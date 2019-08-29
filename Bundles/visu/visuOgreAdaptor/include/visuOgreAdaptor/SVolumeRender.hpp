@@ -30,6 +30,7 @@
 #include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/IGraphicsWorker.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
 #include <fwRenderOgre/vr/PreIntegrationTable.hpp>
@@ -51,6 +52,7 @@ namespace visuOgreAdaptor
  * - \b newImage(): Called when a new image is loaded.
  * - \b updateImage(): Called when the image is updated.
  * - \b toggleWidgets(bool): Toggles widget visibility.
+ * - \b bufferImage(): Called when the image buffer is modified, copies it into the texture buffer.
  * - \b updateVisibility(bool): Shows or hides the volume.
  * - \b updateClippingBox(): Updates the cropping widget from the clipping matrix.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
@@ -164,6 +166,9 @@ private:
     /// Updates renderer and the GPU volume texture with the new input image data.
     void updateImage();
 
+    /// Starts a parallel task to copy the updated image buffer into the texture buffer.
+    void bufferImage();
+
     /// Updates the sampling.
     void updateSampling(int nbSamples);
 
@@ -250,6 +255,12 @@ private:
 
     /// Buffering texture for the 3D image.
     ::Ogre::TexturePtr m_bufferingTexture;
+
+    /// Prevents the service from accessing the textures while they are swapped.
+    std::mutex m_bufferSwapMutex;
+
+    /// Fills the incoming image texture in a parallel thread.
+    std::unique_ptr< ::fwRenderOgre::IGraphicsWorker > m_bufferingWorker;
 
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;

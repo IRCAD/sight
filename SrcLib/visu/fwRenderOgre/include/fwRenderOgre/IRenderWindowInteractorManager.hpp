@@ -24,6 +24,7 @@
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/factory/new.hpp"
+#include "fwRenderOgre/IGraphicsWorker.hpp"
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
 
@@ -181,7 +182,11 @@ public:
     /// Returns the texture in which this window manager is rendering. Only implemented for offscreen windows.
     FWRENDEROGRE_API virtual ::Ogre::TexturePtr getRenderTexture() = 0;
 
+    /// Sets the list of overlays to display on the window.
     FWRENDEROGRE_API virtual void setEnabledOverlays(const OverlaySetType& overlaySet);
+
+    /// Spawns a worker able to handle graphics resources in parallel.
+    FWRENDEROGRE_API virtual IGraphicsWorker* createGraphicsWorker() = 0;
 
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)

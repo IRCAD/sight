@@ -130,7 +130,7 @@ public:
     /// Layer getter
     ::fwRenderOgre::Layer::sptr getLayer() const;
 
-    /// Sets texture.
+    /// Sets the texture holding the image to be displayed. Doesn't recompute the proxy geometry.
     FWRENDEROGRE_API void set3DTexture(const ::Ogre::TexturePtr& _texture );
 
 protected:
