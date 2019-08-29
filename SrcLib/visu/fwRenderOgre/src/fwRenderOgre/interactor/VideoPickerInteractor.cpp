@@ -86,32 +86,6 @@ void VideoPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y
             if(m_control)
             {
                 info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
-
-                // Deprecated statement
-                if(m_sigAddPointDeprecated->getNumberOfConnections() > 1)
-                {
-                    FW_DEPRECATED_MSG(
-                        "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
-                        "20.0");
-                    ::fwData::Point::sptr point                = ::fwData::Point::New();
-                    ::fwData::Point::PointCoordArrayType cords =
-                    {{static_cast<double>(click.x), static_cast<double>(click.y),
-                      static_cast<double>(click.z)}};
-                    point->setCoord(cords);
-                    m_sigAddPointDeprecated->asyncEmit(::fwData::Object::dynamicCast(point));
-                }
-            }
-            // Deprecated statement
-            else if(m_sigRemovePointDeprecated->getNumberOfConnections() > 1)
-            {
-                FW_DEPRECATED_MSG(
-                    "This signal is deprecated. You should use `IPickerInteractor::picked(::fwDataTools::PickingInfo)`",
-                    "20.0");
-                ::fwData::Point::sptr point                = ::fwData::Point::New();
-                ::fwData::Point::PointCoordArrayType cords =
-                {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
-                point->setCoord(cords);
-                m_sigRemovePointDeprecated->asyncEmit(::fwData::Object::dynamicCast(point));
             }
 
             m_picked->asyncEmit(info);

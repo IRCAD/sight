@@ -48,8 +48,6 @@ SAddPoint::SAddPoint() noexcept
 {
     newSlot(s_PICK_SLOT, &SAddPoint::pick, this );
     newSlot(s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this );
-    newSlot("addPoint", &SAddPoint::addPointDeprecated, this );
-    newSlot("removePoint", &SAddPoint::removePointDeprecated, this );
 }
 
 //------------------------------------------------------------------------------
@@ -160,26 +158,6 @@ void SAddPoint::clearPoints()
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SAddPoint::addPointDeprecated(::fwData::Object::sptr _pointObject)
-{
-    FW_DEPRECATED_MSG("This slot is deprecated method. You should use `SAddPoint::pick(::fwDataTools::PickingInfo)`",
-                      "20.0");
-    const auto point = ::fwData::Point::dynamicCast(_pointObject);
-    this->addPoint(point);
-}
-
-//------------------------------------------------------------------------------
-
-void SAddPoint::removePointDeprecated(::fwData::Object::sptr _pointObject)
-{
-    FW_DEPRECATED_MSG("This slot is deprecated method. You should use `SAddPoint::pick(::fwDataTools::PickingInfo)`",
-                      "20.0");
-    const auto point = ::fwData::Point::dynamicCast(_pointObject);
-    this->removePoint(point);
 }
 
 } // namespace uiVisuOgre
