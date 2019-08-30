@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -105,60 +105,62 @@
 #define __FWCORE_GET_ARGS_TYPES(_args_) BOOST_PP_SEQ_TRANSFORM(__FWCORE_GET_NTH_ELEM_III, 0, _args_)
 #define __FWCORE_GET_ARG_DEFAULT_IF_HAS_ONE(arg)             \
     BOOST_PP_EXPR_IF(                                        \
-        BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(arg), 2 ),     \
+        BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(arg), 2 ),         \
             =                                                \
             )                                                \
     BOOST_PP_EXPAND(                                         \
-        BOOST_PP_IF(                                     \
-            BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(arg), 2 ), \
-            BOOST_PP_SEQ_ELEM, __FWCORE_NOTHING_2        \
-            )                                            \
-        (1, arg)                                      \
+        BOOST_PP_IF(                                         \
+            BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(arg), 2 ),     \
+            BOOST_PP_SEQ_ELEM, __FWCORE_NOTHING_2            \
+            )                                                \
+        (1, arg)                                             \
         )
 
-#define __FWCORE_SEQ_IS_EMPTY_SINGLE(_seq_) BOOST_PP_AND( BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(_seq_), 1), \
-                                                          BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_ELEM(0, _seq_)), \
-                                                                         0) )
+#define __FWCORE_SEQ_IS_EMPTY_SINGLE(_seq_) BOOST_PP_AND(              \
+        BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(_seq_), 1),                   \
+        BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(BOOST_PP_SEQ_ELEM(0, _seq_)), \
+                       0) )
 #define __FWCORE_SEQ_IS_NOT_EMPTY_SINGLE(_seq_) BOOST_PP_NOT(__FWCORE_SEQ_IS_EMPTY_SINGLE(_seq_))
 
 /*
  * __FWCORE_GENERATE_ARGS( ((a)) ((b)) ((c)(default)) ) expands to  (a __var, ) (b __var, ) (c __var, = default) where
  *__var is defined by __FWCORE_ARG_NAME
  */
-#define __FWCORE_ADD_ARG_NAME_AND_VALUE_III(s, _data_, _elem_)                                                                 \
-    BOOST_PP_EXPR_IF(_data_, \
+#define __FWCORE_ADD_ARG_NAME_AND_VALUE_III(s, _data_, _elem_)                                                         \
+    BOOST_PP_EXPR_IF(_data_,                                                                                           \
                      (BOOST_PP_SEQ_ELEM(0, _elem_) __FWCORE_ARG_NAME,  __FWCORE_GET_ARG_DEFAULT_IF_HAS_ONE(_elem_) ) )
-#define __FWCORE_GENERATE_ARGS(_args_)                                                                                                                                   \
-    BOOST_PP_IF(                                                                                                                                                         \
-        __FWCORE_SEQ_IS_EMPTY_SINGLE(_args_),                                                                                                                        \
-        (),                                                                                                                                                          \
-        BOOST_PP_EXPR_IF(__FWCORE_SEQ_IS_NOT_EMPTY_SINGLE(_args_), \
+
+#define __FWCORE_GENERATE_ARGS(_args_)                                                                             \
+    BOOST_PP_IF(                                                                                                   \
+        __FWCORE_SEQ_IS_EMPTY_SINGLE(_args_),                                                                      \
+        (),                                                                                                        \
+        BOOST_PP_EXPR_IF(__FWCORE_SEQ_IS_NOT_EMPTY_SINGLE(_args_),                                                 \
                          BOOST_PP_SEQ_TRANSFORM)  (__FWCORE_ADD_ARG_NAME_AND_VALUE_III, BOOST_PP_SEQ_SIZE(_args_), \
-                                                   _args_ ) \
+                                                   _args_ )                                                        \
         )
 
 /*
  * __FWCORE_GENERATE_TYPED_NUMBERED_TUPLE( ((a)) ((b)) ((c)(default)) ) expands to  (a __var0, b __var1, c __var2 =
  * default)  or to () if _args_ is an empty boost_pp sequence
  */
-#define __FWCORE_ADD_ID(_r_, _data_, _i_, _elem_) BOOST_PP_IF(_data_, \
-                                                              ( BOOST_PP_CAT( BOOST_PP_TUPLE_ELEM(2, 0, _elem_), \
-                                                                              _i_) BOOST_PP_TUPLE_ELEM(2, 1, \
+#define __FWCORE_ADD_ID(_r_, _data_, _i_, _elem_) BOOST_PP_IF(_data_,                                                \
+                                                              ( BOOST_PP_CAT( BOOST_PP_TUPLE_ELEM(2, 0, _elem_),     \
+                                                                              _i_) BOOST_PP_TUPLE_ELEM(2, 1,         \
                                                                                                        _elem_)), ())
-#define __FWCORE_GENERATE_TYPED_NUMBERED_TUPLE(_args_)                                                                            \
-    BOOST_PP_IF(                                                                                                                  \
-        __FWCORE_SEQ_IS_EMPTY_SINGLE(_args_),                                                                                     \
-        (),                                                                                                                       \
+#define __FWCORE_GENERATE_TYPED_NUMBERED_TUPLE(_args_)                                            \
+    BOOST_PP_IF(                                                                                  \
+        __FWCORE_SEQ_IS_EMPTY_SINGLE(_args_),                                                     \
+        (),                                                                                       \
         BOOST_PP_SEQ_TO_TUPLE(BOOST_PP_SEQ_FOR_EACH_I(__FWCORE_ADD_ID, BOOST_PP_SEQ_SIZE(_args_), \
-                                                      __FWCORE_GENERATE_ARGS(_args_))) \
+                                                      __FWCORE_GENERATE_ARGS(_args_)))            \
         )
 
 /*
  * __FWCORE_GENERATE_NUMBERED_TUPLE((a)(b)(c)) expands to  ( __var0, __var1, __var2)  or to () if _args_ is an empty
  * boost_pp sequence
  */
-#define __FWCORE_GENERATE_NUMBERED_TUPLE(_args_)                                 \
-    BOOST_PP_IF(                                                                 \
+#define __FWCORE_GENERATE_NUMBERED_TUPLE(_args_)                             \
+    BOOST_PP_IF(                                                             \
         __FWCORE_SEQ_IS_EMPTY_SINGLE(_args_),                                \
         (),                                                                  \
         (BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(_args_), __FWCORE_ARG_NAME)) \
@@ -169,27 +171,21 @@
  */
 #define __FWCORE_GENERATE_FACTORY( _factory_, _args_ )                                                           \
     static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_FACTORY_NAME __FWCORE_GENERATE_TYPED_NUMBERED_TUPLE(_args_) \
-    {                                                                                                        \
-        return __FWCORE_TYPEDEF_SHARED_PTR_NAME(_factory_ __FWCORE_GENERATE_NUMBERED_TUPLE(_args_));       \
+    {                                                                                                            \
+        return __FWCORE_TYPEDEF_SHARED_PTR_NAME(_factory_ __FWCORE_GENERATE_NUMBERED_TUPLE(_args_));             \
     }
 
-#define __FWCORE_GENERATE_ONE_FACTORY(_r_, _data_, _args_)             \
+#define __FWCORE_GENERATE_ONE_FACTORY(_r_, _data_, _args_) \
     __FWCORE_GENERATE_FACTORY( BOOST_PP_SEQ_ELEM(0, _data_), _args_)
 
-#define __FWCORE_GENERATE_FACTORIES( _factory_, _args_ )                      \
-    BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_FACTORY, (_factory_), _args_)
-
-#define __FWCORE_GENERATE_ONE_FACTORY_WITH_N_FACTORIES(_r_, _data_, _factory_args_)                                \
+#define __FWCORE_GENERATE_ONE_FACTORY_WITH_N_FACTORIES(_r_, _data_, _factory_args_) \
     __FWCORE_GENERATE_FACTORY( BOOST_PP_TUPLE_ELEM(2, 0, _factory_args_), BOOST_PP_TUPLE_ELEM(2, 1, _factory_args_))
 
-#define __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES_I( _factories_args_ )                                    \
-    BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_FACTORY_WITH_N_FACTORIES, (BOOST_PP_EMPTY), _factories_args_)
-
 #define __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY( _factory_, _args_ ) \
-    __FWCORE_GENERATE_FACTORIES( _factory_, _args_ )
+    BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_FACTORY, (_factory_), _args_)
 
 #define __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES( _factories_args_ ) \
-    __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES_I( _factories_args_ )
+    BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_FACTORY_WITH_N_FACTORIES, (BOOST_PP_EMPTY), _factories_args_)
 
 /*
  * __FWCORE_GET_CLASSNAME and __FWCORE_GET_SUPERCLASSNAME work with a sequence like "(classname)(baseclassname)" or
@@ -208,66 +204,66 @@
  * BaseClass is a typedef to the superclass
  * RootClass is a typedef to the toplevel base class
  */
-#define __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                               \
-    /** Self type  */                                                                                      \
-    typedef __FWCORE_GET_CLASSNAME (_classinfo_) __FWCORE_TYPEDEF_SELF_NAME;                                \
-    /** Type of base class  */                                                                             \
-    typedef  __FWCORE_GET_SUPERCLASSNAME (_classinfo_) __FWCORE_TYPEDEF_SUPERCLASS_NAME;                   \
-                                                                                                           \
-    typedef  BOOST_PP_IF ( BOOST_PP_EQUAL ( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ),                             \
-                           __FWCORE_TYPEDEF_SUPERCLASS_NAME::__FWCORE_TYPEDEF_ROOTCLASS_NAME, \
-                           __FWCORE_TYPEDEF_SELF_NAME                                         \
-                           ) __FWCORE_TYPEDEF_ROOTCLASS_NAME;                                \
-    /** Shared pointer type  */                                                                            \
-    typedef SPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_NAME;                          \
-    /** Weak pointer type  */                                                                              \
-    typedef WPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_NAME;                            \
-    /** Unique pointer type  */                                                                            \
-    typedef UPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_UNIQUE_PTR_NAME;                          \
-    /** Const shared pointer type  */                                                                      \
-    typedef CSPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME;                   \
-    /** Const weak pointer type  */                                                                        \
-    typedef CWPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME;                     \
-    /** Const unique pointer type  */                                                                      \
+#define __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                    \
+    /** Self type  */                                                                           \
+    typedef __FWCORE_GET_CLASSNAME (_classinfo_) __FWCORE_TYPEDEF_SELF_NAME;                    \
+    /** Type of base class  */                                                                  \
+    typedef  __FWCORE_GET_SUPERCLASSNAME (_classinfo_) __FWCORE_TYPEDEF_SUPERCLASS_NAME;        \
+                                                                                                \
+    typedef  BOOST_PP_IF ( BOOST_PP_EQUAL ( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ),                \
+                           __FWCORE_TYPEDEF_SUPERCLASS_NAME::__FWCORE_TYPEDEF_ROOTCLASS_NAME,   \
+                           __FWCORE_TYPEDEF_SELF_NAME                                           \
+                           ) __FWCORE_TYPEDEF_ROOTCLASS_NAME;                                   \
+    /** Shared pointer type  */                                                                 \
+    typedef SPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_NAME;               \
+    /** Weak pointer type  */                                                                   \
+    typedef WPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_NAME;                 \
+    /** Unique pointer type  */                                                                 \
+    typedef UPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_UNIQUE_PTR_NAME;               \
+    /** Const shared pointer type  */                                                           \
+    typedef CSPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME;        \
+    /** Const weak pointer type  */                                                             \
+    typedef CWPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME;          \
+    /** Const unique pointer type  */                                                           \
     typedef CUPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_UNIQUE_PTR_CONST_NAME;
 
 /*
  * Cast definition for casting from baseclassname and derived to _classname_
  */
-#define __FWCORE_GENERATE_CAST(_classname_, _baseclassname_)                                                    \
-    /** @brief Cast to dynamic shared pointer   */                                                              \
-    template< class BASETYPE, typename = typename std::enable_if < std::is_const<BASETYPE>::value >::type >     \
-    static std::shared_ptr< const _classname_> __FWCORE_DYNAMIC_CAST_FUNC_NAME(                                \
-        const std::shared_ptr<BASETYPE> &p )                                                                    \
-    {                                                                                                           \
-        return std::dynamic_pointer_cast< const _classname_ >(p);                                               \
-    }                                                                                                          \
-    template< class BASETYPE, typename = typename std::enable_if < !std::is_const<BASETYPE>::value >::type >    \
-    static std::shared_ptr<_classname_> __FWCORE_DYNAMIC_CAST_FUNC_NAME(                                       \
-        const std::shared_ptr<BASETYPE> &p )                                                                    \
-    {                                                                                                           \
-        return std::dynamic_pointer_cast< _classname_ >(p);                                                     \
-    }                                                                                                          \
+#define __FWCORE_GENERATE_CAST(_classname_, _baseclassname_)                                                        \
+    /** @brief Cast to dynamic shared pointer   */                                                                  \
+    template< class BASETYPE, typename = typename std::enable_if < std::is_const<BASETYPE>::value >::type >         \
+    static std::shared_ptr< const _classname_> __FWCORE_DYNAMIC_CAST_FUNC_NAME(                                     \
+        const std::shared_ptr<BASETYPE> &p )                                                                        \
+    {                                                                                                               \
+        return std::dynamic_pointer_cast< const _classname_ >(p);                                                   \
+    }                                                                                                               \
+    template< class BASETYPE, typename = typename std::enable_if < !std::is_const<BASETYPE>::value >::type >        \
+    static std::shared_ptr<_classname_> __FWCORE_DYNAMIC_CAST_FUNC_NAME(                                            \
+        const std::shared_ptr<BASETYPE> &p )                                                                        \
+    {                                                                                                               \
+        return std::dynamic_pointer_cast< _classname_ >(p);                                                         \
+    }                                                                                                               \
     /** @brief Const shared pointer cast to dynamic pointer \
      *  @deprecated simply use dynamicCast instead, now it handles const or not const arguments. \
-     */                                                                                                         \
+     */                                                                                                             \
     template< class BASETYPE > static __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME __FWCORE_DYNAMIC_CONST_CAST_FUNC_NAME( \
-        BASETYPE const &p ) \
-    {                                                                                                                                    \
-        return std::dynamic_pointer_cast< const _classname_ >(p);                                                                    \
-    }                                                                                                                                   \
-    /** @brief Cast to const shared pointer */                                                                                           \
-    static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_CONST_CAST_FUNC_NAME( \
-        __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME const &p )            \
-    {                                                                                                                                    \
-        return std::const_pointer_cast< _classname_ >(p);                                                                            \
+        BASETYPE const &p )                                                                                         \
+    {                                                                                                               \
+        return std::dynamic_pointer_cast< const _classname_ >(p);                                                   \
+    }                                                                                                               \
+    /** @brief Cast to const shared pointer */                                                                      \
+    static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_CONST_CAST_FUNC_NAME(                                          \
+        __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME const &p )                                                           \
+    {                                                                                                               \
+        return std::const_pointer_cast< _classname_ >(p);                                                           \
     }
 
 #define __FWCORE_PREDECLARE(_s_, _state_, _elem_) \
-    BOOST_PP_IF(                                 \
-        BOOST_PP_EQUAL( _s_, 2 ),         \
-        class _elem_; ,                   \
-        namespace _elem_ { _state_ }      \
+    BOOST_PP_IF(                                  \
+        BOOST_PP_EQUAL( _s_, 2 ),                 \
+        class _elem_; ,                           \
+        namespace _elem_ { _state_ }              \
         )
 
 // @endcond
@@ -305,10 +301,10 @@
  *     }
  *
  */
-#define fwCorePredeclare( _cls_ )                                           \
+#define fwCorePredeclare( _cls_ ) \
     BOOST_PP_SEQ_FOLD_RIGHT( __FWCORE_PREDECLARE, BOOST_PP_SEQ_NIL, _cls_)
 
-#define __FWCORE_STATIC_CACHE( value )        \
+#define __FWCORE_STATIC_CACHE( value ) \
     static const std::string __cache__(value); return __cache__;
 
 #ifdef __GNUC__
@@ -324,23 +320,42 @@
  * - Classname is ::fwData::Object
  * - LeafClassname is Object
  */
-#define __FWCORECLASSNAMEMACRO(_qualifier)                                                        \
+#define fwCoreInterfaceMacro()                                                                    \
     /** @name Demangling methods */                                                               \
     /** @{ */                                                                                     \
     /** @brief return object's classname without its namespace, i.e. BaseObject */                \
-    FW_NOINLINE virtual const std::string& getLeafClassname() const _qualifier                    \
+    FW_NOINLINE virtual const std::string& getLeafClassname() const                               \
     { __FWCORE_STATIC_CACHE(::fwCore::Demangler(*this).getLeafClassname()); }                     \
     FW_NOINLINE static const std::string& leafClassname()                                         \
     { __FWCORE_STATIC_CACHE(::fwCore::getLeafClassname<SelfType>());  }                           \
     /** @brief return full object's classname with its namespace, i.e. ::fwCore::BaseObject */    \
-    FW_NOINLINE virtual const std::string& getClassname() const _qualifier                        \
+    FW_NOINLINE virtual const std::string& getClassname() const                                   \
     { __FWCORE_STATIC_CACHE(::fwCore::getClassname<SelfType>()); }                                \
     FW_NOINLINE static const std::string& classname()                                             \
     { __FWCORE_STATIC_CACHE(::fwCore::getClassname<SelfType>());  }                               \
     /** @} */
 
-#define fwCoreInterfaceMacro() __FWCORECLASSNAMEMACRO()
-#define fwCoreClassnameMacro() __FWCORECLASSNAMEMACRO(override)
+/**
+ * @brief Generate virtual methods that return classname/namespace strings
+ *
+ * Example: for ::fwData::Object,
+ * - Classname is ::fwData::Object
+ * - LeafClassname is Object
+ */
+#define fwCoreClassnameMacro()                                                                    \
+    /** @name Demangling methods */                                                               \
+    /** @{ */                                                                                     \
+    /** @brief return object's classname without its namespace, i.e. BaseObject */                \
+    FW_NOINLINE virtual const std::string& getLeafClassname() const override                      \
+    { __FWCORE_STATIC_CACHE(::fwCore::Demangler(*this).getLeafClassname()); }                     \
+    FW_NOINLINE static const std::string& leafClassname()                                         \
+    { __FWCORE_STATIC_CACHE(::fwCore::getLeafClassname<SelfType>());  }                           \
+    /** @brief return full object's classname with its namespace, i.e. ::fwCore::BaseObject */    \
+    FW_NOINLINE virtual const std::string& getClassname() const override                          \
+    { __FWCORE_STATIC_CACHE(::fwCore::getClassname<SelfType>()); }                                \
+    FW_NOINLINE static const std::string& classname()                                             \
+    { __FWCORE_STATIC_CACHE(::fwCore::getClassname<SelfType>());  }                               \
+    /** @} */
 
 /**
  * @brief Generate virtual methods that check if passed type is same type of
@@ -362,56 +377,19 @@
                             __FWCORE_TYPEDEF_SUPERCLASS_NAME::isTypeOf( type ), false);     \
     }
 
-#define __FWCOREISAMACRO(_qualifier)                                                        \
-    virtual bool isA(const std::string& type) const _qualifier                              \
-    {                                                                                       \
-        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                            \
+#define fwCoreIsTypeOfMacro(_classinfo_)                              \
+    __FWCOREISTYPEOFMACRO(_classinfo_)                                \
+    virtual bool isA(const std::string& type) const override          \
+    {                                                                 \
+        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);            \
     }
 
-#define fwCoreIsTypeOfMacro(_classinfo_) \
-    __FWCOREISTYPEOFMACRO(_classinfo_) \
-    __FWCOREISAMACRO(override)
-#define fwCoreInterfaceIsTypeOfMacro(_classinfo_) \
-    __FWCOREISTYPEOFMACRO(_classinfo_) \
-    __FWCOREISAMACRO()
-
-namespace fwTools
-{
-template<class, class, class>
-class ClassFactory;
-class Factory;
-}
-
-namespace boost
-{
-namespace serialization
-{
-class access;
-}
-}
-
-namespace boost
-{
-namespace python
-{
-namespace objects
-{
-template <class, class>
-struct pointer_holder;
-}
-}
-}
-
-/**
- * @brief Generate common code for friend class Factory
- */
-#define fwCoreFriendClassFactoryMacro()                                      \
-    friend class ::boost::serialization::access;                             \
-    template<class, class>                                                   \
-    friend struct ::boost::python::objects::pointer_holder;   \
-    template<class, class, class>                                            \
-    friend class ::fwTools::ClassFactory;                                    \
-    friend class ::fwTools::Factory;
+#define fwCoreInterfaceIsTypeOfMacro(_classinfo_)                     \
+    __FWCOREISTYPEOFMACRO(_classinfo_)                                \
+    virtual bool isA(const std::string& type) const                   \
+    {                                                                 \
+        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);            \
+    }
 
 /**
  * @brief Generate methods for classes with one factory
@@ -432,14 +410,31 @@ struct pointer_holder;
  *
  * @param \_factory_ A factory that can take arguments as defined in _parameters_ arguments
  */
-#define fwCoreClassFactoryMacro(_classinfo_, _parameters_, _factory_)                                    \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                 \
+#if !BOOST_PP_VARIADICS_MSVC
+    #define fwCoreClassFactoryMacro(...) BOOST_PP_OVERLOAD(fwCoreClassFactoryMacro_, __VA_ARGS__)(__VA_ARGS__)
+#else
+    #define fwCoreClassFactoryMacro(...) \
+    BOOST_PP_CAT(BOOST_PP_OVERLOAD(fwCoreClassFactoryMacro_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
+#endif
+
+#define fwCoreClassFactoryMacro_2(_classinfo_, _factory_)                                               \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
-     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                  \
-    /* @cond */                                                                                          \
-    /* @endcond */                                                                                       \
-    __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY(_factory_, _parameters_)                               \
-    fwCoreFriendClassFactoryMacro()                                                                      \
+     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
+    /* @cond */                                                                                         \
+    /* @endcond */                                                                                      \
+    static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_FACTORY_NAME()                                     \
+    {                                                                                                   \
+        return __FWCORE_TYPEDEF_SHARED_PTR_NAME(_factory_());                                           \
+    }
+
+#define fwCoreClassFactoryMacro_3(_classinfo_, _parameters_, _factory_)                                 \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
+    /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
+     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
+    /* @cond */                                                                                         \
+    /* @endcond */                                                                                      \
+    __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY(_factory_, _parameters_)
 
 /**
  * @brief Generate common construction methods for classes with one factory
@@ -460,16 +455,51 @@ struct pointer_holder;
  *
  * @param \_factory_ A factory that can take arguments as defined in _parameters_ arguments
  */
-#define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                     \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                 \
+#if !BOOST_PP_VARIADICS_MSVC
+    #define fwCoreClassDefinitionsWithFactoryMacro(...) \
+    BOOST_PP_OVERLOAD(fwCoreClassDefinitionsWithFactoryMacro_, __VA_ARGS__)(__VA_ARGS__)
+#else
+    #define fwCoreClassDefinitionsWithFactoryMacro(...) \
+    BOOST_PP_CAT(BOOST_PP_OVERLOAD(fwCoreClassDefinitionsWithFactoryMacro_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
+#endif
+
+#define fwCoreClassDefinitionsWithFactoryMacro_2(_classinfo_, _factory_)                                \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
-     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                  \
-    /* @cond */                                                                                          \
-    /* @endcond */                                                                                       \
+     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
+    /* @cond */                                                                                         \
+    /* @endcond */                                                                                      \
+    static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_FACTORY_NAME()                                     \
+    {                                                                                                   \
+        return __FWCORE_TYPEDEF_SHARED_PTR_NAME(_factory_());                                           \
+    }                                                                                                   \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
+    fwCoreClassnameMacro()                                                                              \
+    fwCoreIsTypeOfMacro(_classinfo_)
+
+#define fwCoreClassDefinitionsWithFactoryMacro_3(_classinfo_, _parameters_, _factory_)                  \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
+    /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
+     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
+    /* @cond */                                                                                         \
+    /* @endcond */                                                                                      \
     __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY(_factory_, _parameters_)                               \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)         \
-    fwCoreFriendClassFactoryMacro()                                                                      \
-    fwCoreClassnameMacro()                                                                               \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
+    fwCoreClassnameMacro()                                                                              \
+    fwCoreIsTypeOfMacro(_classinfo_)
+
+/**
+ * @brief Generate common methods for classes without factory
+ *
+ * For this macro parameters, each bracket is significant.
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ *                  baseclassname is only required for a non-base class, and should not
+ *                  be used if baseclassname == classname
+ */
+#define fwCoreClassDefinitionsMacro(_classinfo_)                                                        \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
+    fwCoreClassnameMacro()                                                                              \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -489,17 +519,16 @@ struct pointer_holder;
  *                            - for a N-parameters factory : ((type0)) ((type1)) ... ((typeN)(default_value))
  *
  */
-#define fwCoreClassDefinitionsWithNFactoriesMacro(_classinfo_, _factories_args_)                                    \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                            \
+#define fwCoreClassDefinitionsWithNFactoriesMacro(_classinfo_, _factories_args_)                        \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
-     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                             \
-    /* @cond */                                                                                                     \
-                                                                                                                    \
-    __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES(_factories_args_)                                                 \
-    /* @endcond */                                                                                                  \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)                     \
-    fwCoreFriendClassFactoryMacro()                                                                                 \
-    fwCoreClassnameMacro()                                                                                          \
+     * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
+    /* @cond */                                                                                         \
+                                                                                                        \
+    __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES(_factories_args_)                                      \
+    /* @endcond */                                                                                      \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
+    fwCoreClassnameMacro()                                                                              \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -512,7 +541,6 @@ struct pointer_holder;
 #define fwCoreServiceClassDefinitionsMacro(_classinfo_)                                           \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                          \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)  \
-    fwCoreFriendClassFactoryMacro()                                                               \
     fwCoreClassnameMacro()                                                                        \
     fwCoreIsTypeOfMacro(_classinfo_)
 
