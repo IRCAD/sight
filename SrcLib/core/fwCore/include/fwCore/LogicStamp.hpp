@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCORE_LOGICSTAMP_HPP__
-#define __FWCORE_LOGICSTAMP_HPP__
+#pragma once
 
 #include "fwCore/base.hpp"
 #include "fwCore/HiResClock.hpp"
-
 
 namespace fwCore
 {
@@ -39,7 +37,7 @@ class FWCORE_CLASS_API LogicStamp : public BaseObject
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (LogicStamp)(BaseObject), (()), new LogicStamp);
+    fwCoreClassDefinitionsWithFactoryMacro( (LogicStamp)(BaseObject), new LogicStamp);
 
     /**
      * @brief Type used in logical typestamp.
@@ -50,35 +48,31 @@ public:
      * @name Constructor/Destructor
      * @{ */
 
-    FWCORE_API LogicStamp()
+    LogicStamp()
     {
-        this->m_modifiedLogicalTime = 0;
     }
 
     /**  @} */
-
 
     /**
      * @brief Increment global Logical counter and copy it to this LogicStamp.
      */
     FWCORE_API void modified();
 
-
     /**
      * @return LogicStamp's current value
      */
-    FWCORE_API LogicStampType getLogicStamp() const
+    LogicStampType getLogicStamp() const
     {
         return this->m_modifiedLogicalTime;
     }
-
 
     /**
      * @brief Greater than operator for LogicStamp.
      *
      * @param ls LogicStamp to compare to
      */
-    FWCORE_API bool operator>(const LogicStamp& ls) const
+    bool operator>(const LogicStamp& ls) const
     {
         return ( this->m_modifiedLogicalTime > ls.m_modifiedLogicalTime );
     }
@@ -88,7 +82,7 @@ public:
      *
      * @param ls LogicStamp to compare to
      */
-    FWCORE_API bool operator<(const LogicStamp& ls) const
+    bool operator<(const LogicStamp& ls) const
     {
         return ( this->m_modifiedLogicalTime < ls.m_modifiedLogicalTime );
     }
@@ -96,22 +90,18 @@ public:
     /**
      * @brief Cast operator for LogicStamp.
      */
-    FWCORE_API operator LogicStampType() const
+    operator LogicStampType() const
     {
         return this->m_modifiedLogicalTime;
     }
-
 
 private:
 
     /**
      * @brief Stored logical time
      */
-    LogicStampType m_modifiedLogicalTime;
+    LogicStampType m_modifiedLogicalTime{0};
 
 };
 
 } //namespace fwCore
-
-#endif // __FWCORE_LOGICSTAMP_HPP__
-
