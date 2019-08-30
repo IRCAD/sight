@@ -313,6 +313,8 @@ void SVolumeRender::newImage()
         // Destroy the worker to wait for all pending buffering tasks to be cleared.
         m_bufferingWorker.reset();
 
+        std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+
         auto* newWorker = renderService->getInteractorManager()->createGraphicsWorker();
         m_bufferingWorker = std::unique_ptr< ::fwRenderOgre::IGraphicsWorker >(newWorker);
 
@@ -323,9 +325,9 @@ void SVolumeRender::newImage()
         m_helperVolumeTF.setOrCreateTF(volumeTF, image);
 
         m_gpuVolumeTF->updateTexture(volumeTF);
-    }
 
-    ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+    }
 
     this->updateImage();
 }
