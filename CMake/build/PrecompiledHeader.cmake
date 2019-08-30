@@ -282,7 +282,7 @@ function(add_precompiled_header _target _input)
     separate_arguments(CXXFLAGS)
 
     # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
-    list(APPEND CXXFLAGS "-std=gnu++11" "-fPIC")
+    list(APPEND CXXFLAGS "-std=gnu++17" "-fPIC")
 
     # Append macOS specific flags
     if(APPLE)
