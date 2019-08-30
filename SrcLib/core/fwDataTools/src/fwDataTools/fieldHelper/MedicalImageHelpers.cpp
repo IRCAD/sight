@@ -211,10 +211,7 @@ bool MedicalImageHelpers::isBufNull(const ::fwData::Image::BufferType* buf, cons
         ucbuf,
         ucbuf+len,
         0,
-        [] (const ::fwData::Image::BufferType& x, const ::fwData::Image::BufferType& y)
-            {
-                return x|y;
-            }
+        std::bit_or< ::fwData::Image::BufferType>()
         );
     return isNull;
 }
