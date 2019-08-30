@@ -1,5 +1,5 @@
 set(CONAN_BOOST "boost/1.69.0-r2@sight/stable")
-set(CONAN_CAMP "camp/0.8.2-r3@sight/stable")
+set(CONAN_CAMP "camp/0.8.3@sight/testing")
 set(CONAN_CERES "ceres/1.14.0-r2@sight/stable")
 set(CONAN_CPPUNIT "cppunit/1.14.0-r2@sight/stable")
 set(CONAN_DCMTK "dcmtk/3.6.4-r1@sight/stable")
