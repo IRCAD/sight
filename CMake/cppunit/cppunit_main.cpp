@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2004-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,12 +43,12 @@
 class MiniLauncher
 {
 public:
-    MiniLauncher( ::boost::filesystem::path profilePath )
+    MiniLauncher(::boost::filesystem::path profilePath )
     {
         ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
         runtime->addDefaultBundles();
 
-        ::boost::filesystem::path cwd = runtime->getWorkingPath();
+        const ::boost::filesystem::path cwd = runtime->getWorkingPath();
 
         if (!::boost::filesystem::exists( profilePath ))
         {
@@ -115,7 +115,7 @@ struct Options
             return true;
         }
 
-        std::string programName( *argv != 0 ? *argv : "test_runner" );
+        const std::string programName( *argv != 0 ? *argv : "test_runner" );
 
         char** args    = argv + 1;
         char** argsEnd = argv + argc;
@@ -187,50 +187,13 @@ struct Options
 
 };
 
-CPPUNIT_NS_BEGIN
-class SynchronizationObject;
-
-class TestLister : public TestResult
-{
-public:
-    TestLister( SynchronizationObject* syncObject = 0 )
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void startTest( Test* test )
-    {
-        std::cout << test->getName() << std::endl;
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void runTest( Test* test )
-    {
-        test->run( this );
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual bool protect( const Functor& functor,
-                          Test* test,
-                          const std::string& shortDescription = std::string("") )
-    {
-        return false;
-    }
-
-};
 //------------------------------------------------------------------------------
-
-CPPUNIT_NS_END
 
 int main( int argc, char* argv[] )
 {
-
     Options options;
 
-    std::string testExecutable = (argc >= 1) ? std::string(argv[0]) : "unknown";
+    const std::string testExecutable = (argc >= 1) ? std::string(argv[0]) : "unknown";
     options.xmlReportFile = testExecutable + "-cppunit-report.xml";
 
     if (!options.parse(argc, argv))
@@ -250,8 +213,8 @@ int main( int argc, char* argv[] )
 
     if( options.listTests )
     {
-        CPPUNIT_NS::TestLister lister;
-        runner.run( lister );
+        CPPUNIT_NS::TestResult result;
+        runner.run( result );
         return 0;
     }
 
@@ -282,22 +245,20 @@ int main( int argc, char* argv[] )
         options.testsToRun.push_back("");
     }
 
-    std::vector< std::string >::const_iterator iter = options.testsToRun.begin();
-
-    for(; iter != options.testsToRun.end(); ++iter)
+    for(const std::string& test : options.testsToRun)
     {
         try
         {
-            runner.run( controller, *iter );
+            runner.run( controller, test );
         }
         catch ( std::exception& e )
         {
-            std::cerr << "[" << ((iter->empty()) ? "All tests" : *iter) << "]" << "Error: " << e.what() << std::endl;
+            std::cerr << "[" << ((test.empty()) ? "All tests" : test) << "]" << "Error: " << e.what() << std::endl;
             return 1;
         }
         catch ( ... )
         {
-            std::cerr << "[" << ((iter->empty()) ? "All tests" : *iter) << "]" << "Unexpected error. " << std::endl;
+            std::cerr << "[" << ((test.empty()) ? "All tests" : test) << "]" << "Unexpected error. " << std::endl;
             return 1;
         }
     }
