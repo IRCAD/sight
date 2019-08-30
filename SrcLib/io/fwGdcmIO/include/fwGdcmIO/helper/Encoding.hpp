@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_ENCODING_HPP__
-#define __FWGDCMIO_HELPER_ENCODING_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
@@ -62,8 +61,7 @@ public:
      */
     FWGDCMIO_API static std::string convertString(const std::string& source,
                                                   const std::string& definedCharsetTerm,
-                                                  const SPTR(::fwLog::Logger)& logger = nullptr)
-    throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error);
+                                                  const SPTR(::fwLog::Logger)& logger = nullptr);
 
 private:
 
@@ -88,8 +86,7 @@ private:
      */
     static std::string convertSequenceWithCodeExtensions(const std::string& sequence,
                                                          const std::vector<std::string>& definedTermList,
-                                                         const SPTR(::fwLog::Logger)& logger)
-    throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error);
+                                                         const SPTR(::fwLog::Logger)& logger);
 
     /**
      * @brief Map used to convert defined term to charset
@@ -115,6 +112,3 @@ private:
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif //__FWGDCMIO_HELPER_ENCODING_HPP__
-

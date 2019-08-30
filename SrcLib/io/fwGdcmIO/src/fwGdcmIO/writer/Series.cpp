@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-Series::Series(::fwDataIO::writer::IObjectWriter::Key key) :
+Series::Series(::fwDataIO::writer::IObjectWriter::Key ) :
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_fiducialsExportMode(SPATIAL_FIDUCIALS)
 {
@@ -64,7 +64,7 @@ Series::~Series()
 
 //------------------------------------------------------------------------------
 
-void Series::write() throw (::fwGdcmIO::exception::Failed)
+void Series::write()
 {
     ::fwMedData::Series::csptr series = this->getConcreteObject();
     SLM_ASSERT("::fwMedData::Series not instanced", series);

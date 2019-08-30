@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,12 +56,11 @@ SpatialFiducialsIOD::SpatialFiducialsIOD(const ::fwMedData::DicomSeries::csptr& 
 
 SpatialFiducialsIOD::~SpatialFiducialsIOD()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::fwGdcmIO::exception::Failed)
+void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
 {
     // Retrieve images
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
