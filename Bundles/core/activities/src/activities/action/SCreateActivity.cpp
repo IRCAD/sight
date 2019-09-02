@@ -69,6 +69,10 @@ namespace action
 
 //------------------------------------------------------------------------------
 
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, ::fwData::Vector);
+
+//------------------------------------------------------------------------------
+
 const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
 const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG    = "activitySelected";
 
