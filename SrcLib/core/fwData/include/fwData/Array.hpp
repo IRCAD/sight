@@ -375,14 +375,28 @@ public:
         ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
         );
 
-    /** Returns the begining/end of the buffer, casted to T
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+    /**
+     * @brief Returns the begining/end iterators the array buffer, casted to T
+     * @warning Print a warning if T is different to the array type
+     * @note Lock the buffer
      * @{
      */
-    template< typename T > Iterator<T> beginItr();
-    template< typename T > Iterator<T> endItr();
-    template< typename T > Array::ConstIterator<T> beginItr() const;
-    template< typename T > Array::ConstIterator<T> endItr() const;
+    template< typename T > Iterator<T> begin();
+    template< typename T > Iterator<T> end();
+    template< typename T > Array::ConstIterator<T> begin() const;
+    template< typename T > Array::ConstIterator<T> end() const;
+    /// @}
+    ///
+    /**
+     * @brief Returns the begining/end iterators the array buffer, casted to char*
+     * @note Lock the buffer
+     * @{
+     */
+    Iterator<char*> begin();
+    Iterator<char*> end();
+
+    ConstIterator<char*> begin() const;
+    ConstIterator<char*> end() const;
     /// @}
 
     //-----------------------------------------------------
@@ -445,25 +459,6 @@ public:
      * removed in sight 22.0
      */
     FWDATA_API virtual size_t getNumberOfComponents() const;
-
-    /**
-     * Returns the begining/end of the buffer interpreted as a char buffer
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
-     * @{
-     */
-    FWDATA_API virtual char* begin();
-    FWDATA_API virtual char* end();
-    FWDATA_API virtual const char* begin() const;
-    FWDATA_API virtual const char* end() const;
-    ///@}
-
-    /** Returns the begining/end of the buffer, casted to T
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
-     * @{
-     */
-    template< typename T > T* begin();
-    template< typename T > T* end();
-    /// @}
 
 protected:
 
@@ -546,7 +541,7 @@ inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::Iterator<T> Array::beginItr()
+Array::Iterator<T> Array::begin()
 {
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
                 ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
@@ -556,7 +551,7 @@ Array::Iterator<T> Array::beginItr()
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::Iterator<T> Array::endItr()
+Array::Iterator<T> Array::end()
 {
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
                 ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
@@ -569,7 +564,7 @@ Array::Iterator<T> Array::endItr()
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::ConstIterator<T> Array::beginItr() const
+Array::ConstIterator<T> Array::begin() const
 {
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
                 ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
@@ -579,7 +574,7 @@ Array::ConstIterator<T> Array::beginItr() const
 //------------------------------------------------------------------------------
 
 template< typename T >
-Array::ConstIterator<T> Array::endItr() const
+Array::ConstIterator<T> Array::end() const
 {
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
                 ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
@@ -626,7 +621,7 @@ Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array)
 {
     m_lock             = array->lock();
     m_pointer          = static_cast<BufferType>(array->getBuffer());
-    m_numberOfElements = array->getNumberOfElements();
+    m_numberOfElements = array->getSizeInBytes()/sizeof(TYPE);
 }
 
 //------------------------------------------------------------------------------
@@ -645,6 +640,7 @@ Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>::~IteratorBase()
 {
+    m_lock.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -652,7 +648,7 @@ Array::IteratorBase<TYPE, isConst>::~IteratorBase()
 template <class TYPE, bool isConst>
 bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& other) const
 {
-    return m_pointer == other.m_pointer && m_idx == other.m_idx;
+    return m_idx == other.m_idx && m_pointer == other.m_pointer;
 }
 
 //------------------------------------------------------------------------------
@@ -660,7 +656,7 @@ bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& other) c
 template <class TYPE, bool isConst>
 bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& other) const
 {
-    return !(*this == other);
+    return m_idx != other.m_idx || m_pointer != other.m_pointer;
 }
 
 //------------------------------------------------------------------------------
@@ -696,7 +692,8 @@ template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator++(int)
 {
     IteratorBase tmp(*this);
-    operator++();
+    ++m_idx;
+    ++m_pointer;
     return tmp;
 }
 
@@ -758,22 +755,6 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
     m_idx     -= index;
     m_pointer -= index;
     return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template< typename T >
-T* Array::begin()
-{
-    return static_cast<T*>(this->getBuffer());
-}
-
-//------------------------------------------------------------------------------
-
-template< typename T >
-T* Array::end()
-{
-    return reinterpret_cast<T*> (static_cast<char*>(this->getBuffer()) + this->getSizeInBytes());
 }
 
 //-----------------------------------------------------------------------------

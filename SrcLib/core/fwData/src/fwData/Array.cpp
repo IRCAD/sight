@@ -380,38 +380,6 @@ void Array::setBuffer(
 
 //-----------------------------------------------------------------------------
 
-char* Array::begin()
-{
-    FW_DEPRECATED("begin()", "beginItr()", "22.0");
-    void* v = this->getBuffer();
-    return static_cast<char*>(v);
-}
-
-//------------------------------------------------------------------------------
-
-char* Array::end()
-{
-    FW_DEPRECATED("end()", "endItr()", "22.0");
-    return reinterpret_cast<char*> (static_cast<char*>(this->getBuffer()) + this->getSizeInBytes());
-}
-//------------------------------------------------------------------------------
-
-const char* Array::begin() const
-{
-    FW_DEPRECATED("begin()", "beginItr()", "22.0");
-    return static_cast<const char*>(this->getBuffer());
-}
-
-//------------------------------------------------------------------------------
-
-const char* Array::end() const
-{
-    FW_DEPRECATED("end()", "endItr()", "22.0");
-    return reinterpret_cast<const char*> (static_cast<const char*>(this->getBuffer()) + this->getSizeInBytes());
-}
-
-//-----------------------------------------------------------------------------
-
 char* Array::getBufferPtr( const ::fwData::Array::IndexType& id)
 {
     const size_t offset = this->getBufferOffset(id);
@@ -433,6 +401,38 @@ const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id) const
 ::fwMemory::BufferObject::Lock Array::lock() const
 {
     return m_bufferObject->lock();
+}
+
+//------------------------------------------------------------------------------
+
+Array::Iterator<char*> Array::begin()
+{
+    return Iterator<char*>(this);
+}
+
+//------------------------------------------------------------------------------
+
+Array::Iterator<char*> Array::end()
+{
+    auto itr = Iterator<char*>(this);
+    itr += this->getSizeInBytes();
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+Array::ConstIterator<char*> Array::begin() const
+{
+    return ConstIterator<char*>(this);
+}
+
+//------------------------------------------------------------------------------
+
+Array::ConstIterator<char*> Array::end() const
+{
+    auto itr = ConstIterator<char*>(this);
+    itr += this->getSizeInBytes();
+    return itr;
 }
 
 //------------------------------------------------------------------------------
