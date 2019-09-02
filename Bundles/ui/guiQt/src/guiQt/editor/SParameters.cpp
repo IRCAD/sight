@@ -161,7 +161,7 @@ void SParameters::starting()
         const std::string defaultValue = cfg.get< std::string >("<xmlattr>.defaultValue");
         const bool resetButton         = cfg.get< bool >("<xmlattr>.reset", true);
 
-        if(name.compare("") != 0)
+        if(!name.empty())
         {
             layout->addWidget(new QLabel(QString(name.c_str())), row, 0);
         }
@@ -274,6 +274,7 @@ void SParameters::starting()
 
     if(m_sendSignalAtStart)
     {
+        FW_DEPRECATED_MSG("The service should not emit signals at start", "21.0");
         this->updating(); // emits the signals with the default values
     }
 }
@@ -920,7 +921,7 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
 
         layout.addWidget(resetButton, row, 5);
 
-        // Connect reset button to the slider
+        // Connect reset button to the spinbox
         QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetDoubleMapped(spinbox); });
     }
 }
@@ -1112,7 +1113,7 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
 
         layout.addWidget(resetButton, row, 5);
 
-        // Connect reset button to the slider
+        // Connect reset button to the spinbox
         QObject::connect(resetButton, &QPushButton::clicked, this, [ = ] { onResetIntegerMapped(spinbox); });
     }
 }
