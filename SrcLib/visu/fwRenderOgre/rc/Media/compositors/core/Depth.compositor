@@ -1,0 +1,20 @@
+compositor Depth
+{
+    technique
+    {
+        target_output
+        {
+            input none
+
+            pass clear
+            {
+            }
+
+            material_scheme DepthPeeling/depthMap
+
+            pass render_scene
+            {
+            }
+        }
+    }
+}

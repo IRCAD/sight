@@ -18,7 +18,6 @@
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
                     <view caption="Preview" align="bottom" minHeight="200" />
-                    <view caption="Activity creator" align="bottom" minHeight="400" visible="no" />
                 </layout>
                 <toolBar />
             </gui>
@@ -27,7 +26,6 @@
                 <toolBar sid="toolBar" start="yes" />
                 <view sid="selector" start="yes" />
                 <view wid="preview" />
-                <view sid="activityCreator" start="yes" />
             </registry>
         </service>
 
@@ -36,12 +34,11 @@
                 <layout>
                     <menuItem name="Import" icon="media-0.1/icons/Import.svg" />
                     <menuItem name="Export" icon="media-0.1/icons/Export.svg" />
-                    <menuItem name="Launch activity" icon="media-0.1/icons/Launch_activity.svg" />
-                    <menuItem name="Create a new activity" icon="media-0.1/icons/CreateActivity.svg" />
                     <separator />
                     <menuItem name="2D visualization" icon="media-0.1/icons/icon-2D.png" />
                     <menuItem name="3D visualization" icon="media-0.1/icons/icon-3D.png" />
                     <menuItem name="Volume rendering" icon="media-0.1/icons/icon-VR.png" />
+                    <menuItem name="Blend" icon="media-0.1/icons/icon-blend.png" />
                     <separator />
                     <menuItem name="DICOM PACS Reader" icon="media-0.1/icons/Pull.svg" />
                     <menuItem name="DICOM PACS Writer" icon="media-0.1/icons/Push.svg" />
@@ -53,11 +50,10 @@
             <registry>
                 <menuItem sid="action_import" start="yes" />
                 <menuItem sid="action_exportSeries" start="yes" />
-                <menuItem sid="action_newActivity" start="yes" />
-                <menuItem sid="action_createActivity" start="yes" />
                 <menuItem sid="action_2DVisualization" start="yes" />
                 <menuItem sid="action_3DVisualization" start="yes" />
                 <menuItem sid="action_volumeRendering" start="yes" />
+                <menuItem sid="action_blend" start="yes" />
                 <menuItem sid="action_dicomPacsReader" start="yes" />
                 <menuItem sid="action_dicomPacsWriter" start="yes" />
                 <menuItem sid="action_dicomFiltering" start="yes" />
@@ -75,16 +71,6 @@
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard">
-            <inout key="seriesDB" uid="${SERIESDB}" />
-            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
-            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
-            <icons>
-                <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
-                <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
-            </icons>
-        </service>
-
         <service uid="seriesViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
@@ -93,17 +79,17 @@
                     <extract path="@image" pattern="imageID" />
                 </config>
                 <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
-                <config id="ActivityCreatorConfig" type="::fwMedData::ActivitySeries">
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
-                </config>
             </configs>
         </service>
+
         <service uid="action_newActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
                     <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                    <parameter replace="APP_NAME" by="VRRender" />
+                    <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
                 </parameters>
                 <filter>
                     <mode>exclude</mode>
@@ -157,7 +143,21 @@
             </config>
         </service>
 
-        <service uid="action_dicomPacsReader" type="::activities::action::SActivityLauncher">
+        <service uid="action_blend" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <in key="series" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>Blend</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="action_dicomPacsReader" type="::activities::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -172,7 +172,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomPacsWriter" type="::activities::action::SActivityLauncher">
+        <service uid="action_dicomPacsWriter" type="::activities::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -187,7 +187,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomFiltering" type="::activities::action::SActivityLauncher">
+        <service uid="action_dicomFiltering" type="::activities::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -202,7 +202,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomWebReader" type="::activities::action::SActivityLauncher">
+        <service uid="action_dicomWebReader" type="::activities::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -217,7 +217,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomWebWriter" type="::activities::action::SActivityLauncher">
+        <service uid="action_dicomWebWriter" type="::activities::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -230,16 +230,6 @@
                     <id>DicomWebWriterActivity</id>
                 </filter>
             </config>
-        </service>
-
-        <service uid="action_createActivity" type="::activities::action::SCreateActivity">
-            <in key="series" uid="selections" />
-            <filter>
-                <mode>exclude</mode>
-                <id>ImageSeriesExport</id>
-                <id>ModelSeriesExport</id>
-                <id>SDBVRRender</id>
-            </filter>
         </service>
 
         <service uid="action_exportSeries" type="::activities::action::SActivityLauncher" autoConnect="yes">
@@ -262,24 +252,6 @@
             <slot>action_newActivity/launchSeries</slot>
         </connect>
 
-        <connect channel="hide_activity_creator_channel">
-            <signal>activityCreator/activityCreated</signal>
-            <signal>activityCreator/activityUpdated</signal>
-            <slot>activityCreator/hide</slot>
-        </connect>
-
-        <connect channel="create_activity_channel">
-            <signal>action_createActivity/activityIDSelected</signal>
-            <slot>activityCreator/show</slot>
-            <slot>activityCreator/createActivity</slot>
-        </connect>
-
-        <connect channel="update_activity_channel">
-            <signal>action_createActivity/activitySelected</signal>
-            <slot>activityCreator/show</slot>
-            <slot>activityCreator/updateActivity</slot>
-        </connect>
-
         <connect channel="${PROGRESS_CHANNEL}">
             <signal>action_import/jobCreated</signal>
         </connect>
@@ -289,6 +261,7 @@
             <signal>action_2DVisualization/activityLaunched</signal>
             <signal>action_3DVisualization/activityLaunched</signal>
             <signal>action_volumeRendering/activityLaunched</signal>
+            <signal>action_blend/activityLaunched</signal>
             <signal>action_dicomPacsReader/activityLaunched</signal>
             <signal>action_dicomPacsWriter/activityLaunched</signal>
             <signal>action_dicomFiltering/activityLaunched</signal>
@@ -296,13 +269,9 @@
             <signal>action_dicomWebWriter/activityLaunched</signal>
         </connect>
 
-        <connect>
-            <signal>activityCreator/canceled</signal>
-            <slot>activityCreator/hide</slot>
-        </connect>
-
         <start uid="mainview" />
         <start uid="seriesViewer" />
+        <start uid="action_newActivity" />
 
     </config>
 </extension>

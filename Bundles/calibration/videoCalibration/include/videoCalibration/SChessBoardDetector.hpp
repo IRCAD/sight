@@ -62,7 +62,7 @@ namespace videoCalibration
                 <key uid="..." />
                 <key uid="..." />
             </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -71,7 +71,8 @@ namespace videoCalibration
  * - \b calInfo [::arData::CalibrationInfo]: calibration objects storing the detected images.
  * - \b detection [::fwData::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
- * - \b board : preference key to retrieve the number of squares of the board in width and height.
+ * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
+ *              as the scaling factor to be applied to the input image.
  */
 class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
 {
@@ -118,8 +119,18 @@ private:
     /// Runs the detection for the given input index.
     void doDetection(size_t _imageIndex);
 
-    /// Tries to detect a chessboard with the given dimensions in the image.
-    static ::fwData::PointList::sptr detectChessboard(const ::fwData::Image::csptr& _img, size_t _xDim, size_t _yDim);
+    /**
+     * @brief Tries to detect a chessboard with the given dimensions in the image.
+     *
+     * @param[in] _img Image in which to search for a chessboard.
+     * @param[in] _xDim Width of the chessboard in number of tiles.
+     * @param[in] _yDim Height of the chessboard in number of tiles.
+     * @param[in] _scale Scale applied to the input image. Downscaling speeds up the detection.
+     *
+     * @return List of detected chessboard points. Empty if detection failed.
+     */
+    static ::fwData::PointList::sptr detectChessboard(const ::fwData::Image::csptr& _img, size_t _xDim, size_t _yDim,
+                                                      float _scale);
 
     /// Signal emitted after detection.
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
@@ -133,11 +144,16 @@ private:
     /// Preference key to retrieve the chessboard height.
     std::string m_heightKey;
 
+    /// Preference key to retrieve the scaling factor applied to the image before detection.
+    std::string m_scaleKey;
+
     /// Width of the chessboard we're looking for.
-    size_t m_width;
+    size_t m_width { 11 };
 
     /// Height of the chessboard we're looking for.
-    size_t m_height;
+    size_t m_height { 8 };
+
+    float m_scale { 1.f };
 
     /// Last detected chessboard points in each image. Null if detection failed.
     std::vector< ::fwData::PointList::sptr > m_pointLists;

@@ -32,6 +32,7 @@ include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
+include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
 
 file(REMOVE "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake")
 
@@ -272,6 +273,22 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+        if(MSVC_IDE)
+            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
+            set(PROFILE "")
+            set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
+            if(CMAKE_CL_64)
+                set(PLATFORM "x64")
+            else()
+                set(PLATFORM "Win32")
+            endif()
+            configure_file(
+                "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
+                IMMEDIATE @ONLY)
+        endif()
+
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
@@ -686,6 +703,11 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
         createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
+
+    if(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
+        message(WARNING "Bundle ${FWPROJECT_NAME} links with other bundles (${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES}), "
+                        "this feature will be removed in version 21.0 of Sight")
+    endif()
 endmacro()
 
 # Include the projects in parameter and export them.
@@ -900,6 +922,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(START_BEFORE)
     unset(PLUGINS)
     unset(CONAN_DEPS)
+    unset(WARNINGS_AS_ERRORS)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -939,6 +962,8 @@ macro(fwLoadProperties)
             profile_setup(${PROJECT})
         endif()
     endif()
+
+    fwManageWarnings(${NAME})
 
     if(DEPENDENCIES)
         fwUse( ${DEPENDENCIES} )
@@ -1011,3 +1036,19 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
+# Treat warnings as errors if requested
+#   to activate "warning as errors", simply write in the Properties.cmake of your project:
+#   set(WARNINGS_AS_ERRORS ON)
+macro(fwManageWarnings PROJECT)
+    if(${${PROJECT}_WARNINGS_AS_ERRORS})
+        if(MSVC)
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
+                target_compile_options(${PROJECT} PRIVATE /WX)
+            else()
+                message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
+            endif()
+        elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+            target_compile_options(${PROJECT} PRIVATE "-Werror")
+        endif ()
+    endif()
+endmacro()

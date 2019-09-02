@@ -173,6 +173,7 @@ void SPointList::starting()
     const auto pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
     if(pointList)
     {
+        ::fwData::mt::ObjectReadLock lock(pointList);
         this->updateMesh(pointList);
     }
     else
@@ -180,6 +181,7 @@ void SPointList::starting()
         const auto mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
         if(mesh)
         {
+            ::fwData::mt::ObjectReadLock lock(mesh);
             if(!m_customMaterial && mesh->getPointColorsArray() != nullptr)
             {
                 m_materialTemplateName += "_PerPointColor";
@@ -309,7 +311,6 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
-    ::fwData::mt::ObjectReadLock lock(_pointList);
 
     detachAndDestroyEntity();
 
@@ -368,8 +369,6 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
-
-    ::fwData::mt::ObjectReadLock lock(_mesh);
 
     detachAndDestroyEntity();
 

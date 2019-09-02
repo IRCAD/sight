@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CVIO_IMAGE_HPP__
-#define __CVIO_IMAGE_HPP__
+#pragma once
 
 #include "cvIO/config.hpp"
 
@@ -54,6 +53,14 @@ public:
     CVIO_API static ::cv::Mat moveToCv(::fwData::Image::sptr& _image);
 
     /**
+     * @brief Convert an image data into an OpenCV image.
+     *
+     * The resulting ::cv::Mat does not allocate a new buffer and points to the buffer of the ::fwData::Image.
+     * This is the const-overload of the above function. As such it returns a non-modifiable ::cv::Mat.
+     */
+    CVIO_API static const ::cv::Mat moveToCv(const ::fwData::Image::csptr& _image);
+
+    /**
      * @brief Copy an OpenCV image into our internal image data.
      */
     CVIO_API static void copyFromCv(::fwData::Image::sptr& _image, const ::cv::Mat& _cvImage);
@@ -68,5 +75,3 @@ public:
 };
 
 }// namespace cvIO
-
-#endif //__CVIO_IMAGE_HPP__

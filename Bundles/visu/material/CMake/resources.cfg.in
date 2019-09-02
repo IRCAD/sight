@@ -21,5 +21,3 @@ FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/textures/postFX
 [materialsTemplate]
 FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/scene
 
-[fonts]
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/fonts/

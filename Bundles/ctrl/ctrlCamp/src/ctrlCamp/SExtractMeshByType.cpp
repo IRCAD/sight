@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,7 @@
 #include "ctrlCamp/SExtractMeshByType.hpp"
 
 #include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
@@ -104,6 +105,8 @@ void SExtractMeshByType::updating()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries>("source");
     OSLM_ASSERT("ModelSeries not found", modelSeries);
+
+    ::fwData::mt::ObjectReadLock lock(modelSeries);
 
     size_t index = 0;
     for(const auto& elt : m_extract)

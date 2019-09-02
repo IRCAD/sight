@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,8 @@
 #include <boost/program_options/variables_map.hpp>
 
 #include <csignal>
+#include <fstream>
 #include <ostream>
-#include <stdio.h>
 #include <string>
 #include <vector>
 
@@ -57,32 +57,9 @@
 #define DEFAULT_PROFILE_STRING  GET_DEFAULT_PROFILE2(DEFAULT_PROFILE)
 
 //------------------------------------------------------------------------------
-#if defined(_WIN32) && _MSC_VER > 1499 &&  _MSC_VER < 1600 // Visual C++ 2008 only
 
- #pragma message ( "Setting up manifest..." )
-
- #if defined(_DEBUG)
-// add a dependency on the retail crt even in debug
-     #pragma comment(linker,"/manifestdependency:\"type='win32' " \
-    "name='" __LIBRARIES_ASSEMBLY_NAME_PREFIX ".CRT' " \
-    "version='" _CRT_ASSEMBLY_VERSION "' " \
-    "processorArchitecture='*' " \
-    "publicKeyToken='" _VC_ASSEMBLY_PUBLICKEYTOKEN "' " \
-    "language='*'\"")
- #endif /* _DEBUG */
-
- #pragma comment(linker,"/manifestdependency:\"type='win32' " \
-    "name='Microsoft.Windows.Common-Controls' " \
-    "version='6.0.0.0' " \
-    "processorArchitecture='*' " \
-    "publicKeyToken='6595b64144ccf1df' " \
-    "language='*'\"")
-
-#endif /* _WIN32 && _MSC_VER > 1499 &&  _MSC_VER < 1600 */
-
-//------------------------------------------------------------------------------
-namespace po = boost::program_options;
-namespace fs = boost::filesystem;
+namespace po = ::boost::program_options;
+namespace fs = ::boost::filesystem;
 
 typedef fs::path PathType;
 typedef std::vector< PathType > PathListType;
@@ -234,8 +211,10 @@ int main(int argc, char* argv[])
 
     if(fileLog)
     {
-        FILE* pFile = fopen(logFile.c_str(), "w");
-        if (pFile == NULL)
+        std::ofstream logFileStream(logFile.c_str());
+        const bool logFileExists = logFileStream.good();
+        logFileStream.close();
+        if (!logFileExists)
         {
             ::boost::system::error_code err;
             PathType sysTmp = fs::temp_directory_path(err);
@@ -257,7 +236,6 @@ int main(int argc, char* argv[])
             // creates SLM.log in default logFile directory
             logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
         }
-        fclose(pFile);
     }
 
 #ifdef __APPLE__
@@ -322,12 +300,13 @@ int main(int argc, char* argv[])
     {
         bundlePaths.push_back(profileBundlePath);
     }
-
+#if (SPYLOG_LEVEL >= 4 ) // Log level info
     for(const fs::path& bundlePath :  bundlePaths )
     {
         OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
                       vm.count("bundle-path") );
     }
+#endif
     for(const fs::path& bundlePath :  bundlePaths )
     {
         OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
@@ -399,7 +378,7 @@ int main(int argc, char* argv[])
 //-----------------------------------------------------------------------------
 
 #ifdef _WIN32
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
     return main(__argc, __argv);
 }

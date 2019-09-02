@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IODICOM_PLUGIN_HPP__
-#define __IODICOM_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -30,19 +29,15 @@ namespace ioDicom
 
 struct Plugin : public ::fwRuntime::Plugin
 {
-    /**
-     * @brief   destructor
-     */
-    ~Plugin() noexcept;
+    /// Constructor
+    Plugin();
 
     // Overrides
-    void start();
+    void start() final;
 
     // Overrides
-    void stop() noexcept;
+    void stop() noexcept final;
 
 };
 
 } // namespace ioDicom
-
-#endif //__IODICOM_PLUGIN_HPP__
