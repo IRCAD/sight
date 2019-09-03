@@ -256,22 +256,21 @@ public:
         ~IteratorBase();
 
         /// Comparison operators
-        bool operator==(const IteratorBase& other) const;
-        bool operator!=(const IteratorBase& other) const;
-        bool operator<(const IteratorBase& other) const;
+        inline bool operator==(const IteratorBase& other) const;
+        inline bool operator!=(const IteratorBase& other) const;
 
         /// Increment/Decrement operators
-        IteratorBase& operator++();
-        IteratorBase operator++(int);
-        IteratorBase& operator+(size_t index);
-        IteratorBase& operator+=(size_t index);
-        IteratorBase& operator--();
-        IteratorBase operator--(int);
-        IteratorBase& operator-(size_t index);
-        IteratorBase& operator-=(size_t index);
+        inline IteratorBase& operator++();
+        inline IteratorBase operator++(int);
+        inline IteratorBase& operator+(size_t index);
+        inline IteratorBase& operator+=(size_t index);
+        inline IteratorBase& operator--();
+        inline IteratorBase operator--(int);
+        inline IteratorBase& operator-(size_t index);
+        inline IteratorBase& operator-=(size_t index);
 
         /// Value access operators
-        ValueReferenceType operator*();
+        inline ValueReferenceType operator*();
 
     private:
 
@@ -279,8 +278,6 @@ public:
         friend class IteratorBase<TYPE, true>;
 
         BufferType m_pointer{nullptr};
-        size_t m_idx{0};
-        size_t m_numberOfElements{0};
         ::fwMemory::BufferObject::Lock m_lock;
     };
 
@@ -619,9 +616,8 @@ T Array::at(const ::fwData::Array::IndexType& id) const
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array)
 {
-    m_lock             = array->lock();
-    m_pointer          = static_cast<BufferType>(array->getBuffer());
-    m_numberOfElements = array->getSizeInBytes()/sizeof(TYPE);
+    m_lock    = array->lock();
+    m_pointer = static_cast<BufferType>(array->getBuffer());
 }
 
 //------------------------------------------------------------------------------
@@ -629,8 +625,6 @@ Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array)
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>& other) :
     m_pointer(other.m_pointer),
-    m_idx(other.m_idx),
-    m_numberOfElements(other.m_numberOfElements),
     m_lock(other.m_lock)
 {
 }
@@ -648,7 +642,7 @@ Array::IteratorBase<TYPE, isConst>::~IteratorBase()
 template <class TYPE, bool isConst>
 bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& other) const
 {
-    return m_idx == other.m_idx && m_pointer == other.m_pointer;
+    return m_pointer == other.m_pointer;
 }
 
 //------------------------------------------------------------------------------
@@ -656,15 +650,7 @@ bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& other) c
 template <class TYPE, bool isConst>
 bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& other) const
 {
-    return m_idx != other.m_idx || m_pointer != other.m_pointer;
-}
-
-//------------------------------------------------------------------------------
-
-template <class TYPE, bool isConst>
-bool Array::IteratorBase<TYPE, isConst>::operator<(const IteratorBase& other) const
-{
-    return m_idx < other.m_idx;
+    return m_pointer != other.m_pointer;
 }
 
 //------------------------------------------------------------------------------
@@ -672,7 +658,6 @@ bool Array::IteratorBase<TYPE, isConst>::operator<(const IteratorBase& other) co
 template <typename TYPE, bool isConst>
 typename Array::IteratorBase<TYPE, isConst>::ValueReferenceType Array::IteratorBase<TYPE, isConst>::operator*()
 {
-    SLM_ASSERT("Index out of bounds", m_idx < m_numberOfElements);
     return *m_pointer;
 }
 
@@ -681,7 +666,6 @@ typename Array::IteratorBase<TYPE, isConst>::ValueReferenceType Array::IteratorB
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator++()
 {
-    ++m_idx;
     ++m_pointer;
     return *this;
 }
@@ -692,7 +676,6 @@ template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator++(int)
 {
     IteratorBase tmp(*this);
-    ++m_idx;
     ++m_pointer;
     return tmp;
 }
@@ -702,7 +685,6 @@ Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(size_t index)
 {
-    m_idx     = m_idx + index;
     m_pointer = m_pointer + index;
     return *this;
 }
@@ -712,7 +694,6 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+=(size_t index)
 {
-    m_idx     += index;
     m_pointer += index;
     return *this;
 }
@@ -722,7 +703,6 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator--()
 {
-    --m_idx;
     --m_pointer;
     return *this;
 }
@@ -733,7 +713,7 @@ template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator--(int)
 {
     IteratorBase tmp(*this);
-    operator--();
+    --m_pointer;
     return tmp;
 }
 
@@ -742,7 +722,6 @@ Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(size_t index)
 {
-    m_idx     = m_idx - index;
     m_pointer = m_pointer - index;
     return *this;
 }
@@ -752,7 +731,6 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-=(size_t index)
 {
-    m_idx     -= index;
     m_pointer -= index;
     return *this;
 }

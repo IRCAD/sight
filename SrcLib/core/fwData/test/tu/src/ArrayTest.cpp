@@ -237,7 +237,7 @@ void ArrayTest::reallocate()
     std::uint32_t count                              = 0;
     ::fwData::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
     ::fwData::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
-    for (; iter < iterEnd; ++iter)
+    for (; iter != iterEnd; ++iter)
     {
         *iter = count++;
     }
@@ -369,9 +369,11 @@ void ArrayTest::copy()
     auto arrayLock = array->lock();
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
-    std::uint32_t count                           = 0;
-    ::fwData::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
-    for (; iter < array->end<std::uint32_t>(); ++iter)
+    std::uint32_t count                              = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
+    ::fwData::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
+
+    for (; iter != iterEnd; ++iter)
     {
         *iter = count++;
     }
@@ -446,9 +448,11 @@ void ArrayTest::bufferAccessTest()
     array->resize(size, ::fwTools::Type::s_UINT32, true);
     auto lock = array->lock();
 
-    std::uint32_t count                           = 0;
-    ::fwData::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
-    for (; iter < array->end<std::uint32_t>(); ++iter)
+    std::uint32_t count                              = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
+    ::fwData::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
+
+    for (; iter != iterEnd; ++iter)
     {
         *iter = count++;
     }
@@ -474,7 +478,7 @@ void ArrayTest::bufferAccessTest()
 
         std::uint32_t val = 10;
         const auto endItr = array->end<std::uint32_t>();
-        while(itr < endItr)
+        while(itr != endItr)
         {
             CPPUNIT_ASSERT_EQUAL(val, *itr);
             CPPUNIT_ASSERT_NO_THROW(++itr);
@@ -518,7 +522,7 @@ void ArrayTest::constArrayTest()
 
     std::uint32_t count                           = 0;
     ::fwData::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
-    for (; iter < array->end<std::uint32_t>(); ++iter)
+    for (; iter != array->end<std::uint32_t>(); ++iter)
     {
         *iter = count++;
     }
@@ -536,7 +540,7 @@ void ArrayTest::constArrayTest()
     auto it1 = array->begin< std::uint32_t >();
     auto it2 = array2->begin< std::uint32_t >();
 
-    while(it1 < array->end< std::uint32_t >() && it2 < array2->end< std::uint32_t >())
+    while(it1 != array->end< std::uint32_t >() && it2 != array2->end< std::uint32_t >())
     {
         CPPUNIT_ASSERT_EQUAL(*it1, *it2);
         CPPUNIT_ASSERT_NO_THROW(++it1);
