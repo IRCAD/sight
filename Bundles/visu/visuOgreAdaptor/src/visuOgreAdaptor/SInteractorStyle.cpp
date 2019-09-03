@@ -65,12 +65,6 @@ SInteractorStyle::SInteractorStyle() noexcept
     newSlot( s_PICK_SLOT, &::visuOgreAdaptor::SInteractorStyle::picked, this );
 
     m_sigPicked = newSignal< PointClickedSigType >( s_PICKED_SIG );
-
-    newSlot( "addPoint", &::visuOgreAdaptor::SInteractorStyle::addPointDeprecated, this );
-    newSlot( "removePoint", &::visuOgreAdaptor::SInteractorStyle::removePointDeprecated, this );
-
-    m_sigAddPointDeprecated    = newSignal< PointClickedSignalTypeDeprecated >( "pointAdded" );
-    m_sigRemovePointDeprecated = newSignal< PointClickedSignalTypeDeprecated >( "pointRemoved" );
 }
 
 //------------------------------------------------------------------------------
@@ -117,9 +111,6 @@ void SInteractorStyle::starting()
         {
             m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
                                   this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
-
-            m_connections.connect(pickerInteractor, "addPoint", this->getSptr(), "addPoint");
-            m_connections.connect(pickerInteractor,  "removePoint", this->getSptr(), "removePoint");
         }
     }
 }
@@ -195,32 +186,6 @@ void SInteractorStyle::setInteractorStyle()
 void SInteractorStyle::picked(::fwDataTools::PickingInfo _info)
 {
     m_sigPicked->asyncEmit(_info);
-}
-
-//------------------------------------------------------------------------------
-
-void SInteractorStyle::addPointDeprecated(::fwData::Object::sptr _obj )
-{
-    if(m_sigAddPointDeprecated->getNumberOfConnections() > 0 )
-    {
-        FW_DEPRECATED_MSG(
-            "This signal is deprecated. You should use `SInteractorStyle::pick(::fwDataTools::PickingInfo)`",
-            "20.0");
-        m_sigAddPointDeprecated->asyncEmit( _obj );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SInteractorStyle::removePointDeprecated(::fwData::Object::sptr _obj )
-{
-    if(m_sigRemovePointDeprecated->getNumberOfConnections() > 0 )
-    {
-        FW_DEPRECATED_MSG(
-            "This signal is deprecated. You should use `SInteractorStyle::pick(::fwDataTools::PickingInfo)`",
-            "20.0");
-        m_sigRemovePointDeprecated->asyncEmit( _obj );
-    }
 }
 
 } //namespace visuOgreAdaptor
