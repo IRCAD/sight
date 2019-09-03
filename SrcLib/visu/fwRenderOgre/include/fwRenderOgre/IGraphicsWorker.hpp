@@ -33,6 +33,9 @@ namespace fwRenderOgre
  * @brief Interface for graphics worker.
  *
  * Graphics worker are used to run gpu resource handling tasks in parallel.
+ *
+ * /!\ DISCLAIMER: can not be used for parallel rendering as it is not supported by OGRE.
+ * graphics workers should mainly be used to fill large gpu buffers in the background.
  */
 class FWRENDEROGRE_CLASS_API IGraphicsWorker
 {

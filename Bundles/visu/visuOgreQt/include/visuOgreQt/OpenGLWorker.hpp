@@ -66,7 +66,7 @@ private:
     /// OpenGL context for each new task.
     std::unique_ptr< QThreadPool > m_threadPool;
 
-    /// Surface on which
+    /// Surface on which the thread's context is enabled.
     QSurface* m_surface;
 
 };

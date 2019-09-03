@@ -84,6 +84,7 @@ public:
     /// Get the object's type as a string.
     FWRENDEROGRE_API virtual const ::Ogre::String& getMovableType(void) const override;
 
+    /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
     FWRENDEROGRE_API void set3DImageTexture(const ::Ogre::TexturePtr& _texture);
 
 private:
