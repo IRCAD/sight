@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_UUID_HPP__
-#define __FWTOOLS_UUID_HPP__
+#pragma once
 
 #include "fwTools/config.hpp"
 #include "fwTools/Object.hpp"
@@ -41,7 +40,7 @@ class FWTOOLS_CLASS_API UUID
 {
 public:
 
-    fwCoreClassFactoryMacro((UUID), (( )), new UUID );
+    fwCoreClassFactoryMacro((UUID), new UUID );
 
     typedef std::string UUIDType;
 
@@ -110,5 +109,3 @@ private:
 };
 
 }
-
-#endif /* __FWTOOLS_UUID_HPP__ */

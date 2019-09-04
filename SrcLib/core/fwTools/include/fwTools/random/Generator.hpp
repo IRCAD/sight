@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_RANDOM_GENERATOR_HPP__
-#define __FWTOOLS_RANDOM_GENERATOR_HPP__
+#pragma once
 
 #include <fwCore/base.hpp>
 
-#include <boost/concept_check.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/variate_generator.hpp>
-
 #include <algorithm>
 #include <ctime>
+#include <functional>
+#include <random>
 #include <type_traits>
 
 namespace fwTools
@@ -51,19 +45,18 @@ namespace random
  * @return returns a random value uniformly distributed in the range [min..max)
  */
 template <typename T>
-T getValue(T min, T max, std::uint32_t seedVal = std::time(NULL))
+T getValue(T min, T max, std::uint32_t seedVal = static_cast<std::uint32_t>(std::time(nullptr)))
 {
     SLM_ASSERT("Wrong min/max value", min <= max);
-    typedef typename ::boost::mpl::if_<
-            std::is_floating_point<T>,
-            ::boost::uniform_real<>,
-            ::boost::uniform_int<>
+    typedef typename std::conditional<
+            std::is_floating_point<T>::value,
+            std::uniform_real_distribution<T>,
+            std::uniform_int_distribution<T>
             >::type DistroType;
 
-    ::boost::mt19937 seed(seedVal);
+    std::mt19937 gen(seedVal);
     DistroType dist(min, max);
-    ::boost::variate_generator< ::boost::mt19937&, DistroType > random(seed, dist);
-    return random();
+    return dist(gen);
 }
 
 /**
@@ -77,23 +70,22 @@ T getValue(T min, T max, std::uint32_t seedVal = std::time(NULL))
  * @pre  CONTAINER type same as template T
  */
 template <typename T, typename CONTAINER>
-void fillContainer(T min, T max, CONTAINER& randContainer, std::uint32_t seedVal = std::time(NULL))
+void fillContainer(T min, T max, CONTAINER& randContainer,
+                   std::uint32_t seedVal = static_cast<std::uint32_t>(std::time(nullptr)))
 {
     SLM_ASSERT("Wrong min/max value", min <= max);
     SLM_ASSERT("Container type not same as T", (std::is_same< T, typename CONTAINER::value_type>::value) );
-    typedef typename ::boost::mpl::if_<
-            std::is_floating_point<T>,
-            ::boost::uniform_real<>,
-            ::boost::uniform_int<>
+    typedef typename std::conditional<
+            std::is_floating_point<T>::value,
+            std::uniform_real_distribution<T>,
+            std::uniform_int_distribution<T>
             >::type DistroType;
 
-    ::boost::mt19937 seed(seedVal);
+    std::mt19937 gen(seedVal);
     DistroType dist(min, max);
-    ::boost::variate_generator< ::boost::mt19937&, DistroType > random(seed, dist);
-    std::generate(randContainer.begin(), randContainer.end(), random);
+    const auto generator = std::bind(dist, gen);
+    std::generate(randContainer.begin(), randContainer.end(), generator);
 }
 
 } // namespace random
 } // namespace fwTools
-
-#endif //__FWTOOLS_RANDOM_GENERATOR_HPP__

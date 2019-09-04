@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwTools/NumericRoundCast.hxx>
-
 #include "NumericRoundCastTest.hpp"
+
+#include <fwTools/NumericRoundCast.hxx>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::NumericRoundCastTest );
@@ -32,10 +32,14 @@ namespace fwTools
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void NumericRoundCastTest::setUp()
 {
     // Set up context before running a test.
 }
+
+//------------------------------------------------------------------------------
 
 void NumericRoundCastTest::tearDown()
 {
@@ -59,8 +63,8 @@ void NumericRoundCastTest::castFloatToIntTest()
     CPPUNIT_ASSERT_EQUAL(static_cast<int>(-17), castedVal1);
 
     val = 4826.2f;
-    unsigned int castedVal2 = ::fwTools::numericRoundCast<int>(val);
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(4826), castedVal2);
+    const std::uint16_t castedVal2 = ::fwTools::numericRoundCast<std::uint16_t>(val);
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint16_t>(4826), castedVal2);
 }
 
 //------------------------------------------------------------------------------
@@ -136,4 +140,3 @@ void NumericRoundCastTest::castIntToIntTest()
 
 } // namespace ut
 } // namespace fwTools
-
