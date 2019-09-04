@@ -10,4 +10,4 @@ set( REQUIREMENTS
     visuVTK
 )
 
-set( START_BEFORE guiQt )
+set( START_BEFORE guiQml )

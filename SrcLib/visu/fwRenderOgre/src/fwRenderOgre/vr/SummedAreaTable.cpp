@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -124,6 +124,10 @@ SummedAreaTable::SummedAreaTable(std::string _parentId, ::Ogre::SceneManager* _s
 
 SummedAreaTable::~SummedAreaTable()
 {
+    ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
+
+    textureManager.remove(m_parentId + SOURCE_BUFFER_NAME);
+    textureManager.remove(m_parentId + TARGET_BUFFER_NAME);
 }
 
 //-----------------------------------------------------------------------------
@@ -257,9 +261,9 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 
 void SummedAreaTable::initializeSAT()
 {
-    std::uint8_t width  = static_cast<std::uint8_t>(m_satSize[0]);
-    std::uint8_t height = static_cast<std::uint8_t>(m_satSize[1]);
-    std::uint8_t depth  = static_cast<std::uint8_t>(m_satSize[2]);
+    ::Ogre::uint width  = static_cast< ::Ogre::uint >(m_satSize[0]);
+    ::Ogre::uint height = static_cast< ::Ogre::uint >(m_satSize[1]);
+    ::Ogre::uint depth  = static_cast< ::Ogre::uint >(m_satSize[2]);
 
     ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
 

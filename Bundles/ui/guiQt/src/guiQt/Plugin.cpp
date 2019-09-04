@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,8 @@
 #include <fwCore/base.hpp>
 
 #include <fwGuiQt/App.hpp>
-#include <fwGuiQt/WorkerQt.hpp>
+
+#include <fwQt/WorkerQt.hpp>
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
@@ -63,7 +64,13 @@ void Plugin::start()
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
-    m_workerQt = ::fwGuiQt::getQtWorker(argc, argv);
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
+        = [this](int& argc, char** argv)
+          {
+              return QSharedPointer< QApplication > ( new ::fwGuiQt::App(argc, argv, true) );
+          };
+
+    m_workerQt = ::fwQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
 
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 

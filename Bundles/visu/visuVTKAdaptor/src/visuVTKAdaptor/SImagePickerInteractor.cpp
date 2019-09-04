@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -117,18 +117,7 @@ public:
     {
         if( m_eventId->find( static_cast< SImagePickerInteractor::EventID>(eventId) ) != m_eventId->end() )
         {
-#ifdef __linux
-            /// We receive way too many MOUSE_MOVE events on Linux
-            /// HACK_FB: Skip some of them...
-            if(eventId == SImagePickerInteractor::MOUSE_MOVE)
-            {
-                m_skipMove++;
-                if( m_skipMove % 10 )
-                {
-                    return;
-                }
-            }
-#endif
+
             SLM_ASSERT("bad vtk caller", caller);
 
             if ( this->pickSomething() )
