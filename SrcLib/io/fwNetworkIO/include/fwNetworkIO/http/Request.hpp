@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ class FWNETWORKIO_CLASS_API Request : public ::fwCore::BaseObject
 
 public:
     fwCoreAllowSharedFromThis();
-    fwCoreClassDefinitionsWithFactoryMacro((Request), (()), new Request );
+    fwCoreClassDefinitionsWithFactoryMacro((Request), new Request );
 
     /// Maps header name to its value.
     typedef std::map<std::string, std::string> HeadersType;

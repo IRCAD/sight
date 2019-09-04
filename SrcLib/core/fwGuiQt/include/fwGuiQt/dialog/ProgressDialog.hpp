@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_DIALOG_PROGRESSDIALOG_HPP__
-#define __FWGUIQT_DIALOG_PROGRESSDIALOG_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 #include "fwGuiQt/container/QtContainer.hpp"
@@ -61,11 +60,10 @@ Q_OBJECT
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog),
-                                            (()),
                                             ::fwGui::factory::New< ProgressDialog > )
 
     FWGUIQT_API ProgressDialog( ::fwGui::GuiBaseObject::Key key,
-                                const std::string& title = "Progression",
+                                const std::string& title   = "Progression",
                                 const std::string& message = std::string(86, ' ') );
 
     FWGUIQT_API virtual ~ProgressDialog();
@@ -95,5 +93,3 @@ protected:
 };
 } // namespace dialog
 } // namespace fwGuiQt
-
-#endif /* __FWGUIQT_DIALOG_PROGRESSDIALOG_HPP__ */

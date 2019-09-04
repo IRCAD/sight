@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_POLICY_NEVERDUMP_HPP__
-#define __FWMEMORY_POLICY_NEVERDUMP_HPP__
+#pragma once
 
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/config.hpp"
@@ -48,7 +47,6 @@ class FWMEMORY_CLASS_API NeverDump : public fwMemory::IPolicy
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((NeverDump)(fwMemory::IPolicy),
-                                           (()),
                                            ::fwMemory::policy::factory::New< NeverDump >)
 
     FWMEMORY_API virtual void allocationRequest( BufferInfo& info,
@@ -101,6 +99,3 @@ public:
 } // namespace policy
 
 } // namespace fwMemory
-
-#endif // __FWMEMORY_POLICY_NEVERDUMP_HPP__
-

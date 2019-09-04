@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace fwData
 class FWSTRUCTURALPATCH_CLASS_API PointList1 : public ::fwAtomsPatch::IStructuralCreator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PointList1)(::fwAtomsPatch::IStructuralCreator), (()), new PointList1);
+    fwCoreClassDefinitionsWithFactoryMacro( (PointList1)(::fwAtomsPatch::IStructuralCreator), new PointList1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API PointList1();

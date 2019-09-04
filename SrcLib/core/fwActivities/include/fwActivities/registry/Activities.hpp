@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -235,7 +235,7 @@ class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject
 public:
     typedef std::vector< ActivityInfo > ActivitiesType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Activities)(::fwCore::BaseObject), (()), new Activities );
+    fwCoreClassDefinitionsWithFactoryMacro( (Activities)(::fwCore::BaseObject), new Activities );
 
     /// Return the default global instance of Activities
     FWACTIVITIES_API static Activities::sptr getDefault();

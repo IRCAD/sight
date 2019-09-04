@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWLOG_LOGGER_HPP__
-#define __FWLOG_LOGGER_HPP__
+#pragma once
 
-#include "fwLog/Log.hpp"
 #include "fwLog/config.hpp"
+#include "fwLog/Log.hpp"
 
 #include <fwTools/Object.hpp>
 
@@ -41,7 +40,7 @@ class FWLOG_CLASS_API Logger : public ::fwTools::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((Logger)(::fwTools::Object), (()), new Logger);
+    fwCoreClassDefinitionsWithFactoryMacro((Logger)(::fwTools::Object), new Logger);
 
     typedef std::vector< ::fwLog::Log > LogContainerType;
     typedef LogContainerType::iterator IteratorType;
@@ -104,35 +103,51 @@ public:
         return m_logContainer.empty();
     }
 
+    //------------------------------------------------------------------------------
+
     IteratorType begin()
     {
         return m_logContainer.begin();
     }
+    //------------------------------------------------------------------------------
+
     IteratorType end()
     {
         return m_logContainer.end();
     }
+    //------------------------------------------------------------------------------
+
     ConstIteratorType begin() const
     {
         return m_logContainer.begin();
     }
+    //------------------------------------------------------------------------------
+
     ConstIteratorType end()   const
     {
         return m_logContainer.end();
     }
 
+    //------------------------------------------------------------------------------
+
     ReverseIteratorType rbegin()
     {
         return m_logContainer.rbegin();
     }
+    //------------------------------------------------------------------------------
+
     ReverseIteratorType rend()
     {
         return m_logContainer.rend();
     }
+    //------------------------------------------------------------------------------
+
     ConstReverseIteratorType rbegin() const
     {
         return m_logContainer.rbegin();
     }
+    //------------------------------------------------------------------------------
+
     ConstReverseIteratorType rend()   const
     {
         return m_logContainer.rend();
@@ -150,9 +165,6 @@ protected:
     /// Log container
     LogContainerType m_logContainer;
 
-
 }; // class Logger
 
 } // namespace fwLog
-
-#endif // __FWLOG_LOGGER_HPP__

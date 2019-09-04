@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWZIP_WRITEZIPARCHIVE_HPP__
-#define __FWZIP_WRITEZIPARCHIVE_HPP__
+#pragma once
 
 #include "fwZip/config.hpp"
 #include "fwZip/IWriteArchive.hpp"
@@ -43,9 +42,14 @@ class FWZIP_CLASS_API WriteZipArchive : public IWriteArchive
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((WriteZipArchive)(IWriteArchive),
-                                           ((( const ::boost::filesystem::path& ))((const std::string&)(""))),
-                                           std::make_shared<WriteZipArchive> );
+    fwCoreClassDefinitionsMacro((WriteZipArchive)(IWriteArchive));
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const ::boost::filesystem::path& archive, const std::string& comment = "")
+    {
+        return std::make_shared<WriteZipArchive>(archive, comment);
+    }
 
     /**
      * @brief Constructors. Initializes archive path.
@@ -69,7 +73,7 @@ public:
      * @throw ::fwZip::exception::Write if archive cannot be opened.
      * @note Last output stream is automatically flushed before creation of new file entry in zip archive.
      */
-    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path) override;
+    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Writes source file in archive.
@@ -102,6 +106,3 @@ protected:
 };
 
 }
-
-#endif /* __FWZIP_WRITEZIPARCHIVE_HPP__ */
-

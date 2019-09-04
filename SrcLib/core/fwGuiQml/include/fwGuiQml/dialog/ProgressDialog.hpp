@@ -49,7 +49,6 @@ Q_PROPERTY(bool hasCallback MEMBER m_hasCallback NOTIFY hasCallbackChanged)
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro((ProgressDialog)(::fwGui::dialog::IProgressDialog),
-                                           (()),
                                            ::fwGui::factory::New<ProgressDialog>)
 
     FWGUIQML_API ProgressDialog(::fwGui::GuiBaseObject::Key key,

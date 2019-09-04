@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_REGISTRAR_MENUBARREGISTRAR_HPP__
-#define __FWGUI_REGISTRAR_MENUBARREGISTRAR_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
-
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwMenuBar.hpp"
-#include "fwGui/container/fwMenu.hpp"
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
@@ -37,21 +36,23 @@ namespace registrar
 
 /**
  * @brief   Defines the menuBar registrar for IHM.
- * @class   MenuBarRegistrar
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API MenuBarRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
-                                            new MenuBarRegistrar );
+    fwCoreClassDefinitionsMacro((MenuBarRegistrar)(::fwGui::GuiBaseObject));
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const std::string& sid)
+    {
+        return std::make_shared<MenuBarRegistrar>(sid);
+    }
 
     /// Constructor.
-    FWGUI_API MenuBarRegistrar( const std::string &sid);
+    FWGUI_API MenuBarRegistrar( const std::string& sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MenuBarRegistrar();
@@ -125,7 +126,3 @@ protected:
 
 } // namespace registrar
 } // namespace fwGui
-
-#endif /*__FWGUI_REGISTRAR_MENUBARREGISTRAR_HPP__*/
-
-

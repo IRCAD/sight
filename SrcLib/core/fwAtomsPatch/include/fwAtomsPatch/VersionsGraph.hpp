@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_VERSIONSGRAPH_HPP__
-#define __FWATOMSPATCH_VERSIONSGRAPH_HPP__
+#pragma once
 
+#include "fwAtomsPatch/config.hpp"
 #include "fwAtomsPatch/LinkDescriptor.hpp"
 #include "fwAtomsPatch/VersionDescriptor.hpp"
-#include "fwAtomsPatch/config.hpp"
 
 #include <fwCore/BaseObject.hpp>
 #include <fwCore/mt/types.hpp>
@@ -43,7 +42,7 @@ class FWATOMSPATCH_CLASS_API VersionsGraph : public ::fwCore::BaseObject
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (VersionsGraph)(::fwAtomsPatch::VersionsGraph), (()), new VersionsGraph);
+    fwCoreClassDefinitionsWithFactoryMacro( (VersionsGraph)(::fwAtomsPatch::VersionsGraph), new VersionsGraph);
     fwCoreAllowSharedFromThis();
 
     /**
@@ -157,5 +156,3 @@ private:
 };
 
 } // fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_VERSIONSGRAPH_HPP__ */

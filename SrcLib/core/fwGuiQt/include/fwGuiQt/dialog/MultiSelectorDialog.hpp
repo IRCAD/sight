@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_DIALOG_MULTISELECTORDIALOG_HPP__
-#define __FWGUIQT_DIALOG_MULTISELECTORDIALOG_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 
@@ -49,7 +48,6 @@ class FWGUIQT_CLASS_API MultiSelectorDialog : public ::fwGui::dialog::IMultiSele
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog),
-                                            (()),
                                             ::fwGui::factory::New< MultiSelectorDialog > );
 
     FWGUIQT_API MultiSelectorDialog(::fwGui::GuiBaseObject::Key key);
@@ -83,5 +81,3 @@ private:
 
 } // namespace dialog
 } // namespace fwGuiQt
-
-#endif /*__FWGUIQT_DIALOG_MULTISELECTORDIALOG_HPP__*/

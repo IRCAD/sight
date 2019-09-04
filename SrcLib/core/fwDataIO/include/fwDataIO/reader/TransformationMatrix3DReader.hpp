@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__
-#define  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
@@ -51,7 +50,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((TransformationMatrix3DReader)(GenericObjectReader< ::fwData::
                                                                                                TransformationMatrix3D >),
-                                           (()),
                                            ::fwDataIO::reader::factory::New< TransformationMatrix3DReader >
                                            );
 
@@ -72,5 +70,3 @@ public:
 }
 
 }
-
-#endif /*  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__ */

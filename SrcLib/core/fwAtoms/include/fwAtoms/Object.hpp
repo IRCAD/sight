@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef  __FWATOMS_OBJECT_HPP__
-#define  __FWATOMS_OBJECT_HPP__
+#pragma once
 
 #include "fwAtoms/Base.hpp"
 #include "fwAtoms/config.hpp"
@@ -37,7 +36,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Object : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Object >);
+    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Base), ::fwAtoms::factory::New< Object >);
 
     typedef std::map<std::string, Base::sptr> AttributesType;
     typedef std::map<std::string, std::string> MetaInfosType;
@@ -48,7 +47,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    Object(::fwAtoms::Base::Key key)
+    Object(::fwAtoms::Base::Key)
     {
     }
 
@@ -143,6 +142,3 @@ private:
 };
 
 }
-
-#endif /*  __FWATOMS_OBJECT_HPP__ */
-

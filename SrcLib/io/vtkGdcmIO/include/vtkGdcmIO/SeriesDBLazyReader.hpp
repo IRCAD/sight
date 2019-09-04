@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
-#define __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
+#pragma once
 
 #include "vtkGdcmIO/config.hpp"
 
@@ -71,7 +70,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
         (SeriesDBLazyReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
-        (()),
         ::fwDataIO::reader::factory::New< SeriesDBLazyReader >
         );
 
@@ -98,7 +96,7 @@ private:
      *
      * @return a new SeriesDB object
      */
-    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const ::boost::filesystem::path &dicomDir );
+    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const ::boost::filesystem::path& dicomDir );
 
     /**
      * @brief Fills the related SeriesDB object with DICOM data extracted from the given files.
@@ -119,16 +117,16 @@ private:
     void preprocessImage( const ::fwData::Image::sptr& img, const SeriesFilesType& files );
 
     /// Searches and sets equipment information
-    void fillEquipment( gdcm::Scanner & scanner, const std::string & dcmFile, SPTR( ::fwMedData::Equipment ) equipment);
+    void fillEquipment( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Equipment ) equipment);
 
     /// Searches and sets study information
-    void fillStudy( gdcm::Scanner & scanner, const std::string & dcmFile, SPTR( ::fwMedData::Study ) study );
+    void fillStudy( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Study ) study );
 
     /// Searches and sets patient information
-    void fillPatient( gdcm::Scanner & scanner, const std::string & dcmFile, SPTR( ::fwMedData::Patient ) patient );
+    void fillPatient( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Patient ) patient );
 
     /// Searches and sets series information
-    void fillSeries( gdcm::Scanner & scanner, const std::string & dcmFile, SPTR( ::fwMedData::Series ) series );
+    void fillSeries( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Series ) series );
 
     /// Select some dicom tags and scan information in all filenames
     void scanFiles( gdcm::Scanner& scanner, const std::vector< std::string >& filenames );
@@ -138,5 +136,3 @@ private:
 };
 
 } // namespace vtkGdcmIO
-
-#endif // __VTKGDCMIO_SERIESDBLAZYREADER_HPP__

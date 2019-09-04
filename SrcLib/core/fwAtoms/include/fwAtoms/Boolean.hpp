@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMS_BOOLEAN_HPP__
-#define __FWATOMS_BOOLEAN_HPP__
+#pragma once
 
 #include "fwAtoms/Base.hpp"
 #include "fwAtoms/config.hpp"
@@ -39,13 +38,13 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Boolean : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Boolean > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Base), ::fwAtoms::factory::New< Boolean > );
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    Boolean(::fwAtoms::Base::Key key) :
+    Boolean(::fwAtoms::Base::Key) :
         m_value(false)
     {
     }
@@ -115,6 +114,3 @@ protected:
 };
 
 }
-
-#endif /* __FWATOMS_BOOLEAN_HPP__ */
-

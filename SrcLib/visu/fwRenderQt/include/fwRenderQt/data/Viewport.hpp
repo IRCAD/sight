@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERQT_DATA_VIEWPORT_HPP__
-#define __FWRENDERQT_DATA_VIEWPORT_HPP__
+#pragma once
 
 #include "fwRenderQt/config.hpp"
 
@@ -41,7 +40,7 @@ class FWRENDERQT_CLASS_API Viewport : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Viewport)(::fwData::Object), (()), ::fwData::factory::New< Viewport >);
+    fwCoreClassDefinitionsWithFactoryMacro( (Viewport)(::fwData::Object), ::fwData::factory::New< Viewport >);
 
     /**
      * @brief Constructor
@@ -135,6 +134,3 @@ inline void Viewport::setHeight (float _height)
 
 } // namespace data
 } // namespace fwRenderQt
-
-#endif // __FWRENDERQT_DATA_VIEWPORT_HPP__
-

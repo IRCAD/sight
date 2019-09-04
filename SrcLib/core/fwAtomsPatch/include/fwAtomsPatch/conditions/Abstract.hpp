@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_CONDITIONS_ABSTRACT_HPP__
-#define __FWATOMSPATCH_CONDITIONS_ABSTRACT_HPP__
+#pragma once
 
-#include <fwCore/base.hpp>
+#include "fwAtomsPatch/config.hpp"
 
 #include <fwAtoms/Base.hpp>
 
-#include "fwAtomsPatch/config.hpp"
+#include <fwCore/base.hpp>
 
 namespace fwAtomsPatch
 {
@@ -35,13 +34,12 @@ namespace conditions
 {
 
 /**
- * @class Abstract
  * @brief Defines a condition in the patch.
  */
 class FWATOMSPATCH_CLASS_API Abstract : public ::fwCore::BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Abstract), (()), new Abstract );
+    fwCoreClassDefinitionsWithFactoryMacro((Abstract), new Abstract );
     fwCoreAllowSharedFromThis();
 
     /// Default value getter
@@ -67,5 +65,3 @@ protected:
 } // namespace conditions
 
 } // namespace fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_CONDITIONS_ABSTRACT_HPP__ */

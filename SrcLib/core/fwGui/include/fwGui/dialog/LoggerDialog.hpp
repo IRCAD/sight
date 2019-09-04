@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_DIALOG_LOGGERDIALOG_HPP__
-#define __FWGUI_DIALOG_LOGGERDIALOG_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/dialog/ILoggerDialog.hpp"
@@ -44,7 +43,7 @@ class FWGUI_CLASS_API LoggerDialog : public ILoggerDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LoggerDialog)(::fwGui::dialog::ILoggerDialog), (()), new LoggerDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (LoggerDialog)(::fwGui::dialog::ILoggerDialog), new LoggerDialog );
 
     /**
      * Opens a default logger dialog with the specified title, message and logs.
@@ -102,6 +101,3 @@ protected:
 
 } // namespace dialog
 } // namespace fwGui
-
-#endif /*__FWGUI_DIALOG_LOGGERDIALOG_HPP__*/
-

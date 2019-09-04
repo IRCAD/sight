@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_LAYOUTMANAGER_TABLAYOUTMANAGER_HPP__
-#define __FWGUIQT_LAYOUTMANAGER_TABLAYOUTMANAGER_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 #include "fwGuiQt/container/QtContainer.hpp"
@@ -48,7 +47,6 @@ class FWGUIQT_CLASS_API TabLayoutManager : public ::fwGui::layoutManager::TabLay
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (TabLayoutManager)(::fwGui::layoutManager::TabLayoutManagerBase),
-                                            (()),
                                             ::fwGui::factory::New< TabLayoutManager > );
 
     FWGUIQT_API TabLayoutManager(::fwGui::GuiBaseObject::Key key);
@@ -77,6 +75,3 @@ private:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUIQT_LAYOUTMANAGER_TABLAYOUTMANAGER_HPP__*/
-

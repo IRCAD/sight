@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMDSEMANTICPATCH_V2_V03AGO_FWDATA_IMAGE_HPP__
-#define __FWMDSEMANTICPATCH_V2_V03AGO_FWDATA_IMAGE_HPP__
+#pragma once
 
 #include "fwMDSemanticPatch/config.hpp"
 
@@ -40,8 +39,7 @@ namespace fwData
 class FWMDSEMANTICPATCH_CLASS_API Image : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (Image)(::fwAtomsPatch::ISemanticPatch), (()), new Image);
+    fwCoreClassDefinitionsWithFactoryMacro((Image)(::fwAtomsPatch::ISemanticPatch), new Image);
 
     /// Constructor
     FWMDSEMANTICPATCH_API Image();
@@ -68,6 +66,3 @@ public:
 } // namespace V03AGO
 } // namespace V2
 } // namespace fwMDSemanticPatch
-
-#endif /* __FWMDSEMANTICPATCH_V2_V03AGO_FWDATA_IMAGE_HPP__ */
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_REGISTRAR_TOOLBARREGISTRAR_HPP__
-#define __FWGUI_REGISTRAR_TOOLBARREGISTRAR_HPP__
+#pragma once
 
 #include "fwGui/ActionCallbackBase.hpp"
 #include "fwGui/config.hpp"
@@ -46,8 +45,15 @@ class FWGUI_CLASS_API ToolBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
-                                            new ToolBarRegistrar );
+    fwCoreClassDefinitionsMacro((ToolBarRegistrar)(::fwGui::GuiBaseObject));
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const std::string& sid)
+    {
+        return std::make_shared<ToolBarRegistrar>(sid);
+    }
+
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
@@ -206,6 +212,3 @@ protected:
 
 } // namespace registrar
 } // namespace fwGui
-
-#endif /*__FWGUI_REGISTRAR_TOOLBARREGISTRAR_HPP__*/
-

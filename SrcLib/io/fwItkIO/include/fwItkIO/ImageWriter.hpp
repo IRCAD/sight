@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_IMAGEWRITER_HPP__
-#define __FWITKIO_IMAGEWRITER_HPP__
+#pragma once
 
 #include "fwItkIO/config.hpp"
 
@@ -43,7 +42,6 @@ class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Im
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
-                                           (()),
                                            ::fwDataIO::writer::factory::New< ImageWriter >
                                            );
     fwCoreAllowSharedFromThis();
@@ -58,5 +56,3 @@ public:
 };
 
 } // namespace fwItkIO
-
-#endif // __FWITKIO_IMAGEWRITER_HPP__

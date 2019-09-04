@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_SERIESDBREADER_HPP__
-#define __FWVTKIO_SERIESDBREADER_HPP__
+#pragma once
 
 #include "fwVtkIO/config.hpp"
 
@@ -55,7 +54,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::
                                                                                                       SeriesDB >),
-                                           (()),
                                            ::fwDataIO::reader::factory::New< SeriesDBReader >
                                            );
     fwCoreAllowSharedFromThis();
@@ -91,5 +89,3 @@ private:
 };
 
 } // namespace fwVtkIO
-
-#endif // __FWVTKIO_SERIESDBREADER_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWPACSIO_SERIESRETRIEVER_HPP__
-#define __FWPACSIO_SERIESRETRIEVER_HPP__
+#pragma once
 
 #include "fwPacsIO/config.hpp"
 
@@ -47,7 +46,7 @@ class FWPACSIO_CLASS_API SeriesRetriever : public ::fwCore::BaseObject,
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (SeriesRetriever)(::fwPacsIO::SeriesRetriever),
-                                            (()), new SeriesRetriever);
+                                            new SeriesRetriever);
     fwCoreAllowSharedFromThis();
 
     FWPACSIO_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
@@ -98,5 +97,3 @@ protected:
 };
 
 } // namespace fwPacsIO
-
-#endif /*__FWPACSIO_SERIESRETRIEVER_HPP__*/

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATAIO_READER_GZARRAYREADER_HPP__
-#define __FWDATAIO_READER_GZARRAYREADER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
@@ -50,7 +49,6 @@ class FWDATAIO_CLASS_API GzArrayReader :  public GenericObjectReader< ::fwData::
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((GzArrayReader)(GenericObjectReader< ::fwData::Array>),
-                                           (()),
                                            ::fwDataIO::reader::factory::New< GzArrayReader >
                                            );
 
@@ -70,5 +68,3 @@ public:
 
 } // namespace reader
 } // namespace fwDataIO
-
-#endif // __FWDATAIO_READER_GZARRAYREADER_HPP__

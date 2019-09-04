@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,8 +51,14 @@ class FWGUI_CLASS_API ViewRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
-                                            new ViewRegistrar );
+    fwCoreClassDefinitionsMacro((ViewRegistrar)(::fwGui::GuiBaseObject));
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const std::string& sid)
+    {
+        return std::make_shared<ViewRegistrar>(sid);
+    }
 
     /// Constructor.
     FWGUI_API ViewRegistrar( const std::string& sid);

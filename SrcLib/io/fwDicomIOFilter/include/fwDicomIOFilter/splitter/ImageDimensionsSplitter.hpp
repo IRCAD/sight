@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_SPLITTER_IMAGEDIMENSIONSSPLITTER_HPP__
-#define __FWDICOMIOFILTER_SPLITTER_IMAGEDIMENSIONSSPLITTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/splitter/ISplitter.hpp"
@@ -40,7 +39,7 @@ class FWDICOMIOFILTER_CLASS_API ImageDimensionsSplitter : public ISplitter
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ImageDimensionsSplitter)(ISplitter),
-                                            (()), ::fwDicomIOFilter::factory::New< ImageDimensionsSplitter > );
+                                            ::fwDicomIOFilter::factory::New< ImageDimensionsSplitter > );
 
     /// Constructor
     FWDICOMIOFILTER_API ImageDimensionsSplitter(::fwDicomIOFilter::IFilter::Key key);
@@ -69,5 +68,3 @@ protected:
 
 } // namespace splitter
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_SPLITTER_IMAGEDIMENSIONSSPLITTER_HPP__ */

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ class FWDICOMIOFILTER_CLASS_API SliceThicknessModifier : public IModifier
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (SliceThicknessModifier)(IModifier),
-                                            (()), ::fwDicomIOFilter::factory::New< SliceThicknessModifier > );
+                                            ::fwDicomIOFilter::factory::New< SliceThicknessModifier > );
 
     /// Constructor
     FWDICOMIOFILTER_API SliceThicknessModifier(::fwDicomIOFilter::IFilter::Key key);

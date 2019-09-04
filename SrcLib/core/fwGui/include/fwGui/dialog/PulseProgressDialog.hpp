@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_DIALOG_PULSEPROGRESSDIALOG_HPP__
-#define __FWGUI_DIALOG_PULSEPROGRESSDIALOG_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/dialog/IPulseProgressDialog.hpp"
@@ -39,19 +38,22 @@ namespace dialog
  */
 class FWGUI_CLASS_API PulseProgressDialog : public IPulseProgressDialog
 {
-
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog),
-                                            (((const std::string))(
-                                                 (::fwGui::dialog::IPulseProgressDialog::Stuff))),
-                                            new PulseProgressDialog );
+    fwCoreClassDefinitionsMacro((PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog));
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const std::string& title, const ::fwGui::dialog::IPulseProgressDialog::Stuff& stuff)
+    {
+        return std::make_shared<PulseProgressDialog>(title, stuff);
+    }
 
     /// will instantiate the concrete implementation
     FWGUI_API PulseProgressDialog(
         const std::string& title,
         Stuff stuff,
-        const std::string& msg = std::string(),
+        const std::string& msg                                              = std::string(),
         ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh = 100 );
 
     ///set the title for the dialog
@@ -71,6 +73,3 @@ protected:
 
 } //namespace dialog
 } // namespace fwGui
-
-#endif /*__FWGUI_DIALOG_PULSEPROGRESSDIALOG_HPP__*/
-

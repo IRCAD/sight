@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,30 +20,25 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_APPLICATION_HPP__
-#define __FWGUI_APPLICATION_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include "fwGui/IApplication.hpp"
 
 #include <fwCore/base.hpp>
-
-#include "fwGui/IApplication.hpp"
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
 
 /**
  * @brief   Gives access to the underlayed application part
- * @class   Application
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API Application : public ::fwGui::IApplication
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Application)(::fwGui::IApplication), (()), Application::factory);
+    fwCoreClassDefinitionsWithFactoryMacro( (Application)(::fwGui::IApplication), Application::factory);
 
     FWGUI_API static Application::sptr getDefault();
 
@@ -59,11 +54,6 @@ protected:
     {
     }
 
-
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_APPLICATION_HPP__*/
-
-

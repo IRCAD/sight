@@ -49,7 +49,6 @@ Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::dialog::ILocationDialog),
-                                            (()),
                                             ::fwGui::factory::New< LocationDialog > );
 
     FWGUIQML_API LocationDialog(::fwGui::GuiBaseObject::Key key);

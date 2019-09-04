@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_SPLITTER_IMAGEPOSITIONPATIENTSPLITTER_HPP__
-#define __FWDICOMIOFILTER_SPLITTER_IMAGEPOSITIONPATIENTSPLITTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/splitter/ISplitter.hpp"
@@ -41,7 +40,7 @@ class FWDICOMIOFILTER_CLASS_API ImagePositionPatientSplitter : public ISplitter
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ImagePositionPatientSplitter)(ISplitter),
-                                            (()), ::fwDicomIOFilter::factory::New< ImagePositionPatientSplitter > );
+                                            ::fwDicomIOFilter::factory::New< ImagePositionPatientSplitter > );
 
     /// Constructor
     FWDICOMIOFILTER_API ImagePositionPatientSplitter(::fwDicomIOFilter::IFilter::Key key);
@@ -69,5 +68,3 @@ protected:
 
 } // namespace splitter
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_SPLITTER_IMAGEPOSITIONPATIENTSPLITTER_HPP__ */

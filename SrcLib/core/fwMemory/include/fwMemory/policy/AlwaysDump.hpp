@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_POLICY_ALWAYSDUMP_HPP__
-#define __FWMEMORY_POLICY_ALWAYSDUMP_HPP__
+#pragma once
 
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/config.hpp"
@@ -45,7 +44,6 @@ class FWMEMORY_CLASS_API AlwaysDump : public fwMemory::IPolicy
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro((AlwaysDump)(fwMemory::IPolicy),
-                                           (()),
                                            ::fwMemory::policy::factory::New< AlwaysDump >)
 
     FWMEMORY_API virtual void allocationRequest( BufferInfo& info,
@@ -86,6 +84,8 @@ public:
 
     FWMEMORY_API virtual std::string getParam(const std::string& name, bool* ok = NULL ) const override;
 
+    //------------------------------------------------------------------------------
+
     const ::fwMemory::IPolicy::ParamNamesType& getParamNames() const override
     {
         static ::fwMemory::IPolicy::ParamNamesType names;
@@ -101,6 +101,3 @@ protected:
 } // namespace policy
 
 } // namespace fwMemory
-
-#endif // __FWMEMORY_POLICY_ALWAYSDUMP_HPP__
-

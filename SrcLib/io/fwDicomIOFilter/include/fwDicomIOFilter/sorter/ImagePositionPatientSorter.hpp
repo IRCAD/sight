@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_SORTER_IMAGEPOSITIONPATIENTSORTER_HPP__
-#define __FWDICOMIOFILTER_SORTER_IMAGEPOSITIONPATIENTSORTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/sorter/ISorter.hpp"
@@ -41,7 +40,7 @@ class FWDICOMIOFILTER_CLASS_API ImagePositionPatientSorter : public ISorter
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ImagePositionPatientSorter)(ISorter),
-                                            (()), ::fwDicomIOFilter::factory::New< ImagePositionPatientSorter > );
+                                            ::fwDicomIOFilter::factory::New< ImagePositionPatientSorter > );
 
     /// Constructor
     FWDICOMIOFILTER_API ImagePositionPatientSorter(::fwDicomIOFilter::IFilter::Key key);
@@ -70,5 +69,3 @@ protected:
 
 } // namespace sorter
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_SORTER_IMAGEPOSITIONPATIENTSORTER_HPP__ */

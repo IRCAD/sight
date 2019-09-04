@@ -52,7 +52,6 @@ Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emitShown NOTIFY shownChanged)
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (LoggerDialog)(::fwGui::dialog::ILoggerDialog),
-                                            (()),
                                             ::fwGui::factory::New< LoggerDialog > );
 
     /// Constructor

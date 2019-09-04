@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARSTRUCTURALPATCH_ARDATA_CAMERA_V2TOV1_HPP__
-#define __ARSTRUCTURALPATCH_ARDATA_CAMERA_V2TOV1_HPP__
+#pragma once
 
 #include "arStructuralPatch/config.hpp"
 
@@ -40,8 +39,7 @@ namespace Camera
 class ARSTRUCTURALPATCH_CLASS_API V2ToV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (V2ToV1)(::arStructuralPatch::arData::Camera::V2ToV1), (()), new V2ToV1);
+    fwCoreClassDefinitionsWithFactoryMacro((V2ToV1)(::arStructuralPatch::arData::Camera::V2ToV1), new V2ToV1);
 
     /// Constructor
     ARSTRUCTURALPATCH_API V2ToV1();
@@ -69,6 +67,3 @@ public:
 } // namespace arData
 
 } // namespace arStructuralPatch
-
-#endif /* __ARSTRUCTURALPATCH_ARDATA_CAMERA_V2TOV1_HPP__ */
-

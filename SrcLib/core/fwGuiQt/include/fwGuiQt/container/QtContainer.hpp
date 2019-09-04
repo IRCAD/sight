@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_CONTAINER_QTCONTAINER_HPP__
-#define __FWGUIQT_CONTAINER_QTCONTAINER_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 
@@ -54,7 +53,6 @@ class FWGUIQT_CLASS_API QtContainer : public ::fwGui::container::fwContainer
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (QtContainer)(::fwGui::container::fwContainer),
-                                            (()),
                                             ::fwGui::factory::New< QtContainer > )
 
     FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) noexcept;
@@ -86,6 +84,3 @@ private:
 
 } // namespace container
 } // namespace fwGuiQt
-
-#endif /*__FWGUIQT_CONTAINER_QTCONTAINER_HPP__*/
-

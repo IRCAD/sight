@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,8 +37,7 @@ namespace ModelSeries
 class FWSTRUCTURALPATCH_CLASS_API V1ToV2 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (V1ToV2)(::fwStructuralPatch::fwMedData::ModelSeries::V1ToV2), (()), new V1ToV2);
+    fwCoreClassDefinitionsWithFactoryMacro((V1ToV2)(::fwStructuralPatch::fwMedData::ModelSeries::V1ToV2), new V1ToV2);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToV2();

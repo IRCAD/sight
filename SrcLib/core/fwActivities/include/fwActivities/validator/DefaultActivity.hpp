@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWACTIVITIES_VALIDATOR_DEFAULTACTIVITY_HPP__
-#define __FWACTIVITIES_VALIDATOR_DEFAULTACTIVITY_HPP__
+#pragma once
 
 #include "fwActivities/config.hpp"
 #include "fwActivities/IActivityValidator.hpp"
@@ -42,7 +41,6 @@ class FWACTIVITIES_CLASS_API DefaultActivity : public ::fwActivities::IActivityV
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (DefaultActivity)(::fwActivities::IActivityValidator),
-                                            (()),
                                             ::fwActivities::validator::factory::New< DefaultActivity > )
 
     /// Constructor. Do nothing.
@@ -58,6 +56,3 @@ public:
 
 } // namespace validator
 } // namespace fwActivities
-
-#endif // __FWACTIVITIES_VALIDATOR_DEFAULTACTIVITY_HPP__
-

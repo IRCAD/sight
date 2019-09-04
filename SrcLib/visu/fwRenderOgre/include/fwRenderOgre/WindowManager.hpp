@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API WindowManager : public ::fwCore::BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (WindowManager)(::fwRenderOgre::WindowManager), (()), new WindowManager)
+    fwCoreClassDefinitionsWithFactoryMacro( (WindowManager)(::fwRenderOgre::WindowManager), new WindowManager)
     fwCoreAllowSharedFromThis()
 
     /// register an ogre window

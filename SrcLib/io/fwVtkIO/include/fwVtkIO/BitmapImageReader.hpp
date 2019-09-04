@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_BITMAPIMAGEREADER_HPP__
-#define __FWVTKIO_BITMAPIMAGEREADER_HPP__
+#pragma once
 
 #include "fwVtkIO/config.hpp"
 
@@ -54,7 +53,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
         (BitmapImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
-        (()),
         ::fwDataIO::reader::factory::New< BitmapImageReader >
         );
 
@@ -88,5 +86,3 @@ private:
 };
 
 } // namespace fwVtkIO
-
-#endif // __FWVTKIO_BITMAPIMAGEREADER_HPP__

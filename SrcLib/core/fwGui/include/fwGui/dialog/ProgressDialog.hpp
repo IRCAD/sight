@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_DIALOG_PROGRESSDIALOG_HPP__
-#define __FWGUI_DIALOG_PROGRESSDIALOG_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/dialog/IProgressDialog.hpp"
@@ -42,8 +41,7 @@ class FWGUI_CLASS_API ProgressDialog : public IProgressDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog), (()),
-                                            new ProgressDialog )
+    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog), new ProgressDialog )
 
     /// will instanciate the concrete implementation
     FWGUI_API ProgressDialog( const std::string& title = std::string(),  const std::string& msg = std::string() );
@@ -72,6 +70,3 @@ protected:
 
 } //namespace dialog
 } // namespace fwGui
-
-#endif /*__FWGUI_DIALOG_PROGRESSDIALOG_HPP__*/
-

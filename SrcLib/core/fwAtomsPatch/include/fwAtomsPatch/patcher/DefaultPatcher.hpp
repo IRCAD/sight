@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_PATCHER_DEFAULTPATCHER_HPP__
-#define __FWATOMSPATCH_PATCHER_DEFAULTPATCHER_HPP__
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
 #include "fwAtomsPatch/helper/Object.hpp"
@@ -54,7 +53,7 @@ class FWATOMSPATCH_CLASS_API DefaultPatcher : public IPatcher
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((DefaultPatcher)(::fwAtomsPatch::patcher::IPatcher), (()),
+    fwCoreClassDefinitionsWithFactoryMacro((DefaultPatcher)(::fwAtomsPatch::patcher::IPatcher),
                                            ::fwAtomsPatch::patcher::factory::New< DefaultPatcher >);
 
     /// Constructor
@@ -135,5 +134,3 @@ protected:
 } // namespace patcher
 
 } // namespace fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_PATCHER_DEFAULTPATCHER_HPP__ */

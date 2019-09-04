@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKGDCMIO_IMAGESERIESWRITER_HPP__
-#define __VTKGDCMIO_IMAGESERIESWRITER_HPP__
+#pragma once
 
 #include "vtkGdcmIO/config.hpp"
 
@@ -62,7 +61,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((ImageSeriesWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::
                                                                                                          ImageSeries>),
-                                           (()),
                                            ::fwDataIO::writer::factory::New< ImageSeriesWriter >
                                            )
     fwCoreAllowSharedFromThis()
@@ -98,5 +96,3 @@ private:
 };
 
 } // namespace vtkGdcmIO
-
-#endif // __VTKGDCMIO_IMAGESERIESWRITER_HPP__

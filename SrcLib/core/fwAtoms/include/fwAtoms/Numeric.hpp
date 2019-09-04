@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMS_NUMERIC_HPP__
-#define __FWATOMS_NUMERIC_HPP__
+#pragma once
 
 #include "fwAtoms/Base.hpp"
 #include "fwAtoms/config.hpp"
@@ -42,7 +41,7 @@ class FWATOMS_CLASS_API Numeric : public Base
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Numeric >);
+    fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Base), ::fwAtoms::factory::New< Numeric >);
 
     typedef enum
     {
@@ -59,7 +58,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    Numeric(::fwAtoms::Base::Key key)
+    Numeric(::fwAtoms::Base::Key)
     {
     }
 
@@ -152,6 +151,3 @@ protected:
 };
 
 }
-
-#endif /* __FWATOMS_NUMERIC_HPP__ */
-

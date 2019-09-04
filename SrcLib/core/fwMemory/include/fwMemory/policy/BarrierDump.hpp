@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_POLICY_BARRIERDUMP_HPP__
-#define __FWMEMORY_POLICY_BARRIERDUMP_HPP__
+#pragma once
 
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/BufferManager.hpp"
@@ -47,7 +46,6 @@ class FWMEMORY_CLASS_API BarrierDump : public ::fwMemory::IPolicy
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro((BarrierDump)(fwMemory::IPolicy),
-                                           (()),
                                            ::fwMemory::policy::factory::New< BarrierDump >)
     FWMEMORY_API BarrierDump();
 
@@ -112,6 +110,3 @@ protected:
 } // namespace policy
 
 } // namespace fwMemory
-
-#endif // __FWMEMORY_POLICY_BARRIERDUMP_HPP__
-

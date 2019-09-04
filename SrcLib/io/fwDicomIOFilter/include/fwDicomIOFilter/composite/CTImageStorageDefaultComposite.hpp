@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_COMPOSITE_CTIMAGESTORAGEDEFAULTCOMPOSITE_HPP__
-#define __FWDICOMIOFILTER_COMPOSITE_CTIMAGESTORAGEDEFAULTCOMPOSITE_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/composite/IComposite.hpp"
 #include "fwDicomIOFilter/config.hpp"
@@ -40,7 +39,7 @@ class FWDICOMIOFILTER_CLASS_API CTImageStorageDefaultComposite : public IComposi
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (CTImageStorageDefaultComposite)(IComposite),
-                                            (()), ::fwDicomIOFilter::factory::New< CTImageStorageDefaultComposite > );
+                                            ::fwDicomIOFilter::factory::New< CTImageStorageDefaultComposite > );
 
     /// Constructor
     FWDICOMIOFILTER_API CTImageStorageDefaultComposite(::fwDicomIOFilter::IFilter::Key key);
@@ -65,5 +64,3 @@ protected:
 
 } // namespace composite
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_COMPOSITE_CTIMAGESTORAGEDEFAULTCOMPOSITE_HPP__ */

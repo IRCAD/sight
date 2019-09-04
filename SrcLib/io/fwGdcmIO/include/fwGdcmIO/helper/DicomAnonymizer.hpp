@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_DICOMANONYMIZER_HPP__
-#define __FWGDCMIO_HELPER_DICOMANONYMIZER_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/helper/tags.hpp"
@@ -59,7 +58,7 @@ class FWGDCMIO_CLASS_API DicomAnonymizer
 {
 public:
 
-    fwCoreClassFactoryMacro((DicomAnonymizer), (()), new DicomAnonymizer );
+    fwCoreClassFactoryMacro((DicomAnonymizer), new DicomAnonymizer );
 
     /// Constructor
     FWGDCMIO_API DicomAnonymizer();
@@ -237,5 +236,3 @@ private:
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif /*__FWGDCMIO_HELPER_DICOMANONYMIZER_HPP__*/

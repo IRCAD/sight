@@ -46,7 +46,6 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog),
-                                            (()),
                                             ::fwGui::factory::New< PulseProgressDialog > );
 
     FWGUIQML_API PulseProgressDialog(::fwGui::GuiBaseObject::Key key);

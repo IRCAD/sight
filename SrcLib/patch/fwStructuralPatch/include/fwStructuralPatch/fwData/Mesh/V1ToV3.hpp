@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2017 IRCAD France
- * Copyright (C) 2015-2017 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSTRUCTURALPATCH_FWDATA_MESH_V1TOV3_HPP__
-#define __FWSTRUCTURALPATCH_FWDATA_MESH_V1TOV3_HPP__
+#pragma once
 
 #include "fwStructuralPatch/config.hpp"
 
@@ -40,8 +39,7 @@ namespace Mesh
 class FWSTRUCTURALPATCH_CLASS_API V1ToV3 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (V1ToV3)(::fwStructuralPatch::fwData::Mesh::V1ToV3), (()), new V1ToV3);
+    fwCoreClassDefinitionsWithFactoryMacro((V1ToV3)(::fwStructuralPatch::fwData::Mesh::V1ToV3), new V1ToV3);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToV3();
@@ -69,6 +67,3 @@ public:
 } // namespace fwData
 
 } // namespace fwStructuralPatch
-
-#endif /* __FWSTRUCTURALPATCH_FWDATA_MESH_V1TOV3_HPP__ */
-

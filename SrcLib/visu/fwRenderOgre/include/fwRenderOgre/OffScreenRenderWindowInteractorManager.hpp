@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,10 +35,15 @@ class FWRENDEROGRE_CLASS_API OffScreenRenderWindowInteractorManager :
     public ::fwRenderOgre::IRenderWindowInteractorManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((OffScreenRenderWindowInteractorManager)
-                                           (::fwRenderOgre::IRenderWindowInteractorManager),
-                                           (((unsigned int))(
-                                                (unsigned int))), new OffScreenRenderWindowInteractorManager)
+    fwCoreClassDefinitionsMacro(
+        (OffScreenRenderWindowInteractorManager)(::fwRenderOgre::IRenderWindowInteractorManager));
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(unsigned int width, unsigned int height)
+    {
+        return std::make_shared<OffScreenRenderWindowInteractorManager>(width, height);
+    }
 
     /// Constructor
     FWRENDEROGRE_API OffScreenRenderWindowInteractorManager(unsigned int, unsigned int);
