@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -129,6 +129,9 @@ void ServiceConfig::clearRegistry()
 ::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string& configId,
                                                                           const std::string& serviceImpl ) const
 {
+#ifndef _DEBUG
+    FwCoreNotUsedMacro(serviceImpl);
+#endif
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,7 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(::fwServices::IService)() > FactoryType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory)
+    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), new ServiceFactory)
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();

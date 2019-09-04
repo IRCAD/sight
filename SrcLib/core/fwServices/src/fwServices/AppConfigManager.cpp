@@ -502,7 +502,9 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
             if(buildMode.first == "deferred")
             {
                 SLM_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
-                auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
+#ifdef _DEBUG
+                const auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
+#endif
                 SLM_ASSERT(this->msgHead() + "Object '" + id.first + "' already exists in this config.", ret.second);
             }
             else
@@ -893,12 +895,12 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
             if(m_createdObjects.find(objCfg.m_uid) == m_createdObjects.end())
             {
                 // Not found, now look in the objects that were marked as "deferred"
-                const auto itDeferredObj = m_deferredObjects.find(objCfg.m_uid);
+                const auto itLocalDeferredObj = m_deferredObjects.find(objCfg.m_uid);
                 SLM_ASSERT( this->msgHead() + "Object '" + objCfg.m_uid + "' used by service '" + uid +
                             "' has not been declared in this AppConfig.",
-                            itDeferredObj != m_deferredObjects.end());
+                            itLocalDeferredObj != m_deferredObjects.end());
 
-                const auto object = itDeferredObj->second.m_object;
+                const auto object = itLocalDeferredObj->second.m_object;
                 if(object == nullptr)
                 {
                     if(!objCfg.m_optional)

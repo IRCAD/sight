@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,14 @@
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 
+#ifdef BOOST_MSVC
+#pragma warning(push)
+#pragma warning(disable: 4702) // unreachable code
+#endif
 #include <boost/property_tree/ptree.hpp>
+#ifdef BOOST_MSVC
+#pragma warning(pop)
+#endif
 
 #include <cstdint>
 
@@ -738,7 +745,7 @@ protected:
      * @todo This method must be pure virtual
      * @todo This method must have in parameter the new object or the old ?
      */
-    virtual void swapping(const KeyType& key)
+    virtual void swapping(const KeyType&)
     {
     }
 

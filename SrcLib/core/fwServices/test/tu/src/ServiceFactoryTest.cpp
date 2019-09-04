@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -110,13 +110,13 @@ fwServicesRegisterObjectMacro( ::fwServices::ut::TestSrvThreeData, ::fwData::Flo
 void ServiceFactoryTest::factoryTest()
 {
     const auto serviceFactory = ::fwServices::registry::ServiceFactory::getDefault();
+    {
+        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::fwData::Object",
+                                                                                       "::fwServices::ut::TestService");
 
-    const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::fwData::Object",
-                                                                                   "::fwServices::ut::TestService");
-
-    auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestServiceImplementation");
-    CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestServiceImplementation not found ", it != servicesImpl.end());
-
+        auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "::fwServices::ut::TestServiceImplementation");
+        CPPUNIT_ASSERT_MESSAGE("::fwServices::ut::TestServiceImplementation not found ", it != servicesImpl.end());
+    }
     {
         const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::fwData::Float",
                                                                                        "::fwServices::ut::TestService");

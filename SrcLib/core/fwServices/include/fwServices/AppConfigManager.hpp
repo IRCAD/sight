@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,6 @@ class FWSERVICES_CLASS_API AppConfigManager :  public ::fwServices::IAppConfigMa
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((AppConfigManager)(::fwServices::IAppConfigManager),
-                                           (()),
                                            std::make_shared< AppConfigManager >)
     fwCoreAllowSharedFromThis()
 

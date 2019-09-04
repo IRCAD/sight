@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
-#define __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/registry/AppConfig.hpp"
@@ -50,7 +49,7 @@ class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppConfigParameters)(::fwCore::BaseObject), (()), new AppConfigParameters);
+    fwCoreClassDefinitionsWithFactoryMacro( (AppConfigParameters)(::fwCore::BaseObject), new AppConfigParameters);
 
     /// Return the default global instance of AppConfigParameters
     FWSERVICES_API static AppConfigParameters::sptr getDefault();
@@ -98,6 +97,3 @@ protected:
 } // namespace registry
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
-
