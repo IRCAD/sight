@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_CAMP_MAPPER_HPP__
-#define __FWDATA_CAMP_MAPPER_HPP__
+#pragma once
 
 #include "fwData/TransferFunction.hpp"
 
@@ -37,6 +36,8 @@ struct ValueMapper< ::fwData::TransferFunction::TFColor >
 {
     typedef ::fwData::TransferFunction::TFColor ReturnType;
     static const int type = camp::stringType;
+    //------------------------------------------------------------------------------
+
     static const std::string to(const ReturnType& source)
     {
         std::string result = "";
@@ -60,26 +61,38 @@ struct ValueMapper< ::fwData::TransferFunction::TFColor >
         return result;
     }
 
-    static ReturnType from(bool source)
+    //------------------------------------------------------------------------------
+
+    static ReturnType from(bool)
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
-    static ReturnType from(long source)
+    //------------------------------------------------------------------------------
+
+    static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
-    static ReturnType from(double source)
+    //------------------------------------------------------------------------------
+
+    static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
-    static ReturnType from(const camp::EnumObject& source)
+    //------------------------------------------------------------------------------
+
+    static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
-    static ReturnType from(const camp::UserObject& source)
+    //------------------------------------------------------------------------------
+
+    static ReturnType from(const camp::UserObject&)
     {
         CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
     }
+    //------------------------------------------------------------------------------
+
     static ReturnType from(const std::string& source)
     {
         std::vector< std::string> result;
@@ -101,7 +114,4 @@ struct ValueMapper< ::fwData::TransferFunction::TFColor >
     }
 };
 
-
 } //camp_ext
-
-#endif /* __FWDATA_CAMP_MAPPER_HPP__ */

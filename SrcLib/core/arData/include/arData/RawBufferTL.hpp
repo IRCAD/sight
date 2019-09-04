@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_RAWBUFFERTL_HPP__
-#define __ARDATA_RAWBUFFERTL_HPP__
+#pragma once
 
 #include "arData/BufferTL.hpp"
 #include "arData/config.hpp"
@@ -41,7 +40,7 @@ class ARDATA_CLASS_API RawBufferTL : public BufferTL
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (RawBufferTL)(::arData::TimeLine), (()),
+    fwCoreClassDefinitionsWithFactoryMacro( (RawBufferTL)(::arData::TimeLine),
                                             ::fwData::factory::New< RawBufferTL >);
     fwCampMakeFriendDataMacro((arData)(RawBufferTL));
 
@@ -92,5 +91,3 @@ public:
 }; // class RawBufferTL
 
 } // namespace arData
-
-#endif // __ARDATA_RAWBUFFERTL_HPP__

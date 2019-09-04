@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATA_NAVIGATIONSERIES_HPP__
-#define __FWMEDDATA_NAVIGATIONSERIES_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
 #include "fwMedData/Series.hpp"
@@ -46,7 +45,6 @@ class FWMEDDATA_CLASS_API NavigationSeries : public ::fwMedData::Series
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (NavigationSeries)(::fwMedData::Series),
-                                            (()),
                                             ::fwData::factory::New< NavigationSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(NavigationSeries));
@@ -114,6 +112,3 @@ protected:
 };
 
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_NAVIGATIONSERIES_HPP__
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,7 +19,6 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
 
 #include "arData/CalibrationInfo.hpp"
 
@@ -44,7 +43,7 @@ const ::fwCom::Signals::SignalKeyType CalibrationInfo::s_GET_RECORD_SIG     = "g
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::CalibrationInfo(::fwData::Object::Key key)
+CalibrationInfo::CalibrationInfo(::fwData::Object::Key)
 {
     m_sigAddedRecord   = AddedRecordSignalType::New();
     m_sigRemovedRecord = RemovedRecordSignalType::New();
@@ -55,9 +54,6 @@ CalibrationInfo::CalibrationInfo(::fwData::Object::Key key)
     ::fwCom::HasSignals::m_signals(s_REMOVED_RECORD_SIG, m_sigRemovedRecord);
     ::fwCom::HasSignals::m_signals(s_RESET_RECORD_SIG, m_sigResetRecord);
     ::fwCom::HasSignals::m_signals(s_GET_RECORD_SIG, m_sigGetRecord);
-
-
-
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +80,7 @@ void CalibrationInfo::shallowCopy( const ::fwData::Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache)
+void CalibrationInfo::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -109,7 +105,7 @@ void CalibrationInfo::cachedDeepCopy(const ::fwData::Object::csptr& _source, Dee
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::addRecord( const ::fwData::Image::sptr& img, const ::fwData::PointList::sptr &pl )
+void CalibrationInfo::addRecord( const ::fwData::Image::sptr& img, const ::fwData::PointList::sptr& pl )
 {
     m_imageContainer.push_back(img);
     m_pointListContainer.push_back(pl);
@@ -124,9 +120,8 @@ void CalibrationInfo::removeRecord(size_t idx)
     PointListContainerType::iterator plIt = m_pointListContainer.begin();
     ImageContainerType::iterator imgIt    = m_imageContainer.begin();
 
-    std::advance(plIt,idx);
-    std::advance(imgIt,idx);
-
+    std::advance(plIt, idx);
+    std::advance(imgIt, idx);
 
     m_pointListContainer.erase(plIt);
     m_imageContainer.erase(imgIt);
@@ -168,8 +163,7 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
     }
 
     PointListContainerType::const_iterator plIt = m_pointListContainer.begin();
-    std::advance(plIt,dist);
-
+    std::advance(plIt, dist);
 
     if(it != m_imageContainer.end())
     {
@@ -194,7 +188,7 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
     }
 
     ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
-    std::advance(imgIt,dist);
+    std::advance(imgIt, dist);
 
     if(it != m_pointListContainer.end())
     {
@@ -212,7 +206,7 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
 
     ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
 
-    std::advance(imgIt,idx);
+    std::advance(imgIt, idx);
 
     return *(imgIt);
 }
@@ -220,4 +214,3 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
 //------------------------------------------------------------------------------
 
 } //namespace arData
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,14 +44,11 @@ public:
     typedef float ColorType;
     typedef std::array<ColorType, 4> ColorArray;
 
-    fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
-                                               ((::fwData::factory::New< Color >, () ))
-                                                   ((ColorFactory,
-                                                     ((ColorType))((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(
-                                                                                                              1.0)) ))
-                                               );
+    fwCoreClassDefinitionsWithFactoryMacro( (Color)(::fwData::Object), ::fwData::factory::New< Color >);
 
     fwCampMakeFriendDataMacro((fwData)(Color));
+
+    FWDATA_API static sptr New(ColorType red, ColorType green = 1.f, ColorType blue = 1.f, ColorType alpha = 1.f);
 
     /**
      * @brief Constructor
@@ -83,7 +80,7 @@ public:
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
     ///@param[in] hexaColor c hexadecimal format (\#ffffff)
-    FWDATA_API void setRGBA( std::string hexaColor );
+    FWDATA_API void setRGBA(const std::string& hexaColor );
     ///@}
 
     /** @name color attributes accessor
@@ -106,8 +103,6 @@ public:
     //@}
 
 protected:
-
-    FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
 
     //! RGBA of the image (in terms of points)
     ColorArray m_vRGBA;

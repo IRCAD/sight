@@ -1,8 +1,7 @@
-
 set( NAME arDataTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES 
+set( DEPENDENCIES
     fwCore
     fwTest
     fwTools
@@ -11,4 +10,4 @@ set( DEPENDENCIES
     arDataCamp
 )
 set( REQUIREMENTS  )
-
+set( WARNINGS_AS_ERRORS ON )

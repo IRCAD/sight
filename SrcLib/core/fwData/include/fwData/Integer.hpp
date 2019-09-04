@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_INTEGER_HPP__
-#define __FWDATA_INTEGER_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -37,10 +36,10 @@ namespace fwData
  * @brief   This class contains an integer value.
  * Integer object is essentially used as a field in other objects.
  */
-class FWDATA_CLASS_API Integer : public GenericField< int >
+class FWDATA_CLASS_API Integer : public GenericField< std::int64_t >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object), ( ((const int)(0)) ),
+    fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object), ( ((const std::int64_t)(0)) ),
                                             GenericFieldFactory< Integer >);
     fwCampMakeFriendDataMacro((fwData)(Integer));
 
@@ -63,6 +62,3 @@ public:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_INTEGER_HPP__
-

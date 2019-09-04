@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Line.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -33,9 +34,8 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Line::Line (::fwData::Object::Key key)
+Line::Line (::fwData::Object::Key)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ Line::~Line ()
 
 //------------------------------------------------------------------------------
 
-void Line::shallowCopy(const Object::csptr &_source )
+void Line::shallowCopy(const Object::csptr& _source )
 {
     Line::csptr other = Line::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -60,7 +60,7 @@ void Line::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Line::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Line::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Line::csptr other = Line::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -80,5 +80,3 @@ void Line::setValue(const ::fwData::Point::sptr& _position, const ::fwData::Poin
 }
 
 } // namespace fwData
-
-

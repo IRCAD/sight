@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -84,11 +84,11 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getNumberOfComponents());
     CPPUNIT_ASSERT(  array->empty() );
-    CPPUNIT_ASSERT(  arrayHelper.getBuffer() == NULL );
+    CPPUNIT_ASSERT(  arrayHelper.getBuffer() == nullptr );
 
-    char* buffer = new char[1000];
+    std::uint16_t* buffer = new uint16_t[1000];
 
-    for (int i = 0; i < 1000; i++)
+    for (std::uint16_t i = 0; i < 1000; i++)
     {
         buffer[i] = i;
     }
@@ -96,7 +96,7 @@ void ArrayTest::allocation()
     // array->resize(::fwTools::Type::create("uint8"), size, 1);
     // array->setBuffer(buffer);
 
-    arrayHelper.setBuffer(buffer, false, ::fwTools::Type::create("uint8"), size, 1);
+    arrayHelper.setBuffer(buffer, false, ::fwTools::Type::create("uint16"), size, 1);
 
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getBufferOffset({1, 0}, 0, 4));
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getElementSizeInBytes());
@@ -105,12 +105,12 @@ void ArrayTest::allocation()
         ::fwData::Array::OffsetType stride = {1, 10};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(  buffer[0], *(arrayHelper.getItem< char >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[10], *(arrayHelper.getItem< char >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[999], *(arrayHelper.getItem< char >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[326], *(arrayHelper.getItem< char >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[947], *(arrayHelper.getItem< char >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[238], *(arrayHelper.getItem< char >({8, 23})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[0], *(arrayHelper.getItem< std::uint16_t >({0, 0})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[10], *(arrayHelper.getItem< std::uint16_t >({0, 1})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[999], *(arrayHelper.getItem< std::uint16_t >({9, 99})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[326], *(arrayHelper.getItem< std::uint16_t >({6, 32})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[947], *(arrayHelper.getItem< std::uint16_t >({7, 94})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[238], *(arrayHelper.getItem< std::uint16_t >({8, 23})));
     CPPUNIT_ASSERT_EQUAL(false, array->getIsBufferOwner());
 
     array->clear();

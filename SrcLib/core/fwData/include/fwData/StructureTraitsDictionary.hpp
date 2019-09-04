@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_STRUCTURETRAITSDICTIONARY_HPP__
-#define __FWDATA_STRUCTURETRAITSDICTIONARY_HPP__
+#pragma once
 
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
@@ -40,7 +39,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraitsDictionary : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object), (()),
+    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object),
                                             ::fwData::factory::New< StructureTraitsDictionary >);
     fwCampMakeFriendDataMacro((fwData)(StructureTraitsDictionary));
 
@@ -90,6 +89,3 @@ private:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_STRUCTURETRAITSDICTIONARY_HPP__
-

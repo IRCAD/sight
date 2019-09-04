@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,13 +43,13 @@ public:
     typedef double PointCoordType;
     typedef std::array<double, 3> PointCoordArrayType;
 
-    fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
-                                               ((::fwData::factory::New< Point >, () ))
-                                                   ((PointFactory, ((float))((float)(0.0f)) ((float) (0.0f)) ))
-                                                   ((PointFactory, ((double))((double)(0.0)) ((double) (0.0)) ))
-                                                   ((PointFactory, ((const PointCoordArrayType&)) ))
-                                                   ((PointFactory, ((Point::sptr)) ))
-                                               );
+    fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object), ::fwData::factory::New< Point >);
+
+    /// Point factory
+    FWDATA_API static Point::sptr New(float x, float y = 0.f, float z = 0.f);
+    FWDATA_API static Point::sptr New(double x, double y = 0., double z = 0.);
+    FWDATA_API static Point::sptr New(const PointCoordArrayType& coord);
+    FWDATA_API static Point::sptr New(const Point::sptr& p);
 
     fwCampMakeFriendDataMacro((fwData)(Point));
 
@@ -76,12 +76,6 @@ public:
     /// @}
 
 protected:
-
-    /// Point factory
-    FWDATA_API static Point::sptr PointFactory(float x, float y, float z);
-    FWDATA_API static Point::sptr PointFactory(double x, double y, double z);
-    FWDATA_API static Point::sptr PointFactory(const PointCoordArrayType& coord);
-    FWDATA_API static Point::sptr PointFactory(Point::sptr p);
 
     /// point coordinates
     PointCoordArrayType m_vCoord;

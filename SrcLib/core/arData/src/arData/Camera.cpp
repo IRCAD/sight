@@ -44,7 +44,7 @@ const ::fwCom::Signals::SignalKeyType Camera::s_ID_MODIFIED_SIG          = "idMo
 
 //------------------------------------------------------------------------------
 
-Camera::Camera( ::fwData::Object::Key key ) :
+Camera::Camera( ::fwData::Object::Key ) :
     m_width(0),
     m_height(0),
     m_skew(0.),

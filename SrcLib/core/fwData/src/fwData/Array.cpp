@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Array.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <algorithm>
 #include <cstdlib>
@@ -35,9 +35,11 @@ namespace fwData
 
 fwDataRegisterMacro( ::fwData::Array );
 
+//------------------------------------------------------------------------------
+
 inline size_t computeSize(
     size_t elementSize,
-    const ::fwData::Array::SizeType &size,
+    const ::fwData::Array::SizeType& size,
     size_t nbOfComponents )
 {
     size_t total = 0;
@@ -45,11 +47,13 @@ inline size_t computeSize(
     {
         total  = elementSize;
         total *=
-            std::accumulate (size.begin(),
-                             size.end(), nbOfComponents, std::multiplies< ::fwData::Array::SizeType::value_type >() );
+            std::accumulate(size.begin(),
+                            size.end(), nbOfComponents, std::multiplies< ::fwData::Array::SizeType::value_type >() );
     }
     return total;
 }
+
+//------------------------------------------------------------------------------
 
 ::fwData::Array::OffsetType Array::computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType )
 {
@@ -67,7 +71,7 @@ inline size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-Array::Array( ::fwData::Object::Key key ) :
+Array::Array( ::fwData::Object::Key ) :
     m_strides(0),
     m_type(),
     m_bufferObject(::fwMemory::BufferObject::New()),
@@ -100,7 +104,7 @@ void Array::swap( Array::sptr _source )
 
 //------------------------------------------------------------------------------
 
-void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Array::csptr other = Array::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -114,9 +118,9 @@ void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
     {
         ::fwMemory::BufferObject::Lock lockerDest(m_bufferObject);
         this->resize(other->m_type, other->m_size, other->m_nbOfComponents, true);
-        char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
+        char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
         ::fwMemory::BufferObject::Lock lockerSource(other->m_bufferObject);
-        char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
+        char* buffSrc = static_cast< char* >( lockerSource.getBuffer() );
         std::copy(buffSrc, buffSrc+other->getSizeInBytes(), buffDest );
     }
     else
@@ -131,8 +135,8 @@ void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 //------------------------------------------------------------------------------
 
 size_t Array::resize(
-    const ::fwTools::Type &type,
-    const SizeType &size,
+    const ::fwTools::Type& type,
+    const SizeType& size,
     size_t nbOfComponents,
     bool reallocate
     )
@@ -168,20 +172,20 @@ size_t Array::resize(
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const SizeType &size, size_t nbOfComponents, bool reallocate)
+size_t Array::resize(const SizeType& size, size_t nbOfComponents, bool reallocate)
 {
     return this->resize(m_type, size, nbOfComponents, reallocate);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const SizeType &size, bool reallocate)
+size_t Array::resize(const SizeType& size, bool reallocate)
 {
     return this->resize(m_type, size, m_nbOfComponents, reallocate);
 }
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const std::string &type, const SizeType &size, size_t nbOfComponents,
+size_t Array::resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
                      bool reallocate)
 {
     ::fwTools::Type fwType = ::fwTools::Type::create(type);
@@ -235,15 +239,14 @@ size_t Array::getSizeInBytes() const
 
 //------------------------------------------------------------------------------
 
-
-const ::fwData::Array::SizeType &Array::getSize() const
+const ::fwData::Array::SizeType& Array::getSize() const
 {
     return m_size;
 }
 
 //------------------------------------------------------------------------------
 
-const ::fwData::Array::OffsetType &Array::getStrides() const
+const ::fwData::Array::OffsetType& Array::getStrides() const
 {
     return m_strides;
 }
@@ -291,13 +294,15 @@ bool Array::getIsBufferOwner() const
 
 //------------------------------------------------------------------------------
 
-void Array::setType(const std::string &type)
+void Array::setType(const std::string& type)
 {
     ::fwTools::Type fwType = ::fwTools::Type::create(type);
     this->setType(fwType);
 }
 
-void Array::setType(const ::fwTools::Type &type)
+//------------------------------------------------------------------------------
+
+void Array::setType(const ::fwTools::Type& type)
 {
     m_type = type;
     this->resize(
@@ -308,7 +313,6 @@ void Array::setType(const ::fwTools::Type &type)
         );
 }
 
-
 //------------------------------------------------------------------------------
 
 ::fwTools::Type Array::getType() const
@@ -318,11 +322,11 @@ void Array::setType(const ::fwTools::Type &type)
 
 //------------------------------------------------------------------------------
 
-size_t Array::getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const
+size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType ) const
 {
     OSLM_ASSERT(
         "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
-        id.size() == m_size.size()
+            id.size() == m_size.size()
         );
 
     OffsetType offsets(id.size());

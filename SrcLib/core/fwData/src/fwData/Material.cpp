@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,13 @@
  *
  ***********************************************************************/
 
+#include "fwData/Material.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
-#include "fwData/Material.hpp"
 
 fwDataRegisterMacro( ::fwData::Material );
 
@@ -39,7 +40,7 @@ const ::fwCom::Signals::SignalKeyType Material::s_REMOVED_TEXTURE_SIG = "removed
 
 //------------------------------------------------------------------------------
 
-Material::Material(::fwData::Object::Key key) :
+Material::Material(::fwData::Object::Key) :
     m_shadingMode(PHONG),
     m_representationMode(SURFACE),
     m_optionsMode(STANDARD),
@@ -60,7 +61,7 @@ Material::~Material()
 
 //------------------------------------------------------------------------------
 
-void Material::shallowCopy(const Object::csptr &_source )
+void Material::shallowCopy(const Object::csptr& _source )
 {
     Material::csptr other = Material::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -81,7 +82,7 @@ void Material::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Material::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Material::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Material::csptr other = Material::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

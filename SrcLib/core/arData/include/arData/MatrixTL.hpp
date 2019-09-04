@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_MATRIXTL_HPP__
-#define __ARDATA_MATRIXTL_HPP__
+#pragma once
 
 #include "arData/GenericTL.hpp"
 #include "arData/GenericTL.hxx"
@@ -37,18 +36,16 @@ namespace arData
 class ARDATA_CLASS_API MatrixTL : public GenericTL< float[16] >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MatrixTL)(::arData::TimeLine),(()), ::fwData::factory::New< MatrixTL >)
+    fwCoreClassDefinitionsWithFactoryMacro( (MatrixTL)(::arData::TimeLine), ::fwData::factory::New< MatrixTL >)
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    MatrixTL( ::fwData::Object::Key key ) : GenericTL< float[16] >(key)
+    MatrixTL( ::fwData::Object::Key key ) :
+        GenericTL< float[16] >(key)
     {
     }
 };
 
 } // namespace arData
-
-
-#endif // __ARDATA_MATRIXTL_HPP__

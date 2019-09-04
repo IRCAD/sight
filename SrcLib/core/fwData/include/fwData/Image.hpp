@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_IMAGE_HPP__
-#define __FWDATA_IMAGE_HPP__
+#pragma once
 
 #include "fwData/Array.hpp"
 #include "fwData/factory/new.hpp"
@@ -54,7 +53,7 @@ class PointList;
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), ::fwData::factory::New< Image > );
     fwCoreAllowSharedFromThis();
     fwCampMakeFriendDataMacro((fwData)(Image));
 
@@ -314,6 +313,3 @@ inline void Image::setNumberOfComponents(size_t val)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_IMAGE_HPP__
-

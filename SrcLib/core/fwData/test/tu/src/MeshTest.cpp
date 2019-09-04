@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -281,7 +281,7 @@ void MeshTest::colorsNormals()
     {
         for (int c = 0; c < 4; c++)
         {
-            pointColorArray[id][c] = id * 10 + c;
+            pointColorArray[id][c] = static_cast< ::fwData::Mesh::ColorValueType >(id * 10 + c);
         }
     }
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >( 0), pointColorArray[0][0]);
@@ -425,13 +425,13 @@ void MeshTest::addingArray()
     ::fwDataTools::helper::Array cellDataArrayHelper(cellDataArray);
 
     ::fwData::Mesh::CellValueType counter = 0;
-    for (int id = 0; id < nbCells; id++)
+    for (std::uint64_t idCell = 0; idCell < nbCells; idCell++)
     {
         ::fwData::Mesh::CellTypes type = static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE);
-        cellTypeArrayHelper.setItem({size_t(id)}, &type);
+        cellTypeArrayHelper.setItem({size_t(idCell)}, &type);
 
-        ::fwData::Mesh::CellDataOffsetType offset = id*3;
-        cellDataOffsetArrayHelper.setItem({size_t(id)}, &offset);
+        ::fwData::Mesh::CellDataOffsetType offset = idCell*3;
+        cellDataOffsetArrayHelper.setItem({size_t(idCell)}, &offset);
 
         ::fwData::Mesh::CellValueType cell[3] = { counter, counter+1, counter+2 };
         counter                              += 3;
@@ -560,4 +560,3 @@ void MeshTest::copy()
 
 } //namespace ut
 } //namespace fwData
-

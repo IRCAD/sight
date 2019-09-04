@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATA_ACTIVITYSERIES_HPP__
-#define __FWMEDDATA_ACTIVITYSERIES_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
 #include "fwMedData/Series.hpp"
@@ -48,7 +47,6 @@ class FWMEDDATA_CLASS_API ActivitySeries : public ::fwMedData::Series
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ActivitySeries)(::fwMedData::Series),
-                                            (()),
                                             ::fwData::factory::New< ActivitySeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ActivitySeries));
@@ -131,6 +129,3 @@ inline void ActivitySeries::setActivityConfigId (const ActivitySeries::ConfigIdT
 //-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_ACTIVITYSERIES_HPP__
-

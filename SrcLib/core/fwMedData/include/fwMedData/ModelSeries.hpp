@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ class FWMEDDATA_CLASS_API ModelSeries : public ::fwMedData::Series
 public:
     typedef std::vector< SPTR(::fwData::Reconstruction) > ReconstructionVectorType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ModelSeries)(::fwData::Object), (()),
+    fwCoreClassDefinitionsWithFactoryMacro( (ModelSeries)(::fwData::Object),
                                             ::fwData::factory::New< ModelSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ModelSeries));

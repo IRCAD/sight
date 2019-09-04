@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ class Mesh;
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()),
+    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object),
                                             ::fwData::factory::New< Reconstruction >);
 
     fwCoreAllowSharedFromThis()

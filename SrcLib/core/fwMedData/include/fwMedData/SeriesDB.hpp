@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATA_SERIESDB_HPP__
-#define __FWMEDDATA_SERIESDB_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
@@ -48,7 +47,7 @@ class FWMEDDATA_CLASS_API SeriesDB : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)(::fwData::Object), (()), ::fwData::factory::New< SeriesDB >);
+    fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)(::fwData::Object), ::fwData::factory::New< SeriesDB >);
 
     fwCampMakeFriendDataMacro((fwMedData)(SeriesDB));
 
@@ -282,6 +281,3 @@ inline void SeriesDB::setContainer (const SeriesDB::ContainerType& val)
 //-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_SERIESDB_HPP__
-

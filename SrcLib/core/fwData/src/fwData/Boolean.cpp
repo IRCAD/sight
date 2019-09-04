@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Boolean::Boolean( ::fwData::Object::Key key  ) noexcept :
+Boolean::Boolean( ::fwData::Object::Key ) noexcept :
     GenericField< bool >( false )
 {
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Color.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -33,15 +34,15 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Color::Color ( ::fwData::Object::Key key )
+Color::Color ( ::fwData::Object::Key )
 {
     m_vRGBA.fill(1.0);
 }
 
 //------------------------------------------------------------------------------
 
-Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Color::ColorType blue,
-                                Color::ColorType alpha)
+Color::sptr Color::New(Color::ColorType red, Color::ColorType green, Color::ColorType blue,
+                       Color::ColorType alpha)
 {
     Color::sptr color = ::fwData::Color::New();
     color->m_vRGBA = {red, green, blue, alpha};
@@ -56,7 +57,7 @@ Color::~Color ()
 
 //------------------------------------------------------------------------------
 
-void Color::shallowCopy(const Object::csptr &_source )
+void Color::shallowCopy(const Object::csptr& _source )
 {
     Color::csptr other = Color::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -68,7 +69,7 @@ void Color::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Color::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Color::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Color::csptr other = Color::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -87,35 +88,35 @@ void Color::setRGBA( const ColorType red, const ColorType green, const ColorType
 
 //------------------------------------------------------------------------------
 
-void Color::setRGBA( std::string hexaColor )
+void Color::setRGBA(const std::string& hexaColor )
 {
     OSLM_ASSERT(
         "Color string should start with '#' and followed by 6 ou 8 "
         "hexadecimal digits. Given color : " << hexaColor,
-        hexaColor[0] == '#'
-        && ( hexaColor.length() == 7 || hexaColor.length() == 9)
+            hexaColor[0] == '#'
+            && ( hexaColor.length() == 7 || hexaColor.length() == 9)
         );
 
-    std::string redString   = hexaColor.substr(1, 2);
-    std::string greenString = hexaColor.substr(3, 2);
-    std::string blueString  = hexaColor.substr(5, 2);
-    int r,g,b, a = 255;
+    const std::string redString = hexaColor.substr(1, 2);
+    const std::string greenString = hexaColor.substr(3, 2);
+    const std::string blueString = hexaColor.substr(5, 2);
+    float r, g, b, a = 255.f;
 
     std::istringstream iss;
-    iss.str (redString);
+    iss.str(redString);
     iss >> std::hex >> r;
     iss.clear();
-    iss.str (greenString);
+    iss.str(greenString);
     iss >> std::hex >> g;
     iss.clear();
-    iss.str (blueString);
+    iss.str(blueString);
     iss >> std::hex >> b;
 
     if (hexaColor.length() == 9)
     {
-        std::string alphaString = hexaColor.substr(7, 2);
+        const std::string alphaString = hexaColor.substr(7, 2);
         iss.clear();
-        iss.str (alphaString);
+        iss.str(alphaString);
         iss >> std::hex >> a;
     }
 
@@ -124,42 +125,56 @@ void Color::setRGBA( std::string hexaColor )
 
 //------------------------------------------------------------------------------
 
-Color::ColorType  &Color::red()
+Color::ColorType& Color::red()
 {
     return m_vRGBA[0];
 }
 
-Color::ColorType  &Color::green()
+//------------------------------------------------------------------------------
+
+Color::ColorType& Color::green()
 {
     return m_vRGBA[1];
 }
 
-Color::ColorType  &Color::blue()
+//------------------------------------------------------------------------------
+
+Color::ColorType& Color::blue()
 {
     return m_vRGBA[2];
 }
 
-Color::ColorType  &Color::alpha()
+//------------------------------------------------------------------------------
+
+Color::ColorType& Color::alpha()
 {
     return m_vRGBA[3];
 }
 
-const Color::ColorType  &Color::red() const
+//------------------------------------------------------------------------------
+
+const Color::ColorType& Color::red() const
 {
     return m_vRGBA[0];
 }
 
-const Color::ColorType  &Color::green() const
+//------------------------------------------------------------------------------
+
+const Color::ColorType& Color::green() const
 {
     return m_vRGBA[1];
 }
 
-const Color::ColorType  &Color::blue() const
+//------------------------------------------------------------------------------
+
+const Color::ColorType& Color::blue() const
 {
     return m_vRGBA[2];
 }
 
-const Color::ColorType  &Color::alpha() const
+//------------------------------------------------------------------------------
+
+const Color::ColorType& Color::alpha() const
 {
     return m_vRGBA[3];
 }
@@ -167,5 +182,3 @@ const Color::ColorType  &Color::alpha() const
 //------------------------------------------------------------------------------
 
 } // namespace fwData
-
-
