@@ -196,9 +196,6 @@ private:
     /// Size of the character label
     float m_charHeight {0.03f};
 
-    /// Remove last label when removing a point
-    bool m_removeLastLabel {false};
-
     /// RGB Color for the labelPoint color
     ::fwData::Color::sptr m_labelColor;
 
