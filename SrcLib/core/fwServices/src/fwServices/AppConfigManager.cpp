@@ -243,6 +243,9 @@ fwData::Object::sptr AppConfigManager::getConfigRoot() const
 
 fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const std::string& errMsgTail) const
 {
+#ifndef _DEBUG
+    FwCoreNotUsedMacro(errMsgTail);
+#endif
     ::fwData::Object::sptr obj;
 
     // Look first in objects created in this appConfig
