@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -251,7 +251,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         ::fwData::Integer::sptr intValue = ::fwData::Integer::dynamicCast(obj);
         SLM_ASSERT("The given integer object is null", intValue);
 
-        params->setNamedConstant(m_paramName, intValue->value());
+        params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
     }
     else if(objClass == "::fwData::Float")
     {
@@ -265,7 +265,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         ::fwData::Boolean::sptr booleanValue = ::fwData::Boolean::dynamicCast(obj);
         SLM_ASSERT("The given boolean object is null", booleanValue);
 
-        params->setNamedConstant(m_paramName, static_cast< int>(booleanValue->value()));
+        params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
     }
     else if(objClass == "::fwData::Color")
     {
