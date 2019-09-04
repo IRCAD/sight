@@ -226,7 +226,7 @@ public:
      * Iterate through the buffer and check if the idex is not out of the bounds
      */
     template <class TYPE, bool isConstIterator = true>
-    class IteratorBase : public std::iterator<std::bidirectional_iterator_tag, TYPE>
+    class IteratorBase : public std::iterator<std::bidirectional_iterator_tag, TYPE, size_t>
     {
     public:
 
@@ -279,6 +279,8 @@ public:
 
         BufferType m_pointer{nullptr};
         ::fwMemory::BufferObject::Lock m_lock;
+        size_t m_idx{0};
+        const size_t m_numberOfElements;
     };
 
     template <typename TYPE>
@@ -614,10 +616,12 @@ T Array::at(const ::fwData::Array::IndexType& id) const
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array)
+Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array) :
+    m_pointer(static_cast<BufferType>(array->getBuffer())),
+    m_lock(array->lock()),
+    m_idx(0),
+    m_numberOfElements(array->getSizeInBytes()/sizeof(TYPE))
 {
-    m_lock    = array->lock();
-    m_pointer = static_cast<BufferType>(array->getBuffer());
 }
 
 //------------------------------------------------------------------------------
@@ -625,7 +629,9 @@ Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array)
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>& other) :
     m_pointer(other.m_pointer),
-    m_lock(other.m_lock)
+    m_lock(other.m_lock),
+    m_idx(other.m_idx),
+    m_numberOfElements(other.m_numberOfElements)
 {
 }
 
@@ -666,6 +672,9 @@ typename Array::IteratorBase<TYPE, isConst>::ValueReferenceType Array::IteratorB
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator++()
 {
+    ++m_idx;
+    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+               m_idx <= m_numberOfElements );
     ++m_pointer;
     return *this;
 }
@@ -676,6 +685,9 @@ template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator++(int)
 {
     IteratorBase tmp(*this);
+    ++m_idx;
+    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+               m_idx <= m_numberOfElements );
     ++m_pointer;
     return tmp;
 }
@@ -685,6 +697,9 @@ Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(size_t index)
 {
+    m_idx = m_idx + index;
+    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+               m_idx <= m_numberOfElements );
     m_pointer = m_pointer + index;
     return *this;
 }
@@ -694,6 +709,9 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+=(size_t index)
 {
+    m_idx += index;
+    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+               m_idx <= m_numberOfElements );
     m_pointer += index;
     return *this;
 }
@@ -703,6 +721,8 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator--()
 {
+    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    --m_idx;
     --m_pointer;
     return *this;
 }
@@ -712,6 +732,8 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator--(int)
 {
+    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    --m_idx;
     IteratorBase tmp(*this);
     --m_pointer;
     return tmp;
@@ -722,6 +744,9 @@ Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(size_t index)
 {
+    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
+                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
+    m_idx     = m_idx - index;
     m_pointer = m_pointer - index;
     return *this;
 }
@@ -731,6 +756,9 @@ Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator
 template <class TYPE, bool isConst>
 Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-=(size_t index)
 {
+    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
+                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
+    m_idx     -= index;
     m_pointer -= index;
     return *this;
 }

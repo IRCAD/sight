@@ -457,6 +457,8 @@ void ArrayTest::bufferAccessTest()
         *iter = count++;
     }
 
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1000), count);
+    CPPUNIT_ASSERT(iterEnd == iter);
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(99), array->at<std::uint32_t>({9, 9}));
@@ -471,12 +473,14 @@ void ArrayTest::bufferAccessTest()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1), *itr);
         ++itr;
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(2), *itr);
-        itr = itr + 3;
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(5), *itr);
         itr += 5;
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), *itr);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(7), *itr);
+        --itr;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(6), *itr);
+        itr -= 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(4), *itr);
 
-        std::uint32_t val = 10;
+        std::uint32_t val = 4;
         const auto endItr = array->end<std::uint32_t>();
         while(itr != endItr)
         {
@@ -493,12 +497,14 @@ void ArrayTest::bufferAccessTest()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1), *itr);
         ++itr;
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(2), *itr);
-        itr = itr + 3;
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(5), *itr);
         itr += 5;
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), *itr);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(7), *itr);
+        --itr;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(6), *itr);
+        itr -= 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(4), *itr);
 
-        std::uint32_t val = 10;
+        std::uint32_t val = 4;
         const auto endItr = array->end<std::uint32_t>();
         while(itr != endItr)
         {
@@ -528,6 +534,7 @@ void ArrayTest::constArrayTest()
     }
 
     ::fwData::Array::csptr array2 = ::fwData::Object::copy(array);
+    auto lock2 = array2->lock();
 
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
