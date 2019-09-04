@@ -62,7 +62,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
 
     const size_t NB_COMPONENT = 2;
-    ::fwData::Array::SizeType size = {10, 100};
+    ::fwData::Array::SizeType size = {10, 10};
 
     array->resize("uint32", size, NB_COMPONENT, true);
     CPPUNIT_ASSERT(arrayHelper.getBuffer() != NULL);
@@ -86,31 +86,28 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT(  array->empty() );
     CPPUNIT_ASSERT(  arrayHelper.getBuffer() == nullptr );
 
-    std::uint16_t* buffer = new uint16_t[1000];
+    std::uint8_t* buffer = new uint8_t[100];
 
-    for (std::uint16_t i = 0; i < 1000; i++)
+    for (std::uint8_t i = 0; i < 100; i++)
     {
         buffer[i] = i;
     }
 
-    // array->resize(::fwTools::Type::create("uint8"), size, 1);
-    // array->setBuffer(buffer);
-
-    arrayHelper.setBuffer(buffer, false, ::fwTools::Type::create("uint16"), size, 1);
+    arrayHelper.setBuffer(buffer, false, ::fwTools::Type::create("uint8"), size, 1);
 
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getBufferOffset({1, 0}, 0, 4));
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)1*10*100, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  (size_t)1*10*10, array->getSizeInBytes());
     {
         ::fwData::Array::OffsetType stride = {1, 10};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(  buffer[0], *(arrayHelper.getItem< std::uint16_t >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[10], *(arrayHelper.getItem< std::uint16_t >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[999], *(arrayHelper.getItem< std::uint16_t >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[326], *(arrayHelper.getItem< std::uint16_t >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[947], *(arrayHelper.getItem< std::uint16_t >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[238], *(arrayHelper.getItem< std::uint16_t >({8, 23})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[0], *(arrayHelper.getItem< std::uint8_t >({0, 0})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[10], *(arrayHelper.getItem< std::uint8_t >({0, 1})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[99], *(arrayHelper.getItem< std::uint8_t >({9, 9})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[36], *(arrayHelper.getItem< std::uint8_t >({6, 3})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[97], *(arrayHelper.getItem< std::uint8_t >({7, 9})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[28], *(arrayHelper.getItem< std::uint8_t >({8, 2})));
     CPPUNIT_ASSERT_EQUAL(false, array->getIsBufferOwner());
 
     array->clear();
