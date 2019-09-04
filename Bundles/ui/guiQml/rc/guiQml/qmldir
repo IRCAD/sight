@@ -42,3 +42,4 @@ ToolButton 1.0 ToolButton.qml
 ToolSeparator 1.0 ToolSeparator.qml
 ToolTip 1.0 ToolTip.qml
 Tumbler 1.0 Tumbler.qml
+ActivityView 1.0 editor/ActivityView.qml
