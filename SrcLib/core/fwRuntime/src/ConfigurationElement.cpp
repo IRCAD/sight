@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,9 +56,8 @@ std::ostream& operator<<(std::ostream& _sstream, ConfigurationElement& _configur
 //------------------------------------------------------------------------------
 
 ConfigurationElement::ConfigurationElement( const std::shared_ptr< Bundle > bundle, const std::string& name ) :
-    m_bundle( bundle    ),
-    m_name( name      ),
-    m_value( std::string("") )
+    m_name(name),
+    m_bundle(bundle)
 {
 }
 
