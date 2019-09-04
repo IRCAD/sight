@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_UTIL_WEAKCALL_HPP__
-#define __FWCOM_UTIL_WEAKCALL_HPP__
+#pragma once
 
 #include "fwCom/exception/WorkerChanged.hpp"
 
@@ -81,7 +80,8 @@ struct WeakCall
         {
             m_worker.reset();
             // will throw an exception because m_weakPtr is expired
-            std::shared_ptr< T const > ptr(this->m_weakPtr);
+            std::shared_ptr< T const > errorPtr(this->m_weakPtr);
+            FwCoreNotUsedMacro(errorPtr);
         }
 
         ::fwCore::mt::ReadLock lock(ptr->m_workerMutex);
@@ -123,6 +123,3 @@ WeakCall<T, R> weakcall( const std::shared_ptr< T const >& ptr, std::function< R
 } // namespace util
 
 } // namespace fwCom
-
-#endif /* __FWCOM_UTIL_WEAKCALL_HPP__ */
-
