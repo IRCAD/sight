@@ -93,11 +93,16 @@ static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 SActivityLauncher::SActivityLauncher() noexcept :
     m_mode("message")
 {
+#ifndef KEEP_OLD_SERVICE
+    SLM_FATAL("Do not use activities::SActivityLauncher with Qml");
+#else
+    FW_DEPRECATED("::activities::action::SActivityLauncher", "::uiActivitiesQt::action::SActivityLauncher", "21.0");
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
 
     newSlot(s_LAUNCH_SERIES_SLOT, &SActivityLauncher::launchSeries, this);
     newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SActivityLauncher::launchActivitySeries, this);
     newSlot(s_UPDATE_STATE_SLOT, &SActivityLauncher::updateState, this);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -126,6 +131,7 @@ void SActivityLauncher::stopping()
 
 void SActivityLauncher::configuring()
 {
+#ifdef KEEP_OLD_SERVICE
     this->::fwGui::IActionSrv::initialize();
     typedef ::fwServices::IService::ConfigType ConfigType;
 
@@ -196,10 +202,6 @@ void SActivityLauncher::configuring()
 
 ::fwActivities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
 {
-#ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Do not use activities::SActivityLauncher with Qml");
-#else
-    FW_DEPRECATED("::activities::action::SActivityLauncher", "::uiActivitiesQt::action::SActivityLauncher", "21.0");
     QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
