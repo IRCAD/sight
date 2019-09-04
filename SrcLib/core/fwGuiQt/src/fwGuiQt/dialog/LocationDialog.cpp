@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,15 +31,14 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
-#include <functional>
-#include <QApplication>
 
+#include <QApplication>
 #include <QFileDialog>
 #include <QString>
 
+#include <functional>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::LocationDialog, ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
-
 
 namespace fwGuiQt
 {
@@ -58,7 +57,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    QWidget *parent                             = qApp->activeWindow();
+    QWidget* parent                             = qApp->activeWindow();
     QString caption                             = QString::fromStdString(this->getTitle());
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
     QString path                                = QString::fromStdString(defaultPath.string());
@@ -78,7 +77,6 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     {
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
     }
-
 
     if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
     {
@@ -109,7 +107,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
     {
         QString fileName;
-        if ( (m_style & ::fwGui::dialog::ILocationDialog::READ) ||
+        if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
              (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
         {
             dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
@@ -189,7 +187,7 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
 //------------------------------------------------------------------------------
 
 // exemple ( addFilter("images","*.png *.jpg");
-void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
+void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList )
 {
     m_filters.push_back( std::make_pair( filterName, wildcardList ));
 }
@@ -201,12 +199,12 @@ QString LocationDialog::fileFilters()
 {
     std::string result;
     std::vector< std::pair < std::string, std::string > >::const_iterator iter;
-    for ( iter = m_filters.begin(); iter!= m_filters.end(); ++iter)
+    for ( iter = m_filters.begin(); iter != m_filters.end(); ++iter)
     {
         std::string filterName   = iter->first;
         std::string rawWildcards = iter->second;
 
-        if (iter!=m_filters.begin() )
+        if (iter != m_filters.begin() )
         {
             result += ";;";
         }
@@ -226,7 +224,7 @@ std::string LocationDialog::getCurrentSelection() const
         const std::string& filterName       = iter->first;
         const std::string& rawWildcards     = iter->second;
         const std::string& availableFilters = filterName + " (" +  rawWildcards + ")";
-        if (!m_wildcard.compare(availableFilters) && iter != m_filters.begin())
+        if (!m_wildcard.compare(availableFilters))
         {
             extension = &rawWildcards[1];
             break;

@@ -271,6 +271,8 @@ void SVolumeRender::stopping()
 
     m_preIntegrationTable.removeTexture();
 
+    m_illum.reset();
+
     this->destroyWidget();
 }
 
@@ -853,7 +855,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
                                                                                      m_satShells, m_satShellRadius);
             this->updateVolumeIllumination();
         }
-        else
+        else if(m_illum)
         {
             switch(vrEffect)
             {

@@ -12,7 +12,7 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     dataReg
     servicesReg
-    guiQt
+    guiQml
     fwlauncher
 )
 set( PLUGINS

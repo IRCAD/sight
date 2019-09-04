@@ -80,8 +80,6 @@ public:
     typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
 
-    /// Deprecated
-    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigTypeDeprecated;
     /** @} */
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
@@ -113,12 +111,6 @@ protected:
      */
     /// Signal triggered when an action has been triggered
     PointClickedSigType::sptr m_picked {nullptr};
-
-    /// Signal triggered when an action has been triggered
-    PointClickedSigTypeDeprecated::sptr m_sigAddPointDeprecated;
-
-    /// Signal triggered when an action has been triggered
-    PointClickedSigTypeDeprecated::sptr m_sigRemovePointDeprecated;
 
     /// Signal triggered when a render is requested
     RenderRequestedSigType::sptr m_sigRenderRequested {nullptr};

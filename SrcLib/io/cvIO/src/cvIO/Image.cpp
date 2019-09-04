@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -76,6 +76,13 @@ static ::cv::Mat toCv(const ::fwData::Image::csptr& _image, bool _copy)
 //------------------------------------------------------------------------------
 
 ::cv::Mat Image::moveToCv(::fwData::Image::sptr& _image)
+{
+    return toCv(_image, false);
+}
+
+//------------------------------------------------------------------------------
+
+const ::cv::Mat Image::moveToCv(const ::fwData::Image::csptr& _image)
 {
     return toCv(_image, false);
 }
