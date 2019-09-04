@@ -232,11 +232,11 @@ void SNegato2D::newImage()
     this->updateCamera();
 
     // Update Slice
-    int axialIndex =
+    const std::int64_t axialIndex =
         image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-    int frontalIndex =
+    const std::int64_t frontalIndex =
         image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-    int sagittalIndex =
+    const std::int64_t sagittalIndex =
         image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
     this->changeSliceIndex(axialIndex, frontalIndex, sagittalIndex);

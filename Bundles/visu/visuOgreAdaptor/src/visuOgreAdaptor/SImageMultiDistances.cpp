@@ -464,7 +464,7 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
     {
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
         {
-            const int axialIndex = image->getField< ::fwData::Integer >(
+            const std::int64_t axialIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
             const double axialPos = axialIndex * image->getSpacing()[2];
             planePosImageSpace           = {0, 0, axialPos};
@@ -473,7 +473,7 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
         }
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
         {
-            const int frontalIndex = image->getField< ::fwData::Integer >(
+            const std::int64_t frontalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
             const double frontalPos = frontalIndex * image->getSpacing()[1];
             planePosImageSpace           = {0, frontalPos, 0};
@@ -482,7 +482,7 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
         }
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
         {
-            const int sagittalIndex = image->getField< ::fwData::Integer >(
+            const std::int64_t sagittalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
             const double sagittalPos = sagittalIndex * image->getSpacing()[0];
             planePosImageSpace           = {sagittalPos, 0, 0};
