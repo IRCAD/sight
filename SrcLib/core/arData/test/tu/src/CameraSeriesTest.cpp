@@ -101,7 +101,8 @@ void CameraSeriesTest::tearDown()
     {
         for (size_t j = 0; j < 4; ++j)
         {
-            mat->setCoefficient(i, j, 2*i+j);
+            const auto value = static_cast< ::fwData::TransformationMatrix3D::TM3DType >(2*i+j);
+            mat->setCoefficient(i, j, value);
         }
     }
 
@@ -123,7 +124,8 @@ void CameraSeriesTest::cameraTest()
     {
         for (size_t j = 0; j < 4; ++j)
         {
-            mat->setCoefficient(i, j, 2*i+j);
+            const auto value = static_cast< ::fwData::TransformationMatrix3D::TM3DType >(2*i+j);
+            mat->setCoefficient(i, j, value);
         }
     }
 
