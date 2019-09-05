@@ -120,8 +120,8 @@ void CalibrationInfo::removeRecord(size_t idx)
     PointListContainerType::iterator plIt = m_pointListContainer.begin();
     ImageContainerType::iterator imgIt    = m_imageContainer.begin();
 
-    std::advance(plIt, idx);
-    std::advance(imgIt, idx);
+    std::advance(plIt, static_cast<PointListContainerType::iterator::difference_type>(idx));
+    std::advance(imgIt, static_cast<ImageContainerType::iterator::difference_type>(idx));
 
     m_pointListContainer.erase(plIt);
     m_imageContainer.erase(imgIt);
@@ -163,7 +163,7 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
     }
 
     PointListContainerType::const_iterator plIt = m_pointListContainer.begin();
-    std::advance(plIt, dist);
+    std::advance(plIt, static_cast<PointListContainerType::const_iterator::difference_type>(dist));
 
     if(it != m_imageContainer.end())
     {
@@ -188,7 +188,7 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
     }
 
     ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
-    std::advance(imgIt, dist);
+    std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(dist));
 
     if(it != m_pointListContainer.end())
     {
@@ -206,7 +206,7 @@ CalibrationInfo::PointListContainerType CalibrationInfo::getPointListContainer()
 
     ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
 
-    std::advance(imgIt, idx);
+    std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(idx));
 
     return *(imgIt);
 }
