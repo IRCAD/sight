@@ -48,16 +48,20 @@ std::string getEnv(const std::string& name, bool* ok)
 {
 #ifdef WIN32
     std::string value;
-    size_t requiredSize;
+    size_t requiredSize = 0;
     // verify if env var exists and retrieves value size
     getenv_s( &requiredSize, nullptr, 0, name.c_str() );
-    *ok = (requiredSize > 0);
-    if (*ok)
+    const bool envVarExists = (requiredSize > 0);
+    if (envVarExists)
     {
         std::vector<char> data(requiredSize + 1);
         // get the value of the env variable.
         getenv_s( &requiredSize, &data[0], requiredSize, name.c_str() );
-        value = std::string(&data[0], data.size() - 1);
+        value = std::string(&data[0], requiredSize - 1);
+    }
+    if(ok != nullptr)
+    {
+        *ok = envVarExists;
     }
     return value;
 #else
