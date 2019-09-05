@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+<defs>
+<radialGradient id="a" gradientUnits="userSpaceOnUse" cy="41.4" cx="24.29" gradientTransform="matrix(1 0 0 .3526 0 26.8)" r="21.1">
+<stop offset="0"/>
+<stop stop-opacity="0" offset="1"/>
+</radialGradient>
+</defs>
+<ellipse opacity=".41" rx="21.1" ry="7.44" cy="41.4" cx="24.29" fill="url(#a)"/>
+<circle cy="21.4" cx="24.3" r="21.27" fill="#914900"/>
+<circle r="20" cy="21.31" stroke="#fcaf3e" cx="24.44" fill="#f57900"/>
+<g fill="#fff">
+<path d="m21.46 10.39c-0.13 0-0.23 0.16-0.23 0.37l1.07 14.44c0 0.21 0.11 0.38 0.23 0.38h3.57c0.13 0 0.23-0.17 0.23-0.38l1.07-14.44c0-0.21-0.11-0.37-0.23-0.37h-5.7"/>
+<path d="m43.68 20.48c0 10.83-6.1-4.31-18.67 0.39-12.73 4.72-20.58 10.44-20.58-0.39s8.8-19.62 19.63-19.62 19.62 8.79 19.62 19.62" fill-opacity=".21"/>
+<circle cy="30.2" cx="24.36" r="2.3"/>
+</g>
+</svg>

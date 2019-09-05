@@ -16,7 +16,7 @@ set( REQUIREMENTS
     ctrlCamp
     dataReg
     gui
-    guiQt
+    guiQml
     ioData
     ioVTK
     servicesReg

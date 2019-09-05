@@ -210,7 +210,7 @@
             </service>
 
             <service uid="meshreader" type="::ioVTK::SMeshReader">
-                <inout key="output" uid="cube" />
+                <inout key="data" uid="cube" />
                 <resource>ExSolvePnP-@PROJECT_VERSION@/plane.vtk</resource>
             </service>
 

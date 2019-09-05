@@ -108,12 +108,6 @@ private:
     /// SLOT: Clear the point list.
     void clearPoints();
 
-    /// SLOT : Sends a signal with the clicked point coordinates.
-    void addPointDeprecated(::fwData::Object::sptr);
-
-    /// SLOT : Sends a signal with the coordinates of the clicked point.
-    void removePointDeprecated(::fwData::Object::sptr);
-
     /**
      * @}
      */
