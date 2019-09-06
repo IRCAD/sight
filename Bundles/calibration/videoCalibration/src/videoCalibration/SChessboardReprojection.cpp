@@ -172,6 +172,10 @@ void SChessboardReprojection::updating()
 
     if(videoImage)
     {
+        // Reprojected points have a radius equal to 1/3000th of the image's height.
+        int reprojRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
+        reprojRadius = std::max(reprojRadius, 1);
+
         ::fwData::mt::ObjectWriteLock imgLock(videoImage);
         if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage))
         {
@@ -201,9 +205,10 @@ void SChessboardReprojection::updating()
                 drawnDetectedPoints = detectedPointsF;
             }
 
+            const int detectionThickness = reprojRadius < 2 ? 1 : 2;
             for (const auto& pt : drawnDetectedPoints)
             {
-                ::cv::circle(img, pt, 6, ::cv::Scalar(0, 255, 255, 255), 2);
+                ::cv::circle(img, pt, reprojRadius + 3, ::cv::Scalar(0, 255, 255, 255), detectionThickness);
             }
         }
 
@@ -225,7 +230,7 @@ void SChessboardReprojection::updating()
 
                 for (const auto& pt : drawnReprojPts)
                 {
-                    ::cv::circle(img, pt, 3, ::cv::Scalar(255, 0, 0, 255), CV_FILLED);
+                    ::cv::circle(img, pt, reprojRadius, ::cv::Scalar(255, 255, 0, 255), CV_FILLED);
                 }
             }
 
@@ -233,7 +238,11 @@ void SChessboardReprojection::updating()
             {
                 const auto fontFace              = ::cv::FONT_HERSHEY_SIMPLEX;
                 const std::string reprojErrorStr = "Reprojection rmse: " + std::to_string(rmse) + " pixels";
-                ::cv::putText(img, reprojErrorStr, ::cv::Point(80, 40), fontFace, 1., ::cv::Scalar(255, 0, 0, 255), 2);
+                const int leftPadding            = static_cast<int>(0.05 * imgSize.width);
+                const int topPadding             = static_cast<int>(0.05 * imgSize.height);
+
+                ::cv::putText(img, reprojErrorStr, ::cv::Point(leftPadding, topPadding), fontFace, 1.,
+                              ::cv::Scalar(255, 255, 0, 255), 2);
             }
         }
 
