@@ -173,7 +173,7 @@ static std::string _getMacOsSharedLibraryPath(const std::string& _libName)
     const std::regex matchLib(std::string("lib") + _libName);
     const std::regex matchFramework(_libName);
     std::string path;
-    for (std::uint32_t i = _dyld_image_count(); i >= 0; i--)
+    for (std::uint32_t i = 0; i < _dyld_image_count(); ++i)
     {
         const char* const image_name = _dyld_get_image_name(i);
         if (image_name)
