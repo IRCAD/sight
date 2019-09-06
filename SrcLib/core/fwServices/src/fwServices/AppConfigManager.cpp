@@ -505,8 +505,9 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
             if(buildMode.first == "deferred")
             {
                 SLM_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
-#ifdef _DEBUG
                 const auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
+#ifndef _DEBUG
+                FwCoreNotUsedMacro(ret);
 #endif
                 SLM_ASSERT(this->msgHead() + "Object '" + id.first + "' already exists in this config.", ret.second);
             }
