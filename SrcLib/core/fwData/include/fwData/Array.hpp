@@ -465,7 +465,7 @@ protected:
     /**
      * @brief Protected setter for the array buffer.
      *
-     * Releases the previous buffer if is owned by the array.
+     * Releases the previous buffer if it is owned by the array.
      *
      * @param buf Buffer to set as Array's buffer
      * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
