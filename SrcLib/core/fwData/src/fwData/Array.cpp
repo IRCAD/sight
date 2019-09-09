@@ -415,7 +415,7 @@ Array::Iterator<char*> Array::begin()
 Array::Iterator<char*> Array::end()
 {
     auto itr = Iterator<char*>(this);
-    itr += this->getSizeInBytes();
+    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
     return itr;
 }
 
@@ -431,7 +431,7 @@ Array::ConstIterator<char*> Array::begin() const
 Array::ConstIterator<char*> Array::end() const
 {
     auto itr = ConstIterator<char*>(this);
-    itr += this->getSizeInBytes();
+    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
     return itr;
 }
 
