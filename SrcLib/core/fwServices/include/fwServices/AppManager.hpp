@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -224,6 +224,10 @@ public:
 
     /// Add a proxy connection
     FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& proxy);
+
+    /// Create aunique  human readable identifier by concatenating the given id with the AppManaget uid
+    /// (ie. AppManager_1_<id>)
+    FWSERVICES_API std::string getID(const std::string& id) const;
 private:
 
     /// Information about connection <channel, sig/slot name>
@@ -287,6 +291,12 @@ private:
 
     mutable std::recursive_mutex m_objectMutex;
     std::mutex m_serviceMutex;
+
+    /// Unique human readable identifier (ex: AppManager-<count>)
+    std::string m_uid;
+
+    /// Number of instantiated AppManager, it allows to create unique identifier for object and channels
+    static size_t s_counter;
 };
 
 //------------------------------------------------------------------------------

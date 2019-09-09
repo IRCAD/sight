@@ -39,6 +39,8 @@ namespace fwServices
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECT_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECT_SLOT = "removeObject";
 
+size_t AppManager::s_counter = 0;
+
 //------------------------------------------------------------------------------
 
 AppManager::ServiceInfo::ServiceInfo(const ::fwServices::IService::sptr& srv, const bool autoStart,
@@ -56,6 +58,7 @@ AppManager::AppManager()
 {
     newSlot(s_ADD_OBJECT_SLOT, &AppManager::addObject, this);
     newSlot(s_REMOVE_OBJECT_SLOT, &AppManager::removeObject, this);
+    m_uid = "AppManager-" + std::to_string(++s_counter);
 }
 
 //------------------------------------------------------------------------------
@@ -481,6 +484,13 @@ const AppManager::ServiceInfo& AppManager::getServiceInfo(const ::fwServices::IS
 
     SLM_ASSERT("Service '" + srv->getID() + "' is not registered.", itr != m_services.end());
     return *itr;
+}
+
+//------------------------------------------------------------------------------
+
+std::string AppManager::getID(const std::string& id) const
+{
+    return m_uid + "-" + id;
 }
 
 //------------------------------------------------------------------------------

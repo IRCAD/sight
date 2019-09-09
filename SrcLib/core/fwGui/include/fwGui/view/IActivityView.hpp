@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 #include "fwGui/config.hpp"
 #include "fwGui/IGuiContainerSrv.hpp"
 
+#include <fwActivities/ActivityLauncher.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwCom/Slots.hpp>
@@ -66,7 +67,8 @@ namespace view
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
  */
-class FWGUI_CLASS_API IActivityView : public ::fwGui::IGuiContainerSrv
+class FWGUI_CLASS_API IActivityView : public ::fwGui::IGuiContainerSrv,
+                                      public ::fwActivities::ActivityLauncher
 {
 public:
 
@@ -85,7 +87,7 @@ protected:
     FWGUI_API IActivityView();
 
     /// Destructor. Do nothing.
-    FWGUI_API virtual ~IActivityView();
+    FWGUI_API virtual ~IActivityView() override;
 
     /// Parse the configuration
     FWGUI_API virtual void configuring() override;
@@ -109,31 +111,8 @@ protected:
     FWGUI_API virtual bool validateActivity(::fwMedData::ActivitySeries::sptr activitySeries) const;
 
     /// Create the activity series given in 'mainActivity' configuration
-    FWGUI_API virtual ::fwMedData::ActivitySeries::sptr createMainActivity() const;
+    FWGUI_API virtual ::fwMedData::ActivitySeries::sptr createMainActivity() const override;
 
-    /**
-     * @brief Translate parameters from source object.
-     *
-     * Replace camp path (ex.@values.myParam.image) by the uid of the corresponding object.
-     *
-     * @param[in] sourceObj source object used to find sub-object form camp path
-     * @param[in] parameters list of parameters to translate
-     * @param[out] replaceMap map containing the translated parameter
-     */
-    FWGUI_API virtual void translateParameters( ::fwData::Object::sptr sourceObj, const ParametersType& parameters,
-                                                ReplaceMapType& replaceMap );
-
-    /**
-     * @brief Create the replace map from the parameters.
-     *
-     * @param[in] parameters list of parameters to translate
-     * @param[out] replaceMap map containing the translated parameter
-     */
-    FWGUI_API virtual void translateParameters( const ParametersType& parameters, ReplaceMapType& replaceMap );
-
-    std::string m_mainActivityId; ///< configuration id of the main activity
-
-    ParametersType m_parameters; ///< parameters given in configuration
 };
 
 } // namespace view
