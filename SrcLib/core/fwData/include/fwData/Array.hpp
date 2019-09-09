@@ -223,7 +223,7 @@ public:
     /**
      * @brief Iterator on array buffer
      *
-     * Iterate through the buffer and check if the idex is not out of the bounds
+     * Iterate through the buffer and check if the index is not out of the bounds
      */
     template <class TYPE, bool isConstIterator = true>
     class IteratorBase : public std::iterator<std::random_access_iterator_tag, TYPE>
@@ -252,7 +252,7 @@ public:
         IteratorBase(ArrayType array);
         /// Copy constructor
         IteratorBase(const IteratorBase<TYPE, false>& other);
-        /// Desttructor
+        /// Destructor
         ~IteratorBase();
 
         /// Comparison operators
@@ -294,27 +294,26 @@ public:
     /**
      * @brief Resizes and allocate (if needed) the array.
      *
-     * If no buffer is allocated and reallocate is true, this method will allocate a buffer and take it ownership.
-     *
-     * If the combination of type and size parameters do not match anymore the size of the previously allocated buffer,
-     * a reallocation is needed.
+     * If no buffer is allocated and reallocate is true, this method will allocate a buffer and take ownership of it.
+     * If the combination of type and size parameters does not match the size of the previously allocated buffer
+     * anymore, a reallocation is needed.
      * In this case :
-     *  - if reallocate is true and if the Array do not own the buffer, an exception is thrown
-     *  - else if reallocate is false, the array will update the view informations
+     *  - if reallocate is true and if the Array does not own the buffer, an exception is thrown
+     *  - else if reallocate is false, the array will update the view's information
      *  - else, the reallocation is performed.
      *
-     * @param size           Size of the array view
-     * @param type           Type of the array view
+     * @param size           New size of the array or the view.
+     * @param type           New type of the array or the view
      * @param reallocate     If true, allow buffer reallocation
      *
      * @return return the size of the array view
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API virtual size_t resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate = false);
+    FWDATA_API size_t resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate = false);
 
     /**
-     * @brief Return a lock on the array to prevent to dump the buffer on the disk
+     * @brief Return a lock on the array to prevent from dumping the buffer on the disk
      *
      * The buffer cannot be accessed if the array is not locked
      */
@@ -324,9 +323,9 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
-     * @param id Item id
+     * @param id Item array index
      *
-     * @return Buffer value casted to T
+     * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
@@ -339,7 +338,7 @@ public:
      * @tparam T Type in which the pointer will be returned
      * @param id Item id
      *
-     * @return Buffer value casted to T
+     * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
@@ -353,8 +352,8 @@ public:
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @{
      */
-    FWDATA_API virtual void* getBuffer();
-    FWDATA_API virtual const void* getBuffer() const;
+    FWDATA_API void* getBuffer();
+    FWDATA_API const void* getBuffer() const;
     ///@}
 
     /**
@@ -366,8 +365,8 @@ public:
      * @param takeOwnership  if true, the Array will manage allocation and destroy the buffer when needed.
      * @param size           Size of the array view
      * @param type           Type of the array view
+     * @param policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
-     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
     FWDATA_API void setBuffer(
         void* buf,
@@ -378,25 +377,24 @@ public:
         );
 
     /**
-     * @brief Returns the begining/end iterators the array buffer, casted to T
-     * @warning Print a warning if T is different to the array type
-     * @note Lock the buffer
+     * @brief Returns the beginning/end iterators to the array buffer, cast to T
+     * @warning Print a warning if T is different from the array type
+     * @note These functions lock the buffer
      * @{
      */
     template< typename T > Iterator<T> begin();
     template< typename T > Iterator<T> end();
-    template< typename T > Array::ConstIterator<T> begin() const;
-    template< typename T > Array::ConstIterator<T> end() const;
+    template< typename T > ConstIterator<T> begin() const;
+    template< typename T > ConstIterator<T> end() const;
     /// @}
     ///
     /**
-     * @brief Returns the begining/end iterators the array buffer, casted to char*
-     * @note Lock the buffer
+     * @brief Returns the beginning/end iterators to the array buffer, cast to char*
+     * @note These functions lock the buffer
      * @{
      */
     Iterator<char*> begin();
     Iterator<char*> end();
-
     ConstIterator<char*> begin() const;
     ConstIterator<char*> end() const;
     /// @}
@@ -466,13 +464,14 @@ protected:
 
     /**
      * @brief Protected setter for the array buffer.
-     * An existing buffer will be released if the array own it.
+     *
+     * Releases the previous buffer if is owned by the array.
      *
      * @param buf Buffer to set as Array's buffer
      * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
      * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    FWDATA_API virtual void setBuffer(
+    FWDATA_API void setBuffer(
         void* buf,
         bool takeOwnership                              = false,
         ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
@@ -490,10 +489,9 @@ protected:
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
     /**
-     * @brief Get a pointer to the value described by given parameters
+     * @brief Retrieves a pointer to the value at the given index.
      *
-     * @param id Item id
-     *
+     * @param id Item array index
      * @return buffer item pointer
      * @{
      */
@@ -502,10 +500,8 @@ protected:
     ///@}
 
     /**
-     * @brief Compute offset in buffer
-     *
-     * @param id Item id
-     *
+     * @brief Compute the offset of an element in the buffer.
+     * @param id Item array index
      * @return buffer offset
      */
     FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType& id ) const;
@@ -607,11 +603,7 @@ template< typename T >
 inline T Array::at(const ::fwData::Array::IndexType& id) const
 {
     const bool isIndexInBounds =
-        std::equal(id.begin(), id.end(), m_size.begin(),
-                   [](const IndexType::value_type& a, const IndexType::value_type& b)
-        {
-            return a < b;
-        });
+        std::equal(id.begin(), id.end(), m_size.begin(), std::less<IndexType::value_type>());
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"), !isIndexInBounds);
     return *reinterpret_cast<T*>(this->getBufferPtr(id));
 }
