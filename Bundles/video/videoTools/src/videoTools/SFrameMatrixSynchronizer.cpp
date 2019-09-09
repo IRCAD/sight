@@ -51,7 +51,9 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixS
 namespace videoTools
 {
 
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG  = "synchronizationDone";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG    = "synchronizationDone";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_SKIPPED_SIG =
+    "synchronizationSkipped";
 const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG    = "allMatricesFound";
 const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
 const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
@@ -76,10 +78,11 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
     m_timeStep(33),
     m_lastTimestamp(std::numeric_limits<double>::lowest())
 {
-    m_sigSynchronizationDone  = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
-    m_sigAllMatricesFound     = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
-    m_sigMatrixSynchronized   = newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG);
-    m_sigMatrixUnsynchronized = newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG);
+    m_sigSynchronizationDone    = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
+    m_sigSynchronizationSkipped = newSignal<synchronizationSkippedSignalType>(s_SYNCHRONIZATION_SKIPPED_SIG);
+    m_sigAllMatricesFound       = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
+    m_sigMatrixSynchronized     = newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG);
+    m_sigMatrixUnsynchronized   = newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG);
 
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
     newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
@@ -181,7 +184,7 @@ void SFrameMatrixSynchronizer::starting()
                     sendStatus.push_back(-1);
                 }
             }
-            m_sendMatrices.push_back(sendStatus);
+            m_sendMatricesStatus.push_back(sendStatus);
         }
     }
 
@@ -209,6 +212,7 @@ void SFrameMatrixSynchronizer::stopping()
     m_images.clear();
     m_matrixTLs.clear();
     m_matrices.clear();
+    m_sendMatricesStatus.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -277,23 +281,29 @@ void SFrameMatrixSynchronizer::synchronize()
     {
         const auto& tl = m_matrixTLs[i];
         ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
-        if(tlTimestamp > 0)
+        if( (tlTimestamp > 0) && (std::abs(frameTimestamp - tlTimestamp) < m_tolerance) )
         {
-            if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
-            {
-                matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);
-                availableMatricesTL.push_back(i);
-            }
+            matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);
+            availableMatricesTL.push_back(i);
         }
         else
         {
-            OSLM_INFO("no available matrix for timeline 'matrix" << i << "'.");
+            OSLM_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
+
+            // Notify each matrices in the ith TL that they are unsychronized
+            const size_t nbMatricesStatus = m_sendMatricesStatus[i].size();
+            for(size_t statusIndex = 0; statusIndex < nbMatricesStatus; ++statusIndex)
+            {
+                m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[i][statusIndex]);
+            }
         }
     }
 
     // Skip synchzonization if nothing has changed or if the synchronizer decided to go back into the past
     if(matrixTimestamp <= m_lastTimestamp)
     {
+        // Notify that the synchronization is skipped
+        m_sigSynchronizationSkipped->asyncEmit();
         return;
     }
 
@@ -375,7 +385,7 @@ void SFrameMatrixSynchronizer::synchronize()
                         }
                     }
 
-                    m_sigMatrixSynchronized->asyncEmit(m_sendMatrices[tlIdx][k]);
+                    m_sigMatrixSynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
                     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
                         ::fwData::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
@@ -385,9 +395,16 @@ void SFrameMatrixSynchronizer::synchronize()
                 }
                 else
                 {
-                    m_sigMatrixUnsynchronized->asyncEmit(m_sendMatrices[tlIdx][k]);
+                    m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
                 }
 
+            }
+        }
+        else
+        {
+            for(unsigned int k = 0; k < m_sendMatricesStatus[tlIdx].size(); ++k)
+            {
+                m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
             }
         }
     }

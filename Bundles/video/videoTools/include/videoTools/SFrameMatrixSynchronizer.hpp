@@ -59,6 +59,8 @@ namespace videoTools
  *
  * @section Signals Signals
  * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
+ * - \b synchronizationSkipped(::fwCore::HiResClock::HiResClockType) : Emitted when a sync loop is skipped if nothing
+ * has changed or if the synchronizer decided to go back into the past.
  * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
  *  signal if all the matrices are synchronized.
  * - \b matrixSynchronized(int): Emitted when the matrix is synchronized, contains the index of the matrix with
@@ -134,6 +136,9 @@ public:
      */
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
+
+    typedef ::fwCom::Signal< void (void) > synchronizationSkippedSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_SKIPPED_SIG;
 
     typedef ::fwCom::Signal< void (bool) > AllMatricesFoundSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
@@ -219,7 +224,8 @@ private:
     std::vector<SPTR(::fwData::Image)> m_images;
     /// registers matrices with associated timeline key
     std::vector<std::vector<SPTR(::fwData::TransformationMatrix3D)> > m_matrices;
-    std::vector<std::vector<int> > m_sendMatrices;
+    /// registers index of matrices that need to send their status through signals
+    std::vector<std::vector<int> > m_sendMatricesStatus;
 
     /// Time step used for the update
     unsigned int m_timeStep;
@@ -235,6 +241,9 @@ private:
 
     /// Signal emitted when the synchronization of the frame timeline and the matrix timeline is done.
     SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;
+
+    /// Signal emitted when the synchronization of the frame timeline and the matrix timeline are skipped.
+    synchronizationSkippedSignalType::sptr m_sigSynchronizationSkipped;
 
     /// Signal emitted when the synchronization is done, contains a boolean to signal if all the matrices
     /// are synchronized.
