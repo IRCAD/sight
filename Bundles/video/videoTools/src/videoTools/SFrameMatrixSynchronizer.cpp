@@ -51,8 +51,10 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixS
 namespace videoTools
 {
 
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG = "synchronizationDone";
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG   = "allMatricesFound";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG  = "synchronizationDone";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG    = "allMatricesFound";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
 const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
 const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
@@ -74,8 +76,10 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
     m_timeStep(33),
     m_lastTimestamp(std::numeric_limits<double>::lowest())
 {
-    m_sigSynchronizationDone = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
-    m_sigAllMatricesFound    = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
+    m_sigSynchronizationDone  = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
+    m_sigAllMatricesFound     = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
+    m_sigMatrixSynchronized   = newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG);
+    m_sigMatrixUnsynchronized = newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG);
 
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
     newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
@@ -148,6 +152,37 @@ void SFrameMatrixSynchronizer::starting()
         }
         m_totalOutputMatrices += numMatrices;
         m_matrices.push_back(matricesVector);
+    }
+
+    // We need to browser the XML tree to check if a matrix (inside a matrixTL) has or not a `sendStatus` configuration
+    const ConfigType configuration = this->getConfigTree();
+    const auto inoutsConfig        = configuration.equal_range("inout");
+    int matrixIndex                = 0;
+    for(auto itConfig = inoutsConfig.first; itConfig != inoutsConfig.second; ++itConfig)
+    {
+        const std::string group = itConfig->second.get<std::string>("<xmlattr>.group", "");
+        if(group.find(s_MATRICES_INOUT) != std::string::npos)
+        {
+            std::vector<int> sendStatus;
+
+            const auto keyConfig = itConfig->second.equal_range("key");
+            for(auto itKeyConfig = keyConfig.first; itKeyConfig != keyConfig.second; ++itKeyConfig)
+            {
+                const bool needToSendStatus = itKeyConfig->second.get<bool>("<xmlattr>.sendStatus", false);
+                if(needToSendStatus)
+                {
+                    // Push the index that will be send through the `matrixSynchronized` signal
+                    sendStatus.push_back(matrixIndex);
+                    matrixIndex++;
+                }
+                else
+                {
+                    // Push back -1 means that we don't want to send its signal later
+                    sendStatus.push_back(-1);
+                }
+            }
+            m_sendMatrices.push_back(sendStatus);
+        }
     }
 
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
@@ -340,6 +375,7 @@ void SFrameMatrixSynchronizer::synchronize()
                         }
                     }
 
+                    m_sigMatrixSynchronized->asyncEmit(m_sendMatrices[tlIdx][k]);
                     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
                         ::fwData::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
@@ -347,6 +383,11 @@ void SFrameMatrixSynchronizer::synchronize()
                     matrixFound = true;
                     ++syncMatricesNbr;
                 }
+                else
+                {
+                    m_sigMatrixUnsynchronized->asyncEmit(m_sendMatrices[tlIdx][k]);
+                }
+
             }
         }
     }

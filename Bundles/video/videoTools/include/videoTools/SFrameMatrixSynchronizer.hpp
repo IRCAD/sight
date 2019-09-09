@@ -61,6 +61,10 @@ namespace videoTools
  * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
  * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
  *  signal if all the matrices are synchronized.
+ * - \b matrixSynchronized(int): Emitted when the matrix is synchronized, contains the index of the matrix with
+ *  `sendStatus` set to "on", in the decleration order.
+ * - \b matrixUnsynchronized(int): Emitted when the matrix is not present in the buffer and can not be synchronized,
+ *  contains the index of the matrix with `sendStatus` set to "on", in the declaration order.
  *
  * @section Slots Slots
  * - \b synchronize(): Actual synchronization function.
@@ -85,12 +89,12 @@ namespace videoTools
                 <key uid="matrixTL2" />
             </in>
             <inout group="matrices0">
-                <key uid="matrix0" />
+                <key uid="matrix0" sendStatus="true"/>
                 <key uid="matrix1" />
                 <key uid="matrix2" />
             </inout>
             <inout group="matrices1">
-                <key uid="matrix3" />
+                <key uid="matrix3" sendStatus="false"/>
                 <key uid="matrix4" />
             </inout>
             <framerate>30</framerate>
@@ -133,6 +137,12 @@ public:
 
     typedef ::fwCom::Signal< void (bool) > AllMatricesFoundSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
+
+    typedef ::fwCom::Signal< void (int) > MatrixSynchronizedSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_MATRIX_SYNCHRONIZED_SIG;
+
+    typedef ::fwCom::Signal< void (int) > MatrixUnsynchronizedSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_MATRIX_UNSYNCHRONIZED_SIG;
     /** @} */
 
     /**
@@ -209,6 +219,7 @@ private:
     std::vector<SPTR(::fwData::Image)> m_images;
     /// registers matrices with associated timeline key
     std::vector<std::vector<SPTR(::fwData::TransformationMatrix3D)> > m_matrices;
+    std::vector<std::vector<int> > m_sendMatrices;
 
     /// Time step used for the update
     unsigned int m_timeStep;
@@ -226,8 +237,16 @@ private:
     SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;
 
     /// Signal emitted when the synchronization is done, contains a boolean to signal if all the matrices
-    ///  are synchronized.
+    /// are synchronized.
     AllMatricesFoundSignalType::sptr m_sigAllMatricesFound;
+
+    /// Signal emitted when the matrix is synchronized, contains the index of the matrix with `sendStatus` set to "true"
+    /// in the declaration order.
+    MatrixSynchronizedSignalType::sptr m_sigMatrixSynchronized;
+
+    /// Emitted when the matrix is not present in the buffer and can not be synchronized, contains the index of the
+    /// matrix with `sendStatus` set to "true", in the declaration order.
+    MatrixUnsynchronizedSignalType::sptr m_sigMatrixUnsynchronized;
 
     /// Remember last time stamp to skip synchronization if nothing has changed
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
