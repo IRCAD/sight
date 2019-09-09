@@ -24,12 +24,14 @@
 
 #include "guiQml/config.hpp"
 
+#include <fwActivities/ActivityLauncher.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwGui/view/IActivityView.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
+#include <fwQml/IQmlEditor.hpp>
 #include <fwQml/QmlEngine.hpp>
 
 #include <fwServices/BaseObject.hpp>
@@ -76,36 +78,38 @@ namespace editor
  *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
+ *
  */
-class GUIQML_CLASS_API SActivityView : public ::fwGui::view::IActivityView
+class GUIQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
+                                       public ::fwActivities::ActivityLauncher
 {
 
+Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivityView)(::fwGui::view::IActivityView) )
+    fwCoreServiceClassDefinitionsMacro( (SActivityView)(::fwQml::IQmlEditor) )
 
     /// Constructor. Do nothing.
     GUIQML_API SActivityView();
 
     /// Destructor. Do nothing.
 
-    GUIQML_API virtual ~SActivityView();
+    GUIQML_API virtual ~SActivityView() override;
 
-    /**
-     * @name Signal API
-     * @{
-     */
+    /// Signal emited when the activity is launched
     typedef ::fwCom::Signal< void (::fwMedData::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
-    /**
-     * @}
-     */
+
+Q_SIGNALS:
+    void launchRequested(QString path);
 
 protected:
 
-    /// Install the container.
+    virtual void configuring() override;
+
+    /// TODO
     virtual void starting() override;
 
-    /// Destroy the container.
+    /// TODO.
     virtual void stopping() override;
 
     /// Do nothing
@@ -113,33 +117,16 @@ protected:
 
 private:
 
-    /**
-     * @brief Slot: Launch the given activity in the current view (stop and destroy the previous one).
-     */
-    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries) override;
+    /// Slot: Launch the given activity in the stackView.
+    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries);
 
-    /// Slot: set previous enabled on the activity view
-    void enabledPrevious(bool isEnabled);
-
-    /// Slot: set next enabled on the activity view
-    void enabledNext(bool isEnabled);
-
-    /// Helper to launch activity configuration
-    ::fwServices::IAppConfigManager::sptr m_configManager;
-
-    /// WID used to register the activity container
-    std::string m_wid;
+    /// Slot: Launch the given activity in the stackView.
+    void launchActivitySeries(::fwMedData::Series::sptr series);
 
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
 
-    /// Pointer on the Qml engine
-    SPTR(::fwQml::QmlEngine) m_engine;
-
-    /// The Qml object representing the activity view
-    QObject* m_activityView{nullptr};
-
     /// The current activity manager
-    SPTR( ::fwServices::BaseObject ) m_activityManager{nullptr};
+    std::unique_ptr< ::fwServices::AppManager > m_activityManager{nullptr};
 };
 
 } //namespace editor

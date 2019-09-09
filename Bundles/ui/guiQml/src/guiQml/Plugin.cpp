@@ -22,7 +22,11 @@
 
 #include "guiQml/Plugin.hpp"
 
+#include "guiQml/editor/SActivityView.hpp"
+
 #include <fwCore/base.hpp>
+
+#include <fwGui/IGuiContainerSrv.hpp>
 
 #include <fwGuiQml/App.hpp>
 
@@ -58,13 +62,15 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
+    qmlRegisterType< ::guiQml::editor::SActivityView >("guiQml", 1, 0, "SActivityView");
+
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [this](int& argc, char** argv)
+        = [](int& argc, char** argv)
           {
               return QSharedPointer< QGuiApplication > ( new ::fwGuiQml::App(argc, argv) );
           };

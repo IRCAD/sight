@@ -32,6 +32,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/factory/newActivity.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
@@ -43,23 +45,20 @@ namespace guiQml
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQml::editor::SActivityView );
+fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::guiQml::editor::SActivityView );
 
-const ::fwCom::Slots::SlotKeyType s_ENABLED_NEXT_SLOT     = "showNext";
-const ::fwCom::Slots::SlotKeyType s_ENABLED_PREVIOUS_SLOT = "showPrevious";
+static const fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
-const fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
+static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
 
 //------------------------------------------------------------------------------
 
 SActivityView::SActivityView()
 {
-    newSlot(s_ENABLED_NEXT_SLOT, &SActivityView::enabledNext, this);
-    newSlot(s_ENABLED_PREVIOUS_SLOT, &SActivityView::enabledPrevious, this);
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
-
-    // get the qml engine QmlApplicationEngine
-    m_engine = ::fwQml::QmlEngine::getDefault();
+    newSlot(s_LAUNCH_ACTIVITY_SLOT, &SActivityView::launchActivity, this);
+    newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SActivityView::launchActivitySeries, this);
 }
 
 //------------------------------------------------------------------------------
@@ -70,12 +69,17 @@ SActivityView::~SActivityView()
 
 //------------------------------------------------------------------------------
 
+void SActivityView::configuring()
+{
+    const ConfigType config = this->getConfigTree();
+
+    this->parseConfiguration(config, this->getInOuts());
+}
+
+//------------------------------------------------------------------------------
+
 void SActivityView::starting()
 {
-    //this->::fwGui::IGuiContainerSrv::create();
-
-    m_configManager = ::fwServices::IAppConfigManager::New();
-
     if (!m_mainActivityId.empty())
     {
         ::fwMedData::ActivitySeries::sptr activity = this->createMainActivity();
@@ -90,14 +94,7 @@ void SActivityView::starting()
 
 void SActivityView::stopping()
 {
-    if (m_configManager && m_configManager->isStarted())
-    {
-        m_configManager->stopAndDestroy();
-    }
 
-    // possibly delete activityview but still continue
-
-    //this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -110,82 +107,47 @@ void SActivityView::updating()
 
 void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeries)
 {
-    const auto& rootObjects = m_engine->getRootObjects();
-    if (!m_activityView)
-    {
-        for (const auto& root: rootObjects)
-        {
-            m_activityView = root->findChild<QObject*>("guiQml_SActivityView");
-            if (m_activityView)
-            {
-                break;
-            }
-        }
-        SLM_ASSERT("Missing ActivityView in QML", m_activityView);
+    bool isValid;
+    std::string message;
 
-    }
-    SLM_ASSERT("Missing ActivityView in QML", m_activityView);
-    if (this->validateActivity(activitySeries))
+    std::tie(isValid, message) = this->validateActivity(activitySeries);
+
+    if (isValid)
     {
-        if (m_configManager->isStarted())
-        {
-            m_configManager->stopAndDestroy();
-        }
         ::fwActivities::registry::ActivityInfo info;
         info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+
+        const auto path = ::fwRuntime::getBundleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
 
         ReplaceMapType replaceMap;
         this->translateParameters(m_parameters, replaceMap);
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
-        replaceMap["AS_UID"]       = activitySeries->getID();
-        replaceMap[ "WID_PARENT" ] = m_wid;
+        replaceMap["AS_UID"] = activitySeries->getID();
         std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
         replaceMap["GENERIC_UID"] = genericUidAdaptor;
-        try
-        {
-            auto activityManager = ::fwServices::factory::NewActivity(info.appConfig.id);
-            activityManager->setId(info.appConfig.id);
-            activityManager->setStringObject(replaceMap);
-            if (m_activityManager)
-            {
-                m_activityManager->deleteActivityInView();
-                activityManager->setObject(m_activityManager->getObject());
-            }
-            activityManager->launchActivityInView();
-            auto objectList = activityManager->getObject();
-            m_activityManager = activityManager;
 
-            m_sigActivityLaunched->asyncEmit(activitySeries);
-        }
-        catch( std::exception& e )
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
-                                                              e.what(),
-                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
-            OSLM_ERROR(e.what());
-        }
+        this->launchRequested(QString::fromStdString(path.string()));
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
+                                                          message,
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SActivityView::enabledPrevious(bool isEnabled)
+void SActivityView::launchActivitySeries(fwMedData::Series::sptr series)
 {
-    SLM_ASSERT("Missing ActivityView in QML", m_activityView);
-    QObject* previousButton = m_activityView->findChild<QObject*>("guiQml_PreviousActivity");
-    SLM_ASSERT("Missing in SActivityView guiQml_PreviousActivity", previousButton);
-    previousButton->setProperty("enabled", isEnabled);
+    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+    if (activitySeries)
+    {
+        this->launchActivity(activitySeries);
+    }
 }
 
 //------------------------------------------------------------------------------
-
-void SActivityView::enabledNext(bool isEnabled)
-{
-    SLM_ASSERT("Missing ActivityView in QML", m_activityView);
-    QObject* nextButton = m_activityView->findChild<QObject*>("guiQml_NextActivity");
-    SLM_ASSERT("Missing in SActivityView guiQml_NextActivity", nextButton);
-    nextButton->setProperty("enabled", isEnabled);
-}
 
 }// namespace editor
 }// namespace guiQml
