@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_REGISTRY_MACROS_HPP__
-#define __FWRENDEROGRE_REGISTRY_MACROS_HPP__
+#pragma once
 
 #include "fwRenderOgre/ILight.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
@@ -39,6 +38,10 @@ namespace registry
     static ::fwRenderOgre::IRenderWindowInteractorManager::Registrar< OgreRenderInteractorMngClassname >    \
     BOOST_PP_CAT( s__factory__record__, __LINE__) ( FunctorKey );
 
+#define fwRenderOgreRegisterOffscreenMgrMacro(OgreRenderInteractorMngClassname, FunctorKey)                        \
+    static ::fwRenderOgre::IRenderWindowInteractorManager::OffscreenMgrRegistrar<OgreRenderInteractorMngClassname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)( FunctorKey );
+
 #define fwRenderOgreRegisterInteractorMacro( OgreInteractorClassname )                                          \
     static ::fwRenderOgre::interactor::IInteractor::Registrar< OgreInteractorClassname >                                \
     BOOST_PP_CAT( s__factory__record__, __LINE__) ( BOOST_PP_STRINGIZE(OgreInteractorClassname) );
@@ -49,5 +52,3 @@ namespace registry
 
 } // end namespace registry
 } // end namespace fwRenderOgre
-
-#endif /*__FWRENDEROGRE_REGISTRY_MACROS_HPP__*/

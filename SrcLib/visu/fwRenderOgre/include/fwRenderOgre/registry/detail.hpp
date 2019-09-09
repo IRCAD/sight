@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_REGISTRY_DETAIL_HPP__
-#define __FWRENDEROGRE_REGISTRY_DETAIL_HPP__
+#pragma once
 
 #include "fwRenderOgre/config.hpp"
 
@@ -48,12 +47,16 @@ namespace registry
 typedef std::string KeyType;
 
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::IRenderWindowInteractorManager) (), KeyType > Type;
+typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::IRenderWindowInteractorManager)(std::pair<unsigned int,
+                                                                                                        unsigned int>),
+                                         KeyType> OffscreenMgrType;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::interactor::IInteractor) (),
                                          KeyType > InteractorFactoryType;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::ICamera) (), KeyType > CameraFactoryType;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::ILight) (), KeyType > LightFactoryType;
 
 FWRENDEROGRE_API SPTR(Type) get();
+FWRENDEROGRE_API SPTR(OffscreenMgrType) getOffscreenMgr();
 FWRENDEROGRE_API SPTR(InteractorFactoryType) getInteractorRegistry();
 FWRENDEROGRE_API SPTR(CameraFactoryType) getCameraRegistry();
 FWRENDEROGRE_API SPTR(LightFactoryType) getLightRegistry();
@@ -61,6 +64,3 @@ FWRENDEROGRE_API SPTR(LightFactoryType) getLightRegistry();
 } // namespace registry
 
 } // namespace fwRenderOgre
-
-#endif /* __FWRENDEROGRE_REGISTRY_DETAIL_HPP__ */
-

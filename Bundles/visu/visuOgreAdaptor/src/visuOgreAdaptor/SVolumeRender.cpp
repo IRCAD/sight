@@ -696,7 +696,8 @@ void SVolumeRender::createWidget()
     this->destroyWidget(); // Destroys the old widgets if they were created.
     m_widget = std::make_shared< ::fwRenderOgre::ui::VRWidget>(this->getID(), m_volumeSceneNode,
                                                                m_camera, m_sceneManager,
-                                                               ogreClippingMx, clippingMxUpdate);
+                                                               ogreClippingMx, clippingMxUpdate,
+                                                               "BasicAmbient", "BasicPhong");
 
     ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
     ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();

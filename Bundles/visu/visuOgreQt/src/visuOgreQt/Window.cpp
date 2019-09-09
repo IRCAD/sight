@@ -88,45 +88,34 @@ void Window::initialise()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
-    this->makeCurrent();
-
     SLM_ASSERT("OpenGL RenderSystem not found",
                m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
 
     Ogre::NameValuePairList parameters;
 
-    ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
-
-    // We share the OpenGL context on all windows. The first Ogre window will create the context, the other ones will
-    // reuse the current context
-    if(!mgr->hasWindow())
-    {
-        parameters["currentGLContext"] = Ogre::String("false");
-    }
-    else
-    {
-        parameters["currentGLContext"] = Ogre::String("true");
-    }
+    // We share the OpenGL context on all windows. The first window will create the context, the other ones will
+    // reuse the current context.
+    parameters["currentGLContext"] = "true";
 
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
        the scene. Below is a cross-platform method on how to do this.
      */
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-    parameters["externalWindowHandle"] = Ogre::StringConverter::toString(size_t(this->winId()));
-    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(size_t(this->winId()));
+    {
+        const size_t winId = static_cast<size_t>(this->winId());
+        parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
+        parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(winId);
+    }
 #else
-    parameters["externalWindowHandle"] = Ogre::StringConverter::toString((unsigned long)(this->winId()));
+    {
+        const unsigned long winId = static_cast<unsigned long>(this->winId());
+        parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
+    }
 #endif
 
-#if defined(Q_OS_MAC)
-    parameters["macAPI"]               = Ogre::String("cocoa");
-    parameters["macAPICocoaUseNSView"] = Ogre::String("true");
-
-    // We set the contextProfile to GLNativeSupport::CONTEXT_CORE by default otherwise ogre will initialize the default
-    // context to "compatibility" which wil set openGL version to 2.1 which do not support all the feature we want
-    parameters["contextProfile"] = Ogre::String("1");
-#endif
+    m_glContext = ::visuOgreQt::OpenGLContext::getGlobalOgreOpenGLContext();
+    this->makeCurrent();
 
     m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
                                                         static_cast<unsigned int>(this->width()),
@@ -138,6 +127,7 @@ void Window::initialise()
     m_ogreRenderWindow->setAutoUpdated(false);
     m_ogreRenderWindow->addListener(this);
 
+    ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
     mgr->registerWindow(m_ogreRenderWindow);
 
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
@@ -159,32 +149,9 @@ void Window::requestRender()
 
 void Window::makeCurrent()
 {
-    if(m_ogreRoot)
+    if(m_glContext)
     {
-        ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
-
-        if(renderSystem)
-        {
-            // This allows to set the current OpengGL context in Ogre internal state
-            if(m_ogreRenderWindow)
-            {
-                renderSystem->_setRenderTarget(m_ogreRenderWindow);
-            }
-
-            // Use this trick to apply the current OpenGL context
-            //
-            // Actually this method does the following :
-            // void GLRenderSystem::postExtraThreadsStarted()
-            // {
-            //   OGRE_LOCK_MUTEX(mThreadInitMutex);
-            //   if(mCurrentContext)
-            //     mCurrentContext->setCurrent();
-            // }
-            //
-            // This is actually want we want to do, even if this is not the initial purpose of this method
-            //
-            renderSystem->postExtraThreadsStarted();
-        }
+        m_glContext->makeCurrent(this);
     }
 }
 
@@ -572,6 +539,8 @@ void Window::ogreResize(const QSize& newSize)
     m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth), static_cast< unsigned int >(newHeight));
 #endif
     m_ogreRenderWindow->windowMovedOrResized();
+    const float newAspectRatio = static_cast<float>(m_ogreRenderWindow->getWidth()) /
+                                 static_cast<float>(m_ogreRenderWindow->getHeight());
 
     const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
@@ -579,7 +548,7 @@ void Window::ogreResize(const QSize& newSize)
     for (unsigned short i = 0; i < numViewports; i++)
     {
         viewport = m_ogreRenderWindow->getViewport(i);
-        viewport->getCamera()->setAspectRatio(::Ogre::Real(newWidth) / ::Ogre::Real(newHeight));
+        viewport->getCamera()->setAspectRatio(newAspectRatio);
     }
 
     if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
