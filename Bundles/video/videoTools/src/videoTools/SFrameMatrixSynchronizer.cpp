@@ -294,7 +294,11 @@ void SFrameMatrixSynchronizer::synchronize()
             const size_t nbMatricesStatus = m_sendMatricesStatus[i].size();
             for(size_t statusIndex = 0; statusIndex < nbMatricesStatus; ++statusIndex)
             {
-                m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[i][statusIndex]);
+                const int sendStatus = m_sendMatricesStatus[i][statusIndex];
+                if(sendStatus != -1)
+                {
+                    m_sigMatrixUnsynchronized->asyncEmit(sendStatus);
+                }
             }
         }
     }
@@ -374,6 +378,8 @@ void SFrameMatrixSynchronizer::synchronize()
             {
                 ::fwData::TransformationMatrix3D::sptr const& matrix = matrixVector[k];
 
+                const int sendStatus = m_sendMatricesStatus[tlIdx][k];
+
                 if(buffer->isPresent(k))
                 {
                     const auto& values = buffer->getElement(k);
@@ -385,7 +391,11 @@ void SFrameMatrixSynchronizer::synchronize()
                         }
                     }
 
-                    m_sigMatrixSynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
+                    if(sendStatus != -1)
+                    {
+                        m_sigMatrixSynchronized->asyncEmit(sendStatus);
+                    }
+
                     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
                         ::fwData::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
@@ -393,9 +403,9 @@ void SFrameMatrixSynchronizer::synchronize()
                     matrixFound = true;
                     ++syncMatricesNbr;
                 }
-                else
+                else if(sendStatus != -1)
                 {
-                    m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
+                    m_sigMatrixUnsynchronized->asyncEmit(sendStatus);
                 }
 
             }
@@ -404,7 +414,11 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             for(unsigned int k = 0; k < m_sendMatricesStatus[tlIdx].size(); ++k)
             {
-                m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
+                const int sendStatus = m_sendMatricesStatus[tlIdx][k];
+                if(sendStatus != -1)
+                {
+                    m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
+                }
             }
         }
     }
