@@ -137,7 +137,7 @@ void AppManager::onServiceCreated(const QVariant& obj)
     ::fwQml::IQmlEditor::sptr srv(obj.value< ::fwQml::IQmlEditor* >());
     if (srv)
     {
-        if (srv->isA("::guiQml::editor::SActivityView"))
+        if (srv->isA("::uiActivitiesQml::SActivityView"))
         {
             srv->configure(m_activityViewConfig);
             // connect to launch the activity when it is created/updated.

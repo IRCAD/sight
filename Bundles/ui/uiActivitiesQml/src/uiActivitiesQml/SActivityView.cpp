@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "guiQml/editor/SActivityView.hpp"
+#include "uiActivitiesQml/SActivityView.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -40,12 +40,10 @@
 
 #include <QObject>
 
-namespace guiQml
-{
-namespace editor
+namespace uiActivitiesQml
 {
 
-fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::guiQml::editor::SActivityView );
+fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivityView );
 
 static const fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
@@ -155,5 +153,4 @@ void SActivityView::launchActivitySeries(fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-}// namespace editor
-}// namespace guiQml
+}// namespace uiActivitiesQml

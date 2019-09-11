@@ -2,10 +2,12 @@
 
     <library name="ExActivitiesQml" />
 
+    <requirement id="visuVTKQml" />
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="activities" />
     <requirement id="uiImageQml" />
+    <requirement id="uiActivitiesQml" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>ExImageReading</id>

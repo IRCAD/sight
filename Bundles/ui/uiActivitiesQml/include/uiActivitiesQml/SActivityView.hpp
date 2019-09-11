@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "guiQml/config.hpp"
+#include "uiActivitiesQml/config.hpp"
 
 #include <fwActivities/ActivityLauncher.hpp>
 #include <fwActivities/registry/Activities.hpp>
@@ -39,9 +39,7 @@
 
 #include <fwTools/Failed.hpp>
 
-namespace guiQml
-{
-namespace editor
+namespace uiActivitiesQml
 {
 
 /**
@@ -80,8 +78,8 @@ namespace editor
  *          composite contained in the ActivitySeries.
  *
  */
-class GUIQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
-                                       public ::fwActivities::ActivityLauncher
+class UIACTIVITIESQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
+                                                public ::fwActivities::ActivityLauncher
 {
 
 Q_OBJECT
@@ -90,11 +88,11 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SActivityView)(::fwQml::IQmlEditor) )
 
     /// Constructor. Do nothing.
-    GUIQML_API SActivityView();
+    UIACTIVITIESQML_API SActivityView();
 
     /// Destructor. Do nothing.
 
-    GUIQML_API virtual ~SActivityView() override;
+    UIACTIVITIESQML_API virtual ~SActivityView() override;
 
     /// Signal emited when the activity is launched
     typedef ::fwCom::Signal< void (::fwMedData::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
@@ -129,5 +127,4 @@ private:
     std::unique_ptr< ::fwServices::AppManager > m_activityManager{nullptr};
 };
 
-} //namespace editor
-} // guiQt
+} // uiActivitiesQml

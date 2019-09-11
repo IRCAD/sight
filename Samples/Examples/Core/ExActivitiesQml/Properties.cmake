@@ -21,6 +21,7 @@ set( REQUIREMENTS
     visuVTKAdaptor
     uiIO
     uiImageQml
+    uiActivitiesQml
     ioVTK
 )
 

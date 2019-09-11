@@ -3,9 +3,9 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.3
 
-import ExActivitiesQml 1.0
-
 import guiQml 1.0
+import uiActivitiesQml 1.0
+import ExActivitiesQml 1.0
 
 ApplicationWindow {
     id: root
@@ -16,25 +16,7 @@ ApplicationWindow {
 
     title: qsTr("ExActivitiesQml 0.1")
 
-    menuBar: MenuBar {
-        id: menuBar
-        property int pageIndex: 0
-            Menu {
-                title: qsTr("&File")
-                Action {
-                    text: qsTr("&Open")
-                    onTriggered: {
-                    }
-                }
-                Action {
-                    text: qsTr("&Save")
-                    onTriggered: {
-                    }
-                }
-            }
-        }
-
-   header: ToolBar {
+    header: ToolBar {
 
         RowLayout {
             ToolButton{
@@ -58,9 +40,8 @@ ApplicationWindow {
         id: appManager
     }
 
-    // the page of each section associated to the menu TabBar
     SActivityView {
-        id: guiQml_SActivityView
+        id: activityView
 
         onLaunchRequested: {
             activityStackView.clear(StackView.Immediate)
@@ -90,7 +71,7 @@ ApplicationWindow {
         Material.primary = Theme.primary
         Material.elevation = Theme.elevation
         appManager.initialize()
-        appManager.onServiceCreated(guiQml_SActivityView)
+        appManager.onServiceCreated(activityView)
     }
     onClosing: {
         activityStackView.clear()
