@@ -29,6 +29,8 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
+#include <fwQml/IQmlAppManager.hpp>
+
 #include <fwServices/AppManager.hpp>
 #include <fwServices/IService.hpp>
 
@@ -38,8 +40,7 @@
 /**
  * @brief   This class is started when the bundles is loaded.
  */
-class EXACTIVITIESQML_CLASS_API AppManager : public QObject,
-                                             public ::fwServices::AppManager,
+class EXACTIVITIESQML_CLASS_API AppManager : public ::fwQml::IQmlAppManager,
                                              public ::fwCom::HasSignals
 {
 Q_OBJECT
@@ -48,24 +49,18 @@ public:
     EXACTIVITIESQML_API AppManager() noexcept;
 
     /// Destructor. Do nothing.
-    EXACTIVITIESQML_API ~AppManager() noexcept;
+    EXACTIVITIESQML_API ~AppManager() noexcept override;
 
 public Q_SLOTS:
 
     /// Initialize the manager
-    void initialize();
-
-    /// Slot: Create the previous activity series
-    void previous(bool prev);
-
-    /// Slot: Create the next activity series
-    void next(bool next);
+    void initialize() override;
 
     /// Uninitialize the manager
-    void uninitialize();
+    void uninitialize() override;
 
     /// Retrieves the services instanciated in Qml
-    void onServiceCreated(const QVariant& obj);
+    void onServiceCreated(const QVariant& obj) override;
 
     void previous();
 

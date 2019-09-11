@@ -22,58 +22,45 @@
 
 #pragma once
 
-#include "ExActivitiesQml/config.hpp"
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwData/Image.hpp>
-
-#include <fwQml/IQmlAppManager.hpp>
+#include "fwQml/config.hpp"
 
 #include <fwServices/AppManager.hpp>
 #include <fwServices/IService.hpp>
 
-#include <fwVTKQml/FrameBufferItem.hpp>
-
 #include <QObject>
+#include <QVariant>
+
+namespace fwQml
+{
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   Base class for AppManager managing Qml services
  */
-class EXACTIVITIESQML_CLASS_API ImageReadingManager : public ::fwQml::IQmlAppManager,
-                                                      public ::fwCom::HasSignals
+class FWQML_CLASS_API IQmlAppManager : public QObject,
+                                       public ::fwServices::AppManager
 {
 Q_OBJECT
-typedef ::fwVTKQml::FrameBufferItem FrameBufferItem;
-Q_PROPERTY(FrameBufferItem* frameBuffer MEMBER m_frameBuffer)
-
 public:
     /// Constructor.
-    EXACTIVITIESQML_API ImageReadingManager() noexcept;
+    FWQML_API IQmlAppManager() noexcept;
 
     /// Destructor. Do nothing.
-    EXACTIVITIESQML_API ~ImageReadingManager() noexcept override;
+    FWQML_API virtual ~IQmlAppManager() noexcept;
 
 public Q_SLOTS:
-    // Initialize the manager
-    void initialize() override;
+
+    /// Initialize the manager
+    FWQML_API virtual void initialize();
 
     /// Uninitialize the manager
-    void uninitialize() override;
+    FWQML_API virtual void uninitialize();
 
-    /// Create the VTK scene and its adaptors
-    void createVtkScene();
+    /// Retrieves the services instanciated in Qml
+    FWQML_API virtual void onServiceCreated(const QVariant& obj);
 
-    /// Open the image
-    void openImage();
+    /// set the the identifier of the AppManager inputs given by the map
+    FWQML_API virtual void replaceInputs(const QVariant& map) final;
 
-private:
-
-    typedef ::fwCom::Signal<void ()> VoidSignalType;
-
-    bool m_vtkSceneCreated {false};
-    ::fwVTKQml::FrameBufferItem* m_frameBuffer;
-
-    ::fwServices::IService::sptr m_imageAdaptor;
 };
+
+} // fwQml

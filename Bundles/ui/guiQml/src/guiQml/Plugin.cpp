@@ -30,6 +30,7 @@
 
 #include <fwGuiQml/App.hpp>
 
+#include <fwQml/IQmlAppManager.hpp>
 #include <fwQml/QmlEngine.hpp>
 
 #include <fwQt/WorkerQt.hpp>
@@ -63,6 +64,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     qmlRegisterType< ::guiQml::editor::SActivityView >("guiQml", 1, 0, "SActivityView");
+    qmlRegisterType< ::fwQml::IQmlAppManager >("fwQml", 1, 0, "IQmlAppManager");
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);

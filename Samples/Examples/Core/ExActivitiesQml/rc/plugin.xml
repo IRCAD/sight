@@ -5,6 +5,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="activities" />
+    <requirement id="uiImageQml" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>ExImageReading</id>

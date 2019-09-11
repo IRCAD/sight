@@ -160,18 +160,3 @@ void ImageReadingManager::uninitialize()
 }
 
 //------------------------------------------------------------------------------
-
-void ImageReadingManager::replaceInputs(const QVariant& variant)
-{
-    QMap<QString, QVariant> map                   = variant.toMap();
-    QMap<QString, QVariant>::iterator it          = map.begin();
-    const QMap<QString, QVariant>::iterator itEnd = map.end();
-    for (; it != itEnd; ++it)
-    {
-        const std::string replace = it.key().toStdString();
-        const std::string by      = it.value().toString().toStdString();
-        this->replaceInput(replace, by);
-    }
-}
-
-//------------------------------------------------------------------------------

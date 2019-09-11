@@ -20,6 +20,7 @@ set( REQUIREMENTS
     visuVTKQml
     visuVTKAdaptor
     uiIO
+    uiImageQml
     ioVTK
 )
 

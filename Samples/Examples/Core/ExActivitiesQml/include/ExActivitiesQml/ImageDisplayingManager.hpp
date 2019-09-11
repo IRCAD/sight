@@ -29,6 +29,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwQml/IQmlAppManager.hpp>
+
 #include <fwServices/AppManager.hpp>
 #include <fwServices/IService.hpp>
 
@@ -39,8 +41,7 @@
 /**
  * @brief   This class is started when the bundles is loaded.
  */
-class EXACTIVITIESQML_CLASS_API ImageDisplayingManager : public QObject,
-                                                         public ::fwServices::AppManager,
+class EXACTIVITIESQML_CLASS_API ImageDisplayingManager : public ::fwQml::IQmlAppManager,
                                                          public ::fwCom::HasSignals
 {
 Q_OBJECT
@@ -52,19 +53,23 @@ public:
     EXACTIVITIESQML_API ImageDisplayingManager() noexcept;
 
     /// Destructor. Do nothing.
-    EXACTIVITIESQML_API ~ImageDisplayingManager() noexcept;
+    EXACTIVITIESQML_API ~ImageDisplayingManager() noexcept override;
 
 public Q_SLOTS:
     // Initialize the manager
-    void initialize();
+    void initialize() override;
 
     /// Uninitialize the manager
-    void uninitialize();
+    void uninitialize() override;
 
     /// Create the VTK scene and its adaptors
     void createVtkScene();
 
-    void replaceInputs(const QVariant& map);
+    /// Register the services instanciated from Qml
+    void onServiceCreated(const QVariant& obj) override;
+
+    void onUpdateSliceMode(int mode);
+    void onShowScan(bool isShown);
 
 private:
 

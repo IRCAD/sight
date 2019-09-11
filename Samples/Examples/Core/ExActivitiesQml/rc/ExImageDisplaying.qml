@@ -3,9 +3,11 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.3
 
-import ExActivitiesQml 1.0
 import fwVTKQml 1.0
 import guiQml 1.0
+import uiImageQml 1.0
+import ExActivitiesQml 1.0
+
 
 Item {
     id: exImageDisplaying
@@ -32,6 +34,49 @@ Item {
                 anchors.fill: parent
 
                 onReady: appManager.createVtkScene()
+            }
+        }
+
+        RowLayout {
+            Layout.fillHeight: true
+            Layout.maximumHeight: 50
+
+            ComboBox {
+                id: sliceEditor
+                anchors.verticalCenter: parent.verticalCenter
+                Layout.fillHeight: true
+                anchors.leftMargin: 4
+
+                model: ["One slice", "Three slice"]
+
+                currentIndex: 1
+                onActivated: {
+                    appManager.onUpdateSliceMode((index == 0) ? 1 : 3)
+                }
+            }
+
+            Button {
+                id: displayScanButton
+                checkable: true
+                checked: true
+                anchors.verticalCenter: parent.verticalCenter
+                Layout.fillHeight: true
+
+                text: "Scan"
+                onCheckedChanged: {
+                    sliceEditor.enabled = checked
+                    appManager.onShowScan(checked)
+                }
+            }
+
+            SliceSelector {
+                id: sliceSelector
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                onServiceCreated: {
+                    appManager.onServiceCreated(srv)
+                }
             }
         }
     }

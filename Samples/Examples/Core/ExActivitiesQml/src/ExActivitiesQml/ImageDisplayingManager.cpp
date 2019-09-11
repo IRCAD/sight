@@ -32,6 +32,8 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
+#include <fwQml/IQmlEditor.hpp>
+
 #include <fwRenderVTK/factory/new.hpp>
 #include <fwRenderVTK/SRender.hpp>
 
@@ -126,25 +128,43 @@ void ImageDisplayingManager::createVtkScene()
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::uninitialize()
+void ImageDisplayingManager::onServiceCreated(const QVariant& obj)
 {
-    // stop the started services and unregister all the services
-    this->stopAndUnregisterServices();
+    ::fwQml::IQmlEditor::sptr srv(obj.value< ::fwQml::IQmlEditor* >());
+    if (srv)
+    {
+        if (srv->isA("::uiImageQml::SSliceIndexPositionEditor"))
+        {
+            srv->setObjectId("image", this->getInputID(s_IMAGE_ID));
+            this->addService(srv, true);
+        }
+        else
+        {
+            OSLM_FATAL("service '" + srv->getClassname() + "' is not managed");
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::replaceInputs(const QVariant& variant)
+void ImageDisplayingManager::onUpdateSliceMode(int mode)
 {
-    QMap<QString, QVariant> map                   = variant.toMap();
-    QMap<QString, QVariant>::iterator it          = map.begin();
-    const QMap<QString, QVariant>::iterator itEnd = map.end();
-    for (; it != itEnd; ++it)
-    {
-        const std::string replace = it.key().toStdString();
-        const std::string by      = it.value().toString().toStdString();
-        this->replaceInput(replace, by);
-    }
+    m_imageAdaptor->slot("updateSliceMode")->asyncRun(mode);
+}
+
+//------------------------------------------------------------------------------
+
+void ImageDisplayingManager::onShowScan(bool isShown)
+{
+    m_imageAdaptor->slot("showSlice")->asyncRun(isShown);
+}
+
+//------------------------------------------------------------------------------
+
+void ImageDisplayingManager::uninitialize()
+{
+    // stop the started services and unregister all the services
+    this->stopAndUnregisterServices();
 }
 
 //------------------------------------------------------------------------------
