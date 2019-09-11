@@ -23,6 +23,7 @@
 #include "ExActivitiesQml/Plugin.hpp"
 
 #include "ExActivitiesQml/AppManager.hpp"
+#include "ExActivitiesQml/ImageDisplayingManager.hpp"
 #include "ExActivitiesQml/ImageReadingManager.hpp"
 
 #include <fwQml/QmlEngine.hpp>
@@ -54,6 +55,7 @@ void Plugin::start()
 {
     qmlRegisterType<AppManager>("ExActivitiesQml", 1, 0, "AppManager");
     qmlRegisterType<ImageReadingManager>("ExActivitiesQml", 1, 0, "ImageReadingManager");
+    qmlRegisterType<ImageDisplayingManager>("ExActivitiesQml", 1, 0, "ImageDisplayingManager");
 }
 
 //------------------------------------------------------------------------------

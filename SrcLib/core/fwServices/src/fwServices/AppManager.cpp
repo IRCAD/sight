@@ -58,7 +58,6 @@ AppManager::AppManager()
 {
     newSlot(s_ADD_OBJECT_SLOT, &AppManager::addObject, this);
     newSlot(s_REMOVE_OBJECT_SLOT, &AppManager::removeObject, this);
-    m_uid = "AppManager-" + std::to_string(++s_counter);
 }
 
 //------------------------------------------------------------------------------
@@ -71,6 +70,9 @@ AppManager::~AppManager()
 
 void AppManager::create()
 {
+    const std::string classname = ::fwCore::Demangler(*this).getLeafClassname();
+    m_uid = "AppManager-" + classname + "-" + std::to_string(++s_counter);
+
     m_addObjectConnection    = ::fwServices::OSR::getRegisterSignal()->connect( this->slot(s_ADD_OBJECT_SLOT) );
     m_removeObjectConnection = ::fwServices::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECT_SLOT) );
 
@@ -92,6 +94,91 @@ void AppManager::destroy()
         this->removeObject(firstObj->second, firstObj->first);
     }
     m_registeredObject.clear();
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::requireInput(const std::string& key, const InputType& type, const std::string& defaultValue)
+{
+    Input input;
+    input.key          = key;
+    input.type         = type;
+    input.defaultValue = defaultValue;
+    input.isOptional   = !defaultValue.empty();
+    m_inputs[key]      = input;
+}
+
+//------------------------------------------------------------------------------
+
+bool AppManager::checkInputs()
+{
+    bool isOK = true;
+    for (const auto& elt: m_inputs)
+    {
+        const Input& input = elt.second;
+        switch (input.type)
+        {
+            case InputType::OBJECT:
+            {
+                const auto obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(input.value));
+                if (obj)
+                {
+                    this->addObject(obj, input.value);
+                }
+                else if(!input.isOptional)
+                {
+                    const ::fwData::Object::sptr newObj = ::fwData::factory::New(input.defaultValue);
+                    if (newObj)
+                    {
+                        this->addObject(obj, this->getInputID(input.key));
+                    }
+                    else
+                    {
+                        // TODO print a message
+                        OSLM_DEBUG("[" + m_uid + "] missing input for : '" + input.key + "'");
+                        isOK = false;
+                    }
+                }
+                else
+                {
+                    // TODO print a message
+                    isOK = false;
+                }
+                break;
+            }
+            case InputType::CHANNEL:
+                if (input.value.empty() && !input.isOptional)
+                {
+                    OSLM_DEBUG("missing input: '" + input.key + "'");
+                    isOK = false;
+                }
+                break;
+            case InputType::OTHER:
+                if (input.value.empty() && !input.isOptional)
+                {
+                    OSLM_DEBUG("missing input: '" + input.key + "'");
+                    isOK = false;
+                }
+                break;
+        }
+    }
+    return isOK;
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::replaceInput(const std::string& key, const std::string& value)
+{
+    auto itr = m_inputs.find(key);
+    if (itr != m_inputs.end())
+    {
+        Input& input = itr->second;
+        input.value = value;
+    }
+    else
+    {
+        OSLM_WARN("Input '" + key + "' is not define for '" + m_uid + "'");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -488,9 +575,15 @@ const AppManager::ServiceInfo& AppManager::getServiceInfo(const ::fwServices::IS
 
 //------------------------------------------------------------------------------
 
-std::string AppManager::getID(const std::string& id) const
+std::string AppManager::getInputID(const std::string& id) const
 {
-    return m_uid + "-" + id;
+    std::string uid = m_uid + "-" + id;
+    const auto itr  = m_inputs.find(id);
+    if (itr != m_inputs.end())
+    {
+        uid = itr->second.value;
+    }
+    return uid;
 }
 
 //------------------------------------------------------------------------------

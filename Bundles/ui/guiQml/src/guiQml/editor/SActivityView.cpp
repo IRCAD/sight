@@ -123,10 +123,16 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         this->translateParameters(m_parameters, replaceMap);
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
         replaceMap["AS_UID"] = activitySeries->getID();
-        std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
-        replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
-        this->launchRequested(QString::fromStdString(path.string()));
+        QVariantMap qReplaceMap;
+        for (const auto& elt: replaceMap)
+        {
+            QString replace = QString::fromStdString(elt.first);
+            QString by      = QString::fromStdString(elt.second);
+            qReplaceMap.insert(replace, by);
+
+        }
+        Q_EMIT launchRequested(QUrl::fromLocalFile(QString::fromStdString(path.string())), qReplaceMap);
     }
     else
     {

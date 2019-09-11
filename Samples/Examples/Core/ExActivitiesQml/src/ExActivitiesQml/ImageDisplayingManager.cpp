@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ExActivitiesQml/ImageReadingManager.hpp"
+#include "ExActivitiesQml/ImageDisplayingManager.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -43,21 +43,21 @@ static const std::string s_IMAGE_ID = "image";
 
 //------------------------------------------------------------------------------
 
-ImageReadingManager::ImageReadingManager() noexcept
+ImageDisplayingManager::ImageDisplayingManager() noexcept
 {
     this->requireInput(s_IMAGE_ID, InputType::OBJECT);
 }
 
 //------------------------------------------------------------------------------
 
-ImageReadingManager::~ImageReadingManager() noexcept
+ImageDisplayingManager::~ImageDisplayingManager() noexcept
 {
     this->uninitialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReadingManager::initialize()
+void ImageDisplayingManager::initialize()
 {
     this->create();
 
@@ -77,7 +77,7 @@ void ImageReadingManager::initialize()
 
 //------------------------------------------------------------------------------
 
-void ImageReadingManager::createVtkScene()
+void ImageDisplayingManager::createVtkScene()
 {
     if (!m_vtkSceneCreated)
     {
@@ -126,34 +126,7 @@ void ImageReadingManager::createVtkScene()
 
 //------------------------------------------------------------------------------
 
-void ImageReadingManager::openImage()
-{
-    const auto& image = ::fwData::Image::dynamicCast(this->getObject(this->getInputID(s_IMAGE_ID)));
-    auto imageReader  = ::fwServices::add("::uiIO::editor::SIOSelector");
-    ::fwServices::IService::ConfigType imageSeriesReaderConfig;
-    imageSeriesReaderConfig.put("type.<xmlattr>.mode", "reader");
-    imageReader->registerInOut(image, "data");
-    imageReader->setConfiguration(imageSeriesReaderConfig);
-    imageReader->configure();
-    imageReader->start();
-    imageReader->update();
-    imageReader->stop();
-    ::fwServices::OSR::unregisterService(imageReader);
-
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers:: checkImageValidity(image))
-    {
-        ::fwDataTools::helper::Image helper( image );
-
-        helper.createLandmarks();
-        helper.createTransferFunctionPool();
-        helper.createImageSliceIndex();
-    }
-    m_imageAdaptor->update();
-}
-
-//------------------------------------------------------------------------------
-
-void ImageReadingManager::uninitialize()
+void ImageDisplayingManager::uninitialize()
 {
     // stop the started services and unregister all the services
     this->stopAndUnregisterServices();
@@ -161,7 +134,7 @@ void ImageReadingManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-void ImageReadingManager::replaceInputs(const QVariant& variant)
+void ImageDisplayingManager::replaceInputs(const QVariant& variant)
 {
     QMap<QString, QVariant> map                   = variant.toMap();
     QMap<QString, QVariant>::iterator it          = map.begin();

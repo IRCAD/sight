@@ -39,9 +39,9 @@
 /**
  * @brief   This class is started when the bundles is loaded.
  */
-class EXACTIVITIESQML_CLASS_API ImageReadingManager : public QObject,
-                                                      public ::fwServices::AppManager,
-                                                      public ::fwCom::HasSignals
+class EXACTIVITIESQML_CLASS_API ImageDisplayingManager : public QObject,
+                                                         public ::fwServices::AppManager,
+                                                         public ::fwCom::HasSignals
 {
 Q_OBJECT
 typedef ::fwVTKQml::FrameBufferItem FrameBufferItem;
@@ -49,10 +49,10 @@ Q_PROPERTY(FrameBufferItem* frameBuffer MEMBER m_frameBuffer)
 
 public:
     /// Constructor.
-    EXACTIVITIESQML_API ImageReadingManager() noexcept;
+    EXACTIVITIESQML_API ImageDisplayingManager() noexcept;
 
     /// Destructor. Do nothing.
-    EXACTIVITIESQML_API ~ImageReadingManager() noexcept;
+    EXACTIVITIESQML_API ~ImageDisplayingManager() noexcept;
 
 public Q_SLOTS:
     // Initialize the manager
@@ -63,9 +63,6 @@ public Q_SLOTS:
 
     /// Create the VTK scene and its adaptors
     void createVtkScene();
-
-    /// Open the image
-    void openImage();
 
     void replaceInputs(const QVariant& map);
 

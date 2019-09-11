@@ -22,35 +22,32 @@
 
 #include "ExActivitiesQml/AppManager.hpp"
 
-#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
-
-#include <fwData/factory/new.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
-#include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
-#include <QDebug>
+static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
-const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+static const std::string s_ACTIVITY_CREATED_CHANNEL         = "activityCreated";
+static const std::string s_ACTIVITY_LAUNCHED_CHANNEL        = "activityLaunched";
+static const std::string s_ENABLED_PREVIOUS_CHANNEL_CHANNEL = "enabledPreviousChannel";
+static const std::string s_ENABLED_NEXT_CHANNEL_CHANNEL     = "enabledNextChannel";
+static const std::string s_PREVIOUS_CHANNEL                 = "PreviousChannel";
+static const std::string s_NEXT_CHANNEL                     = "NextChannel";
+
+static const std::string s_PREVIOUS_SIG = "previous";
+static const std::string s_NEXT_SIG     = "next";
 
 //------------------------------------------------------------------------------
 
 AppManager::AppManager() noexcept
 {
-    s_SERIES_DB                        = this->getID(s_SERIES_DB);
-    s_ACTIVITY_CREATED_CHANNEL         = this->getID(s_ACTIVITY_CREATED_CHANNEL);
-    s_ACTIVITY_LAUNCHED_CHANNEL        = this->getID(s_ACTIVITY_LAUNCHED_CHANNEL);
-    s_ENABLED_PREVIOUS_CHANNEL_CHANNEL = this->getID(s_ENABLED_PREVIOUS_CHANNEL_CHANNEL);
-    s_ENABLED_NEXT_CHANNEL_CHANNEL     = this->getID(s_ENABLED_NEXT_CHANNEL_CHANNEL);
-    s_PREVIOUS_CHANNEL                 = this->getID(s_PREVIOUS_CHANNEL);
-    s_NEXT_CHANNEL                     = this->getID(s_NEXT_CHANNEL);
+    newSignal< VoidSignalType >(s_PREVIOUS_SIG);
+    newSignal< VoidSignalType >(s_NEXT_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +64,7 @@ void AppManager::initialize()
 
     m_seriesDB = ::fwData::factory::New< ::fwMedData::SeriesDB >();
 
-    this->addObject(m_seriesDB, s_SERIESDB_INOUT);
+    this->addObject(m_seriesDB, this->getInputID(s_SERIESDB_INOUT));
 
     // create the services
     m_activitySequencer = this->addService("::activities::SActivitySequencer", true);
@@ -78,38 +75,43 @@ void AppManager::initialize()
     sequencerConfig.add("activity", "ExImageDisplaying");
     m_activitySequencer->configure(sequencerConfig);
 
-    auto addParam = [&](const std::string& replace, const std::string& by)
-                    {
-                        ::fwServices::IService::ConfigType parameterViewConfig;
-                        parameterViewConfig.add("<xmlattr>.replace", replace);
-                        parameterViewConfig.add("<xmlattr>.by", by);
-                        m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
-                    };
-    addParam(s_ENABLED_PREVIOUS_CHANNEL_CHANNEL, s_ENABLED_PREVIOUS_CHANNEL_CHANNEL);
-    addParam(s_ENABLED_NEXT_CHANNEL_CHANNEL, s_ENABLED_NEXT_CHANNEL_CHANNEL);
-    addParam(s_PREVIOUS_CHANNEL, s_PREVIOUS_CHANNEL);
-    addParam(s_NEXT_CHANNEL, s_NEXT_CHANNEL);
+    auto addActivityViewParam = [&](const std::string& replace)
+                                {
+                                    ::fwServices::IService::ConfigType parameterViewConfig;
+                                    parameterViewConfig.add("<xmlattr>.replace", replace);
+                                    parameterViewConfig.add("<xmlattr>.by", this->getInputID(replace));
+                                    m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
+                                };
+    addActivityViewParam(s_ENABLED_PREVIOUS_CHANNEL_CHANNEL);
+    addActivityViewParam(s_ENABLED_NEXT_CHANNEL_CHANNEL);
+    addActivityViewParam(s_PREVIOUS_CHANNEL);
+    addActivityViewParam(s_NEXT_CHANNEL);
 
     // connect to launch the activity when it is created/updated.
-    ::fwServices::helper::ProxyConnections activityCreatedCnt(s_ACTIVITY_CREATED_CHANNEL);
+    ::fwServices::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
     activityCreatedCnt.addSignalConnection(m_activitySequencer->getID(), "activityCreated");
 
     // When the activity is launched, the sequencer sends the information to enable "previous" and "next" actions
-    ::fwServices::helper::ProxyConnections activityLaunchedCnt(s_ACTIVITY_LAUNCHED_CHANNEL);
+    ::fwServices::helper::ProxyConnections activityLaunchedCnt(this->getInputID(s_ACTIVITY_LAUNCHED_CHANNEL));
     activityLaunchedCnt.addSlotConnection(m_activitySequencer->getID(), "sendInfo");
 
     // The activity sequencer should receive the call from the "previous" action.
-    ::fwServices::helper::ProxyConnections activityPreviousCnt(s_PREVIOUS_CHANNEL);
+    ::fwServices::helper::ProxyConnections activityPreviousCnt(this->getInputID(s_PREVIOUS_CHANNEL));
     activityPreviousCnt.addSlotConnection(m_activitySequencer->getID(), "previous");
 
     // The activity sequencer should receive the call from the "next" action.
-    ::fwServices::helper::ProxyConnections activityNextCnt(s_NEXT_CHANNEL);
+    ::fwServices::helper::ProxyConnections activityNextCnt(this->getInputID(s_NEXT_CHANNEL));
     activityNextCnt.addSlotConnection(m_activitySequencer->getID(), "next");
 
     this->addProxyConnection(activityCreatedCnt);
     this->addProxyConnection(activityLaunchedCnt);
     this->addProxyConnection(activityPreviousCnt);
     this->addProxyConnection(activityNextCnt);
+
+    auto proxyReg = ::fwServices::registry::Proxy::getDefault();
+
+    proxyReg->connect(this->getInputID(s_PREVIOUS_CHANNEL), this->signal(s_PREVIOUS_SIG));
+    proxyReg->connect(this->getInputID(s_NEXT_CHANNEL), this->signal(s_NEXT_SIG));
 
     this->startServices();
     m_activitySequencer->slot("next")->asyncRun();
@@ -121,9 +123,11 @@ void AppManager::uninitialize()
 {
     // stop the started services and unregister all the services
     this->stopAndUnregisterServices();
-}
 
-//------------------------------------------------------------------------------
+    auto proxyReg = ::fwServices::registry::Proxy::getDefault();
+    proxyReg->disconnect(this->getInputID(s_PREVIOUS_CHANNEL), this->signal(s_PREVIOUS_SIG));
+    proxyReg->disconnect(this->getInputID(s_NEXT_CHANNEL), this->signal(s_NEXT_SIG));
+}
 
 //------------------------------------------------------------------------------
 
@@ -136,12 +140,12 @@ void AppManager::onServiceCreated(const QVariant& obj)
         {
             srv->configure(m_activityViewConfig);
             // connect to launch the activity when it is created/updated.
-            ::fwServices::helper::ProxyConnections activityCreatedCnt(s_ACTIVITY_CREATED_CHANNEL);
+            ::fwServices::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
             activityCreatedCnt.addSlotConnection(srv->getID(), "launchActivity");
 
             // When the activity is launched, the sequencer sends the information to enable "previous" and "next"
             // actions
-            ::fwServices::helper::ProxyConnections activityLaunchedCnt(s_ACTIVITY_LAUNCHED_CHANNEL);
+            ::fwServices::helper::ProxyConnections activityLaunchedCnt(this->getInputID(s_ACTIVITY_LAUNCHED_CHANNEL));
             activityLaunchedCnt.addSignalConnection(srv->getID(), "activityLaunched");
 
             this->addProxyConnection(activityCreatedCnt);
@@ -149,26 +153,21 @@ void AppManager::onServiceCreated(const QVariant& obj)
 
             this->addService(srv, true);
         }
-//        else if (srv->isA("::uiMedDataQml::SModelSeriesList"))
-//        {
-//            srv->setObjectId("modelSeries", s_MODELSERIES_ID);
-//            this->addService(srv, true);
-
-//            ::fwServices::helper::ProxyConnections recSelectedCnt(s_REC_SELECTED_CHANNEL);
-//            recSelectedCnt.addSignalConnection(srv->getID(),  "reconstructionSelected");
-//            this->addProxyConnection(recSelectedCnt);
-
-//            ::fwServices::helper::ProxyConnections emptySelectionCnt(s_EMPTY_SELECTION_CHANNEL);
-//            emptySelectionCnt.addSignalConnection(srv->getID(),  "emptiedSelection");
-//            this->addProxyConnection(emptySelectionCnt);
-//        }
-//        else if (srv->isA("::uiReconstructionQml::SOrganMaterialEditor") ||
-//                 srv->isA("::uiReconstructionQml::SRepresentationEditor"))
-//        {
-//            srv->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
-//            this->addService(srv, true);
-//        }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::previous()
+{
+    this->signal<VoidSignalType>(s_PREVIOUS_SIG)->asyncEmit();
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::next()
+{
+    this->signal<VoidSignalType>(s_NEXT_SIG)->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

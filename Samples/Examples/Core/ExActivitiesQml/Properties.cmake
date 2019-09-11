@@ -7,6 +7,8 @@ set( DEPENDENCIES
     fwRuntime
     fwData
     fwQml
+    fwVTKQml
+    fwRenderVTK
 )
 set( REQUIREMENTS
     servicesReg
@@ -17,6 +19,8 @@ set( REQUIREMENTS
     fwlauncher
     visuVTKQml
     visuVTKAdaptor
+    uiIO
+    ioVTK
 )
 
 set( PLUGINS

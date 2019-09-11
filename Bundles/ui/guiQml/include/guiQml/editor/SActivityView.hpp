@@ -100,7 +100,7 @@ public:
     typedef ::fwCom::Signal< void (::fwMedData::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
 
 Q_SIGNALS:
-    void launchRequested(QString path);
+    void launchRequested(QUrl path, QVariantMap replace);
 
 protected:
 

@@ -33,6 +33,7 @@
 #include <fwServices/IService.hpp>
 
 #include <QObject>
+#include <QVariant>
 
 /**
  * @brief   This class is started when the bundles is loaded.
@@ -66,20 +67,17 @@ public Q_SLOTS:
     /// Retrieves the services instanciated in Qml
     void onServiceCreated(const QVariant& obj);
 
+    void previous();
+
+    void next();
+
 private:
+
+    typedef ::fwCom::Signal<void ()> VoidSignalType;
 
     ::fwServices::IService::sptr m_activitySequencer;
 
     ::fwMedData::SeriesDB::sptr m_seriesDB;
 
     ::fwServices::IService::ConfigType m_activityViewConfig;
-
-    /// Identifier for the object and channel, is unique for an instance of the AppManager
-    std::string s_SERIES_DB{"seriesDB"};
-    std::string s_ACTIVITY_CREATED_CHANNEL{"activityCreated"};
-    std::string s_ACTIVITY_LAUNCHED_CHANNEL        {"activityLaunched"};
-    std::string s_ENABLED_PREVIOUS_CHANNEL_CHANNEL {"enabledPreviousChannel"};
-    std::string s_ENABLED_NEXT_CHANNEL_CHANNEL     {"enabledNextChannel"};
-    std::string s_PREVIOUS_CHANNEL                 {"Previous"};
-    std::string s_NEXT_CHANNEL                     {"Next"};
 };

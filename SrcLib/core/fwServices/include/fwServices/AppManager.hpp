@@ -225,9 +225,51 @@ public:
     /// Add a proxy connection
     FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& proxy);
 
-    /// Create aunique  human readable identifier by concatenating the given id with the AppManaget uid
-    /// (ie. AppManager_1_<id>)
-    FWSERVICES_API std::string getID(const std::string& id) const;
+    /**
+     * @brief Return the input identifier or create a unique human readable identifier by concatenating the given id
+     * with the AppManaget uid(ie. AppManager_1_<id>)
+     */
+    FWSERVICES_API std::string getInputID(const std::string& id) const;
+
+    enum class InputType
+    {
+        OBJECT,
+        CHANNEL,
+        OTHER
+    };
+
+    struct Input
+    {
+        InputType type;
+        std::string key;
+        std::string value;
+        std::string defaultValue;
+        bool isOptional;
+    };
+
+    typedef std::map< std::string, Input > InputContainer;
+
+    /**
+     * @brief Define the object, channels or other parameters that are required to launch the manager
+     * @param key name of the input
+     * @param type type of the input OBJECT (for a ::fwData::Object), CHANNEL (for communication) or OTHER (replaced by
+     * a String)
+     * @param defaultValue default value of the input, if it is empty, the input is not present, it will be replaces by
+     * this value (for OBJECT, the default value must be the type of the object to create (ex. ::fwData::Image)
+     */
+    FWSERVICES_API void requireInput(const std::string& key, const InputType& type,
+                                     const std::string& defaultValue = "");
+
+    /// Check if all the required inputs are present and add the object in the manager
+    FWSERVICES_API bool checkInputs();
+
+    /**
+     * @brief Define the value of a required input
+     *
+     * For OBJECT, the value must be the fwID of an existing object.
+     */
+    FWSERVICES_API void replaceInput(const std::string& key, const std::string& value);
+
 private:
 
     /// Information about connection <channel, sig/slot name>
@@ -266,6 +308,8 @@ private:
     ::fwServices::IService::SharedFutureType stop(const ServiceInfo& info);
 
     bool m_isStarted {false};
+
+    InputContainer m_inputs;
 
     /// Store the information of the services (objects, autoStart, autoUpdate)
     std::vector< ServiceInfo > m_services;

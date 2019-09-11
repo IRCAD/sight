@@ -16,11 +16,6 @@ ApplicationWindow {
 
     title: qsTr("ExActivitiesQml 0.1")
 
-    function launchActivity(id)
-    {
-
-    }
-
     menuBar: MenuBar {
         id: menuBar
         property int pageIndex: 0
@@ -39,6 +34,26 @@ ApplicationWindow {
             }
         }
 
+   header: ToolBar {
+
+        RowLayout {
+            ToolButton{
+                text : "<"
+                onClicked: {
+                    appManager.previous()
+                }
+            }
+
+            ToolButton{
+                text : ">"
+                onClicked: {
+                    appManager.next()
+                }
+            }
+        }
+    }
+
+
     AppManager {
         id: appManager
     }
@@ -48,27 +63,15 @@ ApplicationWindow {
         id: guiQml_SActivityView
 
         onLaunchRequested: {
-            console.log("activity to launch: " + path)
-            var component = Qt.createComponent(path)
-            if (component.status === Component.Ready) {
-                var activity = component.createObject(root);
-                //todo set replaceMap
-                activityStackView.push(activity);
-            }
-            else {
-                console.error("Unable to launch the activity: " + path)
-            }
-
-
-        }
-        onStarted:{
-            console.log("services started")
+            activityStackView.clear(StackView.Immediate)
+            activityStackView.push(Qt.createComponent(path), {"replaceMap": replace}, StackView.Immediate)
         }
     }
 
     StackView {
         id: activityStackView
         anchors.fill: parent
+
     }
 
     // Set the global theme inside the singleton "Theme" and then set the Window theme via the Singleton
@@ -76,7 +79,8 @@ ApplicationWindow {
     Component.onCompleted: {
         Theme.accent = Material.color(Material.LightBlue)
         Theme.theme = Material.Light
-        Theme.foreground = (Material.theme == Material.Dark) ? Material.color(Material.BlueGrey, Material.Shade100) : Material.color(Material.BlueGrey, Material.Shade900)
+        Theme.foreground = (Material.theme == Material.Dark) ? Material.color(Material.BlueGrey, Material.Shade100) :
+                                                               Material.color(Material.BlueGrey, Material.Shade900)
         Theme.background = Material.background
         Theme.primary = Material.color(Material.Teal)
         Theme.elevation = Material.elevation
