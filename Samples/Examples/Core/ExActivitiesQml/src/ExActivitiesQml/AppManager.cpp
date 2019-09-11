@@ -54,6 +54,7 @@ AppManager::AppManager() noexcept
 
 AppManager::~AppManager() noexcept
 {
+    this->uninitialize();
 }
 
 //------------------------------------------------------------------------------
@@ -122,7 +123,7 @@ void AppManager::initialize()
 void AppManager::uninitialize()
 {
     // stop the started services and unregister all the services
-    this->stopAndUnregisterServices();
+    this->destroy();
 
     auto proxyReg = ::fwServices::registry::Proxy::getDefault();
     proxyReg->disconnect(this->getInputID(s_PREVIOUS_CHANNEL), this->signal(s_PREVIOUS_SIG));

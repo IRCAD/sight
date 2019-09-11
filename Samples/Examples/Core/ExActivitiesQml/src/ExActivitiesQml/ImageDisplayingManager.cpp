@@ -164,7 +164,7 @@ void ImageDisplayingManager::onShowScan(bool isShown)
 void ImageDisplayingManager::uninitialize()
 {
     // stop the started services and unregister all the services
-    this->stopAndUnregisterServices();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

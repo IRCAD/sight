@@ -175,10 +175,6 @@ void AppManager::replaceInput(const std::string& key, const std::string& value)
         Input& input = itr->second;
         input.value = value;
     }
-    else
-    {
-        OSLM_WARN("Input '" + key + "' is not define for '" + m_uid + "'");
-    }
 }
 
 //------------------------------------------------------------------------------

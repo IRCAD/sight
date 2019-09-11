@@ -156,7 +156,7 @@ void ImageReadingManager::openImage()
 void ImageReadingManager::uninitialize()
 {
     // stop the started services and unregister all the services
-    this->stopAndUnregisterServices();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

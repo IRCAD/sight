@@ -71,7 +71,6 @@ ApplicationWindow {
     StackView {
         id: activityStackView
         anchors.fill: parent
-
     }
 
     // Set the global theme inside the singleton "Theme" and then set the Window theme via the Singleton
@@ -93,5 +92,8 @@ ApplicationWindow {
         appManager.initialize()
         appManager.onServiceCreated(guiQml_SActivityView)
     }
-    onClosing: appManager.uninitialize()
+    onClosing: {
+        activityStackView.clear()
+        appManager.uninitialize()
+    }
 }
