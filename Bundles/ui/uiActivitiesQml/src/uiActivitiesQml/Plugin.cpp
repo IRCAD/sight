@@ -25,7 +25,7 @@
 #include "uiActivitiesQml/ActivityLauncherManager.hpp"
 #include "uiActivitiesQml/SActivityView.hpp"
 
-#include <fwActivities/registry/Activities.hpp>
+#include <fwQml/QmlEngine.hpp>
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>

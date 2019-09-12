@@ -22,23 +22,18 @@
 
 #include "uiActivitiesQml/SActivityView.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <fwActivities/registry/Activities.hpp>
+
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Composite.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/GuiRegistry.hpp>
 
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/factory/newActivity.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-
-#include <QObject>
 
 namespace uiActivitiesQml
 {
@@ -78,14 +73,6 @@ void SActivityView::configuring()
 
 void SActivityView::starting()
 {
-    if (!m_mainActivityId.empty())
-    {
-        ::fwMedData::ActivitySeries::sptr activity = this->createMainActivity();
-        if (activity)
-        {
-            this->launchActivity(activity);
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -103,11 +90,19 @@ void SActivityView::updating()
 
 //------------------------------------------------------------------------------
 
+void SActivityView::notifyActivityCreation()
+{
+    m_sigActivityLaunched->asyncEmit();
+}
+
+//------------------------------------------------------------------------------
+
 void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeries)
 {
     bool isValid;
     std::string message;
 
+    // check if the activity can be launched
     std::tie(isValid, message) = this->validateActivity(activitySeries);
 
     if (isValid)
@@ -115,6 +110,7 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         ::fwActivities::registry::ActivityInfo info;
         info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
+        // get Activity path, it allows to retrieve the associated Qml file
         const auto path = ::fwRuntime::getBundleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
 
         ReplaceMapType replaceMap;
@@ -122,6 +118,7 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
         replaceMap["AS_UID"] = activitySeries->getID();
 
+        // convert the replaceMap to Qt Map to send it to Qml(only QVariantMap type is implemented in Qml)
         QVariantMap qReplaceMap;
         for (const auto& elt: replaceMap)
         {

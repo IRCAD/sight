@@ -25,19 +25,13 @@
 #include "uiActivitiesQml/config.hpp"
 
 #include <fwActivities/ActivityLauncher.hpp>
-#include <fwActivities/registry/Activities.hpp>
-
-#include <fwGui/view/IActivityView.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
-#include <fwQml/QmlEngine.hpp>
 
-#include <fwServices/BaseObject.hpp>
-#include <fwServices/IAppConfigManager.hpp>
-
-#include <fwTools/Failed.hpp>
+#include <QUrl>
+#include <QVariantMap>
 
 namespace uiActivitiesQml
 {
@@ -49,7 +43,7 @@ namespace uiActivitiesQml
  * This service should receive signals containing ActivitySeries connected to the slot \b launchActivity.
  *
  * @section Signals Signals
- * - \b activityLaunched( ::fwMedData::ActivitySeries::sptr ): signal emitted when the activity is launched
+ * - \b activityLaunched(): signal emitted when the activity is launched
  *
  * @section Slots Slots
  * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): This slot allows to create a view for the given activity
@@ -57,26 +51,42 @@ namespace uiActivitiesQml
  * - \b launchActivitySeries( ::fwMedData::Series::sptr ): This slot allows to create a view for the given activity
  *   series.
  *
- * @section XML XML Configuration
- * @code{.xml}
-   <service type="::guiQml::editor::SActivityView" autoConnect="yes" >
-     <mainActivity id="SDBActivity" />
-     <parameters>
-         <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="media-0.1/icons/app.ico"  />
-     </parameters>
-   </service>
+ * @section Config Configuration
+ *
+ * This service sould be instanciated in a Qml file, but it may also be configured in C++ AppManager to add extra
+ * information to replace in the activities that will be launched
+ *
+ * @subsection Qml Qml Configuration
+ * @code{.qml}
+ *  SActivityView {
+        id: activityView
+
+        onLaunchRequested: {
+            activityStackView.clear(StackView.Immediate)
+            activityStackView.push(Qt.createComponent(path), {"replaceMap": replace}, StackView.Immediate)
+            notifyActivityCreation()
+        }
+    }
+
+    StackView {
+        id: activityStackView
+        anchors.fill: parent
+    }
+    @endcode
+ *
+ * @subsection Cpp C++ Configuration
+ * @code{.cpp}
+    ::fwServices::IService::ConfigType parameterViewConfig;
+    parameterViewConfig.add("<xmlattr>.replace", "nameToReplace");
+    parameterViewConfig.add("<xmlattr>.by", this->getInputID("value"));
+    m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
    @endcode
- * - \b mainActivity (optional): information about the main activity. The activity series will be generated.
- *   This activity must not have requirement.
- *   - \b id : identifier of the activity
  * - \b parameters (optional) : additional parameters used to launch the activities
  *    - \b parameter: defines a parameter
  *        - \b replace: name of the parameter as defined in the AppConfig
  *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
- *
  */
 class UIACTIVITIESQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
                                                 public ::fwActivities::ActivityLauncher
@@ -95,19 +105,25 @@ public:
     UIACTIVITIESQML_API virtual ~SActivityView() override;
 
     /// Signal emited when the activity is launched
-    typedef ::fwCom::Signal< void (::fwMedData::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
+    typedef ::fwCom::Signal< void () > ActivityLaunchedSignalType;
 
 Q_SIGNALS:
     void launchRequested(QUrl path, QVariantMap replace);
 
+public Q_SLOTS:
+
+    /// Emit 'activityLaunched' signal. Should be called by Qml when the activity's Qml file is pushed in the stack view
+    void notifyActivityCreation();
+
 protected:
 
+    /// Parse the configuration (set the parameters to replace in the activities to launch
     virtual void configuring() override;
 
-    /// TODO
+    /// Do nothing
     virtual void starting() override;
 
-    /// TODO.
+    /// Do nothing
     virtual void stopping() override;
 
     /// Do nothing
@@ -122,9 +138,6 @@ private:
     void launchActivitySeries(::fwMedData::Series::sptr series);
 
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
-
-    /// The current activity manager
-    std::unique_ptr< ::fwServices::AppManager > m_activityManager{nullptr};
 };
 
 } // uiActivitiesQml

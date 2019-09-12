@@ -45,6 +45,7 @@ Item {
         onLaunchRequested: {
             activityStackView.clear(StackView.Immediate)
             activityStackView.push(Qt.createComponent(path), {"replaceMap": replace}, StackView.Immediate)
+            notifyActivityCreation()
         }
     }
 
