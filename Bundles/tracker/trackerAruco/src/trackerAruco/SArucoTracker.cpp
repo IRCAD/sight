@@ -38,7 +38,6 @@
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
 
 #include <boost/foreach.hpp>
-#include <boost/make_unique.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <opencv2/core.hpp>
@@ -210,7 +209,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
     std::unique_ptr< ::fwData::mt::ObjectReadToWriteLock> lockFrame;
     if(frame)
     {
-        lockFrame = ::boost::make_unique< ::fwData::mt::ObjectReadToWriteLock>(frame);
+        lockFrame = std::make_unique< ::fwData::mt::ObjectReadToWriteLock>(frame);
         inImage   = ::cvIO::Image::moveToCv(frame);
     }
     else

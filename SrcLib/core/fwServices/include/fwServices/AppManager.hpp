@@ -42,7 +42,7 @@ namespace fwServices
  * service is started/stopped and when an object is added/removed.
  *
  * @code{.cpp}
-    m_appMgr = ::boost::make_unique< ::fwServices::AppManager >();
+    m_appMgr = std::make_unique< ::fwServices::AppManager >();
 
     // Initialize the manager
     m_appMgr->create();

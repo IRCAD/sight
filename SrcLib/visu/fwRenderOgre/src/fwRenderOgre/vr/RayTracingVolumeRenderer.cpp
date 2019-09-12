@@ -33,8 +33,6 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreGpuProgramManager.h>
@@ -172,8 +170,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
     const auto stereoMode             = layer->getStereoMode();
     const auto rayEntryCompositorName = "VolumeEntries" + std::to_string(numViewPoints);
-    m_rayEntryCompositor = ::boost::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
-                                                                     stereoMode, true);
+    m_rayEntryCompositor = std::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
+                                                                 stereoMode, true);
 
     auto* const compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
     SLM_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);

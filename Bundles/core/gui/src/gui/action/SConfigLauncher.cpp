@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
-#include <boost/make_unique.hpp>
-
 namespace gui
 {
 namespace action
@@ -49,7 +47,7 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 SConfigLauncher::SConfigLauncher() noexcept
 {
-    m_configLauncher = ::boost::make_unique< ::fwServices::helper::ConfigLauncher>();
+    m_configLauncher = std::make_unique< ::fwServices::helper::ConfigLauncher>();
 
     m_sigLaunched = newSignal<LaunchedSignalType>(s_LAUNCHED_SIG);
 

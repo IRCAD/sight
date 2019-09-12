@@ -29,10 +29,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <boost/make_unique.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/smart_ptr.hpp>
-
 namespace fwServices
 {
 

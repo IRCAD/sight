@@ -50,8 +50,6 @@
 
 #include <fwTools/Type.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <librealsense2/rs_advanced_mode.hpp>
 
 #include <algorithm>
@@ -466,7 +464,7 @@ void SScan::startCamera()
 
     ::rs2::config cfg;
 
-    m_pipe = ::boost::make_unique< ::rs2::pipeline>();
+    m_pipe = std::make_unique< ::rs2::pipeline>();
 
     ::rs2::pipeline_profile profile;
     try
