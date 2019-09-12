@@ -16,12 +16,12 @@ ApplicationWindow {
 
     title: qsTr("ExActivitiesQml 0.1")
 
-    header: activityLauncher.toolbar
-
     ActivityLauncher {
         id: activityLauncher
 
-        activityList: ["ExImageReading", "ExImageDisplaying"]
+        activityIdsList: ["ExImageReading", "ExImageDisplaying"]
+        activityNameList: ["Read", "Display"]
+
     }
 
 

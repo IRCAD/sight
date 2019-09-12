@@ -72,9 +72,12 @@ public Q_SLOTS:
 
     void next();
 
+    void goTo(int index);
+
 private:
 
     typedef ::fwCom::Signal<void ()> VoidSignalType;
+    typedef ::fwCom::Signal<void (int)> IntSignalType;
 
     ::fwServices::IService::sptr m_activitySequencer;
 

@@ -38,9 +38,11 @@ static const std::string s_ENABLED_PREVIOUS_CHANNEL_CHANNEL = "enabledPreviousCh
 static const std::string s_ENABLED_NEXT_CHANNEL_CHANNEL     = "enabledNextChannel";
 static const std::string s_PREVIOUS_CHANNEL                 = "PreviousChannel";
 static const std::string s_NEXT_CHANNEL                     = "NextChannel";
+static const std::string s_GO_TO_CHANNEL                    = "GoToChannel";
 
 static const std::string s_PREVIOUS_SIG = "previous";
 static const std::string s_NEXT_SIG     = "next";
+static const std::string s_GO_TO_SIG    = "goTo";
 
 //------------------------------------------------------------------------------
 
@@ -48,6 +50,7 @@ ActivityLauncherManager::ActivityLauncherManager() noexcept
 {
     newSignal< VoidSignalType >(s_PREVIOUS_SIG);
     newSignal< VoidSignalType >(s_NEXT_SIG);
+    newSignal< IntSignalType >(s_GO_TO_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -97,15 +100,21 @@ void ActivityLauncherManager::initialize()
     ::fwServices::helper::ProxyConnections activityNextCnt(this->getInputID(s_NEXT_CHANNEL));
     activityNextCnt.addSlotConnection(m_activitySequencer->getID(), "next");
 
+    // The activity sequencer should receive the call from the "goTo" action.
+    ::fwServices::helper::ProxyConnections activityGoToCnt(this->getInputID(s_GO_TO_CHANNEL));
+    activityGoToCnt.addSlotConnection(m_activitySequencer->getID(), "goTo");
+
     this->addProxyConnection(activityCreatedCnt);
     this->addProxyConnection(activityLaunchedCnt);
     this->addProxyConnection(activityPreviousCnt);
     this->addProxyConnection(activityNextCnt);
+    this->addProxyConnection(activityGoToCnt);
 
     auto proxyReg = ::fwServices::registry::Proxy::getDefault();
 
     proxyReg->connect(this->getInputID(s_PREVIOUS_CHANNEL), this->signal(s_PREVIOUS_SIG));
     proxyReg->connect(this->getInputID(s_NEXT_CHANNEL), this->signal(s_NEXT_SIG));
+    proxyReg->connect(this->getInputID(s_GO_TO_CHANNEL), this->signal(s_GO_TO_SIG));
 
     this->startServices();
     m_activitySequencer->slot("next")->asyncRun();
@@ -121,6 +130,7 @@ void ActivityLauncherManager::uninitialize()
     auto proxyReg = ::fwServices::registry::Proxy::getDefault();
     proxyReg->disconnect(this->getInputID(s_PREVIOUS_CHANNEL), this->signal(s_PREVIOUS_SIG));
     proxyReg->disconnect(this->getInputID(s_NEXT_CHANNEL), this->signal(s_NEXT_SIG));
+    proxyReg->disconnect(this->getInputID(s_GO_TO_CHANNEL), this->signal(s_GO_TO_SIG));
 }
 
 //------------------------------------------------------------------------------
@@ -173,6 +183,13 @@ void ActivityLauncherManager::previous()
 void ActivityLauncherManager::next()
 {
     this->signal<VoidSignalType>(s_NEXT_SIG)->asyncEmit();
+}
+
+//------------------------------------------------------------------------------
+
+void ActivityLauncherManager::goTo(int index)
+{
+    this->signal<IntSignalType>(s_GO_TO_SIG)->asyncEmit(index);
 }
 
 //------------------------------------------------------------------------------
