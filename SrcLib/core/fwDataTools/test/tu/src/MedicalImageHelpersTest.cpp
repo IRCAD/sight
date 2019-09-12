@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -187,7 +187,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 // ------------------------------------------------------------------------------
 
 template <class P>
-void getPixelBufferTestHelper(const P& pixelValue)
+::fwData::Image::sptr createImageFromPixelBuffer()
 {
     constexpr size_t IMG_DIMENSIONS = 100;
     constexpr size_t N_COMPONENTS   = std::tuple_size<P>::value;
@@ -209,9 +209,22 @@ void getPixelBufferTestHelper(const P& pixelValue)
     void* const arrayPtr = array->getBufferObject()->getBuffer();
     std::fill_n(static_cast<uint8_t*>(arrayPtr), szArray, 0);
 
+    return image;
+}
+
+//------------------------------------------------------------------------------
+
+template <class P>
+void getPixelBufferTestHelper(const P& pixelValue)
+{
+    using SubPixel = typename P::value_type;
+    constexpr size_t N_COMPONENTS = std::tuple_size<P>::value;
+    auto image                    = createImageFromPixelBuffer<P>();
+    auto size                     = image->getSize();
+
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % IMG_DIMENSIONS; });
+    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % size[0]; });
     auto imageBufferPtr = image->getDataArray()->getBufferObject()->getBuffer();
     SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr) +
                           ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
@@ -224,7 +237,7 @@ void getPixelBufferTestHelper(const P& pixelValue)
     SubPixel* pixelHelperPtr2 = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
                                                  static_cast<double>(pixelHelperPtr1[i]),
@@ -238,7 +251,7 @@ void getPixelBufferTestHelper(const P& pixelValue)
     }
     else
     {
-        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr2[i], pixelValue[i]);
@@ -281,29 +294,13 @@ void MedicalImageHelpersTest::getPixelBufferTest()
 template <class P>
 void setPixelBufferTestHelper(P& pixelValue)
 {
-    constexpr size_t IMG_DIMENSIONS = 100;
-    constexpr size_t N_COMPONENTS   = std::tuple_size<P>::value;
     using SubPixel = typename P::value_type;
+    auto image = createImageFromPixelBuffer<P>();
+    auto size  = image->getSize();
 
-    static_assert(N_COMPONENTS != 0, "Cannot test 0-dimensional pixel types");
-
-    // Create a new image
-    auto image = ::fwData::Image::New();
-    ::fwData::Image::SizeType size(3);
-    std::fill_n(size.begin(), 3, IMG_DIMENSIONS);
-    image->allocate(size, ::fwTools::Type::create<SubPixel>(), N_COMPONENTS);
-    image->setSpacing(::fwData::Image::SpacingType(3, 1));
-    image->setOrigin(::fwData::Image::OriginType(3, 0));
-
-    // Zero the buffer
-    auto array           = image->getDataArray();
-    const auto szArray   = image->getAllocatedSizeInBytes();
-    void* const arrayPtr = array->getBufferObject()->getBuffer();
-    std::fill_n(static_cast<uint8_t*>(arrayPtr), szArray, 0);
-
-    // Pick some random coordinates and use setPixelBuffer to store the given pixel there
+    // Pick some random coordinates and store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % IMG_DIMENSIONS; });
+    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % size[0]; });
     size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     ::fwDataTools::helper::Image helper(image);
     helper.setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
@@ -313,7 +310,7 @@ void setPixelBufferTestHelper(P& pixelValue)
     SubPixel* pixelHelperPtr = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
                                                  static_cast<double>(pixelHelperPtr[i]),
@@ -323,7 +320,7 @@ void setPixelBufferTestHelper(P& pixelValue)
     }
     else
     {
-        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr[i], pixelValue[i]);
         }
@@ -359,6 +356,48 @@ void MedicalImageHelpersTest::setPixelBufferTest()
         setPixelBufferTestHelper(pRGB);
     }
 }
+
+//------------------------------------------------------------------------------
+
+void fwDataTools::ut::MedicalImageHelpersTest::isBufNull()
+{
+    auto image = createImageFromPixelBuffer<std::array<uint8_t, 3> >();
+
+    {
+        ::fwDataTools::helper::ImageGetter helper(image);
+        const ::fwData::Image::BufferType* pixBuf =
+            static_cast< ::fwData::Image::BufferType* >(helper.getPixelBuffer(0, 0, 0));
+
+        bool isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+        CPPUNIT_ASSERT_EQUAL(true, isNull);
+
+        isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 100);
+        CPPUNIT_ASSERT_EQUAL(true, isNull);
+
+        {
+            ::fwDataTools::helper::Image helper(image);
+            std::array<float, 3> pixelValue = {{ 42.0f, 1487.4f, 0.1445f }};
+            helper.setPixelBuffer(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
+
+            isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+            CPPUNIT_ASSERT_EQUAL(false, isNull);
+
+            const ::fwData::Image::BufferType* pixBuf =
+                static_cast< ::fwData::Image::BufferType* >(helper.getPixelBuffer(10, 0, 0));
+
+            isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+            CPPUNIT_ASSERT_EQUAL(true, isNull);
+
+            helper.setPixelBuffer(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
+            isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 5*3);
+            CPPUNIT_ASSERT_EQUAL(true, isNull);
+            isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 6*3);
+            CPPUNIT_ASSERT_EQUAL(false, isNull);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwDataTools

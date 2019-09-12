@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_UT_MEDICALIMAGEHELPERSTEST_HPP__
-#define __FWDATATOOLS_UT_MEDICALIMAGEHELPERSTEST_HPP__
+#pragma once
 
 #include <fwCore/base.hpp>
 
@@ -38,6 +37,7 @@ CPPUNIT_TEST_SUITE( MedicalImageHelpersTest );
 CPPUNIT_TEST( getMinMaxTest );
 CPPUNIT_TEST( getPixelBufferTest );
 CPPUNIT_TEST( setPixelBufferTest );
+CPPUNIT_TEST( isBufNull );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,9 +53,9 @@ public:
 
     // Test the setPixelBuffer method for several image pixel types
     void setPixelBufferTest();
+
+    void isBufNull();
 };
 
 } // namespace ut
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_UT_MEDICALIMAGEHELPERSTEST_HPP__

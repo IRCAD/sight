@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -186,7 +186,6 @@ const Encoding::EscapeSequenceToCharsetMapType Encoding::s_ESCAPE_SEQUENCE_TO_CH
 std::string Encoding::convertString(const std::string& source,
                                     const std::string& definedCharsetTerm,
                                     const ::fwLog::Logger::sptr& logger)
-throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error)
 {
     if(source.empty())
     {
@@ -312,7 +311,6 @@ void checkDefinedTermDeclaration(const std::string& definedTerm,
 std::string Encoding::convertSequenceWithCodeExtensions(const std::string& sequence,
                                                         const std::vector<std::string>& definedTermList,
                                                         const ::fwLog::Logger::sptr& logger)
-throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error)
 {
     // We need at least two more characters to determine the new character set
     FW_RAISE_IF("Cannot convert character set: Incomplete escape sequence.", sequence.size() < 2);
@@ -381,4 +379,3 @@ throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error)
 
 } //namespace helper
 } //namespace fwGdcmIO
-

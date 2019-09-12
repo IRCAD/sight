@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed)
+void CTMRImageIOD::read(::fwMedData::Series::sptr series)
 {
     // Retrieve image series
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);

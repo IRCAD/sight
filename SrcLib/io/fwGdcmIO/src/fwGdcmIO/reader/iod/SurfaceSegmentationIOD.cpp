@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -67,7 +67,7 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed)
+void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
 {
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
     SLM_ASSERT("ModelSeries should not be null.", modelSeries);

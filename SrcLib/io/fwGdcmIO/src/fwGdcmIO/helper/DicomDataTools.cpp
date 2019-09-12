@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -105,13 +105,10 @@ DicomDataTools::getPhotometricInterpretation(const ::fwData::Image::csptr& image
     {
         case ::fwData::Material::SURFACE:
             return ::gdcm::Surface::SURFACE;
-            break;
         case ::fwData::Material::POINT:
             return ::gdcm::Surface::POINTS;
-            break;
         case ::fwData::Material::WIREFRAME:
             return ::gdcm::Surface::WIREFRAME;
-            break;
         default:
             SLM_WARN("Representation type not handle (changed to : SURFACE)");
             return ::gdcm::Surface::SURFACE;
@@ -127,13 +124,10 @@ DicomDataTools::getPhotometricInterpretation(const ::fwData::Image::csptr& image
     {
         case ::gdcm::Surface::SURFACE:
             return ::fwData::Material::SURFACE;
-            break;
         case ::gdcm::Surface::WIREFRAME:
             return ::fwData::Material::WIREFRAME;
-            break;
         case ::gdcm::Surface::POINTS:
             return ::fwData::Material::POINT;
-            break;
         default:
             SLM_WARN("Presentation type not handle (changed to : SURFACE)");
             return ::fwData::Material::SURFACE;
@@ -144,7 +138,6 @@ DicomDataTools::getPhotometricInterpretation(const ::fwData::Image::csptr& image
 
 std::size_t DicomDataTools::convertPointToFrameNumber(const ::fwData::Image::csptr& image,
                                                       const ::fwData::Point::csptr& point)
-throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
     const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
@@ -167,7 +160,6 @@ throw(::fwGdcmIO::exception::Failed)
 
 double DicomDataTools::convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image,
                                                        const std::size_t frameNumber)
-throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
     const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
