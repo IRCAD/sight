@@ -60,6 +60,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::activities::SActivitySeque
 
 const ::fwCom::Slots::SlotKeyType s_NEXT_SLOT      = "next";
 const ::fwCom::Slots::SlotKeyType s_PREVIOUS_SLOT  = "previous";
+const ::fwCom::Slots::SlotKeyType s_GO_TO_SLOT     = "goTo";
 const ::fwCom::Slots::SlotKeyType s_SEND_INFO_SLOT = "sendInfo";
 
 const ::fwCom::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
@@ -77,6 +78,7 @@ SActivitySequencer::SActivitySequencer() noexcept :
 {
     newSlot(s_NEXT_SLOT, &SActivitySequencer::next, this);
     newSlot(s_PREVIOUS_SLOT, &SActivitySequencer::previous, this);
+    newSlot(s_GO_TO_SLOT, &SActivitySequencer::goTo, this);
     newSlot(s_SEND_INFO_SLOT, &SActivitySequencer::sendInfo, this);
 
     m_sigActivityCreated = newSignal< ActivityCreatedSignalType >(s_ACTIVITY_CREATED_SIG);
@@ -131,7 +133,7 @@ void SActivitySequencer::updating()
         {
             // Remove the wrong data
             SLM_ERROR("The series DB must only contain 'ActivitySeries'. The series of type '" +
-                      series->getClassname() + "' will be removed");
+                      series->getClassname() + "' will be removed")
 
             ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
             helper.remove(series);
@@ -141,7 +143,7 @@ void SActivitySequencer::updating()
                            activity->getActivityConfigId()) == m_activityIds.end())
         {
             // Remove the wrong data
-            SLM_ERROR("The activity '" +activity->getActivityConfigId() + "' is unknown, it will be removed");
+            SLM_ERROR("The activity '" +activity->getActivityConfigId() + "' is unknown, it will be removed")
 
             ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
             helper.remove(activity);
@@ -188,7 +190,7 @@ void SActivitySequencer::next()
     const size_t newIdx = static_cast<size_t>(m_currentActivity + 1);
     if (newIdx >= m_activityIds.size())
     {
-        OSLM_ERROR("no activity to launch, the current activity '"+ m_activityIds.back() + "' is the last one.");
+        OSLM_ERROR("no activity to launch, the current activity '"+ m_activityIds.back() + "' is the last one.")
         return;
     }
 
@@ -212,7 +214,7 @@ void SActivitySequencer::previous()
 {
     if (m_currentActivity <= 0)
     {
-        OSLM_ERROR("no activity to launch, the current activity '"+ m_activityIds[0] + "' is the first one.");
+        SLM_ERROR("no activity to launch, the current activity '"+ m_activityIds[0] + "' is the first one.")
         return;
     }
     this->storeActivityData();
@@ -225,6 +227,36 @@ void SActivitySequencer::previous()
         m_sigActivityCreated->asyncEmit(activity);
 
         --m_currentActivity;
+    }
+    else
+    {
+        m_sigDataRequired->asyncEmit(activity);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SActivitySequencer::goTo(int index)
+{
+    if (index < 0 || index >= static_cast<int>(m_activityIds.size()))
+    {
+        OSLM_ERROR("no activity to launch at index " << index)
+        return;
+    }
+
+    if (m_currentActivity >= 0)
+    {
+        this->storeActivityData();
+    }
+
+    const size_t newIdx = static_cast<size_t>(index);
+    ::fwMedData::ActivitySeries::sptr activity = this->getActivity(newIdx);
+
+    if(this->checkValidity(activity, true))
+    {
+        m_sigActivityCreated->asyncEmit(activity);
+
+        m_currentActivity = index;
     }
     else
     {
@@ -383,43 +415,11 @@ bool SActivitySequencer::checkValidity(const fwMedData::ActivitySeries::csptr& a
     bool ok = true;
     std::string errorMsg;
 
-    SLM_ASSERT("activity is not defined", activity);
-
-    const ::fwActivities::registry::ActivityInfo& info =
-        ::fwActivities::registry::Activities::getDefault()->getInfo(activity->getActivityConfigId());
-
-    // load activity bundle to register validator factory
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
-    if (!bundle->isStarted())
-    {
-        bundle->start();
-    }
-
-    for (std::string validatorImpl : info.validatorsImpl)
-    {
-        ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
-
-        ::fwActivities::IActivityValidator::sptr activityValidator =
-            ::fwActivities::IActivityValidator::dynamicCast(validator);
-
-        SLM_ERROR_IF("Validator '" + validatorImpl + "' instantiation failed", !activityValidator);
-
-        if (activityValidator)
-        {
-
-            ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(activity);
-            if(!validation.first)
-            {
-                ok        = false;
-                errorMsg += "\n" + validation.second;
-            }
-        }
-    }
+    std::tie(ok, errorMsg) = this->validateActivity(activity);
 
     if (!ok && showDialog)
     {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity not valid", "The activity '" + info.title + "' can "
-                                                          "not be launched: \n" + errorMsg);
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity not valid", errorMsg);
     }
     return ok;
 }

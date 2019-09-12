@@ -24,6 +24,8 @@
 
 #include "activities/config.hpp"
 
+#include <fwActivities/ActivityLauncher.hpp>
+
 #include <fwCom/Signal.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
@@ -81,7 +83,8 @@ namespace activities
  *
  * @todo listen the current activity data to notify when the next activity can be created
  */
-class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController
+class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController,
+                                                public ::fwActivities::ActivityLauncher
 {
 
 public:
@@ -134,11 +137,14 @@ private:
     typedef std::vector< std::string > ActivitesType;
     typedef std::map< std::string, ::fwData::Object::sptr > RequirementsType;
 
-    /// Slot: Create the next activity series
+    /// Slot: Create the next activity series, emit 'dataRequired' signal if the activity require additional data
     void next();
 
-    /// Slot: Create the previous activity series
+    /// Slot: Create the previous activity series, emit 'dataRequired' signal if the activity require additional data
     void previous();
+
+    /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
+    void goTo(int index);
 
     /// Slot: Send the 'enabledNext' and 'enablePrevious' signals for the current activity
     void sendInfo() const;
