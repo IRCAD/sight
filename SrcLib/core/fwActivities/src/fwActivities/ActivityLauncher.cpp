@@ -137,10 +137,13 @@ std::pair<bool, std::string> ActivityLauncher::validateActivity(
         ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(activitySeries);
         if(!validation.first)
         {
-            message = "The activity '" + info.title + "' can not be launched:\n" + validation.second;
-            isValid = false;
-            break;
+            message += "\n" + validation.second;
+            isValid  = false;
         }
+    }
+    if (!isValid)
+    {
+        message = "The activity '" + info.title + "' can not be launched:\n" + message;
     }
 
     return std::make_pair(isValid, message);

@@ -1,2 +1,3 @@
 module uiActivitiesQml
 Activity 1.0 Activity.qml
+ActivityLauncher 1.0 ActivityLauncher.qml

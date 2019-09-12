@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ExActivitiesQml/AppManager.hpp"
+#include "uiActivitiesQml/ActivityLauncherManager.hpp"
 
 #include <fwCom/Slot.hxx>
 
@@ -44,7 +44,7 @@ static const std::string s_NEXT_SIG     = "next";
 
 //------------------------------------------------------------------------------
 
-AppManager::AppManager() noexcept
+ActivityLauncherManager::ActivityLauncherManager() noexcept
 {
     newSignal< VoidSignalType >(s_PREVIOUS_SIG);
     newSignal< VoidSignalType >(s_NEXT_SIG);
@@ -52,14 +52,14 @@ AppManager::AppManager() noexcept
 
 //------------------------------------------------------------------------------
 
-AppManager::~AppManager() noexcept
+ActivityLauncherManager::~ActivityLauncherManager() noexcept
 {
     this->uninitialize();
 }
 
 //------------------------------------------------------------------------------
 
-void AppManager::initialize()
+void ActivityLauncherManager::initialize()
 {
     this->create();
 
@@ -69,12 +69,8 @@ void AppManager::initialize()
 
     // create the services
     m_activitySequencer = this->addService("::activities::SActivitySequencer", true);
-
     m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);
-    ::fwServices::IService::ConfigType sequencerConfig;
-    sequencerConfig.add("activity", "ExImageReading");
-    sequencerConfig.add("activity", "ExImageDisplaying");
-    m_activitySequencer->configure(sequencerConfig);
+    m_activitySequencer->configure(m_sequencerConfig);
 
     auto addActivityViewParam = [&](const std::string& replace)
                                 {
@@ -83,10 +79,7 @@ void AppManager::initialize()
                                     parameterViewConfig.add("<xmlattr>.by", this->getInputID(replace));
                                     m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
                                 };
-    addActivityViewParam(s_ENABLED_PREVIOUS_CHANNEL_CHANNEL);
-    addActivityViewParam(s_ENABLED_NEXT_CHANNEL_CHANNEL);
-    addActivityViewParam(s_PREVIOUS_CHANNEL);
-    addActivityViewParam(s_NEXT_CHANNEL);
+    addActivityViewParam(s_SERIESDB_INOUT);
 
     // connect to launch the activity when it is created/updated.
     ::fwServices::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
@@ -120,7 +113,7 @@ void AppManager::initialize()
 
 //------------------------------------------------------------------------------
 
-void AppManager::uninitialize()
+void ActivityLauncherManager::uninitialize()
 {
     // stop the started services and unregister all the services
     this->destroy();
@@ -132,7 +125,7 @@ void AppManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-void AppManager::onServiceCreated(const QVariant& obj)
+void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 {
     ::fwQml::IQmlEditor::sptr srv(obj.value< ::fwQml::IQmlEditor* >());
     if (srv)
@@ -159,14 +152,25 @@ void AppManager::onServiceCreated(const QVariant& obj)
 
 //------------------------------------------------------------------------------
 
-void AppManager::previous()
+void ActivityLauncherManager::setActivities(const QList<QString>& list)
+{
+    for(const auto& elt: list)
+    {
+        m_sequencerConfig.add("activity", elt.toStdString());
+
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ActivityLauncherManager::previous()
 {
     this->signal<VoidSignalType>(s_PREVIOUS_SIG)->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-void AppManager::next()
+void ActivityLauncherManager::next()
 {
     this->signal<VoidSignalType>(s_NEXT_SIG)->asyncEmit();
 }

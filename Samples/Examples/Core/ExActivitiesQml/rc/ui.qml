@@ -16,43 +16,14 @@ ApplicationWindow {
 
     title: qsTr("ExActivitiesQml 0.1")
 
-    header: ToolBar {
+    header: activityLauncher.toolbar
 
-        RowLayout {
-            ToolButton{
-                text : "<"
-                onClicked: {
-                    appManager.previous()
-                }
-            }
+    ActivityLauncher {
+        id: activityLauncher
 
-            ToolButton{
-                text : ">"
-                onClicked: {
-                    appManager.next()
-                }
-            }
-        }
+        activityList: ["ExImageReading", "ExImageDisplaying"]
     }
 
-
-    AppManager {
-        id: appManager
-    }
-
-    SActivityView {
-        id: activityView
-
-        onLaunchRequested: {
-            activityStackView.clear(StackView.Immediate)
-            activityStackView.push(Qt.createComponent(path), {"replaceMap": replace}, StackView.Immediate)
-        }
-    }
-
-    StackView {
-        id: activityStackView
-        anchors.fill: parent
-    }
 
     // Set the global theme inside the singleton "Theme" and then set the Window theme via the Singleton
     // This singleton will permit to set the same theme in all window open for this application
@@ -71,10 +42,8 @@ ApplicationWindow {
         Material.primary = Theme.primary
         Material.elevation = Theme.elevation
         appManager.initialize()
-        appManager.onServiceCreated(activityView)
     }
     onClosing: {
-        activityStackView.clear()
-        appManager.uninitialize()
+        activityLauncher.clear()
     }
 }

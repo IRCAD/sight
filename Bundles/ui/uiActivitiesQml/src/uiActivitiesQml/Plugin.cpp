@@ -22,6 +22,7 @@
 
 #include "uiActivitiesQml/Plugin.hpp"
 
+#include "uiActivitiesQml/ActivityLauncherManager.hpp"
 #include "uiActivitiesQml/SActivityView.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
@@ -43,6 +44,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     qmlRegisterType< SActivityView >("uiActivitiesQml", 1, 0, "SActivityView");
+    qmlRegisterType< ActivityLauncherManager >("uiActivitiesQml", 1, 0, "ActivityLauncherManager");
 }
 
 //------------------------------------------------------------------------------

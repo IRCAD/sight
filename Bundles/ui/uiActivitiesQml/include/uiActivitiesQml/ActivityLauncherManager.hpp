@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ExActivitiesQml/config.hpp"
+#include "uiActivitiesQml/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -40,16 +40,16 @@
 /**
  * @brief   This class is started when the bundles is loaded.
  */
-class EXACTIVITIESQML_CLASS_API AppManager : public ::fwQml::IQmlAppManager,
-                                             public ::fwCom::HasSignals
+class UIACTIVITIESQML_CLASS_API ActivityLauncherManager : public ::fwQml::IQmlAppManager,
+                                                          public ::fwCom::HasSignals
 {
 Q_OBJECT
 public:
     /// Constructor.
-    EXACTIVITIESQML_API AppManager() noexcept;
+    UIACTIVITIESQML_API ActivityLauncherManager() noexcept;
 
     /// Destructor. Do nothing.
-    EXACTIVITIESQML_API ~AppManager() noexcept override;
+    UIACTIVITIESQML_API ~ActivityLauncherManager() noexcept override;
 
 public Q_SLOTS:
 
@@ -61,6 +61,12 @@ public Q_SLOTS:
 
     /// Retrieves the services instanciated in Qml
     void onServiceCreated(const QVariant& obj) override;
+
+    /**
+     * @brief Set the list of activity's. they will be launched in the same order
+     * @warning This slot must be called before the initialization
+     */
+    void setActivities(const QList<QString>& list);
 
     void previous();
 
@@ -75,4 +81,5 @@ private:
     ::fwMedData::SeriesDB::sptr m_seriesDB;
 
     ::fwServices::IService::ConfigType m_activityViewConfig;
+    ::fwServices::IService::ConfigType m_sequencerConfig;
 };
