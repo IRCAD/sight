@@ -7,5 +7,3 @@ file(DOWNLOAD https://owncloud.ircad.fr/index.php/s/ZGo6FTVOsQlWycG/download "${
 
 file(DOWNLOAD https://owncloud.ircad.fr/index.php/s/oyo3mDMObZcRpQM/download "${BUNDLE_PATH}/aruco_tag.m4v" SHOW_PROGRESS
       EXPECTED_HASH SHA256=92ffe4f0f89380985980a5c1c2fb7536543dee237cddd21922ead2c4e83ecbe2)
-
-generic_install()

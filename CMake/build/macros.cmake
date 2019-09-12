@@ -981,6 +981,11 @@ macro(fwLoadProperties)
     if(WIN32)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/setpath.bat.in ${CMAKE_BINARY_DIR}/bin/setpath.bat @ONLY)
     endif()
+
+    if( TYPE STREQUAL "EXECUTABLE" OR TYPE STREQUAL "APP" )
+        generic_install()
+    endif()
+
 endmacro()
 
 
