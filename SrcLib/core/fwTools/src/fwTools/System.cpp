@@ -152,7 +152,7 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
     {
         if(!subFolderPrefix.empty())
         {
-            const std::string subDirName = subFolderPrefix + "-" + "%%%%%%%%%%%%";
+            const std::string subDirName = subFolderPrefix + "-";
             fs::path tmpSubDir           = createUniqueFolder(tmpDirPath/subDirName);
             return tmpSubDir;
         }
@@ -162,7 +162,7 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
 
     const fs::path& sysTmp = getTempPath();
 
-    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." SIGHT_TMP_EXT;
+    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "." SIGHT_TMP_EXT;
     fs::path tmpDir              = createUniqueFolder(sysTmp/tmpDirName);
     tmpDirPath = tmpDir;    // tmpDirPath always set to root tmp dir
 
