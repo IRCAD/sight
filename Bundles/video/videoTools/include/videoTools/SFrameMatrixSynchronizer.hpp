@@ -116,9 +116,7 @@ namespace videoTools
  * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
  *
  * @subsection Configuration Configuration
- * - \b matrices defines the matrixTL to synchronize.
- *   - \b from: key of the matrix timeline to extract matrix.
- *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
+ * - \b sendStatus defines for each matrix if we want to send the given matrix/Un/Synchronized (default: false)
  * - \b framerate defines the framerate to call synchronization (default: 30). If it is set to 0, then the service does
  * not synchronize periodically. You'll have then to call the slot "synchronize" yourself.
  * - \b tolerance defines the maximum distance between two frames (default: 500).
