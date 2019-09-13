@@ -291,10 +291,8 @@ void SFrameMatrixSynchronizer::synchronize()
             OSLM_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
 
             // Notify each matrices in the ith TL that they are unsychronized
-            const size_t nbMatricesStatus = m_sendMatricesStatus[i].size();
-            for(size_t statusIndex = 0; statusIndex < nbMatricesStatus; ++statusIndex)
+            for(const int sendStatus : m_sendMatricesStatus[i])
             {
-                const int sendStatus = m_sendMatricesStatus[i][statusIndex];
                 if(sendStatus != -1)
                 {
                     m_sigMatrixUnsynchronized->asyncEmit(sendStatus);
@@ -412,9 +410,8 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            for(unsigned int k = 0; k < m_sendMatricesStatus[tlIdx].size(); ++k)
+            for(const int sendStatus : < m_sendMatricesStatus[tlIdx])
             {
-                const int sendStatus = m_sendMatricesStatus[tlIdx][k];
                 if(sendStatus != -1)
                 {
                     m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
