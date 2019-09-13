@@ -362,7 +362,6 @@ void SWriter::updating()
         FW_RAISE_IF( "can't write to : " << requestedFilePath << ", it is a directory.",
                      std::filesystem::is_directory(requestedFilePath)
                      );
-        filePath = filePath / std::tmpnam(nullptr);
     }
 
     const std::filesystem::path folderPath = filePath.parent_path();
