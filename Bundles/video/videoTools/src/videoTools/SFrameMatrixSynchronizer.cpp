@@ -410,11 +410,11 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            for(const int sendStatus : < m_sendMatricesStatus[tlIdx])
+            for(const int sendStatus : m_sendMatricesStatus[tlIdx])
             {
                 if(sendStatus != -1)
                 {
-                    m_sigMatrixUnsynchronized->asyncEmit(m_sendMatricesStatus[tlIdx][k]);
+                    m_sigMatrixUnsynchronized->asyncEmit(sendStatus);
                 }
             }
         }
