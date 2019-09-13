@@ -39,8 +39,6 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
 
-#include <boost/make_shared.hpp>
-
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::Series);
 
 namespace fwGdcmIO

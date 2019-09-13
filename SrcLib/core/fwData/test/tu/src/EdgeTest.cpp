@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,15 @@
  *
  ***********************************************************************/
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <fwData/Edge.hpp>
 #include "EdgeTest.hpp"
 
+#include <fwData/Edge.hpp>
+
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::EdgeTest );
@@ -39,21 +38,27 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void EdgeTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void EdgeTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
+
 void EdgeTest::methode1()
 {
     //-----------test values
-    const std::string STR1 = "toto";
-    const std::string STR2 = "titi";
+    const std::string STR1 = "foo";
+    const std::string STR2 = "bar";
     const std::string STR3 = ::fwData::Edge::NATURE_FLOW;
     ::fwData::Edge::sptr edge = ::fwData::Edge::New();
 
@@ -67,4 +72,3 @@ void EdgeTest::methode1()
 
 } //namespace ut
 } //namespace fwData
-

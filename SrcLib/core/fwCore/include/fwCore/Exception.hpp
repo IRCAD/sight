@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,30 +20,22 @@
  *
  ***********************************************************************/
 
+#pragma once
 
-#ifndef __FWCORE_EXCEPTION_HPP__
-#define __FWCORE_EXCEPTION_HPP__
-
+#include "fwCore/config.hpp"
 
 #include <stdexcept>
 #include <string>
 
-#include <boost/exception/exception.hpp>
-
-#include "fwCore/config.hpp"
-
 namespace fwCore
 {
-
 
 class FWCORE_CLASS_API Exception : public std::runtime_error
 {
 
 public:
-    FWCORE_API Exception ( const std::string &err );
+    FWCORE_API Exception ( const std::string& err );
 
 };
 
 } //namespace fwCore
-
-#endif //__FWCORE_EXCEPTION_HPP__

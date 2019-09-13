@@ -32,8 +32,6 @@
 
 #include <fwMedData/ImageSeries.hpp>
 
-#include <boost/algorithm/string/trim.hpp>
-
 namespace fwGdcmIO
 {
 namespace reader

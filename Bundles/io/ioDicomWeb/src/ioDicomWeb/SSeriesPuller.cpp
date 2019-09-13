@@ -77,11 +77,11 @@ void SSeriesPuller::configuring()
     bool success;
 
     // Dicom Reader
-    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
+    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
     SLM_ASSERT("It should be a \"dicomReader\" in the ::ioDicomWeb::SSeriesPuller config element.", success);
 
     // Dicom Reader Config
-    ::boost::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
+    std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
 
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname

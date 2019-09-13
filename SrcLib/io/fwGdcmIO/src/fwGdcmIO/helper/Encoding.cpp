@@ -29,7 +29,6 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
 #include <boost/locale/encoding.hpp>
 
 namespace fwGdcmIO

@@ -33,8 +33,6 @@
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 #include <regex>
 
 namespace ctrlCamp

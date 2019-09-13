@@ -35,8 +35,6 @@
 
 #include <fwTools/dateAndTime.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <gdcmUIDGenerator.h>
 
 namespace fwGdcmIO

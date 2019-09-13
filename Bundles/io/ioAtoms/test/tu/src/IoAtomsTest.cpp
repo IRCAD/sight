@@ -45,8 +45,6 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/property_tree/ptree.hpp>
-
 #include <filesystem>
 
 // Registers the fixture into the 'registry'

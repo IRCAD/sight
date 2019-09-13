@@ -281,6 +281,8 @@ FWTOOLS_API void Type::setType< std::int64_t >();
 template <>
 FWTOOLS_API void Type::setType< std::uint64_t >();
 
+#endif // linux
+
 //-----------------------------------------------------------------------------
 
 template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>

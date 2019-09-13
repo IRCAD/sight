@@ -30,8 +30,6 @@
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <boost/shared_ptr.hpp>
-
 #include <OGRE/OgreMatrix4.h>
 #include <OGRE/OgreMovableObject.h>
 #include <OGRE/OgreSceneManager.h>

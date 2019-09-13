@@ -42,8 +42,6 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <boost/algorithm/string/split.hpp>
-
 #include <gdcmAttribute.h>
 #include <gdcmDirectory.h>
 #include <gdcmMediaStorage.h>

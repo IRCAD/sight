@@ -56,8 +56,6 @@
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 namespace ioVTK
 {
 

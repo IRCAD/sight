@@ -28,7 +28,6 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/regex.h>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>

@@ -37,8 +37,6 @@
 #include <fwRenderOgre/Mesh.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>
 
-#include <boost/shared_ptr.hpp>
-
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 

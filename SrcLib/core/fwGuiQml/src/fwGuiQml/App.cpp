@@ -28,8 +28,6 @@
 
 #include <fwTools/Os.hpp>
 
-#include <boost/tokenizer.hpp>
-
 #include <filesystem>
 #include <locale.h>
 #include <QCursor>

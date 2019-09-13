@@ -37,8 +37,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/tokenizer.hpp>
-
 #include <vtkAbstractPropPicker.h>
 #include <vtkActor.h>
 #include <vtkCommand.h>

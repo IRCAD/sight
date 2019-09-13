@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,8 +29,6 @@
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <boost/foreach.hpp>
 
 namespace ioDicom
 {
@@ -93,7 +91,7 @@ void SSeriesDBMerger::updating()
     {
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
 
-        if(series && std::find(container.begin(),container.end(), series) == container.end())
+        if(series && std::find(container.begin(), container.end(), series) == container.end())
         {
             sDBhelper.add(series);
             addedSeries.push_back(series);
@@ -118,7 +116,7 @@ void SSeriesDBMerger::updating()
     else
     {
         std::stringstream ss;
-        if(addedSeries.size()==1)
+        if(addedSeries.size() == 1)
         {
             ss << addedSeries.size() << " series has been correctly pushed in the database:\n";
         }

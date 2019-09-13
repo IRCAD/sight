@@ -35,8 +35,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <dcmtk/dcmnet/scu.h>
 
 #include <filesystem>

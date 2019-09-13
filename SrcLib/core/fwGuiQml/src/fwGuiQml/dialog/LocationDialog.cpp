@@ -34,8 +34,6 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/tokenizer.hpp>
-
 #include <filesystem>
 #include <QDir>
 #include <QGuiApplication>

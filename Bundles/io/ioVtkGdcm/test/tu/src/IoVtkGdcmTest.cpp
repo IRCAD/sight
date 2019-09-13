@@ -46,8 +46,6 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
-#include <boost/algorithm/string/trim.hpp>
-
 #include <filesystem>
 
 // Registers the fixture into the 'registry'

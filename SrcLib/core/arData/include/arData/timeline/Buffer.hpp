@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_TIMELINE_BUFFER_HPP__
-#define __ARDATA_TIMELINE_BUFFER_HPP__
+#pragma once
 
-#include <boost/function.hpp>
-
-#include "arData/timeline/Object.hpp"
 #include "arData/config.hpp"
+#include "arData/timeline/Object.hpp"
 
 namespace arData
 {
@@ -41,7 +38,7 @@ class ARDATA_CLASS_API Buffer : public arData::timeline::Object
 {
 public:
     typedef uint8_t* BufferDataType;
-    typedef ::boost::function< void (void*) > DeleterType;
+    typedef std::function< void (void*) > DeleterType;
 
     /// Constructor
     ARDATA_API Buffer(::fwCore::HiResClock::HiResClockType timestamp = 0,
@@ -75,5 +72,3 @@ protected:
 } // namespace timeline
 
 } // namespace arData
-
-#endif /* __ARDATA_TIMELINE_BUFFER_HPP__ */

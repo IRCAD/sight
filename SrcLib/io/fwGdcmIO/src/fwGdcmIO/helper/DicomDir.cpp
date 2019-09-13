@@ -36,7 +36,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/regex.h>
 
 #include <filesystem>
 #include <gdcmMediaStorage.h>

@@ -60,9 +60,6 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/asio/placeholders.hpp>
-#include <boost/foreach.hpp>
-
 #include <filesystem>
 #include <QApplication>
 #include <QComboBox>
@@ -101,7 +98,7 @@ void SSliceIndexDicomPullerEditor::configuring()
     bool success;
 
     // Reader
-    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
+    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
     SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioDicomWeb::SSliceIndexDicomPullerEditor "
                "config element.", success);
 
@@ -112,7 +109,7 @@ void SSliceIndexDicomPullerEditor::configuring()
 
     // Delay
     std::string delayStr;
-    ::boost::tie(success, delayStr) = config->getSafeAttributeValue("delay");
+    std::tie(success, delayStr) = config->getSafeAttributeValue("delay");
     if(success)
     {
         m_delay = ::boost::lexical_cast< unsigned int >(delayStr);

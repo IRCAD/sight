@@ -38,8 +38,6 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <boost/algorithm/clamp.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 // Removes RGB macro defined in windows.h
 // to avoid conflicts in gdcmSurfaceHelper.h

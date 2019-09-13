@@ -39,8 +39,6 @@
 #include <fwTools/Type.hpp>
 
 #include <filesystem>
-#include <filesystem>
-#include <boost/foreach.hpp>
 
 #include <stdarg.h>
 #include <stdio.h>

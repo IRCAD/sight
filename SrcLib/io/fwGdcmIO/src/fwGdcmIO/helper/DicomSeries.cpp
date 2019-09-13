@@ -38,7 +38,6 @@
 #include <fwMedData/Study.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/regex.h>
 
 #include <filesystem>
 #include <gdcmMediaStorage.h>

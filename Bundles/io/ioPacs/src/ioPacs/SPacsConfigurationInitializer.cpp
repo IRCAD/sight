@@ -30,8 +30,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <utility>
 
 namespace ioPacs
@@ -110,42 +108,42 @@ void SPacsConfigurationInitializer::configuring()
     bool success;
 
     /// Local application title
-    ::boost::tie(success, m_localApplicationTitle) = config->getSafeAttributeValue("localApplicationTitle");
+    std::tie(success, m_localApplicationTitle) = config->getSafeAttributeValue("localApplicationTitle");
     SLM_ASSERT("It should be a \"localApplicationTitle\" tag in the "
                "::ioPacs::SPacsConfigurationInitializer config element.", success);
 
     /// Pacs host name
-    ::boost::tie(success, m_pacsHostName) = config->getSafeAttributeValue("pacsHostName");
+    std::tie(success, m_pacsHostName) = config->getSafeAttributeValue("pacsHostName");
     SLM_ASSERT("It should be a \"pacsHostName\" tag in the "
                "::ioPacs::SPacsConfigurationInitializer config element.", success);
 
     /// Pacs application title
-    ::boost::tie(success, m_pacsApplicationTitle) = config->getSafeAttributeValue("pacsApplicationTitle");
+    std::tie(success, m_pacsApplicationTitle) = config->getSafeAttributeValue("pacsApplicationTitle");
     SLM_ASSERT("It should be a \"pacsApplicationTitle\" tag in the "
                "::ioPacs::SPacsConfigurationInitializer config element.", success);
 
     /// Pacs port
     std::string pacsApplicationPort;
-    ::boost::tie(success, pacsApplicationPort) = config->getSafeAttributeValue("pacsApplicationPort");
+    std::tie(success, pacsApplicationPort) = config->getSafeAttributeValue("pacsApplicationPort");
     SLM_ASSERT("It should be a \"pacsApplicationPort\" tag in the "
                "::ioPacs::SPacsConfigurationInitializer config element.", success);
     m_pacsApplicationPort = ::boost::lexical_cast< unsigned short >(pacsApplicationPort.c_str());
 
     /// Move application title
-    ::boost::tie(success, m_moveApplicationTitle) = config->getSafeAttributeValue("moveApplicationTitle");
+    std::tie(success, m_moveApplicationTitle) = config->getSafeAttributeValue("moveApplicationTitle");
     SLM_ASSERT("It should be a \"moveApplicationTitle\" tag in the "
                "::ioPacs::SPacsConfigurationInitializer config element.", success);
 
     /// Move application port
     std::string moveApplicationPort;
-    ::boost::tie(success, moveApplicationPort) = config->getSafeAttributeValue("moveApplicationPort");
+    std::tie(success, moveApplicationPort) = config->getSafeAttributeValue("moveApplicationPort");
     SLM_ASSERT("It should be a \"moveApplicationPort\" tag in the "
                "::ioPacs::SPacsConfigurationInitializer config element.", success);
     m_moveApplicationPort = ::boost::lexical_cast< unsigned short >(moveApplicationPort.c_str());
 
     /// Retrieve Method
     std::string retrieveMethod;
-    ::boost::tie(success, retrieveMethod) = config->getSafeAttributeValue("retrieveMethod");
+    std::tie(success, retrieveMethod) = config->getSafeAttributeValue("retrieveMethod");
     SLM_ASSERT("It should be a \"retrieveMethod\" tag in the "
                "::ioPacs::SPacsConfigurationInitializer config element.", success);
     m_retrieveMethod = (retrieveMethod == "GET") ?

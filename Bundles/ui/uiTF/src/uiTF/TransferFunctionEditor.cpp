@@ -45,8 +45,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <filesystem>
 #include <QBoxLayout>
 #include <QComboBox>
