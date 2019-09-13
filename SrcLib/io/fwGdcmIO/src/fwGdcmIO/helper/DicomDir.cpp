@@ -52,7 +52,7 @@ std::filesystem::path DicomDir::findDicomDir(const std::filesystem::path& root)
 {
     std::filesystem::path current = root;
 
-    while(std::filesystem::exists(current))
+    while(std::filesystem::exists(current) && current != current.root_path())
     {
         std::filesystem::path dicomDirPath = current / "dicomdir";
         if(std::filesystem::exists(dicomDirPath) && !std::filesystem::is_directory(dicomDirPath))
