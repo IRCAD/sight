@@ -26,7 +26,7 @@
 
 #include <filesystem>
 #include <fstream>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/lexical_cast.hpp>
 
 // for PID
@@ -207,7 +207,7 @@ int System::tempFolderPID(const std::filesystem::path& dir) noexcept
 {
     namespace fs = std::filesystem;
 
-    const ::boost::regex pidFilter( "([[:digit:]]+)\\.pid" );
+    const std::regex pidFilter( "([[:digit:]]+)\\.pid" );
 
     int pid = 0;
 
@@ -224,11 +224,11 @@ int System::tempFolderPID(const std::filesystem::path& dir) noexcept
                 continue;
             }
 
-            ::boost::smatch what;
+            std::smatch what;
 
             // Skip if no match
             const std::string s = i->path().filename().string();
-            if( !::boost::regex_match( s, what, pidFilter ) )
+            if( !std::regex_match( s, what, pidFilter ) )
             {
                 continue;
             }
@@ -258,7 +258,7 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 {
     namespace fs = std::filesystem;
 
-    const ::boost::regex tmpFolderFilter( ".*\\." SIGHT_TMP_EXT );
+    const std::regex tmpFolderFilter( ".*\\." SIGHT_TMP_EXT );
 
     std::vector< fs::path > allTempFolders;
 
@@ -273,10 +273,11 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
             continue;
         }
 
-        ::boost::smatch what;
+        std::smatch what;
 
         // Skip if no match
-        if( !::boost::regex_match( i->path().filename().string(), what, tmpFolderFilter ) )
+        std::string s = i->path().filename().string();
+        if( !std::regex_match( s, what, tmpFolderFilter ) )
         {
             continue;
         }

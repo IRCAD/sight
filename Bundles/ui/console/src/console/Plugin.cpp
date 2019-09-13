@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -67,7 +67,7 @@ int Plugin::run() noexcept
     m_worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    const std::uint64_t result = ::boost::any_cast<std::uint64_t>(m_worker->getFuture().get());
+    const std::uint64_t result = std::any_cast<std::uint64_t>(m_worker->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
     m_worker.reset();

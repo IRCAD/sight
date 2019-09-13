@@ -33,14 +33,13 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/regex.hpp>
-
 #include <filesystem>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
 
 #include <cstdint>
+#include <regex>
 
 namespace videoPCL
 {
@@ -267,9 +266,9 @@ void SFrameGrabber::grabImage()
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
         const std::string imageName = imagePath.filename().string();
-        static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
-        ::boost::smatch match;
-        if (!::boost::regex_match(imageName, match, s_TIMESTAMP))
+        static const std::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
+        std::smatch match;
+        if (!std::regex_match(imageName, match, s_TIMESTAMP))
         {
             SLM_ERROR("Could not find a timestamp in file name: " + imageName);
             return;

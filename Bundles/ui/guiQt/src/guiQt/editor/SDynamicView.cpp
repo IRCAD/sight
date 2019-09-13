@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -397,9 +397,9 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
     else
     {
         std::string newTabInfo = info.tabInfo;
-        ::boost::regex e("(!(([[:word:]]+\\.?)+[[:word:]]))");
-        ::boost::smatch what;
-        if(boost::regex_search(newTabInfo, what, e))
+        std::regex e("(!(([[:word:]]+\\.?)+[[:word:]]))");
+        std::smatch what;
+        if(std::regex_search(newTabInfo, what, e))
         {
             std::string submatch(what[1].first, what[1].second);
 

@@ -29,7 +29,7 @@
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
 
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace fwServices
 {
@@ -46,7 +46,7 @@ AppConfig::UidDefinitionType AppConfig::s_uidDefinitionDictionary = { { "object"
                                                                       { "view", "sid" },
                                                                       { "view", "wid" },
                                                                       { "connect", "channel" }, };
-static const ::boost::regex s_isVariable( "\\${.*}.*" );
+static const std::regex s_isVariable( "\\${.*}.*" );
 
 //-----------------------------------------------------------------------------
 
@@ -307,7 +307,7 @@ void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement:
 
         for (auto it = range.first; it != range.second; ++it)
         {
-            if(it->second == attribute.first && !::boost::regex_match(attribute.second, s_isVariable ) )
+            if(it->second == attribute.first && !std::regex_match(attribute.second, s_isVariable ) )
             {
                 _replaceMap.insert(attribute.second);
             }
@@ -341,7 +341,7 @@ void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement:
                attribute.first == "channel" )
             {
                 // Detect if we have a variable name
-                if ( !::boost::regex_match( attribute.second, s_isVariable ) )
+                if ( !std::regex_match( attribute.second, s_isVariable ) )
                 {
                     // This is not a variable, add the prefix
                     result->setAttributeValue( attribute.first,
@@ -353,7 +353,7 @@ void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement:
             else if(attribute.first == "by")
             {
                 // Detect if we have a variable name
-                if ( !::boost::regex_match( attribute.second, s_isVariable ) )
+                if ( !std::regex_match( attribute.second, s_isVariable ) )
                 {
                     // Look inside the map of potential replacements
                     auto itParam = _uidParameterReplace.find(attribute.second);
@@ -377,7 +377,7 @@ void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement:
         if( !_autoPrefixId.empty() && (subElem->getName() == "signal" || subElem->getName() == "slot" ) )
         {
             // Detect if we have a variable name
-            if ( !::boost::regex_match( subElem->getValue(), s_isVariable ) )
+            if ( !std::regex_match( subElem->getValue(), s_isVariable ) )
             {
                 // This is not a variable, add the prefix
                 auto elt = ::fwRuntime::EConfigurationElement::New( subElem->getName() );
@@ -409,17 +409,18 @@ std::string AppConfig::adaptField( const std::string& _str, const FieldAdaptorTy
         // Discriminate first variable expressions only, looking through all keys of the replace map is not for free
         // However we look inside the whole string instead of only at the beginning because we want  to replace "inner"
         // variables as well, i.e. not only ${uid} but also uid${suffix}
-        if ( ::boost::regex_search(_str, s_isVariable ) )
+        if ( std::regex_search(_str, s_isVariable ) )
         {
             // Iterate over all variables
             for(const auto& fieldAdaptor : _variablesMap )
             {
-                const ::boost::regex varRegex( "(.*)" + fieldAdaptor.first + "(.*)" );
-                if ( ::boost::regex_match( _str, varRegex ) )
+                const std::regex varRegex( "(.*)" + fieldAdaptor.first + "(.*)" );
+                if ( std::regex_match( _str, varRegex ) )
                 {
                     const std::string varReplace("\\1" + fieldAdaptor.second + "\\2");
-                    newStr = ::boost::regex_replace( newStr, varRegex, varReplace,
-                                                     ::boost::match_default | ::boost::format_sed );
+                    newStr = std::regex_replace( newStr, varRegex, varReplace,
+                                                 std::regex_constants::match_default |
+                                                 std::regex_constants::format_sed );
                 }
             }
         }

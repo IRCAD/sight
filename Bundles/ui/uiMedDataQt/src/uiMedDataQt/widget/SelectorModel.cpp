@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,11 +41,12 @@
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/math/special_functions/round.hpp>
-#include <boost/regex.hpp>
 
 #include <QFont>
 #include <QStandardItem>
 #include <QString>
+
+#include <regex>
 
 namespace uiMedDataQt
 {
@@ -131,9 +132,9 @@ std::string formatDate(const std::string& date)
     const std::string regexDay   = "[0-9]{2}";
 
     const std::string regexStr = "("+regexYyear+")"+"("+regexMonth+")"+"("+regexDay+")";
-    ::boost::regex re(regexStr);
-    ::boost::smatch match;
-    if( ::boost::regex_match(formatDate, match, re) )
+    std::regex re(regexStr);
+    std::smatch match;
+    if( std::regex_match(formatDate, match, re) )
     {
         std::string year, month, day, hour, min, sec;
         OSLM_ASSERT("Wrong match for "<<formatDate, match.size() >= 4);
@@ -160,9 +161,9 @@ std::string formatTime(const std::string& time)
     const std::string regexEnd  = "[.0-9]*";
 
     const std::string regexStr = "("+regexHour+")"+"("+regexMin+")"+"("+regexSec+")"+regexEnd;
-    ::boost::regex re(regexStr);
-    ::boost::smatch match;
-    if( ::boost::regex_match(formatTime, match, re) )
+    std::regex re(regexStr);
+    std::smatch match;
+    if( std::regex_match(formatTime, match, re) )
     {
         std::string year, month, day, hour, min, sec;
         OSLM_ASSERT("Wrong match for "<<formatTime, match.size() >= 4);

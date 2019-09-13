@@ -25,9 +25,9 @@
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
-#include <boost/regex.hpp>
-
 #include <filesystem>
+
+#include <regex>
 
 namespace fwRuntime
 {
@@ -112,9 +112,9 @@ struct Native
 
     /**
      * @brief  Retrieves the pattern of the dynamic library file name given the host OS
-     * @return the boost::regex
+     * @return the std::regex
      */
-    const ::boost::regex getNativeName() const;
+    const std::regex getNativeName() const;
 
     private:
 

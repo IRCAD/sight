@@ -34,7 +34,8 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/regex.hpp>
+
+#include <regex>
 
 namespace ctrlCamp
 {
@@ -120,11 +121,11 @@ void SExtractMeshByType::updating()
         {
             if(element->getStructureType() == type)
             {
-                const ::boost::regex regSurface(regex);
-                ::boost::smatch match;
+                const std::regex regSurface(regex);
+                std::smatch match;
                 const std::string name = element->getOrganName();
 
-                if(regex.empty() || ::boost::regex_match(name, match, regSurface))
+                if(regex.empty() || std::regex_match(name, match, regSurface))
                 {
                     ::fwData::Mesh::sptr obj = element->getMesh();
 

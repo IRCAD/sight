@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,21 +22,21 @@
 
 #include "SpyLogTest.hpp"
 
-#include <fwCore/spyLog.hpp>
 #include <fwCore/mt/types.hpp>
+#include <fwCore/spyLog.hpp>
 
 #include <fwTest/Exception.hpp>
 
-#include <boost/regex.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/algorithm/string/regex_find_format.hpp>
 
-#include <iostream>
 #include <exception>
+#include <iostream>
+#include <regex>
 #include <streambuf>
-#include <thread>
 #include <string>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::SpyLogTest );
@@ -47,6 +47,8 @@ namespace ut
 {
 
 static ::fwTest::Exception e("");
+
+//------------------------------------------------------------------------------
 
 void SpyLogTest::setUp()
 {
@@ -105,6 +107,8 @@ struct LogProducerThread
     {
     }
 
+    //------------------------------------------------------------------------------
+
     void run(LogContainerType& logs, size_t nbLogs, size_t offset)
     {
         ::fwCore::log::SpyLogger& log = ::fwCore::log::SpyLogger::getSpyLogger();
@@ -125,13 +129,15 @@ struct LogProducerThread
 
 struct RegexLogCompare
 {
+    //------------------------------------------------------------------------------
+
     bool operator() (std::string a, std::string b)
     {
-        boost::regex re(".*(msg n [[:digit:]]+)$");
-        boost::smatch matchA;
-        boost::smatch matchB;
-        bool doMatchA = boost::regex_match(a, matchA, re);
-        bool doMatchB = boost::regex_match(b, matchB, re);
+        std::regex re(".*(msg n [[:digit:]]+)$");
+        std::smatch matchA;
+        std::smatch matchB;
+        bool doMatchA = std::regex_match(a, matchA, re);
+        bool doMatchB = std::regex_match(b, matchB, re);
         CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + a, doMatchA);
         CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + b, doMatchB);
 
@@ -142,12 +148,14 @@ struct RegexLogCompare
     }
 } regex_compare;
 
+//------------------------------------------------------------------------------
+
 void SpyLogTest::threadSafetyTest()
 {
     m_ostream.clear();
     const size_t NB_THREAD(20);
     const size_t NB_LOG(20);
-    LogProducerThread::LogContainerType logs(NB_THREAD * NB_LOG, "test");
+    LogProducerThread::LogContainerType logs(NB_THREAD* NB_LOG, "test");
     std::vector< std::thread > tg;
     for(size_t i = 0; i < NB_THREAD; ++i)
     {
@@ -168,7 +176,7 @@ void SpyLogTest::threadSafetyTest()
 
 //-----------------------------------------------------------------------------
 
-std::vector<std::string> SpyLogTest::logToVector(const std::stringstream &logsStream)
+std::vector<std::string> SpyLogTest::logToVector(const std::stringstream& logsStream)
 {
     std::vector<std::string> lines;
     std::string line;
@@ -183,7 +191,7 @@ std::vector<std::string> SpyLogTest::logToVector(const std::stringstream &logsSt
 
 //-----------------------------------------------------------------------------
 
-void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const std::vector<std::string> &logMessages)
+void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const std::vector<std::string>& logMessages)
 {
     CPPUNIT_ASSERT_EQUAL(logMessagesRef.size(), logMessages.size());
 
@@ -194,7 +202,7 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
     const std::string fileLinePattern("([0-9]+: )");
     const std::string messagePattern("(.*)$");
 
-    boost::regex re(
+    std::regex re(
         linePattern
         + timePattern
         + levelPattern
@@ -202,13 +210,13 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
         + fileLinePattern
         + messagePattern );
 
-    boost::smatch match;
+    std::smatch match;
     std::string regexMessage;
     size_t i = 0;
 
-    for(const std::string &log :  logMessages)
+    for(const std::string& log :  logMessages)
     {
-        bool doMatch = boost::regex_match(log, match, re);
+        bool doMatch = std::regex_match(log, match, re);
 
         CPPUNIT_ASSERT_MESSAGE(log + " don't match regex.", doMatch);
 

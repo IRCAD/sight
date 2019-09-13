@@ -1,11 +1,8 @@
 fwLoadProperties()
 
-find_package(Boost QUIET COMPONENTS Regex REQUIRED)
 find_package(Qt5 QUIET COMPONENTS Core Gui Quick Qml QuickControls2 REQUIRED)
 
-
 fwForwardInclude(
-    ${Boost_REGEX_INCLUDE_DIRS}
     ${Qt5Core_INCLUDE_DIRS}
     ${Qt5Gui_INCLUDE_DIRS}
     ${Qt5Quick_INCLUDE_DIRS}
@@ -14,7 +11,6 @@ fwForwardInclude(
 )
 
 fwLink(
-       ${Boost_REGEX_LIBRARY}
        ${Qt5Core_LIBRARIES}
        ${Qt5Gui_LIBRARIES}
        ${Qt5Quick_LIBRARIES}

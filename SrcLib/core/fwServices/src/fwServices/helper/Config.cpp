@@ -35,8 +35,7 @@
 
 #include <fwTools/Object.hpp>
 
-#include <boost/regex.hpp>
-
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -81,14 +80,14 @@ Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::Configuratio
 {
     ConnectionInfo info;
 
-    ::boost::regex re("(.*)/(.*)");
-    ::boost::smatch match;
+    std::regex re("(.*)/(.*)");
+    std::smatch match;
     std::string src, uid, key;
 
     for(::fwRuntime::ConfigurationElement::csptr elem :   connectionCfg->getElements())
     {
         src = elem->getValue();
-        if( ::boost::regex_match(src, match, re) )
+        if( std::regex_match(src, match, re) )
         {
             OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
@@ -133,8 +132,8 @@ ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationEleme
 #ifndef _DEBUG
     FwCoreNotUsedMacro(errMsgHead);
 #endif
-    ::boost::regex re("(.*)/(.*)");
-    ::boost::smatch match;
+    std::regex re("(.*)/(.*)");
+    std::smatch match;
     std::string src, uid, key;
 
     std::string channel;
@@ -154,7 +153,7 @@ ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationEleme
     for(::fwRuntime::ConfigurationElement::csptr elem : connectionCfg->getElements())
     {
         src = elem->getValue();
-        if( ::boost::regex_match(src, match, re) )
+        if( std::regex_match(src, match, re) )
         {
             OSLM_ASSERT("errMsgHead + Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
@@ -196,13 +195,13 @@ void Config::createProxy( const std::string& objectKey,
     const std::string channel = cfg->getExistingAttributeValue("channel");
     ProxyConnections proxyCnt(channel);
 
-    ::boost::regex re("(.*)/(.*)");
-    ::boost::smatch match;
+    std::regex re("(.*)/(.*)");
+    std::smatch match;
     std::string src, uid, key;
     for(::fwRuntime::ConfigurationElement::csptr elem :   cfg->getElements())
     {
         src = elem->getValue();
-        if( ::boost::regex_match(src, match, re) )
+        if( std::regex_match(src, match, re) )
         {
             SLM_ASSERT("Wrong value for attribute src: " + src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);

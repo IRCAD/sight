@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace gui
 {
@@ -138,14 +138,14 @@ void SSlotCaller::configuring()
 
     ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement(s_SLOT_KEY);
 
-    ::boost::regex re("(.*)/(.*)");
-    ::boost::smatch match;
+    std::regex re("(.*)/(.*)");
+    std::smatch match;
     std::string src, uid, key;
 
     for(ConfigurationType elem :   slotCfgs.getElements())
     {
         src = elem->getValue();
-        if( ::boost::regex_match(src, match, re) )
+        if( std::regex_match(src, match, re) )
         {
             OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);

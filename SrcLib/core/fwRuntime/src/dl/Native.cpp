@@ -86,20 +86,20 @@ const std::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
 
 //------------------------------------------------------------------------------
 
-const ::boost::regex Native::getNativeName() const
+const std::regex Native::getNativeName() const
 {
     const std::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
-    ::boost::regex nativeName;
+    std::regex nativeName;
 
 #if defined(linux) || defined(__linux)
-    nativeName = ::boost::regex(
+    nativeName = std::regex(
         "lib" + fullModulePath.filename().string() + "\\.so" +
         "[0-9\\.]*" );
 #elif defined(WIN32)
-    nativeName = ::boost::regex(
+    nativeName = std::regex(
         fullModulePath.filename().string() + "\\.dll");
 #elif defined (__APPLE__)
-    nativeName = ::boost::regex(
+    nativeName = std::regex(
         "lib" + fullModulePath.filename().string() + "[0-9\\.]*\\.dylib" );
 #endif
 
@@ -116,7 +116,7 @@ const std::filesystem::path Native::getPath() const
     std::filesystem::path result;
 
     const std::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
-    const ::boost::regex nativeFileRegex( this->getNativeName() );
+    const std::regex nativeFileRegex( this->getNativeName() );
 
     // Walk through the module directory, seeking for a matching file.
     std::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
@@ -124,7 +124,7 @@ const std::filesystem::path Native::getPath() const
     for(; curDirEntry != endDirEntry; ++curDirEntry)
     {
         std::filesystem::path curEntryPath( *curDirEntry );
-        if( ::boost::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
+        if( std::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
         {
             result = m_modulePath.parent_path() / curEntryPath.filename();
             break;

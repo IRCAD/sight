@@ -31,8 +31,6 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
-#include <boost/regex.hpp>
-
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
 
@@ -183,12 +181,12 @@ std::string Shading::setPermutationInProgramName(const std::string& _name, const
     std::string prgName;
 
     // Clear the suffix in shader names (+VT+...)
-    static const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P)", ::boost::regex::extended);
-    prgName = ::boost::regex_replace(_name, regexConcat, "$1");
+    static const std::regex regexConcat("\\N{plus-sign}.*(_[FV]P)", std::regex::extended);
+    prgName = std::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique
-    static const ::boost::regex regexShading("("+s_AMBIENT+")|("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
-    prgName = ::boost::regex_replace(prgName, regexShading, _permutation);
+    static const std::regex regexShading("("+s_AMBIENT+")|("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
+    prgName = std::regex_replace(prgName, regexShading, _permutation);
 
     return prgName;
 }
@@ -200,8 +198,8 @@ std::string Shading::setTechniqueInProgramName(const std::string& _name, const s
     std::string prgName;
 
     // Replace the technique and the pass names
-    static const ::boost::regex regex(".*/");
-    prgName = ::boost::regex_replace(_name, regex, _tech + "/");
+    static const std::regex regex(".*/");
+    prgName = std::regex_replace(_name, regex, _tech + "/");
 
     return prgName;
 }

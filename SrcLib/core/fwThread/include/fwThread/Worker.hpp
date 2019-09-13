@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <boost/any.hpp>
 #include <future>
+#include <any>
 
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
@@ -48,7 +48,7 @@ class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject
 public:
     typedef ::fwCore::HiResClock::HiResClockType PeriodType;
     typedef std::function< void () > TaskType;
-    typedef ::boost::any ExitReturnType;
+    typedef std::any ExitReturnType;
 
     typedef std::shared_future< ExitReturnType > FutureType;
 
@@ -71,7 +71,7 @@ public:
      * immediately.
      *
      * @tparam R future's value type
-     * @tparam CALLABLE Any type wrappable with a boost::function< void() >
+     * @tparam CALLABLE Any type wrappable with a std::function< void() >
      *
      * @returns a std::shared_future associated with the result of the given callable
      */

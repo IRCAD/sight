@@ -166,7 +166,7 @@ std::filesystem::path DicomDir::getRealFilename(
     for(std::vector<std::string>::iterator it = elements.begin(); it != elements.end(); ++it)
     {
         std::string current = *it;
-        ::boost::regex regex(DicomDir::createRegex(current));
+        std::regex regex(DicomDir::createRegex(current));
 
         std::filesystem::directory_iterator dirIt(result), dirItEnd;
         std::string child;
@@ -176,7 +176,7 @@ std::filesystem::path DicomDir::getRealFilename(
         for (; dirIt != dirItEnd; ++dirIt)
         {
             child = dirIt->path().filename().string();
-            if (::boost::regex_match(child, regex))
+            if (std::regex_match(child, regex))
             {
                 FW_RAISE_IF("There is more than one file matching the uppercase filename stored "
                             "in the dicom instance: \""+filename+"\"", matchFound);

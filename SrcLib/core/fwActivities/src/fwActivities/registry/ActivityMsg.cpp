@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2017 IRCAD France
- * Copyright (C) 2015-2017 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,8 @@
 #include <fwTools/UUID.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/regex.hpp>
+
+#include <regex>
 
 namespace fwActivities
 {
@@ -59,9 +60,9 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
     else
     {
         std::string newTabInfo = info.tabInfo;
-        ::boost::regex e("(!(([[:word:]]+\\.?)+[[:word:]]))");
-        ::boost::smatch what;
-        if(boost::regex_search(newTabInfo, what, e))
+        std::regex e("(!(([[:word:]]+\\.?)+[[:word:]]))");
+        std::smatch what;
+        if(std::regex_search(newTabInfo, what, e))
         {
             std::string submatch(what[1].first, what[1].second);
 

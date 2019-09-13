@@ -5,7 +5,7 @@ fwLoadProperties()
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE BUNDLE_LIB_PREFIX="${FWBUNDLE_LIB_PREFIX}")
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE BUNDLE_RC_PREFIX="${FWBUNDLE_RC_PREFIX}")
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC Boost::regex ${LIBXML2_LIBRARIES})
+target_link_libraries(${FWPROJECT_NAME} PUBLIC ${LIBXML2_LIBRARIES})
 
 fwForwardInclude(
     ${LIBXML2_INCLUDE_DIR}

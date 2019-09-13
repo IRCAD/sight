@@ -112,7 +112,7 @@ int Plugin::run() noexcept
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    int result = ::boost::any_cast<int>(m_workerQt->getFuture().get());
+    int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
     m_workerQt.reset();

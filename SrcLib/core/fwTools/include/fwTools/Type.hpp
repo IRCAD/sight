@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,9 +27,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/any.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/type_traits/is_signed.hpp>
+#include <any>
 
 #include <limits>
 #include <map>
@@ -54,7 +52,7 @@ public:
         {
         }
         FWTOOLS_API ToolBase(const std::type_info& typeinfo);
-        FWTOOLS_API virtual std::string toString( ::boost::any value ) const;
+        FWTOOLS_API virtual std::string toString( std::any value ) const;
         FWTOOLS_API virtual std::string toString( const void* ) const;
 
         const std::type_info& m_typeinfo;
@@ -67,7 +65,7 @@ public:
         virtual ~Tool()
         {
         }
-        virtual std::string toString( ::boost::any value ) const;
+        virtual std::string toString( std::any value ) const;
         virtual std::string toString( const void* ) const;
     };
 
@@ -94,14 +92,12 @@ public:
 
     /**
      * @brief   Set Type value according given template
-     * @note    A BOOST_ASSERTION can be raised if TYPE is not managed by isMapping
      **/
     template< class TYPE>
     void setType();
 
     /**
-     * @brief   Return true iff the Type value represents the TYPE
-     * @note    A BOOST_ASSERTION can be raised if TYPE is not managed by isMapping
+     * @brief   Return true ff the Type value represents the TYPE
      **/
     template< class TYPE>
     bool isOfType() const;
@@ -145,8 +141,8 @@ protected:
     unsigned char m_sizeof;
     bool m_isSigned;
     bool m_isFixedPrecision;
-    ::boost::any m_min;
-    ::boost::any m_max;
+    std::any m_min;
+    std::any m_max;
 
     SPTR(ToolBase) m_tool;
 
@@ -204,9 +200,9 @@ public:
 //-----------------------------------------------------------------------------
 
 template< typename T >
-std::string Type::Tool<T>::toString(::boost::any value) const
+std::string Type::Tool<T>::toString(std::any value) const
 {
-    return ::fwTools::getString( boost::any_cast<const T> (value));
+    return ::fwTools::getString( std::any_cast<const T> (value));
 }
 
 //-----------------------------------------------------------------------------
@@ -285,8 +281,6 @@ FWTOOLS_API void Type::setType< std::int64_t >();
 template <>
 FWTOOLS_API void Type::setType< std::uint64_t >();
 
-#endif
-
 //-----------------------------------------------------------------------------
 
 template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
@@ -303,10 +297,7 @@ const std::string& Type::traitsToString()
 template <typename T>
 const std::pair<T, T> Type::minMax() const
 {
-    return std::pair<T, T>(
-        boost::any_cast< T >(m_min),
-        boost::any_cast< T >(m_max)
-        );
+    return std::pair<T, T>( std::any_cast< T >(m_min), std::any_cast< T >(m_max) );
 }
 
 //-----------------------------------------------------------------------------

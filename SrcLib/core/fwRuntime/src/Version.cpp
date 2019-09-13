@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,9 +25,9 @@
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
 
 #include <cassert>
+#include <regex>
 #include <sstream>
 
 namespace fwRuntime
@@ -51,9 +51,9 @@ Version::Version(const std::string& version) :
 {
     if( version.empty() == false )
     {
-        ::boost::regex regex("(\\d+)([-.](\\d+)){0,1}([-.](\\d+)){0,1}");
-        ::boost::smatch what;
-        if( ::boost::regex_match(version, what, regex) )
+        std::regex regex("(\\d+)([-.](\\d+)){0,1}([-.](\\d+)){0,1}");
+        std::smatch what;
+        if( std::regex_match(version, what, regex) )
         {
             const std::string& major = what[1].str();
             const std::string& minor = what[3].str();
