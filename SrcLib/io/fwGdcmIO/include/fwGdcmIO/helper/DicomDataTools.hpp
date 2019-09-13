@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -84,19 +84,19 @@ public:
      * @brief Convert a 3D point to the closest frame number index
      * @param[in] image Image containing the point
      * @param[in] point 3D point
+     * @throw ::fwGdcmIO::exception::Failed
      */
     FWGDCMIO_API static std::size_t convertPointToFrameNumber(const ::fwData::Image::csptr& image,
-                                                              const ::fwData::Point::csptr& point)
-    throw(::fwGdcmIO::exception::Failed);
+                                                              const ::fwData::Point::csptr& point);
 
     /**
      * @brief Convert a frame number to a Z coordinate
      * @param[in] image Image containing the point
      * @param[in] frameNumber Frame number
+     * @throw ::fwGdcmIO::exception::Failed
      */
     FWGDCMIO_API static double convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image,
-                                                               const std::size_t frameNumber)
-    throw(::fwGdcmIO::exception::Failed);
+                                                               const std::size_t frameNumber);
 
 };
 

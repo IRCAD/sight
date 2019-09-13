@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -82,8 +82,9 @@ protected:
 
     /**
      * @brief Write image landmarks into sequence
+     * @throw(::fwGdcmIO::exception::Failed)
      */
-    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence) throw(::fwGdcmIO::exception::Failed);
+    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence);
 
     /**
      * @brief Write image distances into sequence
@@ -94,11 +95,10 @@ protected:
      * @brief Add a frame number to the referenced image sequence
      * @param[in] frameNumber Frame Number
      * @param[in] referencedImageSequence Destination sequence
+     * @throw(::fwGdcmIO::exception::Failed)
      */
     void addReferencedImage(int frameNumber,
-                            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::fwGdcmIO::
-                                                                                                           exception::
-                                                                                                           Failed);
+                            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence);
 };
 
 } // namespace ie

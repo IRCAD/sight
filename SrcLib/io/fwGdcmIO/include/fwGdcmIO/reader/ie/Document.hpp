@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -77,8 +77,9 @@ public:
 
     /**
      * @brief Read the Structured Report
+     * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API void readSR() throw (::fwGdcmIO::exception::Failed);
+    FWGDCMIO_API void readSR();
 
 };
 

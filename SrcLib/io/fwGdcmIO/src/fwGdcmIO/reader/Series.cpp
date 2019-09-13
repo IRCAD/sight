@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -67,7 +67,6 @@ Series::~Series()
 // ----------------------------------------------------------------------------
 
 ::fwMedData::Series::sptr Series::read(const ::fwMedData::DicomSeries::csptr& dicomSeries)
-throw(::fwGdcmIO::exception::Failed)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Logger should not be null.", m_logger);

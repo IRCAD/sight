@@ -23,6 +23,7 @@
 #pragma once
 
 #include "visuOgreQt/config.hpp"
+#include "visuOgreQt/OpenGLContext.hpp"
 
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 
@@ -38,7 +39,6 @@
 #include <QtGui/QWindow>
 
 #include <QtWidgets/QApplication>
-//#include <OGRE/SdkTrays.h>
 
 namespace visuOgreQt
 {
@@ -78,9 +78,10 @@ public:
     int getId();
 
     /// Request frame rendering
-    virtual void requestRender();
+    void requestRender();
 
-    virtual void makeCurrent();
+    /// Enables visuOgreQt's shared gl context on this thread against this window.
+    void makeCurrent();
 
     /// Sets the list of overlays to be rendered in this window.
     void setEnabledOverlays(
@@ -209,6 +210,8 @@ private:
     QPoint* m_lastPosRightClick;
 
     int m_frameId;
+
+    std::shared_ptr<QOpenGLContext> m_glContext;
 
 private Q_SLOTS:
 

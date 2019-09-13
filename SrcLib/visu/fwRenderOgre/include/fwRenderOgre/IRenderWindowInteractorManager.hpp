@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -101,6 +101,28 @@ public:
         }
     };
 
+    using OffscreenMgrKey = ::fwRenderOgre::offscreenInteractorMgrFactory::Key;
+
+    /**
+     * @brief Class used to register an offscreen window interactor factory in the factory registry.
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class OffscreenMgrRegistrar
+    {
+    public:
+        OffscreenMgrRegistrar(std::string functorKey)
+        {
+            auto fact = [](std::pair<unsigned int, unsigned int> _dims) -> std::shared_ptr< T >
+                        {
+                            // Capture the factory inside a lambda to distinguish it from overloaded methods.
+                            return ::fwRenderOgre::offscreenInteractorMgrFactory::New<T>( _dims );
+                        };
+            ::fwRenderOgre::registry::getOffscreenMgr()->addFactory(functorKey, fact);
+        }
+    };
+
     fwCoreNonInstanciableClassDefinitionsMacro( (IRenderWindowInteractorManager)(::fwCore::BaseObject) )
 
     typedef std::string FactoryRegistryKeyType;
@@ -109,7 +131,18 @@ public:
 
     FWRENDEROGRE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
+    FWRENDEROGRE_API static const FactoryRegistryKeyType OFFSCREEN_REGISTRY_KEY;
+
     FWRENDEROGRE_API static IRenderWindowInteractorManager::sptr createManager();
+
+    /**
+     * @brief Creates an offscreen window using the factory.
+     *
+     * @param _width  width of underlying render texture.
+     * @param _height height of underlying render texture.
+     */
+    FWRENDEROGRE_API static IRenderWindowInteractorManager::sptr createOffscreenManager(unsigned int _width,
+                                                                                        unsigned int _height);
 
     /// Constructor. Do nothing.
     FWRENDEROGRE_API IRenderWindowInteractorManager();
@@ -139,11 +172,14 @@ public:
     /// Returns frame ID
     FWRENDEROGRE_API virtual int getFrameId() const = 0;
 
-    /// Set this render service as the current OpenGL context
+    /// Sets the rendering context as being enabled against this window and on this thread.
     FWRENDEROGRE_API virtual void makeCurrent() = 0;
 
     /// Get Ogre RenderWindow
     FWRENDEROGRE_API virtual ::Ogre::RenderTarget* getRenderTarget() = 0;
+
+    /// Returns the texture in which this window manager is rendering. Only implemented for offscreen windows.
+    FWRENDEROGRE_API virtual ::Ogre::TexturePtr getRenderTexture() = 0;
 
     FWRENDEROGRE_API virtual void setEnabledOverlays(const OverlaySetType& overlaySet);
 

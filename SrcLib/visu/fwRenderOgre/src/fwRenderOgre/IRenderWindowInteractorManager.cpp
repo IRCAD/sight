@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,6 +30,9 @@ namespace fwRenderOgre
 const IRenderWindowInteractorManager::FactoryRegistryKeyType IRenderWindowInteractorManager::REGISTRY_KEY =
     "::fwRenderOgre::IRenderWindowInteractorManager::REGISTRY_KEY";
 
+const IRenderWindowInteractorManager::FactoryRegistryKeyType IRenderWindowInteractorManager::OFFSCREEN_REGISTRY_KEY =
+    "::fwRenderOgre::IRenderWindowInteractorManager::OFFSCREEN_REGISTRY_KEY";
+
 //-----------------------------------------------------------------------------
 
 IRenderWindowInteractorManager::sptr IRenderWindowInteractorManager::createManager()
@@ -39,6 +42,19 @@ IRenderWindowInteractorManager::sptr IRenderWindowInteractorManager::createManag
     SLM_ASSERT(
         "The factory process to create an IRenderWindowInteractorManager, failed. Missing Qt or Wx component ?",
         manager );
+    return manager;
+}
+
+//-----------------------------------------------------------------------------
+
+IRenderWindowInteractorManager::sptr IRenderWindowInteractorManager::createOffscreenManager(unsigned int _w,
+                                                                                            unsigned int _h)
+{
+    IRenderWindowInteractorManager::sptr manager = ::fwRenderOgre::offscreenInteractorMgrFactory::New(
+        ::fwRenderOgre::IRenderWindowInteractorManager::OFFSCREEN_REGISTRY_KEY, std::make_pair(_w, _h));
+    SLM_ASSERT(
+        "The factory process to create an IRenderWindowInteractorManager, failed. Missing Qt or Wx component ?",
+        manager);
     return manager;
 }
 

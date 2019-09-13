@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 #include "fwRenderOgre/SRender.hpp"
 
 #include "fwRenderOgre/IAdaptor.hpp"
-#include "fwRenderOgre/OffScreenRenderWindowInteractorManager.hpp"
 #include "fwRenderOgre/registry/Adaptor.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
@@ -223,7 +222,7 @@ void SRender::starting()
     if(m_offScreen)
     {
         // Instantiate the manager that help to communicate between this service and the widget
-        m_interactorManager = ::fwRenderOgre::OffScreenRenderWindowInteractorManager::New(m_width, m_height);
+        m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createOffscreenManager(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
         m_interactorManager->createContainer( nullptr, m_renderMode != RenderMode::ALWAYS, m_fullscreen );
     }
@@ -402,10 +401,11 @@ void SRender::requestRender()
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
             SLM_ASSERT("Offscreen image not found.", image);
 
-            auto offScreenInteractor = OffScreenRenderWindowInteractorManager::dynamicCast(m_interactorManager);
             {
                 ::fwData::mt::ObjectWriteLock lock(image);
-                ::fwRenderOgre::Utils::convertFromOgreTexture(offScreenInteractor->getRenderTexture(), image, m_flip);
+                ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
+                SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
+                ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image, m_flip);
             }
 
             auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);

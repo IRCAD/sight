@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,6 +62,35 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 }
 
 } // namespace factory
+
+namespace offscreenInteractorMgrFactory
+{
+
+template <class CLASSNAME> SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims);
+
+/**
+ * @brief Key class used to restrict access to Object construction.
+ * See http://www.drdobbs.com/184402053
+ */
+class Key
+{
+template <typename CLASSNAME>
+friend SPTR(CLASSNAME) fwRenderOgre::offscreenInteractorMgrFactory::New(std::pair<unsigned int, unsigned int>);
+
+Key()
+{
+}
+};
+
+FWRENDEROGRE_API SPTR(::fwRenderOgre::IRenderWindowInteractorManager) New(
+    const ::fwRenderOgre::registry::KeyType& classname, std::pair<unsigned int, unsigned int> _dims);
+
+template <class CLASSNAME> SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims)
+{
+    return std::make_shared<CLASSNAME>(Key(), _dims.first, _dims.second);
+}
+
+} // namespace offscreenInteractorMgrFactory
 
 namespace lightFactory
 {

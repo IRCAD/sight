@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,9 +52,9 @@ public:
     /**
      * @brief Read DICOM series
      * @param[in] dicomSeries DICOM series that shall be read
+     * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& dicomSeries)
-    throw(::fwGdcmIO::exception::Failed);
+    FWGDCMIO_API ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::csptr& dicomSeries);
 
     /// Get Logger
     const ::fwLog::Logger::sptr& getLogger() const
