@@ -94,7 +94,7 @@ bool IActivityView::validateActivity(fwMedData::ActivitySeries::sptr activitySer
     bool isValid;
     std::string message;
 
-    std::tie(isValid, message) = this->::fwActivities::ActivityLauncher::validateActivity(activitySeries);
+    std::tie(isValid, message) = this->::fwActivities::IActivityLauncher::validateActivity(activitySeries);
 
     if (!isValid)
     {
@@ -110,7 +110,7 @@ bool IActivityView::validateActivity(fwMedData::ActivitySeries::sptr activitySer
 
 fwMedData::ActivitySeries::sptr IActivityView::createMainActivity() const
 {
-    ::fwMedData::ActivitySeries::sptr actSeries = this->::fwActivities::ActivityLauncher::createMainActivity();
+    ::fwMedData::ActivitySeries::sptr actSeries = this->::fwActivities::IActivityLauncher::createMainActivity();
 
     if (nullptr == actSeries)
     {

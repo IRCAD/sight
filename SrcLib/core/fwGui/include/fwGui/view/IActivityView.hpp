@@ -25,7 +25,7 @@
 #include "fwGui/config.hpp"
 #include "fwGui/IGuiContainerSrv.hpp"
 
-#include <fwActivities/ActivityLauncher.hpp>
+#include <fwActivities/IActivityLauncher.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwCom/Slots.hpp>
@@ -68,7 +68,7 @@ namespace view
  *          composite contained in the ActivitySeries.
  */
 class FWGUI_CLASS_API IActivityView : public ::fwGui::IGuiContainerSrv,
-                                      public ::fwActivities::ActivityLauncher
+                                      public ::fwActivities::IActivityLauncher
 {
 public:
 

@@ -24,7 +24,7 @@
 
 #include "uiActivitiesQml/config.hpp"
 
-#include <fwActivities/ActivityLauncher.hpp>
+#include <fwActivities/IActivityLauncher.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -89,7 +89,7 @@ namespace uiActivitiesQml
  *          composite contained in the ActivitySeries.
  */
 class UIACTIVITIESQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
-                                                public ::fwActivities::ActivityLauncher
+                                                public ::fwActivities::IActivityLauncher
 {
 
 Q_OBJECT

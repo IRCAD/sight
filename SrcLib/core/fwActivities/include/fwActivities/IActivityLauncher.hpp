@@ -36,7 +36,7 @@ namespace fwActivities
 /**
  * @brief Base class for services that launches Activities
  */
-class FWACTIVITIES_CLASS_API ActivityLauncher
+class FWACTIVITIES_CLASS_API IActivityLauncher
 {
 public:
 
@@ -47,10 +47,10 @@ public:
     typedef std::map< std::string, ::fwData::Object::wptr> InOutMapType;
 
     /// Constructor. Do nothing.
-    FWACTIVITIES_API ActivityLauncher();
+    FWACTIVITIES_API IActivityLauncher();
 
     /// Destructor. Do nothing.
-    FWACTIVITIES_API virtual ~ActivityLauncher();
+    FWACTIVITIES_API virtual ~IActivityLauncher();
 
 protected:
 

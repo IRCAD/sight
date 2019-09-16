@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwActivities/ActivityLauncher.hpp"
+#include "fwActivities/IActivityLauncher.hpp"
 
 #include "fwActivities/IActivityValidator.hpp"
 #include "fwActivities/IValidator.hpp"
@@ -40,19 +40,19 @@ namespace fwActivities
 
 //-----------------------------------------------------------------------------
 
-ActivityLauncher::ActivityLauncher()
+IActivityLauncher::IActivityLauncher()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ActivityLauncher::~ActivityLauncher()
+IActivityLauncher::~IActivityLauncher()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ActivityLauncher::parseConfiguration(const ConfigurationType& config, const InOutMapType& inouts)
+void IActivityLauncher::parseConfiguration(const ConfigurationType& config, const InOutMapType& inouts)
 {
     m_mainActivityId = config.get<std::string>("mainActivity.<xmlattr>.id", "");
     SLM_DEBUG_IF("main activity 'id' is not defined", m_mainActivityId.empty());
@@ -109,7 +109,7 @@ void ActivityLauncher::parseConfiguration(const ConfigurationType& config, const
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::string> ActivityLauncher::validateActivity(
+std::pair<bool, std::string> IActivityLauncher::validateActivity(
     const ::fwMedData::ActivitySeries::csptr& activitySeries) const
 {
     bool isValid = true;
@@ -151,7 +151,7 @@ std::pair<bool, std::string> ActivityLauncher::validateActivity(
 
 //------------------------------------------------------------------------------
 
-fwMedData::ActivitySeries::sptr ActivityLauncher::createMainActivity() const
+fwMedData::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
 {
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(m_mainActivityId);
@@ -186,8 +186,8 @@ fwMedData::ActivitySeries::sptr ActivityLauncher::createMainActivity() const
 
 //------------------------------------------------------------------------------
 
-void ActivityLauncher::translateParameters( const ::fwData::Object::csptr& sourceObj, const ParametersType& parameters,
-                                            ReplaceMapType& replaceMap )
+void IActivityLauncher::translateParameters( const ::fwData::Object::csptr& sourceObj, const ParametersType& parameters,
+                                             ReplaceMapType& replaceMap )
 {
     for(const ParametersType::value_type& param :  parameters)
     {
@@ -221,7 +221,7 @@ void ActivityLauncher::translateParameters( const ::fwData::Object::csptr& sourc
 
 //------------------------------------------------------------------------------
 
-void ActivityLauncher::translateParameters( const ParametersType& parameters, ReplaceMapType& replaceMap )
+void IActivityLauncher::translateParameters( const ParametersType& parameters, ReplaceMapType& replaceMap )
 {
     for(const ParametersType::value_type& param :  parameters)
     {

@@ -24,7 +24,7 @@
 
 #include "activities/config.hpp"
 
-#include <fwActivities/ActivityLauncher.hpp>
+#include <fwActivities/IActivitySequencer.hpp>
 
 #include <fwCom/Signal.hpp>
 
@@ -58,6 +58,7 @@ namespace activities
  * @section Slots Slots
  * - \b next() : Create the next activity series
  * - \b previous() : Create the next activity series
+ * - \b goTo(int) : Create the activity series at the given index
  * - \b sendInfo() : Send the 'enabledNext' and 'enablePrevious' signals for the current activity
  *
  * @section XML XML Configuration
@@ -84,7 +85,7 @@ namespace activities
  * @todo listen the current activity data to notify when the next activity can be created
  */
 class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController,
-                                                public ::fwActivities::ActivityLauncher
+                                                public ::fwActivities::IActivitySequencer
 {
 
 public:
@@ -95,7 +96,7 @@ public:
     ACTIVITIES_API SActivitySequencer() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SActivitySequencer() noexcept;
+    ACTIVITIES_API virtual ~SActivitySequencer() noexcept override;
 
     /// Connect the service to the SeriesDB signals
     ACTIVITIES_API virtual KeyConnectionsMap getAutoConnections() const override;
@@ -134,9 +135,6 @@ protected:
 
 private:
 
-    typedef std::vector< std::string > ActivitesType;
-    typedef std::map< std::string, ::fwData::Object::sptr > RequirementsType;
-
     /// Slot: Create the next activity series, emit 'dataRequired' signal if the activity require additional data
     void next();
 
@@ -149,23 +147,8 @@ private:
     /// Slot: Send the 'enabledNext' and 'enablePrevious' signals for the current activity
     void sendInfo() const;
 
-    /// Store the current activity data
-    void storeActivityData();
-
-    /// Create activity corresponding to the given index in the activity list
-    ::fwMedData::ActivitySeries::sptr getActivity(size_t index);
-
     /// Check if the activity can be launch. If showDialog = true, display the reason
     bool checkValidity(const ::fwMedData::ActivitySeries::csptr& activity, bool showDialog = true) const;
-
-    /// List of the activity to create.
-    ActivitesType m_activityIds;
-
-    /// Index of the current activity
-    int m_currentActivity;
-
-    /// Map containing all the data produced by the activities. It is used to create the next one.
-    RequirementsType m_requirements;
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
     DataRequiredSignalType::sptr m_sigDataRequired;
