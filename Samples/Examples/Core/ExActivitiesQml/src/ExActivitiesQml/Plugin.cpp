@@ -24,6 +24,7 @@
 
 #include "ExActivitiesQml/ImageDisplayingManager.hpp"
 #include "ExActivitiesQml/ImageReadingManager.hpp"
+#include "ExActivitiesQml/MesherManager.hpp"
 
 #include <fwQml/QmlEngine.hpp>
 
@@ -54,6 +55,7 @@ void Plugin::start()
 {
     qmlRegisterType<ImageReadingManager>("ExActivitiesQml", 1, 0, "ImageReadingManager");
     qmlRegisterType<ImageDisplayingManager>("ExActivitiesQml", 1, 0, "ImageDisplayingManager");
+    qmlRegisterType<MesherManager>("ExActivitiesQml", 1, 0, "MesherManager");
 }
 
 //------------------------------------------------------------------------------

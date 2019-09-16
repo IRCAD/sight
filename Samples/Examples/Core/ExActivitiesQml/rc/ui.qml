@@ -19,29 +19,27 @@ ApplicationWindow {
     ActivityLauncher {
         id: activityLauncher
 
-        activityIdsList: ["ExImageReading", "ExImageDisplaying"]
-        activityNameList: ["Read", "Display"]
-
+        activityIdsList: ["ExImageReading", "ExMesher", "ExImageDisplaying"]
+        activityNameList: ["Read", "Mesher", "Display"]
     }
 
 
     // Set the global theme inside the singleton "Theme" and then set the Window theme via the Singleton
     // This singleton will permit to set the same theme in all window open for this application
     Component.onCompleted: {
-        Theme.accent = Material.color(Material.LightBlue)
         Theme.theme = Material.Light
-        Theme.foreground = (Material.theme == Material.Dark) ? Material.color(Material.BlueGrey, Material.Shade100) :
-                                                               Material.color(Material.BlueGrey, Material.Shade900)
+        Theme.accent = Material.color(Material.Teal, Material.Shade900)
+        Theme.foreground =  Material.color(Material.BlueGrey, Material.Shade900)
         Theme.background = Material.background
         Theme.primary = Material.color(Material.Teal)
         Theme.elevation = Material.elevation
+
         Material.accent = Theme.accent
         Material.theme = Theme.theme
         Material.foreground = Theme.foreground
         Material.background = Theme.background
         Material.primary = Theme.primary
         Material.elevation = Theme.elevation
-        appManager.initialize()
     }
     onClosing: {
         activityLauncher.clear()

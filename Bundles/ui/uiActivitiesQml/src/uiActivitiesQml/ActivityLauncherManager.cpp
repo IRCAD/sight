@@ -40,17 +40,11 @@ static const std::string s_PREVIOUS_CHANNEL                 = "PreviousChannel";
 static const std::string s_NEXT_CHANNEL                     = "NextChannel";
 static const std::string s_GO_TO_CHANNEL                    = "GoToChannel";
 
-static const std::string s_PREVIOUS_SIG = "previous";
-static const std::string s_NEXT_SIG     = "next";
-static const std::string s_GO_TO_SIG    = "goTo";
-
 //------------------------------------------------------------------------------
 
 ActivityLauncherManager::ActivityLauncherManager() noexcept
 {
-    newSignal< VoidSignalType >(s_PREVIOUS_SIG);
-    newSignal< VoidSignalType >(s_NEXT_SIG);
-    newSignal< IntSignalType >(s_GO_TO_SIG);
+
 }
 
 //------------------------------------------------------------------------------
@@ -70,11 +64,6 @@ void ActivityLauncherManager::initialize()
 
     this->addObject(m_seriesDB, this->getInputID(s_SERIESDB_INOUT));
 
-    // create the services
-    m_activitySequencer = this->addService("::activities::SActivitySequencer", true);
-    m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);
-    m_activitySequencer->configure(m_sequencerConfig);
-
     auto addActivityViewParam = [&](const std::string& replace)
                                 {
                                     ::fwServices::IService::ConfigType parameterViewConfig;
@@ -84,40 +73,7 @@ void ActivityLauncherManager::initialize()
                                 };
     addActivityViewParam(s_SERIESDB_INOUT);
 
-    // connect to launch the activity when it is created/updated.
-    ::fwServices::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
-    activityCreatedCnt.addSignalConnection(m_activitySequencer->getID(), "activityCreated");
-
-    // When the activity is launched, the sequencer sends the information to enable "previous" and "next" actions
-    ::fwServices::helper::ProxyConnections activityLaunchedCnt(this->getInputID(s_ACTIVITY_LAUNCHED_CHANNEL));
-    activityLaunchedCnt.addSlotConnection(m_activitySequencer->getID(), "sendInfo");
-
-    // The activity sequencer should receive the call from the "previous" action.
-    ::fwServices::helper::ProxyConnections activityPreviousCnt(this->getInputID(s_PREVIOUS_CHANNEL));
-    activityPreviousCnt.addSlotConnection(m_activitySequencer->getID(), "previous");
-
-    // The activity sequencer should receive the call from the "next" action.
-    ::fwServices::helper::ProxyConnections activityNextCnt(this->getInputID(s_NEXT_CHANNEL));
-    activityNextCnt.addSlotConnection(m_activitySequencer->getID(), "next");
-
-    // The activity sequencer should receive the call from the "goTo" action.
-    ::fwServices::helper::ProxyConnections activityGoToCnt(this->getInputID(s_GO_TO_CHANNEL));
-    activityGoToCnt.addSlotConnection(m_activitySequencer->getID(), "goTo");
-
-    this->addProxyConnection(activityCreatedCnt);
-    this->addProxyConnection(activityLaunchedCnt);
-    this->addProxyConnection(activityPreviousCnt);
-    this->addProxyConnection(activityNextCnt);
-    this->addProxyConnection(activityGoToCnt);
-
-    auto proxyReg = ::fwServices::registry::Proxy::getDefault();
-
-    proxyReg->connect(this->getInputID(s_PREVIOUS_CHANNEL), this->signal(s_PREVIOUS_SIG));
-    proxyReg->connect(this->getInputID(s_NEXT_CHANNEL), this->signal(s_NEXT_SIG));
-    proxyReg->connect(this->getInputID(s_GO_TO_CHANNEL), this->signal(s_GO_TO_SIG));
-
     this->startServices();
-    m_activitySequencer->slot("next")->asyncRun();
 }
 
 //------------------------------------------------------------------------------
@@ -126,11 +82,6 @@ void ActivityLauncherManager::uninitialize()
 {
     // stop the started services and unregister all the services
     this->destroy();
-
-    auto proxyReg = ::fwServices::registry::Proxy::getDefault();
-    proxyReg->disconnect(this->getInputID(s_PREVIOUS_CHANNEL), this->signal(s_PREVIOUS_SIG));
-    proxyReg->disconnect(this->getInputID(s_NEXT_CHANNEL), this->signal(s_NEXT_SIG));
-    proxyReg->disconnect(this->getInputID(s_GO_TO_CHANNEL), this->signal(s_GO_TO_SIG));
 }
 
 //------------------------------------------------------------------------------
@@ -157,39 +108,31 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 
             this->addService(srv, true);
         }
+        else if (srv->isA("::uiActivitiesQml::SActivitySequencer"))
+        {
+            // create the services;
+            m_activitySequencer = srv;
+            m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);
+
+            // connect to launch the activity when it is created/updated.
+            ::fwServices::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
+            activityCreatedCnt.addSignalConnection(m_activitySequencer->getID(), "activityCreated");
+
+            // When the activity is launched, the sequencer sends the information to enable "previous" and "next"
+            // actions
+            ::fwServices::helper::ProxyConnections activityLaunchedCnt(this->getInputID(s_ACTIVITY_LAUNCHED_CHANNEL));
+            activityLaunchedCnt.addSlotConnection(m_activitySequencer->getID(), "checkNext");
+
+            // The activity sequencer should receive the call from the "goTo" action.
+            ::fwServices::helper::ProxyConnections activityGoToCnt(this->getInputID(s_GO_TO_CHANNEL));
+            activityGoToCnt.addSlotConnection(m_activitySequencer->getID(), "goTo");
+
+            this->addProxyConnection(activityCreatedCnt);
+            this->addProxyConnection(activityLaunchedCnt);
+            this->addProxyConnection(activityGoToCnt);
+            this->addService(srv, true, true);
+        }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void ActivityLauncherManager::setActivities(const QList<QString>& list)
-{
-    for(const auto& elt: list)
-    {
-        m_sequencerConfig.add("activity", elt.toStdString());
-
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ActivityLauncherManager::previous()
-{
-    this->signal<VoidSignalType>(s_PREVIOUS_SIG)->asyncEmit();
-}
-
-//------------------------------------------------------------------------------
-
-void ActivityLauncherManager::next()
-{
-    this->signal<VoidSignalType>(s_NEXT_SIG)->asyncEmit();
-}
-
-//------------------------------------------------------------------------------
-
-void ActivityLauncherManager::goTo(int index)
-{
-    this->signal<IntSignalType>(s_GO_TO_SIG)->asyncEmit(index);
 }
 
 //------------------------------------------------------------------------------

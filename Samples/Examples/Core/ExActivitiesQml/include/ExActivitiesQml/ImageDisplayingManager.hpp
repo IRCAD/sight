@@ -79,4 +79,8 @@ private:
     ::fwVTKQml::FrameBufferItem* m_frameBuffer;
 
     ::fwServices::IService::sptr m_imageAdaptor;
+    ::fwServices::IService::sptr m_modelSeriesAdaptor;
+
+    ::fwCom::SlotBase::sptr m_slotRecSelected;
+    ::fwCom::SlotBase::sptr m_slotEmptySelection;
 };

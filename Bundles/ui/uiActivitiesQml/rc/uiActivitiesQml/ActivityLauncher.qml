@@ -38,76 +38,15 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
+        spacing: 0
 
-        RowLayout {
-            id: stepperLayout
+        ActivitySequencer {
             Layout.fillWidth: true
-            height: 60
-            anchors.margins: 0
-            spacing: 0
-            Repeater {
-                model: activityNameList.length == 0 ? activityIdsList : activityNameList
-                anchors.margins: 0
-                RowLayout{
-                    implicitWidth: (stepperLayout.width / activityIdsList.length)
-                    width: (stepperLayout.width / activityIdsList.length)
-                    Rectangle{
-                        Layout.fillWidth: true
-                        color: Theme.primary
-                        height: 3
-                        visible: index > 0
-                    }
-                    Button{
-                        id: toolButton
-                        text : modelData
-                        onClicked: {
-                            appManager.goTo(index)
-                        }
-                        background: Rectangle {
-                            color: toolButton.hovered? Qt.lighter(Theme.background) : Theme.background
-                        }
+            activityIdsList: activityLauncher.activityIdsList
+            activityNameList: activityLauncher.activityNameList
 
-                        contentItem: RowLayout {
-                            id: buttonLayout
-                            anchors.margins: 0
-                            Rectangle {
-                                id: activityIndex
-                                color: Theme.primary
-                                radius: 15
-                                width: 30
-                                height: 30
-
-                                Text {
-                                    anchors.fill: parent
-                                    text: index
-                                    font: toolButton.font
-                                    opacity: enabled ? 1.0 : 0.3
-                                    color: Theme.background
-                                    elide: Text.ElideRight
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                }
-                            }
-                            Text {
-                                Layout.fillWidth: true
-                                text: toolButton.text
-                                font: Qt.font({pointSize: 12})
-                                opacity: enabled ? 1.0 : 0.3
-                                color: Theme.primary
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                elide: Text.ElideRight
-                            }
-                        }
-
-                    }
-                    Rectangle{
-                        Layout.fillWidth: true
-                        color: Theme.primary
-                        height: 3
-                        visible: index < activityIdsList.length -1
-                    }
-                }
+            onServiceCreated: {
+                appManager.onServiceCreated(srv)
             }
         }
 
@@ -119,7 +58,6 @@ Item {
     }
 
     Component.onCompleted: {
-        appManager.setActivities(activityIdsList)
         appManager.initialize()
         appManager.onServiceCreated(activityView)
     }

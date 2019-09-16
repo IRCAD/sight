@@ -22,7 +22,10 @@ set( REQUIREMENTS
     uiIO
     uiImageQml
     uiActivitiesQml
+    uiMedDataQml
+    uiReconstructionQml
     ioVTK
+    opVTKMesh
 )
 
 set( PLUGINS

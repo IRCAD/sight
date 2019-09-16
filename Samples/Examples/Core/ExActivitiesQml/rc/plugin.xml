@@ -8,6 +8,8 @@
     <requirement id="activities" />
     <requirement id="uiImageQml" />
     <requirement id="uiActivitiesQml" />
+    <requirement id="uiReconstructionQml" />
+    <requirement id="uiMedDataQml" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>ExImageReading</id>
@@ -29,6 +31,28 @@
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
+        <id>ExMesher</id>
+        <title>Image meshing</title>
+        <desc>Activity to generate a model from an image</desc>
+        <icon>media-0.1/icons/icon-2D.png</icon>
+        <requirements>
+            <!-- The image must be present to launch the activity -->
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
+                <desc>Image that will be display by this activity.</desc>
+            </requirement>
+            <requirement name="model" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="0">
+                <desc>Model generated.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="ExMesher">
+            <parameters>
+                 <parameter replace="image" by="@values.image" />
+                 <parameter replace="model" by="@values.model" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
         <id>ExImageDisplaying</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
@@ -38,14 +62,14 @@
             <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
-            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0">
-                <desc>Landmarks that will be created in this activity.</desc>
+            <requirement name="model" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="0">
+                <desc>Model generated.</desc>
             </requirement>
         </requirements>
         <appConfig id="ExImageDisplaying">
             <parameters>
                  <parameter replace="image" by="@values.image" />
-                 <parameter replace="landmarks" by="@values.landmarks" />
+                 <parameter replace="model" by="@values.model" />
             </parameters>
         </appConfig>
     </extension>

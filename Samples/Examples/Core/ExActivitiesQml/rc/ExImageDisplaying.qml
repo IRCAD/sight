@@ -7,6 +7,8 @@ import guiQml 1.0
 import fwVTKQml 1.0
 import uiImageQml 1.0
 import uiActivitiesQml 1.0
+import uiMedDataQml 1.0
+import uiReconstructionQml 1.0
 import ExActivitiesQml 1.0
 
 
@@ -17,63 +19,137 @@ Activity {
         frameBuffer: scene3D
     }
 
-    ColumnLayout {
-
+    RowLayout {
+        spacing: 0
         anchors.fill: parent
 
-        Rectangle {
-            id: sceneRec
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            color: "#006699"
+        ColumnLayout {
+            anchors.fill: parent
 
-            FrameBufferItem {
-                id: scene3D
-                anchors.fill: parent
+            Rectangle {
+                id: sceneRec
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                color: "#006699"
 
-                onReady: appManager.createVtkScene()
+                FrameBufferItem {
+                    id: scene3D
+                    anchors.fill: parent
+
+                    onReady: appManager.createVtkScene()
+                }
+            }
+
+            RowLayout {
+                Layout.fillHeight: true
+                Layout.maximumHeight: 50
+
+                ComboBox {
+                    id: sliceEditor
+                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.fillHeight: true
+                    anchors.leftMargin: 4
+
+                    model: ["One slice", "Three slice"]
+
+                    currentIndex: 1
+                    onActivated: {
+                        appManager.onUpdateSliceMode((index == 0) ? 1 : 3)
+                    }
+                }
+
+                Button {
+                    id: displayScanButton
+                    checkable: true
+                    checked: true
+                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.fillHeight: true
+
+                    text: "Scan"
+                    onCheckedChanged: {
+                        sliceEditor.enabled = checked
+                        appManager.onShowScan(checked)
+                    }
+                }
+
+                SliceSelector {
+                    id: sliceSelector
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    onServiceCreated: {
+                        appManager.onServiceCreated(srv)
+                    }
+                }
             }
         }
+        ScrollView {
+            spacing: 5
+            enabled: true
+            transformOrigin: Item.Center
 
-        RowLayout {
             Layout.fillHeight: true
-            Layout.maximumHeight: 50
+            Layout.minimumWidth: 300
 
-            ComboBox {
-                id: sliceEditor
-                anchors.verticalCenter: parent.verticalCenter
-                Layout.fillHeight: true
-                anchors.leftMargin: 4
+            ColumnLayout {
+                spacing: 2
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.bottomMargin: 0
+                anchors.topMargin: 0
+                anchors.fill: parent
 
-                model: ["One slice", "Three slice"]
+                Rectangle {
+                    Layout.preferredHeight: 300
+                    Layout.preferredWidth: 300
+                    color: "transparent"
 
-                currentIndex: 1
-                onActivated: {
-                    appManager.onUpdateSliceMode((index == 0) ? 1 : 3)
+                    ModelList {
+                        id: modelList
+                        anchors.rightMargin: 5
+                        anchors.leftMargin: 5
+                        anchors.fill: parent
+
+                        onServiceCreated: {
+                            appManager.onServiceCreated(srv)
+                        }
+                    }
                 }
-            }
 
-            Button {
-                id: displayScanButton
-                checkable: true
-                checked: true
-                anchors.verticalCenter: parent.verticalCenter
-                Layout.fillHeight: true
+                Rectangle {
+                    Layout.preferredHeight: 60
+                    Layout.preferredWidth: 300
 
-                text: "Scan"
-                onCheckedChanged: {
-                    sliceEditor.enabled = checked
-                    appManager.onShowScan(checked)
+                    color: "transparent"
+
+                    OrganMaterialEditor {
+                        id: organMaterialEditor
+                        anchors.rightMargin: 5
+                        anchors.leftMargin: 5
+                        anchors.fill: parent
+
+                        onServiceCreated: {
+                            appManager.onServiceCreated(srv)
+                        }
+                    }
                 }
-            }
 
-            SliceSelector {
-                id: sliceSelector
-                Layout.fillHeight: true
-                Layout.fillWidth: true
+                Rectangle {
+                    Layout.preferredHeight: 400
+                    Layout.preferredWidth: 300
 
-                onServiceCreated: {
-                    appManager.onServiceCreated(srv)
+                    color: "transparent"
+
+                    RepresentationEditor {
+                        id: representationEditor
+                        anchors.rightMargin: 5
+                        anchors.leftMargin: 5
+                        anchors.fill: parent
+
+                        onServiceCreated: {
+                            appManager.onServiceCreated(srv)
+                        }
+                    }
                 }
             }
         }

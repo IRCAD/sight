@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ExActivitiesQml/ImageDisplayingManager.hpp"
+#include "ExActivitiesQml/MesherManager.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -30,7 +30,8 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -38,8 +39,6 @@
 #include <fwRenderVTK/SRender.hpp>
 
 #include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/registry/Proxy.hpp>
 
 #include <fwVTKQml/VtkRenderWindowInteractorManager.hpp>
 
@@ -52,7 +51,7 @@ static const std::string s_EMPTY_SELECTION_CHANNEL = "emptySelection";
 
 //------------------------------------------------------------------------------
 
-ImageDisplayingManager::ImageDisplayingManager() noexcept
+MesherManager::MesherManager() noexcept
 {
     this->requireInput(s_IMAGE_ID, InputType::OBJECT);
     this->requireInput(s_MODEL_ID, InputType::OBJECT);
@@ -60,43 +59,19 @@ ImageDisplayingManager::ImageDisplayingManager() noexcept
 
 //------------------------------------------------------------------------------
 
-ImageDisplayingManager::~ImageDisplayingManager() noexcept
+MesherManager::~MesherManager() noexcept
 {
     this->uninitialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::initialize()
+void MesherManager::initialize()
 {
     this->create();
 
     if (this->checkInputs())
     {
-        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-        auto workerRegistry = ::fwServices::registry::ActiveWorkers::getDefault();
-        workerRegistry->addWorker("AppManager-slots", worker);
-
-        auto proxy = ::fwServices::registry::Proxy::getDefault();
-
-        std::function<void(::fwData::Object::sptr)>  recSelectedFct =
-            [ = ] (::fwData::Object::sptr rec)
-            {
-                this->addObject(rec, this->getInputID(s_RECONSTRUCTION_ID));
-            };
-        m_slotRecSelected = ::fwCom::newSlot(recSelectedFct);
-        m_slotRecSelected->setWorker(worker);
-        proxy->connect(this->getInputID(s_REC_SELECTED_CHANNEL), m_slotRecSelected);
-
-        std::function<void()>  emptySelectionFct =
-            [ = ] ()
-            {
-                this->removeObject(nullptr, this->getInputID(s_RECONSTRUCTION_ID));
-            };
-        m_slotEmptySelection = ::fwCom::newSlot(emptySelectionFct);
-        m_slotEmptySelection->setWorker(worker);
-        proxy->connect(this->getInputID(s_EMPTY_SELECTION_CHANNEL), m_slotEmptySelection);
-
         this->startServices();
     }
     else
@@ -111,7 +86,7 @@ void ImageDisplayingManager::initialize()
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::createVtkScene()
+void MesherManager::createVtkScene()
 {
     if (!m_vtkSceneCreated)
     {
@@ -170,7 +145,7 @@ void ImageDisplayingManager::createVtkScene()
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::onServiceCreated(const QVariant& obj)
+void MesherManager::onServiceCreated(const QVariant& obj)
 {
     ::fwQml::IQmlEditor::sptr srv(obj.value< ::fwQml::IQmlEditor* >());
     if (srv)
@@ -180,49 +155,60 @@ void ImageDisplayingManager::onServiceCreated(const QVariant& obj)
             srv->setObjectId("image", this->getInputID(s_IMAGE_ID));
             this->addService(srv, true);
         }
-        else if (srv->isA("::uiMedDataQml::SModelSeriesList"))
-        {
-            srv->setObjectId("modelSeries", this->getInputID(s_MODEL_ID));
-            this->addService(srv, true);
-
-            ::fwServices::helper::ProxyConnections recSelectedCnt(this->getInputID(s_REC_SELECTED_CHANNEL));
-            recSelectedCnt.addSignalConnection(srv->getID(),  "reconstructionSelected");
-            this->addProxyConnection(recSelectedCnt);
-
-            ::fwServices::helper::ProxyConnections emptySelectionCnt(this->getInputID(s_EMPTY_SELECTION_CHANNEL));
-            emptySelectionCnt.addSignalConnection(srv->getID(),  "emptiedSelection");
-            this->addProxyConnection(emptySelectionCnt);
-        }
-        else if (srv->isA("::uiReconstructionQml::SOrganMaterialEditor") ||
-                 srv->isA("::uiReconstructionQml::SRepresentationEditor"))
-        {
-            srv->setObjectId("reconstruction", this->getInputID(s_RECONSTRUCTION_ID));
-            this->addService(srv, true);
-        }
         else
         {
-            OSLM_FATAL("service '" + srv->getClassname() + "' is not managed");
+            OSLM_FATAL("service '" + srv->getClassname() + "' is not managed")
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::onUpdateSliceMode(int mode)
+void MesherManager::applyMesher(unsigned int reduction)
+{
+    const auto& image = ::fwData::Image::dynamicCast(this->getObject(this->getInputID(s_IMAGE_ID)));
+    const auto& model = ::fwMedData::ModelSeries::dynamicCast(this->getObject(this->getInputID(s_MODEL_ID)));
+
+    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    {
+        ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+        imageSeries->setImage(image);
+        auto mesher = ::fwServices::add("::opVTKMesh::SVTKMesher");
+        mesher->registerInput(imageSeries, "imageSeries");
+
+        ::fwServices::IService::ConfigType mesherConfig;
+        mesherConfig.put("config.percentReduction", reduction);
+        mesher->setConfiguration(mesherConfig);
+        mesher->configure();
+        mesher->start();
+        mesher->update();
+        const auto modelSeries = mesher->getOutput< ::fwMedData::ModelSeries >("modelSeries");
+        mesher->stop();
+        ::fwServices::OSR::unregisterService(mesher);
+
+        model->shallowCopy(modelSeries);
+        auto sig = model->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MesherManager::onUpdateSliceMode(int mode)
 {
     m_imageAdaptor->slot("updateSliceMode")->asyncRun(mode);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::onShowScan(bool isShown)
+void MesherManager::onShowScan(bool isShown)
 {
     m_imageAdaptor->slot("showSlice")->asyncRun(isShown);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDisplayingManager::uninitialize()
+void MesherManager::uninitialize()
 {
     // stop the started services and unregister all the services
     this->destroy();

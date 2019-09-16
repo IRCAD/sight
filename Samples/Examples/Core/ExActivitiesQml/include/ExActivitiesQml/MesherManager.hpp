@@ -22,55 +22,63 @@
 
 #pragma once
 
-#include "uiActivitiesQml/config.hpp"
+#include "ExActivitiesQml/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwQml/IQmlAppManager.hpp>
 
 #include <fwServices/AppManager.hpp>
 #include <fwServices/IService.hpp>
 
+#include <fwVTKQml/FrameBufferItem.hpp>
+
 #include <QObject>
-#include <QVariant>
 
 /**
  * @brief   This class is started when the bundles is loaded.
  */
-class UIACTIVITIESQML_CLASS_API ActivityLauncherManager : public ::fwQml::IQmlAppManager,
-                                                          public ::fwCom::HasSignals
+class EXACTIVITIESQML_CLASS_API MesherManager : public ::fwQml::IQmlAppManager,
+                                                public ::fwCom::HasSignals
 {
 Q_OBJECT
+typedef ::fwVTKQml::FrameBufferItem FrameBufferItem;
+Q_PROPERTY(FrameBufferItem* frameBuffer MEMBER m_frameBuffer)
+
 public:
     /// Constructor.
-    UIACTIVITIESQML_API ActivityLauncherManager() noexcept;
+    EXACTIVITIESQML_API MesherManager() noexcept;
 
     /// Destructor. Do nothing.
-    UIACTIVITIESQML_API ~ActivityLauncherManager() noexcept override;
+    EXACTIVITIESQML_API ~MesherManager() noexcept override;
 
 public Q_SLOTS:
-
-    /// Initialize the manager
+    // Initialize the manager
     void initialize() override;
 
     /// Uninitialize the manager
     void uninitialize() override;
 
-    /// Retrieves the services instanciated in Qml
+    /// Create the VTK scene and its adaptors
+    void createVtkScene();
+
+    /// Register the services instanciated from Qml
     void onServiceCreated(const QVariant& obj) override;
+
+    void onUpdateSliceMode(int mode);
+    void onShowScan(bool isShown);
+    void applyMesher(unsigned int reduction);
 
 private:
 
     typedef ::fwCom::Signal<void ()> VoidSignalType;
-    typedef ::fwCom::Signal<void (int)> IntSignalType;
 
-    ::fwServices::IService::sptr m_activitySequencer;
+    bool m_vtkSceneCreated {false};
+    ::fwVTKQml::FrameBufferItem* m_frameBuffer;
 
-    ::fwMedData::SeriesDB::sptr m_seriesDB;
-
-    ::fwServices::IService::ConfigType m_activityViewConfig;
-    ::fwServices::IService::ConfigType m_sequencerConfig;
+    ::fwServices::IService::sptr m_imageAdaptor;
+    ::fwServices::IService::sptr m_modelSeriesAdaptor;
 };
