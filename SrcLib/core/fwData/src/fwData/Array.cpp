@@ -405,32 +405,32 @@ const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id) const
 
 //------------------------------------------------------------------------------
 
-Array::Iterator<char*> Array::begin()
+Array::Iterator<char> Array::begin()
 {
-    return Iterator<char*>(this);
+    return Iterator<char>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Array::Iterator<char*> Array::end()
+Array::Iterator<char> Array::end()
 {
-    auto itr = Iterator<char*>(this);
+    auto itr = Iterator<char>(this);
     itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-Array::ConstIterator<char*> Array::begin() const
+Array::ConstIterator<char> Array::begin() const
 {
-    return ConstIterator<char*>(this);
+    return ConstIterator<char>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Array::ConstIterator<char*> Array::end() const
+Array::ConstIterator<char> Array::end() const
 {
-    auto itr = ConstIterator<char*>(this);
+    auto itr = ConstIterator<char>(this);
     itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
     return itr;
 }

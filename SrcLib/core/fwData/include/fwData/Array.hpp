@@ -226,7 +226,7 @@ public:
      * Iterate through the buffer and check if the index is not out of the bounds
      */
     template <class TYPE, bool isConstIterator = true>
-    class IteratorBase : public std::iterator<std::random_access_iterator_tag, TYPE>
+    class IteratorBase
     {
     public:
 
@@ -237,16 +237,33 @@ public:
         typedef typename std::conditional<isConstIterator, const Array*, Array*>::type ArrayType;
 
         /**
+         * @name Typedefs required by std::iterator_traits
+         * @{
+         */
+        /**
          * For ConstIterator:   define buffer type to be a const TYPE*
          * For Iterator: define buffer type to be a TYPE*
          */
-        typedef typename std::conditional<isConstIterator, const TYPE*, TYPE*>::type BufferType;
+        typedef typename std::conditional<isConstIterator, const TYPE*, TYPE*>::type pointer;
 
         /**
-         * For const_iterator:   define ValueReferenceType to be a   const TYPE&
-         * For regular iterator: define ValueReferenceType to be a   TYPE&
+         * For const_iterator:   define value_type to be a   const TYPE
+         * For regular iterator: define value_type to be a   TYPE
          */
-        typedef typename std::conditional<isConstIterator, const TYPE&, TYPE&>::type ValueReferenceType;
+        typedef typename std::conditional<isConstIterator, const TYPE, TYPE>::type value_type;
+
+        /**
+         * For const_iterator:   define reference to be a   const TYPE&
+         * For regular iterator: define reference to be a   TYPE&
+         */
+        typedef typename std::conditional<isConstIterator, const TYPE&, TYPE&>::type reference;
+
+        /// Define difference type
+        typedef std::ptrdiff_t difference_type;
+
+        /// define the category of the iterator.
+        typedef std::random_access_iterator_tag iterator_category;
+        /// @}
 
         /// Constructor
         IteratorBase(ArrayType array);
@@ -262,28 +279,28 @@ public:
         /// Increment/Decrement operators
         IteratorBase& operator++();
         IteratorBase operator++(int);
-        IteratorBase& operator+(std::ptrdiff_t index);
-        IteratorBase& operator+=(std::ptrdiff_t index);
+        IteratorBase& operator+(difference_type index);
+        IteratorBase& operator+=(difference_type index);
         IteratorBase& operator--();
         IteratorBase operator--(int);
-        IteratorBase& operator-(std::ptrdiff_t index);
-        IteratorBase& operator-=(std::ptrdiff_t index);
+        IteratorBase& operator-(difference_type index);
+        IteratorBase& operator-=(difference_type index);
 
-        std::ptrdiff_t operator+(const IteratorBase& other) const;
-        std::ptrdiff_t operator-(const IteratorBase& other) const;
+        difference_type operator+(const IteratorBase& other) const;
+        difference_type operator-(const IteratorBase& other) const;
 
         /// Value access operators
-        ValueReferenceType operator*();
+        reference operator*();
 
     private:
 
         /// allow to create a ConstIterator from an Iterator
         friend class IteratorBase<TYPE, true>;
 
-        BufferType m_pointer{nullptr};
+        pointer m_pointer{nullptr};
         ::fwMemory::BufferObject::Lock m_lock;
-        std::ptrdiff_t m_idx{0};
-        const std::ptrdiff_t m_numberOfElements;
+        difference_type m_idx{0};
+        const difference_type m_numberOfElements;
     };
 
     template <typename TYPE>
@@ -393,10 +410,10 @@ public:
      * @note These functions lock the buffer
      * @{
      */
-    Iterator<char*> begin();
-    Iterator<char*> end();
-    ConstIterator<char*> begin() const;
-    ConstIterator<char*> end() const;
+    Iterator<char> begin();
+    Iterator<char> end();
+    ConstIterator<char> begin() const;
+    ConstIterator<char> end() const;
     /// @}
 
     //-----------------------------------------------------
@@ -555,7 +572,7 @@ inline Array::Iterator<T> Array::end()
                 ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
 
     auto itr = Iterator<T>(this);
-    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes()/sizeof(T));
+    itr += static_cast< typename Array::Iterator<T>::difference_type>(this->getSizeInBytes()/sizeof(T));
     return itr;
 }
 
@@ -578,7 +595,7 @@ inline Array::ConstIterator<T> Array::end() const
                 ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
 
     auto itr = ConstIterator<T>(this);
-    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes()/sizeof(T));
+    itr += static_cast< typename Array::ConstIterator<T>::difference_type>(this->getSizeInBytes()/sizeof(T));
     return itr;
 }
 
@@ -612,10 +629,10 @@ inline T Array::at(const ::fwData::Array::IndexType& id) const
 
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array) :
-    m_pointer(static_cast<BufferType>(array->getBuffer())),
+    m_pointer(static_cast<pointer>(array->getBuffer())),
     m_lock(array->lock()),
     m_idx(0),
-    m_numberOfElements(static_cast<std::ptrdiff_t>(array->getSizeInBytes()/sizeof(TYPE)))
+    m_numberOfElements(static_cast<difference_type>(array->getSizeInBytes()/sizeof(TYPE)))
 {
 }
 
@@ -657,7 +674,7 @@ inline bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& o
 //------------------------------------------------------------------------------
 
 template <typename TYPE, bool isConst>
-inline typename Array::IteratorBase<TYPE, isConst>::ValueReferenceType Array::IteratorBase<TYPE, isConst>::operator*()
+inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*()
 {
     return *m_pointer;
 }
@@ -690,7 +707,7 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(std::ptrdiff_t index)
+inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(difference_type index)
 {
     m_idx = m_idx + index;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
@@ -702,7 +719,7 @@ inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::o
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+=(std::ptrdiff_t index)
+inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+=(difference_type index)
 {
     m_idx += index;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
@@ -737,7 +754,7 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(std::ptrdiff_t index)
+inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(difference_type index)
 {
     SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
                                              << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
@@ -749,7 +766,7 @@ inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::o
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-=(std::ptrdiff_t index)
+inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-=(difference_type index)
 {
     SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
                                              << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
@@ -761,7 +778,8 @@ inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::o
 //-----------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-std::ptrdiff_t Array::IteratorBase<TYPE, isConst>::operator+(const IteratorBase& other) const
+typename Array::IteratorBase<TYPE, isConst>::difference_type Array::IteratorBase<TYPE, isConst>::operator+(
+    const IteratorBase& other) const
 {
     return m_pointer + other.m_pointer;
 }
@@ -769,7 +787,8 @@ std::ptrdiff_t Array::IteratorBase<TYPE, isConst>::operator+(const IteratorBase&
 //-----------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-std::ptrdiff_t Array::IteratorBase<TYPE, isConst>::operator-(const IteratorBase& other) const
+typename Array::IteratorBase<TYPE, isConst>::difference_type Array::IteratorBase<TYPE, isConst>::operator-(
+    const IteratorBase& other) const
 {
     return m_pointer - other.m_pointer;
 }
