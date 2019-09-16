@@ -57,13 +57,26 @@ SSolvePnP::SSolvePnP() noexcept :
 
 //-----------------------------------------------------------------------------
 
-void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timestamp)
+void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType)
 {
+    const auto camera = this->getInput< ::arData::Camera > (s_CALIBRATION_INPUT);
+    SLM_FATAL_IF("Camera '" + s_CALIBRATION_INPUT + "' not found", !camera);
 
-    if(!m_isInitialized)
+    ::fwData::mt::ObjectReadLock cameraLock(camera);
+
+    if(!camera->getIsCalibrated())
     {
-        _timestamp += 0.; //avoid unused variable warning
         return;
+    }
+
+    Camera cvCamera;
+    std::tie(cvCamera.intrinsicMat, cvCamera.imageSize, cvCamera.distCoef) = ::cvIO::Camera::copyToCv(camera);
+
+    // if coordinate system is not the same as OpenCV's (TOP_LEFT), compute corresponding offset
+    if(m_videoRef == CENTER)
+    {
+        m_offset[0] = static_cast<float>(cvCamera.imageSize.width) / 2.f;
+        m_offset[1] = static_cast<float>(cvCamera.imageSize.height) / 2.f;
     }
 
     //get points
@@ -117,7 +130,7 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
 
     // call solvepnp
     ::cv::Matx44f cvMat = ::calibration3d::helper::cameraPoseMonocular(points3d, points2d,
-                                                                       m_cvCamera.intrinsicMat, m_cvCamera.distCoef);
+                                                                       cvCamera.intrinsicMat, cvCamera.distCoef);
     // object pose
     if(m_reverseMatrix)
     {
@@ -136,7 +149,6 @@ void SSolvePnP::computeRegistration(::fwCore::HiResClock::HiResClockType _timest
 
 void SSolvePnP::configuring()
 {
-
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     const std::string videoRef = config.get< std::string >("videoReference", "top_left");
@@ -159,37 +171,12 @@ void SSolvePnP::configuring()
 
 void SSolvePnP::starting()
 {
-    this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
 void SSolvePnP::stopping()
 {
-    m_isInitialized = false;
-}
-
-//-----------------------------------------------------------------------------
-
-void SSolvePnP::initialize()
-{
-    const auto camera = this->getInput< ::arData::Camera > (s_CALIBRATION_INPUT);
-    SLM_FATAL_IF("Camera '" + s_CALIBRATION_INPUT + "' not found", !camera);
-
-    ::fwData::mt::ObjectReadLock cameraLock(camera);
-    m_cvCamera.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
-
-    std::tie(m_cvCamera.intrinsicMat, m_cvCamera.imageSize, m_cvCamera.distCoef) = ::cvIO::Camera::copyToCv(camera);
-
-    // if coordinate system is not the same as OpenCV's (TOP_LEFT), compute corresponding offset
-    if(m_videoRef == CENTER)
-    {
-        m_offset[0] = static_cast<float>(m_cvCamera.imageSize.width) / 2.f;
-        m_offset[1] = static_cast<float>(m_cvCamera.imageSize.height) / 2.f;
-    }
-
-    m_isInitialized = true;
-
 }
 
 //-----------------------------------------------------------------------------

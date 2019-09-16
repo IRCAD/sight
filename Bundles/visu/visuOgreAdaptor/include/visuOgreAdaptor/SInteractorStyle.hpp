@@ -139,12 +139,6 @@ private:
     /// Pointer to the generic signal
     PointClickedSigType::sptr m_sigPicked;
 
-    /// Deprecated
-    PointClickedSignalTypeDeprecated::sptr m_sigAddPointDeprecated;
-
-    /// Deprecated
-    PointClickedSignalTypeDeprecated::sptr m_sigRemovePointDeprecated;
-
     /**
      * @}
      */

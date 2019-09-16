@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,6 +39,19 @@ namespace factory
 }
 
 } // namespace factory
+
+namespace offscreenInteractorMgrFactory
+{
+
+//------------------------------------------------------------------------------
+
+::fwRenderOgre::IRenderWindowInteractorManager::sptr New(const ::fwRenderOgre::registry::KeyType& classname,
+                                                         std::pair<unsigned int, unsigned int> _dims)
+{
+    return ::fwRenderOgre::registry::getOffscreenMgr()->create(classname, _dims);
+}
+
+} // namespace offscreenInteractorMgrFactory
 
 namespace lightFactory
 {

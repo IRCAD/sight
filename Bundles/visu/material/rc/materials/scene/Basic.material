@@ -1,0 +1,79 @@
+//------------------------------------------------------------------------------
+
+material BasicAmbient
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/Ambient_VP
+            {
+            }
+
+            fragment_program_ref Default/Ambient_FP
+            {
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/Ambient_VP
+            {
+            }
+
+            fragment_program_ref Default/Ambient_FP
+            {
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+material BasicPhong
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/PixelLit_VP
+            {
+            }
+
+            fragment_program_ref Default/PixelLit_FP
+            {
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Default/PixelLit_VP
+            {
+            }
+
+            fragment_program_ref Default/PixelLit_FP
+            {
+            }
+        }
+    }
+}

@@ -91,6 +91,7 @@ namespace editor
             <param type="int" name="integer parameter" key="intParam" defaultValue="1" min="0" max="255" />
             <param type="enum" name="enum parameters" key="enumParam" defaultValue="p1" values="p1,p2,p3" />
         </parameters>
+        <config sendAtStart="true" />
        </service>
    @endcode
  *
@@ -104,10 +105,13 @@ namespace editor
  * - \b widget (optional) : widget type, available for types 'int' and 'double'.
  * You can choose between a 'spin' or a 'slider' widget. Defaults to 'spin' for 'double' and  'slider' for 'int'.
  * - \b decimals (optional, default=2): number of decimals settable using a double slider.
+ * - \b reset (optional, default=true): display the reset button.
  * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
  * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
  * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKBOARD
  * and will send 'imageBlend' or 'imageCheckerboard'.
+ * - \b sendAtStart (optional, default=true): whether or not to trigger parameter update signals when the service
+ * starts.
  */
 class GUIQT_CLASS_API SParameters : public QObject,
                                     public ::fwGui::editor::IEditor
@@ -204,26 +208,28 @@ private:
     QPushButton* createResetButton();
 
     /// Create a widget associated with a boolean type
-    void createBoolWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue);
+    void createBoolWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
+                          bool resetButton);
 
     /// Create a widget associated with a color type
-    void createColorWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue);
+    void createColorWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
+                           bool resetButton);
 
     /// Create a widget associated with a double type
     void createDoubleWidget(QGridLayout& layout, int row, const std::string& key, double defaultValue,
-                            double min, double max, int count);
+                            double min, double max, int count, bool resetButton = true);
 
     /// Create a slider widget associated with a double type.
     void createDoubleSliderWidget(QGridLayout& layout, int row, const std::string& key, double defaultValue,
-                                  double min, double max, std::uint8_t decimals);
+                                  double min, double max, std::uint8_t decimals, bool resetButton);
 
     /// Create a slider widget associated with an integer type
     void createIntegerSliderWidget(QGridLayout& layout, int row, const std::string& key,
-                                   int defaultValue, int min, int max);
+                                   int defaultValue, int min, int max, bool resetButton);
 
     /// Create a spin widget associated with an integer type
     void createIntegerSpinWidget(QGridLayout& layout, int row, const std::string& key,
-                                 int defaultValue, int min, int max, int count);
+                                 int defaultValue, int min, int max, int count, bool resetButton);
 
     /// Create a multi choice widget
     void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
@@ -307,6 +313,9 @@ private:
 
     /// if true, the signals are not emitted
     bool m_blockSignals;
+
+    /// Send signals at the starting of this service.
+    bool m_sendSignalAtStart{true};
 };
 
 //------------------------------------------------------------------------------

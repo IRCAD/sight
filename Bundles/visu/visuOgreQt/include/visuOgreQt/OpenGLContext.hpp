@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,40 +22,33 @@
 
 #pragma once
 
-#include <fwCore/base.hpp>
+#include "visuOgreQt/config.hpp"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <QOpenGLContext>
 
-namespace fwDataTools
+#include <memory>
+
+namespace visuOgreQt
 {
-namespace ut
-{
 
-class MedicalImageHelpersTest : public CPPUNIT_NS::TestFixture
+/**
+ * @brief Static class to manage the OpenGL context shared by all render windows.
+ */
+class OpenGLContext
 {
-CPPUNIT_TEST_SUITE( MedicalImageHelpersTest );
-CPPUNIT_TEST( getMinMaxTest );
-CPPUNIT_TEST( getPixelBufferTest );
-CPPUNIT_TEST( setPixelBufferTest );
-CPPUNIT_TEST( isBufNull );
-CPPUNIT_TEST_SUITE_END();
-
 public:
-    void setUp();
-    void tearDown();
 
-    void getMinMaxTest();
+    /// Retrieves a shared pointer to Ogre's OpenGL context, creates it if does not exist or has expired.
+    static std::shared_ptr<QOpenGLContext> getGlobalOgreOpenGLContext();
 
-    // Test the getPixelBuffer method for several image pixel types
-    void getPixelBufferTest();
+    /// Creates an OpenGL 4.1 context.
+    static QOpenGLContext* createOgreGLContext();
 
-    //------------------------------------------------------------------------------
+private:
 
-    // Test the setPixelBuffer method for several image pixel types
-    void setPixelBufferTest();
+    /// Weak reference to the OpenGL context, expires when no more windows hold the context.
+    static std::weak_ptr<QOpenGLContext> s_globalOgreOpenGLContext;
 
-    void isBufNull();
 };
 
-} // namespace ut
-} // namespace fwDataTools
+} // namespace visuOgreQt
