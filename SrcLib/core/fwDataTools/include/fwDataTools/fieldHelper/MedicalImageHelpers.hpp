@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,16 +42,6 @@ namespace fwDataTools
 {
 namespace fieldHelper
 {
-
-template <class T> struct bitwise_or : std::binary_function <T, T, T>
-{
-    // ------------------------------------------------------------------------------
-
-    T operator() (const T& x, const T& y) const
-    {
-        return x|y;
-    }
-};
 
 /**
  * @brief   This class contains helpers for medical image fields.

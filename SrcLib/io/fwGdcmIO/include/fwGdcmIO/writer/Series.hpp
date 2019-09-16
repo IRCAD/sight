@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,8 +74,9 @@ public:
      * In addition, it creates an adapted folder tree where DICOM files will be stored.
      * It manages writing of the following general DICOM modules : patient, study and series
      * @note Currently, it handles image, SR and RT document writing.
+     * @throw ::fwGdcmIO::exception::Failed
      */
-    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed) override;
+    FWGDCMIO_API void write() override;
 
     /**
      * Override

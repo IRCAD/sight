@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ class REGISTRATIONCV_CLASS_API SSolvePnP : public ::fwServices::IRegisterer
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SSolvePnP)(::fwServices::IRegisterer));
+    fwCoreServiceClassDefinitionsMacro((SSolvePnP)(::fwServices::IRegisterer))
 
     /// Constructor.
     REGISTRATIONCV_API SSolvePnP() noexcept;
@@ -94,9 +94,6 @@ protected:
     REGISTRATIONCV_API virtual void updating() override;
 
 private:
-
-    /// Gets camera parameters and converts into OpenCV structures
-    void initialize();
 
     /// Manages several video coordinate system.
     typedef enum VideoReference
@@ -126,10 +123,6 @@ private:
     VideoReferenceType m_videoRef;
     /// Map that handles conversion between xml configuration string and VideoReferenceType
     std::map<std::string, VideoReferenceType > m_videoRefMap;
-    /// Camera structure that handles parameters in OpenCV format
-    Camera m_cvCamera;
-    /// checks if service is initialized or not (parsing of camera parameters)
-    bool m_isInitialized = {false};
     /// reverse or not output matrix (camera pose vs object pose)
     bool m_reverseMatrix = {false};
     /// offset to apply if image reference is not at top left
