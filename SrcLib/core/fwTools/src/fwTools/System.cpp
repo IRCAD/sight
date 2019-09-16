@@ -207,7 +207,7 @@ int System::tempFolderPID(const std::filesystem::path& dir) noexcept
 {
     namespace fs = std::filesystem;
 
-    const std::regex pidFilter( "([[:digit:]]+)\\.pid" );
+    const std::regex pidFilter( "([\\d]+)\\.pid" );
 
     int pid = 0;
 

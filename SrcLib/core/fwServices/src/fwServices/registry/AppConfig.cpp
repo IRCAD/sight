@@ -46,7 +46,7 @@ AppConfig::UidDefinitionType AppConfig::s_uidDefinitionDictionary = { { "object"
                                                                       { "view", "sid" },
                                                                       { "view", "wid" },
                                                                       { "connect", "channel" }, };
-static const std::regex s_isVariable( "\\${.*}.*" );
+static const std::regex s_isVariable( "\\$\\{.*\\}" );
 
 //-----------------------------------------------------------------------------
 

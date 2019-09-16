@@ -181,7 +181,7 @@ std::string Shading::setPermutationInProgramName(const std::string& _name, const
     std::string prgName;
 
     // Clear the suffix in shader names (+VT+...)
-    static const std::regex regexConcat("\\N{plus-sign}.*(_[FV]P)", std::regex::extended);
+    static const std::regex regexConcat("\\+.*(_[FV]P)");
     prgName = std::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique

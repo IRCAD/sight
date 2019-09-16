@@ -38,8 +38,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <regex>
-
 namespace gui
 {
 namespace action

@@ -397,7 +397,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
     else
     {
         std::string newTabInfo = info.tabInfo;
-        std::regex e("(!(([[:word:]]+\\.?)+[[:word:]]))");
+        std::regex e("(!(([\\w]+\\.?)+[\\w]))");
         std::smatch what;
         if(std::regex_search(newTabInfo, what, e))
         {

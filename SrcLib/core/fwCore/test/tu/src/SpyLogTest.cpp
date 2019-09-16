@@ -133,7 +133,7 @@ struct RegexLogCompare
 
     bool operator() (std::string a, std::string b)
     {
-        std::regex re(".*(msg n [[:digit:]]+)$");
+        std::regex re(".*(msg n [\\d]+)$");
         std::smatch matchA;
         std::smatch matchB;
         bool doMatchA = std::regex_match(a, matchA, re);
