@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -101,11 +101,12 @@ protected:
      * @param[in] newBitsAllocated Number of bits allocated after rescale
      * @param[in] performRescale Set to true when a rescale must be perfromed
      * @return Global raw buffer of the image.
+     * @throw(::fwGdcmIO::exception::Failed)
      */
     char* readImageBuffer(const std::vector<unsigned int>& dimensions,
                           const unsigned short bitsAllocated,
                           const unsigned short newBitsAllocated,
-                          const bool performRescale) throw(::fwGdcmIO::exception::Failed);
+                          const bool performRescale);
 
     /**
      * @brief Correct image buffer according to image orientation

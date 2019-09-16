@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,9 @@ VRWidget::VRWidget(const std::string& id,
                    ::Ogre::Camera* camera,
                    ::Ogre::SceneManager* sceneManager,
                    const ::Ogre::Matrix4& clippingMatrix,
-                   const ClippingUpdateCallbackType& clippingUpdateCallback) :
+                   const ClippingUpdateCallbackType& clippingUpdateCallback,
+                   const std::string& boxMtlName,
+                   const std::string& handleMtlName) :
     m_id(id),
     m_sceneManager(sceneManager),
     m_camera(camera),
@@ -59,6 +61,11 @@ VRWidget::VRWidget(const std::string& id,
     m_widgetSceneNode(m_volumeSceneNode->createChildSceneNode()),
     m_clippingUpdateCallback(clippingUpdateCallback)
 {
+    m_boxMtl    = ::Ogre::MaterialManager::getSingleton().getByName(boxMtlName);
+    m_handleMtl = ::Ogre::MaterialManager::getSingleton().getByName(handleMtlName);
+    SLM_ASSERT("Missing '" + boxMtlName + "' material.", m_boxMtl);
+    SLM_ASSERT("Missing '" + handleMtlName + "' material.", m_handleMtl);
+
     this->initWidgets();
     this->applyTransform(clippingMatrix);
 }
@@ -78,10 +85,9 @@ VRWidget::~VRWidget()
         m_sceneManager->destroyMovableObject(mo->getName(), mo->getMovableType());
     }
 
-    ::Ogre::MaterialManager::getSingleton().remove(m_sphereHighlightMtl->getHandle());
-    ::Ogre::MaterialManager::getSingleton().remove(m_frameMtl->getHandle());
-    ::Ogre::MaterialManager::getSingleton().remove(m_frameHighlightMtl->getHandle());
-    ::Ogre::MaterialManager::getSingleton().remove(m_faceMtl->getHandle());
+    ::Ogre::MaterialManager::getSingleton().remove(m_handleHightlightMtl->getHandle());
+    ::Ogre::MaterialManager::getSingleton().remove(m_boxHighlightMtl->getHandle());
+    ::Ogre::MaterialManager::getSingleton().remove(m_boxFaceMtl->getHandle());
 
     m_sceneManager->destroySceneNode(m_widgetSceneNode);
 }
@@ -188,26 +194,28 @@ void VRWidget::initWidgets()
             resourceMgr.createResourceGroup(s_VR_MATERIALS_GROUP);
         }
 
-        ::Ogre::MaterialPtr sphereMtl = ::Ogre::MaterialManager::getSingleton().getByName("Default");
-        m_sphereHighlightMtl          = sphereMtl->clone(m_id + "_SphereHighlight", true, s_VR_MATERIALS_GROUP);
+        m_handleMtl->setAmbient(0.1f, 0.1f, 0.1f);
+        m_handleMtl->setDiffuse(1.f, 1.f, 1.f, 1.f);
+        m_handleMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
+        m_handleMtl->setShininess(1.f);
 
-        m_sphereHighlightMtl->setAmbient(0.3f, 0.f, 0.f);
-        m_sphereHighlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
+        m_handleHightlightMtl = m_handleMtl->clone(m_id + "_SphereHighlight", true, s_VR_MATERIALS_GROUP);
+        m_handleHightlightMtl->setAmbient(0.3f, 0.f, 0.f);
+        m_handleHightlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
 
-        m_frameMtl = sphereMtl->clone(m_id + "_Frame", true, s_VR_MATERIALS_GROUP);
-        m_frameMtl->setAmbient(1.f, 1.f, 1.f);
-        m_frameMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
-        m_frameMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
+        m_boxMtl->setAmbient(1.f, 1.f, 1.f);
+        m_boxMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
+        m_boxMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
 
-        m_frameHighlightMtl = m_frameMtl->clone(m_id + "_FrameHighlight", true, s_VR_MATERIALS_GROUP);
-        m_frameHighlightMtl->setAmbient(0.f, 1.f, 0.f);
+        m_boxHighlightMtl = m_boxMtl->clone(m_id + "_FrameHighlight", true, s_VR_MATERIALS_GROUP);
+        m_boxHighlightMtl->setAmbient(0.f, 1.f, 0.f);
 
-        m_faceMtl = sphereMtl->clone(m_id + "_FaceHighlight", true, s_VR_MATERIALS_GROUP);
-        m_faceMtl->setAmbient(1.f, 1.f, 0.f);
-        m_faceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
-        m_faceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
-        m_faceMtl->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
-        m_faceMtl->setDepthWriteEnabled(false);
+        m_boxFaceMtl = m_boxMtl->clone(m_id + "_FaceHighlight", true, s_VR_MATERIALS_GROUP);
+        m_boxFaceMtl->setAmbient(1.f, 1.f, 0.f);
+        m_boxFaceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
+        m_boxFaceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
+        m_boxFaceMtl->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+        m_boxFaceMtl->setDepthWriteEnabled(false);
     }
 
     m_boundingBox  = m_sceneManager->createManualObject(m_id + "_VolumeBB");
@@ -215,7 +223,7 @@ void VRWidget::initWidgets()
 
     const auto clippingBoxPositions = this->getClippingBoxPositions();
 
-    m_boundingBox->begin(m_id + "_Frame", Ogre::RenderOperation::OT_LINE_LIST);
+    m_boundingBox->begin(m_boxMtl->getName(), Ogre::RenderOperation::OT_LINE_LIST);
     {
         for(unsigned i = 0; i < 12; ++i)
         {
@@ -239,7 +247,7 @@ void VRWidget::initWidgets()
 
     m_widgetSceneNode->attachObject(m_boundingBox);
 
-    m_selectedFace->begin(m_id + "_FaceHighlight", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
+    m_selectedFace->begin(m_boxFaceMtl->getName(), Ogre::RenderOperation::OT_TRIANGLE_STRIP);
     {
         for(unsigned i = 0; i < 4; ++i)
         {
@@ -257,7 +265,7 @@ void VRWidget::initWidgets()
         const auto currentFace = static_cast< vr::IVolumeRenderer::CubeFace>(i);
 
         ::Ogre::Entity* newWidget = m_sceneManager->createEntity( ::Ogre::SceneManager::PT_SPHERE );
-        newWidget->setMaterialName("Default");
+        newWidget->setMaterial(m_handleMtl);
 
         ::Ogre::SceneNode* sphereSceneNode = m_widgetSceneNode->createChildSceneNode();
 
@@ -379,13 +387,13 @@ void VRWidget::widgetReleased()
     if(m_selectedWidget)
     {
         this->deselectFace();
-        m_selectedWidget->setMaterialName("Default");
+        m_selectedWidget->setMaterial(m_handleMtl);
         m_selectedWidget = nullptr;
     }
 
     if(m_selectionMode == BOX)
     {
-        m_boundingBox->setMaterialName(0, m_id + "_Frame");
+        m_boundingBox->setMaterialName(0, m_boxMtl->getName());
     }
 
     m_selectionMode = NONE;
@@ -431,7 +439,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
             m_pickedBoxPoint = (mouseRayImgSpace.getPoint(inter.second) - min) / (max - min);
             m_selectionMode  = BOX;
 
-            m_boundingBox->setMaterialName(0, m_id + "_FrameHighlight");
+            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName());
         }
         else
         {
@@ -517,7 +525,7 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
             // Get picked point in box space.
             m_selectionMode = BOX;
 
-            m_boundingBox->setMaterialName(0, m_id + "_FrameHighlight");
+            m_boundingBox->setMaterialName(0, m_boxHighlightMtl->getName());
         }
         else
         {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -211,7 +211,7 @@ bool MedicalImageHelpers::isBufNull(const ::fwData::Image::BufferType* buf, cons
         ucbuf,
         ucbuf+len,
         0,
-        bitwise_or< ::fwData::Image::BufferType >()
+        std::bit_or< ::fwData::Image::BufferType>()
         );
     return isNull;
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,13 +55,17 @@ public:
      * @param sceneManager           scene manager handling this object.
      * @param clippingMatrix         the initial clipping transform in world space
      * @param clippingUpdateCallback function called when the widget is modified through interaction.
+     * @param boxMtlName             material used to display the box edges and faces.
+     * @param handleMtlName          material used to display the widget handles.
      */
     FWRENDEROGRE_API VRWidget(const std::string& id,
                               ::Ogre::SceneNode* parentSceneNode,
                               ::Ogre::Camera* camera,
                               ::Ogre::SceneManager* sceneManager,
                               const ::Ogre::Matrix4& clippingMatrix,
-                              const ClippingUpdateCallbackType& clippingUpdateCallback);
+                              const ClippingUpdateCallbackType& clippingUpdateCallback,
+                              const std::string& boxMtlName    = "BasicAmbient",
+                              const std::string& handleMtlName = "BasicPhong" );
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidget();
@@ -185,8 +189,20 @@ private:
     /// Picked box point.
     ::Ogre::Vector3 m_pickedBoxPoint;
 
-    /// Materials
-    ::Ogre::MaterialPtr m_sphereHighlightMtl, m_frameMtl, m_frameHighlightMtl, m_faceMtl;
+    /// Material applied to the pickable spheres.
+    ::Ogre::MaterialPtr m_handleMtl;
+
+    /// Material applied to a sphere when it is selected.
+    ::Ogre::MaterialPtr m_handleHightlightMtl;
+
+    /// Material displaying the edges of the box.
+    ::Ogre::MaterialPtr m_boxMtl;
+
+    /// Material displaying the edges when user is interacting with the widget.
+    ::Ogre::MaterialPtr m_boxHighlightMtl;
+
+    /// Material displaying the currently selected face.
+    ::Ogre::MaterialPtr m_boxFaceMtl;
 
     /// Called when the clipping box is modified through interaction.
     ClippingUpdateCallbackType m_clippingUpdateCallback;

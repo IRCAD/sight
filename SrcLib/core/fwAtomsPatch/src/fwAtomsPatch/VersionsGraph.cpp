@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef WIN32
-// To fix problem in class boost::detail::stored_edge_property
-// Default constructor is a move constructor and no copy constructor is implemented
-// The instance of the class can not be copied.
-#define BOOST_NO_CXX11_RVALUE_REFERENCES
-#define BOOST_NO_CXX11_REF_QUALIFIERS
-#endif
-#include <algorithm>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/graph/breadth_first_search.hpp>
-#include <fwCore/spyLog.hpp>
+#include "fwAtomsPatch/VersionsGraph.hpp"
 
 #include "fwAtomsPatch/exceptions/UnknownVersion.hpp"
 
-#include "fwAtomsPatch/VersionsGraph.hpp"
+#include <fwCore/spyLog.hpp>
+
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/breadth_first_search.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/graph_traits.hpp>
+
+#include <algorithm>
 
 namespace fwAtomsPatch
 {
@@ -45,9 +40,12 @@ class VertexVisitor : public boost::default_bfs_visitor
 {
 public:
 
-    VertexVisitor(std::vector< std::string >* vector) : m_vector(vector)
+    VertexVisitor(std::vector< std::string >* vector) :
+        m_vector(vector)
     {
     }
+
+    //------------------------------------------------------------------------------
 
     void discover_vertex(VersionsGraph::NodeIDType n, VersionsGraph::GraphType g)
     {
@@ -166,7 +164,7 @@ VersionsGraph::EdgeType VersionsGraph::getEdge(const NodeIDType& origin, const N
     EdgeIDType edgeID;
     bool success = false;
     ::fwCore::mt::ReadLock lock(m_graphMutex);
-    ::boost::tie(edgeID,success) = ::boost::edge(origin, target, m_graph);
+    ::boost::tie(edgeID, success) = ::boost::edge(origin, target, m_graph);
     OSLM_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
                                              << m_graph[target].getVersionName() << "'.", success);
     return m_graph[edgeID];
@@ -251,7 +249,7 @@ VersionsGraph::EdgeIDType VersionsGraph::createEdge(const EdgeType& edge)
 
 // ----------------------------------------------------------------------------
 
-std::vector< std::string > VersionsGraph::getConnectedVersions(const std::string &currentVersion)
+std::vector< std::string > VersionsGraph::getConnectedVersions(const std::string& currentVersion)
 {
     std::vector< std::string > vector;
     VertexVisitor vis(&vector);
@@ -262,12 +260,11 @@ std::vector< std::string > VersionsGraph::getConnectedVersions(const std::string
         ::boost::breadth_first_search( m_graph, nodeId, ::boost::visitor(vis) );
         vector.erase(vector.begin());
     }
-    catch ( ::fwAtomsPatch::exceptions::UnknownVersion & )
+    catch ( ::fwAtomsPatch::exceptions::UnknownVersion& )
     {
     }
 
     return vector;
 }
-
 
 } // fwAtomsPatch

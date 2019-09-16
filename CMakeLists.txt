@@ -92,7 +92,7 @@ set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 ########################################################################################################################
 # Compile flags
 ########################################################################################################################
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Workarround to avoid compile error about OpenGL on macos >= 10.14
