@@ -63,14 +63,16 @@ void SImage::starting()
         this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
-    QIcon* image        = new QIcon(m_path.string().c_str());
     QLabel* label       = new QLabel("");
-    if(image->isNull())
+
+    QPixmap* pixmap = new QPixmap();
+    pixmap->load(m_path.string().c_str());
+
+    if(pixmap->isNull())
     {
         OSLM_ERROR("Image could not be found: " << m_path);
     }
-    QPixmap* pixmap = new QPixmap();
-    pixmap->load(m_path.string().c_str());
+
     if(m_width != -1 && m_height != -1)
     {
         label->setPixmap(pixmap->scaled(m_width, m_height));
