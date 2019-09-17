@@ -155,12 +155,13 @@
                     <orientation value="horizontal" />
                     <view caption="view3" toolTip="View with tabs inside" />
                     <view caption="view4" toolTip="Empty view" />
-                    <view caption="view5" toolTip="Empty view"/>
+                    <view caption="view5"/>
                 </layout>
             </gui>
             <registry>
                 <parent wid="myView" />
                 <view sid="subView3" start="yes" />
+                <view sid="subView5" start="yes" />
             </registry>
         </service>
 
@@ -186,6 +187,20 @@
                 </layout>
             </gui>
             <registry/>
+        </service>
+
+        <service uid="subView5" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view />
+                    <view />
+                </layout>
+            </gui>
+             <registry>
+                <view sid="ircadLogoView" start="yes" />
+                <view sid="ihuLogoView" start="yes" />
+            </registry>
         </service>
 
         <service uid="view12" type="::gui::view::SDefaultView" >
@@ -294,6 +309,16 @@
             <stop uid="item3" />
             <start uid="item4" />
             <start uid="item5" />
+        </service>
+
+        <service uid="ihuLogoView" type="::guiQt::editor::SImage" >
+            <path>media-0.1/icons/ihu_logo.png</path>
+            <height>70</height>
+        </service>
+
+        <service uid="ircadLogoView" type="::guiQt::editor::SImage" >
+            <path>media-0.1/icons/ircad_logo.png</path>
+            <height>70</height>
         </service>
 
         <service uid="actionQuit" type="::gui::action::SQuit" />
