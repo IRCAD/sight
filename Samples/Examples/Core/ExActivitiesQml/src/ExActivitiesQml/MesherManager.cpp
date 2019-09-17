@@ -182,6 +182,13 @@ void MesherManager::applyMesher(unsigned int reduction)
         mesher->stop();
         ::fwServices::OSR::unregisterService(mesher);
 
+        auto currentReconstructions = model->getReconstructionDB();
+        auto newReconstructions     = modelSeries->getReconstructionDB();
+
+        std::copy(newReconstructions.begin(), newReconstructions.end(), std::back_inserter(currentReconstructions));
+
+        modelSeries->setReconstructionDB(currentReconstructions);
+
         model->shallowCopy(modelSeries);
         auto sig = model->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
