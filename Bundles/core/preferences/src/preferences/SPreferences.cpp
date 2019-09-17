@@ -129,7 +129,7 @@ void SPreferences::save()
 
     namespace fs = std::filesystem;
     if( fs::exists(m_prefFile) && fs::is_regular_file(m_prefFile) &&
-        (fs::status(m_prefFile).permissions() & fs::perms::owner_write) != fs::perms::none)
+        (fs::status(m_prefFile).permissions() & fs::perms::owner_write) == fs::perms::none)
     {
         SLM_ERROR("SPreference need write access to the file '"+m_prefFile.string()+"'."
                   "Please, change file permission.");

@@ -26,7 +26,6 @@
 #include <fwCore/macros.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 
 namespace fwMemory
@@ -42,7 +41,7 @@ SPTR(std::istream) Raw::get()
                 !std::filesystem::exists(m_path));
 
     SPTR(std::ifstream) fs
-        = std::make_shared< std::ifstream>(m_path, std::ios::in|std::ios::binary);
+        = std::make_shared< std::ifstream>(m_path.string(), std::ios::in|std::ios::binary);
     return fs;
 }
 

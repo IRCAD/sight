@@ -26,9 +26,9 @@
 
 #include <fwCore/macros.hpp>
 
-#include <filesystem>
-
 #include <cstdint>
+#include <filesystem>
+#include <functional>
 
 namespace fwMedData
 {

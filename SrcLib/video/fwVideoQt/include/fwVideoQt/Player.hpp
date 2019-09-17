@@ -24,7 +24,6 @@
 
 #include "fwVideoQt/config.hpp"
 
-#include <filesystem>
 #include <QAbstractVideoSurface>
 #include <QCamera>
 #include <QMediaPlayer>
@@ -32,6 +31,8 @@
 #include <QObject>
 #include <QPointer>
 #include <QVideoFrame>
+
+#include <filesystem>
 
 namespace fwVideoQt
 {

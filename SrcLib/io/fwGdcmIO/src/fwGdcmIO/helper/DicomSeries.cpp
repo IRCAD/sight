@@ -39,11 +39,11 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <filesystem>
 #include <gdcmMediaStorage.h>
 #include <gdcmReader.h>
 
 #include <algorithm>
+#include <filesystem>
 
 namespace fwGdcmIO
 {
