@@ -196,12 +196,14 @@ void SActivityLauncher::configuring()
         }
         SLM_ASSERT("A maximum of 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
     }
+#endif
 }
 
 //------------------------------------------------------------------------------
 
 ::fwActivities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
 {
+#ifdef KEEP_OLD_SERVICE
     QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
