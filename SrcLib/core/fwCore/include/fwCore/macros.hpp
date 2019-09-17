@@ -320,7 +320,7 @@
  * - Classname is ::fwData::Object
  * - LeafClassname is Object
  */
-#define fwCoreInterfaceMacro()                                                                    \
+#define __FWCORE_INTERFACE_MACRO()                                                                \
     /** @name Demangling methods */                                                               \
     /** @{ */                                                                                     \
     /** @brief return object's classname without its namespace, i.e. BaseObject */                \
@@ -342,7 +342,7 @@
  * - Classname is ::fwData::Object
  * - LeafClassname is Object
  */
-#define fwCoreClassnameMacro()                                                                    \
+#define __FWCORE_CLASSNAME_MACRO()                                                                \
     /** @name Demangling methods */                                                               \
     /** @{ */                                                                                     \
     /** @brief return object's classname without its namespace, i.e. BaseObject */                \
@@ -474,7 +474,7 @@
         return __FWCORE_TYPEDEF_SHARED_PTR_NAME(_factory_());                                           \
     }                                                                                                   \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
-    fwCoreClassnameMacro()                                                                              \
+    __FWCORE_CLASSNAME_MACRO()                                                                          \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 #define fwCoreClassDefinitionsWithFactoryMacro_3(_classinfo_, _parameters_, _factory_)                  \
@@ -485,7 +485,7 @@
     /* @endcond */                                                                                      \
     __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY(_factory_, _parameters_)                               \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
-    fwCoreClassnameMacro()                                                                              \
+    __FWCORE_CLASSNAME_MACRO()                                                                          \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -499,7 +499,7 @@
 #define fwCoreClassDefinitionsMacro(_classinfo_)                                                        \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
-    fwCoreClassnameMacro()                                                                              \
+    __FWCORE_CLASSNAME_MACRO()                                                                          \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -528,7 +528,7 @@
     __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES(_factories_args_)                                      \
     /* @endcond */                                                                                      \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)        \
-    fwCoreClassnameMacro()                                                                              \
+    __FWCORE_CLASSNAME_MACRO()                                                                          \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -541,7 +541,7 @@
 #define fwCoreServiceClassDefinitionsMacro(_classinfo_)                                           \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                          \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)  \
-    fwCoreClassnameMacro()                                                                        \
+    __FWCORE_CLASSNAME_MACRO()                                                                    \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -555,7 +555,7 @@
 #define fwCoreNonInstanciableClassDefinitionsMacro(_classinfo_)                                   \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                          \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)  \
-    fwCoreClassnameMacro()                                                                        \
+    __FWCORE_CLASSNAME_MACRO()                                                                    \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -569,7 +569,7 @@
 #define fwCoreBaseClassDefinitionsMacro(_classinfo_)                                              \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                          \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_), __FWCORE_TYPEDEF_ROOTCLASS_NAME)  \
-    fwCoreInterfaceMacro()                                                                        \
+    __FWCORE_INTERFACE_MACRO()                                                                    \
     fwCoreInterfaceIsTypeOfMacro(_classinfo_)
 
 /**  @} */

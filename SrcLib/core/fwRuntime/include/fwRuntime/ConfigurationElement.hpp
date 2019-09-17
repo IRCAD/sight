@@ -57,7 +57,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
-    __FWCORE_CLASS_TYPEDEFS((ConfigurationElement));
+    fwCoreBaseClassDefinitionsMacro((ConfigurationElement));
 
     /**
      * @brief       ConfigurationElement factory.
@@ -69,9 +69,6 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
     {
         return sptr(new ConfigurationElement(bundle, name));
     }
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME((ConfigurationElement)), __FWCORE_TYPEDEF_ROOTCLASS_NAME)
-    fwCoreInterfaceMacro()
-    fwCoreInterfaceIsTypeOfMacro((ConfigurationElement))
 
     /**
      * @brief   Defines the attribute pair type.
