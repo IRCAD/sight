@@ -13,6 +13,11 @@
         <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="detectionFrame" type="::fwData::Image" />
         <object uid="videoFrame" type="::fwData::Image" />
+
+        <object uid="detectedChessboard" type="::fwData::PointList" />
+        <object uid="chessboardModel" type="::fwData::PointList" src="deferred" />
+        <object uid="cameraPoseMx" type="::fwData::TransformationMatrix3D" />
+
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
             <gui>
@@ -29,7 +34,7 @@
             </registry>
         </service>
 
-        <service uid="leftPanelView" type="::gui::view::SDefaultView" >
+        <service uid="leftPanelView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -43,7 +48,7 @@
             </registry>
         </service>
 
-        <service uid="cameraView" type="::gui::view::SDefaultView" >
+        <service uid="cameraView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -57,7 +62,7 @@
             </registry>
         </service>
 
-        <service uid="toolboxView" type="::gui::view::SDefaultView" >
+        <service uid="toolboxView" type="::gui::view::SDefaultView">
             <gui>
                 <toolBar/>
                 <layout type="::fwGui::ToolboxLayoutManager">
@@ -95,8 +100,10 @@
                     <editor/>
                     <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
                     <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" style="check" />
+                    <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" style="check" shortcut="Space" />
                     <menuItem name="Loop video" icon="arMedia-0.1/icons/loop-cam.svg" style="check" />
+                    <separator />
+                    <menuItem name="Undistort video" icon="arMedia-0.1/icons/distortion.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -105,6 +112,7 @@
                 <menuItem sid="actionStopCamera" start="yes" />
                 <menuItem sid="actionPauseVideo" start="yes" />
                 <menuItem sid="actionLoopVideo" start="yes" />
+                <menuItem sid="actionDistortion" start="yes" />
             </registry>
         </service>
 
@@ -115,7 +123,7 @@
                     <menuItem name="Add" icon="media-0.1/icons/Import.svg" shortcut="A" />
                     <menuItem name="Remove" icon="arMedia-0.1/icons/remove.svg" />
                     <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" />
-                    <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" shortcut="Enter"/>
+                    <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" shortcut="Return"/>
                     <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
                     <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
                     <menuItem name="Save calibration images" icon="arMedia-0.1/icons/save.svg" />
@@ -148,6 +156,7 @@
                 <slot>videoGrabber/stopCamera</slot>
                 <slot>actionStopCamera/hide</slot>
                 <slot>actionStartCamera/show</slot>
+                <slot>actionPauseVideo/deactivate</slot>
             </slots>
         </service>
 
@@ -160,6 +169,14 @@
         <service uid="actionLoopVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber/loopVideo</slot>
+            </slots>
+        </service>
+
+        <service uid="actionDistortion" type="::gui::action::SSlotCaller">
+            <state active="false" visible="false" />
+            <slots>
+                <slot>distorter/changeState</slot>
+                <slot>chessboardReprojection/toggleDistortion</slot>
             </slots>
         </service>
 
@@ -221,17 +238,26 @@
             <label>Reprojection Error (RMSE)</label>
         </service>
 
-        <service uid="detectionFrameUpdater" type="::videoTools::SFrameUpdater" worker="intr_chess_checker">
-            <in key="frameTL" uid="frameTL" autoConnect="yes" />
-            <inout key="frame" uid="detectionFrame" />
+        <service uid="detectionFrameUpdater" type="::videoTools::SFrameMatrixSynchronizer">
+            <in group="frameTL">
+                <key uid="frameTL" autoConnect="yes"/>
+            </in>
+            <inout group="image">
+                <key uid="detectionFrame" />
+            </inout>
+            <tolerance>200</tolerance>
+            <framerate>0</framerate>
         </service>
 
         <service uid="chessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
-            <in group="image" autoConnect="yes" >
+            <in group="image" autoConnect="yes">
                 <key uid="detectionFrame" />
             </in>
             <inout group="calInfo">
                 <key uid="${calibrationInfo}" />
+            </inout>
+            <inout group="detection">
+                <key uid="detectedChessboard" />
             </inout>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
         </service>
@@ -244,10 +270,35 @@
             <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="intrinsicCalibration" type="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
+        <service uid="intrinsicCalibration" type="::videoCalibration::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="${calibrationInfo}" />
             <inout key="camera" uid="${camera}" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+        </service>
+
+        <service uid="chessboardReprojection" type="::videoCalibration::SChessboardReprojection" >
+            <in key="transform" uid="cameraPoseMx" />
+            <in key="camera" uid="${camera}"/>
+            <in key="detectedChessboard" uid="detectedChessboard" />
+            <inout key="videoImage" uid="videoFrame" />
+            <out key="chessboardModel" uid="chessboardModel" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
+        </service>
+
+        <service uid="computeCameraPose" type="::registrationCV::SSolvePnP" worker="intr_chess_checker">
+            <in key="pointList2d" uid="detectedChessboard" />
+            <in key="pointList3d" uid="chessboardModel" />
+            <in key="calibration" uid="${camera}" />
+            <inout key="matrix" uid="cameraPoseMx" />
+            <config inverse="false"/>
+        </service>
+
+        <service uid="distorter" type="::videoCalibration::SDistortion" >
+            <in key="camera" uid="${camera}" autoConnect="yes" />
+            <in key="input" uid="detectionFrame" />
+            <inout key="output" uid="videoFrame" />
+            <mode>undistort</mode>
         </service>
 
         <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
@@ -268,11 +319,6 @@
             <inout key="frameTL" uid="frameTL" />
         </service>
 
-        <service uid="videoFrameUpdater" type="::videoTools::SFrameUpdater">
-            <in key="frameTL" uid="frameTL" autoConnect="yes" />
-            <inout key="frame" uid="videoFrame" />
-        </service>
-
         <service uid="cameraSelector" type="::videoQt::editor::SCamera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>yes</videoSupport>
@@ -280,15 +326,15 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="cameraScene" type="::fwRenderVTK::SRender" >
-            <scene renderMode="timer">
+        <service uid="cameraScene" type="::fwRenderVTK::SRender">
+            <scene renderMode="sync">
                 <renderer id="default" background="0.0" />
                 <adaptor uid="videoAdaptor" />
                 <adaptor uid="interactorStyle" />
             </scene>
         </service>
 
-        <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+        <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo">
             <in key="frame" uid="videoFrame" />
             <config renderer="default" />
         </service>
@@ -327,6 +373,11 @@
         </connect>
 
         <connect>
+            <signal>${camera}/intrinsicCalibrated</signal>
+            <slot>actionDistortion/show</slot>
+        </connect>
+
+        <connect>
             <signal>chessboardDetector/chessboardDetected</signal>
             <slot>detectionStatus/toggleGreenRed</slot>
         </connect>
@@ -348,23 +399,54 @@
             <slot>errorLabel/setDoubleParameter</slot>
         </connect>
 
+        <connect>
+            <signal>chessboardDetector/updated</signal>
+            <slot>computeCameraPose/update</slot>
+        </connect>
+
+        <connect>
+            <signal>computeCameraPose/updated</signal>
+            <slot>distorter/update</slot>
+        </connect>
+
+        <connect>
+            <signal>distorter/updated</signal>
+            <slot>chessboardReprojection/update</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboardReprojection/updated</signal>
+            <slot>videoAdaptor/updateImage</slot>
+            <slot>cameraScene/requestRender</slot>
+            <slot>detectionFrameUpdater/synchronize</slot>
+        </connect>
+
+        <connect>
+            <signal>visibilityParameters/boolChanged</signal>
+        </connect>
+
         <connect channel="${preferencesModifiedProxy}">
             <slot>intrinsicCalibration/updateChessboardSize</slot>
             <slot>chessboardDetector/updateChessboardSize</slot>
+            <slot>chessboardReprojection/updateChessboardSize</slot>
+            <slot>detectionFrameUpdater/synchronize</slot>
         </connect>
 
         <start uid="intrinsicCameraView" />
         <start uid="intrinsicCalibration" />
         <start uid="chessboardDetector" />
+        <start uid="chessboardReprojection" />
         <start uid="displayCalibrationInfo" />
         <start uid="intrinsicEdition" />
         <start uid="calibrationDataWriter" />
         <start uid="videoGrabber" />
-        <start uid="videoFrameUpdater" />
         <start uid="detectionFrameUpdater" />
+        <start uid="distorter" />
         <!-- VTK scene 'camera' -->
         <start uid="videoAdaptor" />
         <start uid="interactorStyle" />
+
+        <start uid="computeCameraPose" />
 
     </config>
 </extension>

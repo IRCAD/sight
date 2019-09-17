@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,8 +56,10 @@ public:
     /// Destructor
     FWGDCMIO_API ~ComprehensiveSRIOD();
 
-    /// Read DICOM file
-    FWGDCMIO_API void read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed);
+    /** Read DICOM file
+     * @throw ::fwGdcmIO::exception::Failed
+     */
+    FWGDCMIO_API void read(::fwMedData::Series::sptr series);
 
 };
 

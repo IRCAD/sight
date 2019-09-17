@@ -20,10 +20,11 @@
  *
  ***********************************************************************/
 
-#include "fwRenderOgre/OffScreenRenderWindowInteractorManager.hpp"
+#include "visuOgreQt/OffScreenRenderWindowInteractorManager.hpp"
 
-#include "fwRenderOgre/SRender.hpp"
-#include "fwRenderOgre/WindowManager.hpp"
+#include <fwRenderOgre/registry/macros.hpp>
+#include <fwRenderOgre/SRender.hpp>
+#include <fwRenderOgre/WindowManager.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <fwCore/Profiling.hpp>
@@ -32,17 +33,22 @@
 #include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreTextureManager.h>
 
+#include <boost/make_unique.hpp>
+
 //-----------------------------------------------------------------------------
 
-namespace fwRenderOgre
+fwRenderOgreRegisterOffscreenMgrMacro(::visuOgreQt::OffScreenRenderWindowInteractorManager,
+                                      ::fwRenderOgre::IRenderWindowInteractorManager::OFFSCREEN_REGISTRY_KEY);
+
+namespace visuOgreQt
 {
 
 int OffScreenRenderWindowInteractorManager::m_counter = 0;
 
 //-----------------------------------------------------------------------------
 
-OffScreenRenderWindowInteractorManager::OffScreenRenderWindowInteractorManager(unsigned int _width,
-                                                                               unsigned int _height) :
+OffScreenRenderWindowInteractorManager::OffScreenRenderWindowInteractorManager(
+    ::fwRenderOgre::IRenderWindowInteractorManager::OffscreenMgrKey, unsigned int _width, unsigned int _height) :
     m_id(OffScreenRenderWindowInteractorManager::m_counter++),
     m_width(_width),
     m_height(_height)
@@ -82,17 +88,13 @@ void OffScreenRenderWindowInteractorManager::createContainer( ::fwGui::container
 
     ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
 
-    // We share the OpenGL context on all windows. The first Ogre window will create the context, the other ones will
-    // reuse the current context
-    if(!mgr->hasWindow())
-    {
-        parameters["currentGLContext"] = Ogre::String("false");
-    }
-    else
-    {
-        parameters["currentGLContext"] = Ogre::String("true");
-    }
+    // We share the OpenGL context on all windows. The first window will create the context, the other ones will
+    // reuse the current context.
+    m_offscreenSurface = ::boost::make_unique<QOffscreenSurface>();
+    m_glContext        = OpenGLContext::getGlobalOgreOpenGLContext();
+    this->makeCurrent();
 
+    parameters["currentGLContext"] = "true";
 #if defined(Q_OS_MAC)
     parameters["macAPI"]               = Ogre::String("cocoa");
     parameters["macAPICocoaUseNSView"] = Ogre::String("true");
@@ -152,35 +154,17 @@ void OffScreenRenderWindowInteractorManager::disconnectInteractor()
         texMgr.remove(m_ogreTexture);
         m_ogreTexture.reset();
     }
+
+    m_offscreenSurface.reset();
 }
 
 //-----------------------------------------------------------------------------
 
 void OffScreenRenderWindowInteractorManager::makeCurrent()
 {
-    if(m_ogreRenderWindow)
+    if(m_glContext)
     {
-        ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
-
-        if(renderSystem)
-        {
-            // This allows to set the current OpengGL context in Ogre internal state
-            renderSystem->_setRenderTarget(m_ogreRenderTarget);
-
-            // Use this trick to apply the current OpenGL context
-            //
-            // Actually this method does the following :
-            // void GLRenderSystem::postExtraThreadsStarted()
-            // {
-            //   OGRE_LOCK_MUTEX(mThreadInitMutex);
-            //   if(mCurrentContext)
-            //     mCurrentContext->setCurrent();
-            // }
-            //
-            // This is actually want we want to do, even if this is not the initial purpose of this method
-            //
-            renderSystem->postExtraThreadsStarted();
-        }
+        m_glContext->makeCurrent(m_offscreenSurface.get());
     }
 }
 
@@ -217,4 +201,4 @@ void OffScreenRenderWindowInteractorManager::render()
 
 //-----------------------------------------------------------------------------
 
-} // namespace fwRenderOgre
+} // namespace visuOgreQt

@@ -41,9 +41,7 @@ IPickerInteractor::IPickerInteractor()
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
     m_picker   = new ::fwRenderOgre::picker::IPicker();
 
-    m_sigAddPointDeprecated    = newSignal< PointClickedSigTypeDeprecated >( "addPoint" );
-    m_sigRemovePointDeprecated = newSignal< PointClickedSigTypeDeprecated >( "removePoint" );
-    m_picked                   = newSignal< PointClickedSigType >( s_PICKED_SIG );
+    m_picked = newSignal< PointClickedSigType >( s_PICKED_SIG );
 
     m_sigRenderRequested = newSignal< RenderRequestedSigType >( s_RENDER_REQUESTED_SIG );
 }

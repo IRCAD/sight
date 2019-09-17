@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -458,9 +458,13 @@ void SMesh::modifyVertices()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Mesh::csptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    const ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
     ::fwData::mt::ObjectReadLock lock(mesh);
     m_meshGeometry->updateVertices(mesh);
+
+    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    m_meshGeometry->updateR2VB(mesh, *sceneMgr,
+                               m_materialAdaptor->getMaterialName(), m_materialAdaptor->hasDiffuseTexture());
 
     // Necessary to update the bounding box in the adaptor
     //m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();

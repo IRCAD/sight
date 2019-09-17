@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 
 #include "visuOgreQt/RenderWindowInteractorManager.hpp"
 
+#include "visuOgreQt/OpenGLContext.hpp"
+
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -32,6 +34,7 @@
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QRect>
+#include <QThread>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -87,6 +90,17 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 
     m_qOgreWidget = new ::visuOgreQt::Window();
     m_qOgreWidget->setAnimating(!renderOnDemand);
+#ifdef __linux
+    // When using qt on linux we need to allocate the window resources before being able to use openGL.
+    // This is because the underlying X API requires a drawable surface to draw on when calling
+    // 'glXMakeCurrent' (see https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glXMakeCurrent.xml)
+    // which is does not exist before 'QWindow::create' is called.
+    //
+    // This is not required for Windows and macOS and will actually break the app on these platforms.
+    // (see https://developer.apple.com/documentation/appkit/nsopenglcontext/1436212-makecurrentcontext
+    //  and https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-wglmakecurrent).
+    m_qOgreWidget->create();
+#endif
 
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     layout->addWidget(renderingContainer);
