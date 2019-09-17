@@ -22,6 +22,9 @@
 
 #include "fwActivities/IActivitySequencer.hpp"
 
+#include <fwCom/Connection.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwTools/dateAndTime.hpp>
