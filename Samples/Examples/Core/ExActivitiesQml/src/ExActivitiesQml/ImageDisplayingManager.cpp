@@ -183,7 +183,6 @@ void ImageDisplayingManager::onServiceCreated(const QVariant& obj)
         else if (srv->isA("::uiMedDataQml::SModelSeriesList"))
         {
             srv->setObjectId("modelSeries", this->getInputID(s_MODEL_ID));
-            this->addService(srv, true);
 
             ::fwServices::helper::ProxyConnections recSelectedCnt(this->getInputID(s_REC_SELECTED_CHANNEL));
             recSelectedCnt.addSignalConnection(srv->getID(),  "reconstructionSelected");
@@ -192,6 +191,8 @@ void ImageDisplayingManager::onServiceCreated(const QVariant& obj)
             ::fwServices::helper::ProxyConnections emptySelectionCnt(this->getInputID(s_EMPTY_SELECTION_CHANNEL));
             emptySelectionCnt.addSignalConnection(srv->getID(),  "emptiedSelection");
             this->addProxyConnection(emptySelectionCnt);
+
+            this->addService(srv, true);
         }
         else if (srv->isA("::uiReconstructionQml::SOrganMaterialEditor") ||
                  srv->isA("::uiReconstructionQml::SRepresentationEditor"))

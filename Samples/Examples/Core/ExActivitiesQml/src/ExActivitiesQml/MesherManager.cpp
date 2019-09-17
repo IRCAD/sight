@@ -42,12 +42,8 @@
 
 #include <fwVTKQml/VtkRenderWindowInteractorManager.hpp>
 
-static const std::string s_IMAGE_ID          = "image";
-static const std::string s_MODEL_ID          = "model";
-static const std::string s_RECONSTRUCTION_ID = "reconstruction";
-
-static const std::string s_REC_SELECTED_CHANNEL    = "recSelected";
-static const std::string s_EMPTY_SELECTION_CHANNEL = "emptySelection";
+static const std::string s_IMAGE_ID = "image";
+static const std::string s_MODEL_ID = "model";
 
 //------------------------------------------------------------------------------
 
