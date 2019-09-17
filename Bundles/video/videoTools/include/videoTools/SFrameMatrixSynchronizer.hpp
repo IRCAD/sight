@@ -64,7 +64,7 @@ namespace videoTools
  * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
  *  signal if all the matrices are synchronized.
  * - \b matrixSynchronized(int): Emitted when the matrix is synchronized, contains the index of the matrix with
- *  `sendStatus` set to "on", in the decleration order.
+ *  `sendStatus` set to "on", in the declaration order.
  * - \b matrixUnsynchronized(int): Emitted when the matrix is not present in the buffer and can not be synchronized,
  *  contains the index of the matrix with `sendStatus` set to "on", in the declaration order.
  *
