@@ -9,7 +9,7 @@ Item {
 
     signal serviceCreated(var srv)
 
-//    enabled: false
+    enabled: false
 
     Component.onCompleted: {
         serviceCreated(modelSeriesList)
@@ -81,7 +81,7 @@ Item {
             Rectangle {
                 width: listView.width; height: 40
                 color: "lightsteelblue"; radius: 5
-                y: listView.currentItem.y
+                y: listView.currentItem ? listView.currentItem.y: 0
                 Behavior on y {
                     SpringAnimation {
                         spring: 3

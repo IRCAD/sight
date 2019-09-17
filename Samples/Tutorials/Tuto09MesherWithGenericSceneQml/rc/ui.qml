@@ -231,7 +231,7 @@ ApplicationWindow {
                 }
 
                 Rectangle {
-                    Layout.preferredHeight: 400
+                    Layout.preferredHeight: 800
                     Layout.preferredWidth: 300
 
                     color: "transparent"
