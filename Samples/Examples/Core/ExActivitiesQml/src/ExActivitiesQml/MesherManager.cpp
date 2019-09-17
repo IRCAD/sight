@@ -39,11 +39,16 @@
 #include <fwRenderVTK/SRender.hpp>
 
 #include <fwServices/op/Add.hpp>
+#include <fwServices/registry/Proxy.hpp>
 
 #include <fwVTKQml/VtkRenderWindowInteractorManager.hpp>
 
 static const std::string s_IMAGE_ID = "image";
 static const std::string s_MODEL_ID = "model";
+
+static const std::string s_VALIDATION_CHANNEL = "validationChannel";
+
+static const ::fwCom::Signals::SignalKeyType s_VALIDATED_SIG = "validated";
 
 //------------------------------------------------------------------------------
 
@@ -51,6 +56,9 @@ MesherManager::MesherManager() noexcept
 {
     this->requireInput(s_IMAGE_ID, InputType::OBJECT);
     this->requireInput(s_MODEL_ID, InputType::OBJECT);
+    this->requireInput(s_VALIDATION_CHANNEL, InputType::CHANNEL);
+
+    newSignal< VoidSignalType >(s_VALIDATED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -68,6 +76,9 @@ void MesherManager::initialize()
 
     if (this->checkInputs())
     {
+        auto proxy = ::fwServices::registry::Proxy::getDefault();
+        proxy->connect(this->getInputID(s_VALIDATION_CHANNEL), this->signal< VoidSignalType >(s_VALIDATED_SIG));
+
         this->startServices();
     }
     else
@@ -185,13 +196,17 @@ void MesherManager::applyMesher(unsigned int reduction)
         auto currentReconstructions = model->getReconstructionDB();
         auto newReconstructions     = modelSeries->getReconstructionDB();
 
-        std::copy(newReconstructions.begin(), newReconstructions.end(), std::back_inserter(currentReconstructions));
+        if (!newReconstructions.empty())
+        {
+            std::copy(newReconstructions.begin(), newReconstructions.end(), std::back_inserter(currentReconstructions));
 
-        modelSeries->setReconstructionDB(currentReconstructions);
+            model->setReconstructionDB(currentReconstructions);
 
-        model->shallowCopy(modelSeries);
-        auto sig = model->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+            auto sig = model->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
+
+            this->signal< VoidSignalType >(s_VALIDATED_SIG)->asyncEmit();
+        }
     }
 }
 
@@ -213,6 +228,9 @@ void MesherManager::onShowScan(bool isShown)
 
 void MesherManager::uninitialize()
 {
+    auto proxy = ::fwServices::registry::Proxy::getDefault();
+    proxy->disconnect(this->getInputID(s_VALIDATION_CHANNEL), this->signal< VoidSignalType >(s_VALIDATED_SIG));
+
     // stop the started services and unregister all the services
     this->destroy();
 }

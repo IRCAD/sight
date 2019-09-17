@@ -22,8 +22,6 @@
 
 #include "uiActivitiesQml/ActivityLauncherManager.hpp"
 
-#include <fwCom/Slot.hxx>
-
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
@@ -32,13 +30,9 @@
 
 static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
-static const std::string s_ACTIVITY_CREATED_CHANNEL         = "activityCreated";
-static const std::string s_ACTIVITY_LAUNCHED_CHANNEL        = "activityLaunched";
-static const std::string s_ENABLED_PREVIOUS_CHANNEL_CHANNEL = "enabledPreviousChannel";
-static const std::string s_ENABLED_NEXT_CHANNEL_CHANNEL     = "enabledNextChannel";
-static const std::string s_PREVIOUS_CHANNEL                 = "PreviousChannel";
-static const std::string s_NEXT_CHANNEL                     = "NextChannel";
-static const std::string s_GO_TO_CHANNEL                    = "GoToChannel";
+static const std::string s_ACTIVITY_CREATED_CHANNEL = "activityCreatedChannel";
+static const std::string s_GO_TO_CHANNEL            = "GoToChannel";
+static const std::string s_VALIDATION_CHANNEL       = "validationChannel";
 
 //------------------------------------------------------------------------------
 
@@ -72,6 +66,7 @@ void ActivityLauncherManager::initialize()
                                     m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
                                 };
     addActivityViewParam(s_SERIESDB_INOUT);
+    addActivityViewParam(s_VALIDATION_CHANNEL);
 
     this->startServices();
 }
@@ -98,13 +93,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
             ::fwServices::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
             activityCreatedCnt.addSlotConnection(srv->getID(), "launchActivity");
 
-            // When the activity is launched, the sequencer sends the information to enable "previous" and "next"
-            // actions
-            ::fwServices::helper::ProxyConnections activityLaunchedCnt(this->getInputID(s_ACTIVITY_LAUNCHED_CHANNEL));
-            activityLaunchedCnt.addSignalConnection(srv->getID(), "activityLaunched");
-
             this->addProxyConnection(activityCreatedCnt);
-            this->addProxyConnection(activityLaunchedCnt);
 
             this->addService(srv, true);
         }
@@ -120,15 +109,15 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 
             // When the activity is launched, the sequencer sends the information to enable "previous" and "next"
             // actions
-            ::fwServices::helper::ProxyConnections activityLaunchedCnt(this->getInputID(s_ACTIVITY_LAUNCHED_CHANNEL));
-            activityLaunchedCnt.addSlotConnection(m_activitySequencer->getID(), "checkNext");
+            ::fwServices::helper::ProxyConnections validationCnt(this->getInputID(s_VALIDATION_CHANNEL));
+            validationCnt.addSlotConnection(m_activitySequencer->getID(), "checkNext");
 
             // The activity sequencer should receive the call from the "goTo" action.
             ::fwServices::helper::ProxyConnections activityGoToCnt(this->getInputID(s_GO_TO_CHANNEL));
             activityGoToCnt.addSlotConnection(m_activitySequencer->getID(), "goTo");
 
             this->addProxyConnection(activityCreatedCnt);
-            this->addProxyConnection(activityLaunchedCnt);
+            this->addProxyConnection(validationCnt);
             this->addProxyConnection(activityGoToCnt);
             this->addService(srv, true, true);
         }

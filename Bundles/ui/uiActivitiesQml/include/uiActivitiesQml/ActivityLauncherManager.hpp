@@ -40,8 +40,7 @@
 /**
  * @brief   This class is started when the bundles is loaded.
  */
-class UIACTIVITIESQML_CLASS_API ActivityLauncherManager : public ::fwQml::IQmlAppManager,
-                                                          public ::fwCom::HasSignals
+class UIACTIVITIESQML_CLASS_API ActivityLauncherManager : public ::fwQml::IQmlAppManager
 {
 Q_OBJECT
 public:
@@ -63,9 +62,6 @@ public Q_SLOTS:
     void onServiceCreated(const QVariant& obj) override;
 
 private:
-
-    typedef ::fwCom::Signal<void ()> VoidSignalType;
-    typedef ::fwCom::Signal<void (int)> IntSignalType;
 
     ::fwServices::IService::sptr m_activitySequencer;
 

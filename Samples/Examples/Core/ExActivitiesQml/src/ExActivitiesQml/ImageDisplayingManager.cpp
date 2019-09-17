@@ -225,6 +225,11 @@ void ImageDisplayingManager::onShowScan(bool isShown)
 
 void ImageDisplayingManager::uninitialize()
 {
+    auto proxy = ::fwServices::registry::Proxy::getDefault();
+
+    proxy->disconnect(this->getInputID(s_REC_SELECTED_CHANNEL), m_slotRecSelected);
+    proxy->disconnect(this->getInputID(s_EMPTY_SELECTION_CHANNEL), m_slotEmptySelection);
+
     // stop the started services and unregister all the services
     this->destroy();
 }
