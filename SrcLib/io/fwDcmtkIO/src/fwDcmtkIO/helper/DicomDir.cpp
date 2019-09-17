@@ -26,7 +26,6 @@
 #include <fwCore/spyLog.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/regex.hpp>
 #include <boost/algorithm/string/split.hpp>
 
 #include <dcmtk/config/osconfig.h>
@@ -35,6 +34,7 @@
 #include <dcmtk/dcmnet/diutil.h>
 
 #include <filesystem>
+#include <regex>
 
 namespace fwDcmtkIO
 {

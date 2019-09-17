@@ -15,6 +15,9 @@ target_link_libraries(${FWPROJECT_NAME} PRIVATE ${FFMPEG_LIBRARIES})
 find_package(Qt5 QUIET COMPONENTS Test REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE Qt5::Test)
 
+find_package(Filesystem REQUIRED)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC std::filesystem)
+
 fwInclude(
     ${OPENNI2_INCLUDE_DIRS}
 )

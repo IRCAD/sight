@@ -8,6 +8,8 @@ cmake_policy(SET CMP0072 NEW)
 cmake_policy(SET CMP0063 NEW)
 # Adds support for the new IN_LIST operator.
 cmake_policy(SET CMP0057 NEW)
+# Use new policy to use CMAKE_CXX_STANDARD in try_compile() macro
+cmake_policy(SET CMP0067 NEW)
 
 # On Windows, if the user doesn't specify a value,
 # 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
@@ -32,6 +34,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/linux/modules)
 
 ########################################################################################################################
 # User options
