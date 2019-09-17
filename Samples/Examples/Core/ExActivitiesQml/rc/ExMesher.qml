@@ -66,9 +66,7 @@ Activity {
 
             ComboBox {
                 id: sliceEditor
-                anchors.verticalCenter: parent.verticalCenter
                 Layout.fillHeight: true
-                anchors.leftMargin: 4
 
                 model: ["One slice", "Three slice"]
 
@@ -82,7 +80,6 @@ Activity {
                 id: displayScanButton
                 checkable: true
                 checked: true
-                anchors.verticalCenter: parent.verticalCenter
                 Layout.fillHeight: true
 
                 text: "Scan"

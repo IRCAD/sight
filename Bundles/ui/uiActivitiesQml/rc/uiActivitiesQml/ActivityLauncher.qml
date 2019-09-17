@@ -7,7 +7,6 @@ import guiQml 1.0
 
 Item {
     id: activityLauncher
-    anchors.fill: parent
 
     // clear the activities and uninitialize the AppManager
     function clear(){

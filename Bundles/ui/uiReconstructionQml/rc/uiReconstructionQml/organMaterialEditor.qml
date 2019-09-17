@@ -1,17 +1,16 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Controls.Material 2.0
+import QtQuick.Controls 2.12
 import uiReconstructionQml 1.0
+import guiQml 1.0
 
 Item {
     id: organMaterialEditor
 
-    signal serviceCreated(var srv)
-
     enabled: false
+
+    signal serviceCreated(var srv)
 
     Component.onCompleted: {
         serviceCreated(organMaterialService)
@@ -24,12 +23,10 @@ Item {
         onStarted: {
             organMaterialEditor.enabled = true
         }
-        // @disable-check M16
         onStopped: {
             organMaterialEditor.enabled = false
         }
 
-        // @disable-check M16
         onMaterialChanged: {
             colorDialog.setColor(color)
             transparencySlider.value = opacity
@@ -37,90 +34,74 @@ Item {
     }
 
     ColumnLayout {
+        anchors.right: parent.right
         anchors.fill: parent
+        Layout.fillWidth: true
+        spacing: 2
 
-        Rectangle {
-            Layout.preferredHeight: 30
+        Button {
+            id: colorButton
+            Layout.preferredHeight: 60
             Layout.fillWidth: true
-            color: "transparent"
-
-            Button {
-                id: colorButton
-                anchors.fill: parent
-                text: "Color"
-                onClicked: {
-                    colorDialog.open()
-                }
-                style: ButtonStyle {
-                        background: Rectangle {
-                            width: 10
-                            height: 10
-                            border.color: colorDialog.color
-                            border.width: 5
-                            radius: 8
-
-                        }
-                    }
+            text: "Color"
+            onClicked: {
+                colorDialog.open()
+            }
+            contentItem: Text {
+                text: colorButton.text
+                font: colorButton.font
+                opacity: enabled ? 1.0 : 0.3
+                color: Theme.foreground
+                verticalAlignment: Qt.AlignVCenter
+                horizontalAlignment: Qt.AlignHCenter
             }
 
-            ColorDialog {
-                id: colorDialog
-                title: "Please choose a color"
-                color: "#ffffff"
-                onAccepted: {
-                    organMaterialService.onColor(color)
-                }
+            background: Rectangle {
+                border.color: colorDialog.color
+                border.width: 5
+                radius: 8
+                color: "transparent"
+            }
+        }
+
+        ColorDialog {
+            id: colorDialog
+            title: "Please choose a color"
+            color: "#ffffff"
+            onAccepted: {
+                organMaterialService.onColor(color)
             }
         }
 
         RowLayout {
-
             Layout.preferredHeight: 30
-            Layout.fillWidth: true
 
-            Rectangle {
-                Layout.fillHeight: true
-                Layout.preferredWidth: 100
-                color: "transparent"
-
-                Text {
-                    height: parent.height
-                    anchors.fill: parent
-                    text: "Opacity: "
-                    verticalAlignment: Text.AlignVCenter
-                }
+            Text {
+                Layout.preferredHeight: 30
+                text: "Opacity: "
+                verticalAlignment: Text.AlignVCenter
             }
 
-            Rectangle {
+            Slider {
+                id: transparencySlider
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                color: "transparent"
-
-                Slider {
-                    id: transparencySlider
-                    anchors.fill: parent
-                    anchors.rightMargin: 4
-                    minimumValue: 0
-                    maximumValue: 100
-                    stepSize: 1
-                    onValueChanged: {
-                        organMaterialService.onOpacitySlider(value)
-                    }
+                anchors.rightMargin: 4
+                from: 0
+                to: 100
+                stepSize: 1
+                onValueChanged: {
+                    organMaterialService.onOpacitySlider(value)
                 }
             }
 
-            Rectangle {
+            Text {
+                id: transparencyLabel
                 Layout.fillHeight: true
                 Layout.preferredWidth: 60
-                color: "transparent"
+                verticalAlignment: Text.AlignVCenter
 
-                Text {
-                    id: transparencyLabel
-                    anchors.fill: parent
-                    verticalAlignment: Text.AlignVCenter
-
-                    text: transparencySlider.value  + " %"
-                }
+                text: transparencySlider.value  + " %"
             }
         }
     }

@@ -24,7 +24,6 @@ Activity {
         anchors.fill: parent
 
         ColumnLayout {
-            anchors.fill: parent
 
             Rectangle {
                 id: sceneRec
@@ -46,9 +45,7 @@ Activity {
 
                 ComboBox {
                     id: sliceEditor
-                    anchors.verticalCenter: parent.verticalCenter
                     Layout.fillHeight: true
-                    anchors.leftMargin: 4
 
                     model: ["One slice", "Three slice"]
 
@@ -62,7 +59,6 @@ Activity {
                     id: displayScanButton
                     checkable: true
                     checked: true
-                    anchors.verticalCenter: parent.verticalCenter
                     Layout.fillHeight: true
 
                     text: "Scan"
@@ -87,68 +83,39 @@ Activity {
             spacing: 5
             enabled: true
             transformOrigin: Item.Center
-
+            Layout.preferredWidth: 400
             Layout.fillHeight: true
-            Layout.minimumWidth: 300
 
             ColumnLayout {
                 spacing: 2
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.bottomMargin: 0
-                anchors.topMargin: 0
-                anchors.fill: parent
+                Layout.fillWidth: true
 
-                Rectangle {
-                    Layout.preferredHeight: 300
-                    Layout.preferredWidth: 300
-                    color: "transparent"
-
-                    ModelList {
-                        id: modelList
-                        anchors.rightMargin: 5
-                        anchors.leftMargin: 5
-                        anchors.fill: parent
-
-                        onServiceCreated: {
-                            appManager.onServiceCreated(srv)
-                        }
+                ModelList {
+                    id: modelList
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 200
+                    onServiceCreated: {
+                        appManager.onServiceCreated(srv)
                     }
                 }
 
-                Rectangle {
-                    Layout.preferredHeight: 60
-                    Layout.preferredWidth: 300
+                OrganMaterialEditor {
+                    id: organMaterialEditor
+                    Layout.preferredWidth: 400
+                    Layout.preferredHeight: 120
 
-                    color: "transparent"
-
-                    OrganMaterialEditor {
-                        id: organMaterialEditor
-                        anchors.rightMargin: 5
-                        anchors.leftMargin: 5
-                        anchors.fill: parent
-
-                        onServiceCreated: {
-                            appManager.onServiceCreated(srv)
-                        }
+                    onServiceCreated: {
+                        appManager.onServiceCreated(srv)
                     }
                 }
 
-                Rectangle {
-                    Layout.preferredHeight: 400
-                    Layout.preferredWidth: 300
+                RepresentationEditor {
+                    id: representationEditor
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 800
 
-                    color: "transparent"
-
-                    RepresentationEditor {
-                        id: representationEditor
-                        anchors.rightMargin: 5
-                        anchors.leftMargin: 5
-                        anchors.fill: parent
-
-                        onServiceCreated: {
-                            appManager.onServiceCreated(srv)
-                        }
+                    onServiceCreated: {
+                        appManager.onServiceCreated(srv)
                     }
                 }
             }

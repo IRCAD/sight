@@ -18,7 +18,7 @@ ApplicationWindow {
 
     ActivityLauncher {
         id: activityLauncher
-
+        anchors.fill: parent
         activityIdsList: ["ExImageReading", "ExMesher", "ExImageDisplaying"]
         activityNameList: ["Read", "Mesher", "Display"]
     }

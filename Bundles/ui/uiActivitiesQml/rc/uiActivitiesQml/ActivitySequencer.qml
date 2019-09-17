@@ -8,7 +8,6 @@ import guiQml 1.0
 RowLayout {
 
     id: stepperLayout
-    anchors.fill: parent
     height: 60
     anchors.margins: 0
     spacing: 0
@@ -40,9 +39,8 @@ RowLayout {
     Repeater {
         id: repeater
         model: activityNameList.length == 0 ? activityIdsList : activityNameList
-        anchors.margins: 0
+
         RowLayout{
-            implicitWidth: (stepperLayout.width / activityIdsList.length)
             width: (stepperLayout.width / activityIdsList.length)
             enabled: false
 
@@ -74,7 +72,7 @@ RowLayout {
 
                 contentItem: RowLayout {
                     id: buttonLayout
-                    anchors.margins: 0
+
                     Rectangle {
                         id: activityIndex
                         color: Theme.primary
