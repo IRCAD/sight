@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,9 +23,6 @@
 /**
  * @file fwGui/builder/IMenuBarBuilder.cpp
  * @brief This file defines the implementation of the interface class  for the menubar builder.
- *
- *
- * @date 2009-2010
  */
 
 #include "fwGui/builder/IMenuBarBuilder.hpp"
@@ -53,7 +50,20 @@ IMenuBarBuilder::~IMenuBarBuilder()
 
 void IMenuBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
-
+    if (configuration->hasAttribute("backgroundColor"))
+    {
+        std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
+        if(hexaColor != "default")
+        {
+            OSLM_ASSERT(
+                "Color string should start with '#' and followed by 6 ou 8 "
+                "hexadecimal digits. Given color : " << hexaColor,
+                    hexaColor[0] == '#'
+                    && ( hexaColor.length() == 7 || hexaColor.length() == 9)
+                );
+            m_backgroundColor = hexaColor;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -67,6 +77,3 @@ void IMenuBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 
 } // namespace builder
 } // namespace fwGui
-
-
-

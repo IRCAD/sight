@@ -100,6 +100,13 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             subContainer->setQtContainer(panel);
             m_subViews.push_back(subContainer);
 
+            if(viewInfo.m_backgroundColor != "default")
+            {
+                const QString style = QString::fromStdString(
+                    "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                panel->setStyleSheet(style);
+            }
+
             if(viewInfo.m_useScrollBar)
             {
                 QScrollArea* scrollArea = new QScrollArea();
@@ -119,6 +126,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             {
                 subContainer->setVisible(false);
             }
+
         }
     }
 }

@@ -85,6 +85,8 @@ public:
         std::pair< bool, std::string >   m_caption;
         bool m_useScrollBar;
         std::string m_toolTip;
+        /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
+        std::string m_backgroundColor {"default"};
     };
 
     /// Constructor. Do nothing.
@@ -127,6 +129,7 @@ public:
      * wxWidgets documenattion for more details
      *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
      *   - \b toolTip : string that will be displayed next to the mouse pointer when it lies over the view.
+     *   - \b backgroundColor (optional) : (hexa) background color.
      */
 
     FWGUI_API virtual void initialize( ConfigurationType configuration) override;
