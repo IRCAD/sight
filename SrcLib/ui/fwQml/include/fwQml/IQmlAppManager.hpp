@@ -36,31 +36,30 @@ namespace fwQml
 /**
  * @brief   Base class for AppManager managing Qml services
  */
-class FWQML_CLASS_API IQmlAppManager : public QObject,
-                                       public ::fwServices::AppManager
+class FWQML_CLASS_QT_API IQmlAppManager : public QObject,
+                                          public ::fwServices::AppManager
 {
 Q_OBJECT
 public:
     /// Constructor.
-    FWQML_API IQmlAppManager() noexcept;
+    FWQML_QT_API IQmlAppManager() noexcept;
 
     /// Destructor. Do nothing.
-    FWQML_API virtual ~IQmlAppManager() noexcept;
+    FWQML_QT_API virtual ~IQmlAppManager() noexcept;
 
 public Q_SLOTS:
 
     /// Initialize the manager
-    FWQML_API virtual void initialize();
+    FWQML_QT_API virtual void initialize();
 
     /// Uninitialize the manager
-    FWQML_API virtual void uninitialize();
+    FWQML_QT_API virtual void uninitialize();
 
     /// Retrieves the services instanciated in Qml
-    FWQML_API virtual void onServiceCreated(const QVariant& obj);
+    FWQML_QT_API virtual void onServiceCreated(const QVariant& obj);
 
     /// set the the identifier of the AppManager inputs given by the map
-    FWQML_API virtual void replaceInputs(const QVariant& map) final;
-
+    FWQML_QT_API virtual void replaceInputs(const QVariant& map) final;
 };
 
 } // fwQml

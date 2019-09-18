@@ -58,11 +58,11 @@ protected:
      *
      * @warning This method remove the series that are not in the list of activity to launch
      */
-    int parseActivities(const ::fwMedData::SeriesDB::sptr& seriesDB);
+    FWACTIVITIES_API int parseActivities(const ::fwMedData::SeriesDB::sptr& seriesDB);
 
     /// Store the current activity data
-    void storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB,
-                           const ::fwData::Composite::csptr& overrides = nullptr);
+    FWACTIVITIES_API void storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB,
+                                            const ::fwData::Composite::csptr& overrides = nullptr);
 
     /**
      * @brief Return the activity corresponding to the given index in the activity list. If the activity does not exist,
@@ -76,10 +76,10 @@ protected:
      * the seriesDB
      * @param overrides Composite that contains data to override the previouly stored data (from the other activities)
      */
-    ::fwMedData::ActivitySeries::sptr getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
-                                                  size_t index,
-                                                  const ::fwCom::SlotBase::sptr& slot         = nullptr,
-                                                  const ::fwData::Composite::csptr& overrides = nullptr);
+    FWACTIVITIES_API ::fwMedData::ActivitySeries::sptr getActivity(const ::fwMedData::SeriesDB::sptr& seriesDB,
+                                                                   size_t index,
+                                                                   const ::fwCom::SlotBase::sptr& slot         = nullptr,
+                                                                   const ::fwData::Composite::csptr& overrides = nullptr);
 
     /// List of the activity to create.
     ActivitesType m_activityIds;
