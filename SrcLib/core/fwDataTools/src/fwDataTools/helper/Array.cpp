@@ -31,6 +31,8 @@ namespace helper
 Array::Array(const ::fwData::Array::sptr& array ) :
     m_array(array)
 {
+    FW_DEPRECATED_MSG("::fwDataTools::helper::Array is no longer supported, the methods have been moved to "
+                      "::fwData::Array", "22.0");
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }

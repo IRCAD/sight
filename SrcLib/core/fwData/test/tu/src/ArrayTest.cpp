@@ -23,6 +23,7 @@
 #include "ArrayTest.hpp"
 
 #include <fwData/Array.hpp>
+#include <fwData/Exception.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -54,60 +55,59 @@ void ArrayTest::tearDown()
 void ArrayTest::allocation()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwDataTools::helper::Array arrayHelper(array);
+    auto lock = array->lock();
 
     CPPUNIT_ASSERT(array->empty());
-    CPPUNIT_ASSERT(arrayHelper.getBuffer() == NULL);
+    CPPUNIT_ASSERT(array->getBuffer() == nullptr);
     CPPUNIT_ASSERT(array->getSize().empty());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
 
-    const size_t NB_COMPONENT = 2;
-    ::fwData::Array::SizeType size = {10, 10};
+    ::fwData::Array::SizeType size = {10, 100};
 
-    array->resize("uint32", size, NB_COMPONENT, true);
-    CPPUNIT_ASSERT(arrayHelper.getBuffer() != NULL);
+    // deprecated: replace by array->resize(size, ::fwTools::Type::s_UINT32, true)
+    array->resize("uint32", size, 1, true);
+    CPPUNIT_ASSERT(array->getBuffer() != nullptr);
     CPPUNIT_ASSERT(!array->empty());
 
     CPPUNIT_ASSERT_EQUAL(size.size(), array->getNumberOfDimensions());
     CPPUNIT_ASSERT_EQUAL(size[0], array->getSize()[0]);
     CPPUNIT_ASSERT_EQUAL(size[1], array->getSize()[1]);
-    CPPUNIT_ASSERT_EQUAL(NB_COMPONENT, array->getNumberOfComponents());
     CPPUNIT_ASSERT_EQUAL(true, array->getIsBufferOwner());
     {
-        ::fwData::Array::OffsetType stride = {8, 80};
+        ::fwData::Array::OffsetType stride = {4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT(array->getType().string() == "uint32");
-    CPPUNIT_ASSERT(array->getType().sizeOf() == 4);
+    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UINT32, array->getType());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), array->getType().sizeOf());
 
     array->clear();
-    CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(0), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(0), array->getNumberOfComponents()); //deprecated
     CPPUNIT_ASSERT(  array->empty() );
-    CPPUNIT_ASSERT(  arrayHelper.getBuffer() == nullptr );
+    CPPUNIT_ASSERT(  array->getBuffer() == nullptr );
+    CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_UNSPECIFIED_TYPE, array->getType());
 
-    std::uint8_t* buffer = new uint8_t[100];
+    std::uint16_t* buffer = new std::uint16_t[1000];
 
-    for (std::uint8_t i = 0; i < 100; i++)
+    for (std::uint16_t i = 0; i < 1000; i++)
     {
         buffer[i] = i;
     }
 
-    arrayHelper.setBuffer(buffer, false, ::fwTools::Type::create("uint8"), size, 1);
+    array->setBuffer(buffer, false, size, ::fwTools::Type::s_UINT16, ::fwMemory::BufferNewPolicy::New());
 
-    CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getBufferOffset({1, 0}, 0, 4));
-    CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)1*10*10, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100), array->getSizeInBytes());
     {
-        ::fwData::Array::OffsetType stride = {1, 10};
+        ::fwData::Array::OffsetType stride = {2, 20};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(  buffer[0], *(arrayHelper.getItem< std::uint8_t >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[10], *(arrayHelper.getItem< std::uint8_t >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[99], *(arrayHelper.getItem< std::uint8_t >({9, 9})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[36], *(arrayHelper.getItem< std::uint8_t >({6, 3})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[97], *(arrayHelper.getItem< std::uint8_t >({7, 9})));
-    CPPUNIT_ASSERT_EQUAL(  buffer[28], *(arrayHelper.getItem< std::uint8_t >({8, 2})));
+    CPPUNIT_ASSERT_EQUAL(  buffer[0], array->at< std::uint16_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  buffer[10], array->at< std::uint16_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(  buffer[999], array->at< std::uint16_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(  buffer[326], array->at< std::uint16_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(  buffer[947], array->at< std::uint16_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(  buffer[238], array->at< std::uint16_t >({8, 23}));
     CPPUNIT_ASSERT_EQUAL(false, array->getIsBufferOwner());
 
     array->clear();
@@ -120,108 +120,107 @@ void ArrayTest::allocation()
 void ArrayTest::resize()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwDataTools::helper::Array arrayHelper(array);
 
-    const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size {10, 100};
 
-    array->resize("uint32", size, NB_COMPONENT, true);
+    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    auto lock = array->lock();
 
-    // CPPUNIT_ASSERT(array->getBuffer() != NULL);
-    // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
+    CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
-    unsigned int count = 0;
-    unsigned int* iter = arrayHelper.begin<unsigned int>();
+    std::uint32_t count = 0;
 
-    // CPPUNIT_ASSERT(iter != NULL);
-    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
+    ::fwData::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
+
+    for (; iter != array->end<std::uint32_t>(); ++iter)
     {
         *iter = count++;
     }
 
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getBufferOffset({1, 0}, 0, 4));
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4*10*100), array->getSizeInBytes());
     {
         ::fwData::Array::OffsetType stride = {4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({8, 23})));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
 
     ::fwData::Array::SizeType newSize = {100, 10};
 
     array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getBufferOffset({1, 0}, 0, 4));
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4*10*100), array->getSizeInBytes());
     {
         ::fwData::Array::OffsetType stride = {4, 400};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({10, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({99, 9})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({26, 3})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({47, 9})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({38, 2})));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({10, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({99, 9}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({26, 3}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({47, 9}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({38, 2}));
 
     newSize.clear();
     newSize = {25, 40};
 
     array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
     {
         ::fwData::Array::OffsetType stride = {4, 100};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({10, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({24, 39})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({1, 13})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({22, 37})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({13, 9})));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({10, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({24, 39}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({1, 13}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({22, 37}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({13, 9}));
 
     newSize.clear();
-    newSize = {100};
 
-    const size_t nbComponant = 10;
-    array->resize(newSize, nbComponant, false);
+    newSize = {2, 10, 100};
+
+    array->resize(newSize, ::fwTools::Type::s_UINT16, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)40, array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2*100*10*2), array->getSizeInBytes());
     {
-        ::fwData::Array::OffsetType stride = {40};
-        CPPUNIT_ASSERT(array->getStrides() == stride);
+        ::fwData::Array::OffsetType stride = {2, 4, 40};
+        CPPUNIT_ASSERT(array->getStrides() == stride );
     }
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0}, 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0}, 10)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({99}, 9)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({32}, 6)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({94}, 7)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({23}, 8)));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({0, 9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({0, 6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({0, 7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({0, 8, 23}));
 
-    newSize.clear();
+    //test deprecated API with component
     newSize = {10, 100};
 
-    array->resize("uint16", newSize, 2, false);
+    array->resize(::fwTools::Type::s_UINT16, newSize, 2, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)2*100*10*2, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2*100*10*2), array->getSizeInBytes());
     {
         ::fwData::Array::OffsetType stride = {4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride );
     }
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({8, 23})));
+
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
 }
 
 //-----------------------------------------------------------------------------
@@ -229,124 +228,133 @@ void ArrayTest::resize()
 void ArrayTest::reallocate()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwDataTools::helper::Array arrayHelper(array);
 
-    const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size = {10, 100};
 
-    array->resize("uint32", size, NB_COMPONENT, true);
-    // CPPUNIT_ASSERT(array->getBuffer() != NULL);
-    // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
+    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    auto lock = array->lock();
 
-    unsigned int count = 0;
-    unsigned int* iter = arrayHelper.begin<unsigned int>();
-    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
+    std::uint32_t count                              = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
+    ::fwData::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
+    for (; iter != iterEnd; ++iter)
     {
         *iter = count++;
     }
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({8, 23})));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
 
     ::fwData::Array::SizeType newSize = {100, 100};
 
-    array->resize(newSize, NB_COMPONENT, true);
+    array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4*100*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({10, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({99, 9})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({26, 3})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({47, 9})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({38, 2})));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*100*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({10, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({99, 9}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({26, 3}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({47, 9}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({38, 2}));
 
-    unsigned int value = 1859;
-    arrayHelper.setItem({50, 90}, &value);
-    CPPUNIT_ASSERT_EQUAL(  value, *(arrayHelper.getItem< unsigned int >({50, 90})));
+    std::uint32_t value = 1859;
+    array->at<std::uint32_t>({50, 90}) = value;
+    CPPUNIT_ASSERT_EQUAL(  value, array->at< std::uint32_t >({50, 90}));
 
-    unsigned int value2 = 25464;
-    arrayHelper.setItem({99, 99}, &value2);
-    CPPUNIT_ASSERT_EQUAL(  value2, *(arrayHelper.getItem< unsigned int >({99, 99})));
+    std::uint32_t value2 = 25464;
+    array->at<std::uint32_t>({99, 99}) = value2;
+    CPPUNIT_ASSERT_EQUAL(  value2, array->at< std::uint32_t >({99, 99}));
 
-    array->resize("uint32", newSize, 2, true);
+    {
+        // deprecated API
+        array->resize(newSize, 2, true);
+        CPPUNIT_ASSERT(newSize == array->getSize());
+        CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*100*100*2), array->getSizeInBytes());
+        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({5, 0}));
+        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(998), array->at< std::uint32_t >({99, 4}));
+        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({63, 1}));
+        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(946), array->at< std::uint32_t >({73, 4}));
+        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({19, 1}));
+
+        CPPUNIT_ASSERT_EQUAL(  value, array->at< std::uint32_t >({25, 45}));
+
+        std::uint32_t value3 = 45643;
+        array->at<std::uint32_t>({35, 48}) = value3;
+        CPPUNIT_ASSERT_EQUAL(  value3, array->at< std::uint32_t >({35, 48}));
+
+        std::uint32_t value4 = 16165;
+        array->at<std::uint32_t>({99, 99}) = value4;
+        CPPUNIT_ASSERT_EQUAL(  value4, array->at< std::uint32_t >({99, 99}));
+
+        newSize.clear();
+    }
+
+    newSize = {2, 100, 100};
+    array->resize(newSize, ::fwTools::Type::s_UINT32, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4*100*100*2, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0}, 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({5, 0}, 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({99, 4}, 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({63, 1}, 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({73, 4}, 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({19, 1}, 0)));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*2*100*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 5, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({1, 99, 4}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({0, 63, 1}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({1, 73, 4}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({0, 19, 1}));
 
-    CPPUNIT_ASSERT_EQUAL(  value, *(arrayHelper.getItem< unsigned int >({25, 45}, 0)));
+    CPPUNIT_ASSERT_EQUAL(  value, array->at< std::uint32_t >({0, 25, 45}));
 
-    CPPUNIT_ASSERT_EQUAL(  value2, *(arrayHelper.getItem< unsigned int >({99, 49}, 1)));
+    CPPUNIT_ASSERT_EQUAL(  value2, array->at< std::uint32_t >({1, 99, 49}));
 
-    unsigned int value3 = 45643;
-    arrayHelper.setItem({35, 48}, 0, &value3);
-    CPPUNIT_ASSERT_EQUAL(  value3, *(arrayHelper.getItem< unsigned int >({35, 48}, 0)));
+    std::uint32_t value3 = 2156;
+    array->at<std::uint32_t>({0, 35, 48}) = value3;
+    CPPUNIT_ASSERT_EQUAL(  value3, array->at< std::uint32_t >({0, 35, 48}));
 
-    unsigned int value4 = 16165;
-    arrayHelper.setItem({99, 99}, 1, &value4);
-    CPPUNIT_ASSERT_EQUAL(  value4, *(arrayHelper.getItem< unsigned int >({99, 99}, 1)));
+    std::uint32_t value4 = 105;
+    array->at<std::uint32_t>({1, 99, 99}) = value4;
+    CPPUNIT_ASSERT_EQUAL(  value4, array->at< std::uint32_t >({1, 99, 99}));
 
     newSize.clear();
+
     newSize = {10, 100};
 
-    array->resize(newSize, NB_COMPONENT, true);
+    array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({8, 23})));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
 
-    array->setNumberOfComponents(2);
+    newSize = {2, 10, 100};
+    array->resize(newSize, ::fwTools::Type::s_UINT16, true);
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100*2), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 0, 1}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({0, 9, 99}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({0, 6, 32}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({0, 7, 94}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({0, 8, 23}));
+
+    newSize = {10, 100};
+    array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)8, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100*2, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({5, 0}, 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({9, 49}, 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({3, 16}, 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({3, 47}, 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({9, 11}, 0)));
-
-    array->setType(::fwTools::Type::create("uint16"));
-    CPPUNIT_ASSERT_EQUAL(  (size_t)2*2, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)2*10*100*2, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)0, *(arrayHelper.getItem< std::uint16_t >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)10, *(arrayHelper.getItem< std::uint16_t >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)999, *(arrayHelper.getItem< std::uint16_t >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)326, *(arrayHelper.getItem< std::uint16_t >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)947, *(arrayHelper.getItem< std::uint16_t >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)238, *(arrayHelper.getItem< std::uint16_t >({8, 23})));
-
-    array->setNumberOfComponents(1);
-    CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)2, array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (size_t)2*10*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0, 2}, 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({2, 65})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({6, 47}, 0)));
-
-    std::uint16_t val;
-    arrayHelper.getItem({2, 65}, &val);
-    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)326, val);
-
-    char* charValue = arrayHelper.getBufferPtr({6, 47}, 0, array->getType().sizeOf());
-    CPPUNIT_ASSERT_EQUAL( (unsigned int)238, *(reinterpret_cast<unsigned int*>(charValue)));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 2}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({2, 65}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({6, 47}));
 
     array->clear();
-    CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(0), array->getSizeInBytes());
 }
 
 //-----------------------------------------------------------------------------
@@ -354,47 +362,197 @@ void ArrayTest::reallocate()
 void ArrayTest::copy()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwDataTools::helper::Array arrayHelper(array);
 
-    const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size = {10, 100};
 
-    array->resize("uint32", size, NB_COMPONENT, true);
-    CPPUNIT_ASSERT(arrayHelper.getBuffer() != NULL);
-    CPPUNIT_ASSERT(arrayHelper.begin<unsigned int>() != NULL);
+    array->resize(size, fwTools::Type::s_UINT32, true);
+    auto arrayLock = array->lock();
+    CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
-    unsigned int count = 0;
-    unsigned int* iter = arrayHelper.begin<unsigned int>();
-    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
+    std::uint32_t count                              = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
+    ::fwData::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
+
+    for (; iter != iterEnd; ++iter)
     {
         *iter = count++;
     }
 
-    ::fwData::Array::sptr deepCopyArray;
-    deepCopyArray = ::fwData::Object::copy(array);
-
-    ::fwDataTools::helper::Array deepCopyArrayHelper(deepCopyArray);
+    ::fwData::Array::sptr deepCopyArray = ::fwData::Object::copy(array);
+    auto deepCopyArrayLock = deepCopyArray->lock();
 
     // check deepCopy
-    CPPUNIT_ASSERT_EQUAL(  array->getBufferOffset({1, 0}, 0, 4),
-                           deepCopyArray->getBufferOffset({1, 0}, 0, 4));
     CPPUNIT_ASSERT_EQUAL(  array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == deepCopyArray->getStrides());
     CPPUNIT_ASSERT(array->getSize() == deepCopyArray->getSize());
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >({0, 0})),
-                          *(deepCopyArrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >({0, 1})),
-                          *(deepCopyArrayHelper.getItem< unsigned int >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >({9, 99})),
-                          *(deepCopyArrayHelper.getItem< unsigned int >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >({6, 32})),
-                          *(deepCopyArrayHelper.getItem< unsigned int >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >({7, 94})),
-                          *(deepCopyArrayHelper.getItem< unsigned int >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >({8, 23})),
-                          *(deepCopyArrayHelper.getItem< unsigned int >({8, 23})));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 0}),
+                          deepCopyArray->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 1}),
+                          deepCopyArray->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({9, 99}),
+                          deepCopyArray->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({6, 32}),
+                          deepCopyArray->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({7, 94}),
+                          deepCopyArray->at< std::uint32_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({8, 23}),
+                          deepCopyArray->at< std::uint32_t >({8, 23}));
     CPPUNIT_ASSERT_EQUAL( true, deepCopyArray->getIsBufferOwner());
+
+    ::fwData::Array::csptr deepCopyArray2 = ::fwData::Object::copy(array);
+    auto deepCopyArrayLock2 = deepCopyArray->lock();
+
+    CPPUNIT_ASSERT_EQUAL(  array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
+    CPPUNIT_ASSERT(array->getStrides() == deepCopyArray->getStrides());
+    CPPUNIT_ASSERT(array->getSize() == deepCopyArray->getSize());
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 0}),
+                          deepCopyArray->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 1}),
+                          deepCopyArray->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({9, 99}),
+                          deepCopyArray->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({6, 32}),
+                          deepCopyArray->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({7, 94}),
+                          deepCopyArray->at< std::uint32_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({8, 23}),
+                          deepCopyArray->at< std::uint32_t >({8, 23}));
+    CPPUNIT_ASSERT_EQUAL( true, deepCopyArray->getIsBufferOwner());
+}
+
+//-----------------------------------------------------------------------------
+
+void ArrayTest::dumpLockTest()
+{
+    ::fwData::Array::SizeType size = {10, 100};
+    ::fwData::Array::sptr array    = ::fwData::Array::New();
+    array->resize(::fwTools::Type::s_INT16, {12, 15}, true);
+
+    CPPUNIT_ASSERT_THROW(array->getBuffer(), ::fwData::Exception);
+
+    auto lock = array->lock();
+    CPPUNIT_ASSERT_NO_THROW(array->getBuffer());
+}
+
+//-----------------------------------------------------------------------------
+
+void ArrayTest::bufferAccessTest()
+{
+    // test getBuffer
+    ::fwData::Array::sptr array = ::fwData::Array::New();
+
+    ::fwData::Array::SizeType size = {10, 100};
+
+    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    auto lock = array->lock();
+
+    std::uint32_t count                              = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
+    ::fwData::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        *iter = count++;
+    }
+
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1000), count);
+    CPPUNIT_ASSERT(iterEnd == iter);
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(99), array->at<std::uint32_t>({9, 9}));
+
+    CPPUNIT_ASSERT_THROW(array->at<std::uint32_t>({10, 0}), ::fwData::Exception);
+    CPPUNIT_ASSERT_THROW(array->at<std::uint32_t>({0, 100}), ::fwData::Exception);
+
+    {
+        Array::Iterator<std::uint32_t> itr = array->begin<std::uint32_t>();
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), *itr);
+        itr++;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1), *itr);
+        ++itr;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(2), *itr);
+        itr += 5;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(7), *itr);
+        --itr;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(6), *itr);
+        itr -= 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(4), *itr);
+
+        std::uint32_t val = 4;
+        const auto endItr = array->end<std::uint32_t>();
+        while(itr != endItr)
+        {
+            CPPUNIT_ASSERT_EQUAL(val, *itr);
+            CPPUNIT_ASSERT_NO_THROW(++itr);
+            ++val;
+        }
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1000), val);
+    }
+    {
+        Array::ConstIterator<std::uint32_t> itr = array->begin<std::uint32_t>();
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), *itr);
+        itr++;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1), *itr);
+        ++itr;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(2), *itr);
+        itr += 5;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(7), *itr);
+        --itr;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(6), *itr);
+        itr -= 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(4), *itr);
+
+        std::uint32_t val = 4;
+        const auto endItr = array->end<std::uint32_t>();
+        while(itr != endItr)
+        {
+            CPPUNIT_ASSERT_EQUAL(val, *itr);
+            CPPUNIT_ASSERT_NO_THROW(++itr);
+            ++val;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ArrayTest::constArrayTest()
+{
+    ::fwData::Array::sptr array = ::fwData::Array::New();
+
+    ::fwData::Array::SizeType size = {10, 100};
+
+    array->resize(size, ::fwTools::Type::s_UINT32, true);
+    auto lock = array->lock();
+
+    std::uint32_t count                           = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
+    for (; iter != array->end<std::uint32_t>(); ++iter)
+    {
+        *iter = count++;
+    }
+
+    ::fwData::Array::csptr array2 = ::fwData::Object::copy(array);
+    auto lock2 = array2->lock();
+
+    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
+
+    auto it1 = array->begin< std::uint32_t >();
+    auto it2 = array2->begin< std::uint32_t >();
+
+    while(it1 != array->end< std::uint32_t >() && it2 != array2->end< std::uint32_t >())
+    {
+        CPPUNIT_ASSERT_EQUAL(*it1, *it2);
+        CPPUNIT_ASSERT_NO_THROW(++it1);
+        CPPUNIT_ASSERT_NO_THROW(++it2);
+    }
 }
 
 //-----------------------------------------------------------------------------

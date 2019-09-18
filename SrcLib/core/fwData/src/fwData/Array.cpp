@@ -55,12 +55,12 @@ inline size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-::fwData::Array::OffsetType Array::computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType )
+::fwData::Array::OffsetType Array::computeStrides( SizeType size, size_t sizeOfType )
 {
     ::fwData::Array::OffsetType strides;
     strides.reserve(size.size());
 
-    size_t currentStride = sizeOfType*nbOfComponents;
+    size_t currentStride = sizeOfType;
     for(const SizeType::value_type& s : size)
     {
         strides.push_back(currentStride);
@@ -134,15 +134,11 @@ void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(
-    const ::fwTools::Type& type,
-    const SizeType& size,
-    size_t nbOfComponents,
-    bool reallocate
-    )
+size_t Array::resize(const SizeType& size, bool reallocate)
 {
-    nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
-    size_t bufSize = computeSize(type.sizeOf(), size, nbOfComponents);
+    // TEMPORARY to support deprecated API < 22.0 : to replace by this->resize(size, m_type, reallocate);
+    m_nbOfComponents = (m_nbOfComponents == 0) ? 1 : m_nbOfComponents;
+    const size_t bufSize = computeSize(m_type.sizeOf(), size, m_nbOfComponents);
 
     if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
     {
@@ -162,34 +158,10 @@ size_t Array::resize(
                                 "Tried to reallocate a not-owned Buffer.");
     }
 
-    m_strides        = computeStrides(size, nbOfComponents, type.sizeOf());
-    m_type           = type;
-    m_size           = size;
-    m_nbOfComponents = nbOfComponents;
+    m_strides = computeStrides(size, m_nbOfComponents, m_type.sizeOf());
+    m_size    = size;
 
     return bufSize;
-}
-
-//------------------------------------------------------------------------------
-
-size_t Array::resize(const SizeType& size, size_t nbOfComponents, bool reallocate)
-{
-    return this->resize(m_type, size, nbOfComponents, reallocate);
-}
-
-//------------------------------------------------------------------------------
-
-size_t Array::resize(const SizeType& size, bool reallocate)
-{
-    return this->resize(m_type, size, m_nbOfComponents, reallocate);
-}
-//------------------------------------------------------------------------------
-
-size_t Array::resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
-                     bool reallocate)
-{
-    ::fwTools::Type fwType = ::fwTools::Type::create(type);
-    return this->resize( fwType, size, nbOfComponents, reallocate);
 }
 
 //------------------------------------------------------------------------------
@@ -253,26 +225,6 @@ const ::fwData::Array::OffsetType& Array::getStrides() const
 
 //------------------------------------------------------------------------------
 
-void Array::setNumberOfComponents(size_t nb)
-{
-    m_nbOfComponents = (nb == 0) ? 1 : nb;
-    this->resize(
-        m_type,
-        m_size,
-        m_nbOfComponents,
-        (m_isBufferOwner && !m_bufferObject->isEmpty())
-        );
-}
-
-//------------------------------------------------------------------------------
-
-size_t Array::getNumberOfComponents() const
-{
-    return m_nbOfComponents;
-}
-
-//------------------------------------------------------------------------------
-
 size_t Array::getNumberOfDimensions() const
 {
     return m_size.size();
@@ -296,7 +248,7 @@ bool Array::getIsBufferOwner() const
 
 void Array::setType(const std::string& type)
 {
-    ::fwTools::Type fwType = ::fwTools::Type::create(type);
+    const ::fwTools::Type fwType = ::fwTools::Type::create(type);
     this->setType(fwType);
 }
 
@@ -306,9 +258,7 @@ void Array::setType(const ::fwTools::Type& type)
 {
     m_type = type;
     this->resize(
-        m_type,
         m_size,
-        m_nbOfComponents,
         (m_isBufferOwner && !m_bufferObject->isEmpty())
         );
 }
@@ -322,8 +272,263 @@ void Array::setType(const ::fwTools::Type& type)
 
 //------------------------------------------------------------------------------
 
-size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType ) const
+size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id ) const
 {
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception("Given index has " + std::to_string(id.size()) + " dimensions, but Array has " +
+                            std::to_string(m_size.size()) + " dimensions."),
+        id.size() != m_size.size() );
+
+    OffsetType offsets(id.size());
+
+    std::transform(id.begin(), id.end(), m_strides.begin(), offsets.begin(),
+                   std::multiplies<OffsetType::value_type>() );
+
+    const size_t offset = std::accumulate(offsets.begin(), offsets.end(), static_cast<size_t>(0));
+
+    return offset;
+}
+
+//------------------------------------------------------------------------------
+// New API
+//------------------------------------------------------------------------------
+
+size_t Array::resize(
+    const SizeType& size,
+    const ::fwTools::Type& type,
+    bool reallocate
+    )
+{
+    const size_t bufSize = computeSize(type.sizeOf(), size, 1);
+
+    if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
+    {
+        if(m_bufferObject->isEmpty())
+        {
+            m_bufferObject->allocate(bufSize);
+        }
+        else
+        {
+            m_bufferObject->reallocate(bufSize);
+        }
+        m_isBufferOwner = true;
+    }
+    else if(reallocate && !m_isBufferOwner)
+    {
+        FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
+                                "Tried to reallocate a not-owned Buffer.");
+    }
+
+    m_strides        = computeStrides(size, type.sizeOf());
+    m_type           = type;
+    m_size           = size;
+    m_nbOfComponents = 1;
+
+    return bufSize;
+}
+
+//------------------------------------------------------------------------------
+
+void* Array::getBuffer()
+{
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("The buffer cannot be accessed if the array is not locked"),
+                          !m_bufferObject->isLocked());
+    return m_bufferObject->getBuffer();
+}
+
+//-----------------------------------------------------------------------------
+
+const void* Array::getBuffer() const
+{
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("The buffer cannot be accessed if the array is not locked"),
+                          !m_bufferObject->isLocked());
+    return m_bufferObject->getBuffer();
+}
+
+//------------------------------------------------------------------------------
+
+void Array::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocationPolicy::sptr policy)
+{
+    if(m_bufferObject)
+    {
+        if(!m_bufferObject->isEmpty())
+        {
+            m_bufferObject->destroy();
+        }
+    }
+    else
+    {
+        ::fwMemory::BufferObject::sptr newBufferObject = ::fwMemory::BufferObject::New();
+        m_bufferObject->swap(newBufferObject);
+    }
+    m_bufferObject->setBuffer(buf, (buf == nullptr) ? 0 : this->getSizeInBytes(), policy);
+    this->setIsBufferOwner(takeOwnership);
+}
+
+//------------------------------------------------------------------------------
+
+void Array::setBuffer(
+    void* buf,
+    bool takeOwnership,
+    const ::fwData::Array::SizeType& size,
+    const ::fwTools::Type& type,
+    ::fwMemory::BufferAllocationPolicy::sptr policy)
+{
+    this->resize( size, type, false);
+    this->setBuffer(buf, takeOwnership, policy);
+}
+
+//-----------------------------------------------------------------------------
+
+char* Array::getBufferPtr( const ::fwData::Array::IndexType& id)
+{
+    const size_t offset = this->getBufferOffset(id);
+    char* item          = static_cast<char*>(this->getBuffer()) + offset;
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id) const
+{
+    const size_t offset = this->getBufferOffset(id);
+    const char* item    = static_cast<const char*>(this->getBuffer()) + offset;
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+::fwMemory::BufferObject::Lock Array::lock() const
+{
+    return m_bufferObject->lock();
+}
+
+//------------------------------------------------------------------------------
+
+Array::Iterator<char> Array::begin()
+{
+    return Iterator<char>(this);
+}
+
+//------------------------------------------------------------------------------
+
+Array::Iterator<char> Array::end()
+{
+    auto itr = Iterator<char>(this);
+    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+Array::ConstIterator<char> Array::begin() const
+{
+    return ConstIterator<char>(this);
+}
+
+//------------------------------------------------------------------------------
+
+Array::ConstIterator<char> Array::end() const
+{
+    auto itr = ConstIterator<char>(this);
+    itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+// Deprecated API
+//------------------------------------------------------------------------------
+
+::fwData::Array::OffsetType Array::computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType )
+{
+    FW_DEPRECATED_MSG("computeStrides(SizeType size, size_t nbOfComponents, size_t sizeOfType) is deprecated, use "
+                      "computeStrides(SizeType size, size_t sizeOfType) instead",
+                      "22.0");
+    ::fwData::Array::OffsetType strides;
+    strides.reserve(size.size());
+
+    size_t currentStride = sizeOfType*nbOfComponents;
+    for(const SizeType::value_type& s : size)
+    {
+        strides.push_back(currentStride);
+        currentStride *= s;
+    }
+    return strides;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Array::resize(
+    const ::fwTools::Type& type,
+    const SizeType& size,
+    size_t nbOfComponents,
+    bool reallocate
+    )
+{
+    FW_DEPRECATED("resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate",
+                  "resize(const SizeType &size, const ::fwTools::Type &type, bool reallocate)",
+                  "22.0")
+    m_nbOfComponents = nbOfComponents;
+    m_type           = type;
+
+    return this->resize(size, reallocate);
+}
+
+//------------------------------------------------------------------------------
+
+size_t Array::resize(const SizeType& size, size_t nbOfComponents, bool reallocate)
+{
+    FW_DEPRECATED("resize(const SizeType &size, size_t nbOfComponents, bool reallocate",
+                  "resize(const SizeType &size, const ::fwTools::Type &type, bool reallocate)",
+                  "22.0")
+    m_nbOfComponents = nbOfComponents;
+    return this->resize(size, reallocate);
+}
+
+//------------------------------------------------------------------------------
+
+size_t Array::resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
+                     bool reallocate)
+{
+    FW_DEPRECATED("resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate)",
+                  "resize(const SizeType &size, const ::fwTools::Type &type, bool reallocate)",
+                  "22.0");
+    m_nbOfComponents = nbOfComponents;
+    m_type           = ::fwTools::Type::create(type);
+    return this->resize( size, reallocate);
+}
+
+//------------------------------------------------------------------------------
+
+void Array::setNumberOfComponents(size_t nb)
+{
+    FW_DEPRECATED_MSG("Component attribute is deprecated, increase array dimension instead of using component", "22.0");
+
+    m_nbOfComponents = (nb == 0) ? 1 : nb;
+    this->resize(
+        m_type,
+        m_size,
+        m_nbOfComponents,
+        (m_isBufferOwner && !m_bufferObject->isEmpty())
+        );
+}
+
+//------------------------------------------------------------------------------
+
+size_t Array::getNumberOfComponents() const
+{
+    FW_DEPRECATED_MSG("Component attribute is deprecated, increase array dimension instead of using component", "22.0");
+    return m_nbOfComponents;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType) const
+{
+    FW_DEPRECATED("getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType )",
+                  "getBufferOffset( const ::fwData::Array::IndexType& id, size_t sizeOfType )",
+                  "22.0");
+
     OSLM_ASSERT(
         "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
             id.size() == m_size.size()
@@ -335,8 +540,7 @@ size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t comp
                    std::multiplies<OffsetType::value_type>() );
 
     size_t offset;
-    offset = std::accumulate(offsets.begin(), offsets.end(), size_t(0));
-
+    offset  = std::accumulate(offsets.begin(), offsets.end(), size_t(0));
     offset += component*sizeOfType;
 
     return offset;
