@@ -43,8 +43,8 @@ namespace activities
  * ActivitySeries are created for each activity using the data produced by the previous activities. This activities are
  * stored in the current SeriesDB.
  *
- * @warning The first launched activity must be able to start without parameters, or they must be supplied in the
- *     `requirementOverrides` composite.
+ * @warning If an activity can not be launched with the existing parameters, the signal 'dataRequired' is emitted. It
+ * can be connected to an activity wizard to add the missing data, or you can supplied 'requirementOverrides' composite.
  *
  * @section Signal Signal
  * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when an activity is created (using

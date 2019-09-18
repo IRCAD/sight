@@ -87,6 +87,17 @@ namespace uiActivitiesQml
  *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
+ *
+ * To simplify the use of SActivityView and SActivitySequencer, a Qml object ActivityLauncher can be used
+ *  @code{.qml}
+    ActivityLauncher {
+        id: activityLauncher
+        activityIdsList: ["ExImageReading", "ExMesher", "ExImageDisplaying"]
+        activityNameList: ["Read", "Mesher", "Display"]
+    }
+   @endcode
+ * - \n activityIdsList: identifiers of the activities to launch
+ * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  */
 class UIACTIVITIESQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
                                                 public ::fwActivities::IActivityLauncher

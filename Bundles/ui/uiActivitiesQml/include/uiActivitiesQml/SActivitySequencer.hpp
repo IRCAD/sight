@@ -39,6 +39,13 @@ namespace uiActivitiesQml
  * @brief This editor displays an activity stepper that allows to select the activity to launch, and display the
  * current selection
  *
+ * The order of the activities is given in the Qml file.
+ *
+ * ActivitySeries are created for each activity using the data produced by the previous activities. This activities are
+ * stored in the current SeriesDB.
+ *
+ * This service should be associated to the SActivityView to display the current activity
+ *
  * @section Signal Signal
  * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
@@ -49,17 +56,34 @@ namespace uiActivitiesQml
  * - \b checkNext() : Chech if the next activities can be enabled
  *
  * @section Config Configuration
-
  *
  * @subsection Qml Qml Configuration
+ *
+ * To use this service, import 'uiActivitiesQml' in your qml file and use the ActivitySequencer object:
+ *
  * @code{.qml}
- *  SActivitySequencer {
-        id: activitysequencer
+ *  ActivitySequencer {
+        activityIdsList: activityLauncher.activityIdsList
+        activityNameList: activityLauncher.activityNameList
 
-
+        onServiceCreated: {
+            appManager.onServiceCreated(srv)
+        }
     }
     @endcode
+ * - \n activityIdsList: identifiers of the activities to launch
+ * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  *
+ * @subsection Cpp C++ Configuration
+ *
+ * Liste the creation of the service in your AppManager ("onServiceCreated").
+ *
+ * @code{.cpp}
+     m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);
+   @endcode
+ *
+ *  @subsubsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: used to store the ActivitySeries of the managed activities
  */
 class UIACTIVITIESQML_CLASS_API SActivitySequencer : public ::fwQml::IQmlEditor,
                                                      public ::fwActivities::IActivitySequencer
@@ -89,9 +113,12 @@ public:
      */
 
 Q_SIGNALS:
+
+    // Emitted when the activity at the given index can be launched
     void enable(int index);
 
 public Q_SLOTS:
+
     /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
     void goTo(int index);
 
@@ -115,10 +142,19 @@ protected:
      */
     virtual void updating() override;
 
+    /// Connect the service to the SeriesDB signals
+    virtual KeyConnectionsMap getAutoConnections() const override;
+
 private:
 
     /// Slot: Chech if the next activities can be enabled
     void checkNext();
+
+    /// Slot: Create the next activity series, emit 'dataRequired' signal if the activity require additional data
+    void next();
+
+    /// Slot: Create the previous activity series, emit 'dataRequired' signal if the activity require additional data
+    void previous();
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
     DataRequiredSignalType::sptr m_sigDataRequired;

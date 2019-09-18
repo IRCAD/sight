@@ -38,7 +38,19 @@
 #include <QVariant>
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief Manager to lauch activities with a sequencer
+ *
+ * To simplify the use of SActivityView and SActivitySequencer, a Qml object ActivityLauncher can be used
+ *
+ *  @code{.qml}
+    ActivityLauncher {
+        id: activityLauncher
+        activityIdsList: ["ExImageReading", "ExMesher", "ExImageDisplaying"]
+        activityNameList: ["Read", "Mesher", "Display"]
+    }
+   @endcode
+ * - \n activityIdsList: identifiers of the activities to launch
+ * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  */
 class UIACTIVITIESQML_CLASS_API ActivityLauncherManager : public ::fwQml::IQmlAppManager
 {

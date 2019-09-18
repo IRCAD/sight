@@ -43,6 +43,8 @@ const ::fwCom::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
 
 const ::fwCom::Slots::SlotKeyType s_GO_TO_SLOT      = "goTo";
 const ::fwCom::Slots::SlotKeyType s_CHECK_NEXT_SLOT = "checkNext";
+const ::fwCom::Slots::SlotKeyType s_NEXT_SLOT       = "next";
+const ::fwCom::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
 
 //------------------------------------------------------------------------------
 
@@ -52,6 +54,8 @@ SActivitySequencer::SActivitySequencer()
     m_sigDataRequired    = newSignal< DataRequiredSignalType >(s_DATA_REQUIRED_SIG);
     newSlot(s_GO_TO_SLOT, &SActivitySequencer::goTo, this);
     newSlot(s_CHECK_NEXT_SLOT, &SActivitySequencer::checkNext, this);
+    newSlot(s_NEXT_SLOT, &SActivitySequencer::next, this);
+    newSlot(s_PREVIOUS_SLOT, &SActivitySequencer::previous, this);
 }
 
 //------------------------------------------------------------------------------
@@ -175,8 +179,36 @@ void SActivitySequencer::checkNext()
 
         std::tie(ok, errorMsg) = this->validateActivity(nextActivity);
 
-        Q_EMIT enable(m_currentActivity + 1);
+        if(ok)
+        {
+            Q_EMIT enable(m_currentActivity + 1);
+        }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SActivitySequencer::next()
+{
+    this->goTo(m_currentActivity + 1);
+}
+
+//------------------------------------------------------------------------------
+
+void SActivitySequencer::previous()
+{
+    this->goTo(m_currentActivity - 1);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );
+    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
