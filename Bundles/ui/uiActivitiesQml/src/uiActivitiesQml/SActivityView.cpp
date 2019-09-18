@@ -110,6 +110,15 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         ::fwActivities::registry::ActivityInfo info;
         info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
+        std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId,
+                                                                                info.bundleVersion);
+        SLM_INFO_IF("Bundle '" + bundle->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
+                    bundle->isStarted())
+        if (!bundle->isStarted())
+        {
+            bundle->start();
+        }
+
         // get Activity path, it allows to retrieve the associated Qml file
         const auto path = ::fwRuntime::getBundleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
 
