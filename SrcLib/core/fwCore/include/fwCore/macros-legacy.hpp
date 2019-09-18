@@ -26,7 +26,6 @@
 
 #pragma once
 
-#include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
 #include <boost/preprocessor/control/expr_if.hpp>
 #include <boost/preprocessor/control/if.hpp>

@@ -29,6 +29,7 @@
 #include "fwCore/Demangler.hpp"
 #include "fwCore/macros-legacy.hpp"
 
+#include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
 
 #include <memory>
@@ -60,8 +61,6 @@
 #define __FWCORE_CLASS_TYPEDEFS_1(_class)      \
     /** Self type  */                          \
     typedef _class SelfType;                   \
-    /** Type of base class  */                 \
-    typedef  SelfType BaseClass;               \
     /** Shared pointer type  */                \
     typedef SPTR ( SelfType ) sptr;            \
     /** Weak pointer type  */                  \
@@ -232,10 +231,10 @@
 
 #if !BOOST_PP_VARIADICS_MSVC
     #define fwCoreClassMacro(...) \
-    BOOST_PP_OVERLOAD(fwCoreClassMacro, __VA_ARGS__)(__VA_ARGS__)
+    BOOST_PP_OVERLOAD(fwCoreClassMacro_, __VA_ARGS__)(__VA_ARGS__)
 #else
     #define fwCoreClassMacro(...) \
-    BOOST_PP_CAT(BOOST_PP_OVERLOAD(fwCoreClassMacro, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
+    BOOST_PP_CAT(BOOST_PP_OVERLOAD(fwCoreClassMacro_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 #endif
 
 #define fwCoreClassMacro_1(_class)      \
