@@ -112,8 +112,8 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
 
         std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId,
                                                                                 info.bundleVersion);
-        SLM_INFO_IF("Bundle '" + bundle->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
-                    bundle->isStarted())
+        SLM_INFO_IF("Bundle '" + bundle->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
+                    "started !", bundle->isStarted())
         if (!bundle->isStarted())
         {
             bundle->start();
