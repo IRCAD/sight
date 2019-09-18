@@ -11,6 +11,7 @@ set( DEPENDENCIES
     fwQml
 )
 set( REQUIREMENTS
+    styleQml
     dataReg
     servicesReg
 )

@@ -10,6 +10,7 @@
     <requirement id="uiActivitiesQml" />
     <requirement id="uiReconstructionQml" />
     <requirement id="uiMedDataQml" />
+    <requirement id="styleQml" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>ExImageReading</id>

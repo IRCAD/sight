@@ -22,13 +22,40 @@
 
 #pragma once
 
-/**
- * @brief The namespace guiQml contains the basic services to build the application IHM with Qml.
- *
- * This bundle is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
- * application's Properties.cmake.
- */
-namespace guiQml
+#include "styleQml/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
+
+namespace fwThread
+{
+class Worker;
+} //namespace fwThread
+
+namespace styleQml
 {
 
-}
+/**
+ * @brief   This class is called when the guiQt bundle is loaded.
+ */
+class STYLEQML_CLASS_API Plugin : public ::fwRuntime::Plugin
+{
+
+public:
+
+    /**
+     * @brief   destructor
+     */
+    STYLEQML_API ~Plugin() noexcept;
+
+    // Overrides
+    STYLEQML_API void start();
+
+    // Overrides
+    STYLEQML_API void initialize();
+
+    // Overrides
+    STYLEQML_API void stop() noexcept;
+
+};
+
+} // namespace styleQml

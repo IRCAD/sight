@@ -1,20 +1,19 @@
 
-set( NAME uiMedDataQml )
+set( NAME styleQml )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
-    fwCom
-    fwCore
-    fwData
-    fwMedData
     fwRuntime
-    fwTools
-    fwDataTools
     fwQml
 )
-set( REQUIREMENTS styleQml )
+set( REQUIREMENTS )
 set( PLUGINS
     QtQml
     QtQuick
     QtQuick.2
+    platforms
+    imageformats
+)
+set( CONAN_DEPS
+    ${CONAN_QT}
 )

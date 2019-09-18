@@ -1,4 +1,4 @@
-module guiQml
+module styleQml
 singleton Theme 1.0 Material.qml
 ApplicationWindow 1.0 ApplicationWindow.qml
 BusyIndicator 1.0 BusyIndicator.qml

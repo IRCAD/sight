@@ -15,6 +15,7 @@ set( REQUIREMENTS
     dataReg
     gui
     guiQml
+    styleQml
     activities
     fwlauncher
     visuVTKQml

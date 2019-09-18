@@ -3,7 +3,7 @@ import QtQuick.Controls 2.12
 import uiActivitiesQml 1.0
 import QtQuick.Layouts 1.3
 
-import guiQml 1.0
+import styleQml 1.0
 
 Item {
     id: activityLauncher

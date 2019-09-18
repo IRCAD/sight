@@ -2,7 +2,7 @@ import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import uiMedDataQml 1.0
-import guiQml 1.0
+import styleQml 1.0
 
 Item {
     id: modelList
