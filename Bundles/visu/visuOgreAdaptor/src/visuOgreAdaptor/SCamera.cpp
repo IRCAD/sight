@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -205,7 +205,7 @@ void SCamera::updateTF3D()
     rotate = rotateZ * rotateY;
     rotate = rotate.Inverse();
 
-    newTransMat = newTransMat * rotate;
+    newTransMat = newTransMat * ::Ogre::Matrix4(rotate);
 
     auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
     {
