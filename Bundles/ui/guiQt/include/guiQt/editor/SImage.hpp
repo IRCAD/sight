@@ -89,13 +89,6 @@ protected:
     /// This method is used to configure the class parameters.
     GUIQT_API virtual void configuring() override;
 
-    /**
-     * @brief This method is used to give information about the service. Do nothing.
-     */
-    GUIQT_API virtual void info(std::ostream& _sstream ) override;
-
-    ///@}
-
 private:
 
     ::boost::filesystem::path m_path; /// Path of the image
