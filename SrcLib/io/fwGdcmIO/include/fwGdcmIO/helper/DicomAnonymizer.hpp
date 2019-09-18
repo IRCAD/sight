@@ -58,7 +58,14 @@ class FWGDCMIO_CLASS_API DicomAnonymizer
 {
 public:
 
-    fwCoreClassFactoryMacro((DicomAnonymizer), new DicomAnonymizer );
+    fwCoreClassMacro(DicomAnonymizer);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New()
+    {
+        return std::make_shared<DicomAnonymizer>();
+    }
 
     /// Constructor
     FWGDCMIO_API DicomAnonymizer();

@@ -40,7 +40,14 @@ class FWTOOLS_CLASS_API UUID
 {
 public:
 
-    fwCoreClassFactoryMacro((UUID), new UUID );
+    fwCoreClassMacro(UUID);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New()
+    {
+        return sptr(new UUID());
+    }
 
     typedef std::string UUIDType;
 

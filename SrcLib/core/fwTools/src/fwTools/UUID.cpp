@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
+#include "fwTools/UUID.hpp"
+
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
-
-#include "fwTools/UUID.hpp"
 
 namespace fwTools
 {
@@ -35,7 +35,7 @@ UUID::UUIDContainer UUID::s_uuidMap;
 
 //-----------------------------------------------------------------------------
 
-UUID::UUID() : m_uuid("")
+UUID::UUID()
 {
 }
 
@@ -55,7 +55,7 @@ UUID::~UUID()
 
 //-----------------------------------------------------------------------------
 
-bool UUID::exist( const UUID::UUIDType & uuid)
+bool UUID::exist( const UUID::UUIDType& uuid)
 {
     ::fwCore::mt::ReadLock lock(s_uuidMapMutex);
     return ( UUID::s_uuidMap.find(uuid) != UUID::s_uuidMap.end() );
@@ -87,7 +87,7 @@ const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 
 //-----------------------------------------------------------------------------
 
-::fwTools::Object::sptr UUID::get( const UUID::UUIDType & uuid )
+::fwTools::Object::sptr UUID::get( const UUID::UUIDType& uuid )
 {
     ::fwCore::mt::ReadLock lock(s_uuidMapMutex);
     ::fwTools::Object::sptr obj;
@@ -101,7 +101,7 @@ const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 
 //-----------------------------------------------------------------------------
 
-bool UUID::set(::fwTools::Object::sptr object, const UUID::UUIDType & uuid )
+bool UUID::set(::fwTools::Object::sptr object, const UUID::UUIDType& uuid )
 {
     ::fwCore::mt::ReadToWriteLock lock(s_uuidMapMutex);
 
@@ -129,7 +129,7 @@ bool UUID::set(::fwTools::Object::sptr object, const UUID::UUIDType & uuid )
 
 UUID::UUIDType UUID::generateUUID()
 {
-    static boost::uuids::random_generator gen;
+    static ::boost::uuids::random_generator gen;
     ::fwCore::mt::ScopedLock lock(s_generateUUIDMutex);
     ::boost::uuids::uuid uuid = gen();
     return ::boost::uuids::to_string(uuid);
