@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,26 +37,28 @@ namespace helper
 {
     SLM_ASSERT("Scene node is null", _sceneNode);
 
-    ::Ogre::SceneNode* sceneNode                 = nullptr;
-    ::Ogre::SceneNode::ChildNodeIterator rootMap = _sceneNode->getChildIterator();
+    ::Ogre::SceneNode* sceneNode = nullptr;
+    const auto& rootMap = _sceneNode->getChildren();
 
-    std::stack< ::Ogre::SceneNode::ChildNodeIterator > stack;
-    stack.push(rootMap);
+    // Use a vector as a stack to benefit from iterators.
+    std::vector< ::Ogre::Node* > stack;
+    std::copy(rootMap.cbegin(), rootMap.cend(), std::back_inserter(stack));
 
     // Recursive search in the graph
     do
     {
-        ::Ogre::SceneNode::ChildNodeIterator map = stack.top();
-        stack.pop();
-        for(auto it : map)
+        ::Ogre::Node* const topNode = stack.back();
+
+        if (topNode->getName() == _nodeId)
         {
-            if (it->getName() == _nodeId)
-            {
-                sceneNode = static_cast< ::Ogre::SceneNode* >(it);
-                break;
-            }
-            stack.push(it->getChildIterator());
+            sceneNode = static_cast< ::Ogre::SceneNode* >(topNode);
+            break;
         }
+
+        const ::Ogre::Node::ChildNodeMap& nodeChildren = topNode->getChildren();
+        stack.pop_back();
+
+        std::copy(nodeChildren.cbegin(), nodeChildren.cend(), std::back_inserter(stack));
     }
     while( !stack.empty() );
 
