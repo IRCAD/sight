@@ -61,6 +61,10 @@
 #define __FWCORE_CLASS_TYPEDEFS_1(_class)      \
     /** Self type  */                          \
     typedef _class SelfType;                   \
+    /** Type of base class  */                 \
+    typedef SelfType BaseClass;                \
+    /** Type of root class  */                 \
+    typedef SelfType RootClass;                \
     /** Shared pointer type  */                \
     typedef SPTR ( SelfType ) sptr;            \
     /** Weak pointer type  */                  \
@@ -72,7 +76,7 @@
     /** Const weak pointer type  */            \
     typedef CWPTR ( SelfType ) cwptr;          \
     /** Const unique pointer type  */          \
-    typedef CUPTR ( SelfType ) cuptr;
+    typedef CUPTR ( SelfType ) cuptr;          \
 
 /**
  * @brief Define several typdefs for classes (sptr, wptr, ...)
@@ -80,9 +84,24 @@
  * BaseClass is a typedef to the superclass
  */
 #define __FWCORE_CLASS_TYPEDEFS_2(_class, _parentClass) \
-    __FWCORE_CLASS_TYPEDEFS_1(_class)                   \
+    /** Self type  */                                   \
+    typedef _class SelfType;                            \
     /** Type of base class  */                          \
-    typedef  _parentClass BaseClass;
+    typedef  _parentClass BaseClass;                    \
+    /** Type of root class  */                          \
+    typedef BaseClass::RootClass RootClass;             \
+    /** Shared pointer type  */                         \
+    typedef SPTR ( SelfType ) sptr;                     \
+    /** Weak pointer type  */                           \
+    typedef WPTR ( SelfType ) wptr;                     \
+    /** Unique pointer type  */                         \
+    typedef UPTR ( SelfType ) uptr;                     \
+    /** Const shared pointer type  */                   \
+    typedef CSPTR ( SelfType ) csptr;                   \
+    /** Const weak pointer type  */                     \
+    typedef CWPTR ( SelfType ) cwptr;                   \
+    /** Const unique pointer type  */                   \
+    typedef CUPTR ( SelfType ) cuptr;
 
 /**
  * @brief Cast definition for casting from baseclassname and derived to _classname_
