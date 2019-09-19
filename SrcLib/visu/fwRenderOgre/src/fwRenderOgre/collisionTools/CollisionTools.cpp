@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -150,351 +150,251 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
     Ogre::MovableObject* target = nullptr;
     float closestDistance;
 
-    // check we are initialised
+    // Check we are initialised.
     if (mRaySceneQuery != nullptr)
     {
-        // create a query object
+        // Create a query object.
         mRaySceneQuery->setRay(ray);
         mRaySceneQuery->setSortByDistance(true);
         mRaySceneQuery->setQueryMask(queryMask);
-        // execute the query, returns a vector of hits
+        // Execute the query, returns a vector of hits.
         if (mRaySceneQuery->execute().size() <= 0)
         {
-            // raycast did not hit an objects bounding box
+            // Raycast did not hit an objects bounding box.
             return std::make_tuple(false, result, target, closestDistance);
         }
     }
     else
     {
-        //LOG_ERROR << "Cannot raycast without RaySceneQuery instance" << ENDLOG;
         return std::make_tuple(false, result, target, closestDistance);
     }
 
-    // at this point we have raycast to a series of different objects bounding boxes.
-    // we need to test these different objects to see which is the first polygon hit.
-    // there are some minor optimizations (distance based) that mean we wont have to
+    // At this point we have raycast to a series of different objects bounding boxes.
+    // We need to test these different objects to see which is the first polygon hit.
+    // There are some minor optimizations (distance based) that mean we wont have to
     // check all of the objects most of the time, but the worst case scenario is that
     // we need to test every triangle of every object.
-    //Ogre::Ogre::Real closestDistance = -1.0f;
     closestDistance = -1.0f;
     Ogre::Vector3 closestResult;
     Ogre::RaySceneQueryResult& queryResult = mRaySceneQuery->getLastResults();
     for (size_t qrIdx = 0; qrIdx < queryResult.size(); qrIdx++)
     {
-        // stop checking if we have found a raycast hit that is closer
-        // than all remaining entities
+        // Stop checking if we have found a raycast hit that is closer
+        // than all remaining entities.
         if ((closestDistance >= 0.0f) &&
             (closestDistance < queryResult[qrIdx].distance))
         {
             break;
         }
 
-        // get the entity to check
-        Ogre::MovableObject* pentity = queryResult[qrIdx].movable;
+        // Get the entity to check.
+        Ogre::MovableObject* const pentity = queryResult[qrIdx].movable;
 
         const bool isEntity = queryResult[qrIdx].movable->getMovableType().compare("Entity") == 0;
         const bool isR2VB   = queryResult[qrIdx].movable->getMovableType().compare(
             factory::R2VBRenderable::FACTORY_TYPE_NAME) == 0;
 
-        // only check this result if its a hit against an entity
-        if ((pentity != nullptr) && (isEntity || isR2VB) )
+        // Only check this result if its a hit against an entity.
+        if( (pentity != nullptr) && (isEntity || isR2VB) )
         {
             if(!pentity->isVisible())
             {
                 continue;
             }
 
-            auto mesh = isEntity ?
-                        static_cast< ::Ogre::Entity*>(pentity)->getMesh() :
-                        static_cast< ::fwRenderOgre::R2VBRenderable*>(pentity)->getMesh();
+            const Ogre::Vector3 position       = pentity->getParentNode()->_getDerivedPosition();
+            const Ogre::Quaternion orientation = pentity->getParentNode()->_getDerivedOrientation();
+            const Ogre::Vector3 scale          = pentity->getParentNode()->_getDerivedScale();
 
-            // mesh data to retrieve
+            const ::Ogre::MeshPtr mesh = isEntity ?
+                                         static_cast< ::Ogre::Entity* >(pentity)->getMesh() :
+                                         static_cast< ::fwRenderOgre::R2VBRenderable*>(pentity)->getMesh();
+
             std::vector< ::Ogre::Vector3> vertices;
-            std::vector< ::Ogre::uint32> indicesTri;
-            std::vector< ::Ogre::uint32> indicesQuad;
+            bool addedShared = false;
 
-            // get the mesh information
-            std::tie( vertices, indicesTri, indicesQuad) =
-                getMeshInformation(mesh,
-                                   pentity->getParentNode()->_getDerivedPosition(),
-                                   pentity->getParentNode()->_getDerivedOrientation(),
-                                   pentity->getParentNode()->_getDerivedScale());
-
-            // test for hitting individual triangles on the mesh
-            bool newClosestFound = false;
-            if(indicesQuad.size())
+            for(const Ogre::SubMesh* const submesh : mesh->getSubMeshes())
             {
-                for (size_t i = 0; i < indicesQuad.size(); i += 4)
+                // Store vertices one time if data are shared, else the vector is refilled each time.
+                if( (!submesh->useSharedVertices) || (submesh->useSharedVertices && !addedShared))
                 {
-                    // check for a hit against this triangle
-                    std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indicesQuad[i]],
-                                                                             vertices[indicesQuad[i+1]],
-                                                                             vertices[indicesQuad[i+3]], true, false);
-
-                    // if it was a hit check if its the closest
-                    if (hit.first)
+                    if(submesh->useSharedVertices)
                     {
-                        if ((closestDistance < 0.0f) || (hit.second < closestDistance))
+                        addedShared = true;
+                        vertices.resize(mesh->sharedVertexData->vertexCount);
+                    }
+                    else
+                    {
+                        vertices.clear();
+                        vertices.resize(submesh->vertexData->vertexCount);
+                    }
+
+                    const Ogre::VertexData* vertexData =
+                        submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+                    const Ogre::VertexElement* const posElem =
+                        vertexData->vertexDeclaration->findElementBySemantic(::Ogre::VES_POSITION);
+                    const Ogre::HardwareVertexBufferSharedPtr vbuf = vertexData->vertexBufferBinding->getBuffer(
+                        posElem->getSource());
+
+                    unsigned char* vertex =
+                        static_cast<unsigned char*>(vbuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
+                    float* pReal;
+
+                    for(size_t j = 0; j < vertexData->vertexCount; ++j, vertex += vbuf->getVertexSize())
+                    {
+                        posElem->baseVertexPointerToElement(vertex, &pReal);
+                        Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
+                        vertices[j] = (orientation * (pt * scale)) + position;
+                    }
+
+                    vbuf->unlock();
+                }
+
+                // Retrieve the index buffer to loop over vertices.
+                std::vector< ::Ogre::uint32> indices;
+                {
+                    const Ogre::IndexData* const indexData        = submesh->indexData;
+                    const Ogre::HardwareIndexBufferSharedPtr ibuf = indexData->indexBuffer;
+
+                    // When a mesh is picked, a billboard is created (for printing purposes), this line ensure theses
+                    // billboars are not picked by the same picker as they do not define an entity.
+                    if(ibuf == nullptr)
+                    {
+                        continue;
+                    }
+
+                    const bool use32bitindexes = (ibuf->getType() == ::Ogre::HardwareIndexBuffer::IT_32BIT);
+
+                    const ::Ogre::uint32* const pLong =
+                        static_cast< const ::Ogre::uint32* >(ibuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
+                    const unsigned short* const pShort = reinterpret_cast< const unsigned short* >(pLong);
+
+                    indices.resize(indexData->indexCount);
+
+                    // Iterate over index buffer.
+                    if(use32bitindexes)
+                    {
+                        for(size_t k = 0; k < indexData->indexCount; ++k)
                         {
-                            // this is the closest so far, save it off
-                            closestDistance = hit.second;
-                            newClosestFound = true;
+                            indices[k] = pLong[k];
+                        }
+                    }
+                    else
+                    {
+                        for(size_t k = 0; k < indexData->indexCount; ++k)
+                        {
+                            indices[k] = static_cast< Ogre::uint32 >(pShort[k]);
                         }
                     }
 
-                    // check for a hit against this triangle
-                    hit = Ogre::Math::intersects(ray, vertices[indicesQuad[i+1]],
-                                                 vertices[indicesQuad[i+2]],
-                                                 vertices[indicesQuad[i+3]], true, false);
-
-                    // if it was a hit check if its the closest
-                    if (hit.first)
-                    {
-                        if ((closestDistance < 0.0f) || (hit.second < closestDistance))
-                        {
-                            // this is the closest so far, save it off
-                            closestDistance = hit.second;
-                            newClosestFound = true;
-                        }
-                    }
+                    ibuf->unlock();
                 }
-            }
-            else if(indicesTri.size())
-            {
-                for (size_t i = 0; i < indicesTri.size(); i += 3)
+
+                // Retrieve the material to check the culling mode.
+                const ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingletonPtr()->getByName(
+                    submesh->getMaterialName());
+                bool positiveSide = true;
+                bool negativeSide = true;
+                if(material != nullptr)
                 {
-                    // check for a hit against this triangle
-                    std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indicesTri[i]],
-                                                                             vertices[indicesTri[i+1]],
-                                                                             vertices[indicesTri[i+2]], true, false);
-
-                    // if it was a hit check if its the closest
-                    if (hit.first)
+                    const ::Ogre::CullingMode cullingMode = material->getTechnique(0)->getPass(0)->getCullingMode();
+                    switch (cullingMode)
                     {
-                        if ((closestDistance < 0.0f) || (hit.second < closestDistance))
-                        {
-                            // this is the closest so far, save it off
-                            closestDistance = hit.second;
-                            newClosestFound = true;
-                        }
+                        case ::Ogre::CULL_NONE:
+                            positiveSide = true;
+                            negativeSide = true;
+                            break;
+                        case ::Ogre::CULL_CLOCKWISE:
+                            positiveSide = true;
+                            negativeSide = false;
+                            break;
+                        case ::Ogre::CULL_ANTICLOCKWISE:
+                            positiveSide = false;
+                            negativeSide = true;
+                            break;
+                        default:
+                            SLM_ERROR("Unsuported culling mode");
+                            break;
                     }
                 }
-            }
-            else
-            {
-                // We do not have faces, we simply check all vertices and compute the distance from the picked point
-                const auto* camera               = mSceneMgr->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-                const ::Ogre::Matrix4 viewMatrix = camera->getViewMatrix();
-                const ::Ogre::Matrix4 projMatrix = camera->getProjectionMatrixWithRSDepth();
 
-                const ::Ogre::Matrix4 viewProjMatrix = projMatrix * viewMatrix;
-
-                const ::Ogre::Vector3 resPointWVP = viewProjMatrix * ray.getPoint(queryResult[qrIdx].distance);
-                const ::Ogre::Vector2 resPointSS  = (resPointWVP.xy() / 2.f) + 0.5f;
-
-                for (size_t i = 0; i < vertices.size(); ++i)
+                // Check intersections depending on the render operation type.
+                bool newClosestFound = false;
+                switch(submesh->operationType)
                 {
-                    const ::Ogre::Vector3 pointWVP = viewProjMatrix * vertices[i];
-                    const ::Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
+                    case ::Ogre::RenderOperation::OT_LINE_LIST:
+                        for(size_t i = 0; i < indices.size(); i += 4)
+                        {
+                            std::pair< bool, Ogre::Real > hit = Ogre::Math::intersects(ray, vertices[indices[i]],
+                                                                                       vertices[indices[i+1]],
+                                                                                       vertices[indices[i+2]],
+                                                                                       positiveSide, negativeSide);
+                            if(hit.first)
+                            {
+                                if((closestDistance < 0.0f) || (hit.second < closestDistance))
+                                {
+                                    closestDistance = hit.second;
+                                    newClosestFound = true;
+                                }
+                            }
 
-                    static const ::Ogre::Real s_TOLERANCE = 0.02f;
-                    if (((closestDistance < 0.0f) || (queryResult[qrIdx].distance < closestDistance)) &&
-                        resPointSS.distance(pointSS) < s_TOLERANCE)
-                    {
-                        newClosestFound = true;
-                        closestDistance = vertices[i].distance(ray.getOrigin());
-                    }
+                            hit = Ogre::Math::intersects(ray, vertices[indices[i+2]],
+                                                         vertices[indices[i+3]],
+                                                         vertices[indices[i]], positiveSide, negativeSide);
+                            if(hit.first)
+                            {
+                                if((closestDistance < 0.0f) || (hit.second < closestDistance))
+                                {
+                                    closestDistance = hit.second;
+                                    newClosestFound = true;
+                                }
+                            }
+                        }
+                        break;
+                    case ::Ogre::RenderOperation::OT_TRIANGLE_LIST:
+                        for(size_t i = 0; i < indices.size(); i += 3)
+                        {
+                            std::pair< bool, Ogre::Real > hit = Ogre::Math::intersects(ray, vertices[indices[i]],
+                                                                                       vertices[indices[i+1]],
+                                                                                       vertices[indices[i+2]],
+                                                                                       positiveSide, negativeSide);
+                            if(hit.first)
+                            {
+                                if((closestDistance < 0.0f) || (hit.second < closestDistance))
+                                {
+                                    closestDistance = hit.second;
+                                    newClosestFound = true;
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        SLM_ERROR("Unsuported operation type");
+                        break;
                 }
-            }
 
-            // if we found a new closest raycast for this object, update the
-            // closest_result before moving on to the next object.
-            if (newClosestFound)
-            {
-                target        = pentity;
-                closestResult = ray.getPoint(closestDistance);
+                if(newClosestFound)
+                {
+                    target        = pentity;
+                    closestResult = ray.getPoint(closestDistance);
+                }
             }
         }
     }
 
-    // return the result
+    // Return the result.
     if (closestDistance >= 0.0f)
     {
-        // raycast success
-        result = closestResult;
-        return std::make_tuple(true, result, target, closestDistance);
+        // Raycast success.
+        return std::make_tuple(true, closestResult, target, closestDistance);
     }
     else
     {
-        // raycast failed
-        return std::make_tuple(false, result, target, closestDistance);
+        // Raycast failed.
+        return std::make_tuple(false, closestResult, target, closestDistance);
     }
 }
 
-// Get the mesh information for the given mesh.
-// Code found on this forum link: http://www.ogre3d.org/wiki/index.php/RetrieveVertexData
-std::tuple< std::vector< Ogre::Vector3>,
-            std::vector< Ogre::uint32>,
-            std::vector< Ogre::uint32> >
-CollisionTools::getMeshInformation(const Ogre::MeshPtr mesh,
-                                   const Ogre::Vector3& position,
-                                   const Ogre::Quaternion& orient,
-                                   const Ogre::Vector3& scale)
-{
-    bool addedShared     = false;
-    size_t currentOffset = 0;
-    size_t sharedOffset  = 0;
-    size_t nextOffset    = 0;
-
-    size_t vertexCount     = 0;
-    size_t indexTriCount   = 0;
-    size_t indexTriOffset  = 0;
-    size_t indexQuadCount  = 0;
-    size_t indexQuadOffset = 0;
-
-    // Calculate how many vertices and indices we're going to need
-    for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
-    {
-        const Ogre::SubMesh* submesh = mesh->getSubMesh( i );
-
-        // We only need to add the shared vertices once
-        if(submesh->useSharedVertices)
-        {
-            if( !addedShared )
-            {
-                vertexCount += mesh->sharedVertexData->vertexCount;
-                addedShared  = true;
-            }
-        }
-        else
-        {
-            vertexCount += submesh->vertexData->vertexCount;
-        }
-
-        // Add the indices
-        if(submesh->operationType == ::Ogre::RenderOperation::OT_TRIANGLE_LIST)
-        {
-            indexTriCount += submesh->indexData->indexCount;
-        }
-        else if(submesh->operationType == ::Ogre::RenderOperation::OT_LINE_LIST)
-        {
-            indexQuadCount += submesh->indexData->indexCount;
-        }
-    }
-
-    // Allocate space for the vertices and indices
-    std::vector< ::Ogre::Vector3> vertices;
-    vertices.resize(vertexCount);
-    std::vector< ::Ogre::uint32> indicesTri;
-    indicesTri.resize(indexTriCount);
-    std::vector< ::Ogre::uint32> indicesQuad;
-    indicesQuad.resize(indexQuadCount);
-
-    addedShared = false;
-
-    // Run through the submeshes again, adding the data into the arrays
-    for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
-    {
-        const Ogre::SubMesh* submesh = mesh->getSubMesh(i);
-
-        const Ogre::VertexData* vertexData = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
-
-        if((!submesh->useSharedVertices)||(submesh->useSharedVertices && !addedShared))
-        {
-            if(submesh->useSharedVertices)
-            {
-                addedShared  = true;
-                sharedOffset = currentOffset;
-            }
-
-            const Ogre::VertexElement* posElem =
-                vertexData->vertexDeclaration->findElementBySemantic(::Ogre::VES_POSITION);
-
-            const Ogre::HardwareVertexBufferSharedPtr vbuf =
-                vertexData->vertexBufferBinding->getBuffer(posElem->getSource());
-
-            unsigned char* vertex = static_cast<unsigned char*>(vbuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
-
-            // There is _no_ baseVertexPointerToElement() which takes an Ogre::Ogre::Real or a double
-            //  as second argument. So make it float, to avoid trouble when Ogre::Ogre::Real will
-            //  be compiled/typedefed as double:
-            //      Ogre::Ogre::Real* pOgre::Real;
-            float* pReal;
-
-            for( size_t j = 0; j < vertexData->vertexCount; ++j, vertex += vbuf->getVertexSize())
-            {
-                posElem->baseVertexPointerToElement(vertex, &pReal);
-
-                Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
-
-                vertices[currentOffset + j] = (orient * (pt * scale)) + position;
-            }
-
-            vbuf->unlock();
-            nextOffset += vertexData->vertexCount;
-        }
-
-        const Ogre::IndexData* indexData              = submesh->indexData;
-        const Ogre::HardwareIndexBufferSharedPtr ibuf = indexData->indexBuffer;
-
-        /*********************** FIX LUIS ***********************/
-
-        // When a mesh is picked, a billboard is created (for printing purposes), this line ensure theses billboars are
-        // not picked by the same picker as they do not define an entity.
-        if(indexData->indexCount == 0)
-        {
-            return std::tuple<std::vector< Ogre::Vector3>,
-                              std::vector< Ogre::uint32>,
-                              std::vector< Ogre::uint32> >(vertices, indicesTri, indicesQuad);
-        }
-
-        /*********************** END FIX LUIS ***********************/
-
-        bool use32bitindexes = (ibuf->getType() == ::Ogre::HardwareIndexBuffer::IT_32BIT);
-
-        auto pLong  = static_cast< const ::Ogre::uint32*>(ibuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
-        auto pShort = reinterpret_cast<const unsigned short*>(pLong);
-
-        size_t offset = (submesh->useSharedVertices) ? sharedOffset : currentOffset;
-
-        std::vector< ::Ogre::uint32>* indices;
-        size_t* indexOffset;
-
-        if(submesh->operationType == ::Ogre::RenderOperation::OT_TRIANGLE_LIST)
-        {
-            indexOffset = &indexTriOffset;
-            indices     = &indicesTri;
-        }
-        else
-        {
-            indexOffset = &indexQuadOffset;
-            indices     = &indicesQuad;
-
-        }
-
-        if ( use32bitindexes )
-        {
-            for ( size_t k = 0; k < indexData->indexCount; ++k)
-            {
-                (*indices)[(*indexOffset)++] = pLong[k] + static_cast<Ogre::uint32>(offset);
-            }
-        }
-        else
-        {
-            for ( size_t k = 0; k < indexData->indexCount; ++k)
-            {
-                (*indices)[(*indexOffset)++] = static_cast<Ogre::uint32>(pShort[k]) + static_cast<Ogre::uint32>(offset);
-            }
-        }
-
-        ibuf->unlock();
-        currentOffset = nextOffset;
-    }
-    return std::tuple < std::vector< Ogre::Vector3>,
-                        std::vector< Ogre::uint32>,
-                        std::vector< Ogre::uint32> >(vertices, indicesTri, indicesQuad);
-}
-
-//------------------------------------------------------------------------------
+//====================================================================================================================
 
 }
