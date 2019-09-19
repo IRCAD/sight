@@ -43,7 +43,7 @@ void DemanglerTest::setUp()
 class IDemanglerTest : public ::fwCore::BaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IDemanglerTest) )
+    fwCoreClassMacro(IDemanglerTest);
     virtual ~IDemanglerTest();
 
 };

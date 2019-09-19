@@ -47,7 +47,7 @@ class FWDATA_CLASS_API GenericField : public GenericFieldBase
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericField<T>)(::fwData::Object) );
+    fwCoreClassMacro(GenericField<T>, ::fwData::Object);
 
     typedef T ValueType;
 

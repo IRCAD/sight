@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_ACTIONCALLBACKBASE_HPP__
-#define __FWGUI_ACTIONCALLBACKBASE_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
@@ -39,7 +38,7 @@ class FWGUI_CLASS_API ActionCallbackBase : public ::fwGui::IMenuItemCallback
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ActionCallbackBase)(::fwGui::IMenuItemCallback) )
+    fwCoreClassMacro(ActionCallbackBase, ::fwGui::IMenuItemCallback);
 
     typedef std::string RegistryKeyType;
 
@@ -78,6 +77,3 @@ private:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_ACTIONCALLBACKBASE_HPP__*/
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,26 +20,21 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_ICURSOR_HPP__
-#define __FWGUI_ICURSOR_HPP__
+#pragma once
 
-#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 namespace fwGui
 {
 
 /**
  * @brief   Defines the generic cursor for IHM.
- * @class   ICursor
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API ICursor : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (ICursor)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(ICursor, ::fwGui::GuiBaseObject);
 
     /// Cursor type
     typedef enum
@@ -55,7 +50,6 @@ public:
     /// Destructor. Do nothing.
     FWGUI_API virtual ~ICursor();
 
-
     typedef std::string FactoryRegistryKeyType;
     FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
@@ -68,7 +62,3 @@ public:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_ICURSOR_HPP__*/
-
-

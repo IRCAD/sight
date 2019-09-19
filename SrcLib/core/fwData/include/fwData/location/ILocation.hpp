@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_LOCATION_ILOCATION_HPP__
-#define __FWDATA_LOCATION_ILOCATION_HPP__
+#pragma once
 
-#include "fwData/Object.hpp"
 #include "fwData/config.hpp"
+#include "fwData/Object.hpp"
 
 #include <boost/filesystem/path.hpp>
 
@@ -44,7 +43,7 @@ namespace location
 class FWDATA_CLASS_API ILocation : public ::fwData::Object
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object) );
+    fwCoreClassMacro(ILocation, ::fwData::Object);
 
     typedef ::boost::filesystem::path PathType;
     typedef std::vector<PathType> VectPathType;
@@ -85,5 +84,3 @@ inline bool have(RW* rw)
 
 }
 }
-
-#endif /* __FWDATA_LOCATION_ILOCATION_HPP__ */

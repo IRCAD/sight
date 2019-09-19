@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_BUILDER_ITOOLBARBUILDER_HPP__
-#define __FWGUI_BUILDER_ITOOLBARBUILDER_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
-
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwToolBar.hpp"
-#include "fwGui/container/fwContainer.hpp"
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
@@ -38,15 +37,11 @@ namespace builder
 
 /**
  * @brief   Defines the interface class  for the toolbar builder.
- * @class   IToolBarBuilder
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IToolBarBuilder : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarBuilder)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(IToolBarBuilder, ::fwGui::GuiBaseObject);
 
     typedef std::string RegistryKeyType;
 
@@ -59,7 +54,6 @@ public:
         RIGHT,
         LEFT
     } Aligment;
-
 
     /// Constructor. Do nothing.
     FWGUI_API IToolBarBuilder();
@@ -113,7 +107,3 @@ protected:
 
 } // namespace builder
 } // namespace fwGui
-
-#endif /*__FWGUI_BUILDER_ITOOLBARBUILDER_HPP__*/
-
-

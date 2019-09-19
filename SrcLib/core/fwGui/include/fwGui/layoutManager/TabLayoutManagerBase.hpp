@@ -43,7 +43,7 @@ class FWGUI_CLASS_API TabLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (TabLayoutManagerBase)(::fwGui::layoutManager::IViewLayoutManager) )
+    fwCoreClassMacro(TabLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager);
 
     typedef std::string RegistryKeyType;
 

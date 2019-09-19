@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMS_BASE_HPP__
-#define __FWATOMS_BASE_HPP__
+#pragma once
 
-
-#include <string>
+#include "fwAtoms/config.hpp"
+#include "fwAtoms/factory/new.hpp"
+#include "fwAtoms/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwAtoms/factory/new.hpp"
-#include "fwAtoms/registry/detail.hpp"
-#include "fwAtoms/config.hpp"
-
+#include <string>
 
 namespace fwAtoms
 {
@@ -74,7 +71,7 @@ public:
         BLOB
     } AtomType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (Base)(::fwCore::BaseObject) );
+    fwCoreClassMacro(Base, ::fwCore::BaseObject);
     fwCoreAllowSharedFromThis();
 
     virtual ~Base()
@@ -180,6 +177,3 @@ protected:
 };
 
 }
-
-#endif /* __FWATOMS_BASE_HPP__ */
-
