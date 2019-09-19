@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,7 @@ class UICALIBRATION_CLASS_API SCameraInformationEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCameraInformationEditor)(::fwGui::editor::IEditor))
+    fwCoreServiceMacro(SCameraInformationEditor, ::fwGui::editor::IEditor);
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef ::fwCom::Slot<void ()> UpdateInfosSlotType;

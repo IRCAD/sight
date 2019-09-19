@@ -89,13 +89,13 @@ public:
 class TestSrvOneData : public TestEmptyService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestSrvOneData)(::fwServices::IService) )
+    fwCoreServiceMacro(TestSrvOneData, ::fwServices::IService);
 
 };
 class TestSrvThreeData : public TestEmptyService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestSrvThreeData)(::fwServices::IService) )
+    fwCoreServiceMacro(TestSrvThreeData, ::fwServices::IService);
 
 };
 

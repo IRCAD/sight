@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,7 +75,7 @@ class VISUVTKARADAPTOR_CLASS_API SCamera : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SCamera)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SCamera, ::fwRenderVTK::IAdaptor);
 
     /// Constructor.
     SCamera() noexcept;

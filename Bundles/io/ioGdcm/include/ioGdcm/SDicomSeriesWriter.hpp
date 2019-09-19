@@ -66,7 +66,7 @@ class IOGDCM_CLASS_API SDicomSeriesWriter : public ::fwIO::IWriter
 public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesWriter)( ::fwIO::IWriter) )
+    fwCoreServiceMacro(SDicomSeriesWriter,  ::fwIO::IWriter);
 
     /**
      * @brief   constructor

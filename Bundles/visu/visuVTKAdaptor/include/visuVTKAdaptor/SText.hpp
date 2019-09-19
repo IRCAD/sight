@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_STEXT_HPP__
-#define __VISUVTKADAPTOR_STEXT_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -85,7 +84,7 @@ class VISUVTKADAPTOR_CLASS_API SText : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SText)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SText, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SText();
     VISUVTKADAPTOR_API virtual ~SText() noexcept;
@@ -159,6 +158,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif //__VISUVTKADAPTOR_STEXT_HPP__
-

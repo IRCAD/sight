@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLCAMP_SEXTRACTMESHBYTYPE_HPP__
-#define __CTRLCAMP_SEXTRACTMESHBYTYPE_HPP__
+#pragma once
 
 #include "ctrlCamp/config.hpp"
 #include "ctrlCamp/ICamp.hpp"
@@ -72,7 +71,7 @@ class CTRLCAMP_CLASS_API SExtractMeshByType : public ::ctrlCamp::ICamp
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SExtractMeshByType)(::ctrlCamp::ICamp) );
+    fwCoreServiceMacro(SExtractMeshByType, ::ctrlCamp::ICamp);
 
     typedef std::map<std::string, std::tuple< std::string, std::string, std::string > > ExtractMapType;
     typedef std::vector<std::pair< std::string, std::string > > ExtractVectorType;
@@ -108,5 +107,3 @@ private:
 };
 
 }// namespace ctrlCamp
-
-#endif /* __CTRLCAMP_SEXTRACTMESHBYTYPE_HPP__ */

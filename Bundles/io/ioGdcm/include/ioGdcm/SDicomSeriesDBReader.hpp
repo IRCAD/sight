@@ -76,7 +76,7 @@ public:
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::fwIO::IReader) )
+    fwCoreServiceMacro(SDicomSeriesDBReader,  ::fwIO::IReader);
 
     /**
      * @brief   constructor

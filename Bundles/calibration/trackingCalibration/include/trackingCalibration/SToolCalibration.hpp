@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ class TRACKINGCALIBRATION_CLASS_API SToolCalibration : public ::fwServices::IReg
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SToolCalibration)(::fwServices::IRegisterer));
+    fwCoreServiceMacro(SToolCalibration, ::fwServices::IRegisterer);
 
     /**
      * @brief Constructor.

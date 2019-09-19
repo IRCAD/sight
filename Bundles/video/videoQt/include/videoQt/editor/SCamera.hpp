@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -94,7 +94,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCamera)(::fwGui::editor::IEditor) );
+    fwCoreServiceMacro(SCamera, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     VIDEOQT_API SCamera() noexcept;

@@ -74,7 +74,7 @@ class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SLight)(::fwRenderOgre::ILight))
+    fwCoreServiceMacro(SLight, ::fwRenderOgre::ILight);
 
     /**
      * @name Slots API

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IOPACS_SPACSCONFIGURATIONINITIALIZER_HPP__
-#define __IOPACS_SPACSCONFIGURATIONINITIALIZER_HPP__
+#pragma once
 
 #include "ioPacs/config.hpp"
 
@@ -62,7 +61,7 @@ class IOPACS_CLASS_API SPacsConfigurationInitializer : public ::fwServices::ICon
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPacsConfigurationInitializer)( ::fwServices::IController ) );
+    fwCoreServiceMacro(SPacsConfigurationInitializer,  ::fwServices::IController );
 
     /**
      * @brief Constructor
@@ -119,5 +118,3 @@ protected:
 };
 
 } // namespace ioPacs
-
-#endif // __IOPACS_SPACSCONFIGURATIONINITIALIZER_HPP__

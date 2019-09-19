@@ -250,27 +250,33 @@
 
 #if !BOOST_PP_VARIADICS_MSVC
     #define fwCoreClassMacro(...) \
-    BOOST_PP_OVERLOAD(fwCoreClassMacro_, __VA_ARGS__)(__VA_ARGS__)
+    BOOST_PP_OVERLOAD(__FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__)
 #else
     #define fwCoreClassMacro(...) \
-    BOOST_PP_CAT(BOOST_PP_OVERLOAD(fwCoreClassMacro_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
+    BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 #endif
 
-#define fwCoreClassMacro_1(_class)      \
+#define __FWCORE_CLASS_MACRO_1(_class)  \
     __FWCORE_CLASS_TYPEDEFS_1(_class)   \
     __FWCORE_GENERATE_CAST(_class)      \
     __FWCORE_INTERFACE_MACRO()          \
     __FWCORE_TYPE_1(_class)
 
-#define fwCoreClassMacro_2(_class, _parentClass)    \
-    __FWCORE_CLASS_TYPEDEFS_2(_class, _parentClass) \
-    __FWCORE_GENERATE_CAST(_class)                  \
-    __FWCORE_CLASSNAME_MACRO()                      \
+#define __FWCORE_CLASS_MACRO_2(_class, _parentClass) \
+    __FWCORE_CLASS_TYPEDEFS_2(_class, _parentClass)  \
+    __FWCORE_GENERATE_CAST(_class)                   \
+    __FWCORE_CLASSNAME_MACRO()                       \
     __FWCORE_TYPE_2(_class, _parentClass)
 
-#define fwCoreClassMacro_3(_class, _parentClass, _factory)  \
-    fwCoreClassMacro_2(_class, _parentClass)                \
-    static sptr New()                                       \
-    {                                                       \
-        return sptr(_factory());                            \
+#define __FWCORE_CLASS_MACRO_3(_class, _parentClass, _factory)  \
+    __FWCORE_CLASS_MACRO_2(_class, _parentClass)                \
+    static sptr New()                                           \
+    {                                                           \
+        return sptr(_factory());                                \
     }
+
+/**
+ * @brief Generate common code for services classes
+ */
+#define fwCoreServiceMacro(_class, _parentClass) \
+    __FWCORE_CLASS_MACRO_2(_class, _parentClass)

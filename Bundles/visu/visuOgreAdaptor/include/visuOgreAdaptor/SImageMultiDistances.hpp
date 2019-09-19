@@ -62,7 +62,7 @@ class SImageMultiDistances : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageMultiDistances)(::fwRenderOgre::IAdaptor) )
+    fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor);
 
     /// Constructor
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;

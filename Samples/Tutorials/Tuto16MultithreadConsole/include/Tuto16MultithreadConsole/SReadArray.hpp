@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __TUTO16MULTITHREADCONSOLE_SREADARRAY_HPP__
-#define __TUTO16MULTITHREADCONSOLE_SREADARRAY_HPP__
+#pragma once
 
 #include "Tuto16MultithreadConsole/config.hpp"
 
@@ -47,7 +46,7 @@ class TUTO16MULTITHREADCONSOLE_CLASS_API SReadArray : public ::fwServices::ICont
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SReadArray)(::fwServices::IController) );
+    fwCoreServiceMacro(SReadArray, ::fwServices::IController);
 
     TUTO16MULTITHREADCONSOLE_API SReadArray() noexcept;
     TUTO16MULTITHREADCONSOLE_API virtual ~SReadArray() noexcept;
@@ -68,6 +67,3 @@ protected:
 };
 
 }  // namespace Tuto16MultithreadConsole
-
-#endif  // __TUTO16MULTITHREADCONSOLE_SREADARRAY_HPP__
-

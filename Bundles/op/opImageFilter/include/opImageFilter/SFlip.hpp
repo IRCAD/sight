@@ -57,7 +57,7 @@ class OPIMAGEFILTER_CLASS_API SFlip : public ::fwServices::IOperator
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFlip)(::fwServices::IOperator) )
+    fwCoreServiceMacro(SFlip, ::fwServices::IOperator);
 
     OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
     OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISY_SLOT;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@ public:
     static const std::string s_UNCONFIGURED;
     static const std::string s_NOT_DEFINED;
 
-    fwCoreServiceClassDefinitionsMacro( (TestService)(::fwServices::IService) )
+    fwCoreServiceMacro(TestService, ::fwServices::IService);
     TestService() noexcept
     {
     }
@@ -153,7 +153,7 @@ class TestServiceImplementation : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation)(::fwServices::ut::TestService) )
+    fwCoreServiceMacro(TestServiceImplementation, ::fwServices::ut::TestService);
 
     /// Keys to register Signal
     static const ::fwCom::Signals::SignalKeyType s_MSG_SENT_SIG;
@@ -243,7 +243,7 @@ class TestServiceImplementation2 : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation2)(::fwServices::ut::TestService) )
+    fwCoreServiceMacro(TestServiceImplementation2, ::fwServices::ut::TestService);
 
     //-------------------------------------------------------------------------
     TestServiceImplementation2() noexcept
@@ -262,7 +262,7 @@ class TestSrvAutoconnect : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TestSrvAutoconnect)(::fwServices::ut::TestService) )
+    fwCoreServiceMacro(TestSrvAutoconnect, ::fwServices::ut::TestService);
 
     /// Keys to register Signal
     static const ::fwCom::Signals::SignalKeyType s_SIG_1;
@@ -344,7 +344,7 @@ public:
     static const KeyType s_INOUT_GROUP;
     static const KeyType s_OUTPUT;
 
-    fwCoreServiceClassDefinitionsMacro( (TestServiceWithData)(::fwServices::IService) )
+    fwCoreServiceMacro(TestServiceWithData, ::fwServices::IService);
     TestServiceWithData() noexcept
     {
         this->registerObject(s_INPUT, AccessType::INPUT, true, false);

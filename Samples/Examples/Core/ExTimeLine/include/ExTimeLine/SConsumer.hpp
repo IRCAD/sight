@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ class EXTIMELINE_CLASS_API SConsumer : public ::fwServices::IService
 public:
     EXTIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
 
-    fwCoreServiceClassDefinitionsMacro( (SConsumer)(::fwServices::IService) );
+    fwCoreServiceMacro(SConsumer, ::fwServices::IService);
 
     EXTIMELINE_API SConsumer() noexcept;
     EXTIMELINE_API virtual ~SConsumer() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SIMAGEMULTIDISTANCES_HPP__
-#define __VISUVTKADAPTOR_SIMAGEMULTIDISTANCES_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -63,7 +62,7 @@ class VISUVTKADAPTOR_CLASS_API SImageMultiDistances : public ::fwRenderVTK::IAda
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageMultiDistances)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SImageMultiDistances, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SImageMultiDistances() noexcept;
 
@@ -120,5 +119,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SIMAGEMULTIDISTANCES_HPP__

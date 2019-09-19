@@ -39,7 +39,7 @@ class FWGUI_CLASS_API IMenuSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IMenuSrv)(::fwServices::IService) )
+    fwCoreServiceMacro(IMenuSrv, ::fwServices::IService);
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);

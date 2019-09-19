@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ class VIDEOFILTER_CLASS_API SCropVideoQuad : public ::videoFilter::IVideoFilter
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCropVideoQuad)(::videoFilter::IVideoFilter) );
+    fwCoreServiceMacro(SCropVideoQuad, ::videoFilter::IVideoFilter);
 
     /// Constructor. Do nothing.
     VIDEOFILTER_API SCropVideoQuad() noexcept;

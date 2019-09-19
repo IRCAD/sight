@@ -40,7 +40,7 @@ class FWGUI_CLASS_API IMenuBarSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IMenuBarSrv)(::fwServices::IService) )
+    fwCoreServiceMacro(IMenuBarSrv, ::fwServices::IService);
 
     /// Method called when a menu service is stopping
     FWGUI_API void menuServiceStopping(std::string menuSrvSID);

@@ -126,7 +126,7 @@ class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISync
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SFrameMatrixSynchronizer)(fwServices::IController))
+    fwCoreServiceMacro(SFrameMatrixSynchronizer, fwServices::IController);
 
     /**
      * @name Signal API

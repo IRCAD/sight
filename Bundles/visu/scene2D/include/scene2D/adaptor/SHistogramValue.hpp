@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_ADAPTOR_SHISTOGRAMVALUE_HPP__
-#define __SCENE2D_ADAPTOR_SHISTOGRAMVALUE_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -69,7 +68,7 @@ class SHistogramValue : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SHistogramValue)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceMacro(SHistogramValue, ::fwRenderQt::IAdaptor);
 
     SCENE2D_API SHistogramValue() noexcept;
     SCENE2D_API virtual ~SHistogramValue() noexcept;
@@ -109,6 +108,3 @@ protected:
 
 }   // namespace adaptor
 }   // namespace scene2D
-
-#endif  // __SCENE2D_ADAPTOR_SHISTOGRAMVALUE_HPP__
-

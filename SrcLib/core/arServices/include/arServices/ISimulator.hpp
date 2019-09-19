@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARSERVICES_ISIMULATOR_HPP__
-#define __ARSERVICES_ISIMULATOR_HPP__
+#pragma once
 
 #include "arServices/config.hpp"
 
@@ -39,7 +38,7 @@ class ARSERVICES_CLASS_API ISimulator : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ISimulator)(::fwServices::IService) );
+    fwCoreServiceMacro(ISimulator, ::fwServices::IService);
 
 protected:
 
@@ -52,5 +51,3 @@ protected:
 };
 
 }
-
-#endif // __ARSERVICES_ISIMULATOR_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __MONITORQT_ACTION_COMPONENTSTREE_HPP__
-#define __MONITORQT_ACTION_COMPONENTSTREE_HPP__
+#pragma once
 
 #include "monitorQt/config.hpp"
 
@@ -45,7 +44,7 @@ class MONITORQT_CLASS_API ComponentsTree : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ComponentsTree)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(ComponentsTree, ::fwGui::IActionSrv);
 
     /// Does nothing
     MONITORQT_API ComponentsTree() noexcept;
@@ -78,6 +77,3 @@ private:
 
 } // namespace action
 } // namespace monitorQt
-
-#endif //__MONITORQT_ACTION_COMPONENTSTREE_HPP__
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,7 @@ class SCENE2D_CLASS_API SGrid2D : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SGrid2D)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceMacro(SGrid2D, ::fwRenderQt::IAdaptor);
 
     /**
      * @name Slots API
@@ -132,4 +132,3 @@ private:
 
 } // namespace adaptor
 } // namespace scene2D
-

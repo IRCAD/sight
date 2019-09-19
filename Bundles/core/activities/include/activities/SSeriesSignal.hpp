@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -78,7 +78,7 @@ class ACTIVITIES_CLASS_API SSeriesSignal : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesSignal)(::fwServices::IController) )
+    fwCoreServiceMacro(SSeriesSignal, ::fwServices::IController);
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SSeriesSignal() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,7 +74,7 @@ class OPVTKSLICER_CLASS_API SPlaneSlicer : public ::fwServices::IOperator
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPlaneSlicer)(::fwServices::IOperator) )
+    fwCoreServiceMacro(SPlaneSlicer, ::fwServices::IOperator);
 
     /// Constructor.
     OPVTKSLICER_API SPlaneSlicer() noexcept;

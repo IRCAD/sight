@@ -80,7 +80,7 @@ public:
 class IBasicTest : public ::fwServices::IService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (IBasicTest)(::fwServices::IService) )
+    fwCoreServiceMacro(IBasicTest, ::fwServices::IService);
 
     static const KeyType s_BUFFER_INOUT;
 };
@@ -90,7 +90,7 @@ class SBasicTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SBasicTest)(IBasicTest) )
+    fwCoreServiceMacro(SBasicTest, IBasicTest);
 
     bool m_updateFinished;
     bool m_swapFinished;
@@ -116,7 +116,7 @@ class SReaderTest : public IBasicTest
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SReaderTest)(IBasicTest) )
+    fwCoreServiceMacro(SReaderTest, IBasicTest);
 
     SReaderTest()
     {
@@ -155,7 +155,7 @@ public:
 
     typedef ::fwCom::Signal< void () > ChangedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro( (SReader2Test)(IBasicTest) )
+    fwCoreServiceMacro(SReader2Test, IBasicTest);
 
     SReader2Test();
 
@@ -195,7 +195,7 @@ class SShowTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShowTest)(IBasicTest) )
+    fwCoreServiceMacro(SShowTest, IBasicTest);
 
     SShowTest();
 
@@ -245,7 +245,7 @@ class SShow2Test : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShow2Test)(IBasicTest) )
+    fwCoreServiceMacro(SShow2Test, IBasicTest);
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 

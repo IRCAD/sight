@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_ACTION_SBOOLEANSLOTCALLER_HPP__
-#define __GUI_ACTION_SBOOLEANSLOTCALLER_HPP__
+#pragma once
 
 #include "gui/action/SSlotCaller.hpp"
 #include "gui/config.hpp"
@@ -52,7 +51,7 @@ class GUI_CLASS_API SBooleanSlotCaller : public ::gui::action::SSlotCaller
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SBooleanSlotCaller)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SBooleanSlotCaller, ::fwGui::IActionSrv);
 
     /**
      * @brief Constructor. Do nothing.
@@ -75,5 +74,3 @@ protected:
 
 } // namespace action
 } // namespace gui
-
-#endif /*__GUI_ACTION_SBOOLEANSLOTCALLER_HPP__*/

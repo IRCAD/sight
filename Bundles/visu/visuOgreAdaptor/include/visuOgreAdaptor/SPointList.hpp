@@ -96,7 +96,7 @@ class VISUOGREADAPTOR_CLASS_API SPointList : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SPointList)(::fwRenderOgre::IAdaptor))
+    fwCoreServiceMacro(SPointList, ::fwRenderOgre::IAdaptor);
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SPointList() noexcept;

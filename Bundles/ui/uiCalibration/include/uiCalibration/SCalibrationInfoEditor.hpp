@@ -61,7 +61,7 @@ class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCalibrationInfoEditor)(::fwGui::editor::IEditor))
+    fwCoreServiceMacro(SCalibrationInfoEditor, ::fwGui::editor::IEditor);
 
     /**
      * @name Slots API

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@ class FWSERVICES_CLASS_API IRegisterer : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((IRegisterer)(::fwServices::IService));
+    fwCoreServiceMacro(IRegisterer, ::fwServices::IService);
 
     /**
      * @name Slots API

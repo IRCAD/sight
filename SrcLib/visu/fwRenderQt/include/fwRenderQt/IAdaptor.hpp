@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERQT_IADAPTOR_HPP__
-#define __FWRENDERQT_IADAPTOR_HPP__
+#pragma once
 
 #include "fwRenderQt/config.hpp"
 #include "fwRenderQt/data/Axis.hpp"
@@ -53,7 +52,7 @@ public:
     /// <width, height>
     typedef std::pair<float, float> Scene2DRatio;
 
-    fwCoreServiceClassDefinitionsMacro( (IAdaptor)(::fwServices::IService) );
+    fwCoreServiceMacro(IAdaptor, ::fwServices::IService);
 
     /// Set the zValue.
     FWRENDERQT_API void setZValue(float _zValue);
@@ -141,6 +140,3 @@ protected:
 //------------------------------------------------------------------------------
 
 } // namespace fwRenderQt
-
-#endif // __FWRENDERQT_IADAPTOR_HPP__
-

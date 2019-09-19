@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ACTIVITIES_ACTION_SCREATEACTIVITY_HPP__
-#define __ACTIVITIES_ACTION_SCREATEACTIVITY_HPP__
+#pragma once
 
 #include "activities/config.hpp"
 
@@ -77,7 +76,7 @@ class ACTIVITIES_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SCreateActivity, ::fwGui::IActionSrv);
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
@@ -151,5 +150,3 @@ private:
 
 } // namespace action
 } // namespace activities
-
-#endif // __ACTIVITIES_ACTION_SCREATEACTIVITY_HPP__

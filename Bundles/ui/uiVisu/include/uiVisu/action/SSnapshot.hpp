@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIVISU_ACTION_SSNAPSHOT_HPP__
-#define __UIVISU_ACTION_SSNAPSHOT_HPP__
+#pragma once
 
 #include "uiVisu/config.hpp"
 
@@ -51,7 +50,7 @@ class UIVISU_CLASS_API SSnapshot : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSnapshot)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SSnapshot, ::fwGui::IActionSrv);
 
     /// Constructor. Do nothing.
     UIVISU_API SSnapshot() noexcept;
@@ -106,6 +105,3 @@ private:
 
 } // action
 } // uiVisu
-
-#endif // __UIVISU_ACTION_SSNAPSHOT_HPP__
-

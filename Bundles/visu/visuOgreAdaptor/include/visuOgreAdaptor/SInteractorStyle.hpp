@@ -62,7 +62,7 @@ class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdapt
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SInteractorStyle)(::fwRenderOgre::IAdaptor))
+    fwCoreServiceMacro(SInteractorStyle, ::fwRenderOgre::IAdaptor);
 
     /**
      * @name Signals API
