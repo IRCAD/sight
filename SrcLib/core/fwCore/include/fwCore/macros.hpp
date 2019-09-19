@@ -253,5 +253,5 @@
     fwCoreClassMacro_2(_class, _parentClass)                \
     static sptr New()                                       \
     {                                                       \
-        return sptr(_factory_());                           \
+        return sptr(_factory());                            \
     }
