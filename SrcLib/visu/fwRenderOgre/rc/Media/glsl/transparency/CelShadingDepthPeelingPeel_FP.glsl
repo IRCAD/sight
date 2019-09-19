@@ -6,7 +6,7 @@ uniform vec4 u_viewport;
 uniform vec4 u_diffuse;
 
 // Input semantics
-layout(location = 0) in vec3 inNormal_WS;
+layout(location = 0) in vec3 v_f3Normal_Ws;
 
 // Output render targets
 layout(location = 0) out vec4 frontColor;
@@ -66,6 +66,6 @@ void main()
         frontDepth = packFloatToVec4(currentDepth);
         frontColor = colorOut;
 
-        bufferNormal.rgb = packNormal(normalize(inNormal_WS));
+        bufferNormal.rgb = packNormal(normalize(v_f3Normal_Ws));
     }
 }

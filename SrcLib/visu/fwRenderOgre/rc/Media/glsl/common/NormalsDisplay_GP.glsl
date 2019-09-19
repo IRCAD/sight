@@ -23,7 +23,7 @@ in VertexDataIn
 uniform vec4 u_normalColor;
 
 // Output semantics
-layout(location = 2) out vec4 outColor;
+layout(location = 2) out vec4 v_f4Color;
 
 #    endif
 
@@ -40,7 +40,7 @@ void main()
             gl_Position = u_worldViewProj * P;
 
 #        ifndef DEPTH
-            outColor = u_normalColor;
+            v_f4Color = u_normalColor;
 #        endif
 
             EmitVertex();
@@ -49,7 +49,7 @@ void main()
             gl_Position = u_worldViewProj * (P + vec4(N, 0.) * scale);
 
 #        ifndef DEPTH
-            outColor = u_normalColor;
+            v_f4Color = u_normalColor;
 #        endif
 
             EmitVertex();
@@ -75,7 +75,7 @@ void main()
         gl_Position = u_worldViewProj * P;
 
 #        ifndef DEPTH
-            outColor = u_normalColor;
+            v_f4Color = u_normalColor;
 #        endif
 
         EmitVertex();
@@ -84,7 +84,7 @@ void main()
         gl_Position = u_worldViewProj * (P + vec4(N, 0.) * scale);
 
 #        ifndef DEPTH
-            outColor = u_normalColor;
+            v_f4Color = u_normalColor;
 #        endif
 
         EmitVertex();
