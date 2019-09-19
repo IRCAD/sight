@@ -13,10 +13,7 @@ uniform mat4 u_worldViewProj;
 uniform float u_sceneSize;
 
 #    ifdef POINT
-in VertexDataIn
-{
-    vec3 normalVP;
-} vertexIn[];
+layout(location = 1) in vec3 v_f3Normal_Ms[];
 #    endif
 
 #    ifndef DEPTH
@@ -34,7 +31,7 @@ void main()
         for(int i = 0; i < 3; i++)
         {
             vec4 P = gl_in[i].gl_Position;
-            vec3 N = vertexIn[i].normalVP;
+            vec3 N = v_f3Normal_Ms[i];
 
             // Vertex normal origin
             gl_Position = u_worldViewProj * P;
