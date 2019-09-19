@@ -42,7 +42,7 @@ class FWSERVICES_CLASS_API ServiceConfigInfo : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfigInfo)(::fwCore::BaseObject), new ServiceConfigInfo );
+    fwCoreClassMacro(ServiceConfigInfo, ::fwCore::BaseObject, new ServiceConfigInfo);
 
     /// Constructor, do nothing.
     ServiceConfigInfo()
@@ -83,7 +83,7 @@ class FWSERVICES_CLASS_API ServiceConfig : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfig)(::fwCore::BaseObject), new ServiceConfig);
+    fwCoreClassMacro(ServiceConfig, ::fwCore::BaseObject, new ServiceConfig);
 
     /// Return the default global instance of ServiceConfig
     FWSERVICES_API static ServiceConfig::sptr getDefault();

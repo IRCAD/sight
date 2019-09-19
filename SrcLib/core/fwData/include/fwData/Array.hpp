@@ -48,7 +48,7 @@ class FWDATA_CLASS_API Array : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), ::fwData::factory::New< Array >);
+    fwCoreClassMacro(Array, ::fwData::Object, ::fwData::factory::New< Array >);
 
     fwCampMakeFriendDataMacro((fwData)(Array))
 

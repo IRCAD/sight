@@ -45,8 +45,7 @@ class FWPACSIO_CLASS_API SeriesRetriever : public ::fwCore::BaseObject,
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesRetriever)(::fwPacsIO::SeriesRetriever),
-                                            new SeriesRetriever);
+    fwCoreClassMacro(SeriesRetriever, ::fwPacsIO::SeriesRetriever, new SeriesRetriever);
     fwCoreAllowSharedFromThis();
 
     FWPACSIO_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;

@@ -74,7 +74,7 @@ public:
 
     typedef size_t SizeType;
 
-    fwCoreClassDefinitionsWithFactoryMacro((BufferObject), new BufferObject );
+    fwCoreClassMacro(BufferObject, ::fwCore::BaseObject, new BufferObject);
     fwCoreAllowSharedFromThis();
 
     /// return the sub class classname : an alias of this->getClassname

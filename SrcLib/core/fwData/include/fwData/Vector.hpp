@@ -51,7 +51,7 @@ class FWDATA_CLASS_API Vector : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), ::fwData::factory::New< Vector >);
+    fwCoreClassMacro(Vector, ::fwData::Object, ::fwData::factory::New< Vector >);
     fwCampMakeFriendDataMacro((fwData)(Vector));
 
     typedef std::vector< Object::sptr > ContainerType;

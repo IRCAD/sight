@@ -57,9 +57,8 @@ class FWMDSEMANTICPATCH_CLASS_API MedicalWorkspacePatcher : public ::fwAtomsPatc
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (MedicalWorkspacePatcher)(::fwAtomsPatch::patcher::DefaultPatcher),
-        ::fwAtomsPatch::patcher::factory::New< MedicalWorkspacePatcher >);
+    fwCoreClassMacro(MedicalWorkspacePatcher, ::fwAtomsPatch::patcher::DefaultPatcher,
+                     ::fwAtomsPatch::patcher::factory::New< MedicalWorkspacePatcher >);
 
     /// Constructor
     FWMDSEMANTICPATCH_API MedicalWorkspacePatcher(::fwAtomsPatch::patcher::IPatcher::Key key);

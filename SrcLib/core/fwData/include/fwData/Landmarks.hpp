@@ -71,7 +71,7 @@ public:
         PointContainer m_points;
     };
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Landmarks)(::fwData::Object), ::fwData::factory::New< Landmarks > );
+    fwCoreClassMacro(Landmarks, ::fwData::Object, ::fwData::factory::New< Landmarks >);
 
     fwCampMakeFriendDataMacro((fwData)(Landmarks));
 

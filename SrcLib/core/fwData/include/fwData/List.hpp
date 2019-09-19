@@ -43,7 +43,7 @@ class FWDATA_CLASS_API List : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), ::fwData::factory::New< List >);
+    fwCoreClassMacro(List, ::fwData::Object, ::fwData::factory::New< List >);
 
     fwCampMakeFriendDataMacro((fwData)(List));
 

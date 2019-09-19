@@ -43,8 +43,7 @@ class FWGUI_CLASS_API MultiSelectorDialog : public IMultiSelectorDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog),
-                                            new MultiSelectorDialog );
+    fwCoreClassMacro(MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog, new MultiSelectorDialog);
 
     /// will instanciate the concrete implementation
     FWGUI_API MultiSelectorDialog();

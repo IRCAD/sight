@@ -39,8 +39,8 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API ImagePositionPatientSplitter : public ISplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImagePositionPatientSplitter)(ISplitter),
-                                            ::fwDicomIOFilter::factory::New< ImagePositionPatientSplitter > );
+    fwCoreClassMacro(ImagePositionPatientSplitter, ISplitter,
+                     ::fwDicomIOFilter::factory::New< ImagePositionPatientSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API ImagePositionPatientSplitter(::fwDicomIOFilter::IFilter::Key key);

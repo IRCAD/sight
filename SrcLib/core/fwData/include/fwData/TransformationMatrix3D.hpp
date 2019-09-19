@@ -40,8 +40,7 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
-                                            ::fwData::factory::New< TransformationMatrix3D >);
+    fwCoreClassMacro(TransformationMatrix3D, ::fwData::Object, ::fwData::factory::New< TransformationMatrix3D >);
 
     fwCampMakeFriendDataMacro((fwData)(TransformationMatrix3D));
 

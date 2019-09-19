@@ -68,10 +68,8 @@ public:
 
     typedef std::map< std::string, SeriesFilesType > MapSeriesType;
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SeriesDBLazyReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
-        ::fwDataIO::reader::factory::New< SeriesDBLazyReader >
-        );
+    fwCoreClassMacro(SeriesDBLazyReader, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+                     ::fwDataIO::reader::factory::New< SeriesDBLazyReader >);
 
     fwCoreAllowSharedFromThis();
 

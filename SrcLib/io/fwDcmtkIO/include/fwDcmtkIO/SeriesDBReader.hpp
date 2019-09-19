@@ -61,8 +61,9 @@ class FWDCMTKIO_CLASS_API SeriesDBReader : public ::fwDataIO::reader::GenericObj
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
+    fwCoreClassMacro(
+        SeriesDBReader,
+        ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
         ::fwDataIO::reader::factory::New< SeriesDBReader >
         );
     fwCoreAllowSharedFromThis();

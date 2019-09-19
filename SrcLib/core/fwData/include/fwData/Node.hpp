@@ -42,7 +42,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), ::fwData::factory::New< Node >);
+    fwCoreClassMacro(Node, ::fwData::Object, ::fwData::factory::New< Node >);
     fwCampMakeFriendDataMacro((fwData)(Node));
 
     /// Port container

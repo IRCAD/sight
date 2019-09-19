@@ -41,7 +41,7 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API WindowManager : public ::fwCore::BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (WindowManager)(::fwRenderOgre::WindowManager), new WindowManager)
+    fwCoreClassMacro(WindowManager, ::fwRenderOgre::WindowManager, new WindowManager);
     fwCoreAllowSharedFromThis()
 
     /// register an ogre window

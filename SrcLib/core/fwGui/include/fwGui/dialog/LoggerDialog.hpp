@@ -43,7 +43,7 @@ class FWGUI_CLASS_API LoggerDialog : public ILoggerDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LoggerDialog)(::fwGui::dialog::ILoggerDialog), new LoggerDialog );
+    fwCoreClassMacro(LoggerDialog, ::fwGui::dialog::ILoggerDialog, new LoggerDialog);
 
     /**
      * Opens a default logger dialog with the specified title, message and logs.

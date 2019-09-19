@@ -39,7 +39,7 @@ namespace fwData
 class FWMDSEMANTICPATCH_CLASS_API Patient : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Patient)(::fwAtomsPatch::ISemanticPatch), new Patient);
+    fwCoreClassMacro(Patient, ::fwAtomsPatch::ISemanticPatch, new Patient);
 
     /// Constructor
     FWMDSEMANTICPATCH_API Patient();

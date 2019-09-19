@@ -38,7 +38,7 @@ class FWGUI_CLASS_API Application : public ::fwGui::IApplication
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Application)(::fwGui::IApplication), Application::factory);
+    fwCoreClassMacro(Application, ::fwGui::IApplication, Application::factory);
 
     FWGUI_API static Application::sptr getDefault();
 

@@ -49,7 +49,7 @@ class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppConfigParameters)(::fwCore::BaseObject), new AppConfigParameters);
+    fwCoreClassMacro(AppConfigParameters, ::fwCore::BaseObject, new AppConfigParameters);
 
     /// Return the default global instance of AppConfigParameters
     FWSERVICES_API static AppConfigParameters::sptr getDefault();

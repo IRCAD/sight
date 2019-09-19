@@ -52,8 +52,7 @@ class FWGUIQT_CLASS_API QtContainer : public ::fwGui::container::fwContainer
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtContainer)(::fwGui::container::fwContainer),
-                                            ::fwGui::factory::New< QtContainer > )
+    fwCoreClassMacro(QtContainer, ::fwGui::container::fwContainer, ::fwGui::factory::New< QtContainer >);
 
     FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 

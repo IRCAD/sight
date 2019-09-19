@@ -39,9 +39,8 @@ namespace Acquisition
 class FWSTRUCTURALPATCH_CLASS_API V1ToFwMedDataImageSeriesV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (V1ToFwMedDataImageSeriesV1)(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1),
-        new V1ToFwMedDataImageSeriesV1);
+    fwCoreClassMacro(V1ToFwMedDataImageSeriesV1, ::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1,
+                     new V1ToFwMedDataImageSeriesV1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToFwMedDataImageSeriesV1();

@@ -50,10 +50,8 @@ class MetaImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-        ::fwDataIO::writer::factory::New< MetaImageWriter >
-        );
+    fwCoreClassMacro(MetaImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+                     ::fwDataIO::writer::factory::New< MetaImageWriter >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.

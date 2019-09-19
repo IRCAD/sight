@@ -42,7 +42,7 @@ class FWDATA_CLASS_API Plane : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object), ::fwData::factory::New< Plane >);
+    fwCoreClassMacro(Plane, ::fwData::Object, ::fwData::factory::New< Plane >);
 
     fwCampMakeFriendDataMacro((fwData)(Plane));
 

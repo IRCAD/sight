@@ -44,8 +44,7 @@ class FWGUIQT_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog),
-                                            ::fwGui::factory::New< SelectorDialog > );
+    fwCoreClassMacro(SelectorDialog, ::fwGui::dialog::ISelectorDialog, ::fwGui::factory::New< SelectorDialog >);
 
     FWGUIQT_API SelectorDialog(::fwGui::GuiBaseObject::Key key);
 

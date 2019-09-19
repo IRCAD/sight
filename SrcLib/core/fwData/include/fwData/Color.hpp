@@ -44,7 +44,7 @@ public:
     typedef float ColorType;
     typedef std::array<ColorType, 4> ColorArray;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Color)(::fwData::Object), ::fwData::factory::New< Color >);
+    fwCoreClassMacro(Color, ::fwData::Object, ::fwData::factory::New< Color >);
 
     fwCampMakeFriendDataMacro((fwData)(Color));
 

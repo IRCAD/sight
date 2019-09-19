@@ -47,8 +47,7 @@ class FWPACSIO_CLASS_API SeriesEnquirer : public ::fwCore::BaseObject,
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesEnquirer)(::fwPacsIO::SeriesEnquirer),
-                                            new SeriesEnquirer);
+    fwCoreClassMacro(SeriesEnquirer, ::fwPacsIO::SeriesEnquirer, new SeriesEnquirer);
     fwCoreAllowSharedFromThis();
 
     FWPACSIO_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;

@@ -52,9 +52,8 @@ class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mes
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >),
-                                           ::fwDataIO::writer::factory::New< MeshWriter >
-                                           );
+    fwCoreClassMacro(MeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
+                     ::fwDataIO::writer::factory::New< MeshWriter >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.

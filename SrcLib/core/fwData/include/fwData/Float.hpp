@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_FLOAT_HPP__
-#define __FWDATA_FLOAT_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -41,8 +40,14 @@ namespace fwData
 class FWDATA_CLASS_API Float : public GenericField< float >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object), ( ((const float)(0.0f)) ),
-                                            GenericFieldFactory< Float >);
+    fwCoreClassMacro(Float, ::fwData::Object);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const float val = 0.f)
+    {
+        return GenericFieldFactory< Float >(val);
+    }
 
     fwCampMakeFriendDataMacro((fwData)(Float));
 
@@ -69,5 +74,3 @@ protected:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_FLOAT_HPP__

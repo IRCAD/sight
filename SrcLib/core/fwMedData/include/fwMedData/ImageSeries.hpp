@@ -46,8 +46,7 @@ class FWMEDDATA_CLASS_API ImageSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageSeries)(::fwData::Object),
-                                            ::fwData::factory::New< ImageSeries >);
+    fwCoreClassMacro(ImageSeries, ::fwData::Object, ::fwData::factory::New< ImageSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ImageSeries));
 

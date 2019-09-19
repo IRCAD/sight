@@ -46,8 +46,8 @@ class FWGUIQT_CLASS_API TabLayoutManager : public ::fwGui::layoutManager::TabLay
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TabLayoutManager)(::fwGui::layoutManager::TabLayoutManagerBase),
-                                            ::fwGui::factory::New< TabLayoutManager > );
+    fwCoreClassMacro(TabLayoutManager, ::fwGui::layoutManager::TabLayoutManagerBase,
+                     ::fwGui::factory::New< TabLayoutManager >);
 
     FWGUIQT_API TabLayoutManager(::fwGui::GuiBaseObject::Key key);
 

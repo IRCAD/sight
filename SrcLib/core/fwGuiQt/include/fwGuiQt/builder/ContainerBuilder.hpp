@@ -44,8 +44,7 @@ namespace builder
 class FWGUIQT_CLASS_API ContainerBuilder : public ::fwGui::builder::IContainerBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ContainerBuilder)(::fwGui::builder::IContainerBuilder),
-                                            ::fwGui::factory::New< ContainerBuilder > );
+    fwCoreClassMacro(ContainerBuilder, ::fwGui::builder::IContainerBuilder, ::fwGui::factory::New< ContainerBuilder >);
 
     FWGUIQT_API ContainerBuilder(::fwGui::GuiBaseObject::Key key);
 

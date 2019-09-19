@@ -56,7 +56,7 @@ public:
     /// Associations of <pattern, value>.
     typedef std::map< std::string, std::string > FieldAdaptorType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppConfig)(::fwCore::BaseObject), new AppConfig);
+    fwCoreClassMacro(AppConfig, ::fwCore::BaseObject, new AppConfig);
 
     /// Destructor
     FWSERVICES_API virtual ~AppConfig();

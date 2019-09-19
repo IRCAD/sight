@@ -45,7 +45,7 @@ class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppInfo)(::fwCore::BaseObject), new AppInfo );
+    fwCoreClassMacro(AppInfo, ::fwCore::BaseObject, new AppInfo);
 
     /// Constructor, do nothing.
     AppInfo()

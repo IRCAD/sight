@@ -47,7 +47,7 @@ class FWSERVICES_CLASS_API Proxy : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((Proxy)(::fwCore::BaseObject), std::make_shared< Proxy >);
+    fwCoreClassMacro(Proxy, ::fwCore::BaseObject, std::make_shared< Proxy >);
 
     typedef std::string ChannelKeyType;
 

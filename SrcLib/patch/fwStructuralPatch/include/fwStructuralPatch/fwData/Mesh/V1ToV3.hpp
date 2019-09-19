@@ -39,7 +39,7 @@ namespace Mesh
 class FWSTRUCTURALPATCH_CLASS_API V1ToV3 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((V1ToV3)(::fwStructuralPatch::fwData::Mesh::V1ToV3), new V1ToV3);
+    fwCoreClassMacro(V1ToV3, ::fwStructuralPatch::fwData::Mesh::V1ToV3, new V1ToV3);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToV3();

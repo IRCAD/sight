@@ -59,10 +59,8 @@ class ImageSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMe
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ImageSeriesWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::
-                                                                                                         ImageSeries>),
-                                           ::fwDataIO::writer::factory::New< ImageSeriesWriter >
-                                           )
+    fwCoreClassMacro(ImageSeriesWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ImageSeries>,
+                     ::fwDataIO::writer::factory::New< ImageSeriesWriter >);
     fwCoreAllowSharedFromThis()
 
     /// Constructor. Does nothing

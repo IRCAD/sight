@@ -41,8 +41,7 @@ class FWPACSIO_CLASS_API PacsConfiguration : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PacsConfiguration)(::fwData::Object),
-                                            ::fwData::factory::New< PacsConfiguration >);
+    fwCoreClassMacro(PacsConfiguration, ::fwData::Object, ::fwData::factory::New< PacsConfiguration >);
     fwCampMakeFriendDataMacro((fwPacsIO)(data)(PacsConfiguration));
 
     /**

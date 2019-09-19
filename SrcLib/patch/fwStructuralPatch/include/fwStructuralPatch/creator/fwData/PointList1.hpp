@@ -37,7 +37,7 @@ namespace fwData
 class FWSTRUCTURALPATCH_CLASS_API PointList1 : public ::fwAtomsPatch::IStructuralCreator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PointList1)(::fwAtomsPatch::IStructuralCreator), new PointList1);
+    fwCoreClassMacro(PointList1, ::fwAtomsPatch::IStructuralCreator, new PointList1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API PointList1();

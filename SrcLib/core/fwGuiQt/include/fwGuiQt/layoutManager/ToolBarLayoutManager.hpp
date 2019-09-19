@@ -43,8 +43,8 @@ namespace layoutManager
 class FWGUIQT_CLASS_API ToolBarLayoutManager : public ::fwGui::layoutManager::IToolBarLayoutManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarLayoutManager)(::fwGui::layoutManager::IToolBarLayoutManager),
-                                            ::fwGui::factory::New< ToolBarLayoutManager > );
+    fwCoreClassMacro(ToolBarLayoutManager, ::fwGui::layoutManager::IToolBarLayoutManager,
+                     ::fwGui::factory::New< ToolBarLayoutManager >);
 
     FWGUIQT_API ToolBarLayoutManager(::fwGui::GuiBaseObject::Key key);
 

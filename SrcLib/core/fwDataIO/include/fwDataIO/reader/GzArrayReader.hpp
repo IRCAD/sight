@@ -48,9 +48,8 @@ class FWDATAIO_CLASS_API GzArrayReader :  public GenericObjectReader< ::fwData::
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((GzArrayReader)(GenericObjectReader< ::fwData::Array>),
-                                           ::fwDataIO::reader::factory::New< GzArrayReader >
-                                           );
+    fwCoreClassMacro(GzArrayReader, GenericObjectReader< ::fwData::Array>,
+                     ::fwDataIO::reader::factory::New< GzArrayReader >);
 
     /// Constructor. Do nothing.
     FWDATAIO_API GzArrayReader(::fwDataIO::reader::IObjectReader::Key key);

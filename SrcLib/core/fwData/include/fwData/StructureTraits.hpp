@@ -45,8 +45,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object),
-                                            ::fwData::factory::New< StructureTraits >);
+    fwCoreClassMacro(StructureTraits, ::fwData::Object, ::fwData::factory::New< StructureTraits >);
     fwCampMakeFriendDataMacro((fwData)(StructureTraits));
 
     /// Defines structure categories

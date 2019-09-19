@@ -39,9 +39,8 @@ namespace Patient
 class FWSTRUCTURALPATCH_CLASS_API V1ToFwMedDataPatientV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (V1ToFwMedDataPatientV1)(::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1),
-        new V1ToFwMedDataPatientV1);
+    fwCoreClassMacro(V1ToFwMedDataPatientV1, ::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1,
+                     new V1ToFwMedDataPatientV1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToFwMedDataPatientV1();

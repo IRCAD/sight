@@ -42,7 +42,7 @@ class FWNETWORKIO_CLASS_API Request : public ::fwCore::BaseObject
 
 public:
     fwCoreAllowSharedFromThis();
-    fwCoreClassDefinitionsWithFactoryMacro((Request), new Request );
+    fwCoreClassMacro(Request, ::fwCore::BaseObject, new Request);
 
     /// Maps header name to its value.
     typedef std::map<std::string, std::string> HeadersType;

@@ -51,8 +51,7 @@ class FWGUIQT_CLASS_API QtMenuBarContainer : public ::fwGui::container::fwMenuBa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuBarContainer)(::fwGui::container::fwMenuBar),
-                                            ::fwGui::factory::New< QtMenuBarContainer > );
+    fwCoreClassMacro(QtMenuBarContainer, ::fwGui::container::fwMenuBar, ::fwGui::factory::New< QtMenuBarContainer >);
 
     FWGUIQT_API QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 

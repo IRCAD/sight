@@ -39,7 +39,7 @@ namespace location
 class FWDATA_CLASS_API MultiFiles  : public ILocation
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiFiles)(ILocation),  ::fwData::factory::New< MultiFiles > );
+    fwCoreClassMacro(MultiFiles, ILocation, ::fwData::factory::New< MultiFiles >);
 
     /// Constructor
     FWDATA_API MultiFiles( ::fwData::Object::Key key );

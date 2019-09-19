@@ -41,7 +41,7 @@ class FWATOMS_CLASS_API Numeric : public Base
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Base), ::fwAtoms::factory::New< Numeric >);
+    fwCoreClassMacro(Numeric, ::fwAtoms::Base, ::fwAtoms::factory::New< Numeric >);
 
     typedef enum
     {

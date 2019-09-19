@@ -52,10 +52,8 @@ class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedDa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::
-                                                                                                      SeriesDB >),
-                                           ::fwDataIO::reader::factory::New< SeriesDBReader >
-                                           );
+    fwCoreClassMacro(SeriesDBReader, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+                     ::fwDataIO::reader::factory::New< SeriesDBReader >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.

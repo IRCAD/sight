@@ -58,7 +58,7 @@ public:
     typedef std::vector< std::string >  ParamsContainer;
     typedef std::function< int () > RunCallbackType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), std::make_shared< Profile >);
+    fwCoreClassMacro(Profile, BaseObject, std::make_shared< Profile >);
 
     /**
      * @brief   Constructor : does nothing.

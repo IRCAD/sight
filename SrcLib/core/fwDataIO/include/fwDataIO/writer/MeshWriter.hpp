@@ -54,9 +54,7 @@ class FWDATAIO_CLASS_API MeshWriter :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)(GenericObjectWriter< ::fwData::Mesh >),
-                                           ::fwDataIO::writer::factory::New< MeshWriter >
-                                           );
+    fwCoreClassMacro(MeshWriter, GenericObjectWriter< ::fwData::Mesh >, ::fwDataIO::writer::factory::New< MeshWriter >);
     /// Constructor. Do nothing.
     FWDATAIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 

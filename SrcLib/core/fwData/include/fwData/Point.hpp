@@ -43,7 +43,7 @@ public:
     typedef double PointCoordType;
     typedef std::array<double, 3> PointCoordArrayType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Point)(::fwData::Object), ::fwData::factory::New< Point >);
+    fwCoreClassMacro(Point, ::fwData::Object, ::fwData::factory::New< Point >);
 
     /// Point factory
     FWDATA_API static Point::sptr New(float x, float y = 0.f, float z = 0.f);

@@ -50,8 +50,7 @@ class FWGUIQT_CLASS_API QtToolBarContainer : public ::fwGui::container::fwToolBa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtToolBarContainer)(::fwGui::container::fwToolBar),
-                                            ::fwGui::factory::New< QtToolBarContainer > );
+    fwCoreClassMacro(QtToolBarContainer, ::fwGui::container::fwToolBar, ::fwGui::factory::New< QtToolBarContainer >);
 
     FWGUIQT_API QtToolBarContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 

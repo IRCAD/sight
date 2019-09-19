@@ -39,7 +39,7 @@ class FWDATA_CLASS_API Histogram : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Histogram)(::fwData::Object), ::fwData::factory::New< Histogram > );
+    fwCoreClassMacro(Histogram, ::fwData::Object, ::fwData::factory::New< Histogram >);
 
     fwCampMakeFriendDataMacro((fwData)(Histogram));
 

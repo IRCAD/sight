@@ -45,8 +45,8 @@ class FWDATAIO_CLASS_API ArrayWriter :  public GenericObjectWriter< ::fwData::Ar
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ArrayWriter)(GenericObjectWriter< ::fwData::Array>),
-                                           ::fwDataIO::writer::factory::New< ArrayWriter >);
+    fwCoreClassMacro(ArrayWriter, GenericObjectWriter< ::fwData::Array>,
+                     ::fwDataIO::writer::factory::New< ArrayWriter >);
 
     /// Constructor. Do nothing.
     FWDATAIO_API ArrayWriter(::fwDataIO::writer::IObjectWriter::Key key);

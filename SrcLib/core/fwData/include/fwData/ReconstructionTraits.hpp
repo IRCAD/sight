@@ -45,8 +45,7 @@ namespace fwData
 class FWDATA_CLASS_API ReconstructionTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object),
-                                            ::fwData::factory::New< ReconstructionTraits >);
+    fwCoreClassMacro(ReconstructionTraits, ::fwData::Object, ::fwData::factory::New< ReconstructionTraits >);
     fwCampMakeFriendDataMacro((fwData)(ReconstructionTraits));
 
     /**

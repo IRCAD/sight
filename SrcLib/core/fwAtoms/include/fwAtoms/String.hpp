@@ -38,7 +38,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API String : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::Base), ::fwAtoms::factory::New< String > );
+    fwCoreClassMacro(String, ::fwAtoms::Base, ::fwAtoms::factory::New< String >);
 
     /**
      * @brief Constructor

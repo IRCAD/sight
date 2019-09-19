@@ -39,9 +39,8 @@ namespace Study
 class FWSTRUCTURALPATCH_CLASS_API V1ToFwMedDataStudyV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (V1ToFwMedDataStudyV1)(::fwStructuralPatch::fwData::Study::V1ToFwMedDataStudyV1),
-        new V1ToFwMedDataStudyV1);
+    fwCoreClassMacro(V1ToFwMedDataStudyV1, ::fwStructuralPatch::fwData::Study::V1ToFwMedDataStudyV1,
+                     new V1ToFwMedDataStudyV1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToFwMedDataStudyV1();

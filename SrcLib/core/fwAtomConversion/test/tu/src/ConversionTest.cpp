@@ -605,8 +605,7 @@ class ClassNotCamped : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (ClassNotCamped)(::fwData::Object), ::fwData::factory::New< ClassNotCamped >);
+    fwCoreClassMacro(ClassNotCamped, ::fwData::Object, ::fwData::factory::New< ClassNotCamped >);
 
     ClassNotCamped(::fwData::Object::Key)
     {
@@ -725,8 +724,7 @@ class ClassNotManaged : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (ClassNotManaged)(::fwData::Object), ::fwData::factory::New< ClassNotManaged >);
+    fwCoreClassMacro(ClassNotManaged, ::fwData::Object, ::fwData::factory::New< ClassNotManaged >);
 
     fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
 

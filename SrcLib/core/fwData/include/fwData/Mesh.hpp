@@ -89,7 +89,7 @@ class FWDATA_CLASS_API Mesh : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), ::fwData::factory::New< Mesh >);
+    fwCoreClassMacro(Mesh, ::fwData::Object, ::fwData::factory::New< Mesh >);
 
     fwCampMakeFriendDataMacro((fwData)(Mesh));
 

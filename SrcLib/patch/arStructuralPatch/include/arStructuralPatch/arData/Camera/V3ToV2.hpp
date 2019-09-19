@@ -39,7 +39,7 @@ namespace Camera
 class ARSTRUCTURALPATCH_CLASS_API V3ToV2 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((V3ToV2)(::arStructuralPatch::arData::Camera::V3ToV2), new V3ToV2);
+    fwCoreClassMacro(V3ToV2, ::arStructuralPatch::arData::Camera::V3ToV2, new V3ToV2);
 
     /// Constructor
     ARSTRUCTURALPATCH_API V3ToV2();

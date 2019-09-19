@@ -40,8 +40,8 @@ class FWGUIQT_CLASS_API ToolboxLayoutManager : public ::fwGui::layoutManager::To
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolboxLayoutManager)(::fwGui::layoutManager::ToolboxLayoutManagerBase),
-                                            ::fwGui::factory::New< ToolboxLayoutManager > );
+    fwCoreClassMacro(ToolboxLayoutManager, ::fwGui::layoutManager::ToolboxLayoutManagerBase,
+                     ::fwGui::factory::New< ToolboxLayoutManager >);
 
     FWGUIQT_API ToolboxLayoutManager(::fwGui::GuiBaseObject::Key key);
 

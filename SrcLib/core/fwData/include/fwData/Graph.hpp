@@ -46,7 +46,7 @@ class FWDATA_CLASS_API Graph : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), ::fwData::factory::New< Graph >);
+    fwCoreClassMacro(Graph, ::fwData::Object, ::fwData::factory::New< Graph >);
 
     fwCampMakeFriendDataMacro((fwData)(Graph));
 

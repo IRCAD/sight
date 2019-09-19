@@ -36,7 +36,7 @@ namespace arData
 class ARDATA_CLASS_API MatrixTL : public GenericTL< float[16] >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MatrixTL)(::arData::TimeLine), ::fwData::factory::New< MatrixTL >)
+    fwCoreClassMacro(MatrixTL, ::arData::TimeLine, ::fwData::factory::New< MatrixTL >);
 
     /**
      * @brief Constructor

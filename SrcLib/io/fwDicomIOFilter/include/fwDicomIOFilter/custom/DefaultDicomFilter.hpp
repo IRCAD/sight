@@ -38,8 +38,7 @@ namespace custom
 class FWDICOMIOFILTER_CLASS_API DefaultDicomFilter : public ICustom
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (DefaultDicomFilter)(ICustom),
-                                            ::fwDicomIOFilter::factory::New< DefaultDicomFilter > );
+    fwCoreClassMacro(DefaultDicomFilter, ICustom, ::fwDicomIOFilter::factory::New< DefaultDicomFilter >);
 
     /// Constructor
     FWDICOMIOFILTER_API DefaultDicomFilter(::fwDicomIOFilter::IFilter::Key key);

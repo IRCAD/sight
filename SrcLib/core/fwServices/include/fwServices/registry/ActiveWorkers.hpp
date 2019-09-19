@@ -41,7 +41,7 @@ class FWSERVICES_CLASS_API ActiveWorkers : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ActiveWorkers)(::fwCore::BaseObject), std::make_shared< ActiveWorkers >);
+    fwCoreClassMacro(ActiveWorkers, ::fwCore::BaseObject, std::make_shared< ActiveWorkers >);
 
     typedef std::string WorkerKeyType;
 

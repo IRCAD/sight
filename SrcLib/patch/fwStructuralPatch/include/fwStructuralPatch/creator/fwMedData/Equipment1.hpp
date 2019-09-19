@@ -37,7 +37,7 @@ namespace fwMedData
 class FWSTRUCTURALPATCH_CLASS_API Equipment1 : public ::fwAtomsPatch::IStructuralCreator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Equipment1)(::fwAtomsPatch::IStructuralCreator), new Equipment1);
+    fwCoreClassMacro(Equipment1, ::fwAtomsPatch::IStructuralCreator, new Equipment1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API Equipment1();

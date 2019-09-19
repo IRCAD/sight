@@ -39,7 +39,7 @@ namespace fwData
 class FWMDSEMANTICPATCH_CLASS_API Study : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Study)(::fwAtomsPatch::ISemanticPatch), new Study);
+    fwCoreClassMacro(Study, ::fwAtomsPatch::ISemanticPatch, new Study);
 
     /// Constructor
     FWMDSEMANTICPATCH_API Study();

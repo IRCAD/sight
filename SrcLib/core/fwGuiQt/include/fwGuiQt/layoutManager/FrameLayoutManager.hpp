@@ -49,8 +49,8 @@ class FWGUIQT_CLASS_API FrameLayoutManager : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (FrameLayoutManager)(::fwGui::layoutManager::IFrameLayoutManager),
-                                            ::fwGui::factory::New< FrameLayoutManager > );
+    fwCoreClassMacro(FrameLayoutManager, ::fwGui::layoutManager::IFrameLayoutManager,
+                     ::fwGui::factory::New< FrameLayoutManager >);
 
     FWGUIQT_API FrameLayoutManager(::fwGui::GuiBaseObject::Key key);
 

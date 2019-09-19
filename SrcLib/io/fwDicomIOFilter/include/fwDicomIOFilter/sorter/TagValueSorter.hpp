@@ -40,8 +40,7 @@ namespace sorter
 class FWDICOMIOFILTER_CLASS_API TagValueSorter : public ISorter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TagValueSorter)(ISorter),
-                                            ::fwDicomIOFilter::factory::New< TagValueSorter > );
+    fwCoreClassMacro(TagValueSorter, ISorter, ::fwDicomIOFilter::factory::New< TagValueSorter >);
 
     /// Constructor
     FWDICOMIOFILTER_API TagValueSorter(::fwDicomIOFilter::IFilter::Key key);

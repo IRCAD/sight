@@ -46,8 +46,7 @@ class FWMEDDATA_CLASS_API ActivitySeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ActivitySeries)(::fwMedData::Series),
-                                            ::fwData::factory::New< ActivitySeries >);
+    fwCoreClassMacro(ActivitySeries, ::fwMedData::Series, ::fwData::factory::New< ActivitySeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ActivitySeries));
 

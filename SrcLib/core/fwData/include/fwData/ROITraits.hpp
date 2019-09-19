@@ -46,7 +46,7 @@ namespace fwData
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), ::fwData::factory::New< ROITraits >);
+    fwCoreClassMacro(ROITraits, ::fwData::Object, ::fwData::factory::New< ROITraits >);
     fwCampMakeFriendDataMacro((fwData)(ROITraits));
 
     /**

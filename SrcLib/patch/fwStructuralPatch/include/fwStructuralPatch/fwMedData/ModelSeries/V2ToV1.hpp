@@ -37,7 +37,7 @@ namespace ModelSeries
 class FWSTRUCTURALPATCH_CLASS_API V2ToV1 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((V2ToV1)(::fwStructuralPatch::fwMedData::ModelSeries::V2ToV1), new V2ToV1);
+    fwCoreClassMacro(V2ToV1, ::fwStructuralPatch::fwMedData::ModelSeries::V2ToV1, new V2ToV1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V2ToV1();

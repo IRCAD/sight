@@ -44,7 +44,7 @@ class FWDATA_CLASS_API PointList : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PointList)(::fwData::Object), ::fwData::factory::New< PointList >);
+    fwCoreClassMacro(PointList, ::fwData::Object, ::fwData::factory::New< PointList >);
 
     fwCampMakeFriendDataMacro((fwData)(PointList));
 

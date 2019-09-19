@@ -44,8 +44,8 @@ namespace layoutManager
 class FWGUIQT_CLASS_API MenuBarLayoutManager : public ::fwGui::layoutManager::IMenuBarLayoutManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarLayoutManager)(::fwGui::layoutManager::IMenuBarLayoutManager),
-                                            ::fwGui::factory::New< MenuBarLayoutManager > );
+    fwCoreClassMacro(MenuBarLayoutManager, ::fwGui::layoutManager::IMenuBarLayoutManager,
+                     ::fwGui::factory::New< MenuBarLayoutManager >);
 
     FWGUIQT_API MenuBarLayoutManager(::fwGui::GuiBaseObject::Key key);
 

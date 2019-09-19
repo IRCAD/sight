@@ -47,9 +47,7 @@ class FWDATAIO_CLASS_API ArrayReader :  public GenericObjectReader< ::fwData::Ar
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ArrayReader)(GenericObjectReader< ::fwData::Array>),
-                                           ::fwDataIO::reader::factory::New<ArrayReader>
-                                           );
+    fwCoreClassMacro(ArrayReader, GenericObjectReader< ::fwData::Array>, ::fwDataIO::reader::factory::New<ArrayReader>);
 
     /// Constructor. Do nothing.
     FWDATAIO_API ArrayReader(::fwDataIO::reader::IObjectReader::Key key);

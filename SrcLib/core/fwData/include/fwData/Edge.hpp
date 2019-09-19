@@ -40,7 +40,7 @@ namespace fwData
 class FWDATA_CLASS_API Edge : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object), ::fwData::factory::New< Edge >);
+    fwCoreClassMacro(Edge, ::fwData::Object, ::fwData::factory::New< Edge >);
     fwCampMakeFriendDataMacro((fwData)(Edge));
 
     FWDATA_API static std::string NATURE_FLOW;

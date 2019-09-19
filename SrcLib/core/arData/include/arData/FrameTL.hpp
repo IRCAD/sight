@@ -42,7 +42,7 @@ class ARDATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (FrameTL)(::arData::TimeLine), ::fwData::factory::New< FrameTL >)
+    fwCoreClassMacro(FrameTL, ::arData::TimeLine, ::fwData::factory::New< FrameTL >);
     fwCampMakeFriendDataMacro((arData)(FrameTL))
 
     /**

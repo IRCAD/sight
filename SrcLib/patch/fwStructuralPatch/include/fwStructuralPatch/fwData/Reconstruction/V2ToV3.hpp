@@ -39,7 +39,7 @@ namespace Reconstruction
 class FWSTRUCTURALPATCH_CLASS_API V2ToV3 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((V2ToV3)(::fwStructuralPatch::fwData::Reconstruction::V2ToV3), new V2ToV3);
+    fwCoreClassMacro(V2ToV3, ::fwStructuralPatch::fwData::Reconstruction::V2ToV3, new V2ToV3);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V2ToV3();

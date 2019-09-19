@@ -38,8 +38,7 @@ class FWSTRUCTURALPATCH_CLASS_API ImageSeries1 : public ::fwStructuralPatch::cre
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageSeries1)(::fwStructuralPatch::creator::fwMedData::Series1),
-                                            new ImageSeries1);
+    fwCoreClassMacro(ImageSeries1, ::fwStructuralPatch::creator::fwMedData::Series1, new ImageSeries1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API ImageSeries1();

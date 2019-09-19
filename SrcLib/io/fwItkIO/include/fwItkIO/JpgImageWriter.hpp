@@ -43,9 +43,8 @@ class JpgImageWriter :  public ::fwDataIO::writer::GenericObjectWriter< ::fwData
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((JpgImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
-                                           ::fwDataIO::writer::factory::New< JpgImageWriter >
-                                           );
+    fwCoreClassMacro(JpgImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>,
+                     ::fwDataIO::writer::factory::New< JpgImageWriter >);
     fwCoreAllowSharedFromThis();
 
     FWITKIO_API JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key);

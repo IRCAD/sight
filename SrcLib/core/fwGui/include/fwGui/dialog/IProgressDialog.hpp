@@ -48,7 +48,7 @@ class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject,
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (IProgressDialog)(::fwGui::GuiBaseObject), progressDialogFactory);
+    fwCoreClassMacro(IProgressDialog, ::fwGui::GuiBaseObject, progressDialogFactory);
 
     typedef std::string FactoryRegistryKeyType;
     typedef boost::function< void () >  CancelCallbackType;

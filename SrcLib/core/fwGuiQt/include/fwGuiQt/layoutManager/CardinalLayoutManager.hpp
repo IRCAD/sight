@@ -46,8 +46,8 @@ class FWGUIQT_CLASS_API CardinalLayoutManager : public ::fwGui::layoutManager::C
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (CardinalLayoutManager)(::fwGui::layoutManager::CardinalLayoutManagerBase),
-                                            ::fwGui::factory::New< CardinalLayoutManager > );
+    fwCoreClassMacro(CardinalLayoutManager, ::fwGui::layoutManager::CardinalLayoutManagerBase,
+                     ::fwGui::factory::New< CardinalLayoutManager >);
 
     FWGUIQT_API CardinalLayoutManager(::fwGui::GuiBaseObject::Key key);
 

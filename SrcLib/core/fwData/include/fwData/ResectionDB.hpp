@@ -42,8 +42,7 @@ class FWDATA_CLASS_API ResectionDB : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object),
-                                            ::fwData::factory::New< ResectionDB >);
+    fwCoreClassMacro(ResectionDB, ::fwData::Object, ::fwData::factory::New< ResectionDB >);
     fwCampMakeFriendDataMacro((fwData)(ResectionDB));
 
     /**

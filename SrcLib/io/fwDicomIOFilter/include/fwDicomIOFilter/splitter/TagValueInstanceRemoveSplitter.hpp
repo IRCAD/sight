@@ -40,8 +40,8 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API TagValueInstanceRemoveSplitter : public ISplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TagValueInstanceRemoveSplitter)(ISplitter),
-                                            ::fwDicomIOFilter::factory::New< TagValueInstanceRemoveSplitter > );
+    fwCoreClassMacro(TagValueInstanceRemoveSplitter, ISplitter,
+                     ::fwDicomIOFilter::factory::New< TagValueInstanceRemoveSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API TagValueInstanceRemoveSplitter(::fwDicomIOFilter::IFilter::Key key);

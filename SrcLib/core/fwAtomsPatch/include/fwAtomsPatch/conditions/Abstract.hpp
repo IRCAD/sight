@@ -39,7 +39,7 @@ namespace conditions
 class FWATOMSPATCH_CLASS_API Abstract : public ::fwCore::BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Abstract), new Abstract );
+    fwCoreClassMacro(Abstract, ::fwCore::BaseObject, new Abstract);
     fwCoreAllowSharedFromThis();
 
     /// Default value getter

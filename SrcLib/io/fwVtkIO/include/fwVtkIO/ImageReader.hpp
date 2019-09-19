@@ -50,9 +50,8 @@ class ImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Im
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
-                                           ::fwDataIO::reader::factory::New< ImageReader >
-                                           );
+    fwCoreClassMacro(ImageReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
+                     ::fwDataIO::reader::factory::New< ImageReader >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.

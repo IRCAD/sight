@@ -40,7 +40,7 @@ class FWGUI_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MessageDialog)(::fwGui::dialog::IMessageDialog), new MessageDialog)
+    fwCoreClassMacro(MessageDialog, ::fwGui::dialog::IMessageDialog, new MessageDialog);
 
     /**
      * Opens a default message box with the specified title, text and icon.

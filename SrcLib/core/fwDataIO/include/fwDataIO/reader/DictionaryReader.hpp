@@ -56,10 +56,8 @@ class FWDATAIO_CLASS_API DictionaryReader :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (DictionaryReader)(GenericObjectReader< ::fwData::StructureTraitsDictionary >),
-        ::fwDataIO::reader::factory::New< DictionaryReader >
-        );
+    fwCoreClassMacro(DictionaryReader, GenericObjectReader< ::fwData::StructureTraitsDictionary >,
+                     ::fwDataIO::reader::factory::New< DictionaryReader >);
 
     /// Constructor. Do nothing .
     FWDATAIO_API DictionaryReader(::fwDataIO::reader::IObjectReader::Key key);

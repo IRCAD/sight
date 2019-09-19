@@ -40,7 +40,7 @@ class FWMEDDATA_CLASS_API Patient : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), ::fwData::factory::New< Patient >);
+    fwCoreClassMacro(Patient, ::fwData::Object, ::fwData::factory::New< Patient >);
 
     fwCampMakeFriendDataMacro((fwMedData)(Patient));
 

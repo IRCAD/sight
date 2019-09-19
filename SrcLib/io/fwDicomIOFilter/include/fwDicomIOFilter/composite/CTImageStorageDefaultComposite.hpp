@@ -38,8 +38,8 @@ namespace composite
 class FWDICOMIOFILTER_CLASS_API CTImageStorageDefaultComposite : public IComposite
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (CTImageStorageDefaultComposite)(IComposite),
-                                            ::fwDicomIOFilter::factory::New< CTImageStorageDefaultComposite > );
+    fwCoreClassMacro(CTImageStorageDefaultComposite, IComposite,
+                     ::fwDicomIOFilter::factory::New< CTImageStorageDefaultComposite >);
 
     /// Constructor
     FWDICOMIOFILTER_API CTImageStorageDefaultComposite(::fwDicomIOFilter::IFilter::Key key);

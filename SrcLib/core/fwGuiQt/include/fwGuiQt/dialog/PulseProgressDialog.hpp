@@ -46,8 +46,8 @@ class FWGUIQT_CLASS_API PulseProgressDialog : public ::fwGui::dialog::IPulseProg
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog),
-                                            ::fwGui::factory::New< PulseProgressDialog > );
+    fwCoreClassMacro(PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog,
+                     ::fwGui::factory::New< PulseProgressDialog >);
 
     FWGUIQT_API PulseProgressDialog(::fwGui::GuiBaseObject::Key key);
 

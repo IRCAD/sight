@@ -36,8 +36,7 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API TemporalPositionSplitter : public ::fwDicomIOFilter::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TemporalPositionSplitter)(ISplitter),
-                                            ::fwDicomIOFilter::factory::New< TemporalPositionSplitter > );
+    fwCoreClassMacro(TemporalPositionSplitter, ISplitter, ::fwDicomIOFilter::factory::New< TemporalPositionSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API TemporalPositionSplitter(::fwDicomIOFilter::IFilter::Key key);

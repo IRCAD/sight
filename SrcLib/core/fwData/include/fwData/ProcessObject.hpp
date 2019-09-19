@@ -44,8 +44,7 @@ namespace fwData
 class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object),
-                                            ::fwData::factory::New< ProcessObject >);
+    fwCoreClassMacro(ProcessObject, ::fwData::Object, ::fwData::factory::New< ProcessObject >);
 
     fwCampMakeFriendDataMacro((fwData)(ProcessObject));
 

@@ -40,7 +40,7 @@ namespace fwData
 class FWMDSEMANTICPATCH_CLASS_API Acquisition : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Acquisition)(::fwAtomsPatch::ISemanticPatch), new Acquisition);
+    fwCoreClassMacro(Acquisition, ::fwAtomsPatch::ISemanticPatch, new Acquisition);
 
     /// Constructor
     FWMDSEMANTICPATCH_API Acquisition();

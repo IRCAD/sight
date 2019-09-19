@@ -50,10 +50,8 @@ class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData:
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (VtiImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-        ::fwDataIO::writer::factory::New< VtiImageWriter >
-        );
+    fwCoreClassMacro(VtiImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+                     ::fwDataIO::writer::factory::New< VtiImageWriter >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.

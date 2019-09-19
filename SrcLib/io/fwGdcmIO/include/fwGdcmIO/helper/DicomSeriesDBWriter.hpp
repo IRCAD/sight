@@ -57,9 +57,8 @@ class FWGDCMIO_CLASS_API DicomSeriesDBWriter :
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((DicomSeriesDBWriter)
-                                           (::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB>),
-                                           ::fwDataIO::writer::factory::New< DicomSeriesDBWriter >);
+    fwCoreClassMacro(DicomSeriesDBWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB>,
+                     ::fwDataIO::writer::factory::New< DicomSeriesDBWriter >);
     fwCoreAllowSharedFromThis();
 
     /**

@@ -38,8 +38,8 @@ namespace sorter
 class FWDICOMIOFILTER_CLASS_API InstanceNumberSorter : public ::fwDicomIOFilter::sorter::TagValueSorter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (InstanceNumberSorter)(::fwDicomIOFilter::sorter::TagValueSorter),
-                                            ::fwDicomIOFilter::factory::New< InstanceNumberSorter > );
+    fwCoreClassMacro(InstanceNumberSorter, ::fwDicomIOFilter::sorter::TagValueSorter,
+                     ::fwDicomIOFilter::factory::New< InstanceNumberSorter >);
 
     /// Constructor
     FWDICOMIOFILTER_API InstanceNumberSorter(::fwDicomIOFilter::IFilter::Key key);

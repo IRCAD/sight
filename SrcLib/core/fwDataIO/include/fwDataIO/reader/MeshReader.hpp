@@ -54,9 +54,7 @@ class FWDATAIO_CLASS_API MeshReader :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MeshReader)(GenericObjectReader< ::fwData::Mesh >),
-                                            ::fwDataIO::reader::factory::New< MeshReader >
-                                            );
+    fwCoreClassMacro(MeshReader, GenericObjectReader< ::fwData::Mesh >, ::fwDataIO::reader::factory::New< MeshReader >);
 
     /// Constructor. Do nothing.
     FWDATAIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);

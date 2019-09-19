@@ -48,8 +48,7 @@ class ARDATA_CLASS_API CalibrationInfo : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((CalibrationInfo)( ::fwData::Object),
-                                           ::fwData::factory::New< CalibrationInfo >);
+    fwCoreClassMacro(CalibrationInfo, ::fwData::Object, ::fwData::factory::New< CalibrationInfo >);
 
     fwCampMakeFriendDataMacro((arData)(CalibrationInfo));
 

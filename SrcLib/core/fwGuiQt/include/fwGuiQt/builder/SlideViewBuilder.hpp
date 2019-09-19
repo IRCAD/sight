@@ -43,8 +43,7 @@ namespace builder
 class FWGUIQT_CLASS_API SlideViewBuilder : public ::fwGui::builder::ISlideViewBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SlideViewBuilder)(::fwGui::builder::ISlideViewBuilder),
-                                            ::fwGui::factory::New< SlideViewBuilder >);
+    fwCoreClassMacro(SlideViewBuilder, ::fwGui::builder::ISlideViewBuilder, ::fwGui::factory::New< SlideViewBuilder >);
 
     FWGUIQT_API SlideViewBuilder(::fwGui::GuiBaseObject::Key key);
 

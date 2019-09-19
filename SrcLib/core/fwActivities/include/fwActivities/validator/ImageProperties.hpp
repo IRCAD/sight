@@ -38,8 +38,8 @@ namespace validator
 class FWACTIVITIES_CLASS_API ImageProperties : public ::fwActivities::IObjectValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageProperties)(::fwActivities::IObjectValidator),
-                                            ::fwActivities::validator::factory::New< ImageProperties > )
+    fwCoreClassMacro(ImageProperties, ::fwActivities::IObjectValidator,
+                     ::fwActivities::validator::factory::New< ImageProperties >);
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API ImageProperties(::fwActivities::IValidator::Key key);

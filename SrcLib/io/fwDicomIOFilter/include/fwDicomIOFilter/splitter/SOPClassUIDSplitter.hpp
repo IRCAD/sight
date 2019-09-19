@@ -38,8 +38,8 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API SOPClassUIDSplitter : public ::fwDicomIOFilter::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SOPClassUIDSplitter)(::fwDicomIOFilter::splitter::TagValueSplitter),
-                                            ::fwDicomIOFilter::factory::New< SOPClassUIDSplitter > );
+    fwCoreClassMacro(SOPClassUIDSplitter, ::fwDicomIOFilter::splitter::TagValueSplitter,
+                     ::fwDicomIOFilter::factory::New< SOPClassUIDSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API SOPClassUIDSplitter(::fwDicomIOFilter::IFilter::Key key);

@@ -38,8 +38,8 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API AcquisitionNumberSplitter : public ::fwDicomIOFilter::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (AcquisitionNumberSplitter)(ISplitter),
-                                            ::fwDicomIOFilter::factory::New< AcquisitionNumberSplitter > );
+    fwCoreClassMacro(AcquisitionNumberSplitter, ISplitter,
+                     ::fwDicomIOFilter::factory::New< AcquisitionNumberSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API AcquisitionNumberSplitter(::fwDicomIOFilter::IFilter::Key key);

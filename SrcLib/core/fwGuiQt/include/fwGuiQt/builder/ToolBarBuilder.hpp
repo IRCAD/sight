@@ -45,8 +45,7 @@ namespace builder
 class FWGUIQT_CLASS_API ToolBarBuilder : public ::fwGui::builder::IToolBarBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarBuilder)(::fwGui::builder::IToolBarBuilder),
-                                            ::fwGui::factory::New< ToolBarBuilder >);
+    fwCoreClassMacro(ToolBarBuilder, ::fwGui::builder::IToolBarBuilder, ::fwGui::factory::New< ToolBarBuilder >);
 
     FWGUIQT_API ToolBarBuilder(::fwGui::GuiBaseObject::Key key);
 

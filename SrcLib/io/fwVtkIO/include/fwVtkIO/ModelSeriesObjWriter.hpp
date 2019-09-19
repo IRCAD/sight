@@ -59,10 +59,8 @@ class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::f
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (ModelSeriesObjWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >),
-        ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >
-        );
+    fwCoreClassMacro(ModelSeriesObjWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
+                     ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >);
 
     fwCoreAllowSharedFromThis();
 

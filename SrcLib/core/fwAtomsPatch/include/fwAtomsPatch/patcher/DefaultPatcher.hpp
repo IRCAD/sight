@@ -53,8 +53,8 @@ class FWATOMSPATCH_CLASS_API DefaultPatcher : public IPatcher
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((DefaultPatcher)(::fwAtomsPatch::patcher::IPatcher),
-                                           ::fwAtomsPatch::patcher::factory::New< DefaultPatcher >);
+    fwCoreClassMacro(DefaultPatcher, ::fwAtomsPatch::patcher::IPatcher,
+                     ::fwAtomsPatch::patcher::factory::New< DefaultPatcher >);
 
     /// Constructor
     FWATOMSPATCH_API DefaultPatcher(::fwAtomsPatch::patcher::IPatcher::Key key);

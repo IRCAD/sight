@@ -47,7 +47,7 @@ class FWMEDDATA_CLASS_API SeriesDB : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)(::fwData::Object), ::fwData::factory::New< SeriesDB >);
+    fwCoreClassMacro(SeriesDB, ::fwData::Object, ::fwData::factory::New< SeriesDB >);
 
     fwCampMakeFriendDataMacro((fwMedData)(SeriesDB));
 

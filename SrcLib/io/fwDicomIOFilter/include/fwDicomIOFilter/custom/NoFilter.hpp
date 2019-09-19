@@ -38,7 +38,7 @@ namespace custom
 class FWDICOMIOFILTER_CLASS_API NoFilter : public ICustom
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (NoFilter)(ICustom), ::fwDicomIOFilter::factory::New< NoFilter > );
+    fwCoreClassMacro(NoFilter, ICustom, ::fwDicomIOFilter::factory::New< NoFilter >);
 
     /// Constructor
     FWDICOMIOFILTER_API NoFilter(::fwDicomIOFilter::IFilter::Key key);

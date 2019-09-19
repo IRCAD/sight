@@ -37,7 +37,7 @@ namespace fwData
 class FWSTRUCTURALPATCH_CLASS_API Landmarks1 : public ::fwAtomsPatch::IStructuralCreator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Landmarks1)(::fwAtomsPatch::IStructuralCreator), new Landmarks1);
+    fwCoreClassMacro(Landmarks1, ::fwAtomsPatch::IStructuralCreator, new Landmarks1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API Landmarks1();

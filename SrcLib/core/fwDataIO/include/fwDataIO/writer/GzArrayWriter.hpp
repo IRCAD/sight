@@ -46,9 +46,8 @@ class FWDATAIO_CLASS_API GzArrayWriter :  public GenericObjectWriter< ::fwData::
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((GzArrayWriter)(GenericObjectWriter< ::fwData::Array>),
-                                           ::fwDataIO::writer::factory::New< GzArrayWriter >
-                                           );
+    fwCoreClassMacro(GzArrayWriter, GenericObjectWriter< ::fwData::Array>,
+                     ::fwDataIO::writer::factory::New< GzArrayWriter >);
 
     /// Constructor. Do nothing.
     FWDATAIO_API GzArrayWriter(::fwDataIO::writer::IObjectWriter::Key key);

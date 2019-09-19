@@ -43,8 +43,7 @@ namespace policy
 class FWMEMORY_CLASS_API AlwaysDump : public fwMemory::IPolicy
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((AlwaysDump)(fwMemory::IPolicy),
-                                           ::fwMemory::policy::factory::New< AlwaysDump >)
+    fwCoreClassMacro(AlwaysDump, fwMemory::IPolicy, ::fwMemory::policy::factory::New< AlwaysDump >);
 
     FWMEMORY_API virtual void allocationRequest( BufferInfo& info,
                                                  ::fwMemory::BufferManager::ConstBufferPtrType buffer,

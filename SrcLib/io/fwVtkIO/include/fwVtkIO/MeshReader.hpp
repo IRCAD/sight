@@ -52,9 +52,8 @@ class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mes
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >),
-                                           ::fwDataIO::reader::factory::New< MeshReader >
-                                           );
+    fwCoreClassMacro(MeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+                     ::fwDataIO::reader::factory::New< MeshReader >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.

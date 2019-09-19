@@ -38,7 +38,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Boolean : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Base), ::fwAtoms::factory::New< Boolean > );
+    fwCoreClassMacro(Boolean, ::fwAtoms::Base, ::fwAtoms::factory::New< Boolean >);
 
     /**
      * @brief Constructor

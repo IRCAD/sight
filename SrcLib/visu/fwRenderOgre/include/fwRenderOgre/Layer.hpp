@@ -77,7 +77,7 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), new Layer)
+    fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer);
     fwCoreAllowSharedFromThis()
 
     using CameraCalibrationsType = std::vector< ::Ogre::Matrix4 >;

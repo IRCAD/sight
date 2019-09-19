@@ -42,7 +42,7 @@ class FWATOMSPATCH_CLASS_API VersionsGraph : public ::fwCore::BaseObject
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (VersionsGraph)(::fwAtomsPatch::VersionsGraph), new VersionsGraph);
+    fwCoreClassMacro(VersionsGraph, ::fwAtomsPatch::VersionsGraph, new VersionsGraph);
     fwCoreAllowSharedFromThis();
 
     /**

@@ -50,7 +50,7 @@ namespace fwData
 class FWDATA_CLASS_API Composite : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), ::fwData::factory::New< Composite >);
+    fwCoreClassMacro(Composite, ::fwData::Object, ::fwData::factory::New< Composite >);
     fwCampMakeFriendDataMacro((fwData)(Composite));
 
     typedef std::map< std::string, ::fwData::Object::sptr > ContainerType;

@@ -50,8 +50,7 @@ namespace policy
 class FWMEMORY_CLASS_API ValveDump : public fwMemory::IPolicy
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ValveDump)(fwMemory::IPolicy),
-                                           ::fwMemory::policy::factory::New< ValveDump >)
+    fwCoreClassMacro(ValveDump, fwMemory::IPolicy, ::fwMemory::policy::factory::New< ValveDump >);
 
     FWMEMORY_API ValveDump();
 

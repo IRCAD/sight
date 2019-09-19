@@ -59,8 +59,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog),
-                                            ::fwGui::factory::New< ProgressDialog > )
+    fwCoreClassMacro(ProgressDialog, ::fwGui::dialog::IProgressDialog, ::fwGui::factory::New< ProgressDialog >);
 
     FWGUIQT_API ProgressDialog( ::fwGui::GuiBaseObject::Key key,
                                 const std::string& title   = "Progression",

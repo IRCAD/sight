@@ -40,8 +40,7 @@ namespace builder
 class FWACTIVITIES_CLASS_API ActivitySeries : public ::fwActivities::IBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ActivitySeries)(::fwActivities::IBuilder),
-                                            ::fwActivities::builder::factory::New< ActivitySeries > )
+    fwCoreClassMacro(ActivitySeries, ::fwActivities::IBuilder, ::fwActivities::builder::factory::New< ActivitySeries >);
 
     typedef std::string RegistryKeyType;
 

@@ -39,7 +39,7 @@ class FWSTRUCTURALPATCH_CLASS_API Patient1 : public ::fwAtomsPatch::IStructuralC
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Patient1)(::fwAtomsPatch::IStructuralCreator), new Patient1);
+    fwCoreClassMacro(Patient1, ::fwAtomsPatch::IStructuralCreator, new Patient1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API Patient1();

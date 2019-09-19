@@ -42,7 +42,7 @@ class FWGUI_CLASS_API LocationDialog : public ILocationDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::dialog::ILocationDialog), new LocationDialog )
+    fwCoreClassMacro(LocationDialog, ::fwGui::dialog::ILocationDialog, new LocationDialog);
 
     /// Will instantiate the concrete implementation
     FWGUI_API LocationDialog();

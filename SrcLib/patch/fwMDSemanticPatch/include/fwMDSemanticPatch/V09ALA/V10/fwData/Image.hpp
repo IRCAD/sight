@@ -39,7 +39,7 @@ namespace fwData
 class FWMDSEMANTICPATCH_CLASS_API Image : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Image)(::fwAtomsPatch::ISemanticPatch), new Image);
+    fwCoreClassMacro(Image, ::fwAtomsPatch::ISemanticPatch, new Image);
 
     /// Constructor
     FWMDSEMANTICPATCH_API Image();

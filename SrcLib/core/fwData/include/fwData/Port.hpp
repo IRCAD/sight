@@ -36,7 +36,7 @@ namespace fwData
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), ::fwData::factory::New< Port >);
+    fwCoreClassMacro(Port, ::fwData::Object, ::fwData::factory::New< Port >);
 
     /**
      * @brief Constructor

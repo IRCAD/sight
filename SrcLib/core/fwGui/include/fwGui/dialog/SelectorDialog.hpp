@@ -39,7 +39,7 @@ class FWGUI_CLASS_API SelectorDialog : public ISelectorDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog), new SelectorDialog )
+    fwCoreClassMacro(SelectorDialog, ::fwGui::dialog::ISelectorDialog, new SelectorDialog);
 
     /**
      * Opens a default selector with the specified title, message and choices.

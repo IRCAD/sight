@@ -59,7 +59,7 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(::fwServices::IService)() > FactoryType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), new ServiceFactory)
+    fwCoreClassMacro(ServiceFactory, ::fwCore::BaseObject, new ServiceFactory);
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();

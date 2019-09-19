@@ -41,7 +41,7 @@ class FWDATA_CLASS_API Folder : public ILocation
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Folder)(ILocation), ::fwData::factory::New< Folder >);
+    fwCoreClassMacro(Folder, ILocation, ::fwData::factory::New< Folder >);
 
     fwCampMakeFriendDataMacro((fwData)(location)(Folder));
 

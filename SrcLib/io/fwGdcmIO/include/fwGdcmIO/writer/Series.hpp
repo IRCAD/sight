@@ -51,8 +51,8 @@ class FWGDCMIO_CLASS_API Series : public ::fwDataIO::writer::GenericObjectWriter
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Series)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >),
-                                            ::fwDataIO::writer::factory::New< Series >);
+    fwCoreClassMacro(Series, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >,
+                     ::fwDataIO::writer::factory::New< Series >);
 
     typedef enum
     {

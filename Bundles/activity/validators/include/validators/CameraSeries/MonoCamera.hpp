@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VALIDATORS_CAMERASERIES_MONOCAMERA_HPP__
-#define __VALIDATORS_CAMERASERIES_MONOCAMERA_HPP__
+#pragma once
 
 #include "validators/config.hpp"
 
@@ -38,9 +37,8 @@ namespace CameraSeries
 class VALIDATORS_CLASS_API MonoCamera : public ::fwActivities::IObjectValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MonoCamera)(::fwActivities::IObjectValidator),
-                                            (()),
-                                            ::fwActivities::validator::factory::New< MonoCamera > )
+    fwCoreClassMacro(MonoCamera, ::fwActivities::IObjectValidator,
+                     ::fwActivities::validator::factory::New< MonoCamera >);
 
     /// Constructor. Do nothing.
     VALIDATORS_API MonoCamera(::fwActivities::IValidator::Key key);
@@ -58,5 +56,3 @@ public:
 
 } // namespace CameraSeries
 } // namespace validators
-
-#endif /* __VALIDATORS_CAMERASERIES_MONOCAMERA_HPP__ */

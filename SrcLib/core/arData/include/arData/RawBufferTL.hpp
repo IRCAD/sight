@@ -40,8 +40,7 @@ class ARDATA_CLASS_API RawBufferTL : public BufferTL
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (RawBufferTL)(::arData::TimeLine),
-                                            ::fwData::factory::New< RawBufferTL >);
+    fwCoreClassMacro(RawBufferTL, ::arData::TimeLine, ::fwData::factory::New< RawBufferTL >);
     fwCampMakeFriendDataMacro((arData)(RawBufferTL));
 
     /**

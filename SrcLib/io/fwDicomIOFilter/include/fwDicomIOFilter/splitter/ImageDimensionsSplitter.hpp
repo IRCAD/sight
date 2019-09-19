@@ -38,8 +38,7 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API ImageDimensionsSplitter : public ISplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageDimensionsSplitter)(ISplitter),
-                                            ::fwDicomIOFilter::factory::New< ImageDimensionsSplitter > );
+    fwCoreClassMacro(ImageDimensionsSplitter, ISplitter, ::fwDicomIOFilter::factory::New< ImageDimensionsSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API ImageDimensionsSplitter(::fwDicomIOFilter::IFilter::Key key);

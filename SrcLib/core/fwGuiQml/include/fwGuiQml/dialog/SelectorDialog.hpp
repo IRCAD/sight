@@ -48,8 +48,7 @@ Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog),
-                                            ::fwGui::factory::New< SelectorDialog > );
+    fwCoreClassMacro(SelectorDialog, ::fwGui::dialog::ISelectorDialog, ::fwGui::factory::New< SelectorDialog >);
 
     FWGUIQML_API SelectorDialog(::fwGui::GuiBaseObject::Key key);
 

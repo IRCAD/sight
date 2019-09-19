@@ -37,7 +37,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Sequence : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Base), ::fwAtoms::factory::New< Sequence > );
+    fwCoreClassMacro(Sequence, ::fwAtoms::Base, ::fwAtoms::factory::New< Sequence >);
 
     typedef std::vector<Base::sptr> SequenceType;
 

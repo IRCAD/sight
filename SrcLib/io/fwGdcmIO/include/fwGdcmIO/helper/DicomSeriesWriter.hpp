@@ -68,9 +68,8 @@ class DicomSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMe
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (DicomSeriesWriter)(::fwDataIO::writer::GenericObjectWriter< ::fwMedData::DicomSeries>),
-        ::fwDataIO::writer::factory::New< DicomSeriesWriter >);
+    fwCoreClassMacro(DicomSeriesWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::DicomSeries>,
+                     ::fwDataIO::writer::factory::New< DicomSeriesWriter >);
 
     fwCoreAllowSharedFromThis();
 

@@ -40,8 +40,7 @@ namespace validator
 class FWACTIVITIES_CLASS_API RelatedStudy : public ::fwActivities::IValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (RelatedStudy)(::fwActivities::IValidator),
-                                            ::fwActivities::validator::factory::New< RelatedStudy > );
+    fwCoreClassMacro(RelatedStudy, ::fwActivities::IValidator, ::fwActivities::validator::factory::New< RelatedStudy >);
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API RelatedStudy(::fwActivities::IValidator::Key key);

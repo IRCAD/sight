@@ -40,8 +40,8 @@ class FWGUIQT_CLASS_API LineLayoutManager : public ::fwGui::layoutManager::LineL
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LineLayoutManager)(::fwGui::layoutManager::LineLayoutManagerBase),
-                                            ::fwGui::factory::New< LineLayoutManager > );
+    fwCoreClassMacro(LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase,
+                     ::fwGui::factory::New< LineLayoutManager >);
 
     FWGUIQT_API LineLayoutManager(::fwGui::GuiBaseObject::Key key);
 

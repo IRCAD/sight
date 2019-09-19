@@ -42,7 +42,7 @@ class FWDATA_CLASS_API Tag : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), ::fwData::factory::New< Tag >);
+    fwCoreClassMacro(Tag, ::fwData::Object, ::fwData::factory::New< Tag >);
 
     /**
      * @brief Constructor

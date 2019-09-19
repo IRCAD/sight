@@ -48,8 +48,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LoggerDialog)(::fwGui::dialog::ILoggerDialog),
-                                            ::fwGui::factory::New< LoggerDialog > );
+    fwCoreClassMacro(LoggerDialog, ::fwGui::dialog::ILoggerDialog, ::fwGui::factory::New< LoggerDialog >);
 
     /// Constructor
     FWGUIQT_API LoggerDialog(::fwGui::GuiBaseObject::Key key);

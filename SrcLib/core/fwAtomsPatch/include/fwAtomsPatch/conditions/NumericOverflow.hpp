@@ -37,7 +37,7 @@ namespace conditions
 class FWATOMSPATCH_CLASS_API NumericOverflow : public Abstract
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((NumericOverflow), new NumericOverflow)
+    fwCoreClassMacro(NumericOverflow, Abstract, new NumericOverflow);
     fwCoreAllowSharedFromThis()
 
     /// Numerical test

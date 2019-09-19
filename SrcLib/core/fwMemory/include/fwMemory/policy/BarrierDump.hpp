@@ -45,8 +45,8 @@ namespace policy
 class FWMEMORY_CLASS_API BarrierDump : public ::fwMemory::IPolicy
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((BarrierDump)(fwMemory::IPolicy),
-                                           ::fwMemory::policy::factory::New< BarrierDump >)
+    fwCoreClassMacro(BarrierDump, fwMemory::IPolicy, ::fwMemory::policy::factory::New< BarrierDump >);
+
     FWMEMORY_API BarrierDump();
 
     FWMEMORY_API virtual void allocationRequest( BufferInfo& info,

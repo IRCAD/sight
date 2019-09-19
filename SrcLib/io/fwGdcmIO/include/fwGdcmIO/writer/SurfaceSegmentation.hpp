@@ -61,9 +61,8 @@ class FWGDCMIO_CLASS_API SurfaceSegmentation :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SurfaceSegmentation)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >),
-        ::fwDataIO::writer::factory::New< SurfaceSegmentation >);
+    fwCoreClassMacro(SurfaceSegmentation, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
+                     ::fwDataIO::writer::factory::New< SurfaceSegmentation >);
 
     /// Constructor
     FWGDCMIO_API SurfaceSegmentation(::fwDataIO::writer::IObjectWriter::Key key);

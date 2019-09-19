@@ -53,7 +53,7 @@ class PointList;
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), ::fwData::factory::New< Image > );
+    fwCoreClassMacro(Image, ::fwData::Object, ::fwData::factory::New< Image >);
     fwCoreAllowSharedFromThis();
     fwCampMakeFriendDataMacro((fwData)(Image));
 

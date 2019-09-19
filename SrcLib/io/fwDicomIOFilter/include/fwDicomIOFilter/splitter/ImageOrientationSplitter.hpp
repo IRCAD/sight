@@ -36,8 +36,7 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API ImageOrientationSplitter : public ::fwDicomIOFilter::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageOrientationSplitter)(ISplitter),
-                                            ::fwDicomIOFilter::factory::New< ImageOrientationSplitter > );
+    fwCoreClassMacro(ImageOrientationSplitter, ISplitter, ::fwDicomIOFilter::factory::New< ImageOrientationSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API ImageOrientationSplitter(::fwDicomIOFilter::IFilter::Key key);

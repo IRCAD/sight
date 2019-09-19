@@ -40,7 +40,7 @@ class FWLOG_CLASS_API Logger : public ::fwTools::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((Logger)(::fwTools::Object), new Logger);
+    fwCoreClassMacro(Logger, ::fwTools::Object, new Logger);
 
     typedef std::vector< ::fwLog::Log > LogContainerType;
     typedef LogContainerType::iterator IteratorType;

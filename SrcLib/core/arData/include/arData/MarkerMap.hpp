@@ -41,7 +41,7 @@ namespace arData
 class ARDATA_CLASS_API MarkerMap : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MarkerMap)(::fwData::Object), ::fwData::factory::New< MarkerMap >)
+    fwCoreClassMacro(MarkerMap, ::fwData::Object, ::fwData::factory::New< MarkerMap >);
 
     typedef std::string KeyType;
     typedef std::array<float, 2> PointType;

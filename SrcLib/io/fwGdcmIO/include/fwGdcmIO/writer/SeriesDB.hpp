@@ -50,9 +50,8 @@ class SeriesDB : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Se
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SeriesDB)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >),
-        ::fwDataIO::writer::factory::New< SeriesDB >);
+    fwCoreClassMacro(SeriesDB, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
+                     ::fwDataIO::writer::factory::New< SeriesDB >);
 
     /// Constructor
     FWGDCMIO_API SeriesDB(::fwDataIO::writer::IObjectWriter::Key key);

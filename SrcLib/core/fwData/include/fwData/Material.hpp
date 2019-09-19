@@ -41,7 +41,7 @@ class FWDATA_CLASS_API Material : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), ::fwData::factory::New< Material >);
+    fwCoreClassMacro(Material, ::fwData::Object, ::fwData::factory::New< Material >);
     fwCampMakeFriendDataMacro((fwData)(Material));
 
     /**

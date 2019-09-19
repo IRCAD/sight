@@ -51,10 +51,8 @@ class BitmapImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwDa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (BitmapImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-        ::fwDataIO::writer::factory::New< BitmapImageWriter >
-        );
+    fwCoreClassMacro(BitmapImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+                     ::fwDataIO::writer::factory::New< BitmapImageWriter >);
 
     fwCoreAllowSharedFromThis();
 

@@ -42,8 +42,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ActionCallback)(::fwGui::ActionCallbackBase),
-                                            ::fwGui::factory::New< ActionCallback > );
+    fwCoreClassMacro(ActionCallback, ::fwGui::ActionCallbackBase, ::fwGui::factory::New< ActionCallback >);
 
     FWGUIQT_API ActionCallback(::fwGui::GuiBaseObject::Key key);
 

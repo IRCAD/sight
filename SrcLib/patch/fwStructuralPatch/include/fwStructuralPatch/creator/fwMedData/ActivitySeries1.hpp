@@ -40,8 +40,7 @@ class FWSTRUCTURALPATCH_CLASS_API ActivitySeries1 : public ::fwStructuralPatch::
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (ActivitySeries1)(::fwStructuralPatch::creator::fwMedData::Series1), new ActivitySeries1);
+    fwCoreClassMacro(ActivitySeries1, ::fwStructuralPatch::creator::fwMedData::Series1, new ActivitySeries1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API ActivitySeries1();

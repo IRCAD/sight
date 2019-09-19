@@ -47,7 +47,7 @@ class ARDATA_CLASS_API Camera : public ::fwData::Object
 {
 public:
     fwCampMakeFriendDataMacro((arData)(Camera));
-    fwCoreClassDefinitionsWithFactoryMacro((Camera)(::fwData::Object), ::fwData::factory::New< Camera >);
+    fwCoreClassMacro(Camera, ::fwData::Object, ::fwData::factory::New< Camera >);
 
     typedef std::array<double, 5> DistArrayType;
     typedef std::array<double, 4> IntrinsecType;

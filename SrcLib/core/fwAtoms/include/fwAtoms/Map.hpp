@@ -46,7 +46,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Map : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Map)(::fwAtoms::Base), ::fwAtoms::factory::New< Map >);
+    fwCoreClassMacro(Map, ::fwAtoms::Base, ::fwAtoms::factory::New< Map >);
 
     typedef std::map<std::string, Base::sptr> MapType;
 

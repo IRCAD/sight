@@ -39,7 +39,7 @@ class FWGUIQT_CLASS_API Cursor : public ::fwGui::ICursor
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor), ::fwGui::factory::New< Cursor > );
+    fwCoreClassMacro(Cursor, ::fwGui::ICursor, ::fwGui::factory::New< Cursor >);
 
     FWGUIQT_API Cursor(::fwGui::GuiBaseObject::Key key);
 

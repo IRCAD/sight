@@ -46,8 +46,7 @@ class FWMEMORY_CLASS_API NeverDump : public fwMemory::IPolicy
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((NeverDump)(fwMemory::IPolicy),
-                                           ::fwMemory::policy::factory::New< NeverDump >)
+    fwCoreClassMacro(NeverDump, fwMemory::IPolicy, ::fwMemory::policy::factory::New< NeverDump >);
 
     FWMEMORY_API virtual void allocationRequest( BufferInfo& info,
                                                  ::fwMemory::BufferManager::ConstBufferPtrType buffer,

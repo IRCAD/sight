@@ -52,7 +52,7 @@ public:
 
     typedef std::shared_future< ExitReturnType > FutureType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Worker)(::fwCore::BaseObject), defaultFactory );
+    fwCoreClassMacro(Worker, ::fwCore::BaseObject, defaultFactory);
 
     Worker()
     {

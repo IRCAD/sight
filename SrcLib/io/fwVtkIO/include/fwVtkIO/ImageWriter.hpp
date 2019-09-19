@@ -52,9 +52,8 @@ class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Im
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-                                           ::fwDataIO::writer::factory::New< ImageWriter >
-                                           );
+    fwCoreClassMacro(ImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+                     ::fwDataIO::writer::factory::New< ImageWriter >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.

@@ -39,7 +39,7 @@ namespace Material
 class FWSTRUCTURALPATCH_CLASS_API V3ToV4 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((V3ToV4)(::fwStructuralPatch::fwData::Material::V3ToV4), new V3ToV4);
+    fwCoreClassMacro(V3ToV4, ::fwStructuralPatch::fwData::Material::V3ToV4, new V3ToV4);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V3ToV4();

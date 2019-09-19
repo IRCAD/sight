@@ -51,8 +51,7 @@ class FWGUIQT_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog),
-                                            ::fwGui::factory::New< InputDialog > );
+    fwCoreClassMacro(InputDialog, ::fwGui::dialog::IInputDialog, ::fwGui::factory::New< InputDialog >);
 
     FWGUIQT_API InputDialog(::fwGui::GuiBaseObject::Key key);
 

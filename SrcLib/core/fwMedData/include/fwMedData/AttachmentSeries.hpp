@@ -45,8 +45,7 @@ class FWMEDDATA_CLASS_API AttachmentSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (AttachmentSeries)(::fwData::Object),
-                                            ::fwData::factory::New< AttachmentSeries >);
+    fwCoreClassMacro(AttachmentSeries, ::fwData::Object, ::fwData::factory::New< AttachmentSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(AttachmentSeries));
 

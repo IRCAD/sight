@@ -49,7 +49,7 @@ namespace arData
 class ARDATA_CLASS_API CameraSeries : public ::fwMedData::Series
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((CameraSeries)( ::fwData::Object), ::fwData::factory::New< CameraSeries >);
+    fwCoreClassMacro(CameraSeries, ::fwData::Object, ::fwData::factory::New< CameraSeries >);
 
     fwCampMakeFriendDataMacro((arData)(CameraSeries));
 

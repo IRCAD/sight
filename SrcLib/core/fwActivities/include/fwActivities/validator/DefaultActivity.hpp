@@ -40,8 +40,8 @@ namespace validator
 class FWACTIVITIES_CLASS_API DefaultActivity : public ::fwActivities::IActivityValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (DefaultActivity)(::fwActivities::IActivityValidator),
-                                            ::fwActivities::validator::factory::New< DefaultActivity > )
+    fwCoreClassMacro(DefaultActivity, ::fwActivities::IActivityValidator,
+                     ::fwActivities::validator::factory::New< DefaultActivity >);
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API DefaultActivity(::fwActivities::IValidator::Key key);

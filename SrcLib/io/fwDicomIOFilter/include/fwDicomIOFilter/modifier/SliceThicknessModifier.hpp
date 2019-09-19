@@ -39,8 +39,7 @@ namespace modifier
 class FWDICOMIOFILTER_CLASS_API SliceThicknessModifier : public IModifier
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SliceThicknessModifier)(IModifier),
-                                            ::fwDicomIOFilter::factory::New< SliceThicknessModifier > );
+    fwCoreClassMacro(SliceThicknessModifier, IModifier, ::fwDicomIOFilter::factory::New< SliceThicknessModifier >);
 
     /// Constructor
     FWDICOMIOFILTER_API SliceThicknessModifier(::fwDicomIOFilter::IFilter::Key key);

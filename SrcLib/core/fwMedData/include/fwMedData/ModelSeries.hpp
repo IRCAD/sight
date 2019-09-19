@@ -53,8 +53,7 @@ class FWMEDDATA_CLASS_API ModelSeries : public ::fwMedData::Series
 public:
     typedef std::vector< SPTR(::fwData::Reconstruction) > ReconstructionVectorType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ModelSeries)(::fwData::Object),
-                                            ::fwData::factory::New< ModelSeries >);
+    fwCoreClassMacro(ModelSeries, ::fwData::Object, ::fwData::factory::New< ModelSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ModelSeries));
 

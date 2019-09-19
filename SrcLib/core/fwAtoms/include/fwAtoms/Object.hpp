@@ -36,7 +36,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Object : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Base), ::fwAtoms::factory::New< Object >);
+    fwCoreClassMacro(Object, ::fwAtoms::Base, ::fwAtoms::factory::New< Object >);
 
     typedef std::map<std::string, Base::sptr> AttributesType;
     typedef std::map<std::string, std::string> MetaInfosType;

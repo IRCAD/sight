@@ -41,7 +41,7 @@ class FWGUI_CLASS_API ProgressDialog : public IProgressDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog), new ProgressDialog )
+    fwCoreClassMacro(ProgressDialog, ::fwGui::dialog::IProgressDialog, new ProgressDialog);
 
     /// will instanciate the concrete implementation
     FWGUI_API ProgressDialog( const std::string& title = std::string(),  const std::string& msg = std::string() );

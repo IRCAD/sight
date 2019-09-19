@@ -53,8 +53,7 @@ class FWSERVICES_CLASS_API AppConfigManager :  public ::fwServices::IAppConfigMa
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((AppConfigManager)(::fwServices::IAppConfigManager),
-                                           std::make_shared< AppConfigManager >)
+    fwCoreClassMacro(AppConfigManager, ::fwServices::IAppConfigManager, std::make_shared< AppConfigManager >);
     fwCoreAllowSharedFromThis()
 
     /// Constructor. Do nothing.

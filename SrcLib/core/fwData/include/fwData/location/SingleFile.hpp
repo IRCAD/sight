@@ -41,7 +41,7 @@ class FWDATA_CLASS_API SingleFile  : public ILocation
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SingleFile)(ILocation), ::fwData::factory::New< SingleFile >);
+    fwCoreClassMacro(SingleFile, ILocation, ::fwData::factory::New< SingleFile >);
 
     /// SingleFile factory
     FWDATA_API static sptr New(PathType path);

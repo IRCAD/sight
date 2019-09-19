@@ -51,10 +51,8 @@ class MetaImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (MetaImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
-        ::fwDataIO::reader::factory::New< MetaImageReader >
-        );
+    fwCoreClassMacro(MetaImageReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
+                     ::fwDataIO::reader::factory::New< MetaImageReader >);
 
     fwCoreAllowSharedFromThis();
 

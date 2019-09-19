@@ -45,8 +45,7 @@ class FWGUIQT_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
-                                            ::fwGui::factory::New< MessageDialog > )
+    fwCoreClassMacro(MessageDialog, ::fwGui::dialog::IMessageDialog, ::fwGui::factory::New< MessageDialog > );
 
     FWGUIQT_API MessageDialog(::fwGui::GuiBaseObject::Key key);
 

@@ -48,7 +48,7 @@ class FWGUI_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), new InputDialog )
+    fwCoreClassMacro(InputDialog, ::fwGui::dialog::IInputDialog, new InputDialog);
 
     /**
      * Opens a default input box with the specified title and message.

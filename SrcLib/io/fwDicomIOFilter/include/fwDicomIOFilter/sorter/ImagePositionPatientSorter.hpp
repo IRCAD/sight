@@ -39,8 +39,8 @@ namespace sorter
 class FWDICOMIOFILTER_CLASS_API ImagePositionPatientSorter : public ISorter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImagePositionPatientSorter)(ISorter),
-                                            ::fwDicomIOFilter::factory::New< ImagePositionPatientSorter > );
+    fwCoreClassMacro(ImagePositionPatientSorter, ISorter,
+                     ::fwDicomIOFilter::factory::New< ImagePositionPatientSorter >);
 
     /// Constructor
     FWDICOMIOFILTER_API ImagePositionPatientSorter(::fwDicomIOFilter::IFilter::Key key);

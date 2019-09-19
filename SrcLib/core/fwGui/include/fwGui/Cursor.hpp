@@ -39,7 +39,7 @@ class FWGUI_CLASS_API Cursor : public ::fwGui::ICursor
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor), new Cursor );
+    fwCoreClassMacro(Cursor, ::fwGui::ICursor, new Cursor);
 
     /// Constructor. Create the implementation of the specific cursor
     FWGUI_API Cursor();

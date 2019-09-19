@@ -51,10 +51,8 @@ class BitmapImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwDa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (BitmapImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
-        ::fwDataIO::reader::factory::New< BitmapImageReader >
-        );
+    fwCoreClassMacro(BitmapImageReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
+                     ::fwDataIO::reader::factory::New< BitmapImageReader >);
 
     fwCoreAllowSharedFromThis();
 

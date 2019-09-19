@@ -44,8 +44,7 @@ class FWMEDDATA_CLASS_API NavigationSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (NavigationSeries)(::fwMedData::Series),
-                                            ::fwData::factory::New< NavigationSeries >);
+    fwCoreClassMacro(NavigationSeries, ::fwMedData::Series, ::fwData::factory::New< NavigationSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(NavigationSeries));
 

@@ -37,7 +37,7 @@ namespace arData
 class ARDATA_CLASS_API MarkerTL : public ::arData::GenericTL< float[8] >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MarkerTL)(::arData::TimeLine), ::fwData::factory::New< MarkerTL >)
+    fwCoreClassMacro(MarkerTL, ::arData::TimeLine, ::fwData::factory::New< MarkerTL >);
 
     /**
      * @brief Constructor

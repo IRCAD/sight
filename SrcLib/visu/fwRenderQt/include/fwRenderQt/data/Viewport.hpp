@@ -40,7 +40,7 @@ class FWRENDERQT_CLASS_API Viewport : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Viewport)(::fwData::Object), ::fwData::factory::New< Viewport >);
+    fwCoreClassMacro(Viewport, ::fwData::Object, ::fwData::factory::New< Viewport >);
 
     /**
      * @brief Constructor

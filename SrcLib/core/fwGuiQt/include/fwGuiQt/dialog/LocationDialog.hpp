@@ -46,8 +46,7 @@ class FWGUIQT_CLASS_API LocationDialog : public ::fwGui::dialog::ILocationDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::dialog::ILocationDialog),
-                                            ::fwGui::factory::New< LocationDialog > );
+    fwCoreClassMacro(LocationDialog, ::fwGui::dialog::ILocationDialog, ::fwGui::factory::New< LocationDialog >);
 
     FWGUIQT_API LocationDialog(::fwGui::GuiBaseObject::Key key);
 

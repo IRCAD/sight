@@ -39,7 +39,7 @@ namespace fwData
 class FWMDSEMANTICPATCH_CLASS_API Composite : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Composite)(::fwAtomsPatch::ISemanticPatch), new Composite);
+    fwCoreClassMacro(Composite, ::fwAtomsPatch::ISemanticPatch, new Composite);
 
     /// Constructor
     FWMDSEMANTICPATCH_API Composite();

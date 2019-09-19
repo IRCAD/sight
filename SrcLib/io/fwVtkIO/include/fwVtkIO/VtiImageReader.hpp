@@ -51,10 +51,8 @@ class VtiImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData:
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (VtiImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
-        ::fwDataIO::reader::factory::New< VtiImageReader >
-        );
+    fwCoreClassMacro(VtiImageReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
+                     ::fwDataIO::reader::factory::New< VtiImageReader >);
 
     fwCoreAllowSharedFromThis();
 

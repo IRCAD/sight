@@ -42,9 +42,8 @@ class FWRENDERVTK_CLASS_API OffScreenInteractorManager : public ::fwRenderVTK::I
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((OffScreenInteractorManager)
-                                           (::fwRenderVTK::IVtkRenderWindowInteractorManager),
-                                           new OffScreenInteractorManager)
+    fwCoreClassMacro(OffScreenInteractorManager, ::fwRenderVTK::IVtkRenderWindowInteractorManager,
+                     new OffScreenInteractorManager);
 
     FWRENDERVTK_API OffScreenInteractorManager();
 

@@ -50,9 +50,8 @@ class FWDATAIO_CLASS_API GzBufferImageWriter :  public GenericObjectWriter< ::fw
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((GzBufferImageWriter)(GenericObjectWriter< ::fwData::Image>),
-                                           ::fwDataIO::writer::factory::New< GzBufferImageWriter >
-                                           );
+    fwCoreClassMacro(GzBufferImageWriter, GenericObjectWriter< ::fwData::Image>,
+                     ::fwDataIO::writer::factory::New< GzBufferImageWriter >);
 
     /// Constructor. Do nothing.
     FWDATAIO_API GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
