@@ -57,7 +57,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
-    fwCoreBaseClassDefinitionsMacro((ConfigurationElement));
+    fwCoreClassMacro(ConfigurationElement);
 
     /**
      * @brief       ConfigurationElement factory.
