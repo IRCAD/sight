@@ -37,10 +37,6 @@ namespace styleQml
  *
  * The style in Qml is located inside styleQml.
  *
- * Inside Plugin, we get the current profile to launch the QGuiApplication with startup argument.
- * Then we setup the application using the Worker by setting the organization Name, organization Domain, name and
- * version. All files other than Plugin are only qml file for the style.
- *
  * @section Singleton Material Style
  *
  * The most recent style that exist for Qt is the Material Style.

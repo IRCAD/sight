@@ -26,16 +26,11 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace fwThread
-{
-class Worker;
-} //namespace fwThread
-
 namespace styleQml
 {
 
 /**
- * @brief   This class is called when the guiQt bundle is loaded.
+ * @brief   This class is called when the styleQml bundle is loaded.
  */
 class STYLEQML_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

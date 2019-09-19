@@ -72,6 +72,62 @@ namespace fwServices
    @endcode
  *
  * You can access the objects managed by the configuration using addObject(), getObject() and removeObject().
+ *
+ * If you want to dynamically launch an AppManager, you should inherit from this class. You can define the inputs you
+ * required by string that will be replaced when the manager is launched. You will need to call the method
+ * getInputID("...") to retrieve the string that are replaced.
+ *
+ * The method "checkInputs" checks if all the required inputs are present and add the object in the manager.
+ *
+ * You can find an example in ExActivitiesQml sample.
+ *
+ * @code{.cpp}
+    static const std::string s_IMAGE_ID = "image";
+    static const std::string s_MODEL_ID = "model";
+    static const std::string s_VALIDATION_CHANNEL = "validationChannel";
+
+    MyManager::MyManager() noexcept
+    {
+        this->requireInput(s_IMAGE_ID, InputType::OBJECT);
+        this->requireInput(s_MODEL_ID, InputType::OBJECT);
+        this->requireInput(s_VALIDATION_CHANNEL, InputType::CHANNEL);
+    }
+
+    MyManager::~MyManager() noexcept
+    {
+        this->destroy();
+    }
+
+    void MyManager::initialize()
+    {
+        this->create();
+
+        if (this->checkInputs())
+        {
+            auto mesher = this->addService("::opVTKMesh::SVTKMesher", true, true);
+            mesher->setObjectId("imageSeries", this->getInputID(s_IMAGE_ID));
+            mesher->setObjectId("modelSeries", this->getInputID(s_MODEL_ID));
+
+            ::fwServices::IService::ConfigType mesherConfig;
+            mesherConfig.put("config.percentReduction", reduction);
+            mesher->configure(mesherConfig);
+
+            ::fwServices::helper::ProxyConnections connection(this->getInputID(s_VALIDATION_CHANNEL));
+            connection.addSignalConnection(mesher->getID(), ::fwServices::IService::s_UPDATED_SIG);
+            this->addProxyConnection(connection);
+
+            this->startServices();
+        }
+        else
+        {
+            const std::string msg = "All the required inputs are not present, '" + this->getInputID("") +
+                                    "' activity will not be launched";
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Manager Initialization",
+                                                              msg,
+                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
+        }
+    }
+   @endcode
  */
 class FWSERVICES_CLASS_API AppManager : public ::fwCom::HasSlots
 {
@@ -225,11 +281,7 @@ public:
     /// Add a proxy connection
     FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& proxy);
 
-    /**
-     * @brief Return the input identifier or create a unique human readable identifier by concatenating the given id
-     * with the AppManaget uid(ie. AppManager_1_<id>)
-     */
-    FWSERVICES_API std::string getInputID(const std::string& id) const;
+protected:
 
     enum class InputType
     {
@@ -248,6 +300,12 @@ public:
     };
 
     typedef std::map< std::string, Input > InputContainer;
+
+    /**
+     * @brief Return the input identifier or create a unique human readable identifier by concatenating the given id
+     * with the AppManaget uid(ie. AppManager_1_<id>)
+     */
+    FWSERVICES_API std::string getInputID(const std::string& id) const;
 
     /**
      * @brief Define the object, channels or other parameters that are required to launch the manager

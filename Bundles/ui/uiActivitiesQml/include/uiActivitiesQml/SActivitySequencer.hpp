@@ -53,7 +53,7 @@ namespace uiActivitiesQml
  *
  * @section Slots Slots
  * - \b goTo(int) : Create the activity series at the given index
- * - \b checkNext() : Chech if the next activities can be enabled
+ * - \b checkNext() : Check if the next activities can be enabled
  *
  * @section Config Configuration
  *
@@ -76,7 +76,8 @@ namespace uiActivitiesQml
  *
  * @subsection Cpp C++ Configuration
  *
- * Liste the creation of the service in your AppManager ("onServiceCreated").
+ * Listen the creation of the service in your AppManager with the method "onServiceCreated(srv)" and then associate the
+ * the seriesDB inout and register the service.
  *
  * @code{.cpp}
      m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);

@@ -49,15 +49,15 @@ void IQmlAppManager::initialize()
 
 void IQmlAppManager::uninitialize()
 {
-    this->stopAndUnregisterServices();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
 void IQmlAppManager::onServiceCreated(const QVariant& )
 {
-    OSLM_ASSERT("The method 'onServiceCreated(srv)' must be implemented to properly register the service instantiated "
-                "in Qml", false);
+    SLM_ASSERT("The method 'onServiceCreated(srv)' must be implemented to properly register the service instantiated "
+               "in Qml", false);
 }
 
 //------------------------------------------------------------------------------

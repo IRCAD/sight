@@ -53,8 +53,9 @@ namespace uiActivitiesQml
  *
  * @section Config Configuration
  *
- * This service sould be instanciated in a Qml file, but it may also be configured in C++ AppManager to add extra
- * information to replace in the activities that will be launched
+ * This service should be instanciated in a Qml file, but it should also be registered in C++ AppManager.
+ * You may need to configure it to add extra information in the replace map (map to define the string that will be
+ * replaced in the launched activities, for example channels, object ids, ...
  *
  * @subsection Qml Qml Configuration
  * @code{.qml}
