@@ -34,6 +34,9 @@ RowLayout {
         onEnable: {
             repeater.itemAt(index).enabled = true
         }
+        onSelect: {
+            currentSelection = index
+        }
     }
 
     Repeater {

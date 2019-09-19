@@ -14,6 +14,8 @@ set( REQUIREMENTS
     styleQml
     dataReg
     servicesReg
+    ioAtoms
+    ioActivity
 )
 
 set( PLUGINS

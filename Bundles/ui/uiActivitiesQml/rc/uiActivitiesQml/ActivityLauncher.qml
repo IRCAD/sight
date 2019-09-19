@@ -39,13 +39,45 @@ Item {
         anchors.fill: parent
         spacing: 0
 
-        ActivitySequencer {
-            Layout.fillWidth: true
-            activityIdsList: activityLauncher.activityIdsList
-            activityNameList: activityLauncher.activityNameList
+        RowLayout {
+            ActivitySequencer {
+                Layout.fillWidth: true
+                activityIdsList: activityLauncher.activityIdsList
+                activityNameList: activityLauncher.activityNameList
 
-            onServiceCreated: {
-                appManager.onServiceCreated(srv)
+                onServiceCreated: {
+                    appManager.onServiceCreated(srv)
+                }
+            }
+            Button{
+                id: menuButton
+                text: ""
+                icon.source: "icons/menu.svg"
+
+                onClicked: {
+                    if (menu.visible){
+                        menu.close()
+                    } else {
+                        menu.open()
+                    }
+                }
+            }
+
+            Menu{
+                id: menu
+                x: menuButton.x
+                y: menuButton.y + menuButton.height
+                width: menuButton.width
+                Action {
+                    text: ""
+                    icon.source: "icons/open.svg"
+                    onTriggered: appManager.open()
+                }
+                Action {
+                    text: ""
+                    icon.source: "icons/save.svg"
+                    onTriggered: appManager.save()
+                }
             }
         }
 

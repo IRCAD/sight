@@ -73,6 +73,12 @@ public Q_SLOTS:
     /// Retrieves the services instanciated in Qml
     void onServiceCreated(const QVariant& obj) override;
 
+    /// Open a seriesDB
+    void open();
+
+    /// Save a seriesDB
+    void save();
+
 private:
 
     ::fwServices::IService::sptr m_activitySequencer;

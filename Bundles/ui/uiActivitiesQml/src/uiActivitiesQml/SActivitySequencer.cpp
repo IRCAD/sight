@@ -99,22 +99,11 @@ void SActivitySequencer::updating()
 
     if (m_currentActivity >= 0)
     {
-        // launch the last series
-        const size_t index = static_cast<size_t>(m_currentActivity);
-        ::fwMedData::ActivitySeries::sptr lastActivity = this->getActivity(seriesDB, index, m_slotUpdate);
-
-        bool ok = true;
-        std::string errorMsg;
-
-        std::tie(ok, errorMsg) = this->validateActivity(lastActivity);
-        if (ok)
+        for (int i = 0; i <= m_currentActivity; ++i)
         {
-            m_sigActivityCreated->asyncEmit(lastActivity);
+            Q_EMIT enable(i);
         }
-        else
-        {
-            m_sigDataRequired->asyncEmit(lastActivity);
-        }
+        this->goTo(m_currentActivity);
     }
     else
     {
@@ -154,6 +143,7 @@ void SActivitySequencer::goTo(int index)
         m_sigActivityCreated->asyncEmit(activity);
 
         m_currentActivity = index;
+        Q_EMIT select(index);
     }
     else
     {

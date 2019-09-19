@@ -31,6 +31,8 @@
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
+#include <QIcon>
+
 namespace uiActivitiesQml
 {
 
@@ -58,6 +60,9 @@ void Plugin::initialize()
     auto path = ::fwRuntime::getBundleResourcePath("uiActivitiesQml");
 
     engine->importModulePath(path);
+    QStringList iconPath = QIcon::themeSearchPaths();
+    iconPath.append(QString::fromStdString(path.string()));
+    QIcon::setThemeSearchPaths(iconPath);
 }
 
 //------------------------------------------------------------------------------

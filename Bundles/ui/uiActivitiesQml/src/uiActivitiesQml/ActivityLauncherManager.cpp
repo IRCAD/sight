@@ -22,11 +22,15 @@
 
 #include "uiActivitiesQml/ActivityLauncherManager.hpp"
 
+#include <fwCom/Signal.hxx>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/Proxy.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 
 static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
@@ -122,6 +126,44 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
             this->addService(srv, true, true);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ActivityLauncherManager::open()
+{
+    const auto& seriesDB = ::fwMedData::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
+    auto reader          = ::fwServices::add("::uiIO::editor::SIOSelector");
+    reader->registerInOut(seriesDB, "data");
+    const auto srvCfgFactory = ::fwServices::registry::ServiceConfig::getDefault();
+    const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityReaderConfig", "::uiIO::editor::SIOSelector");
+    reader->setConfiguration(::fwRuntime::ConfigurationElement::constCast(cfgElem));
+    reader->configure();
+
+    reader->start();
+    reader->update();
+    reader->stop();
+    ::fwServices::OSR::unregisterService(reader);
+
+    auto sig = seriesDB->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
+}
+
+//------------------------------------------------------------------------------
+
+void ActivityLauncherManager::save()
+{
+    const auto& seriesDB = ::fwMedData::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
+    auto writer          = ::fwServices::add("::uiIO::editor::SIOSelector");
+    writer->registerInOut(seriesDB, "data");
+    const auto srvCfgFactory = ::fwServices::registry::ServiceConfig::getDefault();
+    const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityWriterConfig", "::uiIO::editor::SIOSelector");
+    writer->setConfiguration(::fwRuntime::ConfigurationElement::constCast(cfgElem));
+    writer->configure();
+    writer->start();
+    writer->update();
+    writer->stop();
+    ::fwServices::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------

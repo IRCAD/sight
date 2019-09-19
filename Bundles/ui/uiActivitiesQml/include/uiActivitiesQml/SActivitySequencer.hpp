@@ -117,6 +117,7 @@ Q_SIGNALS:
 
     // Emitted when the activity at the given index can be launched
     void enable(int index);
+    void select(int index);
 
 public Q_SLOTS:
 
