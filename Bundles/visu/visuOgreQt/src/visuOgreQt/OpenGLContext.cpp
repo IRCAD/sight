@@ -33,7 +33,7 @@ std::weak_ptr<QOpenGLContext> OpenGLContext::s_globalOgreOpenGLContext;
 
 //-----------------------------------------------------------------------------
 
-QOpenGLContext* OpenGLContext::createOgreGLContext()
+QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* _sharedContext)
 {
     auto* glContext = new QOpenGLContext();
     QSurfaceFormat format;
@@ -45,7 +45,17 @@ QOpenGLContext* OpenGLContext::createOgreGLContext()
     format.setMajorVersion(4);
     format.setMinorVersion(1);
     glContext->setFormat(format);
-    bool success = glContext->create();
+
+    if(_sharedContext)
+    {
+        // For context sharing to be enabled, both contexts need to be on the same thread when calling 'create'.
+        // (At least on Windows: see https://community.khronos.org/t/wglsharelists-failing/42656).
+        OSLM_FATAL_IF("Shared contexts should be created on the same thread.",
+                      glContext->thread() != _sharedContext->thread());
+        glContext->setShareContext(_sharedContext);
+    }
+
+    const bool success = glContext->create();
     OSLM_FATAL_IF("Did not manage to create an OpenGL 4.1 core context for ogre.",
                   !success || glContext->versionFunctions<QOpenGLFunctions_4_1_Core>() == nullptr);
 

@@ -41,8 +41,13 @@ public:
     /// Retrieves a shared pointer to Ogre's OpenGL context, creates it if does not exist or has expired.
     static std::shared_ptr<QOpenGLContext> getGlobalOgreOpenGLContext();
 
-    /// Creates an OpenGL 4.1 context.
-    static QOpenGLContext* createOgreGLContext();
+    /**
+     * @brief Creates an OpenGL 4.1 context.
+     *
+     * @param _sharedContext context to share resources with or nullptr for no context sharing.
+     * @pre   if a _sharedContext is used then it must be on the same thread as the one calling this method.
+     */
+    static QOpenGLContext* createOgreGLContext(QOpenGLContext* _sharedContext = nullptr);
 
 private:
 

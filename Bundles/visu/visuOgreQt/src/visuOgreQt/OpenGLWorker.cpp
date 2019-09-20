@@ -26,8 +26,6 @@
 
 #include <fwCore/Profiling.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <QRunnable>
 #include <QThreadPool>
 
@@ -87,20 +85,15 @@ struct OpenGLRunner : public QRunnable
 OpenGLWorker::OpenGLWorker(QSurface* _surface) :
     m_surface(_surface)
 {
-    m_threadPool = ::boost::make_unique<QThreadPool>();
+    m_threadPool = std::make_unique<QThreadPool>();
 
     // Only use a single thread. We want tasks to be executed in a FIFO order.
     // Also avoids the cost of having to create an OpenGL context for every thread.
     m_threadPool->setMaxThreadCount(1);
 
     auto globalGLContext = OpenGLContext::getGlobalOgreOpenGLContext();
-    m_glContext = std::unique_ptr<QOpenGLContext>(OpenGLContext::createOgreGLContext());
-    m_glContext->setShareContext(globalGLContext.get());
+    m_glContext = std::unique_ptr<QOpenGLContext>(OpenGLContext::createOgreGLContext(globalGLContext.get()));
 
-    // Re-create the context so context sharing takes effect.
-    // For context sharing to be enabled, both contexts need to be on the same thread when calling 'create'.
-    // (At least on Windows: see https://community.khronos.org/t/wglsharelists-failing/42656).
-    m_glContext->create();
     // Remove thread affinity so it can be pulled by the worker.
     m_glContext->doneCurrent();
     m_glContext->moveToThread(nullptr);
@@ -110,8 +103,8 @@ OpenGLWorker::OpenGLWorker(QSurface* _surface) :
 
 OpenGLWorker::~OpenGLWorker()
 {
-    m_threadPool->clear();
-    m_threadPool->waitForDone();
+    m_threadPool->clear(); // Clear all pending tasks.
+    m_threadPool->waitForDone(); // Wait on the running task.
 }
 
 //------------------------------------------------------------------------------
