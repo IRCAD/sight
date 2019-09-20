@@ -51,8 +51,12 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixS
 namespace videoTools
 {
 
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG = "synchronizationDone";
-const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG   = "allMatricesFound";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG    = "synchronizationDone";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_SKIPPED_SIG =
+    "synchronizationSkipped";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG    = "allMatricesFound";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
 const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
 const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
@@ -74,8 +78,11 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
     m_timeStep(33),
     m_lastTimestamp(std::numeric_limits<double>::lowest())
 {
-    m_sigSynchronizationDone = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
-    m_sigAllMatricesFound    = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
+    m_sigSynchronizationDone    = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
+    m_sigSynchronizationSkipped = newSignal<synchronizationSkippedSignalType>(s_SYNCHRONIZATION_SKIPPED_SIG);
+    m_sigAllMatricesFound       = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
+    m_sigMatrixSynchronized     = newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG);
+    m_sigMatrixUnsynchronized   = newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG);
 
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
     newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
@@ -150,6 +157,37 @@ void SFrameMatrixSynchronizer::starting()
         m_matrices.push_back(matricesVector);
     }
 
+    // We need to browser the XML tree to check if a matrix (inside a matrixTL) has or not a `sendStatus` configuration
+    const ConfigType configuration = this->getConfigTree();
+    const auto inoutsConfig        = configuration.equal_range("inout");
+    int matrixIndex                = 0;
+    for(auto itConfig = inoutsConfig.first; itConfig != inoutsConfig.second; ++itConfig)
+    {
+        const std::string group = itConfig->second.get<std::string>("<xmlattr>.group", "");
+        if(group.find(s_MATRICES_INOUT) != std::string::npos)
+        {
+            std::vector<int> sendStatus;
+
+            const auto keyConfig = itConfig->second.equal_range("key");
+            for(auto itKeyConfig = keyConfig.first; itKeyConfig != keyConfig.second; ++itKeyConfig)
+            {
+                const bool needToSendStatus = itKeyConfig->second.get<bool>("<xmlattr>.sendStatus", false);
+                if(needToSendStatus)
+                {
+                    // Push the index that will be send through the `matrixSynchronized` signal
+                    sendStatus.push_back(matrixIndex);
+                    matrixIndex++;
+                }
+                else
+                {
+                    // Push back -1 means that we don't want to send its signal later
+                    sendStatus.push_back(-1);
+                }
+            }
+            m_sendMatricesStatus.push_back(sendStatus);
+        }
+    }
+
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
     if(m_timeStep)
     {
@@ -174,6 +212,7 @@ void SFrameMatrixSynchronizer::stopping()
     m_images.clear();
     m_matrixTLs.clear();
     m_matrices.clear();
+    m_sendMatricesStatus.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -242,23 +281,31 @@ void SFrameMatrixSynchronizer::synchronize()
     {
         const auto& tl = m_matrixTLs[i];
         ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
-        if(tlTimestamp > 0)
+        if( (tlTimestamp > 0) && (std::abs(frameTimestamp - tlTimestamp) < m_tolerance) )
         {
-            if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
-            {
-                matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);
-                availableMatricesTL.push_back(i);
-            }
+            matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);
+            availableMatricesTL.push_back(i);
         }
         else
         {
-            OSLM_INFO("no available matrix for timeline 'matrix" << i << "'.");
+            OSLM_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
+
+            // Notify each matrices in the ith TL that they are unsychronized
+            for(const int sendStatus : m_sendMatricesStatus[i])
+            {
+                if(sendStatus != -1)
+                {
+                    m_sigMatrixUnsynchronized->asyncEmit(sendStatus);
+                }
+            }
         }
     }
 
     // Skip synchzonization if nothing has changed or if the synchronizer decided to go back into the past
     if(matrixTimestamp <= m_lastTimestamp)
     {
+        // Notify that the synchronization is skipped
+        m_sigSynchronizationSkipped->asyncEmit();
         return;
     }
 
@@ -329,6 +376,8 @@ void SFrameMatrixSynchronizer::synchronize()
             {
                 ::fwData::TransformationMatrix3D::sptr const& matrix = matrixVector[k];
 
+                const int sendStatus = m_sendMatricesStatus[tlIdx][k];
+
                 if(buffer->isPresent(k))
                 {
                     const auto& values = buffer->getElement(k);
@@ -340,12 +389,32 @@ void SFrameMatrixSynchronizer::synchronize()
                         }
                     }
 
+                    if(sendStatus != -1)
+                    {
+                        m_sigMatrixSynchronized->asyncEmit(sendStatus);
+                    }
+
                     auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
                         ::fwData::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
 
                     matrixFound = true;
                     ++syncMatricesNbr;
+                }
+                else if(sendStatus != -1)
+                {
+                    m_sigMatrixUnsynchronized->asyncEmit(sendStatus);
+                }
+
+            }
+        }
+        else
+        {
+            for(const int sendStatus : m_sendMatricesStatus[tlIdx])
+            {
+                if(sendStatus != -1)
+                {
+                    m_sigMatrixUnsynchronized->asyncEmit(sendStatus);
                 }
             }
         }

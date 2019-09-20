@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -136,6 +136,8 @@ void ProcessingTest::histogramTest()
     CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(20, 21));
     CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(30, 31));
     CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(40, 41));
+
+    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

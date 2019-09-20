@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_UT_ARRAYTEST_HPP__
-#define __FWDATA_UT_ARRAYTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -38,6 +37,9 @@ private:
     CPPUNIT_TEST( resize );
     CPPUNIT_TEST( reallocate );
     CPPUNIT_TEST( copy );
+    CPPUNIT_TEST( dumpLockTest );
+    CPPUNIT_TEST( bufferAccessTest );
+    CPPUNIT_TEST( constArrayTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,7 +51,9 @@ public:
     void resize();
     void reallocate();
     void copy();
+    void dumpLockTest();
+    void bufferAccessTest();
+    void constArrayTest();
 };
 } //namespace ut
 } //namespace fwData
-#endif // __FWDATA_UT_ARRAYTEST_HPP__
