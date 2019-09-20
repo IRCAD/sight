@@ -59,8 +59,14 @@ namespace videoTools
  *
  * @section Signals Signals
  * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
+ * - \b synchronizationSkipped(::fwCore::HiResClock::HiResClockType) : Emitted when a sync loop is skipped if nothing
+ * has changed or if the synchronizer decided to go back into the past.
  * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
  *  signal if all the matrices are synchronized.
+ * - \b matrixSynchronized(int): Emitted when the matrix is synchronized, contains the index of the matrix with
+ *  `sendStatus` set to "on", in the declaration order.
+ * - \b matrixUnsynchronized(int): Emitted when the matrix is not present in the buffer and can not be synchronized,
+ *  contains the index of the matrix with `sendStatus` set to "on", in the declaration order.
  *
  * @section Slots Slots
  * - \b synchronize(): Actual synchronization function.
@@ -85,12 +91,12 @@ namespace videoTools
                 <key uid="matrixTL2" />
             </in>
             <inout group="matrices0">
-                <key uid="matrix0" />
+                <key uid="matrix0" sendStatus="true"/>
                 <key uid="matrix1" />
                 <key uid="matrix2" />
             </inout>
             <inout group="matrices1">
-                <key uid="matrix3" />
+                <key uid="matrix3" sendStatus="false"/>
                 <key uid="matrix4" />
             </inout>
             <framerate>30</framerate>
@@ -110,9 +116,7 @@ namespace videoTools
  * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
  *
  * @subsection Configuration Configuration
- * - \b matrices defines the matrixTL to synchronize.
- *   - \b from: key of the matrix timeline to extract matrix.
- *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
+ * - \b sendStatus defines for each matrix if we want to send the given matrix/Un/Synchronized (default: false)
  * - \b framerate defines the framerate to call synchronization (default: 30). If it is set to 0, then the service does
  * not synchronize periodically. You'll have then to call the slot "synchronize" yourself.
  * - \b tolerance defines the maximum distance between two frames (default: 500).
@@ -131,8 +135,17 @@ public:
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
 
+    typedef ::fwCom::Signal< void (void) > synchronizationSkippedSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_SKIPPED_SIG;
+
     typedef ::fwCom::Signal< void (bool) > AllMatricesFoundSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
+
+    typedef ::fwCom::Signal< void (int) > MatrixSynchronizedSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_MATRIX_SYNCHRONIZED_SIG;
+
+    typedef ::fwCom::Signal< void (int) > MatrixUnsynchronizedSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_MATRIX_UNSYNCHRONIZED_SIG;
     /** @} */
 
     /**
@@ -209,6 +222,8 @@ private:
     std::vector<SPTR(::fwData::Image)> m_images;
     /// registers matrices with associated timeline key
     std::vector<std::vector<SPTR(::fwData::TransformationMatrix3D)> > m_matrices;
+    /// registers index of matrices that need to send their status through signals
+    std::vector<std::vector<int> > m_sendMatricesStatus;
 
     /// Time step used for the update
     unsigned int m_timeStep;
@@ -225,9 +240,20 @@ private:
     /// Signal emitted when the synchronization of the frame timeline and the matrix timeline is done.
     SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;
 
+    /// Signal emitted when the synchronization of the frame timeline and the matrix timeline are skipped.
+    synchronizationSkippedSignalType::sptr m_sigSynchronizationSkipped;
+
     /// Signal emitted when the synchronization is done, contains a boolean to signal if all the matrices
-    ///  are synchronized.
+    /// are synchronized.
     AllMatricesFoundSignalType::sptr m_sigAllMatricesFound;
+
+    /// Signal emitted when the matrix is synchronized, contains the index of the matrix with `sendStatus` set to "true"
+    /// in the declaration order.
+    MatrixSynchronizedSignalType::sptr m_sigMatrixSynchronized;
+
+    /// Emitted when the matrix is not present in the buffer and can not be synchronized, contains the index of the
+    /// matrix with `sendStatus` set to "true", in the declaration order.
+    MatrixUnsynchronizedSignalType::sptr m_sigMatrixUnsynchronized;
 
     /// Remember last time stamp to skip synchronization if nothing has changed
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
