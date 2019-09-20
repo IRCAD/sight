@@ -66,6 +66,7 @@ void SImage::starting()
     QLabel* label       = new QLabel("");
 
     QPixmap* pixmap = new QPixmap();
+
     pixmap->load(m_path.string().c_str());
 
     if(pixmap->isNull())
@@ -75,21 +76,20 @@ void SImage::starting()
 
     if(m_width != -1 && m_height != -1)
     {
-        label->setPixmap(pixmap->scaled(m_width, m_height));
+        label->setPixmap(pixmap->scaled(m_width, m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     }
     else if(m_width != -1)
     {
-        label->setPixmap((pixmap->scaledToWidth(m_width)));
+        label->setPixmap((pixmap->scaledToWidth(m_width, Qt::SmoothTransformation)));
     }
     else if(m_height != -1)
     {
-        label->setPixmap((pixmap->scaledToHeight(m_height)));
+        label->setPixmap((pixmap->scaledToHeight(m_height, Qt::SmoothTransformation)));
     }
     else
     {
         label->setPixmap(*pixmap);
     }
-
     layout->addWidget(label);
     qtContainer->setLayout(layout);
 
