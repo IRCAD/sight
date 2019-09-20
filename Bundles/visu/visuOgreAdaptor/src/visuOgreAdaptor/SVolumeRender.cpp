@@ -200,10 +200,13 @@ void SVolumeRender::starting()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
-    m_bufferingTexture = ::Ogre::TextureManager::getSingleton().create(
-        this->getID() + "_Texture2",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true);
+    if(m_dynamic)
+    {
+        m_bufferingTexture = ::Ogre::TextureManager::getSingleton().create(
+            this->getID() + "_Texture2",
+            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            true);
+    }
 
     m_gpuVolumeTF->createTexture(this->getID() + "_VolumeGpuTF");
 
@@ -264,8 +267,11 @@ void SVolumeRender::stopping()
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
 
-    ::Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
-    m_bufferingTexture.reset();
+    if(m_bufferingTexture)
+    {
+        ::Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
+        m_bufferingTexture.reset();
+    }
 
     m_gpuVolumeTF.reset();
 
@@ -312,13 +318,16 @@ void SVolumeRender::newImage()
 
     auto renderService = this->getRenderService();
     {
-        // Destroy the worker to wait for all pending buffering tasks to be cleared.
-        m_bufferingWorker.reset();
+        if(m_dynamic)
+        {
+            // Destroy the worker to wait for all pending buffering tasks to be cleared.
+            m_bufferingWorker.reset();
 
-        std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+            std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
-        auto* newWorker = renderService->getInteractorManager()->createGraphicsWorker();
-        m_bufferingWorker = std::unique_ptr< ::fwRenderOgre::IGraphicsWorker >(newWorker);
+            auto* newWorker = renderService->getInteractorManager()->createGraphicsWorker();
+            m_bufferingWorker = std::unique_ptr< ::fwRenderOgre::IGraphicsWorker >(newWorker);
+        }
 
         ::fwData::mt::ObjectReadLock lock(image);
 
