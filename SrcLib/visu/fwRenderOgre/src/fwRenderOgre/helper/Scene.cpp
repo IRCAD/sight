@@ -37,21 +37,21 @@ namespace helper
 {
     SLM_ASSERT("Scene node is null", _sceneNode);
 
-    ::Ogre::SceneNode* sceneNode = nullptr;
-    const auto& rootMap = _sceneNode->getChildren();
+    ::Ogre::SceneNode* foundNode = nullptr;
 
     // Use a vector as a stack to benefit from iterators.
     std::vector< ::Ogre::Node* > stack;
-    std::copy(rootMap.cbegin(), rootMap.cend(), std::back_inserter(stack));
+    stack.push_back(_sceneNode);
 
     // Recursive search in the graph
-    do
+    while( !stack.empty() )
     {
         ::Ogre::Node* const topNode = stack.back();
 
         if (topNode->getName() == _nodeId)
         {
-            sceneNode = static_cast< ::Ogre::SceneNode* >(topNode);
+            foundNode = dynamic_cast< ::Ogre::SceneNode* >(topNode);
+            SLM_ASSERT("'" + _nodeId + "' is not a scene node.", foundNode);
             break;
         }
 
@@ -60,9 +60,8 @@ namespace helper
 
         std::copy(nodeChildren.cbegin(), nodeChildren.cend(), std::back_inserter(stack));
     }
-    while( !stack.empty() );
 
-    return sceneNode;
+    return foundNode;
 }
 
 //-----------------------------------------------------------------------------
