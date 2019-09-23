@@ -297,6 +297,9 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                 bool negativeSide = true;
                 if(material != nullptr)
                 {
+                    SLM_ASSERT("The material must have at least one technique", material->getTechnique(0) != nullptr);
+                    SLM_ASSERT("The material's technique must have at least one pass", material->getTechnique(
+                                   0)->getPass(0) != nullptr);
                     const ::Ogre::CullingMode cullingMode = material->getTechnique(0)->getPass(0)->getCullingMode();
                     switch (cullingMode)
                     {
@@ -382,17 +385,8 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
         }
     }
 
-    // Return the result.
-    if (closestDistance >= 0.0f)
-    {
-        // Raycast success.
-        return std::make_tuple(true, closestResult, target, closestDistance);
-    }
-    else
-    {
-        // Raycast failed.
-        return std::make_tuple(false, closestResult, target, closestDistance);
-    }
+    const bool collisionSuccess = (closestDistance >= 0.0f);
+    return std::make_tuple(collisionSuccess, closestResult, target, closestDistance);
 }
 
 //====================================================================================================================
