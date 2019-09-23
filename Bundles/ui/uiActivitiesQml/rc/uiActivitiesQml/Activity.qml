@@ -7,4 +7,9 @@ Item {
 
     property IQmlAppManager appManager
     property var replaceMap
+
+    Component.onCompleted: {
+        appManager.replaceInputs(replaceMap)
+        appManager.initialize()
+    }
 }

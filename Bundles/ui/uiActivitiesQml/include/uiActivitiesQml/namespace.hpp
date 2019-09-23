@@ -74,10 +74,6 @@
             id: appManager
             frameBuffer: scene3D
         }
-        Component.onCompleted: {
-            appManager.replaceInputs(replaceMap)
-            appManager.initialize()
-        }
         // Your layout, object, service...
         // ...
     }

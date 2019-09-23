@@ -44,9 +44,4 @@ Activity {
             }
         }
     }
-
-    Component.onCompleted: {
-        appManager.replaceInputs(replaceMap)
-        appManager.initialize()
-    }
 }

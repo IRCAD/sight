@@ -108,7 +108,5 @@ Activity {
         Material.background = Theme.background
         Material.primary = Theme.primary
         Material.elevation = Theme.elevation
-        appManager.replaceInputs(replaceMap)
-        appManager.initialize()
     }
 }
