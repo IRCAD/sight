@@ -30,8 +30,6 @@
 
 #include <fwServices/IController.hpp>
 
-fwCorePredeclare( (fwData)(Object) )
-
 namespace uiVisuOgre
 {
 

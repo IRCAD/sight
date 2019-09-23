@@ -44,13 +44,10 @@ class QSlider;
 class QToolButton;
 class QSignalMapper;
 
-fwCorePredeclare( (fwGuiQt)(widget)(QRangeSlider) );
-
 namespace fwGuiQt
 {
 namespace widget
 {
-
 class QRangeSlider;
 }
 }
