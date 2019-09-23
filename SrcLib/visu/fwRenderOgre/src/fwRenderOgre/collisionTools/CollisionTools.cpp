@@ -326,29 +326,8 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     }
                 }
 
-                // This function is use to check a ray / triangle intersection.
-                bool newClosestFound = false;
-                const auto checkHit = [&](  const ::Ogre::Vector3& _a,
-                                            const ::Ogre::Vector3& _b,
-                                            const ::Ogre::Vector3& _c)
-                                      {
-
-                                          std::pair< bool, Ogre::Real > hit = Ogre::Math::intersects(ray, _a,
-                                                                                                     _b,
-                                                                                                     _c,
-                                                                                                     positiveSide,
-                                                                                                     negativeSide);
-                                          if(hit.first)
-                                          {
-                                              if((closestDistance < 0.0f) || (hit.second < closestDistance))
-                                              {
-                                                  closestDistance = hit.second;
-                                                  newClosestFound = true;
-                                              }
-                                          }
-                                      };
-
                 // Check intersections depending on the render operation type.
+                bool newClosestFound = false;
                 switch(submesh->operationType)
                 {
                     // Points list is used for billboard.
@@ -366,6 +345,8 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         const ::Ogre::Vector3 resPointWVP = viewProjMatrix * ray.getPoint(queryResult[qrIdx].distance);
                         const ::Ogre::Vector2 resPointSS  = (resPointWVP.xy() / 2.f) + 0.5f;
 
+                        static const ::Ogre::Real s_TOLERANCE = 0.02f;
+
                         if(indices.size() > 0)
                         {
                             for (size_t i = 0; i < indices.size(); ++i)
@@ -373,7 +354,6 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                                 const ::Ogre::Vector3 pointWVP = viewProjMatrix * vertices[indices[i]];
                                 const ::Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
 
-                                static const ::Ogre::Real s_TOLERANCE = 0.02f;
                                 if (((closestDistance < 0.0f) || (queryResult[qrIdx].distance < closestDistance)) &&
                                     resPointSS.distance(pointSS) < s_TOLERANCE)
                                 {
@@ -389,7 +369,6 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                                 const ::Ogre::Vector3 pointWVP = viewProjMatrix * vertices[i];
                                 const ::Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
 
-                                static const ::Ogre::Real s_TOLERANCE = 0.02f;
                                 if (((closestDistance < 0.0f) || (queryResult[qrIdx].distance < closestDistance)) &&
                                     resPointSS.distance(pointSS) < s_TOLERANCE)
                                 {
@@ -406,16 +385,42 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         {
                             for(size_t i = 0; i < indices.size(); i += 4)
                             {
-                                checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
-                                checkHit(vertices[indices[i+2]],  vertices[indices[i+3]], vertices[indices[i]]);
+                                const auto firstHit = intersect(ray, vertices[indices[i]],  vertices[indices[i+1]],
+                                                                vertices[indices[i+2]], closestDistance, positiveSide,
+                                                                negativeSide);
+                                if(firstHit.first)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = firstHit.second;
+                                }
+                                const auto secondHit = intersect(ray, vertices[indices[i+2]],  vertices[indices[i+3]],
+                                                                 vertices[indices[i]], closestDistance, positiveSide,
+                                                                 negativeSide);
+                                if(secondHit.first)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = secondHit.second;
+                                }
                             }
                         }
                         else
                         {
                             for(size_t i = 0; i < vertices.size(); i += 4)
                             {
-                                checkHit(vertices[i],  vertices[i+1], vertices[i+2]);
-                                checkHit(vertices[i+2],  vertices[i+3], vertices[i]);
+                                const auto firstHit = intersect(ray, vertices[i],  vertices[i+1], vertices[i+2],
+                                                                closestDistance, positiveSide, negativeSide);
+                                if(firstHit.first)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = firstHit.second;
+                                }
+                                const auto secondHit = intersect(ray, vertices[i+2],  vertices[i+3], vertices[i],
+                                                                 closestDistance, positiveSide, negativeSide);
+                                if(secondHit.first)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = secondHit.second;
+                                }
                             }
                         }
                         break;
@@ -425,14 +430,27 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         {
                             for(size_t i = 0; i < indices.size(); i += 3)
                             {
-                                checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
+                                const auto firstHit = intersect(ray, vertices[indices[i]],  vertices[indices[i+1]],
+                                                                vertices[indices[i+2]], closestDistance, positiveSide,
+                                                                negativeSide);
+                                if(firstHit.first)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = firstHit.second;
+                                }
                             }
                         }
                         else
                         {
                             for(size_t i = 0; i < vertices.size(); i += 3)
                             {
-                                checkHit(vertices[i],  vertices[i+1], vertices[i+2]);
+                                const auto firstHit = intersect(ray, vertices[i],  vertices[i+1], vertices[i+2],
+                                                                closestDistance, positiveSide, negativeSide);
+                                if(firstHit.first)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = firstHit.second;
+                                }
                             }
                         }
                         break;
@@ -452,6 +470,27 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
 
     const bool collisionSuccess = (closestDistance >= 0.0f);
     return std::make_tuple(collisionSuccess, closestResult, target, closestDistance);
+}
+
+//====================================================================================================================
+
+std::pair<bool, float> CollisionTools::intersect(const ::Ogre::Ray& _ray,
+                                                 const ::Ogre::Vector3& _a,
+                                                 const ::Ogre::Vector3& _b,
+                                                 const ::Ogre::Vector3& _c,
+                                                 const float _closestDistance,
+                                                 bool _positiveSide,
+                                                 bool _negativeSide)
+{
+    const std::pair< bool, Ogre::Real > hit = Ogre::Math::intersects(_ray, _a, _b, _c,  _positiveSide, _negativeSide);
+    if(hit.first)
+    {
+        if((_closestDistance < 0.0f) || (hit.second < _closestDistance))
+        {
+            return std::pair(true, hit.second);
+        }
+    }
+    return std::pair(false, hit.second);
 }
 
 //====================================================================================================================

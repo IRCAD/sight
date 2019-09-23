@@ -90,6 +90,28 @@ public:
                                                                                           const Ogre::uint32 queryMask =
                                                                                               0xFFFFFFFF);
 
+private:
+
+    /**
+     * @brief Compute the intersection between a ray and a triangle.
+     * @param _ray The ray used to compute the intersection.
+     * @param _a The first vertex of the triangle.
+     * @param _b The second vertex of the triangle.
+     * @param _c The third vertex of the triangle.
+     * @param _closestDistance The current closest intersection distance with the ray.
+     * @param _positiveSide Set to true to intersect with the positive side of the triangle.
+     * @param _negativeSide Set to true to intersect with the negative side of the triangle.
+     * @return A pair containing a boolean to specify if there was an intersection, and the distance of between the ray
+     * origin and the intersection.
+     */
+    static std::pair<bool, float> intersect(const ::Ogre::Ray& _ray,
+                                            const ::Ogre::Vector3& _a,
+                                            const ::Ogre::Vector3& _b,
+                                            const ::Ogre::Vector3& _c,
+                                            const float _closestDistance,
+                                            bool _positiveSide,
+                                            bool _negativeSide);
+
 };
 
 }
