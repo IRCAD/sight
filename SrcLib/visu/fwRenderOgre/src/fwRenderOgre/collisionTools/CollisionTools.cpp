@@ -258,38 +258,35 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     const Ogre::IndexData* const indexData        = submesh->indexData;
                     const Ogre::HardwareIndexBufferSharedPtr ibuf = indexData->indexBuffer;
 
-                    // When a mesh is picked, a billboard is created (for printing purposes), this line ensure theses
-                    // billboars are not picked by the same picker as they do not define an entity.
-                    if(ibuf == nullptr)
+                    // Billboars do not define an entity, they do not contain any index buffer.
+                    if(ibuf != nullptr)
                     {
-                        continue;
-                    }
+                        const bool use32bitindexes = (ibuf->getType() == ::Ogre::HardwareIndexBuffer::IT_32BIT);
 
-                    const bool use32bitindexes = (ibuf->getType() == ::Ogre::HardwareIndexBuffer::IT_32BIT);
+                        const ::Ogre::uint32* const pLong =
+                            static_cast< const ::Ogre::uint32* >(ibuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
+                        const unsigned short* const pShort = reinterpret_cast< const unsigned short* >(pLong);
 
-                    const ::Ogre::uint32* const pLong =
-                        static_cast< const ::Ogre::uint32* >(ibuf->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY));
-                    const unsigned short* const pShort = reinterpret_cast< const unsigned short* >(pLong);
+                        indices.resize(indexData->indexCount);
 
-                    indices.resize(indexData->indexCount);
-
-                    // Iterate over index buffer.
-                    if(use32bitindexes)
-                    {
-                        for(size_t k = 0; k < indexData->indexCount; ++k)
+                        // Iterate over index buffer.
+                        if(use32bitindexes)
                         {
-                            indices[k] = pLong[k];
+                            for(size_t k = 0; k < indexData->indexCount; ++k)
+                            {
+                                indices[k] = pLong[k];
+                            }
                         }
-                    }
-                    else
-                    {
-                        for(size_t k = 0; k < indexData->indexCount; ++k)
+                        else
                         {
-                            indices[k] = static_cast< Ogre::uint32 >(pShort[k]);
+                            for(size_t k = 0; k < indexData->indexCount; ++k)
+                            {
+                                indices[k] = static_cast< Ogre::uint32 >(pShort[k]);
+                            }
                         }
-                    }
 
-                    ibuf->unlock();
+                        ibuf->unlock();
+                    }
                 }
 
                 // Retrieve the material to check the culling mode.
@@ -352,19 +349,89 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                 // Check intersections depending on the render operation type.
                 switch(submesh->operationType)
                 {
+                    // Points list is used for billboard.
+                    case ::Ogre::RenderOperation::OT_POINT_LIST:
+                    {
+                        // We do not have faces, we simply check all vertices and compute the distance from the picked
+                        // point
+                        const ::Ogre::Camera* const camera = mSceneMgr->getCamera(
+                            ::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+                        const ::Ogre::Matrix4 viewMatrix = camera->getViewMatrix();
+                        const ::Ogre::Matrix4 projMatrix = camera->getProjectionMatrixWithRSDepth();
+
+                        const ::Ogre::Matrix4 viewProjMatrix = projMatrix * viewMatrix;
+
+                        const ::Ogre::Vector3 resPointWVP = viewProjMatrix * ray.getPoint(queryResult[qrIdx].distance);
+                        const ::Ogre::Vector2 resPointSS  = (resPointWVP.xy() / 2.f) + 0.5f;
+
+                        if(indices.size() > 0)
+                        {
+                            for (size_t i = 0; i < indices.size(); ++i)
+                            {
+                                const ::Ogre::Vector3 pointWVP = viewProjMatrix * vertices[indices[i]];
+                                const ::Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
+
+                                static const ::Ogre::Real s_TOLERANCE = 0.02f;
+                                if (((closestDistance < 0.0f) || (queryResult[qrIdx].distance < closestDistance)) &&
+                                    resPointSS.distance(pointSS) < s_TOLERANCE)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = vertices[indices[i]].distance(ray.getOrigin());
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (size_t i = 0; i < vertices.size(); ++i)
+                            {
+                                const ::Ogre::Vector3 pointWVP = viewProjMatrix * vertices[i];
+                                const ::Ogre::Vector2 pointSS  = (pointWVP.xy() / 2.f) + 0.5f;
+
+                                static const ::Ogre::Real s_TOLERANCE = 0.02f;
+                                if (((closestDistance < 0.0f) || (queryResult[qrIdx].distance < closestDistance)) &&
+                                    resPointSS.distance(pointSS) < s_TOLERANCE)
+                                {
+                                    newClosestFound = true;
+                                    closestDistance = vertices[i].distance(ray.getOrigin());
+                                }
+                            }
+                        }
+                    }
+                    break;
                     // Lines list is used to represent a quad.
                     case ::Ogre::RenderOperation::OT_LINE_LIST:
-                        for(size_t i = 0; i < indices.size(); i += 4)
+                        if(indices.size() > 0)
                         {
-                            checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
-                            checkHit(vertices[indices[i+2]],  vertices[indices[i+3]], vertices[indices[i]]);
+                            for(size_t i = 0; i < indices.size(); i += 4)
+                            {
+                                checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
+                                checkHit(vertices[indices[i+2]],  vertices[indices[i+3]], vertices[indices[i]]);
+                            }
+                        }
+                        else
+                        {
+                            for(size_t i = 0; i < vertices.size(); i += 4)
+                            {
+                                checkHit(vertices[i],  vertices[i+1], vertices[i+2]);
+                                checkHit(vertices[i+2],  vertices[i+3], vertices[i]);
+                            }
                         }
                         break;
                     // Triangles list is simply a list of triangles.
                     case ::Ogre::RenderOperation::OT_TRIANGLE_LIST:
-                        for(size_t i = 0; i < indices.size(); i += 3)
+                        if(indices.size() > 0)
                         {
-                            checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
+                            for(size_t i = 0; i < indices.size(); i += 3)
+                            {
+                                checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
+                            }
+                        }
+                        else
+                        {
+                            for(size_t i = 0; i < vertices.size(); i += 3)
+                            {
+                                checkHit(vertices[i],  vertices[i+1], vertices[i+2]);
+                            }
                         }
                         break;
                     default:
