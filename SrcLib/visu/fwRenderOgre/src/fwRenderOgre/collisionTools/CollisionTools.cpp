@@ -298,11 +298,13 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                 {
                     positiveSide = false;
                     negativeSide = false;
-                    SLM_ASSERT("The material must have at least one technique",
-                               material->getBestTechnique() != nullptr);
-                    SLM_ASSERT("The material's technique must have at least one pass",
-                               material->getBestTechnique()->getPass(0) != nullptr);
-                    for(const ::Ogre::Pass* pass : material->getBestTechnique()->getPasses())
+                    const auto* tech = material->getBestTechnique();
+                    SLM_ASSERT("'" + material->getName() + "' does not have any suitable technique.", tech);
+                    const auto& passes = tech->getPasses();
+                    SLM_ASSERT(
+                        "'" + material->getName() + "' technique '" + tech->getName() + "' does not define any passes.",
+                        passes.size() > 0);
+                    for(const ::Ogre::Pass* pass : passes)
                     {
                         const ::Ogre::CullingMode cullingMode = pass->getCullingMode();
                         switch (cullingMode)

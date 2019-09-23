@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -89,21 +89,6 @@ public:
     FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(const Ogre::Ray&,
                                                                                           const Ogre::uint32 queryMask =
                                                                                               0xFFFFFFFF);
-
-private:
-
-    /** return mesh properties
-     * @param mesh pointer to Ogre Mesh
-     * @param position world position of the entity using the mesh
-     * @param orientation world orientation of the entity using the mesh
-     * @param scale world scale of the entity using the mesh
-     * @return tuple containing <list of points, list of triangles, list of quads>
-     */
-    std::tuple<std::vector<Ogre::Vector3>, std::vector<Ogre::uint32>, std::vector< Ogre::uint32> >
-    getMeshInformation(const Ogre::MeshPtr mesh,
-                       const Ogre::Vector3& position,
-                       const Ogre::Quaternion& orient,
-                       const Ogre::Vector3& scale);
 
 };
 
