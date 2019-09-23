@@ -14,19 +14,18 @@ set( REQUIREMENTS
     fwlauncher
     appXml
 
-    patchMedicalData
-    filterUnknownSeries
-
     2DVisualizationActivity
+    volumeRenderingActivity
     vtkSimpleNegato
 
     activities
     ioActivity
+    activitiesConfig
 
     ioAtoms
     ioVTK
 
-    uiMedDataQt
+    uiIO
 
     media
 

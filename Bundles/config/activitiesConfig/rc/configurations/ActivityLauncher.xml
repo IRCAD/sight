@@ -1,0 +1,248 @@
+<!--
+    This configuration allows to launch activities sequentially. It should be called from an activity like:
+    It displays a "stepper" that allows to select the current activity, they are enabled sequencially when their
+    inputs are present.
+
+    The configuration can be launched by a 'SConfigController':
+
+    <service uid="activityLauncher" type="::fwServices::SConfigController">
+        <appConfig id="ActivityLauncher" />
+        <inout key="seriesDB" uid="mySeriesDB" />
+        <parameter replace="WID_PARENT" by="activityView" />
+        <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+        <parameter replace="SEQUENCER_CONFIG" by="sequencerServiceConfigName" />
+    </service>
+
+    You can also launch this configuration as an activity :
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>sequencerActivityName</id>
+        <title>Activity title</title>
+        <desc>Description of the activity</desc>
+        <icon>path/to/icons</icon>
+        <requirements>
+            <requirement name="seriesDB" type="::fwMedData::SeriesDB" minOccurs="0" maxOccurs="0" />
+        </requirements>
+        <appConfig id="ActivityLauncher">
+            <parameters>
+                <parameter replace="seriesDB" by="@values.seriesDB" />
+                <parameter replace="SEQUENCER_CONFIG" by="sequencerServiceConfigName" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    The ActivitySeries representing the activities launched by this config will be saved in the 'seriesDB' object, when
+    they are loaded, the sequencer will jump to the last activity.
+
+    The SEQUENCER_CONFIG represents the list of the activities to launch, like:
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>sequencerServiceConfigName</id>
+        <service>::uiActivitiesQt::editor::SActivitySequencer</service>
+        <desc>Configuration for the sequencer</desc>
+        <config>
+            <activity id="activity1" name="my activity 1" />
+            <activity id="activity2" name="my activity 2" />
+            <activity id="activity3" name="my activity 3" />
+        </config>
+    </extension>
+
+    With:
+    - id: identifier of the activity
+    - name (optional): name displayed in the activity stepper. If the name is not define, the title of the activity will
+    be used.
+
+
+    You can override the default configuration for activity reader/writer by adding the two parameters:
+    <parameter replace="ACTIVITY_READER_CONFIG" by="ActivityReaderConfig" />
+    <parameter replace="ACTIVITY_WRITER_CONFIG" by="ActivityWriterConfig" />
+-->
+<extension implements="::fwServices::registry::AppConfig">
+    <id>ActivityLauncher</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="ICON_PATH" />
+        <param name="seriesDB" />
+        <param name="SEQUENCER_CONFIG" />
+        <param name="ACTIVITY_READER_CONFIG" default="ActivityReaderConfig" />
+        <param name="ACTIVITY_WRITER_CONFIG" default="ActivityWriterConfig" />
+    </parameters>
+    <desc>Configuration to launch activities sequentially</desc>
+    <config>
+
+        <!-- ************************************ Begin Objects declaration **************************************** -->
+
+        <object uid="${seriesDB}" type="::fwMedData::SeriesDB"  src="ref"/>
+
+        <!-- ************************************* Begin layouts declaration *************************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="1" />
+                    <view proportion="1" visible="false" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="stepperView" start="yes" />
+                <view sid="dynamicView" start="yes" />
+                <view sid="activityCreator" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="stepperView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="activitySequencer" start="yes" />
+                <view sid="openButton" start="yes" />
+                <view sid="saveButton" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Begin editor declaration *************************************** -->
+
+        <service uid="openButton" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <icon>media-0.1/icons/open.svg</icon>
+               <iconWidth>40</iconWidth>
+               <iconHeight>40</iconHeight>
+            </config>
+        </service>
+
+        <service uid="saveButton" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <icon>media-0.1/icons/save.svg</icon>
+               <iconWidth>40</iconWidth>
+               <iconHeight>40</iconHeight>
+            </config>
+        </service>
+
+        <!-- ************************************* Begin reader/writer declaration *************************************** -->
+
+        <service uid="SDBReader" type="::uiIO::editor::SIOSelector" config="ActivityReaderConfig">
+            <inout key="data" uid="${seriesDB}" />
+        </service>
+
+        <!-- Service to save the launched activities -->
+        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="ActivityWriterConfig">
+            <inout key="data" uid="${seriesDB}" />
+        </service>
+
+        <!-- *************************************** Begin view declaration **************************************** -->
+
+        <!-- Display the activity in the current view -->
+        <service uid="dynamicView" type="::guiQt::editor::SActivityView">
+            <inout key="SERIESDB" uid="${seriesDB}" />
+            <parameters>
+                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                <parameter replace="previousActivityChannel" by="previousActivityChannel" />
+                <parameter replace="nextActivityChannel" by="nextActivityChannel" />
+                <parameter replace="validationChannel" by="validationChannel" />
+            </parameters>
+        </service>
+
+        <!-- Display the activity data selector -->
+        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard">
+            <inout key="seriesDB" uid="${seriesDB}" />
+            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
+            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
+            <confirm>false</confirm>
+            <icons>
+                <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
+                <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
+            </icons>
+        </service>
+
+        <!-- Launch the activity sequentially -->
+        <service uid="activitySequencer" type="::uiActivitiesQt::editor::SActivitySequencer" config="${SEQUENCER_CONFIG}" >
+            <inout key="seriesDB" uid="${seriesDB}" autoConnect="yes" />
+        </service>
+
+        <!-- ************************************ Begin connection declaration ************************************* -->
+
+        <!-- Connections to open a seriesDB when the open button is clicked -->
+        <connect>
+            <signal>openButton/clicked</signal>
+            <slot>SDBReader/update</slot>
+        </connect>
+
+        <!-- Connections to save the seriesDB when the save button is clicked -->
+        <connect>
+            <signal>saveButton/clicked</signal>
+            <slot>SDBWriter/update</slot>
+        </connect>
+
+
+        <!-- connect to launch the activity when it is created/updated. -->
+        <connect channel="launch_activity_channel">
+            <signal>activitySequencer/activityCreated</signal>
+            <slot>dynamicView/show</slot>
+            <slot>dynamicView/launchActivity</slot>
+            <slot>activityCreator/hide</slot>
+            <slot>activitySequencer/checkNext</slot>
+        </connect>
+
+        <!-- Update the sequencer information when an activity is updated -->
+        <connect>
+            <signal>activityCreator/activityUpdated</signal>
+            <slot>activitySequencer/update</slot>
+        </connect>
+
+        <!-- When the activity is launched, the sequencer sends the information to enable "previous" and "next" actions -->
+        <connect>
+            <signal>dynamicView/activityLaunched</signal>
+            <slot>activitySequencer/sendInfo</slot>
+        </connect>
+
+        <!-- Display the wizard when data are missing for the next activity -->
+        <connect>
+            <signal>activitySequencer/dataRequired</signal>
+            <slot>activityCreator/updateActivity</slot>
+            <slot>activityCreator/show</slot>
+            <slot>dynamicView/hide</slot>
+        </connect>
+
+        <!-- Hide the creator editor when the activity creation is canceled. -->
+        <connect>
+            <signal>activityCreator/canceled</signal>
+            <slot>activityCreator/hide</slot>
+            <slot>dynamicView/show</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "previous" action. -->
+        <connect channel="previousActivityChannel">
+            <slot>activitySequencer/previous</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "next" action. -->
+        <connect channel="nextActivityChannel">
+            <slot>activitySequencer/next</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "previous" action. -->
+        <connect channel="validationChannel">
+            <slot>activitySequencer/checkNext</slot>
+        </connect>
+
+
+        <!-- *************************************** Begin start and update **************************************** -->
+
+        <start uid="mainView" />
+        <start uid="SDBReader" />
+        <start uid="SDBWriter" />
+
+        <!-- Load the sub-activities contained in the seriesDB, or launch the first activity from the sequencer -->
+        <update uid="activitySequencer" />
+
+    </config>
+</extension>
