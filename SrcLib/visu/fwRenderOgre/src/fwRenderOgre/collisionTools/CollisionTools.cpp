@@ -55,6 +55,8 @@
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
 
+#include <functional>
+
 namespace fwRenderOgre
 {
 
@@ -325,54 +327,44 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     }
                 }
 
-                // Check intersections depending on the render operation type.
+                // This function is use to check a ray / triangle intersection.
                 bool newClosestFound = false;
+                const auto checkHit = [&](  const ::Ogre::Vector3& _a,
+                                            const ::Ogre::Vector3& _b,
+                                            const ::Ogre::Vector3& _c)
+                                      {
+
+                                          std::pair< bool, Ogre::Real > hit = Ogre::Math::intersects(ray, _a,
+                                                                                                     _b,
+                                                                                                     _c,
+                                                                                                     positiveSide,
+                                                                                                     negativeSide);
+                                          if(hit.first)
+                                          {
+                                              if((closestDistance < 0.0f) || (hit.second < closestDistance))
+                                              {
+                                                  closestDistance = hit.second;
+                                                  newClosestFound = true;
+                                              }
+                                          }
+                                      };
+
+                // Check intersections depending on the render operation type.
                 switch(submesh->operationType)
                 {
+                    // Lines list is used to represent a quad.
                     case ::Ogre::RenderOperation::OT_LINE_LIST:
                         for(size_t i = 0; i < indices.size(); i += 4)
                         {
-                            std::pair< bool, Ogre::Real > hit = Ogre::Math::intersects(ray, vertices[indices[i]],
-                                                                                       vertices[indices[i+1]],
-                                                                                       vertices[indices[i+2]],
-                                                                                       positiveSide, negativeSide);
-                            if(hit.first)
-                            {
-                                if((closestDistance < 0.0f) || (hit.second < closestDistance))
-                                {
-                                    closestDistance = hit.second;
-                                    newClosestFound = true;
-                                }
-                            }
-
-                            hit = Ogre::Math::intersects(ray, vertices[indices[i+2]],
-                                                         vertices[indices[i+3]],
-                                                         vertices[indices[i]], positiveSide, negativeSide);
-                            if(hit.first)
-                            {
-                                if((closestDistance < 0.0f) || (hit.second < closestDistance))
-                                {
-                                    closestDistance = hit.second;
-                                    newClosestFound = true;
-                                }
-                            }
+                            checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
+                            checkHit(vertices[indices[i+2]],  vertices[indices[i+3]], vertices[indices[i]]);
                         }
                         break;
+                    // Triangles list is simply a list of triangles.
                     case ::Ogre::RenderOperation::OT_TRIANGLE_LIST:
                         for(size_t i = 0; i < indices.size(); i += 3)
                         {
-                            std::pair< bool, Ogre::Real > hit = Ogre::Math::intersects(ray, vertices[indices[i]],
-                                                                                       vertices[indices[i+1]],
-                                                                                       vertices[indices[i+2]],
-                                                                                       positiveSide, negativeSide);
-                            if(hit.first)
-                            {
-                                if((closestDistance < 0.0f) || (hit.second < closestDistance))
-                                {
-                                    closestDistance = hit.second;
-                                    newClosestFound = true;
-                                }
-                            }
+                            checkHit(vertices[indices[i]],  vertices[indices[i+1]], vertices[indices[i+2]]);
                         }
                         break;
                     default:
