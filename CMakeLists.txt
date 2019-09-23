@@ -367,63 +367,108 @@ elseif(PYTHONINTERP_FOUND)
     execute_process(
         COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags()), sep='', end='', flush=True)"
         OUTPUT_VARIABLE SIGHT_CXX_FLAGS
+		OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    string(STRIP ${SIGHT_CXX_FLAGS} SIGHT_CXX_FLAGS)
+		
+	# Add common flags
     separate_arguments(SIGHT_CXX_FLAGS)
 
-    # Release flags
-    # Execute common.get_cxx_flags_release() and store it to ${CMAKE_CXX_FLAGS_RELEASE}
-    execute_process(
-        COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags_release()), sep='', end='', flush=True)"
-        OUTPUT_VARIABLE SIGHT_CXX_FLAGS_RELEASE
-    )
-    string(STRIP ${SIGHT_CXX_FLAGS_RELEASE} SIGHT_CXX_FLAGS_RELEASE)
-    separate_arguments(SIGHT_CXX_FLAGS_RELEASE)
+	# Release flags
+	if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	    # Execute common.get_cxx_flags_release() and store it to ${SIGHT_CXX_FLAGS_RELEASE}
+		execute_process(
+			COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_release_cxx_flags()), sep='', end='', flush=True)"
+			OUTPUT_VARIABLE SIGHT_CXX_FLAGS_RELEASE
+			OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+		
+		# Add Release flags
+		separate_arguments(SIGHT_CXX_FLAGS_RELEASE)
+		list(APPEND SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS_RELEASE})
+		unset(SIGHT_CXX_FLAGS_RELEASE)
 
-    # Debug flags
-    # Execute common.get_cxx_flags_debug() and store it to ${CMAKE_CXX_FLAGS_DEBUG}
-    execute_process(
-        COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags_debug()), sep='', end='', flush=True)"
-        OUTPUT_VARIABLE SIGHT_CXX_FLAGS_DEBUG
-    )
-    string(STRIP ${SIGHT_CXX_FLAGS_DEBUG} SIGHT_CXX_FLAGS_DEBUG)
-    separate_arguments(SIGHT_CXX_FLAGS_DEBUG)
+	# Debug flags
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		option(THOROUGH_DEBUG "Use slow but thorough debuging" OFF)
+		
+		if(THOROUGH_DEBUG)
+			set(PYTHON_DEBUG_COMMAND "import common; print(\"{0}\".format(common.get_thorough_debug_cxx_flags()), sep='', end='', flush=True)")			
+		else()
+			set(PYTHON_DEBUG_COMMAND "import common; print(\"{0}\".format(common.get_debug_cxx_flags()), sep='', end='', flush=True)")
+		endif()
+		
+		# Execute common.get_cxx_flags_debug() and store it to ${SIGHT_CXX_FLAGS_DEBUG}
+		execute_process(
+			COMMAND ${PYTHON_EXECUTABLE} -u -c "${PYTHON_DEBUG_COMMAND}"
+			OUTPUT_VARIABLE SIGHT_CXX_FLAGS_DEBUG
+			OUTPUT_STRIP_TRAILING_WHITESPACE
+		)
+		
+		unset(PYTHON_DEBUG_COMMAND)
+		
+		# Add Debug flags
+		separate_arguments(SIGHT_CXX_FLAGS_DEBUG)
+		list(APPEND SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS_DEBUG})
+		unset(SIGHT_CXX_FLAGS_DEBUG)
 
-    # RelWithDebInfo flags
-    # Execute common.get_cxx_flags_relwithdebinfo() and store it to ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}
-    execute_process(
-        COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags_relwithdebinfo()), sep='', end='', flush=True)"
-        OUTPUT_VARIABLE SIGHT_CXX_FLAGS_RELWITHDEBINFO
-    )
-    string(STRIP ${SIGHT_CXX_FLAGS_RELWITHDEBINFO} SIGHT_CXX_FLAGS_RELWITHDEBINFO)
-    separate_arguments(SIGHT_CXX_FLAGS_RELWITHDEBINFO)
-
-    # Set the flags
-    if(MSVC)
-        # We override all flags instead of appending because on windows, unfortunately, we cannot mix incompatible flags and the last one doesn't take precedence
-        set(CMAKE_CXX_FLAGS ${SIGHT_CXX_FLAGS})
-        set(CMAKE_CXX_FLAGS_RELEASE ${SIGHT_CXX_FLAGS_RELEASE})
-        set(CMAKE_CXX_FLAGS_DEBUG ${SIGHT_CXX_FLAGS_DEBUG})
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO ${SIGHT_CXX_FLAGS_RELWITHDEBINFO})
-    else()
-        # Append our options, which normaly will take precedence
-        add_compile_options(
-            ${SIGHT_CXX_FLAGS}
-            "$<$<CONFIG:RELEASE>:${SIGHT_CXX_FLAGS_RELEASE}>"
-            "$<$<CONFIG:DEBUG>:${SIGHT_CXX_FLAGS_DEBUG}>"
-            "$<$<CONFIG:RELWITHDEBINFO>:${SIGHT_CXX_FLAGS_RELWITHDEBINFO}>"
-        )
-    endif()
-
-    # cleanup
-    unset(SIGHT_CXX_FLAGS)
-    unset(SIGHT_CXX_FLAGS_RELEASE)
-    unset(SIGHT_CXX_FLAGS_DEBUG)
-    unset(SIGHT_CXX_FLAGS_RELWITHDEBINFO)
+	# RelWithDebInfo flags
+    elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+		# Execute common.get_cxx_flags_relwithdebinfo() and store it to ${SIGHT_CXX_FLAGS_RELWITHDEBINFO}
+		execute_process(
+			COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_relwithdebinfo_cxx_flags()), sep='', end='', flush=True)"
+			OUTPUT_VARIABLE SIGHT_CXX_FLAGS_RELWITHDEBINFO
+		)
+		
+		# Add RelWithDebInfo flags
+		separate_arguments(SIGHT_CXX_FLAGS_RELWITHDEBINFO)
+		list(APPEND SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS_RELWITHDEBINFO})
+		unset(SIGHT_CXX_FLAGS_RELWITHDEBINFO)
+	endif()
 
     # Restore old PYTHONPATH environment
     set(ENV{PYTHONPATH} ${OLD_PYTHONPATH})
     unset(OLD_PYTHONPATH)
+	
+	# Filter incompatible flags on MSVC to avoid errors and command-line warning D9025
+	if(MSVC)
+		if(SIGHT_CXX_FLAGS MATCHES "/O[x12]")
+			# /RTC[1csu] is incompatible with optimization
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+			string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+				
+			# Avoid errors and command-line Warning D9025
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+			string(REGEX REPLACE "/O[x12d]" "" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+		endif()
+			
+		if(SIGHT_CXX_FLAGS MATCHES "/Ob[012]")
+			# Avoid errors and command-line Warning D9025
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS}")
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+			string(REGEX REPLACE "/Ob[012]" "" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+		endif()
+	endif()
+	
+	# Finally, add the flags
+	add_compile_options(${SIGHT_CXX_FLAGS})
+	unset(SIGHT_CXX_FLAGS)
 endif()
 
 # C/C++ standard
@@ -445,21 +490,46 @@ add_compile_options(
     "$<$<CXX_COMPILER_ID:MSVC>:/W4>"
 )
 
-# Use external/system includes available from Visual Studio 15.6
-# source https://gitlab.kitware.com/cmake/cmake/issues/17904
-if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-    add_compile_options("/experimental:external;/external:W0")
-    set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
-endif()
+# MSVC need special treatment
+if(MSVC)
+	# Remove Command-Line Warning D9025
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+	string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
-# PCH hack
-if(MSVC AND ENABLE_PCH)
-    # Store debug information in the .obj file instead of a PDB.
-    string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-    # Force set debug compile flags.
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "Debug flags" FORCE)
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" CACHE STRING "RelWithDebInfo flags" FORCE)
+	# Use external/system includes available from Visual Studio 15.6
+	# source https://gitlab.kitware.com/cmake/cmake/issues/17904
+	if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
+		add_compile_options("/experimental:external;/external:W0")
+		set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
+	endif()
+
+	if(ENABLE_PCH)
+		# Store debug information in the .obj file instead of a PDB.
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+		string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")		
+	endif()
+	
+	# Force set cleaned compile flags.
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "" FORCE)
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}" CACHE STRING "" FORCE)
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "" FORCE)
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" CACHE STRING "" FORCE)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "" FORCE)
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}" CACHE STRING "" FORCE)
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}" CACHE STRING "" FORCE)
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}" CACHE STRING "" FORCE)
 endif()
 
 # Color for ninja and Clang on Linux and OSX

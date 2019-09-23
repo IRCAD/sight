@@ -1,8 +1,8 @@
 stages:
-  - lint
-  - build
-  - doc
-  - deploy
+#  - lint
+#  - build
+#  - doc
+#  - deploy
 
 .linux_template: &linux_job
   image: ${DOCKER_ENVDEV_MINT19}

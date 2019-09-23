@@ -40,9 +40,10 @@ endmacro()
 
 macro(installConanDeps CONAN_DEPS_LIST)
 
-    set(CONAN_BUILD_OPTION "never")
     if(CONAN_BUILD_MISSING)
         set(CONAN_BUILD_OPTION "missing")
+	else()
+		set(CONAN_BUILD_OPTION "never")
     endif()
 
     if(UNIX AND NOT APPLE AND NOT CONAN_SETTINGS)
@@ -100,10 +101,17 @@ macro(installConanDeps CONAN_DEPS_LIST)
     if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
         set(CMAKE_BUILD_TYPE "Release")
     endif()
+	
+	# Force use of c++17 as standard
+	if(MSVC)
+		list(APPEND CONAN_SETTINGS "compiler.cppstd=17")
+	else()
+		list(APPEND CONAN_SETTINGS "compiler.cppstd=gnu17")
+	endif()
 
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
-        BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
+        BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
         OPTIONS ${CONAN_OPTIONS}
         BUILD ${CONAN_BUILD_OPTION}
         SETTINGS ${CONAN_SETTINGS}
