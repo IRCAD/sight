@@ -100,7 +100,7 @@ void Color::setRGBA(const std::string& hexaColor )
     const std::string redString = hexaColor.substr(1, 2);
     const std::string greenString = hexaColor.substr(3, 2);
     const std::string blueString = hexaColor.substr(5, 2);
-    float r, g, b, a = 255.f;
+    std::int32_t r, g, b, a = 255;
 
     std::istringstream iss;
     iss.str(redString);
@@ -120,7 +120,12 @@ void Color::setRGBA(const std::string& hexaColor )
         iss >> std::hex >> a;
     }
 
-    this->setRGBA(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
+    this->setRGBA(
+        static_cast<float>(r)/255.0f,
+        static_cast<float>(g)/255.0f,
+        static_cast<float>(b)/255.0f,
+        static_cast<float>(a)/255.0f
+        );
 }
 
 //------------------------------------------------------------------------------
