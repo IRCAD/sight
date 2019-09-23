@@ -297,27 +297,31 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                 bool negativeSide = true;
                 if(material != nullptr)
                 {
-                    SLM_ASSERT("The material must have at least one technique", material->getTechnique(0) != nullptr);
-                    SLM_ASSERT("The material's technique must have at least one pass", material->getTechnique(
-                                   0)->getPass(0) != nullptr);
-                    const ::Ogre::CullingMode cullingMode = material->getTechnique(0)->getPass(0)->getCullingMode();
-                    switch (cullingMode)
+                    positiveSide = false;
+                    negativeSide = false;
+                    SLM_ASSERT("The material must have at least one technique",
+                               material->getBestTechnique() != nullptr);
+                    SLM_ASSERT("The material's technique must have at least one pass",
+                               material->getBestTechnique()->getPass(0) != nullptr);
+                    for(const ::Ogre::Pass* pass : material->getBestTechnique()->getPasses())
                     {
-                        case ::Ogre::CULL_NONE:
-                            positiveSide = true;
-                            negativeSide = true;
-                            break;
-                        case ::Ogre::CULL_CLOCKWISE:
-                            positiveSide = true;
-                            negativeSide = false;
-                            break;
-                        case ::Ogre::CULL_ANTICLOCKWISE:
-                            positiveSide = false;
-                            negativeSide = true;
-                            break;
-                        default:
-                            SLM_ERROR("Unsuported culling mode");
-                            break;
+                        const ::Ogre::CullingMode cullingMode = pass->getCullingMode();
+                        switch (cullingMode)
+                        {
+                            case ::Ogre::CULL_NONE:
+                                positiveSide = true;
+                                negativeSide = true;
+                                break;
+                            case ::Ogre::CULL_CLOCKWISE:
+                                positiveSide = true;
+                                break;
+                            case ::Ogre::CULL_ANTICLOCKWISE:
+                                negativeSide = true;
+                                break;
+                            default:
+                                SLM_ERROR("Unsuported culling mode");
+                                break;
+                        }
                     }
                 }
 
