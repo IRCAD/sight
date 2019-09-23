@@ -51,7 +51,7 @@
  * ActivityLauncher uses the ActivitySequencer object with the SActivityView. It contains an AppManager an can be used
  * standalone to manage activitiy launching.
  *
- * It displays a "stepper" to launch the activities sequencially and display the current activity in the main container.
+ * It displays a "stepper" to launch the activities sequentially and display the current activity in the main container.
  *
  *  @code{.qml}
     ActivityLauncher {
@@ -73,6 +73,10 @@
         appManager: MesherManager {
             id: appManager
             frameBuffer: scene3D
+        }
+        Component.onCompleted: {
+            appManager.replaceInputs(replaceMap)
+            appManager.initialize()
         }
         // Your layout, object, service...
         // ...
