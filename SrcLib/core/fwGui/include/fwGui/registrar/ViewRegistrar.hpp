@@ -51,7 +51,7 @@ class FWGUI_CLASS_API ViewRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsMacro((ViewRegistrar)(::fwGui::GuiBaseObject));
+    fwCoreClassMacro(ViewRegistrar, ::fwGui::GuiBaseObject);
 
     //------------------------------------------------------------------------------
 

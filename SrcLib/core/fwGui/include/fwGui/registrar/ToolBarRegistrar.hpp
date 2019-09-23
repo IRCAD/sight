@@ -45,7 +45,7 @@ class FWGUI_CLASS_API ToolBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsMacro((ToolBarRegistrar)(::fwGui::GuiBaseObject));
+    fwCoreClassMacro(ToolBarRegistrar, ::fwGui::GuiBaseObject);
 
     //------------------------------------------------------------------------------
 

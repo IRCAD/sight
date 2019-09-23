@@ -40,7 +40,7 @@ class FWGUI_CLASS_API PulseProgressDialog : public IPulseProgressDialog
 {
 public:
 
-    fwCoreClassDefinitionsMacro((PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog));
+    fwCoreClassMacro(PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog);
 
     //------------------------------------------------------------------------------
 

@@ -42,7 +42,7 @@ class FWZIP_CLASS_API WriteZipArchive : public IWriteArchive
 
 public:
 
-    fwCoreClassDefinitionsMacro((WriteZipArchive)(IWriteArchive));
+    fwCoreClassMacro(WriteZipArchive, IWriteArchive);
 
     //------------------------------------------------------------------------------
 

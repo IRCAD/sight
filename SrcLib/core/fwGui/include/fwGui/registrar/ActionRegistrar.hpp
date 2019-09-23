@@ -38,7 +38,7 @@ class FWGUI_CLASS_API ActionRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsMacro((ActionRegistrar)(::fwGui::GuiBaseObject));
+    fwCoreClassMacro(ActionRegistrar, ::fwGui::GuiBaseObject);
 
     //------------------------------------------------------------------------------
 

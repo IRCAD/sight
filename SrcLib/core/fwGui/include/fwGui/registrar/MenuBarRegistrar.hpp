@@ -42,7 +42,7 @@ class FWGUI_CLASS_API MenuBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsMacro((MenuBarRegistrar)(::fwGui::GuiBaseObject));
+    fwCoreClassMacro(MenuBarRegistrar, ::fwGui::GuiBaseObject);
 
     //------------------------------------------------------------------------------
 
