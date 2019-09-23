@@ -44,6 +44,20 @@
 #include <boost/preprocessor/seq/transform.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
 
+#define __FWCORE_HELPER_STR(X) #X
+#if defined(__clang__)
+    #define __FWCORE_DEPRECATED_MACRO(message) \
+    _Pragma(__FWCORE_HELPER_STR(GCC warning("[DEPRECATED]: " message)))
+#elif defined(__GNUC__)
+    #define __FWCORE_DEPRECATED_MACRO(message) \
+    _Pragma(__FWCORE_HELPER_STR(GCC warning message))
+#elif defined(_MSC_VER)
+    #define __FWCORE_DEPRECATED_MACRO(_message) \
+    __pragma(message(__FILE__ "[DEPRECATED]: " _message))
+#else
+    #define __FWCORE_DEPRECATED_MACRO(message)
+#endif
+
 #ifdef _WIN32
 #pragma warning(disable: 4003)
 #endif //_WIN32
@@ -218,7 +232,9 @@
  *     }
  *
  */
-#define fwCorePredeclare( _cls_ ) \
+#define fwCorePredeclare( _cls_ )                                               \
+    __FWCORE_DEPRECATED_MACRO(                                                  \
+        "fwCorePredeclare is no longer supported and will be removed in 22.0 ") \
     BOOST_PP_SEQ_FOLD_RIGHT( __FWCORE_PREDECLARE, BOOST_PP_SEQ_NIL, _cls_)
 
 #ifdef __GNUC__
@@ -247,18 +263,22 @@
                             __FWCORE_TYPEDEF_SUPERCLASS_NAME::isTypeOf( type ), false);     \
     }
 
-#define fwCoreIsTypeOfMacro(_classinfo_)                              \
-    __FWCOREISTYPEOFMACRO(_classinfo_)                                \
-    virtual bool isA(const std::string& type) const override          \
-    {                                                                 \
-        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);            \
+#define fwCoreIsTypeOfMacro(_classinfo_)                                           \
+    __FWCORE_DEPRECATED_MACRO(                                                     \
+        "fwCoreIsTypeOfMacro is no longer supported and will be removed in 22.0 ") \
+    __FWCOREISTYPEOFMACRO(_classinfo_)                                             \
+    virtual bool isA(const std::string& type) const override                       \
+    {                                                                              \
+        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                         \
     }
 
-#define fwCoreInterfaceIsTypeOfMacro(_classinfo_)                     \
-    __FWCOREISTYPEOFMACRO(_classinfo_)                                \
-    virtual bool isA(const std::string& type) const                   \
-    {                                                                 \
-        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);            \
+#define fwCoreInterfaceIsTypeOfMacro(_classinfo_)                                           \
+    __FWCORE_DEPRECATED_MACRO(                                                              \
+        "fwCoreInterfaceIsTypeOfMacro is no longer supported and will be removed in 22.0 ") \
+    __FWCOREISTYPEOFMACRO(_classinfo_)                                                      \
+    virtual bool isA(const std::string& type) const                                         \
+    {                                                                                       \
+        return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                                  \
     }
 
 /**
@@ -288,6 +308,8 @@
 #endif
 
 #define fwCoreClassFactoryMacro_2(_classinfo_, _factory_)                                               \
+    __FWCORE_DEPRECATED_MACRO(                                                                          \
+        "fwCoreClassFactoryMacro is no longer supported and will be removed in 22.0 ")                  \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
      * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
@@ -299,6 +321,8 @@
     }
 
 #define fwCoreClassFactoryMacro_3(_classinfo_, _parameters_, _factory_)                                 \
+    __FWCORE_DEPRECATED_MACRO(                                                                          \
+        "fwCoreClassFactoryMacro is no longer supported and will be removed in 22.0 ")                  \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
      * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
@@ -334,6 +358,8 @@
 #endif
 
 #define fwCoreClassDefinitionsWithFactoryMacro_2(_classinfo_, _factory_)                                \
+    __FWCORE_DEPRECATED_MACRO(                                                                          \
+        "fwCoreClassDefinitionsWithFactoryMacro is no longer supported and will be removed in 22.0 ")   \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
      * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
@@ -348,6 +374,8 @@
     fwCoreIsTypeOfMacro(_classinfo_)
 
 #define fwCoreClassDefinitionsWithFactoryMacro_3(_classinfo_, _parameters_, _factory_)                  \
+    __FWCORE_DEPRECATED_MACRO(                                                                          \
+        "fwCoreClassDefinitionsWithFactoryMacro is no longer supported and will be removed in 22.0 ")   \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
      * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                 \
@@ -366,10 +394,12 @@
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  */
-#define fwCoreClassDefinitionsMacro(_classinfo_)                                                        \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_))                                         \
-    __FWCORE_CLASSNAME_MACRO()                                                                          \
+#define fwCoreClassDefinitionsMacro(_classinfo_)                                           \
+    __FWCORE_DEPRECATED_MACRO(                                                             \
+        "fwCoreClassDefinitionsMacro is no longer supported and will be removed in 22.0 ") \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                   \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_))                            \
+    __FWCORE_CLASSNAME_MACRO()                                                             \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -380,6 +410,8 @@
  *                  be used if baseclassname == classname
  */
 #define fwCoreServiceClassDefinitionsMacro(_classinfo_)                                           \
+    __FWCORE_DEPRECATED_MACRO(                                                                    \
+        "fwCoreServiceClassDefinitionsMacro is no longer supported and will be removed in 22.0 ") \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                          \
     __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_))                                   \
     __FWCORE_CLASSNAME_MACRO()                                                                    \
@@ -393,10 +425,12 @@
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  */
-#define fwCoreNonInstanciableClassDefinitionsMacro(_classinfo_)                                   \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                          \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_))                                   \
-    __FWCORE_CLASSNAME_MACRO()                                                                    \
+#define fwCoreNonInstanciableClassDefinitionsMacro(_classinfo_)                                           \
+    __FWCORE_DEPRECATED_MACRO(                                                                            \
+        "fwCoreNonInstanciableClassDefinitionsMacro is no longer supported and will be removed in 22.0 ") \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                                  \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_))                                           \
+    __FWCORE_CLASSNAME_MACRO()                                                                            \
     fwCoreIsTypeOfMacro(_classinfo_)
 
 /**
@@ -407,10 +441,12 @@
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  */
-#define fwCoreBaseClassDefinitionsMacro(_classinfo_)                                              \
-    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                          \
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_))                                   \
-    __FWCORE_INTERFACE_MACRO()                                                                    \
+#define fwCoreBaseClassDefinitionsMacro(_classinfo_)                                           \
+    __FWCORE_DEPRECATED_MACRO(                                                                 \
+        "fwCoreBaseClassDefinitionsMacro is no longer supported and will be removed in 22.0 ") \
+    __FWCORE_CLASS_TYPEDEFS(_classinfo_)                                                       \
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME(_classinfo_))                                \
+    __FWCORE_INTERFACE_MACRO()                                                                 \
     fwCoreInterfaceIsTypeOfMacro(_classinfo_)
 
 /**  @} */
