@@ -135,16 +135,15 @@ function(assign_precompiled_header _target _pch _pch_header)
                 set(_pch_compile_flags)
             endif()
             
-            separate_arguments(_pch_compile_flags)
-            list(APPEND _pch_compile_flags -Winvalid-pch)
+            set(_pch_compile_flags "${_pch_compile_flags} -Winvalid-pch")
             if(APPLE)
-                list(APPEND _pch_compile_flags --relocatable-pch)
+                set(_pch_compile_flags "${_pch_compile_flags} --relocatable-pch")
             endif()
             
             if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-                list(APPEND _pch_compile_flags -include-pch "${_pch}")
+                set(_pch_compile_flags "${_pch_compile_flags} -include-pch \"${_pch}\"")
             else()
-                list(INSERT _pch_compile_flags 0 -include "${_pch_header}" )
+                set(_pch_compile_flags "-include \"${_pch_header}\" ${_pch_compile_flags}")
             endif()
 
             get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
@@ -153,7 +152,6 @@ function(assign_precompiled_header _target _pch _pch_header)
             endif()
             list(APPEND _object_depends "${_pch}")
 
-            combine_arguments(_pch_compile_flags)
             set_source_files_properties(${_source} PROPERTIES
                 COMPILE_FLAGS "${_pch_compile_flags}"
                 OBJECT_DEPENDS "${_object_depends}")
