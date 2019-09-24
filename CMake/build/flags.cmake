@@ -136,7 +136,9 @@ add_compile_options(
 
 # Warning level
 add_compile_options(
-    "$<$<CXX_COMPILER_ID:Clang,AppleClang,GNU>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
+    "$<$<CXX_COMPILER_ID:GNU>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
+    "$<$<CXX_COMPILER_ID:Clang>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
+    "$<$<CXX_COMPILER_ID:AppleClang>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
     "$<$<CXX_COMPILER_ID:MSVC>:/W4>"
 )
 
