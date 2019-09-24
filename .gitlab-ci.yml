@@ -45,6 +45,7 @@ stages:
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
     FW_IGNORE_SLOW_TESTS: 1
+    CUDA_PATH: "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1"
   before_script:
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
