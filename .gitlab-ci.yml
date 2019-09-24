@@ -17,8 +17,8 @@ stages:
     - export CCACHE_NOHASHDIR=1
     - export CCACHE_DIR=/cache/ccache
     - conan config set storage.path=/cache/conan-cache/data
-    - export CC=/usr/local/lib/ccache/gcc
-    - export CXX=/usr/local/lib/ccache/g++
+    - export CC=/usr/local/lib/ccache/gcc-8
+    - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
