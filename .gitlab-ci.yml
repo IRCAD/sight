@@ -1,8 +1,8 @@
 stages:
-#  - lint
-#  - build
-#  - doc
-#  - deploy
+  - lint
+  - build
+  - doc
+  - deploy
 
 .linux_template: &linux_job
   image: ${DOCKER_ENVDEV_MINT19}
@@ -39,7 +39,7 @@ stages:
     - export CXX=/usr/local/opt/ccache/libexec/clang++
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
   tags:
-    - mojave
+    - apple-clang-11.0
 
 .windows_template: &windows_job
   variables:
