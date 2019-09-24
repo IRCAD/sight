@@ -281,6 +281,16 @@ public:
     /// Add a proxy connection
     FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& proxy);
 
+    /**
+     * @brief Define the value of a required input
+     *
+     * For OBJECT, the value must be the fwID of an existing object.
+     */
+    FWSERVICES_API void replaceInput(const std::string& key, const std::string& value);
+
+    /// Check if all the required inputs are present and add the object in the manager
+    FWSERVICES_API bool checkInputs();
+
 protected:
 
     enum class InputType
@@ -317,16 +327,6 @@ protected:
      */
     FWSERVICES_API void requireInput(const std::string& key, const InputType& type,
                                      const std::string& defaultValue = "");
-
-    /// Check if all the required inputs are present and add the object in the manager
-    FWSERVICES_API bool checkInputs();
-
-    /**
-     * @brief Define the value of a required input
-     *
-     * For OBJECT, the value must be the fwID of an existing object.
-     */
-    FWSERVICES_API void replaceInput(const std::string& key, const std::string& value);
 
 private:
 
