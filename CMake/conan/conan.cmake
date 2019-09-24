@@ -42,8 +42,8 @@ macro(installConanDeps CONAN_DEPS_LIST)
 
     if(CONAN_BUILD_MISSING)
         set(CONAN_BUILD_OPTION "missing")
-	else()
-		set(CONAN_BUILD_OPTION "never")
+    else()
+        set(CONAN_BUILD_OPTION "never")
     endif()
 
     if(UNIX AND NOT APPLE AND NOT CONAN_SETTINGS)
@@ -76,13 +76,13 @@ macro(installConanDeps CONAN_DEPS_LIST)
         set(CONAN_DISTRO "${LSB_RELEASE_ID_LOWER}${LSB_MAJOR_RELEASE_NUMBER}" CACHE INTERNAL "custom conan distro" FORCE)
         set(CONAN_SETTINGS "os.distro=${CONAN_DISTRO}" CACHE INTERNAL "custom conan settings" FORCE)
     endif()
-	
-	# Force use of c++17 as standard
-	if(MSVC)
-		list(APPEND CONAN_SETTINGS "compiler.cppstd=17")
-	else()
-		list(APPEND CONAN_SETTINGS "compiler.cppstd=gnu17")
-	endif()
+    
+    # Force use of c++17 as standard
+    if(MSVC)
+        list(APPEND CONAN_SETTINGS "compiler.cppstd=17")
+    else()
+        list(APPEND CONAN_SETTINGS "compiler.cppstd=gnu17")
+    endif()
 
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
