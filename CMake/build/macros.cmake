@@ -983,8 +983,12 @@ macro(fwLoadProperties)
     endif()
 
     if( TYPE STREQUAL "EXECUTABLE" OR TYPE STREQUAL "APP" )
-        generic_install()
+        # Only execute install for the required targets, and not implicit dependencies
+        if(${NAME} IN_LIST PROJECTS_TO_BUILD)
+            generic_install()
+        endif()
     endif()
+
 
 endmacro()
 
