@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -355,6 +355,70 @@ cv::Ptr< ::cv::aruco::Dictionary> generateArucoDictionary(const size_t _width, c
 }
 
 //-----------------------------------------------------------------------------
+
+::fwData::PointList::sptr detectChessboard(const ::cv::Mat& _img,
+                                           size_t _xDim, size_t _yDim, float _scale)
+{
+    ::fwData::PointList::sptr pointlist;
+
+    OSLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
+
+    // Ensure that we have a true depth-less 2D image.
+    const ::cv::Mat img2d = _img.dims == 3 ? _img.reshape(0, 2, _img.size + 1) : _img;
+
+    ::cv::Mat grayImg;
+    if (_img.channels() == 1)
+    {
+        grayImg = img2d;
+    }
+    else
+    {
+        const auto cvtMethod = _img.channels() == 3 ? CV_RGB2GRAY : CV_RGBA2GRAY;
+
+        ::cv::cvtColor(img2d, grayImg, cvtMethod);
+    }
+
+    const ::cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
+    std::vector< ::cv::Point2f > corners;
+
+    const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS |
+                      CV_CALIB_CB_FAST_CHECK;
+
+    ::cv::Mat detectionImage;
+
+    if(_scale < 1.f)
+    {
+        ::cv::resize(grayImg, detectionImage, ::cv::Size(), _scale, _scale);
+    }
+    else
+    {
+        detectionImage = grayImg;
+    }
+
+    const bool patternWasFound = ::cv::findChessboardCorners(detectionImage, boardSize, corners, flags);
+
+    if (patternWasFound)
+    {
+        // Rescale points to get their coordinates in the full scale image.
+        const auto rescale = [_scale](::cv::Point2f& _pt) { _pt = _pt / _scale; };
+        std::for_each(corners.begin(), corners.end(), rescale);
+
+        // Refine points coordinates in the full scale image.
+        ::cv::TermCriteria term(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS, 30, 0.1);
+        ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
+
+        pointlist                                       = ::fwData::PointList::New();
+        ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
+        points.reserve(corners.size());
+
+        const auto cv2SightPt = [](const ::cv::Point2f& p) { return ::fwData::Point::New(p.x, p.y); };
+        std::transform(corners.cbegin(), corners.cend(), std::back_inserter(points), cv2SightPt);
+    }
+
+    return pointlist;
+}
+
+// ----------------------------------------------------------------------------
 
 }//namespace calibration3d
 }//namespace helper

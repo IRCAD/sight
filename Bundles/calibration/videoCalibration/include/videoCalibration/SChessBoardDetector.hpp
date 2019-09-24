@@ -119,19 +119,6 @@ private:
     /// Runs the detection for the given input index.
     void doDetection(size_t _imageIndex);
 
-    /**
-     * @brief Tries to detect a chessboard with the given dimensions in the image.
-     *
-     * @param[in] _img Image in which to search for a chessboard.
-     * @param[in] _xDim Width of the chessboard in number of tiles.
-     * @param[in] _yDim Height of the chessboard in number of tiles.
-     * @param[in] _scale Scale applied to the input image. Downscaling speeds up the detection.
-     *
-     * @return List of detected chessboard points. Empty if detection failed.
-     */
-    static ::fwData::PointList::sptr detectChessboard(const ::fwData::Image::csptr& _img, size_t _xDim, size_t _yDim,
-                                                      float _scale);
-
     /// Signal emitted after detection.
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
 

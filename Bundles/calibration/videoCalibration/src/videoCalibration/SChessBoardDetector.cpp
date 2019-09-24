@@ -24,6 +24,8 @@
 
 #include <arData/CalibrationInfo.hpp>
 
+#include <calibration3d/helper.hpp>
+
 #include <cvIO/Image.hpp>
 
 #include <fwCom/Signal.hxx>
@@ -229,7 +231,9 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
 
     if(isValid)
     {
-        m_pointLists[_imageIndex] = detectChessboard(img, m_width, m_height, m_scale);
+        const ::cv::Mat cvImg = ::cvIO::Image::moveToCv(img);
+
+        m_pointLists[_imageIndex] = ::calibration3d::helper::detectChessboard(cvImg, m_width, m_height, m_scale);
 
         if (m_pointLists[_imageIndex] != nullptr)
         {
@@ -259,75 +263,6 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
             sig->asyncEmit();
         }
     }
-}
-
-// ----------------------------------------------------------------------------
-
-::fwData::PointList::sptr SChessBoardDetector::detectChessboard(const ::fwData::Image::csptr& _img,
-                                                                size_t _xDim, size_t _yDim, float _scale)
-{
-    ::fwData::PointList::sptr pointlist;
-
-    const auto pixType = _img->getType();
-    OSLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
-
-    const ::cv::Mat img = ::cvIO::Image::moveToCv(_img);
-
-    // Ensure that we have a true depth-less 2D image.
-    const ::cv::Mat img2d = img.dims == 3 ? img.reshape(0, 2, img.size + 1) : img;
-
-    ::cv::Mat grayImg;
-    if (_img->getNumberOfComponents() == 1)
-    {
-        grayImg = img2d;
-    }
-    else
-    {
-        const auto cvtMethod = _img->getNumberOfComponents() == 3 ? CV_RGB2GRAY : CV_RGBA2GRAY;
-
-        ::cv::cvtColor(img2d, grayImg, cvtMethod);
-    }
-
-    const ::cv::Size boardSize(static_cast<int>(_xDim) - 1, static_cast<int>(_yDim) - 1);
-    std::vector< ::cv::Point2f > corners;
-
-    const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS |
-                      CV_CALIB_CB_FAST_CHECK;
-
-    ::cv::Mat detectionImage;
-
-    if(_scale < 1.f)
-    {
-        ::cv::resize(grayImg, detectionImage, ::cv::Size(), _scale, _scale);
-    }
-    else
-    {
-        detectionImage = grayImg;
-    }
-
-    const bool patternWasFound = ::cv::findChessboardCorners(detectionImage, boardSize, corners, flags);
-
-    if (patternWasFound)
-    {
-        // Rescale points to get their coordinates in the full scale image.
-        std::for_each(corners.begin(), corners.end(), [_scale](::cv::Point2f& _pt) { _pt = _pt / _scale; });
-
-        // Refine points coordinates in the full scale image.
-        ::cv::TermCriteria term(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS, 30, 0.1);
-        ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
-
-        pointlist                                       = ::fwData::PointList::New();
-        ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
-        points.reserve(corners.size());
-
-        for (::cv::Point2f& p : corners)
-        {
-            ::fwData::Point::sptr point = ::fwData::Point::New(p.x, p.y);
-            points.push_back(point);
-        }
-    }
-
-    return pointlist;
 }
 
 // ----------------------------------------------------------------------------
