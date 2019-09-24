@@ -49,6 +49,8 @@ stages:
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
     - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - chcp 1252
   tags:
     - shell
     - windows
@@ -141,8 +143,6 @@ build:debug-windows:
   dependencies: []
   script:
     - cd "%CI_PROJECT_DIR%/build"
-    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
-    - chcp 1252
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja
@@ -171,8 +171,6 @@ build:release-windows:
   dependencies: []
   script:
     - cd "%CI_PROJECT_DIR%/build"
-    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
-    - chcp 1252
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja

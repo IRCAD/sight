@@ -17,7 +17,9 @@ if(USE_SYSTEM_LIB OR NOT PYTHONINTERP_FOUND)
     # No conan or python, means we must use hard coded default
     # We simply use CMAKE one plus some very basic stuff
     add_compile_options(
-        "$<$CXX_COMPILER_ID:Clang,AppleClang,GNU>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+        "$<$CXX_COMPILER_ID:GNU>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+        "$<$CXX_COMPILER_ID:Clang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+        "$<$CXX_COMPILER_ID:AppleClang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
         "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:AVX;/MP;/bigobj>"
     )
 
@@ -169,7 +171,8 @@ endif()
 # Color for ninja and Clang on Linux and OSX
 if(CMAKE_GENERATOR STREQUAL "Ninja")
     add_compile_options(
-        "$<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics>"
+        "$<$<CXX_COMPILER_ID:Clang>:-fcolor-diagnostics>"
+        "$<$<CXX_COMPILER_ID:AppleClang>:-fcolor-diagnostics>"
         "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>"
     )
 endif()
