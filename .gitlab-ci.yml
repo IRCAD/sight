@@ -22,7 +22,6 @@ stages:
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
-    - conan remove ogre -f
 
 .macos_template: &macos_job
   variables:
@@ -39,7 +38,6 @@ stages:
     - export CC=/usr/local/opt/ccache/libexec/clang
     - export CXX=/usr/local/opt/ccache/libexec/clang++
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
-    - conan remove ogre -f
   tags:
     - apple-clang-11.0
 
@@ -54,7 +52,6 @@ stages:
     - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
     - chcp 1252
-    - conan remove ogre -f
   tags:
     - shell
     - windows
