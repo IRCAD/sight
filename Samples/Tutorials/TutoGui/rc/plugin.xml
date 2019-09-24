@@ -2,6 +2,7 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
     <id>tutoGuiConfig</id>

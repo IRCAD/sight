@@ -59,13 +59,13 @@ void SImage::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    QVBoxLayout* layout = new QVBoxLayout();
-    QLabel* label       = new QLabel("");
+    QVBoxLayout* const layout = new QVBoxLayout();
+    QLabel* const label       = new QLabel("");
 
-    QPixmap* pixmap = new QPixmap();
+    QPixmap* const pixmap = new QPixmap();
 
     pixmap->load(m_path.string().c_str());
 
@@ -113,8 +113,8 @@ void SImage::configuring()
 
     m_path = ::fwRuntime::getBundleResourceFilePath(pathCfg);
 
-    m_width  = cfg.get_optional< int >("width").get_value_or(m_width);
-    m_height = cfg.get_optional< int >("height").get_value_or(m_height);
+    m_width  = cfg.get< int >("width", m_width);
+    m_height = cfg.get< int >("height", m_height);
 
 }
 

@@ -89,6 +89,7 @@ protected:
     /// This method is used to configure the class parameters.
     GUIQT_API virtual void configuring() override;
 
+    /** @} */
 private:
 
     ::boost::filesystem::path m_path; /// Path of the image
