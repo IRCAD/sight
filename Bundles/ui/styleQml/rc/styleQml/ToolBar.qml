@@ -5,13 +5,13 @@ ToolBar {
 
     background: Rectangle {
         implicitHeight: 40
-        color: Material.background
+        color: Theme.background
     }
     Rectangle {
         width: parent.width
         height: 1
         anchors.bottom: parent.bottom
         color: "transparent"
-        border.color: Material.primary
+        border.color: Theme.primary
     }
 }

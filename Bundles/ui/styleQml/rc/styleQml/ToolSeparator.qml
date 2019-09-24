@@ -9,6 +9,6 @@ ToolSeparator {
                 contentItem: Rectangle {
                     implicitWidth: parent.vertical ? 1 : 24
                     implicitHeight: parent.vertical ? 24 : 1
-                    color: Material.primary
+                    color: Theme.primary
                 }
 }

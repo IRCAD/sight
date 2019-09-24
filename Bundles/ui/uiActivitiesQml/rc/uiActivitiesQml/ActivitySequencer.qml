@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import uiActivitiesQml 1.0
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Material 2.12
 
 import styleQml 1.0
 
@@ -68,7 +69,7 @@ RowLayout {
                         {
                             color = Theme.accent
                         }
-                        toolButton.hovered? Qt.lighter(color) : color
+                        toolButton.hovered? Material.color(Material.Grey, Material.Shade400) : color
                     }
                     radius: 10
                 }

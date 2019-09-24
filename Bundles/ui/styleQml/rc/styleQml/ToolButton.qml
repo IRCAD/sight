@@ -8,7 +8,7 @@ ToolButton {
         text: control.text
         font: control.font
         opacity: enabled ? 1.0 : 0.3
-        color: Material.primary
+        color: Theme.primary
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
