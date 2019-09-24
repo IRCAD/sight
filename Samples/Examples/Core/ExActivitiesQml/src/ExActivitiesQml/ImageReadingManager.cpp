@@ -65,22 +65,14 @@ ImageReadingManager::~ImageReadingManager() noexcept
 
 void ImageReadingManager::initialize()
 {
-    this->create();
+    this->::fwQml::IQmlAppManager::initialize();
 
-    if (this->checkInputs())
+    if (m_isInitialized)
     {
         auto proxy = ::fwServices::registry::Proxy::getDefault();
         proxy->connect(this->getInputID(s_VALIDATION_CHANNEL), this->signal< VoidSignalType >(s_VALIDATED_SIG));
 
         this->startServices();
-    }
-    else
-    {
-        const std::string msg = "All the required inputs are not present, '" + this->getInputID("") +
-                                "' activity will not be launched";
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Manager Initialization",
-                                                          msg,
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
     }
 }
 

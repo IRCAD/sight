@@ -95,7 +95,7 @@ Activity {
                 Layout.fillWidth: true
 
                 onServiceCreated: {
-                    appManager.onServiceCreated(srv)
+                    exImageDisplaying.registerService(srv)
                 }
             }
         }

@@ -7,9 +7,20 @@ Item {
 
     property IQmlAppManager appManager
     property var replaceMap
+    property var serviceList: []
+
+    function registerService(service){
+        console.log("push " + service)
+        serviceList.push(service)
+    }
 
     Component.onCompleted: {
         appManager.replaceInputs(replaceMap)
         appManager.initialize()
+        for (var service in serviceList){
+            console.log("register service: " + serviceList[service]);
+            appManager.onServiceCreated(serviceList[service])
+        }
+
     }
 }

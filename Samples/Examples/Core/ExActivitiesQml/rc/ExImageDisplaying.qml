@@ -74,7 +74,7 @@ Activity {
                     Layout.fillWidth: true
 
                     onServiceCreated: {
-                        appManager.onServiceCreated(srv)
+                        exImageDisplaying.registerService(srv)
                     }
                 }
             }
@@ -95,7 +95,7 @@ Activity {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 200
                     onServiceCreated: {
-                        appManager.onServiceCreated(srv)
+                        exImageDisplaying.registerService(srv)
                     }
                 }
 
@@ -105,7 +105,7 @@ Activity {
                     Layout.preferredHeight: 120
 
                     onServiceCreated: {
-                        appManager.onServiceCreated(srv)
+                        exImageDisplaying.registerService(srv)
                     }
                 }
 
@@ -115,7 +115,7 @@ Activity {
                     Layout.preferredHeight: 800
 
                     onServiceCreated: {
-                        appManager.onServiceCreated(srv)
+                        exImageDisplaying.registerService(srv)
                     }
                 }
             }

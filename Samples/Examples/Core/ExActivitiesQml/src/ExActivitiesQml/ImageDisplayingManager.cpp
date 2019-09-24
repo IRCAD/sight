@@ -69,9 +69,9 @@ ImageDisplayingManager::~ImageDisplayingManager() noexcept
 
 void ImageDisplayingManager::initialize()
 {
-    this->create();
+    this->::fwQml::IQmlAppManager::initialize();
 
-    if (this->checkInputs())
+    if (m_isInitialized)
     {
         ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
         auto workerRegistry = ::fwServices::registry::ActiveWorkers::getDefault();
@@ -98,14 +98,6 @@ void ImageDisplayingManager::initialize()
         proxy->connect(this->getInputID(s_EMPTY_SELECTION_CHANNEL), m_slotEmptySelection);
 
         this->startServices();
-    }
-    else
-    {
-        const std::string msg = "All the required inputs are not present, '" + this->getInputID("") +
-                                "' activity will not be launched";
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Manager Initialization",
-                                                          msg,
-                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
     }
 }
 

@@ -117,6 +117,9 @@ public Q_SLOTS:
      * @see replaceInput()
      */
     FWQML_QT_API virtual void replaceInputs(const QVariant& map) final;
+
+protected:
+    bool m_isInitialized{false};
 };
 
 } // fwQml
