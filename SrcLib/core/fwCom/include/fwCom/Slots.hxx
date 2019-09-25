@@ -43,7 +43,7 @@ Slots& Slots::operator()( const SlotKeyType& key, F f, A ... a )
 
 // Only define it when fwCom/HasSlots.hpp has been included
 // This saves us a file like fwCom/HasSlots.hxx
-#ifdef __FWCOM_HASSLOTS_HPP__
+#if defined(__FWCOM_HASSLOTS_HPP__)
 
 template<typename F, typename A>
 SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >)

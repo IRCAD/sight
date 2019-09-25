@@ -22,6 +22,9 @@
 
 #pragma once
 
+// define required by Slots.hxx
+#define __FWCOM_HASSLOTS_HPP__
+
 #include "fwCom/config.hpp"
 #include "fwCom/Slots.hpp"
 #include "fwCom/util/convert_function_type.hpp"
