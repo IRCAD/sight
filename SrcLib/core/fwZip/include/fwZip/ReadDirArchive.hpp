@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWZIP_READDIRARCHIVE_HPP__
-#define __FWZIP_READDIRARCHIVE_HPP__
+#pragma once
 
 #include "fwZip/config.hpp"
 #include "fwZip/IReadArchive.hpp"
@@ -42,10 +41,14 @@ class FWZIP_CLASS_API ReadDirArchive : public IReadArchive
 {
 
 public:
+    fwCoreClassMacro(ReadDirArchive, IReadArchive);
 
-    fwCoreClassDefinitionsWithFactoryMacro((ReadDirArchive)(IReadArchive),
-                                           ((( const ::boost::filesystem::path& ))),
-                                           std::make_shared< ReadDirArchive >)
+    //------------------------------------------------------------------------------
+
+    static sptr New(const ::boost::filesystem::path& archive)
+    {
+        return std::make_shared< ReadDirArchive >(archive);
+    }
 
     /// Constructors. Initializes archive path.
     FWZIP_API ReadDirArchive( const ::boost::filesystem::path& archive );
@@ -60,7 +63,7 @@ public:
      *
      * @throw ::fwZip::exception::Read if file doesn't exist in archive.
      */
-    FWZIP_API SPTR(std::istream) getFile(const ::boost::filesystem::path &path) override;
+    FWZIP_API SPTR(std::istream) getFile(const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
@@ -80,6 +83,3 @@ protected:
 };
 
 }
-
-#endif /* __FWZIP_READDIRARCHIVE_HPP__ */
-

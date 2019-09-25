@@ -41,8 +41,7 @@ class VISUOGREQT_CLASS_API OffScreenRenderWindowInteractorManager :
     public ::fwRenderOgre::IRenderWindowInteractorManager
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro((OffScreenRenderWindowInteractorManager)
-                                               (::fwRenderOgre::IRenderWindowInteractorManager));
+    fwCoreClassMacro(OffScreenRenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager);
 
     /// Constructor
     VISUOGREQT_API OffScreenRenderWindowInteractorManager(

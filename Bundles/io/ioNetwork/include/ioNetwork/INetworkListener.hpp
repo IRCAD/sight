@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IONETWORK_INETWORKLISTENER_HPP__
-#define __IONETWORK_INETWORKLISTENER_HPP__
+#pragma once
 
 #include "ioNetwork/config.hpp"
 
@@ -41,7 +40,7 @@ class IONETWORK_CLASS_API INetworkListener : public ::fwServices::IController
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (INetworkListener) (::fwServices::IController));
+    fwCoreServiceMacro(INetworkListener, ::fwServices::IController);
 
     /**
      * @brief Service connected signal is emitted when listener is connected
@@ -90,6 +89,3 @@ protected:
 };
 
 } // namespace ioNetwork
-
-#endif /*__IONETWORK_INETWORKLISTENER_HPP__*/
-

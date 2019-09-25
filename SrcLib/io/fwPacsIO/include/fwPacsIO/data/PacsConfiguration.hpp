@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWPACSIO_DATA_PACSCONFIGURATION_HPP__
-#define __FWPACSIO_DATA_PACSCONFIGURATION_HPP__
+#pragma once
 
 #include "fwPacsIO/config.hpp"
 
@@ -42,8 +41,7 @@ class FWPACSIO_CLASS_API PacsConfiguration : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PacsConfiguration)(::fwData::Object), (()),
-                                            ::fwData::factory::New< PacsConfiguration >);
+    fwCoreClassMacro(PacsConfiguration, ::fwData::Object, ::fwData::factory::New< PacsConfiguration >);
     fwCampMakeFriendDataMacro((fwPacsIO)(data)(PacsConfiguration));
 
     /**
@@ -221,5 +219,3 @@ protected:
 
 } //namespace data
 } //namespace fwPacsIO
-
-#endif /* __FWPACSIO_DATA_PACSCONFIGURATION_HPP__ */

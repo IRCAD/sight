@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,7 +75,7 @@ public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
-    fwCoreServiceClassDefinitionsMacro( (SNegato3D)(::fwRenderOgre::IAdaptor) )
+    fwCoreServiceMacro(SNegato3D, ::fwRenderOgre::IAdaptor);
 
     /// Constructor
     VISUOGREADAPTOR_API SNegato3D() noexcept;

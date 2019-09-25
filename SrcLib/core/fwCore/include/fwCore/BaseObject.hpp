@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace fwCore
 class FWCORE_CLASS_API BaseObject : public std::enable_shared_from_this<BaseObject>
 {
 public:
-    fwCoreBaseClassDefinitionsMacro( (BaseObject) )
+    fwCoreClassMacro(BaseObject);
 
 protected:
     FWCORE_API virtual ~BaseObject();

@@ -46,21 +46,41 @@ namespace os
 
 std::string getEnv(const std::string& name, bool* ok)
 {
-    char* value = std::getenv(name.c_str());
-    bool exists = (value != NULL);
-    if(ok != NULL)
+#ifdef WIN32
+    std::string value;
+    size_t requiredSize = 0;
+    // verify if env var exists and retrieves value size
+    getenv_s( &requiredSize, nullptr, 0, name.c_str() );
+    const bool envVarExists = (requiredSize > 0);
+    if (envVarExists)
+    {
+        std::vector<char> data(requiredSize + 1);
+        // get the value of the env variable.
+        getenv_s( &requiredSize, &data[0], requiredSize, name.c_str() );
+        value = std::string(&data[0], requiredSize - 1);
+    }
+    if(ok != nullptr)
+    {
+        *ok = envVarExists;
+    }
+    return value;
+#else
+    const char* value = std::getenv(name.c_str());
+    const bool exists = (value != nullptr);
+    if(ok != nullptr)
     {
         *ok = exists;
     }
     return std::string(exists ? value : "");
+#endif
 }
 
 //------------------------------------------------------------------------------
 
 std::string getEnv(const std::string& name, const std::string& defaultValue)
 {
-    bool ok           = false;
-    std::string value = getEnv(name, &ok);
+    bool ok                 = false;
+    const std::string value = getEnv(name, &ok);
     return ok ? value : defaultValue;
 }
 
@@ -70,7 +90,6 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
 {
     std::string dataDir;
 #ifdef WIN32
-    char* appData = std::getenv("APPDATA");
     dataDir = ::fwTools::os::getEnv("APPDATA");
 #else
     bool hasXdgConfigHome     = false;
@@ -154,7 +173,7 @@ static std::string _getMacOsSharedLibraryPath(const std::string& _libName)
     const std::regex matchLib(std::string("lib") + _libName);
     const std::regex matchFramework(_libName);
     std::string path;
-    for (int32_t i = _dyld_image_count(); i >= 0; i--)
+    for (std::uint32_t i = 0; i < _dyld_image_count(); ++i)
     {
         const char* const image_name = _dyld_get_image_name(i);
         if (image_name)

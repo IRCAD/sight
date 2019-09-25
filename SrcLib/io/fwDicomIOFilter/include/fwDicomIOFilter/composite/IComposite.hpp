@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__
-#define __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/IFilter.hpp"
@@ -39,7 +38,7 @@ namespace composite
 class FWDICOMIOFILTER_CLASS_API IComposite : public ::fwDicomIOFilter::IFilter
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IComposite)(::fwDicomIOFilter::IFilter) );
+    fwCoreClassMacro(IComposite, ::fwDicomIOFilter::IFilter);
 
     typedef std::vector< ::fwDicomIOFilter::IFilter::sptr > FilterContainerType;
 
@@ -83,5 +82,3 @@ protected:
 
 } // namespace composite
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__ */

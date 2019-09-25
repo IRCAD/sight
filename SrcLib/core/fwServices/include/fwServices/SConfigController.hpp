@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_SCONFIGCONTROLLER_HPP__
-#define __FWSERVICES_SCONFIGCONTROLLER_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/helper/ConfigLauncher.hpp"
@@ -67,7 +66,7 @@ class FWSERVICES_CLASS_API SConfigController : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SConfigController)(::fwServices::IController) );
+    fwCoreServiceMacro(SConfigController, ::fwServices::IController);
 
     /// Constructor. Does nothing.
     FWSERVICES_API SConfigController() noexcept;
@@ -122,6 +121,3 @@ private:
 };
 
 } // fwServices
-
-#endif // __FWSERVICES_SCONFIGCONTROLLER_HPP__
-

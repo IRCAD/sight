@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,7 +71,7 @@ class VISUVTKADAPTOR_CLASS_API SPoint : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPoint)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SPoint, ::fwRenderVTK::IAdaptor);
 
     static const ::fwServices::IService::KeyType s_POINT_INOUT;
 

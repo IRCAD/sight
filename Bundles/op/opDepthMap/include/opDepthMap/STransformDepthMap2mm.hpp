@@ -55,7 +55,7 @@ namespace opDepthMap
 class OPDEPTHMAP_CLASS_API STransformDepthMap2mm : public ::fwServices::IOperator
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((STransformDepthMap2mm)(::fwServices::IOperator))
+    fwCoreServiceMacro(STransformDepthMap2mm, ::fwServices::IOperator);
 
     /**
      * @brief STransformDepthMap2mm constructor.

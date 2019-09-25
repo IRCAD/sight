@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
 Q_OBJECT;
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber);
 
     /// Constructor. Do nothing.
     VIDEOQT_API SFrameGrabber() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_ACTION_SDONOTHING_HPP__
-#define __GUI_ACTION_SDONOTHING_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -43,7 +42,7 @@ class GUI_CLASS_API SDoNothing : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDoNothing)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SDoNothing, ::fwGui::IActionSrv);
 
     /**
      * @brief Constructor. Do nothing.
@@ -86,5 +85,3 @@ protected:
 
 } // namespace action
 } // namespace gui
-
-#endif /*__GUI_ACTION_SDONOTHING_HPP__*/

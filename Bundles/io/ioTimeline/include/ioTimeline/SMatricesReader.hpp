@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -88,7 +88,7 @@ class IOTIMELINE_CLASS_API SMatricesReader : public ::fwIO::IReader
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMatricesReader)(::fwIO::IReader) );
+    fwCoreServiceMacro(SMatricesReader, ::fwIO::IReader);
 
     /// Constructor.
     IOTIMELINE_API SMatricesReader() noexcept;

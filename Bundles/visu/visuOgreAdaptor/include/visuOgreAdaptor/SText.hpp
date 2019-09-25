@@ -73,7 +73,7 @@ namespace visuOgreAdaptor
 class VISUOGREADAPTOR_CLASS_API SText : public ::fwRenderOgre::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SText)(::fwRenderOgre::IAdaptor))
+    fwCoreServiceMacro(SText, ::fwRenderOgre::IAdaptor);
 
     /// Constructor.
     VISUOGREADAPTOR_API SText() noexcept;

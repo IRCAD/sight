@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_ASPECT_SDEFAULTTOOLBAR_HPP__
-#define __GUI_ASPECT_SDEFAULTTOOLBAR_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -42,7 +41,7 @@ class GUI_CLASS_API SDefaultToolBar : public ::fwGui::IToolBarSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDefaultToolBar)(::fwGui::IToolBarSrv) );
+    fwCoreServiceMacro(SDefaultToolBar, ::fwGui::IToolBarSrv);
 
     /// Constructor. Do nothing.
     GUI_API SDefaultToolBar() noexcept;
@@ -133,5 +132,3 @@ protected:
 }
 
 }
-
-#endif // __GUI_ASPECT_SDEFAULTTOOLBAR_HPP__

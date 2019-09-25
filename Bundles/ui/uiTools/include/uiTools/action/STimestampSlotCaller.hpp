@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__
-#define __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__
+#pragma once
 
 #include "uiTools/config.hpp"
 
@@ -49,7 +48,7 @@ class UITOOLS_CLASS_API STimestampSlotCaller : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STimestampSlotCaller)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(STimestampSlotCaller, ::fwGui::IActionSrv);
 
     /// Constructor
     UITOOLS_API STimestampSlotCaller();
@@ -96,5 +95,3 @@ protected:
 
 } // namespace action
 } // namespace uiTools
-
-#endif /* __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__ */

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,8 +50,7 @@ class FWVTKQML_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVTK
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)
-                                                (::fwRenderVTK::IVtkRenderWindowInteractorManager) )
+    fwCoreClassMacro(VtkRenderWindowInteractorManager, ::fwRenderVTK::IVtkRenderWindowInteractorManager);
 
     /// Constructor. Do nothing
     FWVTKQML_API VtkRenderWindowInteractorManager(::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key);

@@ -58,7 +58,7 @@ class IOGDCM_CLASS_API SSeriesDBWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBWriter)( ::fwIO::IWriter) )
+    fwCoreServiceMacro(SSeriesDBWriter,  ::fwIO::IWriter);
 
     /**
      * @brief Constructor

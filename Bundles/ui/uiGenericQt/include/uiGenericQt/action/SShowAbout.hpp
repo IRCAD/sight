@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIGENERICQT_ACTION_SSHOWABOUT_HPP__
-#define __UIGENERICQT_ACTION_SSHOWABOUT_HPP__
+#pragma once
 
 #include "uiGenericQt/config.hpp"
 
@@ -48,7 +47,7 @@ class UIGENERICQT_CLASS_API SShowAbout : public QObject,
 
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro( (SShowAbout)( ::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SShowAbout,  ::fwGui::IActionSrv);
 
     /**
      * @name Constructor/Destructor
@@ -113,6 +112,3 @@ private:
 } // namespace action
 
 } // namespace uiGenericQt
-
-#endif // __UIGENERICQT_ACTION_SSHOWABOUT_HPP__
-

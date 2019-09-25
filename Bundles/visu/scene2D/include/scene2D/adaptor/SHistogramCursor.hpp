@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_ADAPTOR_SHISTOGRAMCURSOR_HPP__
-#define __SCENE2D_ADAPTOR_SHISTOGRAMCURSOR_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -70,7 +69,7 @@ class SHistogramCursor : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SHistogramCursor)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceMacro(SHistogramCursor, ::fwRenderQt::IAdaptor);
 
     SCENE2D_API SHistogramCursor() noexcept;
     SCENE2D_API virtual ~SHistogramCursor() noexcept;
@@ -108,6 +107,3 @@ protected:
 
 }   // namespace adaptor
 }   // namespace scene2D
-
-#endif  // __SCENE2D_ADAPTOR_SHISTOGRAMCURSOR_HPP__
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_GENERICTL_HPP__
-#define __ARDATA_GENERICTL_HPP__
+#pragma once
 
 #include "arData/BufferTL.hpp"
 #include "arData/config.hpp"
@@ -38,7 +37,7 @@ class GenericTL : public BufferTL
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericTL<BUFFER_TYPE>)(::fwData::Object) )
+    fwCoreClassMacro(GenericTL<BUFFER_TYPE>, ::fwData::Object);
 
     typedef ::arData::timeline::GenericObject< BUFFER_TYPE > BufferType;
     /**
@@ -94,5 +93,3 @@ protected:
 }; // class GenericTL
 
 } // namespace arData
-
-#endif // __ARDATA_GENERICTL_HPP__

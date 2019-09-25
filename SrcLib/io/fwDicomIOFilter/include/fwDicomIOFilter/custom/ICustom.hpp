@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_CUSTOM_ICUSTOM_HPP__
-#define __FWDICOMIOFILTER_CUSTOM_ICUSTOM_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/IFilter.hpp"
@@ -39,7 +38,7 @@ namespace custom
 class FWDICOMIOFILTER_CLASS_API ICustom : public ::fwDicomIOFilter::IFilter
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (ICustom)(::fwDicomIOFilter::IFilter) );
+    fwCoreClassMacro(ICustom, ::fwDicomIOFilter::IFilter);
 
     /// Destructor
     FWDICOMIOFILTER_API virtual ~ICustom();
@@ -55,5 +54,3 @@ protected:
 
 } // namespace custom
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_CUSTOM_ICUSTOM_HPP__ */

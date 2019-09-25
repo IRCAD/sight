@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,7 +75,7 @@ class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IRGBDGrabber) );
+    fwCoreServiceMacro(SScan, ::arServices::IRGBDGrabber);
 
     /// Constructor. Creates/Connects slots and creates a worker for the frame grabber slot.
     VIDEOOPENNI_API SScan() noexcept;

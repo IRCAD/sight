@@ -119,8 +119,8 @@ void CameraTest::computeProjectionMatrix()
 
             tupleType(&::arData::Camera::setCx, 0., 0, 2, 1.00104212760925f),
             tupleType(&::arData::Camera::setCy, 0., 1, 2, -1.00185346603394f),
-            tupleType(&::arData::Camera::setFx, 0., 0, 0, 0),
-            tupleType(&::arData::Camera::setFy, 0., 1, 1, 0),
+            tupleType(&::arData::Camera::setFx, 0., 0, 0, 0.f),
+            tupleType(&::arData::Camera::setFy, 0., 1, 1, 0.f),
 
             tupleType(&::arData::Camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925f),
             tupleType(&::arData::Camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394f),
@@ -159,8 +159,8 @@ void CameraTest::computeProjectionMatrix()
         typedef std::tuple<std::function< void (const arData::Camera::sptr, size_t) >, size_t, unsigned int,
                            unsigned int, float> tupleType;
         const std::vector<tupleType> permutation{
-            tupleType(&::arData::Camera::setWidth, width, 0, 2, -3.5464549820937e+35),
-            tupleType(&::arData::Camera::setHeight, height, 1, 2, 6.30736510970334e+35),
+            tupleType(&::arData::Camera::setWidth, width, 0, 2, -3.5464549820937e+35f),
+            tupleType(&::arData::Camera::setHeight, height, 1, 2, 6.30736510970334e+35f),
 
             tupleType(&::arData::Camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()),
             tupleType(&::arData::Camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()),
@@ -218,10 +218,11 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Vector3 viewportPoint(
-            (ndcPoint.x+1.0) * 0.5 * viewport->getActualWidth(),
-            viewport->getActualHeight() - (ndcPoint.y+1.0) * 0.5 * viewport->getActualHeight(),
-            (ndcPoint.z+1.0) * 0.5);
+        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f * static_cast<float>(viewport->getActualWidth());
+        const ::Ogre::Real fY = static_cast<float>(viewport->getActualHeight()) - (ndcPoint.y+1.f) * 0.5f *
+                                static_cast<float>(viewport->getActualHeight());
+        const ::Ogre::Real fZ = (ndcPoint.z+1.f) * 0.5f;
+        const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
         const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
@@ -238,10 +239,11 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Vector3 viewportPoint(
-            (ndcPoint.x+1.0) * 0.5 * viewport->getActualWidth(),
-            viewport->getActualHeight() - (ndcPoint.y+1.0) * 0.5 * viewport->getActualHeight(),
-            (ndcPoint.z+1.0) * 0.5);
+        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f * static_cast<float>(viewport->getActualWidth());
+        const ::Ogre::Real fY = static_cast<float>(viewport->getActualHeight()) - (ndcPoint.y+1.f) * 0.5f *
+                                static_cast<float>(viewport->getActualHeight());
+        const ::Ogre::Real fZ = (ndcPoint.z+1.f) * 0.5f;
+        const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
         const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};

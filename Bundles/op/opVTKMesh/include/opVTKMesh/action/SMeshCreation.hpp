@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __OPVTKMESH_ACTION_SMESHCREATION_HPP__
-#define __OPVTKMESH_ACTION_SMESHCREATION_HPP__
+#pragma once
 
 #include "opVTKMesh/config.hpp"
 
@@ -64,7 +63,7 @@ class OPVTKMESH_CLASS_API SMeshCreation : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMeshCreation)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SMeshCreation, ::fwGui::IActionSrv);
 
     OPVTKMESH_API SMeshCreation() noexcept;
 
@@ -89,5 +88,3 @@ private:
 
 } // namespace action
 } // namespace opVTKMesh
-
-#endif // __OPVTKMESH_ACTION_SMESHCREATION_HPP__

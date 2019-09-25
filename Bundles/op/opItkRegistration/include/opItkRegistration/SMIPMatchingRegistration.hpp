@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ namespace opItkRegistration
 class OPITKREGISTRATION_CLASS_API SMIPMatchingRegistration : public ::fwServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SMIPMatchingRegistration)(::fwServices::IRegisterer));
+    fwCoreServiceMacro(SMIPMatchingRegistration, ::fwServices::IRegisterer);
 
     /**
      * @brief Constructor

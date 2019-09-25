@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -94,7 +94,7 @@ namespace videoCharucoCalibration
 class VIDEOCHARUCOCALIBRATION_CLASS_API SCharucoBoardDetector : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SCharucoBoardDetector)(::fwServices::IController))
+    fwCoreServiceMacro(SCharucoBoardDetector, ::fwServices::IController);
 
     /**
      * @name Signals API

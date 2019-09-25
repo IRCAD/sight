@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,7 +86,7 @@ class UICALIBRATION_CLASS_API SCameraConfigLauncher : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCameraConfigLauncher)(::fwGui::editor::IEditor) );
+    fwCoreServiceMacro(SCameraConfigLauncher, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     UICALIBRATION_API SCameraConfigLauncher() noexcept;

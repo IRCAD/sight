@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ class VIDEOOPENCV_CLASS_API SVideoWriter : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVideoWriter)(::fwIO::IWriter) );
+    fwCoreServiceMacro(SVideoWriter, ::fwIO::IWriter);
 
     /// Constructor.
     VIDEOOPENCV_API SVideoWriter() noexcept;

@@ -64,7 +64,7 @@ class VISUOGREADAPTOR_CLASS_API SFrustum : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SFrustum)(::fwRenderOgre::IAdaptor))
+    fwCoreServiceMacro(SFrustum, ::fwRenderOgre::IAdaptor);
 
     /**
      * @name Slots API

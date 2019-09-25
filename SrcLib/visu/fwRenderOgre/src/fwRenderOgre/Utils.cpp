@@ -35,6 +35,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <boost/filesystem.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -85,7 +86,7 @@ void Utils::loadResources()
                 OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
-            const auto tmpPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
+            const auto tmpPath = ::boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
             std::ofstream newResourceFile(tmpPath.string());
 
             if(!::boost::filesystem::exists(tmpPath))
@@ -732,7 +733,7 @@ Ogre::Matrix4 Utils::convertTM3DToOgreMx(const fwData::TransformationMatrix3D::c
     const std::array<double, 16> tm3dData = _tm3d->getCoefficients();
 
     std::array< ::Ogre::Real, 16> floatData;
-    std::copy(tm3dData.begin(), tm3dData.end(), floatData.begin());
+    std::transform(tm3dData.begin(), tm3dData.end(), floatData.begin(), ::boost::numeric_cast<float, double>);
 
     return ::Ogre::Matrix4(floatData.data());
 }

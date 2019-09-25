@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@ RawBufferTL::~RawBufferTL ()
 
 //------------------------------------------------------------------------------
 
-void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     RawBufferTL::csptr other = RawBufferTL::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -128,4 +128,3 @@ bool RawBufferTL::isObjectValid(const CSPTR(::arData::timeline::Object)& obj) co
 //------------------------------------------------------------------------------
 
 } // namespace arData
-

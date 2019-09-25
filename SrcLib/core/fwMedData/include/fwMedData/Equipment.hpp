@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATA_EQUIPMENT_HPP__
-#define __FWMEDDATA_EQUIPMENT_HPP__
+#pragma once
 
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
@@ -41,7 +40,7 @@ class FWMEDDATA_CLASS_API Equipment : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Equipment)(::fwData::Object), (()), ::fwData::factory::New< Equipment >);
+    fwCoreClassMacro(Equipment, ::fwData::Object, ::fwData::factory::New< Equipment >);
 
     fwCampMakeFriendDataMacro((fwMedData)(Equipment));
 
@@ -96,6 +95,3 @@ inline void Equipment::setInstitutionName(const DicomValueType& val)
 //-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
-
-#endif // __FWMEDDATA_EQUIPMENT_HPP__
-

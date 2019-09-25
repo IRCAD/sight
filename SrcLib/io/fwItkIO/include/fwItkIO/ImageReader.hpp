@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_IMAGEREADER_HPP__
-#define __FWITKIO_IMAGEREADER_HPP__
+#pragma once
 
 #include "fwItkIO/config.hpp"
 
@@ -42,10 +41,8 @@ class ImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Im
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ImageReader)(::fwDataIO::reader::GenericObjectReader< ::fwData::Image>),
-                                           (()),
-                                           ::fwDataIO::reader::factory::New< ImageReader >
-                                           );
+    fwCoreClassMacro(ImageReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Image>,
+                     ::fwDataIO::reader::factory::New< ImageReader >);
     fwCoreAllowSharedFromThis();
 
     FWITKIO_API ImageReader(::fwDataIO::reader::IObjectReader::Key key);
@@ -56,5 +53,3 @@ public:
 };
 
 } // namespace fwItkIO
-
-#endif // __FWITKIO_IMAGEREADER_HPP__

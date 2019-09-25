@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,9 +41,7 @@ namespace validator
 class CALIBRATIONACTIVITY_CLASS_API TagId : public ::fwActivities::IObjectValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TagId)(::fwActivities::IValidator),
-                                            (()),
-                                            ::fwActivities::validator::factory::New< TagId > )
+    fwCoreClassMacro(TagId, ::fwActivities::IValidator, ::fwActivities::validator::factory::New< TagId >);
 
     /// Constructor. Do nothing.
     CALIBRATIONACTIVITY_API TagId(::fwActivities::IValidator::Key key);

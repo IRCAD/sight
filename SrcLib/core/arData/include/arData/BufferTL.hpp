@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_BUFFERTL_HPP__
-#define __ARDATA_BUFFERTL_HPP__
+#pragma once
 
 #include "arData/config.hpp"
 #include "arData/TimeLine.hpp"
@@ -42,7 +41,7 @@ class ARDATA_CLASS_API BufferTL : public TimeLine
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (BufferTL) (::fwData::Object) )
+    fwCoreClassMacro(BufferTL, ::fwData::Object);
 
     typedef ::fwCore::HiResClock::HiResClockType TimestampType;
     typedef std::map< TimestampType, SPTR(::arData::timeline::Buffer) > TimelineType;
@@ -129,5 +128,3 @@ protected:
 }; // class BufferTL
 
 } // namespace arData
-
-#endif // __ARDATA_BUFFERTL_HPP__

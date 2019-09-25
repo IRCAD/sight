@@ -48,7 +48,7 @@ class FWGUI_CLASS_API IFrameLayoutManager : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IFrameLayoutManager)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(IFrameLayoutManager, ::fwGui::GuiBaseObject);
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 

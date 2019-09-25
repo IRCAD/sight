@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLCAMP_SEXTRACTOBJ_HPP__
-#define __CTRLCAMP_SEXTRACTOBJ_HPP__
+#pragma once
 
 #include "ctrlCamp/config.hpp"
 #include "ctrlCamp/ICamp.hpp"
@@ -67,7 +66,7 @@ class CTRLCAMP_CLASS_API SExtractObj : public ::ctrlCamp::ICamp
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SExtractObj)(::ctrlCamp::ICamp) );
+    fwCoreServiceMacro(SExtractObj, ::ctrlCamp::ICamp);
 
     typedef std::map<std::string, std::string> ExtractMapType;
 
@@ -101,5 +100,3 @@ private:
 };
 
 } // namespace ctrlCamp
-
-#endif /* __CTRLCAMP_SEXTRACTOBJ_HPP__ */

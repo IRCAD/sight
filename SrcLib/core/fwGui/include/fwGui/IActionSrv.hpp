@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_IACTIONSRV_HPP__
-#define __FWGUI_IACTIONSRV_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/registrar/ActionRegistrar.hpp"
@@ -42,7 +41,7 @@ class FWGUI_CLASS_API IActionSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IActionSrv)(::fwServices::IService) );
+    fwCoreServiceMacro(IActionSrv, ::fwServices::IService);
     fwCoreAllowSharedFromThis();
 
     /**
@@ -239,6 +238,3 @@ private:
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-
-#endif /*__FWGUI_IACTIONSRV_HPP__*/
-

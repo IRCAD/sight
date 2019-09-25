@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_REGISTRAR_MENUREGISTRAR_HPP__
-#define __FWGUI_REGISTRAR_MENUREGISTRAR_HPP__
+#pragma once
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwMenu.hpp"
-#include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
+#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -39,22 +37,25 @@ namespace registrar
 
 /**
  * @brief   Defines the menu registrar for IHM.
- * @class   MenuRegistrar
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API MenuRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
-                                            new MenuRegistrar );
+    fwCoreClassMacro(MenuRegistrar, ::fwGui::GuiBaseObject);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const std::string& sid)
+    {
+        return std::make_shared<MenuRegistrar>(sid);
+    }
+
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
-    FWGUI_API MenuRegistrar( const std::string &sid);
+    FWGUI_API MenuRegistrar( const std::string& sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MenuRegistrar();
@@ -180,7 +181,3 @@ protected:
 
 } // namespace registrar
 } // namespace fwGui
-
-#endif /*__FWGUI_REGISTRAR_MENUREGISTRAR_HPP__*/
-
-

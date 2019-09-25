@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Distance)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(Distance, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API Distance() noexcept;

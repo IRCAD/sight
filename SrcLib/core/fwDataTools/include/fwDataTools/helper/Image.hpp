@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_HELPER_IMAGE_HPP__
-#define __FWDATATOOLS_HELPER_IMAGE_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
@@ -40,12 +39,27 @@ class FWDATATOOLS_CLASS_API Image
 {
 
 public:
-    fwCoreClassFactoryMacro((Image), (((::fwData::Image::sptr))), new Image )
 
     typedef ::fwData::Image::SizeType SizeType;
     typedef ::fwData::Image::IndexType IndexType;
     typedef ::fwData::Image::BufferType BufferType;
     typedef ::fwData::Image::BufferIndexType BufferIndexType;
+
+    /// Shared pointer type
+    typedef std::shared_ptr < ::fwDataTools::helper::Image > sptr;
+    /// Const shared pointer type
+    typedef std::shared_ptr < const ::fwDataTools::helper::Image > csptr;
+    /// Unique pointer type
+    typedef std::unique_ptr < ::fwDataTools::helper::Image > uptr;
+    /// Const unique pointer type
+    typedef std::unique_ptr < const ::fwDataTools::helper::Image > cuptr;
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(::fwData::Image::sptr image)
+    {
+        return std::make_shared< ::fwDataTools::helper::Image >(image);
+    }
 
     /// Constructor. Initialize parameters.
     FWDATATOOLS_API Image( ::fwData::Image::sptr image );
@@ -114,6 +128,3 @@ private:
 
 } // helper
 } // fwDataTools
-
-#endif // __FWDATATOOLS_HELPER_IMAGE_HPP__
-

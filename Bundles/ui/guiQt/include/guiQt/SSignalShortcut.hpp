@@ -53,7 +53,7 @@ class GUIQT_CLASS_API SSignalShortcut : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSignalShortcut)(::fwServices::IService) )
+    fwCoreServiceMacro(SSignalShortcut, ::fwServices::IService);
 
     /// Signal emitted when the shortcut is received.
     typedef ::fwCom::Signal< void () > ActivatedShortcutSignalType;

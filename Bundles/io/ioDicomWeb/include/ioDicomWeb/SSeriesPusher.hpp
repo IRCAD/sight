@@ -63,7 +63,7 @@ class IODICOMWEB_CLASS_API SSeriesPusher : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesPusher)( ::fwServices::IController ) )
+    fwCoreServiceMacro(SSeriesPusher,  ::fwServices::IController );
 
     typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::fwGui::editor::IEd
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SliceIndexPositionEditor)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(SliceIndexPositionEditor, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     UIIMAGEQT_API SliceIndexPositionEditor() noexcept;

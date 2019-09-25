@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -97,11 +97,12 @@ void CameraSeriesTest::tearDown()
 
     // --------------- Extrinsic matrix ----------------------
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i < 4; ++i)
+    for (size_t i = 0; i < 4; ++i)
     {
-        for (int j = 0; j < 4; ++j)
+        for (size_t j = 0; j < 4; ++j)
         {
-            mat->setCoefficient(i, j, 2*i+j);
+            const auto value = static_cast< ::fwData::TransformationMatrix3D::TM3DType >(2*i+j);
+            mat->setCoefficient(i, j, value);
         }
     }
 
@@ -119,11 +120,12 @@ void CameraSeriesTest::cameraTest()
 
     ::fwData::TransformationMatrix3D::sptr identity = ::fwData::TransformationMatrix3D::New();
     ::fwData::TransformationMatrix3D::sptr mat      = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i < 4; ++i)
+    for (size_t i = 0; i < 4; ++i)
     {
-        for (int j = 0; j < 4; ++j)
+        for (size_t j = 0; j < 4; ++j)
         {
-            mat->setCoefficient(i, j, 2*i+j);
+            const auto value = static_cast< ::fwData::TransformationMatrix3D::TM3DType >(2*i+j);
+            mat->setCoefficient(i, j, value);
         }
     }
 

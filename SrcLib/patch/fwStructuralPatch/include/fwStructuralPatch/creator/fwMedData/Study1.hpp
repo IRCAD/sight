@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ class FWSTRUCTURALPATCH_CLASS_API Study1 : public ::fwAtomsPatch::IStructuralCre
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Study1)(::fwAtomsPatch::IStructuralCreator), (()), new Study1);
+    fwCoreClassMacro(Study1, ::fwAtomsPatch::IStructuralCreator, new Study1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API Study1();

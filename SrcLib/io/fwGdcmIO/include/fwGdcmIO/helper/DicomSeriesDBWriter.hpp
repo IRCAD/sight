@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_DICOMSERIESDBWRITER_HPP__
-#define __FWGDCMIO_HELPER_DICOMSERIESDBWRITER_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
@@ -58,9 +57,8 @@ class FWGDCMIO_CLASS_API DicomSeriesDBWriter :
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((DicomSeriesDBWriter)
-                                           (::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB>),
-                                           (()), ::fwDataIO::writer::factory::New< DicomSeriesDBWriter >);
+    fwCoreClassMacro(DicomSeriesDBWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB>,
+                     ::fwDataIO::writer::factory::New< DicomSeriesDBWriter >);
     fwCoreAllowSharedFromThis();
 
     /**
@@ -106,5 +104,3 @@ private:
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_HELPER_DICOMSERIESDBWRITER_HPP__

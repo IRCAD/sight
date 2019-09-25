@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/PlaneList.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -40,9 +41,8 @@ const ::fwCom::Signals::SignalKeyType PlaneList::s_VISIBILITY_MODIFIED_SIG = "vi
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList(::fwData::Object::Key key)
+PlaneList::PlaneList(::fwData::Object::Key)
 {
-    SLM_TRACE_FUNC();
     newSignal< PlaneAddedSignalType >(s_PLANE_ADDED_SIG);
     newSignal< PlaneRemovedSignalType >(s_PLANE_REMOVED_SIG);
     newSignal< VisibilityModifiedSignalType >(s_VISIBILITY_MODIFIED_SIG);
@@ -57,7 +57,7 @@ PlaneList::~PlaneList()
 
 //------------------------------------------------------------------------------
 
-void PlaneList::shallowCopy(const Object::csptr &_source )
+void PlaneList::shallowCopy(const Object::csptr& _source )
 {
     PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -70,7 +70,7 @@ void PlaneList::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void PlaneList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void PlaneList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -87,5 +87,3 @@ void PlaneList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
 }
 
 } // namespace fwData
-
-

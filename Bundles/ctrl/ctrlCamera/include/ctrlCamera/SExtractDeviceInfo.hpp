@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLCAMERA_SEXTRACTDEVICEINFO_HPP__
-#define __CTRLCAMERA_SEXTRACTDEVICEINFO_HPP__
+#pragma once
 
 #include "ctrlCamera/config.hpp"
 
@@ -80,7 +79,7 @@ class CTRLCAMERA_CLASS_API SExtractDeviceInfo : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SExtractDeviceInfo)(::fwServices::IController) );
+    fwCoreServiceMacro(SExtractDeviceInfo, ::fwServices::IController);
 
     /// Constructor
     CTRLCAMERA_API SExtractDeviceInfo();
@@ -113,5 +112,3 @@ private:
 };
 
 } // namespace ctrlCamera
-
-#endif /* __CTRLCAMERA_SEXTRACTDEVICEINFO_HPP__ */

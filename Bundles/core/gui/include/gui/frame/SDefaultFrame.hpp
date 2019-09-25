@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_FRAME_SDEFAULTFRAME_HPP__
-#define __GUI_FRAME_SDEFAULTFRAME_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -42,7 +41,7 @@ class GUI_CLASS_API SDefaultFrame : public ::fwGui::IFrameSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDefaultFrame)(::fwGui::IFrameSrv) );
+    fwCoreServiceMacro(SDefaultFrame, ::fwGui::IFrameSrv);
 
     /// Constructor. Do nothing.
     GUI_API SDefaultFrame() noexcept;
@@ -89,5 +88,3 @@ protected:
 
 } // namespace frame
 } // namespace gui
-
-#endif /*__GUI_FRAME_SDEFAULTFRAME_HPP__*/

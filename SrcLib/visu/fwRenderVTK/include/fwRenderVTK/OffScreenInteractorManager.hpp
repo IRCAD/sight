@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_OFFSCREENINTERACTORMANAGER_HPP__
-#define __FWRENDERVTK_OFFSCREENINTERACTORMANAGER_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
@@ -43,9 +42,8 @@ class FWRENDERVTK_CLASS_API OffScreenInteractorManager : public ::fwRenderVTK::I
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((OffScreenInteractorManager)
-                                           (::fwRenderVTK::IVtkRenderWindowInteractorManager),
-                                           (()), new OffScreenInteractorManager)
+    fwCoreClassMacro(OffScreenInteractorManager, ::fwRenderVTK::IVtkRenderWindowInteractorManager,
+                     new OffScreenInteractorManager);
 
     FWRENDERVTK_API OffScreenInteractorManager();
 
@@ -71,5 +69,3 @@ private:
 };
 
 } // namespace fwRenderVTK
-
-#endif // __FWRENDERVTK_OFFSCREENINTERACTORMANAGER_HPP__

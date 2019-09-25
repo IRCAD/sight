@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ class FWGUI_CLASS_API IDialogEditor : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IDialogEditor)(::fwServices::IService) );
+    fwCoreServiceMacro(IDialogEditor, ::fwServices::IService);
 
 protected:
 

@@ -57,7 +57,7 @@ class MATHS_CLASS_API SDecomposeMatrix : public ::fwServices::IOperator
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SDecomposeMatrix)(::fwServices::IOperator))
+    fwCoreServiceMacro(SDecomposeMatrix, ::fwServices::IOperator);
 
     /**
      * @brief Constructor.

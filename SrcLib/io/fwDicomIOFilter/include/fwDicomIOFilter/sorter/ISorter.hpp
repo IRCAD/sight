@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_SORTER_ISORTER_HPP__
-#define __FWDICOMIOFILTER_SORTER_ISORTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/IFilter.hpp"
@@ -39,7 +38,7 @@ namespace sorter
 class FWDICOMIOFILTER_CLASS_API ISorter : public ::fwDicomIOFilter::IFilter
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (ISorter)(::fwDicomIOFilter::IFilter) );
+    fwCoreClassMacro(ISorter, ::fwDicomIOFilter::IFilter);
 
     /// Destructor
     FWDICOMIOFILTER_API virtual ~ISorter();
@@ -55,5 +54,3 @@ protected:
 
 } // namespace sorter
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_SORTER_ISORTER_HPP__ */

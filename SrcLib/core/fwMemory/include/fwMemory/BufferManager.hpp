@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_BUFFERMANAGER_HPP__
-#define __FWMEMORY_BUFFERMANAGER_HPP__
+#pragma once
 
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/config.hpp"
@@ -90,7 +89,7 @@ public:
 
     typedef std::map< ConstBufferPtrType, BufferInfo > BufferInfoMapType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (BufferManager)(::fwCore::BaseObject) );
+    fwCoreClassMacro(BufferManager, ::fwCore::BaseObject);
     fwCoreAllowSharedFromThis();
 
     BufferManager();
@@ -287,6 +286,8 @@ public:
      */
     FWMEMORY_API static BufferManager::sptr getDefault();
 
+    //------------------------------------------------------------------------------
+
     ::fwCore::mt::ReadWriteMutex& getMutex() const
     {
         return m_mutex;
@@ -348,5 +349,3 @@ protected:
 };
 
 }
-
-#endif /* __FWMEMORY_BUFFERMANAGER_HPP__ */

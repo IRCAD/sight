@@ -119,7 +119,7 @@ class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVolumeRender)(::fwRenderOgre::IAdaptor) )
+    fwCoreServiceMacro(SVolumeRender, ::fwRenderOgre::IAdaptor);
 
     /// Constructor.
     VISUOGREADAPTOR_API SVolumeRender() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -123,7 +123,7 @@ class FWGUI_CLASS_API IGuiContainerSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IGuiContainerSrv)(::fwServices::IService) );
+    fwCoreServiceMacro(IGuiContainerSrv, ::fwServices::IService);
 
     FWGUI_API SPTR(::fwGui::container::fwContainer) getContainer();
 

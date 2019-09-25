@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IONETWORK_INETWORKSENDER_HPP__
-#define __IONETWORK_INETWORKSENDER_HPP__
+#pragma once
 
 #include "ioNetwork/config.hpp"
 
@@ -41,7 +40,7 @@ class IONETWORK_CLASS_API INetworkSender : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (INetworkSender) (::fwServices::IController));
+    fwCoreServiceMacro(INetworkSender, ::fwServices::IController);
 
     /**
      * @brief Service connected signal is emitted when the server is started
@@ -95,6 +94,3 @@ protected:
 };
 
 } // namespace ioNetwork
-
-#endif /*__IONETWORK_INETWORKSENDER_HPP__*/
-
