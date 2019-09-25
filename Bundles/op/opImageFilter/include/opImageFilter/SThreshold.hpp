@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ class OPIMAGEFILTER_CLASS_API SThreshold : public ::fwServices::IOperator
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SThreshold)(::fwServices::IOperator) );
+    fwCoreServiceMacro(SThreshold, ::fwServices::IOperator);
 
     OPIMAGEFILTER_API SThreshold() noexcept;
 

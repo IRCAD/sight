@@ -139,6 +139,20 @@
                 </gui>
                 <registry>
                     <view sid="stereoView" start="yes" />
+                    <view sid="reprojectionInfo" start="yes" />
+                    <view sid="reprojectionMatrixStatus" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="reprojectionInfo" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
                     <view sid="errorLabelLeft" start="yes" />
                     <view sid="errorLabelRight" start="yes" />
                 </registry>
@@ -377,6 +391,14 @@
                 <label>Reprojection Error Right (RMSE)</label>
             </service>
 
+            <!-- GUI to display a state -->
+            <service uid="reprojectionMatrixStatus" type="::uiTools::editor::SStatus">
+                <form>circle</form>
+                <labelStatus>Reprojection matrix computed</labelStatus>
+                <red>No reprojection matrix</red>
+                <green>Reprojection matrix is present</green>
+            </service>
+
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="CameraSelector1" type="::videoQt::editor::SCamera">
                 <inout key="camera" uid="camera1" />
@@ -477,7 +499,7 @@
                     <key uid="matrixTL" />
                 </in>
                 <inout group="matrices0">
-                    <key uid="matrix" />
+                    <key uid="matrix" sendStatus="true" />
                 </inout>
                 <framerate>30</framerate>
                 <tolerance>100</tolerance>
@@ -521,6 +543,16 @@
             <connect>
                 <signal>reprojectionErrorRight/errorComputed</signal>
                  <slot>errorLabelRight/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>synchronizer/matrixSynchronized</signal>
+                <slot>reprojectionMatrixStatus/changeToGreen</slot>
+            </connect>
+
+            <connect>
+                <signal>synchronizer/matrixUnsynchronized</signal>
+                <slot>reprojectionMatrixStatus/changeToRed</slot>
             </connect>
 
             <connect>

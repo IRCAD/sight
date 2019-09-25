@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_GUIBASEOBJECT_HPP__
-#define __FWGUI_GUIBASEOBJECT_HPP__
+#pragma once
 
-#include <fwCore/base.hpp>
-
+#include "fwGui/config.hpp"
 #include "fwGui/factory/new.hpp"
 #include "fwGui/registry/detail.hpp"
-#include "fwGui/config.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwGui
 {
@@ -58,7 +57,7 @@ public:
         }
     };
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (GuiBaseObject)(::fwCore::BaseObject) );
+    fwCoreClassMacro(GuiBaseObject, ::fwCore::BaseObject);
 
 protected:
     /**
@@ -77,6 +76,3 @@ protected:
 };
 
 } // namespace fwGui
-
-#endif // __FWGUI_GUIBASEOBJECT_HPP__
-

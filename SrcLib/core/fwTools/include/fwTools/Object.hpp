@@ -42,7 +42,7 @@ class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject,
                                   protected ::fwTools::fwID
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwCore::BaseObject) );
+    fwCoreClassMacro(Object, ::fwCore::BaseObject);
     fwCoreAllowSharedFromThis();
 
     friend class ::fwTools::UUID;

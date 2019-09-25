@@ -66,7 +66,7 @@ class REGISTRATIONCV_CLASS_API SSolvePnP : public ::fwServices::IRegisterer
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SSolvePnP)(::fwServices::IRegisterer))
+    fwCoreServiceMacro(SSolvePnP, ::fwServices::IRegisterer);
 
     /// Constructor.
     REGISTRATIONCV_API SSolvePnP() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_MESHWRITER_HPP__
-#define __FWVTKIO_MESHWRITER_HPP__
+#pragma once
 
 #include "fwVtkIO/config.hpp"
 
@@ -53,10 +52,8 @@ class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mes
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >),
-                                           (()),
-                                           ::fwDataIO::writer::factory::New< MeshWriter >
-                                           );
+    fwCoreClassMacro(MeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
+                     ::fwDataIO::writer::factory::New< MeshWriter >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
@@ -81,5 +78,3 @@ private:
 };
 
 } // namespace fwVtkIO
-
-#endif // __FWVTKIO_MESHWRITER_HPP__

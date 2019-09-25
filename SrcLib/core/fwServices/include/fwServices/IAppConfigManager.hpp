@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2017 IRCAD France
- * Copyright (C) 2015-2017 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_IAPPCONFIGMANAGER_HPP__
-#define __FWSERVICES_IAPPCONFIGMANAGER_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/registry/AppInfo.hpp"
@@ -40,7 +39,7 @@ class FWSERVICES_CLASS_API IAppConfigManager : public ::fwTools::Object
 public:
     typedef registry::FieldAdaptorType FieldAdaptorType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro((IAppConfigManager)(::fwTools::Object));
+    fwCoreClassMacro(IAppConfigManager, ::fwTools::Object);
 
     /// Constructor. Do nothing.
     FWSERVICES_API IAppConfigManager();
@@ -169,5 +168,3 @@ inline void IAppConfigManager::setConfig(fwRuntime::ConfigurationElement::csptr 
 //------------------------------------------------------------------------------
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_IAPPCONFIGMANAGER_HPP__

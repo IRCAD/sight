@@ -38,7 +38,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <boost/property_tree/ptree.hpp>
 #include <boost/regex.hpp>
 
 #include <functional>
@@ -849,15 +848,15 @@ void IService::autoConnect()
                 else
                 {
                     // Special case if we have a key from a group we check with the name of the group
-                    boost::smatch match;
+                    ::boost::smatch match;
                     static const ::boost::regex reg("(.*)#[0-9]+");
                     if( ::boost::regex_match(objectCfg.m_key, match, reg ) && match.size() == 2)
                     {
                         const std::string group = match[1].str();
-                        auto it                 = connectionMap.find(group);
-                        if( it != connectionMap.end())
+                        auto itConnection       = connectionMap.find(group);
+                        if( itConnection != connectionMap.end())
                         {
-                            connections = it->second;
+                            connections = itConnection->second;
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ class UICALIBRATION_CLASS_API SIntrinsicEdition : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SIntrinsicEdition)(::fwServices::IService));
+    fwCoreServiceMacro(SIntrinsicEdition, ::fwServices::IService);
 
     /**
      * @brief Constructor.

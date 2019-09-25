@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VALIDATORS_MODELSERIES_CONTAINONESKIN_HPP__
-#define __VALIDATORS_MODELSERIES_CONTAINONESKIN_HPP__
+#pragma once
 
 #include "validators/config.hpp"
 
@@ -39,9 +38,8 @@ namespace ModelSeries
 class VALIDATORS_CLASS_API ContainOneSkin : public ::fwActivities::IObjectValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ContainOneSkin)(::fwActivities::IObjectValidator),
-                                            (()),
-                                            ::fwActivities::validator::factory::New< ContainOneSkin > );
+    fwCoreClassMacro(ContainOneSkin, ::fwActivities::IObjectValidator,
+                     ::fwActivities::validator::factory::New< ContainOneSkin >);
 
     /// Constructor. Do nothing.
     VALIDATORS_API ContainOneSkin(::fwActivities::IValidator::Key key);
@@ -60,6 +58,3 @@ public:
 
 } // namespace ModelSeries
 } // namespace validators
-
-#endif // __VALIDATORS_MODELSERIES_CONTAINONESKIN_HPP__
-

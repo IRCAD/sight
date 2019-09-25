@@ -77,8 +77,13 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
 
         # Guess everything from the doxygen
 
-        # 1. Find the service type from fwCoreServiceClassDefinitionsMacro, we assume there is only one occurrence
-        set(SRV_TYPE_REGEX "fwCoreServiceClassDefinitionsMacro\\([\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)[\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)")
+        # 1. Find the service type from fwCoreServiceClassDefinitionsMacro (old macro) or fwCoreServiceMacro (new macro),
+        #    we assume there is only one occurrence
+        set(SRV_TYPE_REGEX "fwCoreServiceMacro\\(([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]+)\\)")
+        string(FIND "${HPP_FILE_CONTENT}" "fwCoreServiceClassDefinitionsMacro" OLD_CORE_SRV_MACRO)
+        if( NOT ${OLD_CORE_SRV_MACRO} EQUAL -1 )
+            set(SRV_TYPE_REGEX "fwCoreServiceClassDefinitionsMacro\\([\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)[\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)")
+        endif()
 
         if("${HPP_FILE_CONTENT}" MATCHES ${SRV_TYPE_REGEX})
 

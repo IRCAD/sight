@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATAIO_WRITER_GZBUFFERIMAGEWRITER_HPP__
-#define __FWDATAIO_WRITER_GZBUFFERIMAGEWRITER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/GenericObjectWriter.hpp"
@@ -51,10 +50,8 @@ class FWDATAIO_CLASS_API GzBufferImageWriter :  public GenericObjectWriter< ::fw
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((GzBufferImageWriter)(GenericObjectWriter< ::fwData::Image>),
-                                           (()),
-                                           ::fwDataIO::writer::factory::New< GzBufferImageWriter >
-                                           );
+    fwCoreClassMacro(GzBufferImageWriter, GenericObjectWriter< ::fwData::Image>,
+                     ::fwDataIO::writer::factory::New< GzBufferImageWriter >);
 
     /// Constructor. Do nothing.
     FWDATAIO_API GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
@@ -73,5 +70,3 @@ public:
 } // namespace writer
 
 } // namespace fwDataIO
-
-#endif // __FWDATAIO_WRITER_GZBUFFERIMAGEWRITER_HPP__

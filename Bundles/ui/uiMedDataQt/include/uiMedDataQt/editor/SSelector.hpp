@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ class UIMEDDATAQT_CLASS_API SSelector : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSelector)(::fwGui::editor::IEditor) );
+    fwCoreServiceMacro(SSelector, ::fwGui::editor::IEditor);
 
     /// Constructor
     UIMEDDATAQT_API SSelector();

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLSELECTION_SMANAGE_HPP__
-#define __CTRLSELECTION_SMANAGE_HPP__
+#pragma once
 
 #include "ctrlSelection/config.hpp"
 
@@ -109,7 +108,7 @@ class CTRLSELECTION_CLASS_API SManage : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SManage)(::fwServices::IController) );
+    fwCoreServiceMacro(SManage, ::fwServices::IController);
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SManage() noexcept;
@@ -189,5 +188,3 @@ private:
 };
 
 } // ctrlSelection
-
-#endif // __CTRLSELECTION_SMANAGE_HPP__

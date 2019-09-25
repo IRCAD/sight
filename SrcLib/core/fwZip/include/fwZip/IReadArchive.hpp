@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWZIP_IREADARCHIVE_HPP__
-#define __FWZIP_IREADARCHIVE_HPP__
+#pragma once
 
 #include <fwCore/macros.hpp>
 
@@ -40,7 +39,7 @@ class IReadArchive
 
 public:
 
-    fwCoreBaseClassDefinitionsMacro((IReadArchive))
+    fwCoreClassMacro(IReadArchive);
 
     virtual ~IReadArchive()
     {
@@ -51,7 +50,7 @@ public:
      * @param path file in archive.
      * @return input stream from request file.
      */
-    virtual SPTR(std::istream) getFile(const ::boost::filesystem::path &path) = 0;
+    virtual SPTR(std::istream) getFile(const ::boost::filesystem::path& path) = 0;
 
     /**
      * @brief Returns archive path.
@@ -62,6 +61,3 @@ public:
 };
 
 }
-
-#endif /* __FWZIP_IREADARCHIVE_HPP__ */
-

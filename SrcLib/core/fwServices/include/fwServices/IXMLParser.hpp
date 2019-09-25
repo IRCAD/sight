@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_IXMLPARSER_HPP__
-#define __FWSERVICES_IXMLPARSER_HPP__
+#pragma once
 
 #include "fwServices/IService.hpp"
 
@@ -53,7 +52,7 @@ class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IXMLParser)(::fwServices::IService) );
+    fwCoreServiceMacro(IXMLParser, ::fwServices::IService);
 
 public:
 
@@ -107,5 +106,3 @@ protected:
 };
 
 }
-
-#endif /* __FWSERVICES_IXMLPARSER_HPP__ */

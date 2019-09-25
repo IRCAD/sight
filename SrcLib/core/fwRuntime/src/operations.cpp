@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -245,7 +245,9 @@ void addBundles( const ::boost::filesystem::path& directory)
 
 std::shared_ptr<Bundle> loadBundle(const std::string& identifier, const Version& version)
 {
+# ifdef _DEBUG
     Runtime* rntm = Runtime::getDefault();
+#endif
     SLM_ASSERT("Default runtime not found", rntm);
 
     auto bundle = ::fwRuntime::Runtime::getDefault()->findBundle(identifier, version);

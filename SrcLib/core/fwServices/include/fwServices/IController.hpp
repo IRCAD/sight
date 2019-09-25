@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_ICONTROLLER_HPP__
-#define __FWSERVICES_ICONTROLLER_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
@@ -30,18 +29,15 @@ namespace fwServices
 {
 
 /**
- * @brief   This interface defines control service API. Does nothing particularly, can be considered as a default service type to be implemented by unclassified services.
- *
- * @class   IController
- *
- * @date    2007-2009.
+ * @brief   This interface defines control service API.
+ * Does nothing particularly, can be considered as a default service type to be implemented by unclassified services.
  */
 class FWSERVICES_CLASS_API IController : public ::fwServices::IService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IController)(::fwServices::IService) );
+    fwCoreServiceMacro(IController, ::fwServices::IService);
 
 protected:
 
@@ -54,5 +50,3 @@ protected:
 };
 
 }
-
-#endif // __FWSERVICES_ICONTROLLER_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -137,7 +137,7 @@ void CameraSeries::removeCamera(const ::arData::Camera::sptr& camera)
     CameraContainerType::iterator iter = std::find(m_cameras.begin(), m_cameras.end(), camera);
     FW_RAISE_IF("Camera not found in CameraSeries.", iter == m_cameras.end());
 
-    size_t index                        = std::distance(m_cameras.begin(), iter);
+    const auto index                    = std::distance(m_cameras.begin(), iter);
     MatricesContainer::iterator matIter = m_extrinsicMatrices.begin() + index;
     m_extrinsicMatrices.erase(matIter);
     m_cameras.erase(iter);

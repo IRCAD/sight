@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCAMP_MAPPER_ARRAYMAPPER_HPP__
-#define __FWCAMP_MAPPER_ARRAYMAPPER_HPP__
+#pragma once
+
+#include <camp/camptype.hpp>
+#include <camp/type.hpp>
+#include <camp/valuemapper.hpp>
 
 #include <set>
-
-#include <camp/valuemapper.hpp>
-#include <camp/type.hpp>
-#include <camp/camptype.hpp>
 
 namespace camp_ext
 {
@@ -39,39 +38,51 @@ struct ArrayMapper<std::set<T> >
 {
     typedef T ElementType;
 
+    //------------------------------------------------------------------------------
+
     static bool dynamic()
     {
         return true;
     }
+
+    //------------------------------------------------------------------------------
 
     static std::size_t size(const std::set<T>& arr)
     {
         return arr.size();
     }
 
+    //------------------------------------------------------------------------------
+
     static const T& get(const std::set<T>& arr, std::size_t index)
     {
         typename std::set<T>::const_iterator cIt = arr.begin();
-        for(int i = 0; i < index; i++)
+        for(std::size_t i = 0; i < index; i++)
         {
             ++cIt;
         }
         return *cIt;
     }
 
-    static void set(std::set<T>& arr, std::size_t index, const T& value)
+    //------------------------------------------------------------------------------
+
+    static void set(std::set<T>&, std::size_t, const T&)
     {
     }
 
-    static void insert(std::set<T>& arr, std::size_t before, const T& value)
+    //------------------------------------------------------------------------------
+
+    static void insert(std::set<T>& arr, std::size_t, const T& value)
     {
         arr.insert(value);
     }
 
+    //------------------------------------------------------------------------------
+
     static void remove(std::set<T>& arr, std::size_t index)
     {
         typename std::set<T>::const_iterator cIt = arr.begin();
-        for(int i = 0; i < index; ++i)
+        for(std::size_t i = 0; i < index; ++i)
         {
             ++cIt;
         }
@@ -79,8 +90,4 @@ struct ArrayMapper<std::set<T> >
     }
 };
 
-
 } //camp_ext
-
-
-#endif /* __FWCAMP_MAPPER_ARRAYMAPPER_HPP__ */

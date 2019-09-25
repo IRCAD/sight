@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSFILTER_IFILTER_HPP__
-#define __FWATOMSFILTER_IFILTER_HPP__
+#pragma once
 
-#include <string>
-#include <map>
+#include "fwAtomsFilter/config.hpp"
+#include "fwAtomsFilter/factory/new.hpp"
+#include "fwAtomsFilter/registry/detail.hpp"
 
-#include <fwCore/base.hpp>
 #include <fwAtoms/Object.hpp>
 
-#include "fwAtomsFilter/registry/detail.hpp"
-#include "fwAtomsFilter/factory/new.hpp"
-#include "fwAtomsFilter/config.hpp"
+#include <fwCore/base.hpp>
+
+#include <map>
+#include <string>
 
 namespace fwAtoms
 {
@@ -42,7 +42,6 @@ namespace fwAtomsFilter
 {
 
 /**
- * @class IFilter
  * @brief Removes atom attributes which are not managed by a context.
  */
 class FWATOMSFILTER_CLASS_API IFilter : public ::fwCore::BaseObject
@@ -68,8 +67,7 @@ public:
         }
     };
 
-
-    fwCoreNonInstanciableClassDefinitionsMacro((IFilter));
+    fwCoreClassMacro(IFilter);
     fwCoreAllowSharedFromThis();
 
     /// Constructor.
@@ -83,8 +81,4 @@ public:
 
 };
 
-
 } //fwAtomsFilter
-
-#endif /* __FWATOMSFILTER_IFILTER_HPP__ */
-

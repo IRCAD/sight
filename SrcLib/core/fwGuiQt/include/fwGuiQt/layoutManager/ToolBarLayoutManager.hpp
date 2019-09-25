@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_LAYOUTMANAGER_TOOLBARLAYOUTMANAGER_HPP__
-#define __FWGUIQT_LAYOUTMANAGER_TOOLBARLAYOUTMANAGER_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
@@ -44,9 +43,8 @@ namespace layoutManager
 class FWGUIQT_CLASS_API ToolBarLayoutManager : public ::fwGui::layoutManager::IToolBarLayoutManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarLayoutManager)(::fwGui::layoutManager::IToolBarLayoutManager),
-                                            (()),
-                                            ::fwGui::factory::New< ToolBarLayoutManager > );
+    fwCoreClassMacro(ToolBarLayoutManager, ::fwGui::layoutManager::IToolBarLayoutManager,
+                     ::fwGui::factory::New< ToolBarLayoutManager >);
 
     FWGUIQT_API ToolBarLayoutManager(::fwGui::GuiBaseObject::Key key);
 
@@ -87,6 +85,3 @@ protected:
 
 } // namespace layoutManager
 } // namespace fwGui
-
-#endif /*__FWGUIQT_LAYOUTMANAGER_TOOLBARLAYOUTMANAGER_HPP__*/
-

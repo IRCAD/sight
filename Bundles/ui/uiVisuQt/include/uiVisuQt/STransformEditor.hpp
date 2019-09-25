@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ class UIVISUQT_CLASS_API STransformEditor : public QObject,
 {
 Q_OBJECT;
 public:
-    fwCoreServiceClassDefinitionsMacro( (STransformEditor)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(STransformEditor, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     UIVISUQT_API STransformEditor() noexcept;

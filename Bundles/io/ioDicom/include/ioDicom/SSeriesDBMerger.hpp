@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IODICOM_SSERIESDBMERGER_HPP__
-#define __IODICOM_SSERIESDBMERGER_HPP__
+#pragma once
 
 #include "ioDicom/config.hpp"
 
@@ -55,7 +54,7 @@ class IODICOM_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBMerger)( ::fwGui::IActionSrv ) );
+    fwCoreServiceMacro(SSeriesDBMerger,  ::fwGui::IActionSrv );
 
     /// Constructor
     IODICOM_API SSeriesDBMerger() noexcept;
@@ -82,5 +81,3 @@ protected:
 };
 
 } // namespace ioDicom
-
-#endif // __IODICOM_SSERIESDBMERGER_HPP__

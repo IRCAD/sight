@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_IFILTER_HPP__
-#define __FWDICOMIOFILTER_IFILTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
@@ -62,7 +61,7 @@ public:
         }
     };
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IFilter)(::fwTools::Object) );
+    fwCoreClassMacro(IFilter, ::fwTools::Object);
 
     typedef std::vector< ::fwMedData::DicomSeries::sptr > DicomSeriesContainerType;
 
@@ -114,5 +113,3 @@ protected:
 };
 
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_IFILTER_HPP__ */

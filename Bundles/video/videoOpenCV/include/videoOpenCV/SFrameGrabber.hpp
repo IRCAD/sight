@@ -110,7 +110,7 @@ class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) )
+    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber);
 
     /// Constructor. Do nothing.
     VIDEOOPENCV_API SFrameGrabber() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ const ::fwCom::Signals::SignalKeyType PointList::s_POINT_REMOVED_SIG = "pointRem
 
 //------------------------------------------------------------------------------
 
-PointList::PointList(::fwData::Object::Key _key)
+PointList::PointList(::fwData::Object::Key)
 {
     newSignal<PointAddedSignalType>(s_POINT_ADDED_SIG);
     newSignal<PointRemovedSignalType>(s_POINT_REMOVED_SIG);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,28 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_PATCHER_IPATCHER_HPP__
-#define __FWATOMSPATCH_PATCHER_IPATCHER_HPP__
+#pragma once
 
-#include <string>
-
-#include <fwTools/Object.hpp>
-#include <fwAtoms/Object.hpp>
-
+#include "fwAtomsPatch/config.hpp"
+#include "fwAtomsPatch/helper/Object.hpp"
 #include "fwAtomsPatch/patcher/factory/new.hpp"
 #include "fwAtomsPatch/patcher/registry/detail.hpp"
-
-#include "fwAtomsPatch/helper/Object.hpp"
 #include "fwAtomsPatch/VersionDescriptor.hpp"
 #include "fwAtomsPatch/VersionsGraph.hpp"
 
-#include "fwAtomsPatch/patcher/registry/detail.hpp"
-#include "fwAtomsPatch/patcher/factory/new.hpp"
+#include <fwAtoms/Object.hpp>
 
+#include <fwTools/Object.hpp>
 
-
-#include "fwAtomsPatch/config.hpp"
-
+#include <string>
 
 namespace fwAtomsPatch
 {
@@ -50,7 +42,6 @@ namespace patcher
 {
 
 /**
- * @class IPatcher
  * @brief Base class of all patchers
  */
 class FWATOMSPATCH_CLASS_API IPatcher : public ::fwTools::Object
@@ -77,10 +68,9 @@ public:
         }
     };
 
-
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro((IPatcher)(::fwTools::Object));
+    fwCoreClassMacro(IPatcher, ::fwTools::Object);
     fwCoreAllowSharedFromThis();
 
     /// Constructor
@@ -91,14 +81,12 @@ public:
 
     /// Transform the specified object
     FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr transformObject(::fwAtoms::Object::sptr object,
-                                                                     const std::string &context,
-                                                                     const std::string &currentVersion,
-                                                                     const std::string &targetVersion) = 0;
+                                                                     const std::string& context,
+                                                                     const std::string& currentVersion,
+                                                                     const std::string& targetVersion) = 0;
 
 };
 
 } // namespace patcher
 
 } // namespace fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_PATCHER_IPATCHER_HPP__ */

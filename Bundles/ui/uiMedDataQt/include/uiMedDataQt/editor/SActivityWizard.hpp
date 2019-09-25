@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -110,7 +110,7 @@ class UIMEDDATAQT_CLASS_API SActivityWizard : public QObject,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivityWizard)(::fwGui::editor::IEditor) );
+    fwCoreServiceMacro(SActivityWizard, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SActivityWizard() noexcept;

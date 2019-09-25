@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,7 @@ class VISUVTKARADAPTOR_CLASS_API SPointList3D : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPointList3D)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SPointList3D, ::fwRenderVTK::IAdaptor);
 
     /// Constructor.
     VISUVTKARADAPTOR_API SPointList3D() noexcept;

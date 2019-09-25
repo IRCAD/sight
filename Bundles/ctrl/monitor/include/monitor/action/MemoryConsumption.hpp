@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
-#define __MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
+#pragma once
 
 #include "monitor/config.hpp"
 
@@ -33,12 +32,12 @@ namespace action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
-class MONITOR_CLASS_API MemoryConsumption : public  ::fwGui::IActionSrv
+class MONITOR_CLASS_API MemoryConsumption : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (MemoryConsumption)(  ::fwGui::IActionSrv ) );
+    fwCoreServiceMacro(MemoryConsumption,   ::fwGui::IActionSrv );
 
     /// Does nothing
     MONITOR_API MemoryConsumption() noexcept;
@@ -89,6 +88,3 @@ private:
 
 } // namespace action
 } // namespace monitor
-
-#endif //__MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
-

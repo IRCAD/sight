@@ -10,6 +10,7 @@ set( REQUIREMENTS
     dataReg
     servicesReg
     fwlauncher
+    media
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoGuiConfig)

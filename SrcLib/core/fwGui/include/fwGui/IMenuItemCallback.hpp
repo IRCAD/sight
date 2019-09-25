@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,28 +20,23 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_IMENUITEMCALLBACK_HPP__
-#define __FWGUI_IMENUITEMCALLBACK_HPP__
+#pragma once
 
-#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 namespace fwGui
 {
 
 /**
  * @brief   Defines the menu item callback.
- * @class   IMenuItemCallback
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IMenuItemCallback : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IMenuItemCallback)(::fwGui::GuiBaseObject) );
+    fwCoreClassMacro(IMenuItemCallback, ::fwGui::GuiBaseObject);
 
     /**
      * @brief  Called method when callback is executed.
@@ -51,7 +46,3 @@ public:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_IMENUITEMCALLBACK_HPP__*/
-
-

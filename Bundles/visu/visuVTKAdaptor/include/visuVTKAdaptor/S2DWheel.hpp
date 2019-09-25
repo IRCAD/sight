@@ -60,7 +60,7 @@ class VISUVTKADAPTOR_CLASS_API S2DWheel : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (S2DWheel)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(S2DWheel, ::fwRenderVTK::IAdaptor);
 
     typedef ::fwCom::Signal<void (double, double, double)> WheelUpdatedSignalType;
 

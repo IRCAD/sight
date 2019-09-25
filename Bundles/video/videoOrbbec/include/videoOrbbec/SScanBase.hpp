@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ class ColorFrameWorker;
 class VIDEOORBBEC_CLASS_API SScanBase : public ::arServices::IRGBDGrabber
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro((SScanBase)(::arServices::IRGBDGrabber))
+    fwCoreClassMacro(SScanBase, ::arServices::IRGBDGrabber);
 
     /**
      * @brief SScanBase constructor.

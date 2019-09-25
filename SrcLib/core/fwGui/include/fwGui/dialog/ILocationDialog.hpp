@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_DIALOG_ILOCATIONDIALOG_HPP__
-#define __FWGUI_DIALOG_ILOCATIONDIALOG_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
+
+#include <fwData/Composite.hpp>
+#include <fwData/location/ILocation.hpp>
 
 #include <boost/filesystem.hpp>
 
 #include <string>
-
-#include <fwData/location/ILocation.hpp>
-#include <fwData/Composite.hpp>
-
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
@@ -39,24 +38,20 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic file/folder selector dialog for IHM.
- * @class   LocationDialog
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API ILocationDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ILocationDialog)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(ILocationDialog, ::fwGui::GuiBaseObject);
 
     typedef enum
     {
-        NONE                = 0,
-        READ                = 1 << 1,
-            WRITE           = 1 << 2,
-            FILE_MUST_EXIST = 1 << 3,
+        NONE            = 0,
+        READ            = 1 << 1,
+        WRITE           = 1 << 2,
+        FILE_MUST_EXIST = 1 << 3,
     } Options;
 
     typedef enum
@@ -105,7 +100,7 @@ public:
      * @param[in] wildcardList a string of extension (glob syntax) separated by spaces
      * example : addFilter("images","*.png *.jpg")
      */
-    FWGUI_API virtual void addFilter(const std::string &filterName, const std::string &wildcardList ) = 0;
+    FWGUI_API virtual void addFilter(const std::string& filterName, const std::string& wildcardList ) = 0;
 
     /**
      * Display the dialog
@@ -132,7 +127,3 @@ private:
 
 } //namespace dialog
 } // namespace fwGui
-
-#endif /*__FWGUI_DIALOG_ILOCATIONDIALOG_HPP__*/
-
-

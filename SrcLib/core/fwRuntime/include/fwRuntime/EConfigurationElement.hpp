@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,29 +20,39 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_ECONFIGURATIONELEMENT_HPP__
-#define __FWRUNTIME_ECONFIGURATIONELEMENT_HPP__
+#pragma once
 
-#include "fwRuntime/ConfigurationElement.hpp"
 #include "fwRuntime/config.hpp"
+#include "fwRuntime/ConfigurationElement.hpp"
 
 namespace fwRuntime
 {
 
-
 /**
- * @brief   Editable configuration element : allow the self configuration element building, which reading XML structure provided by bundle descriptions
- * @class   EConfigurationElement
- * @date    2006-2009
+ * @brief   Editable configuration element : allow the self configuration element building,
+ *          which reading XML structure provided by bundle descriptions
  *
  */
 class FWRUNTIME_CLASS_API EConfigurationElement : public ::fwRuntime::ConfigurationElement
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (EConfigurationElement)(ConfigurationElement),
-                                            ((( const std::string& ))),
-                                            new EConfigurationElement
-                                            );
+
+    /// Shared pointer type
+    typedef std::shared_ptr < EConfigurationElement > sptr;
+    /// Weak pointer type
+    typedef std::weak_ptr < EConfigurationElement > wptr;
+    /// Const shared pointer type
+    typedef std::shared_ptr < const EConfigurationElement > csptr;
+
+    /**
+     * @brief       EConfigurationElement factory.
+     *
+     * @param[in]   name name of the configuration element
+     */
+    static sptr New(const std::string& name)
+    {
+        return std::make_shared<EConfigurationElement>(name);
+    }
 
     /**
      * @brief       Constructor.
@@ -74,5 +84,3 @@ public:
 };
 
 }
-
-#endif /*__FWRUNTIME_ECONFIGURATIONELEMENT_HPP__*/

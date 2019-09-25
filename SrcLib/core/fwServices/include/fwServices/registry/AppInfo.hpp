@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_REGISTRY_APPINFO_HPP__
-#define __FWSERVICES_REGISTRY_APPINFO_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 
 #include <fwCore/BaseObject.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <map>
@@ -45,7 +45,7 @@ class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppInfo)(::fwCore::BaseObject), (()), new AppInfo );
+    fwCoreClassMacro(AppInfo, ::fwCore::BaseObject, new AppInfo);
 
     /// Constructor, do nothing.
     AppInfo()
@@ -69,5 +69,3 @@ public:
 } // namespace registry
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_REGISTRY_APPINFO_HPP__

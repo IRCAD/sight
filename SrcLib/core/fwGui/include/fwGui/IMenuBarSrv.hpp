@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,33 +20,27 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_IMENUBARSRV_HPP__
-#define __FWGUI_IMENUBARSRV_HPP__
-
-#include <fwServices/IService.hpp>
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwContainer.hpp"
-
-#include "fwGui/registrar/MenuBarRegistrar.hpp"
 #include "fwGui/layoutManager/IMenuBarLayoutManager.hpp"
+#include "fwGui/registrar/MenuBarRegistrar.hpp"
+
+#include <fwServices/IService.hpp>
 
 namespace fwGui
 {
 
 /**
  * @brief   Defines the service interface managing the menu bar.
- * @class   IMenuBarSrv
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IMenuBarSrv : public ::fwServices::IService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IMenuBarSrv)(::fwServices::IService) );
+    fwCoreServiceMacro(IMenuBarSrv, ::fwServices::IService);
 
     /// Method called when a menu service is stopping
     FWGUI_API void menuServiceStopping(std::string menuSrvSID);
@@ -89,7 +83,8 @@ protected:
      *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see ::fwGui::registrar::MenuBarRegistrar::initialize(), ::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
+     *  @see ::fwGui::registrar::MenuBarRegistrar::initialize(),
+     *::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
      */
     FWGUI_API void initialize();
 
@@ -114,7 +109,3 @@ private:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_IMENUBARSRV_HPP__*/
-
-

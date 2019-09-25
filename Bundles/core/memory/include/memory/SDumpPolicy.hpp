@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __MEMORY_SDUMPPOLICY_HPP__
-#define __MEMORY_SDUMPPOLICY_HPP__
+#pragma once
 
 #include "memory/config.hpp"
 
@@ -39,7 +38,7 @@ class MEMORY_CLASS_API SDumpPolicy : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDumpPolicy)(::fwServices::IController) );
+    fwCoreServiceMacro(SDumpPolicy, ::fwServices::IController);
 
     MEMORY_API SDumpPolicy();
 
@@ -82,6 +81,3 @@ protected:
 };
 
 } // namespace memory
-
-#endif /*__MEMORY_SDUMPPOLICY_HPP__*/
-

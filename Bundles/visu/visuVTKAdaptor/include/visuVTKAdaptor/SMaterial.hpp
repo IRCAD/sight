@@ -56,7 +56,7 @@ public:
 
     static const ::fwServices::IService::KeyType s_MATERIAL_INPUT;
 
-    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SMaterial, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SMaterial() noexcept;
 

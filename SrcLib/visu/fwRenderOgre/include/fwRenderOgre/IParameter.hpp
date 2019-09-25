@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@ class FWRENDEROGRE_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IParameter)(::fwRenderOgre::IAdaptor) )
+    fwCoreClassMacro(IParameter, ::fwRenderOgre::IAdaptor);
 
     /**
      * @name Slots API

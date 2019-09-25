@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,6 @@
  *
  ***********************************************************************/
 
-
 #include "fwMedData/Study.hpp"
 
 #include <fwData/Exception.hpp>
@@ -31,7 +30,7 @@ fwDataRegisterMacro( ::fwMedData::Study );
 namespace fwMedData
 {
 
-Study::Study(::fwData::Object::Key key)
+Study::Study(::fwData::Object::Key)
 {
 }
 
@@ -43,7 +42,7 @@ Study::~Study()
 
 //------------------------------------------------------------------------------
 
-void Study::shallowCopy(const ::fwData::Object::csptr &_source)
+void Study::shallowCopy(const ::fwData::Object::csptr& _source)
 {
     Study::csptr other = Study::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -61,7 +60,7 @@ void Study::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void Study::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
+void Study::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Study::csptr other = Study::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -80,4 +79,3 @@ void Study::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCache
 //------------------------------------------------------------------------------
 
 } // namespace fwMedData
-

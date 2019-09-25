@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,21 +21,16 @@
  ***********************************************************************/
 
 /**
- * @file fwGui/layoutManager/IViewLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a layout geometry.
- *
- *
- * @date 2009-2010
  */
 
-#ifndef __FWGUI_LAYOUTMANAGER_IVIEWLAYOUTMANAGER_HPP__
-#define __FWGUI_LAYOUTMANAGER_IVIEWLAYOUTMANAGER_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
-
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwContainer.hpp"
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
@@ -44,16 +39,12 @@ namespace layoutManager
 
 /**
  * @brief   Defines the generic layout manager for IHM.
- * @class   IViewLayoutManager
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IViewLayoutManager : public ::fwGui::GuiBaseObject
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IViewLayoutManager)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(IViewLayoutManager, ::fwGui::GuiBaseObject);
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -100,7 +91,3 @@ protected:
 
 } // namespace layoutManager
 } // namespace fwGui
-
-#endif /*__FWGUI_LAYOUTMANAGER_IVIEWLAYOUTMANAGER_HPP__*/
-
-

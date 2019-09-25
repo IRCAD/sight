@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ class PostWindowRenderListener;
 class VISUOGREADAPTOR_CLASS_API SRenderStats : public ::fwRenderOgre::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SRenderStats)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceMacro(SRenderStats, ::fwRenderOgre::IAdaptor);
 
     /// Constructor.
     VISUOGREADAPTOR_API SRenderStats() noexcept;

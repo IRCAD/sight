@@ -87,8 +87,9 @@ Q_OBJECT;
 public:
 
 #ifdef KEEP_OLD_SERVICE
-    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(SCreateActivity, ::fwGui::editor::IEditor)
 #endif
+
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
 

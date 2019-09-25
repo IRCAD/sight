@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_BOOLEAN_HPP__
-#define __FWDATA_BOOLEAN_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -40,8 +39,15 @@ namespace fwData
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object), ( ((const bool)(false)) ),
-                                            GenericFieldFactory< Boolean >);
+    fwCoreClassMacro(Boolean, ::fwData::Object);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const bool val = false)
+    {
+        return GenericFieldFactory< Boolean >(val);
+    }
+
     fwCampMakeFriendDataMacro((fwData)(Boolean));
 
     /**
@@ -64,6 +70,3 @@ public:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_BOOLEAN_HPP__
-

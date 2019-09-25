@@ -30,8 +30,6 @@
 
 #include <fwServices/IController.hpp>
 
-fwCorePredeclare( (fwData)(Object) )
-
 namespace uiVisuOgre
 {
 
@@ -56,7 +54,7 @@ class UIVISUOGRE_CLASS_API SAddPoint : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAddPoint)(::fwServices::IController) )
+    fwCoreServiceMacro(SAddPoint, ::fwServices::IController);
 
     /**
      * @name Slots API

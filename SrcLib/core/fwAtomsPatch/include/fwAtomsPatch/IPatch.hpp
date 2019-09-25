@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,31 +20,29 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_IPATCH_HPP__
-#define __FWATOMSPATCH_IPATCH_HPP__
-
-#include <string>
-#include <map>
-
-#include <fwCore/base.hpp>
-#include <fwAtoms/Object.hpp>
-#include <fwAtomsPatch/helper/Object.hpp>
+#pragma once
 
 #include "fwAtomsPatch/config.hpp"
+#include <fwAtomsPatch/helper/Object.hpp>
 
+#include <fwAtoms/Object.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <map>
+#include <string>
 
 namespace fwAtomsPatch
 {
 
 /**
- * @class IPatch
  * @brief Base class of all patches
  */
 class FWATOMSPATCH_CLASS_API IPatch : public ::fwCore::BaseObject
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro((IPatch));
+    fwCoreClassMacro(IPatch);
     fwCoreAllowSharedFromThis();
 
     /**
@@ -57,7 +55,7 @@ public:
     FWATOMSPATCH_API IPatch();
 
     /// Copy constructor
-    FWATOMSPATCH_API IPatch( const IPatch &cpy );
+    FWATOMSPATCH_API IPatch( const IPatch& cpy );
 
     /// Destructor. Does nothing.
     FWATOMSPATCH_API virtual ~IPatch();
@@ -73,7 +71,6 @@ public:
     /// Returns the origin version of the object
     FWATOMSPATCH_API virtual const std::string& getOriginVersion() const;
 
-
 protected:
 
     /// Origin classname of the object
@@ -84,6 +81,4 @@ protected:
 
 };
 
-
 } //fwAtomsPatch
-#endif /* __FWATOMSPATCH_IPATCH_HPP__ */

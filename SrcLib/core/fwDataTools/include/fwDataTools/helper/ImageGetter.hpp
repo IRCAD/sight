@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_HELPER_IMAGEGETTER_HPP__
-#define __FWDATATOOLS_HELPER_IMAGEGETTER_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
@@ -44,6 +43,22 @@ public:
     typedef ::fwData::Image::IndexType IndexType;
     typedef ::fwData::Image::BufferType BufferType;
     typedef ::fwData::Image::BufferIndexType BufferIndexType;
+
+    /// Shared pointer type
+    typedef std::shared_ptr < ImageGetter > sptr;
+    /// Const shared pointer type
+    typedef std::shared_ptr < const ImageGetter > csptr;
+    /// Unique pointer type
+    typedef std::unique_ptr < ImageGetter > uptr;
+    /// Const unique pointer type
+    typedef std::unique_ptr < const ImageGetter > cuptr;
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(::fwData::Image::csptr image)
+    {
+        return std::make_shared<ImageGetter>(image);
+    }
 
     /// Constructor. Initialize parameters.
     FWDATATOOLS_API ImageGetter( ::fwData::Image::csptr image );
@@ -76,6 +91,3 @@ private:
 
 } // helper
 } // fwDataTools
-
-#endif // __FWDATATOOLS_HELPER_IMAGEGETTER_HPP__
-

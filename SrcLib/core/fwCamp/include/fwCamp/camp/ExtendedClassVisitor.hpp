@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCAMP_CAMP_EXTENDEDCLASSVISITOR_HPP__
-#define __FWCAMP_CAMP_EXTENDEDCLASSVISITOR_HPP__
+#pragma once
 
-#include <camp/classvisitor.hpp>
 #include "fwCamp/camp/MapProperty.hpp"
 #include "fwCamp/config.hpp"
+
+#include <camp/classvisitor.hpp>
 
 namespace camp
 {
@@ -34,40 +34,47 @@ class FWCAMP_CLASS_API ExtendedClassVisitor : public ClassVisitor
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     virtual void visit(const Property& property)
     {
         ClassVisitor::visit(property);
     }
+    //------------------------------------------------------------------------------
+
     virtual void visit(const SimpleProperty& property)
     {
         ClassVisitor::visit(property);
     }
+    //------------------------------------------------------------------------------
+
     virtual void visit(const ArrayProperty& property)
     {
         ClassVisitor::visit(property);
     }
+    //------------------------------------------------------------------------------
+
     virtual void visit(const EnumProperty& property)
     {
         ClassVisitor::visit(property);
     }
+    //------------------------------------------------------------------------------
+
     virtual void visit(const UserProperty& property)
     {
         ClassVisitor::visit(property);
     }
+    //------------------------------------------------------------------------------
+
     virtual void visit(const Function& function)
     {
         ClassVisitor::visit(function);
     }
+    //------------------------------------------------------------------------------
 
-
-    FWCAMP_API virtual void visit(const MapProperty& property)
+    virtual void visit(const MapProperty&)
     {
     }
-
-
 };
 
-
 } //camp
-
-#endif /* __FWCAMP_CAMP_EXTENDEDCLASSVISITOR_HPP__ */

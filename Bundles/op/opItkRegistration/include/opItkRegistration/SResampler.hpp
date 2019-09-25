@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __OPITKREGISTRATION_SRESAMPLER_HPP__
-#define __OPITKREGISTRATION_SRESAMPLER_HPP__
+#pragma once
 
 #include "opItkRegistration/config.hpp"
 
@@ -57,7 +56,7 @@ class OPITKREGISTRATION_CLASS_API SResampler : public ::fwServices::IOperator
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SResampler)(::fwServices::IOperator) );
+    fwCoreServiceMacro(SResampler, ::fwServices::IOperator);
 
     /// Constructor, does nothing.
     OPITKREGISTRATION_API SResampler();
@@ -91,5 +90,3 @@ protected:
 };
 
 } // namespace opItkRegistration
-
-#endif // __OPITKREGISTRATION_SRESAMPLER_HPP__

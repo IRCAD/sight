@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -114,7 +114,7 @@ class TRACKERARUCO_CLASS_API SArucoTracker : public ::arServices::ITracker
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SArucoTracker)(arServices::ITracker));
+    fwCoreServiceMacro(SArucoTracker, arServices::ITracker);
 
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
     typedef ::fwCom::Signal< void (bool) > MarkerDetectedSignalType;

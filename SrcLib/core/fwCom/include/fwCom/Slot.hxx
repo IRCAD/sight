@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SLOT_HXX__
-#define __FWCOM_SLOT_HXX__
+#pragma once
 
 #ifndef __FWCOM_SLOT_HPP__
 #error fwCom/Slot.hpp not included
@@ -114,7 +113,10 @@ SPTR(Slot< R( A ...  )>) Slot< Slot< R( A ... )> >::New( SPTR( SlotRun< F > ) sl
 template<typename F, typename ... BINDING>
 SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot(F f, BINDING ... binding)
 {
-    SLM_ASSERT( "Too many arguments", ( sizeof ... (binding) < 2 ) );
+#ifdef _DEBUG
+    constexpr bool hasValidNbArgs = (sizeof ... (binding) < 2);
+    SLM_ASSERT( "Too many arguments", hasValidNbArgs );
+#endif
     typedef std::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
     FunctionType func = ::fwCom::util::autobind(f, binding ...);
     return std::make_shared< Slot< FunctionType > > ( func );
@@ -123,6 +125,3 @@ SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot(F
 //-----------------------------------------------------------------------------
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOT_HXX__ */
-

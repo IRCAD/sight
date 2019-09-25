@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/ROITraits.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -33,7 +34,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-ROITraits::ROITraits(::fwData::Object::Key key)
+ROITraits::ROITraits(::fwData::Object::Key)
 {
 }
 
@@ -78,7 +79,7 @@ void ROITraits::setStructureTraits(const ::fwData::StructureTraits::sptr& struct
 
 //------------------------------------------------------------------------------
 
-void ROITraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+void ROITraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ROITraits::csptr other = ROITraits::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -90,5 +91,3 @@ void ROITraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &c
 }
 
 } // namespace fwData
-
-
