@@ -112,6 +112,12 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
                 QScrollArea* scrollArea = new QScrollArea();
                 scrollArea->setWidget(panel);
                 scrollArea->setWidgetResizable( true );
+                if(viewInfo.m_backgroundColor != "default")
+                {
+                    const QString style = QString::fromStdString(
+                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                    scrollArea->setStyleSheet(style);
+                }
 
                 layout->addWidget( scrollArea );
                 layout->setStretchFactor(scrollArea, viewInfo.m_proportion);

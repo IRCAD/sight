@@ -104,6 +104,12 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 scrollArea = new QScrollArea(m_qtWindow);
                 scrollArea->setWidget(widget);
                 scrollArea->setWidgetResizable( true );
+                if(viewInfo.m_backgroundColor != "default")
+                {
+                    const QString style = QString::fromStdString(
+                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                    scrollArea->setStyleSheet(style);
+                }
                 m_qtWindow->setCentralWidget(scrollArea);
             }
             else
@@ -177,6 +183,12 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 scrollArea = new QScrollArea(dockWidget);
                 scrollArea->setWidget(insideWidget);
                 scrollArea->setWidgetResizable(true);
+                if(viewInfo.m_backgroundColor != "default")
+                {
+                    const QString style = QString::fromStdString(
+                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                    scrollArea->setStyleSheet(style);
+                }
                 dockWidget->setWidget(scrollArea);
             }
             else
