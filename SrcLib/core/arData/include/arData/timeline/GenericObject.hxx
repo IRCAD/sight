@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_TIMELINE_GENERICOBJECT_HXX__
-#define __ARDATA_TIMELINE_GENERICOBJECT_HXX__
+#pragma once
 
 namespace arData
 {
@@ -65,7 +64,7 @@ void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int in
 
     // store floating point values
     ElementType* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
-    memcpy(dstElement, &element, getElementSize());
+    memcpy(static_cast<void*>(dstElement), &element, getElementSize());
 
     // update presence mask
     uint64_t oldMask = m_presenceMask;
@@ -111,8 +110,7 @@ typename GenericObject<TYPE>::iterator GenericObject<TYPE>::getPresenceIterator(
 
 template< typename TYPE >
 GenericObject<TYPE>::iterator::iterator(const GenericObjectBase& object) :
-    m_object(&object)
-    ,
+    m_object(&object),
     m_currentIndex(0)
 {
     m_maxElement = m_object->getMaxElementNum();
@@ -148,5 +146,3 @@ const TYPE& GenericObject<TYPE>::iterator::operator*() const
 } // namespace timeline
 
 } // namespace arData
-
-#endif /* __ARDATA_TIMELINE_GENERICOBJECT_HXX__ */
