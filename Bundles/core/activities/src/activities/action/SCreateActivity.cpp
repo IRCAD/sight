@@ -206,7 +206,7 @@ void SCreateActivity::configuring()
     return info;
 
 #endif
-
+    return ::fwActivities::registry::ActivityInfo();
 }
 
 //------------------------------------------------------------------------------
