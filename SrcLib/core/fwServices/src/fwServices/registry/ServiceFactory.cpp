@@ -383,7 +383,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
     SLM_ASSERT("This case is not managed ", object != "::fwData::Object" );
 
     std::string serviceImpl = "";
-#if SLM_DEBUG_ENABLED
+#ifdef _DEBUG
     bool genericImplIsFound = false;
 #endif
     bool specificImplIsFound = false;
@@ -412,7 +412,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
                     OSLM_ASSERT("Method has already found a generic service for the object ("
                                 << oimpl << ").",
                                 !genericImplIsFound );
-#if SLM_DEBUG_ENABLED
+#ifdef _DEBUG
                     genericImplIsFound = true;
 #endif
                     if ( !specificImplIsFound )
