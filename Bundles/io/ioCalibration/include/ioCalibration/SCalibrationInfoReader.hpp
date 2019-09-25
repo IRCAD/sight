@@ -32,19 +32,21 @@ namespace ioCalibration
 {
 
 /**
- * @brief Write CalibrationInfo 2D images to a folder using OpenCV.
+ * @brief Read calibration input datasets.
+ *
+ * Load images of chessboards to fill a calibration info structure.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service uid="..." type="::ioCalibration::SCalibrationInfoReader">
-       <inout key="data" uid="..." />
+        <inout key="data" uid="..." />
         <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
    </service>
    @endcode
  *
  * @subsection InOut InOut
- * - \b data [::arData::CalibrationInfo]: images to write.
+ * - \b data [::arData::CalibrationInfo]: structure to which the loaded data is appended
  * @subsection Configuration Configuration:
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.
@@ -69,13 +71,13 @@ protected:
     /// Returns the folder path type.
     IOCALIBRATION_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
-    /// Configures the output file format.
+    /// Configures the output file format and the chessboard preference keys.
     IOCALIBRATION_API virtual void configuring() override;
 
-    /// Does nothing.
+    /// Updates the chessboard parameters from the preferences.
     IOCALIBRATION_API virtual void starting() override;
 
-    /// Writes the images to the folder if it has been defined.
+    /// Loads the images and attempts to detect a chessboard.
     IOCALIBRATION_API virtual void updating() override;
 
     /// Does nothing.

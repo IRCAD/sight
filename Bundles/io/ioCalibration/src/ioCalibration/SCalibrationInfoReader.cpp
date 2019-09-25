@@ -79,9 +79,9 @@ void SCalibrationInfoReader::configureWithIHM()
     static ::boost::filesystem::path s_defaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
+    dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(s_defaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
     ::fwData::location::Folder::sptr result = ::fwData::location::Folder::dynamicCast(dialogFile.show());
