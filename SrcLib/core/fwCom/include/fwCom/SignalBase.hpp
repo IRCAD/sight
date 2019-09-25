@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,14 +19,13 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_SIGNALBASE_HPP__
-#define __FWCOM_SIGNALBASE_HPP__
 
-#include <fwCore/BaseObject.hpp>
+#pragma once
 
 #include "fwCom/config.hpp"
-
 #include "fwCom/Connection.hpp"
+
+#include <fwCore/BaseObject.hpp>
 
 namespace fwCom
 {
@@ -36,7 +35,7 @@ struct SlotBase;
 /**
  * @brief Signal base class.
  */
-struct SignalBase : virtual fwCore::BaseObject
+struct FWCOM_CLASS_API SignalBase : virtual fwCore::BaseObject
 {
     /**
      * @name Typedefs
@@ -57,13 +56,13 @@ struct SignalBase : virtual fwCore::BaseObject
      * @brief Connects the given slot.
      * @throws BadSlot If given slot doesn't match signal type.
      */
-    virtual Connection connect ( SPTR( SlotBase ) slot ) = 0;
+    virtual Connection connect( SPTR( SlotBase ) slot ) = 0;
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    virtual void disconnect ( SPTR( SlotBase ) slot ) = 0;
+    virtual void disconnect( SPTR( SlotBase ) slot ) = 0;
 
     /// Returns number of connections.
     virtual size_t getNumberOfConnections() const = 0;
@@ -77,6 +76,3 @@ struct SignalBase : virtual fwCore::BaseObject
 };
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SIGNALBASE_HPP__ */
-

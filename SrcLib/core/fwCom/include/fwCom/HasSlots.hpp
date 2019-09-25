@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_HASSLOTS_HPP__
-#define __FWCOM_HASSLOTS_HPP__
+#pragma once
 
 #include "fwCom/config.hpp"
 #include "fwCom/Slots.hpp"
@@ -35,7 +34,7 @@ struct SlotBase;
 /**
  * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
  */
-class HasSlots
+class FWCOM_CLASS_API HasSlots
 {
 
 public:
@@ -50,20 +49,20 @@ public:
     {
     }
 
-    SPTR( SlotBase ) slot( const Slots::SlotKeyType & key ) const
+    SPTR( SlotBase ) slot( const Slots::SlotKeyType& key ) const
     {
         return m_slots[key];
     }
 
     template< typename SlotType >
-    SPTR( SlotType ) slot( const Slots::SlotKeyType & key ) const
+    SPTR( SlotType ) slot( const Slots::SlotKeyType& key ) const
     {
         SPTR( SlotType ) slot = std::dynamic_pointer_cast< SlotType >( this->slot(key) );
         return slot;
     }
 
     template<typename F, typename A>
-    SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot( const Slots::SlotKeyType & key, F f,
+    SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot( const Slots::SlotKeyType& key, F f,
                                                                                     A a );
 
 protected:
@@ -78,5 +77,3 @@ protected:
 };
 
 } // namespace fwCom
-
-#endif // __FWCOM_HASSLOTS_HPP__

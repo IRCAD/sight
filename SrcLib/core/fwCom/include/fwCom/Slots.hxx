@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,22 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SLOTS_HXX__
-#define __FWCOM_SLOTS_HXX__
+#pragma once
 
-
-#ifndef __FWCOM_SLOTS_HPP__
+#if !defined(__FWCOM_SLOTS_HPP__)
 #error fwCom/Slots.hpp not included
 #endif
 
 #include "fwCom/Slot.hpp"
 #include "fwCom/Slot.hxx"
 
-
 namespace fwCom
 {
 
+//------------------------------------------------------------------------------
+
 template<typename F, typename ... A>
-Slots& Slots::operator()( const SlotKeyType &key, F f, A ... a )
+Slots& Slots::operator()( const SlotKeyType& key, F f, A ... a )
 {
     SPTR( SlotBase ) slotBase = std::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a ...) );
     return this->operator()(key, slotBase);
@@ -48,7 +47,7 @@ Slots& Slots::operator()( const SlotKeyType &key, F f, A ... a )
 
 template<typename F, typename A>
 SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >)
-HasSlots::newSlot( const ::fwCom::Slots::SlotKeyType & key, F f, A a )
+HasSlots::newSlot( const ::fwCom::Slots::SlotKeyType& key, F f, A a )
 {
     auto slot = ::fwCom::newSlot(f, a);
     this->m_slots(key, slot);
@@ -58,5 +57,3 @@ HasSlots::newSlot( const ::fwCom::Slots::SlotKeyType & key, F f, A a )
 #endif
 
 } // namespace fwCom
-
-#endif //__FWCOM_SLOTS_HXX__
