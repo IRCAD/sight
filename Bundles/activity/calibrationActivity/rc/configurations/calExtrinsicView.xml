@@ -155,6 +155,7 @@
                     <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
                     <menuItem name="Export Extrinsic Matrix(.trf)" icon="arMedia-0.1/icons/save.svg" />
                     <menuItem name="Save calibration information" icon="arMedia-0.1/icons/save.svg" />
+                    <menuItem name="Load calibration images" icon="media-0.1/icons/LoadActivity.svg" />
                 </layout>
             </gui>
             <registry>
@@ -166,6 +167,7 @@
                 <menuItem sid="actionDisplayImage" start="yes" />
                 <menuItem sid="actionExportExtrinsic" start="yes" />
                 <menuItem sid="actionSaveInputs" start="yes" />
+                <menuItem sid="actionLoadInputs" start="yes" />
             </registry>
         </service>
 
@@ -263,6 +265,16 @@
                 <slot>calibrationDataWriter1/update</slot>
                 <slot>calibrationDataWriter2/configureWithIHM</slot>
                 <slot>calibrationDataWriter2/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionLoadInputs" type="::gui::action::SSlotCaller">
+            <sync>true</sync>
+            <slots>
+                <slot>calibrationDataReader1/configureWithIHM</slot>
+                <slot>calibrationDataReader1/update</slot>
+                <slot>calibrationDataReader2/configureWithIHM</slot>
+                <slot>calibrationDataReader2/update</slot>
             </slots>
         </service>
 
@@ -425,6 +437,18 @@
             <format>.tiff</format>
         </service>
 
+        <service uid="calibrationDataReader1" type="::ioCalibration::SCalibrationInfoReader">
+            <windowTitle>Load left images.</windowTitle>
+            <inout key="data" uid="${calibrationInfo1}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+        </service>
+
+        <service uid="calibrationDataReader2" type="::ioCalibration::SCalibrationInfoReader">
+            <windowTitle>Load right images.</windowTitle>
+            <inout key="data" uid="${calibrationInfo2}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+        </service>
+
         <!-- ******************************* Connections ************************************** -->
         <connect>
             <signal>chessboardDetector/chessboardDetected</signal>
@@ -458,6 +482,9 @@
             <signal>${calibrationInfo1}/addedRecord</signal>
             <signal>${calibrationInfo1}/removedRecord</signal>
             <signal>${calibrationInfo1}/resetRecord</signal>
+            <signal>${calibrationInfo2}/addedRecord</signal>
+            <signal>${calibrationInfo2}/removedRecord</signal>
+            <signal>${calibrationInfo2}/resetRecord</signal>
             <slot>extrinsicCalibrationInfoEditor/update</slot>
         </connect>
 
@@ -469,6 +496,8 @@
         <connect channel="${preferencesModifiedProxy}">
             <slot>openCVExtrinsicCal/updateChessboardSize</slot>
             <slot>chessboardDetector/updateChessboardSize</slot>
+            <slot>calibrationDataReader1/updateChessboardSize</slot>
+            <slot>calibrationDataReader2/updateChessboardSize</slot>
         </connect>
 
         <start uid="extrinsicView" />
@@ -482,6 +511,8 @@
         <start uid="videoGrabber2" />
         <start uid="calibrationDataWriter1" />
         <start uid="calibrationDataWriter2" />
+        <start uid="calibrationDataReader1" />
+        <start uid="calibrationDataReader2" />
         <!-- VTK scene 'camera1' -->
         <start uid="videoAdapter1" />
         <start uid="interactorStyle1" />
