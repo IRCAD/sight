@@ -93,7 +93,7 @@ build:debug-linux:
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
-    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >
@@ -123,7 +123,7 @@ build:release-linux:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=ON
-    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >
@@ -209,6 +209,7 @@ build:debug-macos:
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >
@@ -238,6 +239,7 @@ build:release-macos:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=ON
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >
