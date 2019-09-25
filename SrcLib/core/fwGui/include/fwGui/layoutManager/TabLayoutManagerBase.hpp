@@ -65,6 +65,8 @@ public:
         std::string m_caption;
         bool m_isSelect;
         bool m_useScrollBar;
+        /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
+        std::string m_backgroundColor {"default"};
     };
 
     /// Constructor. Do nothing.

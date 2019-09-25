@@ -72,6 +72,13 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
         widget->setMinimumSize(minWidthSize, minHeightSize);
         widget->setContentsMargins(border, border, border, border);
 
+        if(viewInfo.m_backgroundColor != "default")
+        {
+            const QString style = QString::fromStdString(
+                "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+            widget->setStyleSheet(style);
+        }
+
         ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
         subContainer->setQtContainer(widget);
         m_subViews.push_back(subContainer);

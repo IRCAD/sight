@@ -76,6 +76,12 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
         QWidget* panel = new QWidget();
         panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
         panel->setContentsMargins(border, border, border, border);
+        if(viewInfo.m_backgroundColor != "default")
+        {
+            const QString style = QString::fromStdString(
+                "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+            panel->setStyleSheet(style);
+        }
 
         ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
         subContainer->setQtContainer(panel);
