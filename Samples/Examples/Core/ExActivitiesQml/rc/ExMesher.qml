@@ -11,6 +11,8 @@ import styleQml 1.0
 
 Activity {
     id: exImageDisplaying
+
+    // App manager associated to this activity
     appManager: MesherManager {
         id: appManager
         frameBuffer: scene3D
@@ -52,6 +54,7 @@ Activity {
             Layout.fillHeight: true
             color: "#006699"
 
+            // Frame buffer to display the 3D scene
             FrameBufferItem {
                 id: scene3D
                 anchors.fill: parent
@@ -95,6 +98,7 @@ Activity {
                 Layout.fillWidth: true
 
                 onServiceCreated: {
+                    // register the service in the activity manager
                     exImageDisplaying.registerService(srv)
                 }
             }

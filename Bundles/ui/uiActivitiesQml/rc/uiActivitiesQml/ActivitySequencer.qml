@@ -18,14 +18,14 @@ RowLayout {
     // name of the activities to launch. Displayed in the sequencer
     property var activityNameList: []
 
-    // Signal emitted when the service is created
+    // Signal emitted when the service is created, it must be listen in the upper Qml object
     signal serviceCreated(var srv)
 
     Component.onCompleted: {
         serviceCreated(activitySequencer)
     }
 
-    // launch activities in the stack view
+    // C++ service: allow to select and enable the activities
     SActivitySequencer {
         id: activitySequencer
         activityIds: activityIdsList
@@ -40,6 +40,7 @@ RowLayout {
         }
     }
 
+    // display the stepper buttons
     Repeater {
         id: repeater
         model: activityNameList.length == 0 ? activityIdsList : activityNameList
@@ -69,7 +70,7 @@ RowLayout {
                         {
                             color = Theme.accent
                         }
-                        toolButton.hovered? Material.color(Material.Grey, Material.Shade400) : color
+                        toolButton.hovered? Qt.lighter(color) : color
                     }
                     radius: 10
                 }

@@ -39,7 +39,9 @@
 #include <QObject>
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief AppManager for a Qml application that allows to generate models from a 3D image mask.
+ *
+ * It is associated to `ExMesher.qml` file.
  */
 class EXACTIVITIESQML_CLASS_API MesherManager : public ::fwQml::IQmlAppManager,
                                                 public ::fwCom::HasSignals
@@ -56,7 +58,8 @@ public:
     EXACTIVITIESQML_API ~MesherManager() noexcept override;
 
 public Q_SLOTS:
-    // Initialize the manager
+
+    /// Initialize the manager
     void initialize() override;
 
     /// Uninitialize the manager
@@ -68,8 +71,13 @@ public Q_SLOTS:
     /// Register the services instanciated from Qml
     void onServiceCreated(const QVariant& obj) override;
 
+    /// Tell the image adaptor to change the slice mode
     void onUpdateSliceMode(int mode);
+
+    /// Tell the image adaptor to show/hide image slices
     void onShowScan(bool isShown);
+
+    /// Generate the mesh
     void applyMesher(unsigned int reduction);
 
 private:

@@ -37,15 +37,21 @@
 #include <QObject>
 #include <QVariant>
 
+namespace uiActivitiesQml
+{
 /**
  * @brief Manager to lauch activities with a sequencer
  *
- * To simplify the use of SActivityView and SActivitySequencer, a Qml object ActivityLauncher can be used
+ * To simplify the use of SActivityView and SActivitySequencer, a Qml object ActivityLauncher can be used.
+ *
+ * If you need to enable the next activity after a process in your activity, you must call the sequencer `checkNext`
+ * slot from your AppManager to check if the next activity is available. This slot can be call using the channel
+ * `validationChannel`.
  *
  *  @code{.qml}
     ActivityLauncher {
         id: activityLauncher
-        activityIdsList: ["ExImageReading", "ExMesher", "ExImageDisplaying"]
+        activityIdsList: ["ExImageReadingActivity", "ExMesherActivity", "ExImageDisplayingActivity"]
         activityNameList: ["Read", "Mesher", "Display"]
     }
    @endcode
@@ -88,3 +94,5 @@ private:
     ::fwServices::IService::ConfigType m_activityViewConfig;
     ::fwServices::IService::ConfigType m_sequencerConfig;
 };
+
+} //namespace uiActivitiesQml

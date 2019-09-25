@@ -39,7 +39,9 @@
 #include <QObject>
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief AppManager for a Qml application that allows to read an image and display it a basic 3D scene
+ *
+ * It is associated to `ExImageReading.qml` file.
  */
 class EXACTIVITIESQML_CLASS_API ImageReadingManager : public ::fwQml::IQmlAppManager,
                                                       public ::fwCom::HasSignals
@@ -56,7 +58,8 @@ public:
     EXACTIVITIESQML_API ~ImageReadingManager() noexcept override;
 
 public Q_SLOTS:
-    // Initialize the manager
+
+    /// Initialize the manager
     void initialize() override;
 
     /// Uninitialize the manager

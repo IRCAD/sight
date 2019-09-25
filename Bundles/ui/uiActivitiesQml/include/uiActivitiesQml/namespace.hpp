@@ -29,7 +29,7 @@
  *
  * @section ActivitySequencer ActivitySequencer
  *
- *  ActivitySequencer object instantiate a SActivitySequencer service and allows to display the "stepper":
+ * ActivitySequencer object instantiate a SActivitySequencer service and allows to display the "stepper":
  *
  * @code{.qml}
  *  ActivitySequencer {
@@ -63,19 +63,31 @@
  * - \n activityIdsList: identifiers of the activities to launch
  * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  *
+ * @see uiActivitiesQml::ActivityLauncherManager
+ *
  * @section Activity Activity
  *
  * This object provides a template for the activity that will be launched.
  *
  *  @code{.qml}
     Activity {
-        id: exImageDisplaying
+        id: exImageDisplayingActivity
         appManager: MesherManager {
             id: appManager
             frameBuffer: scene3D
         }
+
         // Your layout, object, service...
         // ...
+        // the services should be register with 'exImageDisplayingActivity.registerService(service)'
+        SliceSelector {
+            id: sliceSelector
+
+            // register the service when created
+            onServiceCreated: {
+                exImageDisplayingActivity.registerService(srv)
+            }
+        }
     }
    @endcode
  *

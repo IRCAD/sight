@@ -13,7 +13,7 @@
     <requirement id="styleQml" />
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>ExImageReading</id>
+        <id>ExImageReadingActivity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
         <icon>media-0.1/icons/LoadActivity.svg</icon>
@@ -32,7 +32,7 @@
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>ExMesher</id>
+        <id>ExMesherActivity</id>
         <title>Image meshing</title>
         <desc>Activity to generate a model from an image</desc>
         <icon>media-0.1/icons/icon-2D.png</icon>
@@ -54,7 +54,7 @@
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>ExImageDisplaying</id>
+        <id>ExImageDisplayingActivity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
         <icon>media-0.1/icons/icon-2D.png</icon>

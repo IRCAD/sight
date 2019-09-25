@@ -32,6 +32,9 @@
 #include <fwServices/registry/Proxy.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
+namespace uiActivitiesQml
+{
+
 static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 static const std::string s_ACTIVITY_CREATED_CHANNEL = "activityCreatedChannel";
@@ -167,3 +170,5 @@ void ActivityLauncherManager::save()
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace uiActivitiesQml

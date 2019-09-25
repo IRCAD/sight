@@ -16,10 +16,13 @@ ApplicationWindow {
 
     title: qsTr("ExActivitiesQml 0.1")
 
+    // Display the activities: display a stepper and the selected activity in the main container
     ActivityLauncher {
         id: activityLauncher
         anchors.fill: parent
-        activityIdsList: ["ExImageReading", "ExMesher", "ExImageDisplaying"]
+        // Activity ids
+        activityIdsList: ["ExImageReadingActivity", "ExMesherActivity", "ExImageDisplayingActivity"]
+        // Name of the activities displayed in the stepper
         activityNameList: ["Read", "Mesher", "Display"]
     }
 

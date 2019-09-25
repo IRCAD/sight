@@ -40,6 +40,8 @@ Item {
         spacing: 0
 
         RowLayout {
+
+            // Sequencer Object that displays the activity stepper
             ActivitySequencer {
                 Layout.fillWidth: true
                 activityIdsList: activityLauncher.activityIdsList
@@ -81,6 +83,7 @@ Item {
             }
         }
 
+        // the activities component will be displayed in this view
         StackView {
             id: activityStackView
             Layout.fillHeight: true
