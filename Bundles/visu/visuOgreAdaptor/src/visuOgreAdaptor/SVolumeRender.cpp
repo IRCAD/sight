@@ -323,8 +323,6 @@ void SVolumeRender::newImage()
             // Destroy the worker to wait for all pending buffering tasks to be cleared.
             m_bufferingWorker.reset();
 
-            std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
-
             auto* newWorker = renderService->getInteractorManager()->createGraphicsWorker();
             m_bufferingWorker = std::unique_ptr< ::fwRenderOgre::IGraphicsWorker >(newWorker);
         }
