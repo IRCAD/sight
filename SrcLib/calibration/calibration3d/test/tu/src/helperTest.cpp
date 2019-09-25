@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,13 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <fwTest/Data.hpp>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::calibration3d::ut::helperTest );
@@ -38,6 +41,26 @@ namespace calibration3d
 {
 namespace ut
 {
+
+using ExpectedChessboardType = std::vector< ::fwData::Point::PointCoordArrayType >;
+
+//------------------------------------------------------------------------------
+
+static inline void compareChessboards(const ExpectedChessboardType& _expected,
+                                      const ::fwData::PointList::csptr& _detected)
+{
+    CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected->getPoints().size());
+
+    for(std::uint32_t i = 0; i < _expected.size(); ++i)
+    {
+        const auto& expectedCoords = _expected[i];
+        const auto& detectedCoords = _detected->getPoints()[i]->getCoord();
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoords[0], detectedCoords[0], 0.01);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCoords[1], detectedCoords[1], 0.01);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, detectedCoords[2], 0.0);
+    }
+}
 
 //------------------------------------------------------------------------------
 
@@ -408,6 +431,211 @@ void helperTest::generateCharucoDict()
 }
 
 //------------------------------------------------------------------------------
+
+void helperTest::chessboardDetectionTest()
+{
+    const auto calibDataDir = ::fwTest::Data::dir() / "sight" / "calibration";
+    {
+        const ::cv::Mat chessRgb0 = ::cv::imread((calibDataDir / "chessboardRGB0.tiff").string());
+
+        CPPUNIT_ASSERT_EQUAL(false, chessRgb0.empty());
+        CPPUNIT_ASSERT_EQUAL(3, chessRgb0.channels());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb0.elemSize1());
+
+        const ::fwData::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessRgb0,
+                                                                                                   9, 6, 0.25f);
+
+        const ExpectedChessboardType expectedChessboard {
+            {743.796, 429.966, 0.0},
+            {822.543, 406.12, 0.0},
+            {903.78, 383.864, 0.0},
+            {984.956, 361.093, 0.0},
+            {1065.97, 338.673, 0.0},
+            {1146.06, 317.624, 0.0},
+            {1225.52, 297.342, 0.0},
+            {1302.24, 276.42, 0.0},
+            {762.267, 508.076, 0.0},
+            {843.178, 484.55, 0.0},
+            {925.297, 459.935, 0.0},
+            {1007.55, 436.705, 0.0},
+            {1089.97, 413.711, 0.0},
+            {1171.73, 393.006, 0.0},
+            {1251.21, 370.877, 0.0},
+            {1328.73, 350.586, 0.0},
+            {781.57, 587.452, 0.0},
+            {863.595, 563.583, 0.0},
+            {946.918, 539.969, 0.0},
+            {1030.23, 515.795, 0.0},
+            {1114.83, 492.528, 0.0},
+            {1197.12, 468.886, 0.0},
+            {1277.37, 446.899, 0.0},
+            {1355.74, 424.96, 0.0},
+            {802.265, 668.699, 0.0},
+            {885.736, 644.777, 0.0},
+            {970.339, 621.625, 0.0},
+            {1055.98, 597.247, 0.0},
+            {1139.21, 573.536, 0.0},
+            {1222.75, 548.947, 0.0},
+            {1304.78, 525.552, 0.0},
+            {1383.77, 502.059, 0.0},
+            {824.78, 751.572, 0.0},
+            {909.374, 728.127, 0.0},
+            {994.385, 704.509, 0.0},
+            {1080.42, 680.52, 0.0},
+            {1165.74, 656.121, 0.0},
+            {1249.02, 630.135, 0.0},
+            {1331.61, 605.354, 0.0},
+            {1411.49, 581.081, 0.0}
+        };
+
+        compareChessboards(expectedChessboard, detectedChess);
+    }
+
+    {
+        const ::cv::Mat chessRgb1 = ::cv::imread((calibDataDir / "chessboardRGB1.tiff").string());
+
+        CPPUNIT_ASSERT_EQUAL(false, chessRgb1.empty());
+        CPPUNIT_ASSERT_EQUAL(3, chessRgb1.channels());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb1.elemSize1());
+
+        const ::fwData::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessRgb1,
+                                                                                                   9, 6, 0.25f);
+
+        const ExpectedChessboardType expectedChessboard {
+            {739.34, 394.467, 0.0},
+            {822.398, 400.638, 0.0},
+            {907.387, 406.695, 0.0},
+            {994.247, 412.994, 0.0},
+            {1083.21, 420.174, 0.0},
+            {1172.81, 426.662, 0.0},
+            {1262.31, 434.583, 0.0},
+            {1350.74, 442.525, 0.0},
+            {715.396, 444.915, 0.0},
+            {801.192, 451.006, 0.0},
+            {890.182, 457.649, 0.0},
+            {980.747, 464.722, 0.0},
+            {1073.72, 471.985, 0.0},
+            {1167.43, 480.636, 0.0},
+            {1261.21, 487.35, 0.0},
+            {1353.4, 496.396, 0.0},
+            {688.777, 498.619, 0.0},
+            {777.508, 506.315, 0.0},
+            {870.244, 514.487, 0.0},
+            {965.658, 522.376, 0.0},
+            {1061.78, 530.548, 0.0},
+            {1160.71, 538.417, 0.0},
+            {1258.89, 546.984, 0.0},
+            {1356.3, 555.451, 0.0},
+            {660.464, 558.024, 0.0},
+            {752.264, 566.962, 0.0},
+            {849.34, 576.219, 0.0},
+            {948.697, 585.038, 0.0},
+            {1049.92, 593.705, 0.0},
+            {1153.28, 603.106, 0.0},
+            {1256.79, 611.626, 0.0},
+            {1359.38, 620.055, 0.0},
+            {629.884, 622.767, 0.0},
+            {726.468, 633.131, 0.0},
+            {825.885, 643.774, 0.0},
+            {930.79, 653.911, 0.0},
+            {1037.31, 664.543, 0.0},
+            {1145.59, 674.313, 0.0},
+            {1254.46, 683.415, 0.0},
+            {1361.34, 691.433, 0.0}
+        };
+
+        compareChessboards(expectedChessboard, detectedChess);
+    }
+
+    {
+        const ::cv::Mat chessGray = ::cv::imread((calibDataDir / "chessboardGray.tiff").string(),
+                                                 CV_LOAD_IMAGE_GRAYSCALE);
+
+        CPPUNIT_ASSERT_EQUAL(false, chessGray.empty());
+        CPPUNIT_ASSERT_EQUAL(1, chessGray.channels());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessGray.elemSize1());
+
+        const ::fwData::PointList::csptr detectedChess = ::calibration3d::helper::detectChessboard(chessGray,
+                                                                                                   9, 6, 0.25f);
+
+        const ExpectedChessboardType expectedChessboard {
+            {933.376, 504.662, 0.0},
+            {980.189, 463.743, 0.0},
+            {1033.96, 427.51, 0.0},
+            {1081.23, 392.296, 0.0},
+            {1126.85, 357.625, 0.0},
+            {1169.53, 325.472, 0.0},
+            {1209.91, 295.648, 0.0},
+            {1248.9, 266.503, 0.0},
+            {984.026, 557.646, 0.0},
+            {1034.66, 516.435, 0.0},
+            {1083.63, 477.243, 0.0},
+            {1129.72, 440.497, 0.0},
+            {1174.63, 404.916, 0.0},
+            {1215.77, 371.629, 0.0},
+            {1255.68, 339.41, 0.0},
+            {1293.53, 309.586, 0.0},
+            {1034.53, 610.859, 0.0},
+            {1084.45, 568.443, 0.0},
+            {1132.77, 527.856, 0.0},
+            {1179.05, 490.443, 0.0},
+            {1221.37, 452.432, 0.0},
+            {1262.46, 417.321, 0.0},
+            {1300.72, 384.633, 0.0},
+            {1337.88, 353.154, 0.0},
+            {1086.83, 664.58, 0.0},
+            {1135.66, 621.173, 0.0},
+            {1182.46, 578.872, 0.0},
+            {1227.32, 539.044, 0.0},
+            {1268.66, 501.042, 0.0},
+            {1309.61, 464.375, 0.0},
+            {1346.99, 429.715, 0.0},
+            {1382.89, 397.553, 0.0},
+            {1138.79, 718.459, 0.0},
+            {1186.3, 673.672, 0.0},
+            {1232.29, 629.863, 0.0},
+            {1275.78, 588.117, 0.0},
+            {1316.88, 549.465, 0.0},
+            {1355.55, 511.947, 0.0},
+            {1392.14, 476.584, 0.0},
+            {1426.73, 442.136, 0.0}
+        };
+
+        compareChessboards(expectedChessboard, detectedChess);
+
+        const ::fwData::PointList::csptr detectedChess2 = ::calibration3d::helper::detectChessboard(chessGray,
+                                                                                                    8, 5, 0.25f);
+        CPPUNIT_ASSERT(!detectedChess2);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void helperTest::chessboardDetectionScaleTest()
+{
+    const auto calibDataDir = ::fwTest::Data::dir() / "sight" / "calibration";
+
+    const ::cv::Mat chessRgb0 = ::cv::imread((calibDataDir / "chessboardRGB0.tiff").string());
+
+    const ::fwData::PointList::csptr detectedChessFullScale =
+        ::calibration3d::helper::detectChessboard(chessRgb0, 9, 6, 1.f);
+
+    const ::fwData::PointList::csptr detectedChessQuarterScale =
+        ::calibration3d::helper::detectChessboard(chessRgb0, 9, 6, 0.25f);
+
+    CPPUNIT_ASSERT_EQUAL(detectedChessFullScale->getPoints().size(), detectedChessQuarterScale->getPoints().size());
+
+    for(std::uint32_t i = 0; i < detectedChessFullScale->getPoints().size(); ++i)
+    {
+        const auto& fullScaleCoords    = detectedChessFullScale->getPoints()[i]->getCoord();
+        const auto& quarterScaleCoords = detectedChessQuarterScale->getPoints()[i]->getCoord();
+
+        for(std::uint8_t j = 0; j < 3; ++j)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(fullScaleCoords[j], quarterScaleCoords[j], 0.5);
+        }
+    }
+}
 
 }//namespace ut
 }//namespace calibration3d
