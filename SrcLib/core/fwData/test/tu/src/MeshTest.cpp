@@ -312,7 +312,7 @@ void MeshTest::colorsNormals()
     {
         for (long n = 0; n < 3; n++)
         {
-            cellNormalArray[id][n] = id + n/10.f;
+            cellNormalArray[id][n] = static_cast<float>(id) + static_cast<float>(n)/10.f;
         }
     }
     CPPUNIT_ASSERT_EQUAL(0.0f, cellNormalArray[0][0]);
@@ -362,7 +362,7 @@ void MeshTest::texCoords()
     {
         for (long n = 0; n < 2; n++)
         {
-            cellTexCoordArray[id][n] = id + n/10.f;
+            cellTexCoordArray[id][n] = static_cast<float>(id) + static_cast<float>(n)/10.f;
         }
     }
     CPPUNIT_ASSERT_EQUAL(0.0f, cellTexCoordArray[0][0]);
@@ -397,7 +397,7 @@ void MeshTest::addingArray()
     {
         for (int i = 0; i < 3; i++)
         {
-            *iter = count + i/10.0f;
+            *iter = count + static_cast<float>(i)/10.0f;
         }
         count++;
     }

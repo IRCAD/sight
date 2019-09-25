@@ -218,10 +218,11 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Vector3 viewportPoint(
-            (ndcPoint.x+1.f) * 0.5f * viewport->getActualWidth(),
-            viewport->getActualHeight() - (ndcPoint.y+1.f) * 0.5f * viewport->getActualHeight(),
-            (ndcPoint.z+1.f) * 0.5f);
+        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f * static_cast<float>(viewport->getActualWidth());
+        const ::Ogre::Real fY = static_cast<float>(viewport->getActualHeight()) - (ndcPoint.y+1.f) * 0.5f *
+                                static_cast<float>(viewport->getActualHeight());
+        const ::Ogre::Real fZ = (ndcPoint.z+1.f) * 0.5f;
+        const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
         const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
@@ -238,10 +239,11 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Vector3 viewportPoint(
-            (ndcPoint.x+1.f) * 0.5f * viewport->getActualWidth(),
-            viewport->getActualHeight() - (ndcPoint.y+1.f) * 0.5f * viewport->getActualHeight(),
-            (ndcPoint.z+1.f) * 0.5f);
+        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f * static_cast<float>(viewport->getActualWidth());
+        const ::Ogre::Real fY = static_cast<float>(viewport->getActualHeight()) - (ndcPoint.y+1.f) * 0.5f *
+                                static_cast<float>(viewport->getActualHeight());
+        const ::Ogre::Real fZ = (ndcPoint.z+1.f) * 0.5f;
+        const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
         const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
