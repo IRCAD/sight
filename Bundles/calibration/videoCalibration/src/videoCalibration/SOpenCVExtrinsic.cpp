@@ -172,13 +172,14 @@ void SOpenCVExtrinsic::updating()
             ::arData::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
             ::arData::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
 
-            SLM_ASSERT("The two calibrationInfo have not the same size", ptlists1.size() == ptlists2.size());
+            SLM_ERROR_IF("The two calibrationInfo have not the same size", ptlists1.size() == ptlists2.size());
 
-            ::arData::CalibrationInfo::PointListContainerType::iterator itr1   = ptlists1.begin();
-            ::arData::CalibrationInfo::PointListContainerType::iterator itr2   = ptlists2.begin();
-            ::arData::CalibrationInfo::PointListContainerType::iterator itrEnd = ptlists1.end();
+            ::arData::CalibrationInfo::PointListContainerType::iterator itr1    = ptlists1.begin();
+            ::arData::CalibrationInfo::PointListContainerType::iterator itr2    = ptlists2.begin();
+            ::arData::CalibrationInfo::PointListContainerType::iterator itrEnd1 = ptlists1.end();
+            ::arData::CalibrationInfo::PointListContainerType::iterator itrEnd2 = ptlists2.end();
 
-            for(; itr1 != itrEnd; ++itr1, ++itr2)
+            for(; itr1 != itrEnd1 && itr2 != itrEnd2; ++itr1, ++itr2)
             {
                 ::fwData::PointList::sptr ptList1 = *itr1;
                 ::fwData::PointList::sptr ptList2 = *itr2;
