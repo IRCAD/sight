@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_RUNTIMEEXCEPTION_HPP__
-#define __FWRUNTIME_RUNTIMEEXCEPTION_HPP__
+#pragma once
+
+#include "fwRuntime/config.hpp"
+
+#include <fwCore/Exception.hpp>
 
 #include <exception>
 #include <string>
 
-#include <fwCore/Exception.hpp>
-
-#include "fwRuntime/config.hpp"
-
-
 namespace fwRuntime
 {
 
-
 /**
  * @brief   Defines the runtime exception class.
- * @struct  RuntimeException
- * @date    2004-2009
  *
  */
 struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
@@ -65,8 +60,4 @@ struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
 
 };
 
-
 } // namespace fwRuntime
-
-
-#endif // __FWRUNTIME_RUNTIMEEXCEPTION_HPP__

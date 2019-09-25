@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,26 +20,19 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_IPLUGIN_HPP__
-#define __FWRUNTIME_IPLUGIN_HPP__
-
-#include <string>
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/IExecutable.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
-
+#include <string>
 
 namespace fwRuntime
 {
 
-
-
 /**
  * @brief   Defines the plugin interface.
- * @struct  IPlugin
- * @date    2004-2009
  *
  */
 struct FWRUNTIME_CLASS_API IPlugin : public IExecutable
@@ -72,8 +65,4 @@ struct FWRUNTIME_CLASS_API IPlugin : public IExecutable
 
 };
 
-
-
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_IPLUGIN_HPP__
