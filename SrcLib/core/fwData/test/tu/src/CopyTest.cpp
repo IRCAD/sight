@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -132,7 +132,8 @@ void CopyTest::fieldCopyTest()
 
 void CopyTest::severalReferencesCopyTest()
 {
-    ::fwData::Integer::sptr integer     = ::fwData::Integer::New(42);
+    const std::int64_t value = 42;
+    ::fwData::Integer::sptr integer     = ::fwData::Integer::New(value);
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
     (*composite)["A"] = integer;
@@ -143,7 +144,7 @@ void CopyTest::severalReferencesCopyTest()
     ::fwData::Composite::sptr compositeCopy = ::fwData::Object::copy(composite);
 
     CPPUNIT_ASSERT( integer != ::fwData::Integer::dynamicCast((*compositeCopy)["A"]) );
-    CPPUNIT_ASSERT_EQUAL(42, ::fwData::Integer::dynamicCast((*compositeCopy)["A"])->getValue());
+    CPPUNIT_ASSERT_EQUAL(value, ::fwData::Integer::dynamicCast((*compositeCopy)["A"])->getValue());
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], (*compositeCopy)["B"]);

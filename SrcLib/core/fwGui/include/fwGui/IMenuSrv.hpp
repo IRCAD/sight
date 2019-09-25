@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,32 +20,26 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_IMENUSRV_HPP__
-#define __FWGUI_IMENUSRV_HPP__
-
-#include <fwServices/IService.hpp>
+#pragma once
 
 #include "fwGui/config.hpp"
-
-#include "fwGui/registrar/MenuRegistrar.hpp"
 #include "fwGui/layoutManager/IMenuLayoutManager.hpp"
+#include "fwGui/registrar/MenuRegistrar.hpp"
+
+#include <fwServices/IService.hpp>
 
 namespace fwGui
 {
 
 /**
  * @brief   Defines the service interface managing the menu.
- * @class   IMenuSrv
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IMenuSrv : public ::fwServices::IService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IMenuSrv)(::fwServices::IService) );
+    fwCoreServiceMacro(IMenuSrv, ::fwServices::IService);
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -135,7 +129,3 @@ private:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_IMENUSRV_HPP__*/
-
-

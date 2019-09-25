@@ -102,7 +102,7 @@ class VIDEOTOOLS_CLASS_API SGrabberProxy :  public ::arServices::IGrabber,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SGrabberProxy)(::arServices::IGrabber) )
+    fwCoreServiceMacro(SGrabberProxy, ::arServices::IGrabber);
 
     /// Constructor. Initialize slots and signals
     VIDEOTOOLS_API SGrabberProxy() noexcept;

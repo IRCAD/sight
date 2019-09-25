@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_GUIREGISTRY_HPP__
-#define __FWGUI_GUIREGISTRY_HPP__
+#pragma once
 
-
-#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 namespace fwGui
 {
@@ -50,7 +48,7 @@ public:
     typedef std::vector< std::string >                           ParentSidsType;
     typedef std::map< std::string, ParentSidsType > ActionToParentMapType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (GuiRegistry)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(GuiRegistry, ::fwGui::GuiBaseObject);
 
     /**
      * @brief   Constructor.
@@ -141,7 +139,6 @@ public:
      */
     FWGUI_API static ::fwGui::container::fwMenuBar::sptr getSIDMenuBar(std::string sid);
     ///@}
-
 
     //-----------------------------------------------------------------------------
 
@@ -249,7 +246,3 @@ protected:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_GUIREGISTRY_HPP__*/
-
-

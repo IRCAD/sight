@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwData/ReconstructionTraits.hpp"
+
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
@@ -76,10 +77,9 @@ void ReconstructionTraits::setStructureTraits(const ::fwData::StructureTraits::s
 
 //------------------------------------------------------------------------------
 
-ReconstructionTraits::ReconstructionTraits(::fwData::Object::Key key)
+ReconstructionTraits::ReconstructionTraits(::fwData::Object::Key)
 {
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ ReconstructionTraits::~ReconstructionTraits()
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+void ReconstructionTraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -101,5 +101,3 @@ void ReconstructionTraits::cachedDeepCopy(const Object::csptr &source, DeepCopyC
 }
 
 } // namespace fwData
-
-

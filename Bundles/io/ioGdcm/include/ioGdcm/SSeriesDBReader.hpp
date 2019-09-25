@@ -119,7 +119,7 @@ class IOGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::fwIO::IReader) )
+    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader);
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 

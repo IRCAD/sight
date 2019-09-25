@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,6 +54,7 @@ void CameraTest::tearDown()
 {
     //Force link with arDataCamp
     const int arfVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(arfVersion);
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +76,6 @@ void CameraTest::tearDown()
     const std::string CAM_ID                        = "CAM_461384568";
     const size_t WIDTH                              = 800;
     const size_t HEIGHT                             = 800;
-    const bool ISCALIBRATED                         = true;
     const ::arData::Camera::SourceType CAMERASOURCE = ::arData::Camera::DEVICE;
     const std::string CAMERAID                      = "/dev/video0";
     const float MAXIMUMFRAMERATE                    = 30.f;
@@ -125,7 +125,6 @@ void CameraTest::paramTest()
     const std::string CAM_ID                        = "CAM_461384568";
     const size_t WIDTH                              = 800;
     const size_t HEIGHT                             = 800;
-    const bool ISCALIBRATED                         = true;
     const ::arData::Camera::SourceType CAMERASOURCE = ::arData::Camera::DEVICE;
     const std::string CAMERAID                      = "/dev/video0";
     const float MAXIMUMFRAMERATE                    = 30.f;

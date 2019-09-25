@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_ADAPTOR_SSQUARE_HPP__
-#define __SCENE2D_ADAPTOR_SSQUARE_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -59,7 +58,7 @@ class SCENE2D_CLASS_API SSquare : public ::fwRenderQt::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSquare)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceMacro(SSquare, ::fwRenderQt::IAdaptor);
 
     SCENE2D_API SSquare() noexcept;
     SCENE2D_API virtual ~SSquare() noexcept;
@@ -92,6 +91,3 @@ private:
 
 } // namespace adaptor
 } // namespace scene2D
-
-#endif // __SCENE2D_ADAPTOR_SSQUARE_HPP__
-

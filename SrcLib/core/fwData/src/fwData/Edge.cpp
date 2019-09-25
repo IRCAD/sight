@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Edge.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::Edge );
 
@@ -34,12 +35,11 @@ std::string Edge::NATURE_DATA = "data";
 
 //------------------------------------------------------------------------------
 
-Edge::Edge( ::fwData::Object::Key key ) :
+Edge::Edge( ::fwData::Object::Key ) :
     m_fromPortIdentifier("not defined"),
     m_toPortIdentifier("not defined"),
     m_nature("not defined")
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ Edge::~Edge()
 
 //------------------------------------------------------------------------------
 
-void Edge::setIdentifiers(const std::string & fromPortIndentifier, const std::string & toPortIndentifier)
+void Edge::setIdentifiers(const std::string& fromPortIndentifier, const std::string& toPortIndentifier)
 {
     m_fromPortIdentifier = fromPortIndentifier;
     m_toPortIdentifier   = toPortIndentifier;
@@ -59,7 +59,7 @@ void Edge::setIdentifiers(const std::string & fromPortIndentifier, const std::st
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string,std::string> Edge::getIdentifiers() const
+std::pair<std::string, std::string> Edge::getIdentifiers() const
 {
     return make_pair(m_fromPortIdentifier, m_toPortIdentifier);
 }
@@ -80,7 +80,6 @@ std::string Edge::getToPortID() const
 
 //------------------------------------------------------------------------------
 
-
 std::string Edge::getPortID(bool upStream) const
 {
     return upStream ? m_fromPortIdentifier : m_toPortIdentifier;
@@ -95,13 +94,13 @@ void Edge::setNature(std::string nature)
 
 //------------------------------------------------------------------------------
 
-const std::string &Edge::getNature() const
+const std::string& Edge::getNature() const
 {
     return m_nature;
 }
 
 //------------------------------------------------------------------------------
-void Edge::shallowCopy(const Object::csptr &_source )
+void Edge::shallowCopy(const Object::csptr& _source )
 {
     Edge::csptr other = Edge::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -116,7 +115,7 @@ void Edge::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Edge::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Edge::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Edge::csptr other = Edge::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

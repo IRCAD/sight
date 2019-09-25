@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -90,8 +90,8 @@ MaterialMgrListener::~MaterialMgrListener()
 
     // The R2VB material does not need to fill the OIT schemes, though Ogre get us here to know what to do
     // We simply return the main technique in this case
-    const ::Ogre::Technique::Passes& passes = defaultTech->getPasses();
-    for(const auto pass : passes)
+    const ::Ogre::Technique::Passes& defaultTechPasses = defaultTech->getPasses();
+    for(const auto pass : defaultTechPasses)
     {
         if(  ::Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/" ) )
         {

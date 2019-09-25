@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,22 @@ namespace helper
 class FWDATATOOLS_CLASS_API Mesh
 {
 public:
-    fwCoreClassFactoryMacro((Mesh), (((::fwData::Mesh::sptr))), new Mesh )
+
+    /// Shared pointer type
+    typedef std::shared_ptr < ::fwDataTools::helper::Mesh > sptr;
+    /// Const shared pointer type
+    typedef std::shared_ptr < const ::fwDataTools::helper::Mesh > csptr;
+    /// Unique pointer type
+    typedef std::unique_ptr < ::fwDataTools::helper::Mesh > uptr;
+    /// Const unique pointer type
+    typedef std::unique_ptr < const ::fwDataTools::helper::Mesh > cuptr;
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(::fwData::Mesh::sptr mesh)
+    {
+        return std::make_shared< ::fwDataTools::helper::Mesh >(mesh);
+    }
 
     FWDATATOOLS_API Mesh( ::fwData::Mesh::sptr mesh );
 

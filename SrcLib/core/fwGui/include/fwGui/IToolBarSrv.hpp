@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_ITOOLBARSRV_HPP__
-#define __FWGUI_ITOOLBARSRV_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
@@ -40,7 +39,7 @@ class FWGUI_CLASS_API IToolBarSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IToolBarSrv)(::fwServices::IService) );
+    fwCoreServiceMacro(IToolBarSrv, ::fwServices::IService);
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -133,6 +132,3 @@ private:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_ITOOLBARSRV_HPP__*/
-

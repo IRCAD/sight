@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
-
 #include "fwData/location/Folder.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::location::Folder );
 
@@ -36,6 +36,7 @@ namespace location
 
 Folder::Folder( ::fwData::Object::Key key )
 {
+    FwCoreNotUsedMacro(key);
 }
 
 //------------------------------------------------------------------------------
@@ -46,7 +47,7 @@ Folder::~Folder()
 
 //------------------------------------------------------------------------------
 
-Folder::sptr Folder::FolderFactory(PathType path, bool recursive )
+Folder::sptr Folder::New(PathType path, bool recursive )
 {
     FwCoreNotUsedMacro(recursive);
     Folder::sptr folder = Folder::New();
@@ -56,7 +57,7 @@ Folder::sptr Folder::FolderFactory(PathType path, bool recursive )
 
 //------------------------------------------------------------------------------
 
-void Folder::shallowCopy(const Object::csptr &_source )
+void Folder::shallowCopy(const Object::csptr& _source )
 {
     Folder::csptr other = Folder::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -68,7 +69,7 @@ void Folder::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Folder::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Folder::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Folder::csptr other = Folder::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

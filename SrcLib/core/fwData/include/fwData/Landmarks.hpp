@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_LANDMARKS_HPP__
-#define __FWDATA_LANDMARKS_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -72,7 +71,7 @@ public:
         PointContainer m_points;
     };
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Landmarks)(::fwData::Object), (()), ::fwData::factory::New< Landmarks > );
+    fwCoreClassMacro(Landmarks, ::fwData::Object, ::fwData::factory::New< Landmarks >);
 
     fwCampMakeFriendDataMacro((fwData)(Landmarks));
 
@@ -281,6 +280,3 @@ inline size_t Landmarks::getNumberOfGroups() const
 }
 
 } // end namespace fwData
-
-#endif // __FWDATA_LANDMARKS_HPP__
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -105,6 +105,9 @@
 
 #define __FWCORE_IF_ENABLED( level, expr ) \
     BOOST_PP_EXPR_IIF( BOOST_PP_GREATER_EQUAL(SPYLOG_LEVEL, level), expr)
+
+#define __FWCORE_IF_ELSE_ENABLED( level, expr1, expr2 ) \
+    BOOST_PP_IIF( BOOST_PP_GREATER_EQUAL(SPYLOG_LEVEL, level), expr1, expr2)
 
 #endif
 
@@ -382,3 +385,21 @@
     OSLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
                  "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
                  "in '" << version << "'.");
+
+/** Preprocessor define that can be tested to know if trace log level is active */
+#define SLM_TRACE_ENABLED __FWCORE_IF_ELSE_ENABLED( 6, 1, 0 )
+
+/** Preprocessor define that can be tested to know if debug log level is active */
+#define SLM_DEBUG_ENABLED __FWCORE_IF_ELSE_ENABLED( 5, 1, 0 )
+
+/** Preprocessor define that can be tested to know if info log level is active */
+#define SLM_INFO_ENABLED  __FWCORE_IF_ELSE_ENABLED( 4, 1, 0 )
+
+/** Preprocessor define that can be tested to know if warning log level is active */
+#define SLM_WARN_ENABLED  __FWCORE_IF_ELSE_ENABLED( 3, 1, 0 )
+
+/** Preprocessor define that can be tested to know if error log level is active */
+#define SLM_ERROR_ENABLED __FWCORE_IF_ELSE_ENABLED( 2, 1, 0 )
+
+/** Preprocessor define that can be tested to know if fatal log level is active */
+#define SLM_FATAL_ENABLED __FWCORE_IF_ELSE_ENABLED( 1, 1, 0 )

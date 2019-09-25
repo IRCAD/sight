@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_DIALOG_IINPUTDIALOG_HPP__
-#define __FWGUI_DIALOG_IINPUTDIALOG_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <string>
-
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
@@ -34,17 +33,13 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic input dialog box for IHM.
- * @class   IInputDialog
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IInputDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IInputDialog)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(IInputDialog, ::fwGui::GuiBaseObject);
 
     /// Constructor. Do nothing.
     FWGUI_API IInputDialog();
@@ -55,22 +50,18 @@ public:
     FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
     /// Set the title of the input dialog
-    FWGUI_API virtual void setTitle(const std::string &title) = 0;
+    FWGUI_API virtual void setTitle(const std::string& title) = 0;
 
     /// Set the input text in the input field
-    FWGUI_API virtual void setInput(const std::string &text) = 0;
+    FWGUI_API virtual void setInput(const std::string& text) = 0;
 
     /// Get the input text in the input field
     FWGUI_API virtual std::string getInput() = 0;
 
     /// Set the message
-    FWGUI_API virtual void setMessage(const std::string &msg) = 0;
+    FWGUI_API virtual void setMessage(const std::string& msg) = 0;
 
 };
 
 } //namespace dialog
 } // namespace fwGui
-
-#endif /*__FWGUI_DIALOG_IINPUTDIALOG_HPP__*/
-
-

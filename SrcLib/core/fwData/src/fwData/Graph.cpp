@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,14 +46,10 @@ const ::fwCom::Signals::SignalKeyType Graph::s_UPDATED_SIG = "updated";
 
 //------------------------------------------------------------------------------
 
-Graph::Graph(::fwData::Object::Key key) :
+Graph::Graph(::fwData::Object::Key) :
     m_sigUpdated(UpdatedSignalType::New())
 {
-    // Init
-
-    // Register
     m_signals( s_UPDATED_SIG,  m_sigUpdated);
-
 }
 
 //------------------------------------------------------------------------------

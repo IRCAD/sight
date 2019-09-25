@@ -90,7 +90,7 @@ Q_OBJECT
 Q_PROPERTY(int sliceIndex WRITE configureSliceIndex)
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSliceIndexPositionEditor)(::fwQml::IQmlEditor) )
+    fwCoreServiceMacro(SSliceIndexPositionEditor, ::fwQml::IQmlEditor);
 
     /// Constructor. Do nothing.
     UIIMAGEQML_QT_API SSliceIndexPositionEditor() noexcept;

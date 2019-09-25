@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::fwRenderOgre::IP
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCompositorParameter)(::fwRenderOgre::IParameter) )
+    fwCoreServiceMacro(SCompositorParameter, ::fwRenderOgre::IParameter);
 
     /// Constructor.
     VISUOGREADAPTOR_API SCompositorParameter() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,21 @@ class ClassTest
 {
 
 public:
-    fwCoreClassFactoryMacro((ClassTest), (())( ((int)) ), new ClassTest);
+
+    fwCoreClassMacro(ClassTest);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New()
+    {
+        return std::make_shared<ClassTest>();
+    }
+    //------------------------------------------------------------------------------
+
+    static sptr New(int num)
+    {
+        return std::make_shared<ClassTest>(num);
+    }
 
     //------------------------------------------------------------------------------
 
@@ -47,8 +61,7 @@ public:
         return m_num;
     }
 
-    ClassTest() :
-        m_num(1)
+    ClassTest()
     {
     }
 
@@ -62,7 +75,7 @@ public:
     }
 
 private:
-    int m_num;
+    int m_num{1};
 };
 
 //------------------------------------------------------------------------------

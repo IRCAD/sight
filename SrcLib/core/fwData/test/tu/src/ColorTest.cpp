@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,17 @@
  *
  ***********************************************************************/
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <fwData/Color.hpp>
 #include "ColorTest.hpp"
 
+#include <fwData/Color.hpp>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ColorTest );
@@ -39,15 +40,21 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void ColorTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void ColorTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void ColorTest::methode1()
 {
@@ -64,6 +71,8 @@ void ColorTest::methode1()
     CPPUNIT_ASSERT_EQUAL(color->blue(), B);
     CPPUNIT_ASSERT_EQUAL(color->alpha(), A);
 }
+
+//------------------------------------------------------------------------------
 
 void ColorTest::methode2()
 {
@@ -82,6 +91,28 @@ void ColorTest::methode2()
     array[3] = A;
 
     color->setRGBA(array);
+
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[2], B);
+    CPPUNIT_ASSERT_EQUAL(color->getRGBA()[3], A);
+}
+
+//------------------------------------------------------------------------------
+
+void ColorTest::methode3()
+{
+    // fuchsia string value
+    const std::string fuchsia = "#FF006E";
+    // fuchsia float values
+    const float R = 1.f;
+    const float G = 0.f;
+    const float B = 110.f/255.f;
+    const float A = 1.f;
+
+    ::fwData::Color::sptr color = ::fwData::Color::New();
+
+    color->setRGBA(fuchsia);
 
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);

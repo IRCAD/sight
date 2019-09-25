@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __DATAREG_PARSER_OBJECT_HPP__
-#define __DATAREG_PARSER_OBJECT_HPP__
+#pragma once
 
 #include "dataReg/config.hpp"
 
@@ -46,7 +45,7 @@ namespace parser
 class DATAREG_CLASS_API Object : public ::fwServices::IXMLParser
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (Object)(::fwServices::IXMLParser) );
+    fwCoreServiceMacro(Object, ::fwServices::IXMLParser);
 
     DATAREG_API Object( );
     DATAREG_API virtual ~Object();
@@ -67,5 +66,3 @@ protected:
 
 } //namespace parser
 } //namespace dataReg
-
-#endif /* __DATAREG_PARSER_OBJECT_HPP__ */

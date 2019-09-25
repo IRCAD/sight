@@ -51,9 +51,8 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog),
-                                            (()),
-                                            ::fwGui::factory::New< MultiSelectorDialog > );
+    fwCoreClassMacro(MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog,
+                     ::fwGui::factory::New< MultiSelectorDialog >);
 
     FWGUIQML_API MultiSelectorDialog(::fwGui::GuiBaseObject::Key key);
 

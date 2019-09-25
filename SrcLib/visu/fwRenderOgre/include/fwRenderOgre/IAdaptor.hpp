@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ class FWRENDEROGRE_CLASS_API IAdaptor : public ::fwServices::IService,
 {
 friend class SRender;
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IAdaptor)(::fwServices::IService) );
+    fwCoreClassMacro(IAdaptor, ::fwServices::IService);
 
     /// Set the layer ID
     FWRENDEROGRE_API void setLayerID(const std::string& id);

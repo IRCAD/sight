@@ -464,27 +464,27 @@ void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _
     {
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
         {
-            const int axialIndex = image->getField< ::fwData::Integer >(
+            const std::int64_t axialIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
-            const double axialPos = axialIndex * image->getSpacing()[2];
+            const double axialPos = static_cast<double>(axialIndex) * image->getSpacing()[2];
             planePosImageSpace           = {0, 0, axialPos};
             planeDirImageSpaceNormalized = {0, 0, -1};
             break;
         }
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
         {
-            const int frontalIndex = image->getField< ::fwData::Integer >(
+            const std::int64_t frontalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
-            const double frontalPos = frontalIndex * image->getSpacing()[1];
+            const double frontalPos = static_cast<double>(frontalIndex) * image->getSpacing()[1];
             planePosImageSpace           = {0, frontalPos, 0};
             planeDirImageSpaceNormalized = {0, -1, 0};
             break;
         }
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
         {
-            const int sagittalIndex = image->getField< ::fwData::Integer >(
+            const std::int64_t sagittalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
-            const double sagittalPos = sagittalIndex * image->getSpacing()[0];
+            const double sagittalPos = static_cast<double>(sagittalIndex) * image->getSpacing()[0];
             planePosImageSpace           = {sagittalPos, 0, 0};
             planeDirImageSpaceNormalized = {-1, 0, 0};
             break;
@@ -731,9 +731,9 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton _button, int _x, int _y, i
         /// Look in z axis, axial]
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
         {
-            const int axialIndex = image->getField< ::fwData::Integer >(
+            const auto axialIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
-            const float axialPos = static_cast<float>(axialIndex * image->getSpacing()[2]);
+            const float axialPos = static_cast<float>(axialIndex) * static_cast<float>(image->getSpacing()[2]);
             end[0] = worldspaceClikedPoint[0];
             end[1] = worldspaceClikedPoint[1];
             end[2] = axialPos;
@@ -742,9 +742,9 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton _button, int _x, int _y, i
         /// Look in y axis, frontal
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
         {
-            const int frontalIndex = image->getField< ::fwData::Integer >(
+            const auto frontalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
-            const float frontalPos = static_cast<float>(frontalIndex * image->getSpacing()[1]);
+            const float frontalPos = static_cast<float>(frontalIndex) * static_cast<float>(image->getSpacing()[1]);
             end[0] = worldspaceClikedPoint[0];
             end[1] = frontalPos;
             end[2] = worldspaceClikedPoint[2];
@@ -753,9 +753,9 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton _button, int _x, int _y, i
         /// Look in -z axis, sagittal
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
         {
-            const int sagittalIndex = image->getField< ::fwData::Integer >(
+            const auto sagittalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
-            const float sagittalPos = static_cast<float>(sagittalIndex * image->getSpacing()[0]);
+            const float sagittalPos = static_cast<float>(sagittalIndex) * static_cast<float>(image->getSpacing()[0]);
             end[0] = sagittalPos;
             end[1] = worldspaceClikedPoint[1];
             end[2] = worldspaceClikedPoint[2];
@@ -823,9 +823,9 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, int _x, int _
         /// Look in z axis, axial]
         case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
         {
-            const int axialIndex = image->getField< ::fwData::Integer >(
+            const auto axialIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
-            const double axialPos = static_cast<double>(axialIndex * image->getSpacing()[2]);
+            const double axialPos = static_cast<double>(axialIndex) * image->getSpacing()[2];
             pointList->getPoints()[m_isBeginMove]->setCoord({static_cast<double>(worldspaceClikedPoint[0]),
                                                              static_cast<double>(worldspaceClikedPoint[1]),
                                                              axialPos});
@@ -834,9 +834,9 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, int _x, int _
         /// Look in y axis, frontal
         case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
         {
-            const int frontalIndex = image->getField< ::fwData::Integer >(
+            const auto frontalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
-            const double frontalPos = frontalIndex * image->getSpacing()[1];
+            const double frontalPos = static_cast<double>(frontalIndex) * image->getSpacing()[1];
             pointList->getPoints()[m_isBeginMove]->setCoord({static_cast<double>(worldspaceClikedPoint[0]),
                                                              frontalPos,
                                                              static_cast<double>(worldspaceClikedPoint[2])});
@@ -845,9 +845,9 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, int _x, int _
         /// Look in x axis, sagittal
         case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
         {
-            const int sagittalIndex = image->getField< ::fwData::Integer >(
+            const auto sagittalIndex = image->getField< ::fwData::Integer >(
                 ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
-            const double sagittalPos = sagittalIndex * image->getSpacing()[0];
+            const double sagittalPos = static_cast<double>(sagittalIndex) * image->getSpacing()[0];
             pointList->getPoints()[m_isBeginMove]->setCoord({sagittalPos,
                                                              static_cast<double>(worldspaceClikedPoint[1]),
                                                              static_cast<double>(worldspaceClikedPoint[2])});

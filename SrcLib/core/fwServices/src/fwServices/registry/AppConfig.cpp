@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -82,11 +82,6 @@ void AppConfig::parseBundleInformation()
         if ( ext->hasConfigurationElement("desc") )
         {
             desc = ext->findConfigurationElement("desc")->getValue();
-        }
-        unsigned long syntax = 1;
-        if ( ext->hasConfigurationElement("syntax") )
-        {
-            syntax = std::stoul( ext->findConfigurationElement("syntax")->getValue() );
         }
 
         AppInfo::ParametersType parameters;
@@ -183,11 +178,11 @@ void AppConfig::clearRegistry()
 
     for( AppInfo::ParametersType::value_type param :  parameters )
     {
-        FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
-        const std::string key                 = "\\$\\{" + param.first + "\\}";
-        if ( iter != fieldAdaptors.end() )
+        FieldAdaptorType::const_iterator iterField = fieldAdaptors.find( param.first );
+        const std::string key                      = "\\$\\{" + param.first + "\\}";
+        if ( iterField != fieldAdaptors.end() )
         {
-            fields[key] = iter->second;
+            fields[key] = iterField->second;
         }
         else if ( param.second != s_mandatoryParameterIdentifier)
         {
@@ -272,7 +267,7 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string& gro
 FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;
-    for(const ::fwData::Composite::value_type& elem :  * fieldAdaptors )
+    for(const ::fwData::Composite::value_type& elem :  *fieldAdaptors )
     {
         fields[elem.first] = ::fwData::String::dynamicCast( elem.second )->value();
     }
@@ -437,4 +432,3 @@ std::string AppConfig::adaptField( const std::string& _str, const FieldAdaptorTy
 } // namespace registry
 
 } // namespace fwServices
-

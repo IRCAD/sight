@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_LOCATION_FOLDER_HPP__
-#define __FWDATA_LOCATION_FOLDER_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -38,17 +37,16 @@ namespace location
 /**
  * @brief This class defines a folder location.
  */
-class FWDATA_CLASS_API Folder  : public ILocation
+class FWDATA_CLASS_API Folder : public ILocation
 {
 public:
 
-    fwCoreClassDefinitionsWithNFactoriesMacro(
-        (Folder)(ILocation),
-        ((::fwData::factory::New< Folder >, () ))
-            ((FolderFactory, ((::boost::filesystem::path))((bool)(false)) ))
-        );
+    fwCoreClassMacro(Folder, ILocation, ::fwData::factory::New< Folder >);
 
     fwCampMakeFriendDataMacro((fwData)(location)(Folder));
+
+    /// Folder factory
+    FWDATA_API static sptr New(PathType path, bool recursive = false );
 
     /// Constructor
     FWDATA_API Folder( ::fwData::Object::Key key );
@@ -75,8 +73,6 @@ public:
     FWDATA_API bool getRecursive();
 
 protected:
-
-    FWDATA_API static sptr FolderFactory(PathType path, bool recursive = false );
 
     /// %Folder path
     PathType m_folder;
@@ -140,5 +136,3 @@ struct enableFolder
 
 }
 }
-
-#endif /* __FWDATA_LOCATION_FOLDER_HPP__ */

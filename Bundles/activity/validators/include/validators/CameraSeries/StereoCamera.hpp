@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VALIDATORS_CAMERASERIES_STEREOCAMERA_HPP__
-#define __VALIDATORS_CAMERASERIES_STEREOCAMERA_HPP__
+#pragma once
 
 #include "validators/config.hpp"
 
@@ -38,9 +37,8 @@ namespace CameraSeries
 class VALIDATORS_CLASS_API StereoCamera : public ::fwActivities::IObjectValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StereoCamera)(::fwActivities::IObjectValidator),
-                                            (()),
-                                            ::fwActivities::validator::factory::New< StereoCamera > );
+    fwCoreClassMacro(StereoCamera, ::fwActivities::IObjectValidator,
+                     ::fwActivities::validator::factory::New< StereoCamera >);
 
     /// Constructor. Do nothing.
     VALIDATORS_API StereoCamera(::fwActivities::IValidator::Key key);
@@ -58,6 +56,3 @@ public:
 
 } // namespace CameraSeries
 } // namespace validators
-
-#endif // __VALIDATORS_CAMERASERIES_STEREOCAMERA_HPP__
-

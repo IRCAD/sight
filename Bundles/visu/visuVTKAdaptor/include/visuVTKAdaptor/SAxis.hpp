@@ -59,7 +59,7 @@ class VISUVTKADAPTOR_CLASS_API SAxis : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAxis)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SAxis, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SAxis() noexcept;
     VISUVTKADAPTOR_API virtual ~SAxis() noexcept;

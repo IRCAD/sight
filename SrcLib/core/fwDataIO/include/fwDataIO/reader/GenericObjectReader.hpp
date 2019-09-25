@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATAIO_READER_GENERICOBJECTREADER_HPP__
-#define __FWDATAIO_READER_GENERICOBJECTREADER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/IObjectReader.hpp"
@@ -50,7 +49,7 @@ public:
     /// the object type related
     typedef DATATYPE DataType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectReader<DATATYPE>)(::fwDataIO::reader::IObjectReader) );
+    fwCoreClassMacro(GenericObjectReader<DATATYPE>, ::fwDataIO::reader::IObjectReader);
 
     /// Constructor. Do nothing.
     GenericObjectReader()
@@ -97,5 +96,3 @@ public:
 } // namespace reader
 
 } // namespace fwDataIO
-
-#endif // __FWDATAIO_READER_GENERICOBJECTREADER_HPP__

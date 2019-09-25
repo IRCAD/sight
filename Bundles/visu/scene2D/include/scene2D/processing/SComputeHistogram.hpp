@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_PROCESSING_SCOMPUTEHISTOGRAM_HPP__
-#define __SCENE2D_PROCESSING_SCOMPUTEHISTOGRAM_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -63,7 +62,7 @@ class SCENE2D_CLASS_API SComputeHistogram : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SComputeHistogram)(::fwServices::IController) );
+    fwCoreServiceMacro(SComputeHistogram, ::fwServices::IController);
 
     /// Constructor. Does nothing.
     SCENE2D_API SComputeHistogram() noexcept;
@@ -104,6 +103,3 @@ private:
 };
 } // namespace processing
 } // namespace scene2D
-
-#endif // __SCENE2D_PROCESSING_SCOMPUTEHISTOGRAM_HPP__
-

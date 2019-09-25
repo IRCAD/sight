@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Vector.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -37,7 +38,7 @@ const ::fwCom::Signals::SignalKeyType Vector::s_REMOVED_OBJECTS_SIG = "removedOb
 
 //------------------------------------------------------------------------------
 
-Vector::Vector(::fwData::Object::Key key)
+Vector::Vector(::fwData::Object::Key)
 {
     newSignal< AddedObjectsSignalType >(s_ADDED_OBJECTS_SIG);
     newSignal< RemovedObjectsSignalType >(s_REMOVED_OBJECTS_SIG);
@@ -51,7 +52,7 @@ Vector::~Vector()
 
 //------------------------------------------------------------------------------
 
-void Vector::shallowCopy(const Object::csptr &_source )
+void Vector::shallowCopy(const Object::csptr& _source )
 {
     Vector::csptr other = Vector::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -63,7 +64,7 @@ void Vector::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Vector::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+void Vector::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     Vector::csptr other = Vector::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -72,7 +73,7 @@ void Vector::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cach
     this->fieldDeepCopy( source, cache );
     m_container.clear();
     m_container.reserve(other->m_container.size());
-    for(const ContainerType::value_type &obj : other->m_container)
+    for(const ContainerType::value_type& obj : other->m_container)
     {
         m_container.push_back( ::fwData::Object::copy(obj, cache) );
     }

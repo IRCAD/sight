@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,63 +62,61 @@ IParametersService::~IParametersService()
 
 //-----------------------------------------------------------------------------
 
-void IParametersService::setBoolParameter(bool val, std::string key)
+void IParametersService::setBoolParameter(bool, std::string)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void IParametersService::setColorParameter(std::array<std::uint8_t, 4>, std::string)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void IParametersService::setDoubleParameter(double, std::string)
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-void IParametersService::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
+void IParametersService::setDouble2Parameter(double, double, std::string)
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-void IParametersService::setDoubleParameter(double val, std::string key)
+void IParametersService::setDouble3Parameter(double, double, double, std::string)
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-void IParametersService::setDouble2Parameter(double val0, double val1, std::string key)
+void IParametersService::setIntParameter(int, std::string)
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-void IParametersService::setDouble3Parameter(double val0, double val1, double val2, std::string key)
+void IParametersService::setInt2Parameter(int, int, std::string)
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-void IParametersService::setIntParameter(int val, std::string key)
+void IParametersService::setInt3Parameter(int, int, int, std::string)
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-void IParametersService::setInt2Parameter(int val0, int val1, std::string key)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-
-void IParametersService::setInt3Parameter(int val0, int val1, int val2, std::string key)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-
-void IParametersService::setEnumParameter(std::string val, std::string key)
+void IParametersService::setEnumParameter(std::string, std::string)
 {
 
 }

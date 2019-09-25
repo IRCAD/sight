@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ class IOTIMELINE_CLASS_API SMatrixWriter : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMatrixWriter)(::fwIO::IWriter) );
+    fwCoreServiceMacro(SMatrixWriter, ::fwIO::IWriter);
 
     /// Constructor.
     IOTIMELINE_API SMatrixWriter() noexcept;

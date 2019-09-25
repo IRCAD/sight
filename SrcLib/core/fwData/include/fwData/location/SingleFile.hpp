@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_LOCATION_SINGLEFILE_HPP__
-#define __FWDATA_LOCATION_SINGLEFILE_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -41,11 +40,11 @@ namespace location
 class FWDATA_CLASS_API SingleFile  : public ILocation
 {
 public:
-    fwCoreClassDefinitionsWithNFactoriesMacro(
-        (SingleFile)(ILocation),
-        ((::fwData::factory::New< SingleFile >, () ))
-            ((SingleFileFactory, ((::boost::filesystem::path)) ))
-        );
+
+    fwCoreClassMacro(SingleFile, ILocation, ::fwData::factory::New< SingleFile >);
+
+    /// SingleFile factory
+    FWDATA_API static sptr New(PathType path);
 
     /// Constructor
     FWDATA_API SingleFile( ::fwData::Object::Key key );
@@ -68,8 +67,6 @@ public:
     FWDATA_API PathType getPath() const;
 
 protected:
-
-    FWDATA_API static sptr SingleFileFactory(PathType path);
 
     /// file system path
     PathType m_path;
@@ -116,5 +113,3 @@ struct enableSingleFile
 
 }
 }
-
-#endif /* __FWDATA_LOCATION_SINGLEFILE_HPP__ */

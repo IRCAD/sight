@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SRESECTION_HPP__
-#define __VISUVTKADAPTOR_SRESECTION_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -56,7 +55,7 @@ class VISUVTKADAPTOR_CLASS_API SResection : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SResection)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SResection, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SResection() noexcept;
 
@@ -106,5 +105,3 @@ inline void SResection::setAutoResetCamera(bool autoResetCamera)
 }
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SRESECTION_HPP__

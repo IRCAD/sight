@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_ACTION_SPUSHFIELD_HPP__
-#define __GUI_ACTION_SPUSHFIELD_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -55,7 +54,7 @@ class GUI_CLASS_API SPushField : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPushField)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SPushField, ::fwGui::IActionSrv);
 
     /// Constructor. Do nothing.
     GUI_API SPushField() noexcept;
@@ -101,5 +100,3 @@ private:
 } // namespace action
 
 } // namespace gui
-
-#endif // __GUI_ACTION_SPUSHFIELD_HPP__

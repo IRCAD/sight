@@ -44,7 +44,7 @@ class FWGUI_CLASS_API CardinalLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (CardinalLayoutManagerBase)(::fwGui::layoutManager::IViewLayoutManager) )
+    fwCoreClassMacro(CardinalLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager);
 
     /// Defines all possible position for a CardinalLayout
     typedef enum

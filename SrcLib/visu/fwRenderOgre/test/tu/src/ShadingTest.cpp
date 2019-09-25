@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -345,7 +345,7 @@ void ShadingTest::createObjectFromShaderParameter()
         value.i = {{ 321, 0, 0, 0 }};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT1, value);
         CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Integer"), obj->getClassname());
-        CPPUNIT_ASSERT_EQUAL(321, ::fwData::Integer::dynamicCast(obj)->getValue());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(321), ::fwData::Integer::dynamicCast(obj)->getValue());
     }
 
     // Array types

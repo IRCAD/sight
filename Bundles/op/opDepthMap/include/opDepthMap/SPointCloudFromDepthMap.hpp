@@ -72,7 +72,7 @@ namespace opDepthMap
 class OPDEPTHMAP_CLASS_API SPointCloudFromDepthMap : public ::fwServices::IOperator
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SPointCloudFromDepthMap)(::fwServices::IOperator))
+    fwCoreServiceMacro(SPointCloudFromDepthMap, ::fwServices::IOperator);
 
     /**
      * @brief SPointCloudFromDepthMap constructor.

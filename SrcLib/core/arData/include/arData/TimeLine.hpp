@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_TIMELINE_HPP__
-#define __ARDATA_TIMELINE_HPP__
+#pragma once
 
 #include "arData/config.hpp"
 #include "arData/timeline/Object.hpp"
@@ -39,7 +38,7 @@ class ARDATA_CLASS_API TimeLine : public ::fwData::Object
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (TimeLine) (::fwData::Object) );
+    fwCoreClassMacro(TimeLine, ::fwData::Object);
 
     typedef enum
     {
@@ -109,5 +108,3 @@ protected:
 }; // class TimeLine
 
 } // namespace arData
-
-#endif // __ARDATA_TIMELINE_HPP__

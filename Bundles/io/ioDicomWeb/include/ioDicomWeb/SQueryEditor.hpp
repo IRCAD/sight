@@ -71,7 +71,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SQueryEditor)( ::fwGui::editor::IEditor ) )
+    fwCoreServiceMacro(SQueryEditor,  ::fwGui::editor::IEditor );
 
     /// Constructor
     IODICOMWEB_API SQueryEditor() noexcept;

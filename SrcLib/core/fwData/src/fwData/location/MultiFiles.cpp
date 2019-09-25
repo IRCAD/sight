@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,12 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
-
 #include "fwData/location/MultiFiles.hpp"
 
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
+
 fwDataRegisterMacro( ::fwData::location::MultiFiles );
-
-
-
 
 namespace fwData
 {
@@ -37,7 +34,7 @@ namespace location
 
 //------------------------------------------------------------------------------
 
-MultiFiles::MultiFiles( ::fwData::Object::Key key )
+MultiFiles::MultiFiles( ::fwData::Object::Key )
 {
 }
 
@@ -63,7 +60,7 @@ ILocation::VectPathType MultiFiles::getPaths()
 
 //------------------------------------------------------------------------------
 
-void MultiFiles::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+void MultiFiles::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     MultiFiles::csptr other = MultiFiles::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

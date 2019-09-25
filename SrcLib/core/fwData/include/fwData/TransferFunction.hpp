@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_TRANSFERFUNCTION_HPP__
-#define __FWDATA_TRANSFERFUNCTION_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
@@ -41,8 +40,7 @@ class FWDATA_CLASS_API TransferFunction : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()),
-                                            ::fwData::factory::New< TransferFunction >)
+    fwCoreClassMacro(TransferFunction, ::fwData::Object, ::fwData::factory::New< TransferFunction >);
 
     /// Macro for deep and shallow copies
 
@@ -350,6 +348,3 @@ inline void TransferFunction::setBackgroundColor (const TFColor& val)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_TRANSFERFUNCTION_HPP__
-

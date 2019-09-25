@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -208,7 +208,6 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
 
 IService::sptr ServiceFactory::create( const std::string& _srvType, const std::string& _srvImpl ) const
 {
-
 #ifdef _DEBUG
     {
         ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
@@ -221,6 +220,8 @@ IService::sptr ServiceFactory::create( const std::string& _srvType, const std::s
                 << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType,
                 _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType);
     }
+#else
+    FwCoreNotUsedMacro(_srvType);
 #endif //_DEBUG
 
     IService::sptr service = this->create(_srvImpl);
@@ -283,7 +284,9 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
         // Either the bundle does not contain objects informations or this service does not belong to a bundle
         if(info.objectsSetFromBundle)
         {
+#ifdef _DEBUG
             const auto itFind = std::find(info.objectImpl.begin(), info.objectImpl.end(), oimpl);
+#endif
             SLM_ASSERT("Try to add factory, but the service '" + simpl + "' is already registered and does not have the "
                        "same objects.",
                        info.objectImpl.empty() || itFind != info.objectImpl.end());
@@ -308,7 +311,7 @@ void ServiceFactory::printInfoMap( const SrvRegContainer& src ) const
         OSLM_DEBUG(" Service name = " << srvReg.first );
         OSLM_DEBUG("  - type   = " << srvReg.second.serviceType );
 
-#if SPYLOG_LEVEL >= 5
+#if SLM_DEBUG_ENABLED
         size_t objNum = 0;
         for(const auto& objImpl : srvReg.second.objectImpl)
         {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_GENERICTL_HXX__
-#define __ARDATA_GENERICTL_HXX__
+#pragma once
 
 #include <fwData/Exception.hpp>
 
@@ -50,7 +49,7 @@ GenericTL<BUFFER_TYPE>::~GenericTL ()
 //------------------------------------------------------------------------------
 
 template < class BUFFER_TYPE >
-void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     GenericTL::csptr other = GenericTL::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -146,5 +145,3 @@ unsigned int GenericTL<BUFFER_TYPE>::getMaxElementNum() const
 //------------------------------------------------------------------------------
 
 } // namespace arData
-
-#endif // __ARDATA_GENERICTL_HXX__

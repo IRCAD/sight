@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __DATAREG_PARSER_GENERICFIELD_HPP__
-#define __DATAREG_PARSER_GENERICFIELD_HPP__
+#pragma once
 
 #include "dataReg/config.hpp"
 
@@ -46,7 +45,7 @@ class DATAREG_CLASS_API GenericField  : public ::fwServices::IXMLParser
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (GenericField)(::fwServices::IXMLParser) );
+    fwCoreServiceMacro(GenericField, ::fwServices::IXMLParser);
 
     /// Constructor : does nothing.
     GenericField()
@@ -77,7 +76,7 @@ protected:
 class BooleanParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (BooleanParser)(::fwServices::IXMLParser) );
+    fwCoreServiceMacro(BooleanParser, ::fwServices::IXMLParser);
 };
 
 /**
@@ -86,7 +85,7 @@ public:
 class IntegerParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (IntegerParser)(::fwServices::IXMLParser) );
+    fwCoreServiceMacro(IntegerParser, ::fwServices::IXMLParser);
 };
 
 /**
@@ -95,7 +94,7 @@ public:
 class FloatParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (FloatParser)(::fwServices::IXMLParser) );
+    fwCoreServiceMacro(FloatParser, ::fwServices::IXMLParser);
 };
 
 /**
@@ -104,10 +103,8 @@ public:
 class StringParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (StringParser)(::fwServices::IXMLParser) );
+    fwCoreServiceMacro(StringParser, ::fwServices::IXMLParser);
 };
 
 } //namespace parser
 } //namespace dataReg
-
-#endif // __DATAREG_PARSER_GENERICFIELD_HPP__

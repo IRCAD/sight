@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_COMPOSITE_HPP__
-#define __FWDATA_COMPOSITE_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -51,7 +50,7 @@ namespace fwData
 class FWDATA_CLASS_API Composite : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::factory::New< Composite >);
+    fwCoreClassMacro(Composite, ::fwData::Object, ::fwData::factory::New< Composite >);
     fwCampMakeFriendDataMacro((fwData)(Composite));
 
     typedef std::map< std::string, ::fwData::Object::sptr > ContainerType;
@@ -358,6 +357,3 @@ CSPTR(DATATYPE) Composite::at(const std::string& key) const
 //-----------------------------------------------------------------------------
 
 } //namespace fwData
-
-#endif /* __FWDATA_COMPOSITE_HPP__ */
-

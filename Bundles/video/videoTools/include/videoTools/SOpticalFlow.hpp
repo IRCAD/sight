@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,7 +65,7 @@ namespace videoTools
 class VIDEOTOOLS_CLASS_API SOpticalFlow : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SOpticalFlow)(::fwServices::IController));
+    fwCoreServiceMacro(SOpticalFlow, ::fwServices::IController);
 
     typedef ::fwCom::Signal<void ()> MotionSignalType;
     typedef ::fwCom::Signal<void ()> NoMotionSignalType;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ const ::fwCom::Signals::SignalKeyType Landmarks::s_POINT_DESELECTED_SIG = "point
 
 //------------------------------------------------------------------------------
 
-Landmarks::Landmarks(::fwData::Object::Key key)
+Landmarks::Landmarks(::fwData::Object::Key)
 {
     newSignal<GroupAddedSignalType>(s_GROUP_ADDED_SIG);
     newSignal<GroupRemovedSignalType>(s_GROUP_REMOVED_SIG);
@@ -281,4 +281,3 @@ size_t Landmarks::getNumberOfPoints(const std::string& name) const
 //------------------------------------------------------------------------------
 
 } // namespace fwData
-

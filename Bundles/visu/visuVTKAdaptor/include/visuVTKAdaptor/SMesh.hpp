@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SMESH_HPP__
-#define __VISUVTKADAPTOR_SMESH_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -105,7 +104,7 @@ class VISUVTKADAPTOR_CLASS_API SMesh : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SMesh)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SMesh, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SMesh() noexcept;
     VISUVTKADAPTOR_API virtual ~SMesh() noexcept;
@@ -237,7 +236,7 @@ protected:
 
     void updateMesh( CSPTR(::fwData::Mesh) mesh );
 
-    void setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr &srv,
+    void setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr& srv,
                               SPTR(::fwData::Material) material);
 
     void removeServicesStarterCommand();
@@ -287,5 +286,3 @@ protected:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SMESH_HPP__

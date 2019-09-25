@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,11 +51,8 @@ class BitmapImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwDa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (BitmapImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-        (()),
-        ::fwDataIO::writer::factory::New< BitmapImageWriter >
-        );
+    fwCoreClassMacro(BitmapImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+                     ::fwDataIO::writer::factory::New< BitmapImageWriter >);
 
     fwCoreAllowSharedFromThis();
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKGDCMIO_SERIESDBREADER_HPP__
-#define __VTKGDCMIO_SERIESDBREADER_HPP__
+#pragma once
 
 #include "vtkGdcmIO/config.hpp"
 
@@ -53,11 +52,8 @@ class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedDa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
-        (()),
-        ::fwDataIO::reader::factory::New< SeriesDBReader >
-        );
+    fwCoreClassMacro(SeriesDBReader, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+                     ::fwDataIO::reader::factory::New< SeriesDBReader >);
     fwCoreAllowSharedFromThis();
 
     VTKGDCMIO_API SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key);
@@ -81,7 +77,7 @@ private:
      *
      * @return a new SeriesDB object
      */
-    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const ::boost::filesystem::path &dicomDir );
+    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const ::boost::filesystem::path& dicomDir );
 
     /**
      * @brief Fills the related SeriesDB object with DICOM data extracted from the given files.
@@ -97,5 +93,3 @@ private:
 };
 
 } // namespace vtkGdcmIO
-
-#endif /*__VTKGDCMIO_SERIESDBREADER_HPP__*/

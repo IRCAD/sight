@@ -49,9 +49,7 @@ Q_PROPERTY(QUrl icon MEMBER m_iconImage NOTIFY iconChanged)
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
-                                            (()),
-                                            ::fwGui::factory::New< MessageDialog > )
+    fwCoreClassMacro(MessageDialog, ::fwGui::dialog::IMessageDialog, ::fwGui::factory::New< MessageDialog > );
 
     FWGUIQML_API MessageDialog(::fwGui::GuiBaseObject::Key key);
 

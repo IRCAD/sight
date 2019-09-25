@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/List.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::List );
 
@@ -31,9 +32,8 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-List::List(::fwData::Object::Key key)
+List::List(::fwData::Object::Key)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ List::~List()
 
 //------------------------------------------------------------------------------
 
-void List::shallowCopy(const Object::csptr &_source )
+void List::shallowCopy(const Object::csptr& _source )
 {
     List::csptr other = List::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -57,7 +57,7 @@ void List::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void List::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void List::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     List::csptr other = List::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -66,7 +66,7 @@ void List::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache
     this->fieldDeepCopy( _source, cache );
 
     m_container.clear();
-    for(const ContainerType::value_type &obj : other->m_container)
+    for(const ContainerType::value_type& obj : other->m_container)
     {
         m_container.push_back( ::fwData::Object::copy(obj, cache) );
     }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,9 +41,8 @@ const ::fwCom::Signals::SignalKeyType Node::s_UPDATED_SIG = "updated";
 Node::Node(::fwData::Object::Key key) :
     m_sigUpdated(UpdatedSignalType::New())
 {
+    FwCoreNotUsedMacro(key);
     m_signals( s_UPDATED_SIG,  m_sigUpdated);
-
-
 }
 
 //------------------------------------------------------------------------------
@@ -69,14 +68,14 @@ void Node::addOutputPort(const ::fwData::Port::sptr& port)
 
 //------------------------------------------------------------------------------
 
-Node::PortContainer & Node::getInputPorts()
+Node::PortContainer& Node::getInputPorts()
 {
     return m_inputs;
 }
 
 //------------------------------------------------------------------------------
 
-Node::PortContainer & Node::getOutputPorts()
+Node::PortContainer& Node::getOutputPorts()
 {
     return m_outputs;
 }
@@ -97,7 +96,7 @@ void Node::setObject(const ::fwData::Object::sptr& object )
 
 //------------------------------------------------------------------------------
 
-Port::sptr Node::findPort(const std::string &identifier, bool modeInput) const
+Port::sptr Node::findPort(const std::string& identifier, bool modeInput) const
 {
     if ( modeInput)
     {
@@ -124,7 +123,7 @@ Port::sptr Node::findPort(const std::string &identifier, bool modeInput) const
 
 //------------------------------------------------------------------------------
 
-void Node::shallowCopy(const Object::csptr &_source )
+void Node::shallowCopy(const Object::csptr& _source )
 {
     Node::csptr other = Node::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -154,7 +153,7 @@ void Node::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Node::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Node::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Node::csptr other = Node::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -167,13 +166,13 @@ void Node::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache
 
     m_object = ::fwData::Object::copy( other->m_object, cache );
 
-    for(const ::fwData::Port::sptr &port : other->m_inputs)
+    for(const ::fwData::Port::sptr& port : other->m_inputs)
     {
         ::fwData::Port::sptr newPort;
         newPort = ::fwData::Object::copy(port, cache);
         this->addInputPort(newPort);
     }
-    for(const ::fwData::Port::sptr &port : other->m_outputs)
+    for(const ::fwData::Port::sptr& port : other->m_outputs)
     {
         ::fwData::Port::sptr newPort;
         newPort = ::fwData::Object::copy(port, cache);

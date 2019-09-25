@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIMEASUREMENT_ACTION_SFOCUSLANDMARK_HPP__
-#define __UIMEASUREMENT_ACTION_SFOCUSLANDMARK_HPP__
+#pragma once
 
 #include "uiMeasurement/config.hpp"
 
@@ -58,7 +57,7 @@ class UIMEASUREMENT_CLASS_API SFocusLandmark : public ::fwGui::IActionSrv
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SFocusLandmark)( ::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SFocusLandmark,  ::fwGui::IActionSrv);
 
     UIMEASUREMENT_API SFocusLandmark() noexcept;
 
@@ -101,5 +100,3 @@ private:
 
 } // namespace action
 } // namespace uiMeasurement
-
-#endif // __UIMEASUREMENT_ACTION_SFOCUSLANDMARK_HPP__

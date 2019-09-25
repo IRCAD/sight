@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ namespace arData
 class ARDATA_CLASS_API MarkerMap : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MarkerMap)(::fwData::Object), (()), ::fwData::factory::New< MarkerMap >)
+    fwCoreClassMacro(MarkerMap, ::fwData::Object, ::fwData::factory::New< MarkerMap >);
 
     typedef std::string KeyType;
     typedef std::array<float, 2> PointType;

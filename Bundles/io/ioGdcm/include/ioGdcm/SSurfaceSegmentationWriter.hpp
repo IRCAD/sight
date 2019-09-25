@@ -62,7 +62,7 @@ class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSurfaceSegmentationWriter)( ::fwIO::IWriter) )
+    fwCoreServiceMacro(SSurfaceSegmentationWriter,  ::fwIO::IWriter);
 
     /**
      * @brief Constructor

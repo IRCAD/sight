@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -85,7 +85,7 @@ namespace colourSegmentation
 class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SColourImageMasking) (::fwServices::IOperator) );
+    fwCoreServiceMacro(SColourImageMasking, ::fwServices::IOperator);
 
     /**
      * @name Slots API

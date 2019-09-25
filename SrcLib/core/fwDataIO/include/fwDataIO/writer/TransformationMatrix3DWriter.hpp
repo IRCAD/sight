@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATAIO_WRITER_TRANSFORMATIONMATRIX3DWRITER_HPP__
-#define __FWDATAIO_WRITER_TRANSFORMATIONMATRIX3DWRITER_HPP__
+#pragma once
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/GenericObjectWriter.hpp"
@@ -49,11 +48,11 @@ class FWDATAIO_CLASS_API TransformationMatrix3DWriter :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3DWriter)(GenericObjectWriter< ::fwData::
-                                                                                                TransformationMatrix3D >),
-                                            (()),
-                                            ::fwDataIO::writer::factory::New< TransformationMatrix3DWriter >
-                                            )
+    fwCoreClassMacro(
+        TransformationMatrix3DWriter,
+        GenericObjectWriter< ::fwData::TransformationMatrix3D >,
+        ::fwDataIO::writer::factory::New< TransformationMatrix3DWriter >
+        );
     /// Constructor. Do nothing.
     FWDATAIO_API TransformationMatrix3DWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
@@ -71,5 +70,3 @@ public:
 }
 
 }
-
-#endif /* __FWDATAIO_WRITER_TRANSFORMATIONMATRIX3DWRITER_HPP__ */

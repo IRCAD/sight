@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_ACTION_SQUIT_HPP__
-#define __GUI_ACTION_SQUIT_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -42,7 +41,7 @@ class GUI_CLASS_API SQuit : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SQuit)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SQuit, ::fwGui::IActionSrv);
 
     /**
      * @brief Constructor. Do nothing.
@@ -80,5 +79,3 @@ protected:
 
 } // namespace action
 } // namespace gui
-
-#endif /*__GUI_ACTION_SQUIT_HPP__*/

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ class FWSERVICES_CLASS_API ServiceConfigInfo : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfigInfo)(::fwCore::BaseObject), (()), new ServiceConfigInfo );
+    fwCoreClassMacro(ServiceConfigInfo, ::fwCore::BaseObject, new ServiceConfigInfo);
 
     /// Constructor, do nothing.
     ServiceConfigInfo()
@@ -83,7 +83,7 @@ class FWSERVICES_CLASS_API ServiceConfig : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfig)(::fwCore::BaseObject), (()), new ServiceConfig);
+    fwCoreClassMacro(ServiceConfig, ::fwCore::BaseObject, new ServiceConfig);
 
     /// Return the default global instance of ServiceConfig
     FWSERVICES_API static ServiceConfig::sptr getDefault();

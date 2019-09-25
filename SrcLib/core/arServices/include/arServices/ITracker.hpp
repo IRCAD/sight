@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ class ARSERVICES_CLASS_API ITracker : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ITracker)(::fwServices::IService) );
+    fwCoreServiceMacro(ITracker, ::fwServices::IService);
 
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_TRACK_SLOT;
     ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_TRACKING_SLOT;
