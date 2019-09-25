@@ -84,7 +84,7 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 
     if (configuration->hasAttribute("backgroundColor"))
     {
-        std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
+        const std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
         if(hexaColor != "default")
         {
             OSLM_ASSERT(

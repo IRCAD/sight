@@ -149,7 +149,7 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
         }
         if( view->hasAttribute("backgroundColor") )
         {
-            std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
+            const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
             if(hexaColor != "default")
             {
                 OSLM_ASSERT(
