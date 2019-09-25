@@ -122,7 +122,7 @@ build:release-linux:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=OFF
+     -DENABLE_PCH=ON
     - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
     - ninja
     - ccache -s
@@ -237,7 +237,7 @@ build:release-macos:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=OFF
+     -DENABLE_PCH=ON
     - ninja
     - ccache -s
     - >
