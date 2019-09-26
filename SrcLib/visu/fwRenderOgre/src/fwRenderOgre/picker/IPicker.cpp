@@ -45,10 +45,7 @@ namespace picker
 
 // ----------------------------------------------------------------------------
 
-IPicker::IPicker() :
-    m_sceneManager(nullptr),
-    m_selectedObject(nullptr),
-    m_hasSceneManager(false)
+IPicker::IPicker()
 {
 }
 

@@ -127,10 +127,10 @@ private:
      */
 
     /// Type of the picker style
-    std::string m_pickerStyle;
+    std::string m_pickerStyle {""};
 
     /// Type of the movement style
-    std::string m_movementStyle;
+    std::string m_movementStyle {""};
 
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
@@ -139,10 +139,10 @@ private:
     std::uint32_t m_queryMask {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Pointer on move interactor
-    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;
+    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor {nullptr};
 
     /// Pointer on select interactor
-    ::fwRenderOgre::interactor::IInteractor::sptr m_selectInteractor;
+    ::fwRenderOgre::interactor::IInteractor::sptr m_selectInteractor {nullptr};
 };
 
 } //namespace visuOgreAdaptor

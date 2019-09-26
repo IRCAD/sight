@@ -67,11 +67,11 @@ class FWRENDEROGRE_CLASS_API CollisionTools
 
 public:
 
-    Ogre::RaySceneQuery* mRaySceneQuery;
+    Ogre::RaySceneQuery* mRaySceneQuery {nullptr};
 
-    Ogre::RaySceneQuery* mTSMRaySceneQuery;
+    Ogre::RaySceneQuery* mTSMRaySceneQuery {nullptr};
 
-    Ogre::SceneManager* mSceneMgr;
+    Ogre::SceneManager* mSceneMgr {nullptr};
 
     FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask);
 

@@ -63,15 +63,15 @@ public:
 protected:
 
     /// Current scene manager
-    ::Ogre::SceneManager* m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Selected movable object
-    ::Ogre::MovableObject* m_selectedObject;
+    ::Ogre::MovableObject* m_selectedObject {nullptr};
 
-    bool m_hasSceneManager;
+    bool m_hasSceneManager {false};
 
     /// Intersection between the ray and the selected object
-    ::Ogre::Vector3 m_rayIntersect;
+    ::Ogre::Vector3 m_rayIntersect {};
 
     /// Returns the scene node containing the default camera
     ::Ogre::SceneNode* getCameraSceneNode() const;
