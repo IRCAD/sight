@@ -357,9 +357,9 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="extrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="extrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" >
             <inout key="calInfo1" uid="${calibrationInfo1}" />
-            <inout key="calInfo2" uid="${calibrationInfo2}" />
+            <inout key="calInfo2" uid="${calibrationInfo2}" autoConnect="yes" />
         </service>
 
         <service uid="detectionStatus" type="::uiTools::editor::SStatus">
@@ -479,9 +479,6 @@
         </connect>
 
         <connect>
-            <signal>${calibrationInfo1}/addedRecord</signal>
-            <signal>${calibrationInfo1}/removedRecord</signal>
-            <signal>${calibrationInfo1}/resetRecord</signal>
             <signal>${calibrationInfo2}/addedRecord</signal>
             <signal>${calibrationInfo2}/removedRecord</signal>
             <signal>${calibrationInfo2}/resetRecord</signal>

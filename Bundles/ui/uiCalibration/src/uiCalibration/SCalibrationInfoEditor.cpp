@@ -32,6 +32,8 @@
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
@@ -95,6 +97,15 @@ void SCalibrationInfoEditor::updating()
         }
 
         m_nbCapturesLabel->setText(QString().setNum(captureIdx));
+
+        if(plList1.size() != plList2.size())
+        {
+            const auto errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
+                                "Your images may be out of sync.";
+
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Inputs do not match",
+                                                              errMsg, ::fwGui::dialog::MessageDialog::WARNING);
+        }
     }
     else
     {
