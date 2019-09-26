@@ -49,15 +49,17 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SReconstruction">
             <in key="reconstruction" uid="..." />
-            <config transform="transform" autoresetcamera="autoresetcamera" />
+            <config layer="..." transform="..." autoresetcamera="yes" />
        </service>
    @endcode
  * @subsection Input Input:
  * - \b reconstruction [::fwData::Reconstruction]: reconstruction to display.
  * @subsection Configuration Configuration:
+ * - \b layer (mandatory) : defines the mesh's layer.
  * - \b transform (optional) : the transformation matrix to associate to the adaptor.
  * - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
- * - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
+ * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
+ * flag.
  */
 
 class VISUOGREADAPTOR_CLASS_API SReconstruction : public ::fwRenderOgre::IAdaptor,
@@ -71,38 +73,66 @@ public:
      * @name Slots API
      * @{
      */
+    /// Slot used when the mesh has changed.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT;
 
+    /// Slot used to change the reconstruciton visibility.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT;
     /** @} */
 
-    /// Constructor.
+    /// Initialise slots.
     VISUOGREADAPTOR_API SReconstruction() noexcept;
 
-    /// Destructor. Does nothing
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SReconstruction() noexcept;
 
-    /// Forces the Reconstruction to be hidden or not.
+    /**
+     * @brief Forces the reconstruction to be hidden or not.
+     * @param _hide Set tot true to force the reconstruction to be hidden.
+     */
     VISUOGREADAPTOR_API void setForceHide(bool _hide);
 
-    /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
+    /**
+     * @brief Active/Inactive automatic reset on camera.
+     * @param _autoResetCamera Use true to activate it.
+     */
     VISUOGREADAPTOR_API void setAutoResetCamera(bool _autoResetCamera);
 
-    /// Changes the material's name
+    /**
+     * @brief Sets the material template Name.
+     * @param _materialName The material name.
+     */
     VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& _materialName);
 
+    /**
+     * @brief Get the mesh adaptor.
+     * @return The mesh adaptor.
+     */
     VISUOGREADAPTOR_API ::visuOgreAdaptor::SMesh::sptr getMeshAdaptor();
 
-    /// Returns proposals to connect service slots to associated object signals
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals.
+     * @return The connection map proposals.
+     */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
+    /**
+     * @brief Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update).
+     * @param _isDynamic Set to true to use dynamic vertex buffer.
+     */
     VISUOGREADAPTOR_API void setDynamicVertices(bool _isDynamic);
 
-    /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
+    /**
+     * @brief Set meshes and indices buffers to dynamic state (only has effect if called before service
+     * starting/update).
+     * @param _isDynamic Set to true to use dynamic vertex and indices buffer.
+     */
     VISUOGREADAPTOR_API void setDynamic(bool _isDynamic);
 
-    /// Set query mask
+    /**
+     * @brief Set the query flag.
+     * @param _queryFlags The value of the query flag.
+     */
     VISUOGREADAPTOR_API void setQueryFlags(std::uint32_t _queryFlags);
 
 protected:
@@ -121,10 +151,12 @@ protected:
 
 private:
 
-    /// Changes the attached mesh
-    void changeMesh( SPTR( ::fwData::Mesh) );
+    /**
+     * @brief Changes the attached mesh.
+     */
+    void changeMesh(::fwData::Mesh::sptr);
 
-    /// modify if the
+    /// Modify the visibility.
     void modifyVisibility();
 
     /// Creates the mesh service.

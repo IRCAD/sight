@@ -172,7 +172,7 @@ void SReconstruction::setForceHide(bool _hide)
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::changeMesh( SPTR( ::fwData::Mesh) )
+void SReconstruction::changeMesh(::fwData::Mesh::sptr)
 {
     if (!m_meshAdaptor.expired())
     {

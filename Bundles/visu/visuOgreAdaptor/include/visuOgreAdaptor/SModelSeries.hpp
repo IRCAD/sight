@@ -55,13 +55,14 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the modelSeries's layer
  * - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
- * - \b material : the name of the base Ogre material to pass to the mesh adaptors.
+ * - \b material (optional): the name of the base Ogre material to pass to the mesh adaptors.
  * - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
  * - \b dynamic (optional, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is a
  * performance hint that will choose a specific GPU memory pool accordingly.
  * - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
  * is a performance hint that will choose a specific GPU memory pool accordingly.
- * - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
+ * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
+ * flag.
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
@@ -75,18 +76,22 @@ public:
      * @name Slots API
      * @{
      */
+    /// Slot used to show the reconstruction.
     static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
     /**
      * @}
      */
 
-    /// Constructor.
+    /// Initialisa slots.
     VISUOGREADAPTOR_API SModelSeries() noexcept;
 
-    /// Destructor. Does nothing
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
 
-    /// Returns proposals to connect service slots to associated object signals
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals.
+     * @return The connection map proposals.
+     */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
@@ -94,10 +99,10 @@ protected:
     /// Creates a Transform Service, then updates.
     VISUOGREADAPTOR_API void starting() override;
 
-    /// Configure the parameter
+    /// Configure the parameter.
     VISUOGREADAPTOR_API void configuring() override;
 
-    /// Redraws all (stops then restarts sub services)
+    /// Redraws all (stops then restarts sub services).
     VISUOGREADAPTOR_API void updating() override;
 
     /// Closes connections and unregisters service.
@@ -105,14 +110,21 @@ protected:
 
 private:
 
-    /// Slot: update all reconstructions visibility.
+    /**
+     * @name Slots methods
+     * @{
+     */
+    /**
+     * @brief Update all reconstructions visibility.
+     * @param _show Set to true to show reconstructions.
+     */
     void showReconstructions(bool _show);
 
-    /// Slot: update all reconstructions visibility using "ShowReconstructions" field.
+    /// Update all reconstructions visibility using "ShowReconstructions" field.
     void showReconstructionsOnFieldChanged();
-
-    /// Signal/Slot connections with this service
-    ::fwCom::helper::SigSlotConnection m_connections;
+    /**
+     * @}
+     */
 
     /// Defines if the camera must be reset automatically
     bool m_autoResetCamera {true};

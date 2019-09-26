@@ -53,9 +53,9 @@ namespace visuOgreAdaptor
    @endcode
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): Layer on which the interactions will be done.
- * - \b movement (optional, string, default=''): (Trackball', 'Fixed', 'Negato2D', 'VR') Style of the movement
+ * - \b movement (optional, 'Trackball'/'Fixed'/'Negato2D'/'VR', default=''): Style of the movement
  * interactor.
- * - \b picker (optional, string, default=''): ('Mesh' or 'Video') Style of the picker interactor.
+ * - \b picker (optional, 'Mesh'/'Video', default=''): Style of the picker interactor.
  * - \b queryMask (optional, uint32, default=0x40000000): (uint32) Used for picking. Picked only displayed entities with
  * the matching flag.
  */
