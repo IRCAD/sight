@@ -60,11 +60,11 @@ IPicker::~IPicker()
 
 //------------------------------------------------------------------------------
 
-bool IPicker::executeRaySceneQuery(int x, int y, int width, int height, std::uint32_t _queryMask)
+bool IPicker::executeRaySceneQuery(int _x, int _y, int _width, int _height, std::uint32_t _queryMask)
 {
     ::Ogre::Ray r = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getCameraToViewportRay(
-        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
-        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+        static_cast< ::Ogre::Real>(_x) / static_cast< ::Ogre::Real>(_width),
+        static_cast< ::Ogre::Real>(_y) / static_cast< ::Ogre::Real>(_height));
 
     float distance;
     bool entityFound;
@@ -153,9 +153,9 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height, std::uin
 
 //-----------------------------------------------------------------------------
 
-void IPicker::setSceneManager(::Ogre::SceneManager* sceneMgr)
+void IPicker::setSceneManager(::Ogre::SceneManager* _sceneMgr)
 {
-    m_sceneManager    = sceneMgr;
+    m_sceneManager    = _sceneMgr;
     m_hasSceneManager = true;
 }
 

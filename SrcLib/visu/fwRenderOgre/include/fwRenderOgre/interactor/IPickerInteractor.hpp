@@ -79,7 +79,6 @@ public:
     /// Send picking info
     typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
-
     /** @} */
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
@@ -99,12 +98,6 @@ public:
 
 protected:
 
-    /// Ogre picker
-    ::fwRenderOgre::picker::IPicker* m_picker {nullptr};
-
-    /// Mask for picking requests
-    std::uint32_t m_queryMask {::Ogre::SceneManager::ENTITY_TYPE_MASK};
-
     /**
      * @name Signals attributes
      * @{
@@ -117,6 +110,12 @@ protected:
     /**
      * @}
      */
+
+    /// Ogre picker
+    ::fwRenderOgre::picker::IPicker* m_picker {nullptr};
+
+    /// Mask for picking requests
+    std::uint32_t m_queryMask {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 }

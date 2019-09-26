@@ -42,17 +42,22 @@ class FWRENDEROGRE_CLASS_API IPicker
 public:
 
     FWRENDEROGRE_API IPicker();
+
     FWRENDEROGRE_API virtual ~IPicker();
 
     /// Executes the RaySceneQuery object and returns true or false wether an object has been selected or not
-    FWRENDEROGRE_API bool executeRaySceneQuery(int x, int y, int width, int height, std::uint32_t _queryMask);
+    FWRENDEROGRE_API bool executeRaySceneQuery(int _x, int _y, int _width, int _height, std::uint32_t _queryMask);
 
     FWRENDEROGRE_API ::Ogre::MovableObject* getSelectedObject() const;
+
     FWRENDEROGRE_API ::Ogre::Vector3 getIntersectionInWorldSpace() const;
+
     FWRENDEROGRE_API ::Ogre::Vector2 getIntersectionInViewSpace() const;
+
     FWRENDEROGRE_API ::Ogre::Vector2 getIntersectionInPixel() const;
 
-    FWRENDEROGRE_API void setSceneManager(::Ogre::SceneManager*);
+    FWRENDEROGRE_API void setSceneManager(::Ogre::SceneManager* _sceneMgr);
+
     FWRENDEROGRE_API bool hasSceneManager();
 
 protected:

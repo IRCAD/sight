@@ -65,27 +65,20 @@ public:
     fwCoreServiceMacro(SInteractorStyle, ::fwRenderOgre::IAdaptor);
 
     /**
-     * @name Signals API
-     * @{
-     */
-
-    /// Signal used to forward the interactor sinal
-    typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
-    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
-
-    /// Deprecated
-    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSignalTypeDeprecated;
-
-    /** @} */
-
-    /**
      * @name Slots API
      * @{
      */
-
     /// Slots used to forward the picker sinal
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
+    /** @} */
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    /// Signal used to forward the interactor sinal
+    typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
+    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
     /** @} */
 
     /// Constructor. Creates signals and slots
@@ -114,16 +107,8 @@ private:
      * @name Slots methods
      * @{
      */
-
     /// Slot: forward the signal sent by the interactor
     void picked(::fwDataTools::PickingInfo);
-
-    /// Deprecated
-    void addPointDeprecated(::fwData::Object::sptr obj);
-
-    /// Deprecated
-    void removePointDeprecated(::fwData::Object::sptr obj);
-
     /**
      * @}
      */
@@ -135,10 +120,8 @@ private:
      * @name Signals attributes
      * @{
      */
-
     /// Pointer to the generic signal
     PointClickedSigType::sptr m_sigPicked;
-
     /**
      * @}
      */
@@ -153,7 +136,7 @@ private:
     ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Mask for picking requests
-    std::uint32_t m_queryMask { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
+    std::uint32_t m_queryMask {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Pointer on move interactor
     ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;

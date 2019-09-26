@@ -64,31 +64,38 @@ namespace fwRenderOgre
 
 class FWRENDEROGRE_CLASS_API CollisionTools
 {
+
 public:
+
     Ogre::RaySceneQuery* mRaySceneQuery;
+
     Ogre::RaySceneQuery* mTSMRaySceneQuery;
 
     Ogre::SceneManager* mSceneMgr;
 
     FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask);
+
     FWRENDEROGRE_API ~CollisionTools();
 
-    FWRENDEROGRE_API bool collidesWithEntity(const Ogre::Vector3& fromPoint, const Ogre::Vector3& toPoint,
-                                             const float collisionRadius = 2.5f, const float rayHeightLevel = 0.0f,
-                                             const Ogre::uint32 queryMask = 0xFFFFFFFF);
+    FWRENDEROGRE_API bool collidesWithEntity(const Ogre::Vector3& _fromPoint,
+                                             const Ogre::Vector3& _toPoint,
+                                             const Ogre::uint32 _queryMask,
+                                             const float _collisionRadius = 2.5f,
+                                             const float _rayHeightLevel  = 0.0f);
 
     FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
-        ::Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2& mousecoords,
-        const Ogre::uint32 queryMask);
+        ::Ogre::RenderWindow* _rw,
+        Ogre::Camera* _camera,
+        const Ogre::Vector2& _mousecoords,
+        const Ogre::uint32 _queryMask);
 
-    FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(const Ogre::Vector3&,
-                                                                                                   const Ogre::Vector3&,
-                                                                                                   const Ogre::uint32 queryMask =
-                                                                                                       0xFFFFFFFF);
+    FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
+        const Ogre::Vector3& _point,
+        const Ogre::Vector3& _normal,
+        const Ogre::uint32 _queryMask);
 
-    FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(const Ogre::Ray&,
-                                                                                          const Ogre::uint32 queryMask =
-                                                                                              0xFFFFFFFF);
+    FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(const Ogre::Ray& _ray,
+                                                                                          const Ogre::uint32 _queryMask);
 
 private:
 
