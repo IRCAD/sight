@@ -98,7 +98,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivitySequencer)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(SActivitySequencer, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQT_API SActivitySequencer() noexcept;
