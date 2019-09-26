@@ -339,7 +339,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->addQueryFlags(m_queryFlags);
+        m_entity->setQueryFlags(m_queryFlags);
     }
 
     //------------------------------------------
@@ -392,7 +392,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->addQueryFlags(m_queryFlags);
+        m_entity->setQueryFlags(m_queryFlags);
     }
 
     //------------------------------------------

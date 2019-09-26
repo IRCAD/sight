@@ -200,7 +200,7 @@ private:
     /// SMaterial adaptors attached to the r2vb objects
     std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
     /// Mask for picking request
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 //------------------------------------------------------------------------------

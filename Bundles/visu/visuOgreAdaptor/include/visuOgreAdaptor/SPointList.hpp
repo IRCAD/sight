@@ -200,7 +200,7 @@ private:
     ::fwData::Color::sptr m_labelColor;
 
     /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Used to store label of each point.
     std::vector< ::fwRenderOgre::Text* > m_labels;

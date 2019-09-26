@@ -117,7 +117,7 @@ private:
     /// Signal/Slot connections with this service
     ::fwCom::helper::SigSlotConnection m_connections;
     /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 //------------------------------------------------------------------------------
