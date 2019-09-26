@@ -132,7 +132,7 @@ class UIACTIVITIESQT_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivityLauncher)(::fwGui::IActionSrv) )
+    fwCoreServiceMacro(SActivityLauncher, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQT_API SActivityLauncher() noexcept;

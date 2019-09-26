@@ -107,7 +107,7 @@ class UIACTIVITIESQML_CLASS_API SActivityView : public ::fwQml::IQmlEditor,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivityView)(::fwQml::IQmlEditor) )
+    fwCoreServiceMacro(SActivityView, ::fwQml::IQmlEditor)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQML_API SActivityView();

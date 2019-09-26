@@ -76,13 +76,13 @@ class UIACTIVITIESQT_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::IActionSrv) )
+    fwCoreServiceMacro(SCreateActivity, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQT_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept;
+    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept override;
 
     /**
      * @name Signals API

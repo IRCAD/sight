@@ -94,7 +94,7 @@ Q_OBJECT
 Q_PROPERTY(QStringList activityIds MEMBER m_qActivityIds)
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivitySequencer)(::fwQml::IQmlEditor) )
+    fwCoreServiceMacro(SActivitySequencer, ::fwQml::IQmlEditor)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQML_API SActivitySequencer();
