@@ -153,7 +153,7 @@ private:
     ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryMask { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
 
     /// Pointer on move interactor
     ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;

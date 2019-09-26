@@ -60,11 +60,11 @@
 namespace fwRenderOgre
 {
 
-CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr)
+CollisionTools::CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask)
 {
-    mSceneMgr = sceneMgr;
+    mSceneMgr = _sceneMgr;
 
-    mRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray());
+    mRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray(), _queryMask);
     if (nullptr == mRaySceneQuery)
     {
         // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
@@ -72,7 +72,7 @@ CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr)
     }
     mRaySceneQuery->setSortByDistance(true);
 
-    mTSMRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray());
+    mTSMRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray(), _queryMask);
 }
 
 CollisionTools::~CollisionTools()

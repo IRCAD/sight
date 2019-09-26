@@ -70,7 +70,7 @@ public:
 
     Ogre::SceneManager* mSceneMgr;
 
-    FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* sceneMgr);
+    FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask);
     FWRENDEROGRE_API ~CollisionTools();
 
     FWRENDEROGRE_API bool collidesWithEntity(const Ogre::Vector3& fromPoint, const Ogre::Vector3& toPoint,
@@ -79,7 +79,7 @@ public:
 
     FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
         ::Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2& mousecoords,
-        const Ogre::uint32 queryMask = 0xFFFFFFFF);
+        const Ogre::uint32 queryMask);
 
     FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(const Ogre::Vector3&,
                                                                                                    const Ogre::Vector3&,

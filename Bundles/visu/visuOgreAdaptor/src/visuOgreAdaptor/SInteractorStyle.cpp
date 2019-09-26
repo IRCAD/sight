@@ -91,7 +91,7 @@ void SInteractorStyle::configuring()
         m_movementStyle = config.get<std::string>(s_CONFIG_MOVEMENT);
     }
 
-    m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
+    m_queryMask = config.get<std::uint32_t>("queryMask", m_queryMask);
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ void SInteractorStyle::setInteractorStyle()
             auto layer            = this->getRenderService()->getLayer(m_layerID);
             auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor);
             pickerInteractor->initPicker();
-            pickerInteractor->setQueryFlags(m_queryFlags);
+            pickerInteractor->setQueryMask(m_queryMask);
             layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor));
         }
         else

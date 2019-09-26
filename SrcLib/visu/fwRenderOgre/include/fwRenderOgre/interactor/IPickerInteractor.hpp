@@ -95,7 +95,7 @@ public:
     FWRENDEROGRE_API bool isPickerInitialized() const;
 
     /// Set query mask
-    FWRENDEROGRE_API void setQueryFlags(std::uint32_t _queryFlags);
+    FWRENDEROGRE_API void setQueryMask(std::uint32_t _queryMask);
 
 protected:
 
@@ -103,7 +103,7 @@ protected:
     ::fwRenderOgre::picker::IPicker* m_picker {nullptr};
 
     /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryMask {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /**
      * @name Signals attributes

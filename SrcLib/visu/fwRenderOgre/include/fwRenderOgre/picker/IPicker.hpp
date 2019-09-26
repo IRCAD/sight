@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ public:
     FWRENDEROGRE_API virtual ~IPicker();
 
     /// Executes the RaySceneQuery object and returns true or false wether an object has been selected or not
-    FWRENDEROGRE_API bool executeRaySceneQuery(int x, int y, int width, int height, std::uint32_t _queryFlags);
+    FWRENDEROGRE_API bool executeRaySceneQuery(int x, int y, int width, int height, std::uint32_t _queryMask);
 
     FWRENDEROGRE_API ::Ogre::MovableObject* getSelectedObject() const;
     FWRENDEROGRE_API ::Ogre::Vector3 getIntersectionInWorldSpace() const;
