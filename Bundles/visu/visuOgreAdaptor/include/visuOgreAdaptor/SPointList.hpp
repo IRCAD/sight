@@ -100,26 +100,30 @@ public:
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SPointList() noexcept;
+
     /// Destructor: if an entity exists in the Ogre Scene, asks Ogre to destroy it.
     VISUOGREADAPTOR_API virtual ~SPointList() noexcept;
 
     /// Returns the material associated to this.
-    VISUOGREADAPTOR_API SPTR(::fwData::Material) getMaterial() const;
+    VISUOGREADAPTOR_API ::fwData::Material::sptr getMaterial() const;
+
     /// Sets the current material.
-    VISUOGREADAPTOR_API void setMaterial(SPTR(::fwData::Material) material);
+    VISUOGREADAPTOR_API void setMaterial(::fwData::Material::sptr _material);
+
     /// Sets the material template Name.
-    VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& materialName);
+    VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& _materialName);
 
     /// Active/Inactive automatic reset on camera. By default =true.
-    VISUOGREADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
+    VISUOGREADAPTOR_API void setAutoResetCamera(bool _autoResetCamera);
 
     /// Returns associated entity
     VISUOGREADAPTOR_API ::Ogre::Entity* getEntity() const;
 
     /// Returns if the SPointList is visible in the scene or not.
     VISUOGREADAPTOR_API bool getVisibility() const;
+
     /// Sets whether the mesh is to be seen or not.
-    VISUOGREADAPTOR_API void updateVisibility(bool isVisible);
+    VISUOGREADAPTOR_API void updateVisibility(bool _isVisible);
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -131,10 +135,13 @@ private:
 
     /// Configures the adaptor
     void configuring() override;
+
     /// Manually creates a Mesh in the Default Ogre Ressource group
     void starting() override;
+
     /// Deletes the mesh after unregistering the service, and shutting connections.
     void stopping() override;
+
     /// Called when the mesh is modified
     void updating() override;
 
@@ -146,6 +153,7 @@ private:
 
     /// Instantiates a new material adaptor
     ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
+
     /// Associates a new SMaterial to the managed SPointList.
     /// With this method, SPointList is responsible for creating a SMaterial
     void updateMaterialAdaptor();
@@ -173,8 +181,10 @@ private:
 
     /// SMaterial attached to the mesh
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+
     /// Ogre Material related to the mesh
     ::fwData::Material::sptr m_material;
+
     /// Attached Material's name
     std::string m_materialTemplateName;
 
@@ -188,7 +198,7 @@ private:
     ::fwRenderOgre::Mesh::sptr m_meshGeometry;
 
     /// Allows to scale the billboards
-    float m_radius { 1.f };
+    float m_radius {1.f};
 
     /// Display the labelNumber
     bool m_displayLabel {false};
@@ -209,36 +219,36 @@ private:
     std::vector< ::Ogre::SceneNode* > m_nodes;
 
     /// Scene node where all of our manual objects are attached
-    ::Ogre::SceneNode* m_sceneNode { nullptr };
+    ::Ogre::SceneNode* m_sceneNode {nullptr};
 };
 
 //------------------------------------------------------------------------------
 // Inline functions
 
-inline SPTR(::fwData::Material) SPointList::getMaterial() const
+inline ::fwData::Material::sptr SPointList::getMaterial() const
 {
     return m_material;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SPointList::setMaterial(::fwData::Material::sptr material)
+inline void SPointList::setMaterial(::fwData::Material::sptr _material)
 {
-    m_material = material;
+    m_material = _material;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SPointList::setMaterialTemplateName(const std::string& materialName)
+inline void SPointList::setMaterialTemplateName(const std::string& _materialName)
 {
-    m_materialTemplateName = materialName;
+    m_materialTemplateName = _materialName;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SPointList::setAutoResetCamera(bool autoResetCamera)
+inline void SPointList::setAutoResetCamera(bool _autoResetCamera)
 {
-    m_autoResetCamera = autoResetCamera;
+    m_autoResetCamera = _autoResetCamera;
 }
 
 //------------------------------------------------------------------------------

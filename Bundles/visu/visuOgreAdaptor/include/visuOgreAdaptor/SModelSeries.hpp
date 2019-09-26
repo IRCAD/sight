@@ -70,15 +70,6 @@ public:
 
     fwCoreServiceMacro(SModelSeries, ::fwRenderOgre::IAdaptor);
 
-    /// Constructor.
-    VISUOGREADAPTOR_API SModelSeries() noexcept;
-
-    /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
-
-    /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
     /**
      * @name Slots API
      * @{
@@ -88,34 +79,55 @@ public:
      * @}
      */
 
+    /// Constructor.
+    VISUOGREADAPTOR_API SModelSeries() noexcept;
+
+    /// Destructor. Does nothing
+    VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
+
+    /// Returns proposals to connect service slots to associated object signals
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
 protected:
+
     /// Creates a Transform Service, then updates.
     VISUOGREADAPTOR_API void starting() override;
+
     /// Configure the parameter
     VISUOGREADAPTOR_API void configuring() override;
+
     /// Redraws all (stops then restarts sub services)
     VISUOGREADAPTOR_API void updating() override;
+
     /// Closes connections and unregisters service.
     VISUOGREADAPTOR_API void stopping() override;
 
 private:
+
     /// Slot: update all reconstructions visibility.
     void showReconstructions(bool _show);
+
     /// Slot: update all reconstructions visibility using "ShowReconstructions" field.
     void showReconstructionsOnFieldChanged();
 
-    /// Defines if the camera must be reset automatically
-    bool m_autoResetCamera;
-    /// Texture adaptor's UID
-    std::string m_textureAdaptorUID;
-    /// Material name
-    std::string m_materialTemplateName;
-    /// Defines if the model series is dynamic
-    bool m_isDynamic;
-    /// Defines if the model series' vertices are dynamic
-    bool m_isDynamicVertices;
     /// Signal/Slot connections with this service
     ::fwCom::helper::SigSlotConnection m_connections;
+
+    /// Defines if the camera must be reset automatically
+    bool m_autoResetCamera;
+
+    /// Texture adaptor's UID
+    std::string m_textureAdaptorUID;
+
+    /// Material name
+    std::string m_materialTemplateName;
+
+    /// Defines if the model series is dynamic
+    bool m_isDynamic;
+
+    /// Defines if the model series' vertices are dynamic
+    bool m_isDynamicVertices;
+
     /// Mask for picking requests
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };

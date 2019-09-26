@@ -90,17 +90,17 @@ SPointList::~SPointList() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SPointList::updateVisibility(bool isVisible)
+void SPointList::updateVisibility(bool _isVisible)
 {
-    m_isVisible = isVisible;
+    m_isVisible = _isVisible;
 
     if(m_entity)
     {
         this->getRenderService()->makeCurrent();
 
-        m_entity->setVisible(isVisible);
+        m_entity->setVisible(_isVisible);
 
-        m_meshGeometry->setVisible(isVisible);
+        m_meshGeometry->setVisible(_isVisible);
 
         this->requestRender();
     }

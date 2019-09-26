@@ -67,28 +67,27 @@ public:
 
     fwCoreServiceMacro(SReconstruction, ::fwRenderOgre::IAdaptor);
 
+    /**
+     * @name Slots API
+     * @{
+     */
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT;
+
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT;
+    /** @} */
+
     /// Constructor.
     VISUOGREADAPTOR_API SReconstruction() noexcept;
 
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SReconstruction() noexcept;
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    typedef ::fwCom::Slot< void (SPTR( ::fwData::Mesh ) )> ChangeMeshSlotType;
-    typedef ::fwCom::Slot< void () > VisibilitySlotType;
-
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT;
-    /** @} */
-
     /// Forces the Reconstruction to be hidden or not.
     VISUOGREADAPTOR_API void setForceHide(bool _hide);
 
     /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
     VISUOGREADAPTOR_API void setAutoResetCamera(bool _autoResetCamera);
+
     /// Changes the material's name
     VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& _materialName);
 
@@ -107,20 +106,27 @@ public:
     VISUOGREADAPTOR_API void setQueryFlags(std::uint32_t _queryFlags);
 
 protected:
+
     /// Configure the Reconstruction adaptor.
     VISUOGREADAPTOR_API void configuring() override;
+
     /// starts the service; creates the mesh service.
     VISUOGREADAPTOR_API void starting() override;
+
     /// stops and unregisters the service.
     VISUOGREADAPTOR_API void stopping() override;
+
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
     VISUOGREADAPTOR_API void updating() override;
 
 private:
+
     /// Changes the attached mesh
     void changeMesh( SPTR( ::fwData::Mesh) );
+
     /// modify if the
     void modifyVisibility();
+
     /// Creates the mesh service.
     void createMeshService();
 
@@ -132,10 +138,13 @@ private:
 
     /// Material's name
     std::string m_materialTemplateName;
+
     /// defines if the mesh changes dynamically
     bool m_isDynamic;
+
     /// defines if the vertices change dynamically
     bool m_isDynamicVertices;
+
     /// Mask for picking requests
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };

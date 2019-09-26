@@ -93,14 +93,14 @@ SMesh::~SMesh() noexcept
 
 //-----------------------------------------------------------------------------
 
-void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
+void visuOgreAdaptor::SMesh::updateVisibility(bool _isVisible)
 {
-    m_isVisible = isVisible;
+    m_isVisible = _isVisible;
     if(m_entity)
     {
-        m_entity->setVisible(isVisible);
+        m_entity->setVisible(_isVisible);
 
-        m_meshGeometry->setVisible(isVisible);
+        m_meshGeometry->setVisible(_isVisible);
 
         this->requestRender();
     }
