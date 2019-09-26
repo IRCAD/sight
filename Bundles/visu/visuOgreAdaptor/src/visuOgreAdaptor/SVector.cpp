@@ -69,8 +69,6 @@ SVector::~SVector() noexcept
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SVector::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( ::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG, ::fwData::Object::s_MODIFIED_SIG,
-                      s_UPDATE_SLOT );
     return connections;
 }
 
@@ -165,7 +163,7 @@ void SVector::stopping()
 
 void SVector::createVector()
 {
-    // Size
+    // Size, these value allow to display a vector with good enough ratio.
     const float cylinderLength = m_length - m_length/10;
     const float cylinderRadius = m_length/80;
     const float coneLength     = m_length - cylinderLength;
