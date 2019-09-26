@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IOIGTL_SSERVERLISTENER_HPP__
-#define __IOIGTL_SSERVERLISTENER_HPP__
+#pragma once
 
 #include "ioIGTL/config.hpp"
 
@@ -63,7 +62,7 @@ class IOIGTL_CLASS_API SServerListener : public ::ioNetwork::INetworkListener
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SServerListener)( ::ioNetwork::INetworkListener ) );
+    fwCoreServiceMacro(SServerListener,  ::ioNetwork::INetworkListener );
 
     /// Constructor
     IOIGTL_API SServerListener();
@@ -108,5 +107,3 @@ private:
 };
 
 } // namespace ioIGTL
-
-#endif /*__IOIGTL_SSERVERLISTENER_HPP__*/

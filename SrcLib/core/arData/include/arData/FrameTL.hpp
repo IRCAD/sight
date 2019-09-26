@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_FRAMETL_HPP__
-#define __ARDATA_FRAMETL_HPP__
+#pragma once
 
 #include "arData/GenericTL.hpp"
 #include "arData/GenericTL.hxx"
@@ -43,7 +42,7 @@ class ARDATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (FrameTL)(::arData::TimeLine), (()), ::fwData::factory::New< FrameTL >)
+    fwCoreClassMacro(FrameTL, ::arData::TimeLine, ::fwData::factory::New< FrameTL >);
     fwCampMakeFriendDataMacro((arData)(FrameTL))
 
     /**
@@ -107,5 +106,3 @@ private:
 }; // class FrameTL
 
 } // namespace arData
-
-#endif // __ARDATA_FRAMETL_HPP__

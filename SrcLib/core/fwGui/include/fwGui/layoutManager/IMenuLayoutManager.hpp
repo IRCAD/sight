@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,7 @@
  * @brief This file defines the interface of the base class for managing a menu.
  */
 
-#ifndef __FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__
-#define __FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwMenu.hpp"
@@ -49,7 +48,7 @@ namespace layoutManager
 class FWGUI_CLASS_API IMenuLayoutManager : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuLayoutManager)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(IMenuLayoutManager, ::fwGui::GuiBaseObject);
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
@@ -207,6 +206,3 @@ protected:
 
 } // namespace layoutManager
 } // namespace fwGui
-
-#endif /*__FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__*/
-

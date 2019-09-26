@@ -51,7 +51,7 @@ class FWIO_CLASS_API IReader : public ::fwServices::IService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (IReader)(::fwServices::IService) )
+    fwCoreServiceMacro(IReader, ::fwServices::IService);
 
     /**
      * @name Slots API

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCAMP_MACROS_HPP__
-#define __FWCAMP_MACROS_HPP__
+#pragma once
 
 #ifndef CAMP_COMPILATION
 
@@ -38,6 +37,16 @@
 #include <camp/camptype.hpp>
 #include <camp/class.hpp>
 #include <camp/enum.hpp>
+
+#define __FWCAMP_PREDECLARE(_s_, _state_, _elem_) \
+    BOOST_PP_IF(                                  \
+        BOOST_PP_EQUAL( _s_, 2 ),                 \
+        class _elem_; ,                           \
+        namespace _elem_ { _state_ }              \
+        )
+
+#define __FWCAMP_PREDECLARE_MACRO( _cls_ )  \
+    BOOST_PP_SEQ_FOLD_RIGHT( __FWCAMP_PREDECLARE, BOOST_PP_SEQ_NIL, _cls_)
 
 #define __FWCAMP_CAT(_s_, _state_, _elem_) BOOST_PP_CAT(_state_, _elem_)
 #define __FWCAMP_NAMESPACE_CAT(_s_, _state_, _elem_) _state_::_elem_
@@ -58,7 +67,7 @@
     CAMP_TYPE_NONCOPYABLE( type)
 
 #define __FWCAMP__AUTO__DECLARE__MACRO(desc) \
-    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &); \
+    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc)&); \
     inline void __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)() \
     { \
         __FWCAMP_CLASS_BUILDER_TYPE(desc) builder = \
@@ -102,19 +111,19 @@
     template<typename T> \
     struct UserObjectRegistrar; \
     } \
-    fwCorePredeclare(desc) \
+    __FWCAMP_PREDECLARE_MACRO(desc) \
     __FWCAMP__AUTO__DECLARE__MACRO(desc)
 
 //----------------------------------------------------------------------------
 
 #define fwCampAutoDeclareMacro( desc, export) \
-    fwCorePredeclare(desc) \
+    __FWCAMP_PREDECLARE_MACRO(desc) \
     export __FWCAMP__AUTO__DECLARE__MACRO(desc)
 
 //----------------------------------------------------------------------------
 
 #define fwCampAutoDeclareEnumMacro(desc) \
-    void __FWCAMP_DECLARE_FUNC_NAME(desc)(camp::EnumBuilder &); \
+    void __FWCAMP_DECLARE_FUNC_NAME(desc)(camp::EnumBuilder&); \
     inline void __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)() \
     { \
         camp::EnumBuilder builder = \
@@ -179,7 +188,7 @@
             return ReturnHelper< ReturnType>::get(ptr); \
         } \
 \
-        bool set(ClassType& objectptr, const Value &value) const \
+        bool set(ClassType& objectptr, const Value& value) const \
         { \
             ReturnType ptr = m_getter(objectptr); \
             ptr = __FWCAMP_NAMESPACE_NAME(attribut) ::dynamicCast(((value.to< DataType* >()))->getSptr()); \
@@ -195,6 +204,3 @@
     }
 
 #endif
-
-#endif // __FWCAMP_MACROS_HPP__
-

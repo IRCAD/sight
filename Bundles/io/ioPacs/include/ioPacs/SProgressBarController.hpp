@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IOPACS_SPROGRESSBARCONTROLLER_HPP__
-#define __IOPACS_SPROGRESSBARCONTROLLER_HPP__
+#pragma once
 
 #include "ioPacs/config.hpp"
 
@@ -46,7 +45,7 @@ class IOPACS_CLASS_API SProgressBarController : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SProgressBarController)( ::fwServices::IController ) );
+    fwCoreServiceMacro(SProgressBarController,  ::fwServices::IController );
 
     /// Type of progress bar container
     typedef std::map< std::string, ::fwGui::dialog::ProgressDialog::sptr > ProgressDialogContainerType;
@@ -108,5 +107,3 @@ protected:
 };
 
 } // namespace ioPacs
-
-#endif // __IOPACS_SPROGRESSBARCONTROLLER_HPP__

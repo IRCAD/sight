@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -78,7 +78,7 @@ class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public ::fwServices::
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAutomaticRegistration)(::fwServices::IOperator) )
+    fwCoreServiceMacro(SAutomaticRegistration, ::fwServices::IOperator);
 
     /// Constructor, does nothing.
     OPITKREGISTRATION_API SAutomaticRegistration();

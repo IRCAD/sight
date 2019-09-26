@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ class GUI_CLASS_API SDefaultView : public ::fwGui::view::IView
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDefaultView)(::fwGui::view::IView) );
+    fwCoreServiceMacro(SDefaultView, ::fwGui::view::IView);
 
     /// Constructor. Do nothing.
     GUI_API SDefaultView() noexcept;

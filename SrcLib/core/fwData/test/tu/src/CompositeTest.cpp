@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,8 @@
 
 #include "CompositeTest.hpp"
 
-#include <fwData/Composite.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
@@ -38,25 +38,32 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void CompositeTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void CompositeTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
+
 void CompositeTest::methode1()
 {
+    const std::int64_t value = 404;
     typedef ::fwData::Composite::value_type pair_type;
     const pair_type PAIRS[] = {
         std::make_pair( "Composite", ::fwData::Composite::New()    ),
         std::make_pair( "boolean true", ::fwData::Boolean::New(true)  ),
         std::make_pair( "boolean false", ::fwData::Boolean::New(false) ),
         std::make_pair( "float", ::fwData::Float::New(3.14f)   ),
-        std::make_pair( "integer", ::fwData::Integer::New(404)   )
+        std::make_pair( "integer", ::fwData::Integer::New(value)   )
     };
 
     ::fwData::Composite::ContainerType stdmap;
@@ -77,17 +84,16 @@ void CompositeTest::methode1()
     for( pair_type p : *composite)
     {
         CPPUNIT_ASSERT( composite->getContainer()[p.first] == (*composite)[p.first] );
-        CPPUNIT_ASSERT(                 stdmap[p.first] == (*composite)[p.first] );
+        CPPUNIT_ASSERT( stdmap[p.first] == (*composite)[p.first] );
     }
 
+    CPPUNIT_ASSERT_EQUAL( true, ::fwData::Boolean::dynamicCast((*composite)[ "boolean true" ])->value());
+    CPPUNIT_ASSERT_EQUAL( false, ::fwData::Boolean::dynamicCast((*composite)[ "boolean false" ])->value());
+    CPPUNIT_ASSERT_EQUAL( 3.14f, ::fwData::Float::dynamicCast((*composite)[ "float" ])->value());
+    CPPUNIT_ASSERT_EQUAL( value, ::fwData::Integer::dynamicCast((*composite)[ "integer" ])->value());
 
-    CPPUNIT_ASSERT_EQUAL( true,  ::fwData::Boolean::dynamicCast((*composite)[ "boolean true" ])->value()  );
-    CPPUNIT_ASSERT_EQUAL( false,  ::fwData::Boolean::dynamicCast((*composite)[ "boolean false" ])->value() );
-    CPPUNIT_ASSERT_EQUAL( 3.14f,   ::fwData::Float::dynamicCast((*composite)[ "float" ])->value()         );
-    CPPUNIT_ASSERT_EQUAL( 404,  ::fwData::Integer::dynamicCast((*composite)[ "integer" ])->value()       );
-
-    //-----------test values
-    const std::string STR = "toto";
+    // test values
+    const std::string STR = "string value";
     ::fwData::Object::sptr obj = ::fwData::Float::New();
 
     composite->getContainer()[STR] = obj;
@@ -98,11 +104,13 @@ void CompositeTest::methode1()
     CPPUNIT_ASSERT_EQUAL(composite->getContainer()[STR], obj);
 }
 
+//------------------------------------------------------------------------------
+
 void CompositeTest::setGetContainerTest()
 {
     std::map< std::string, ::fwData::String::sptr > myStdMap;
-    std::string key1 = "toto";
-    std::string key2 = "tutu";
+    const std::string key1 = "string value 1";
+    const std::string key2 = "string value 2";
     myStdMap[ key1 ] = ::fwData::String::New("lolo");
     myStdMap[ key2 ] = ::fwData::String::New("lulu");
 
@@ -112,11 +120,9 @@ void CompositeTest::setGetContainerTest()
 
     std::map< std::string, ::fwData::String::sptr > myStdMap2;
     myStdMap2 = myDataMap->getDataContainer< ::fwData::String >();
-    CPPUNIT_ASSERT( myStdMap2[key1] ==  myStdMap[key1] );
-    CPPUNIT_ASSERT( myStdMap2[key2] ==  myStdMap[key2] );
+    CPPUNIT_ASSERT( myStdMap2[key1] == myStdMap[key1] );
+    CPPUNIT_ASSERT( myStdMap2[key2] == myStdMap[key2] );
 }
-
 
 } //namespace ut
 } //namespace fwData
-

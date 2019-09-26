@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UICALIBRATION_SDISPLAYCALIBRATIONINFO_HPP__
-#define __UICALIBRATION_SDISPLAYCALIBRATIONINFO_HPP__
+#pragma once
 
 #include "uiCalibration/config.hpp"
 
@@ -71,7 +70,7 @@ class UICALIBRATION_CLASS_API SDisplayCalibrationInfo : public ::fwServices::ICo
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDisplayCalibrationInfo)(::fwServices::IController) );
+    fwCoreServiceMacro(SDisplayCalibrationInfo, ::fwServices::IController);
 
     /// Constructor. Does nothing.
     UICALIBRATION_API SDisplayCalibrationInfo() noexcept;
@@ -118,5 +117,3 @@ private:
 };
 
 } // uiCalibration
-
-#endif // __UICALIBRATION_SDISPLAYCALIBRATIONINFO_HPP__

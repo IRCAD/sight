@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ECHOEDSIMU_SCOMPUTEMATRIXFROMCELL_HPP__
-#define __ECHOEDSIMU_SCOMPUTEMATRIXFROMCELL_HPP__
+#pragma once
 
 #include "echoEdSimu/config.hpp"
 
@@ -62,7 +61,7 @@ class ECHOEDSIMU_CLASS_API SComputeMatrixFromCell : public ::arServices::ISimula
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SComputeMatrixFromCell)(::arServices::ISimulator) );
+    fwCoreServiceMacro(SComputeMatrixFromCell, ::arServices::ISimulator);
 
     /// Constructor.
     ECHOEDSIMU_API SComputeMatrixFromCell() noexcept;
@@ -116,5 +115,3 @@ private:
 };
 
 } // echoEdSimu
-
-#endif // __ECHOEDSIMU_SCOMPUTEMATRIXFROMCELL_HPP__

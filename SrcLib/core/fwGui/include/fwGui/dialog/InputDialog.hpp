@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_DIALOG_INPUTDIALOG_HPP__
-#define __FWGUI_DIALOG_INPUTDIALOG_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 #include "fwGui/dialog/IInputDialog.hpp"
@@ -49,7 +48,7 @@ class FWGUI_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog )
+    fwCoreClassMacro(InputDialog, ::fwGui::dialog::IInputDialog, new InputDialog);
 
     /**
      * Opens a default input box with the specified title and message.
@@ -107,6 +106,3 @@ protected:
 
 } //namespace dialog
 } // namespace fwGui
-
-#endif /*__FWGUI_DIALOG_INPUTDIALOG_HPP__*/
-

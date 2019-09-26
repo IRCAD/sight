@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SLINE_HPP__
-#define __VISUVTKADAPTOR_SLINE_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -64,7 +63,7 @@ class VISUVTKADAPTOR_CLASS_API SLine : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLine)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SLine, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SLine() noexcept;
     VISUVTKADAPTOR_API virtual ~SLine() noexcept;
@@ -111,5 +110,3 @@ private:
 };
 
 } // namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SLINE_HPP__

@@ -57,9 +57,7 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog),
-                                            (()),
-                                            ::fwGui::factory::New< InputDialog > );
+    fwCoreClassMacro(InputDialog, ::fwGui::dialog::IInputDialog, ::fwGui::factory::New< InputDialog >);
 
     FWGUIQML_API InputDialog(::fwGui::GuiBaseObject::Key key);
 

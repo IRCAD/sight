@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ class ARDATA_CLASS_API Camera : public ::fwData::Object
 {
 public:
     fwCampMakeFriendDataMacro((arData)(Camera));
-    fwCoreClassDefinitionsWithFactoryMacro((Camera)(::fwData::Object), (()), ::fwData::factory::New< Camera >);
+    fwCoreClassMacro(Camera, ::fwData::Object, ::fwData::factory::New< Camera >);
 
     typedef std::array<double, 5> DistArrayType;
     typedef std::array<double, 4> IntrinsecType;

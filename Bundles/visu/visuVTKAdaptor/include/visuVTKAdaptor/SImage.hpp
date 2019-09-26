@@ -75,7 +75,7 @@ class VISUVTKADAPTOR_CLASS_API SImage : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImage)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SImage, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SImage() noexcept;
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_UT_COLORTEST_HPP__
-#define __FWDATA_UT_COLORTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -36,6 +35,7 @@ private:
     CPPUNIT_TEST_SUITE( ColorTest );
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST( methode2 );
+    CPPUNIT_TEST( methode3 );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,8 +45,7 @@ public:
 
     void methode1();
     void methode2();
+    void methode3();
 };
 } //namespace ut
 } //namespace fwData
-
-#endif //__FWDATA_UT_COLORTEST_HPP__

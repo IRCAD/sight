@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,7 +74,7 @@ class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCamera)(::fwRenderOgre::IAdaptor))
+    fwCoreServiceMacro(SCamera, ::fwRenderOgre::IAdaptor);
 
     /// Constructor.
     VISUOGREADAPTOR_API SCamera() noexcept;

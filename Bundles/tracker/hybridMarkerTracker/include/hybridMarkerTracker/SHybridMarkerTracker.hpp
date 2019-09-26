@@ -73,7 +73,7 @@ namespace hybridMarkerTracker
 class HYBRIDMARKERTRACKER_CLASS_API SHybridMarkerTracker : public ::arServices::ITracker
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SHybridMarkerTracker)(arServices::ITracker))
+    fwCoreServiceMacro(SHybridMarkerTracker, arServices::ITracker);
 
     HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     HYBRIDMARKERTRACKER_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;

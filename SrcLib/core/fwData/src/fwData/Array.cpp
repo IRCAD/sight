@@ -71,7 +71,7 @@ inline size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-Array::Array( ::fwData::Object::Key /*key*/ ) :
+Array::Array( ::fwData::Object::Key ) :
     m_strides(0),
     m_type(),
     m_bufferObject(::fwMemory::BufferObject::New()),

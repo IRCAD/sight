@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_REGISTRY_APPCONFIG_HPP__
-#define __FWSERVICES_REGISTRY_APPCONFIG_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/registry/AppInfo.hpp"
@@ -57,7 +56,7 @@ public:
     /// Associations of <pattern, value>.
     typedef std::map< std::string, std::string > FieldAdaptorType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppConfig)(::fwCore::BaseObject), (()), new AppConfig);
+    fwCoreClassMacro(AppConfig, ::fwCore::BaseObject, new AppConfig);
 
     /// Destructor
     FWSERVICES_API virtual ~AppConfig();
@@ -198,6 +197,3 @@ private:
 } // namespace registry
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_REGISTRY_APPCONFIG_HPP__
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include "fwMedData/Series.hpp"
 #include "fwMedData/SeriesDB.hpp"
+
+#include "fwMedData/Series.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
-
 
 fwDataRegisterMacro( ::fwMedData::SeriesDB );
 
@@ -40,7 +40,7 @@ const ::fwCom::Signals::SignalKeyType SeriesDB::s_REMOVED_SERIES_SIG = "removedS
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(::fwData::Object::Key key)
+SeriesDB::SeriesDB(::fwData::Object::Key)
 {
     newSignal< AddedSeriesSignalType >(s_ADDED_SERIES_SIG);
     newSignal< RemovedSeriesSignalType >(s_REMOVED_SERIES_SIG);
@@ -54,7 +54,7 @@ SeriesDB::~SeriesDB()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::shallowCopy(const ::fwData::Object::csptr &_source)
+void SeriesDB::shallowCopy(const ::fwData::Object::csptr& _source)
 {
     SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -68,7 +68,7 @@ void SeriesDB::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
+void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -78,7 +78,7 @@ void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCa
     this->fieldDeepCopy( other, cache );
     m_container.clear();
     m_container.reserve(other->m_container.size());
-    for(const ValueType &series :  other->m_container)
+    for(const ValueType& series :  other->m_container)
     {
         m_container.push_back(::fwData::Object::copy(series, cache));
     }
@@ -87,4 +87,3 @@ void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCa
 //------------------------------------------------------------------------------
 
 } // namespace fwMedData
-

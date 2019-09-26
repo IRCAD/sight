@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,9 +61,8 @@ class FWGDCMIO_CLASS_API SurfaceSegmentation :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SurfaceSegmentation)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >), (()),
-        ::fwDataIO::writer::factory::New< SurfaceSegmentation >);
+    fwCoreClassMacro(SurfaceSegmentation, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
+                     ::fwDataIO::writer::factory::New< SurfaceSegmentation >);
 
     /// Constructor
     FWGDCMIO_API SurfaceSegmentation(::fwDataIO::writer::IObjectWriter::Key key);

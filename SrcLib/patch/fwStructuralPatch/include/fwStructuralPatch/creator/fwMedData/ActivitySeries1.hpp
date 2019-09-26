@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,8 +40,7 @@ class FWSTRUCTURALPATCH_CLASS_API ActivitySeries1 : public ::fwStructuralPatch::
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (ActivitySeries1)(::fwStructuralPatch::creator::fwMedData::Series1), (()), new ActivitySeries1);
+    fwCoreClassMacro(ActivitySeries1, ::fwStructuralPatch::creator::fwMedData::Series1, new ActivitySeries1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API ActivitySeries1();

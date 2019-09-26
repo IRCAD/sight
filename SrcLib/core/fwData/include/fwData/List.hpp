@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_LIST_HPP__
-#define __FWDATA_LIST_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -44,7 +43,7 @@ class FWDATA_CLASS_API List : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >);
+    fwCoreClassMacro(List, ::fwData::Object, ::fwData::factory::New< List >);
 
     fwCampMakeFriendDataMacro((fwData)(List));
 
@@ -238,6 +237,3 @@ inline void List::setContainer (const List::ContainerType& val)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif /* __FWDATA_LIST_HPP__ */
-

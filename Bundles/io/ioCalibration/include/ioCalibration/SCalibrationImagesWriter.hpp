@@ -54,7 +54,7 @@ class IOCALIBRATION_CLASS_API SCalibrationImagesWriter : public ::fwIO::IWriter
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCalibrationImagesWriter)( ::fwIO::IWriter) )
+    fwCoreServiceMacro(SCalibrationImagesWriter,  ::fwIO::IWriter);
 
     /// Constructor.
     IOCALIBRATION_API SCalibrationImagesWriter() noexcept;

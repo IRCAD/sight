@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ class UITOOLS_CLASS_API SMatrixViewer : public QObject,
                                         public ::fwGui::editor::IEditor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SMatrixViewer)(::fwGui::editor::IEditor) );
+    fwCoreServiceMacro(SMatrixViewer, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     UITOOLS_API SMatrixViewer() noexcept;

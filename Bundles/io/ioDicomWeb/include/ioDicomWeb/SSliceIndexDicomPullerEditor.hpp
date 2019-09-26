@@ -102,7 +102,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSliceIndexDicomPullerEditor)( ::fwGui::editor::IEditor ) )
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ::fwGui::editor::IEditor );
 
     /**
      * @brief Constructor

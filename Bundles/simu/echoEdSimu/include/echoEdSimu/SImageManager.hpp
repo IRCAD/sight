@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ECHOEDSIMU_SIMAGEMANAGER_HPP__
-#define __ECHOEDSIMU_SIMAGEMANAGER_HPP__
+#pragma once
 
 #include "echoEdSimu/config.hpp"
 
@@ -59,7 +58,7 @@ class ECHOEDSIMU_CLASS_API SImageManager : public ::arServices::ISimulator
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageManager)(::arServices::ISimulator) );
+    fwCoreServiceMacro(SImageManager, ::arServices::ISimulator);
 
     /// Constructor. Do nothing.
     ECHOEDSIMU_API SImageManager() noexcept;
@@ -118,6 +117,3 @@ private:
 };
 
 } // namespace echoEdSimu
-
-#endif /*__ECHOEDSIMU_SIMAGEMANAGER_HPP__*/
-

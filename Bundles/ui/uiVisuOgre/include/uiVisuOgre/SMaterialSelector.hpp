@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(SMaterialSelector, ::fwGui::editor::IEditor);
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() noexcept;

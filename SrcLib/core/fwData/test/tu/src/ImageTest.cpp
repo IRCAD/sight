@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -68,8 +68,8 @@ void ImageTest::testGetterSetter()
     std::vector<double> VECTORSPACING(DIMENSION, CREFSPACING);
     double CREFORIGIN = 2.7;
     std::vector<double> VECTORORIGIN(DIMENSION, CREFORIGIN);
-    std::int32_t CREFSIZE = 42;
-    ::fwData::Image::SizeType VECTORSIZE(DIMENSION, CREFSIZE);
+    const size_t CREFSIZE = 42;
+    const ::fwData::Image::SizeType VECTORSIZE(DIMENSION, CREFSIZE);
     const double WINDOWCENTER = 10.10;
     const double WINDOWWIDTH  = 11.34;
 
@@ -249,18 +249,16 @@ void ImageTest::testSetGetPixel()
         *iter = count++;
     }
 
-    for (unsigned int x = 0; x < VECTORSIZE[0]; ++x)
+    for (size_t x = 0; x < VECTORSIZE[0]; ++x)
     {
-        for (unsigned int y = 0; y < VECTORSIZE[1]; ++y)
+        for (size_t y = 0; y < VECTORSIZE[1]; ++y)
         {
-            for (unsigned int z = 0; z < VECTORSIZE[2]; ++z)
+            for (size_t z = 0; z < VECTORSIZE[2]; ++z)
             {
-                short val = static_cast<short>(x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1]);
-                ::fwData::Image::IndexType index = val;
+                const ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
+                const short val                        = static_cast<short>(index);
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(x, y, z)));
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
-                ::fwData::Image::BufferType* buffer =
-                    reinterpret_cast< ::fwData::Image::BufferType* >(imgHelper.getBuffer());
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
 
                 std::stringstream ss;
@@ -271,14 +269,14 @@ void ImageTest::testSetGetPixel()
     }
 
     // test 2 : use setPixelBuffer
-    for (unsigned int x = 0; x < VECTORSIZE[0]; ++x)
+    for (size_t x = 0; x < VECTORSIZE[0]; ++x)
     {
-        for (unsigned int y = 0; y < VECTORSIZE[1]; ++y)
+        for (size_t y = 0; y < VECTORSIZE[1]; ++y)
         {
-            for (unsigned int z = 0; z < VECTORSIZE[2]; ++z)
+            for (size_t z = 0; z < VECTORSIZE[2]; ++z)
             {
-                ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
-                short val = static_cast<short>(index * 2);
+                const ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
+                short val                              = static_cast<short>(index * 2);
                 imgHelper.setPixelBuffer(index, reinterpret_cast< ::fwData::Image::BufferType* >(&val));
             }
         }

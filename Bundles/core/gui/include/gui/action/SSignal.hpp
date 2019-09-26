@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_ACTION_SSIGNAL_HPP__
-#define __GUI_ACTION_SSIGNAL_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -54,7 +53,7 @@ class GUI_CLASS_API SSignal : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSignal)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(SSignal, ::fwGui::IActionSrv);
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal
@@ -95,6 +94,3 @@ protected:
 
 } // namespace action
 } // namespace gui
-
-#endif /* __GUI_ACTION_SSIGNAL_HPP__ */
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,26 +20,19 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_ACTIONCALLBACK_HPP__
-#define __FWGUIQT_ACTIONCALLBACK_HPP__
-
-
-#include <QObject>
-
-#include <fwGui/ActionCallbackBase.hpp>
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 
+#include <fwGui/ActionCallbackBase.hpp>
+
+#include <QObject>
 
 namespace fwGuiQt
 {
 
 /**
  * @brief   Defines the menu item callback.
- * @class   ActionCallback
- *
- * @date    2009-2010.
- *
  */
 class FWGUIQT_CLASS_API ActionCallback :  public QObject,
                                           public ::fwGui::ActionCallbackBase
@@ -49,9 +42,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ActionCallback)(::fwGui::ActionCallbackBase),
-                                            (()),
-                                            ::fwGui::factory::New< ActionCallback > );
+    fwCoreClassMacro(ActionCallback, ::fwGui::ActionCallbackBase, ::fwGui::factory::New< ActionCallback >);
 
     FWGUIQT_API ActionCallback(::fwGui::GuiBaseObject::Key key);
 
@@ -67,7 +58,3 @@ public Q_SLOTS:
 };
 
 } // namespace fwGuiQt
-
-#endif /*__FWGUIQT_ACTIONCALLBACK_HPP__*/
-
-

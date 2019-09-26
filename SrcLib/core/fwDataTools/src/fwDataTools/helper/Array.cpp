@@ -28,7 +28,7 @@ namespace fwDataTools
 namespace helper
 {
 
-Array::Array( ::fwData::Array::sptr array ) :
+Array::Array(const ::fwData::Array::sptr& array ) :
     m_array(array)
 {
     FW_DEPRECATED_MSG("::fwDataTools::helper::Array is no longer supported, the methods have been moved to "
@@ -123,7 +123,7 @@ const char* Array::end() const
 
 //-----------------------------------------------------------------------------
 
-char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType )
+char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t )
 {
     size_t sizeOf = m_array->getType().sizeOf();
     size_t offset = m_array->getBufferOffset(id, component, sizeOf);
@@ -133,7 +133,7 @@ char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t componen
 
 //------------------------------------------------------------------------------
 
-const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType ) const
+const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t ) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     size_t offset    = m_array->getBufferOffset(id, component, sizeOf);

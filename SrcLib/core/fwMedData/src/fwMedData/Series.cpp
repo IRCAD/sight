@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
+#include "fwMedData/Series.hpp"
+
 #include "fwMedData/Equipment.hpp"
 #include "fwMedData/Patient.hpp"
-#include "fwMedData/Series.hpp"
 #include "fwMedData/Study.hpp"
 
 #include <fwData/Exception.hpp>
@@ -31,7 +32,7 @@
 namespace fwMedData
 {
 
-Series::Series(::fwData::Object::Key key) :
+Series::Series(::fwData::Object::Key) :
     m_patient(::fwMedData::Patient::New()),
     m_study(::fwMedData::Study::New()),
     m_equipment(::fwMedData::Equipment::New())
@@ -46,7 +47,7 @@ Series::~Series()
 
 //------------------------------------------------------------------------------
 
-void Series::shallowCopy(const ::fwData::Object::csptr &_source)
+void Series::shallowCopy(const ::fwData::Object::csptr& _source)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -69,7 +70,7 @@ void Series::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void Series::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
+void Series::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -93,4 +94,3 @@ void Series::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCach
 //------------------------------------------------------------------------------
 
 } // namespace fwMedData
-

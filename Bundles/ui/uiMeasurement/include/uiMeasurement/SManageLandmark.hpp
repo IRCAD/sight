@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIMEASUREMENT_SMANAGELANDMARK_HPP__
-#define __UIMEASUREMENT_SMANAGELANDMARK_HPP__
+#pragma once
 
 #include "uiMeasurement/config.hpp"
 
@@ -55,7 +54,7 @@ class UIMEASUREMENT_CLASS_API SManageLandmark : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SManageLandmark)(::fwServices::IController));
+    fwCoreServiceMacro(SManageLandmark, ::fwServices::IController);
 
     /**
      * @brief Constructor.
@@ -106,5 +105,3 @@ private:
 };
 
 } //namespace uiMeasurement
-
-#endif  // __UIMEASUREMENT_SMANAGELANDMARK_HPP__

@@ -75,7 +75,7 @@ class VIDEOORBBEC_CLASS_API SScan : public SScanBase
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SScan)(::arServices::IRGBDGrabber))
+    fwCoreServiceMacro(SScan, ::arServices::IRGBDGrabber);
 
     /**
      * @brief SScan constructor

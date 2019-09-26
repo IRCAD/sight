@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
+#include "fwData/Reconstruction.hpp"
 
 #include "fwData/Exception.hpp"
 #include "fwData/Image.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Mesh.hpp"
-#include "fwData/Reconstruction.hpp"
 #include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -45,7 +45,7 @@ const ::fwCom::Signals::SignalKeyType Reconstruction::s_VISIBILITY_MODIFIED_SIG 
 
 //------------------------------------------------------------------------------
 
-Reconstruction::Reconstruction(::fwData::Object::Key key) :
+Reconstruction::Reconstruction(::fwData::Object::Key) :
     m_bIsVisible(false),
     m_sOrganName(""),
     m_sStructureType(""),
@@ -67,7 +67,7 @@ Reconstruction::~Reconstruction()
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::shallowCopy(const Object::csptr &_source )
+void Reconstruction::shallowCopy(const Object::csptr& _source )
 {
     Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -88,7 +88,7 @@ void Reconstruction::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Reconstruction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

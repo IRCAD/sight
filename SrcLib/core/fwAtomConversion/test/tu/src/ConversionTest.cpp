@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -603,13 +603,11 @@ void ConversionTest::uuidReuseTest()
 
 class ClassNotCamped : public ::fwData::Object
 {
-
 public:
 
-    fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotCamped)(::fwData::Object),
-                                               ((::fwData::factory::New< ClassNotCamped >, () )) )
+    fwCoreClassMacro(ClassNotCamped, ::fwData::Object, ::fwData::factory::New< ClassNotCamped >);
 
-    ClassNotCamped(::fwData::Object::Key key)
+    ClassNotCamped(::fwData::Object::Key)
     {
     }
     //------------------------------------------------------------------------------
@@ -726,11 +724,11 @@ class ClassNotManaged : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotManaged)(::fwData::Object),
-                                               ((::fwData::factory::New< ClassNotManaged >, () )) )
+    fwCoreClassMacro(ClassNotManaged, ::fwData::Object, ::fwData::factory::New< ClassNotManaged >);
+
     fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
 
-    ClassNotManaged(::fwData::Object::Key key)
+    ClassNotManaged(::fwData::Object::Key)
     {
         m_values.insert( std::make_pair( ::fwData::String::New(), 0.2 ) );
     }

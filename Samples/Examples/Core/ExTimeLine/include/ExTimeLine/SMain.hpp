@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ class EXTIMELINE_CLASS_API SMain : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMain)(::fwServices::IService) );
+    fwCoreServiceMacro(SMain, ::fwServices::IService);
 
     EXTIMELINE_API SMain() noexcept;
     EXTIMELINE_API virtual ~SMain() noexcept;

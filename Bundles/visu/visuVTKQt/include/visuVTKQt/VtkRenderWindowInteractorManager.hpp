@@ -53,8 +53,7 @@ class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVT
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)
-                                                (::fwRenderVTK::IVtkRenderWindowInteractorManager) )
+    fwCoreClassMacro(VtkRenderWindowInteractorManager, ::fwRenderVTK::IVtkRenderWindowInteractorManager);
 
     VISUVTKQT_API VtkRenderWindowInteractorManager(::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key);
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_NODE_HPP__
-#define __FWDATA_NODE_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -43,7 +42,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::factory::New< Node >);
+    fwCoreClassMacro(Node, ::fwData::Object, ::fwData::factory::New< Node >);
     fwCampMakeFriendDataMacro((fwData)(Node));
 
     /// Port container
@@ -114,6 +113,3 @@ protected:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_NODE_HPP__
-

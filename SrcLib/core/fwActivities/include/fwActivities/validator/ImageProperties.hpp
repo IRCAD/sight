@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,9 +38,8 @@ namespace validator
 class FWACTIVITIES_CLASS_API ImageProperties : public ::fwActivities::IObjectValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageProperties)(::fwActivities::IObjectValidator),
-                                            (()),
-                                            ::fwActivities::validator::factory::New< ImageProperties > )
+    fwCoreClassMacro(ImageProperties, ::fwActivities::IObjectValidator,
+                     ::fwActivities::validator::factory::New< ImageProperties >);
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API ImageProperties(::fwActivities::IValidator::Key key);

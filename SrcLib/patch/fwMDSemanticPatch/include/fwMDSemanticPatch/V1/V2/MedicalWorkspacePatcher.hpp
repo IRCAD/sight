@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMDSEMANTICPATCH_V1_V2_MEDICALWORKSPACEPATCHER_HPP__
-#define __FWMDSEMANTICPATCH_V1_V2_MEDICALWORKSPACEPATCHER_HPP__
+#pragma once
 
 #include "fwAtomsPatch/patcher/DefaultPatcher.hpp"
 
@@ -58,9 +57,8 @@ class FWMDSEMANTICPATCH_CLASS_API MedicalWorkspacePatcher : public ::fwAtomsPatc
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (MedicalWorkspacePatcher)(::fwAtomsPatch::patcher::DefaultPatcher), (()),
-        ::fwAtomsPatch::patcher::factory::New< MedicalWorkspacePatcher >);
+    fwCoreClassMacro(MedicalWorkspacePatcher, ::fwAtomsPatch::patcher::DefaultPatcher,
+                     ::fwAtomsPatch::patcher::factory::New< MedicalWorkspacePatcher >);
 
     /// Constructor
     FWMDSEMANTICPATCH_API MedicalWorkspacePatcher(::fwAtomsPatch::patcher::IPatcher::Key key);
@@ -89,6 +87,3 @@ protected:
 } // namespace V2
 } // namespace V1
 } // namespace fwMDSemanticPatch
-
-#endif /* __FWMDSEMANTICPATCH_V1_V2_MEDICALWORKSPACEPATCHER_HPP__ */
-

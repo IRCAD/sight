@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_STRING_HPP__
-#define __FWDATA_STRING_HPP__
+#pragma once
 
 #include "fwData/factory/new.hpp"
 #include "fwData/GenericField.hpp"
@@ -40,8 +39,15 @@ namespace fwData
 class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ),
-                                            GenericFieldFactory< String >);
+    fwCoreClassMacro(String, ::fwData::Object);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const std::string val = "")
+    {
+        return GenericFieldFactory< String >(val);
+    }
+
     fwCampMakeFriendDataMacro((fwData)(String));
 
     /**
@@ -64,6 +70,3 @@ public:
 };
 
 } // namespace fwData
-
-#endif /* __FWDATA_STRING_HPP__ */
-

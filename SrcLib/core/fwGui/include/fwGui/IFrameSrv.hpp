@@ -87,7 +87,7 @@ class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IFrameSrv)(::fwServices::IService) )
+    fwCoreServiceMacro(IFrameSrv, ::fwServices::IService);
 
     /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();

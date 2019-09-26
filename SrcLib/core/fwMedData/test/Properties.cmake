@@ -14,4 +14,4 @@ set( DEPENDENCIES
     fwAtomConversion
 )
 set( REQUIREMENTS  )
-
+set( WARNINGS_AS_ERRORS ON )

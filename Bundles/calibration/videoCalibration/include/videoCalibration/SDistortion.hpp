@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ class VIDEOCALIBRATION_CLASS_API SDistortion : public ::fwServices::IOperator
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDistortion)(::fwServices::IOperator) )
+    fwCoreServiceMacro(SDistortion, ::fwServices::IOperator);
 
     /**
      * @name Slots API

@@ -52,7 +52,7 @@ class FWIO_CLASS_API IWriter : public ::fwServices::IService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (IWriter)(::fwServices::IService) )
+    fwCoreServiceMacro(IWriter, ::fwServices::IService);
 
     /**
      * @name Slots API

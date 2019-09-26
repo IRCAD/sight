@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ class FWQML_CLASS_QT_API IQmlEditor : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IQmlEditor)(::fwServices::IService) )
+    fwCoreServiceMacro(IQmlEditor, ::fwServices::IService);
 
     /// Constructor. Do nothing.
     FWQML_QT_API IQmlEditor() noexcept;

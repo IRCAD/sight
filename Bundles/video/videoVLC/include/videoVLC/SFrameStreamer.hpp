@@ -57,7 +57,7 @@ struct MemoryVideoData;
 class VIDEOVLC_CLASS_API SFrameStreamer : public ::fwServices::IOperator
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SFrameStreamer)(::fwServices::IOperator))
+    fwCoreServiceMacro(SFrameStreamer, ::fwServices::IOperator);
 
     /**
      * @brief SFrameStreamer constructor.

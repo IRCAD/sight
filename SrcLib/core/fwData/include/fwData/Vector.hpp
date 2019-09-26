@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_VECTOR_HPP__
-#define __FWDATA_VECTOR_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -52,7 +51,7 @@ class FWDATA_CLASS_API Vector : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::factory::New< Vector >);
+    fwCoreClassMacro(Vector, ::fwData::Object, ::fwData::factory::New< Vector >);
     fwCampMakeFriendDataMacro((fwData)(Vector));
 
     typedef std::vector< Object::sptr > ContainerType;
@@ -313,5 +312,3 @@ inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
 //-----------------------------------------------------------------------------
 
 } //namespace fwData
-
-#endif /* __FWDATA_VECTOR_HPP__ */

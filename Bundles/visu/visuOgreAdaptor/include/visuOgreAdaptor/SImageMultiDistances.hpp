@@ -62,7 +62,7 @@ class SImageMultiDistances : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageMultiDistances)(::fwRenderOgre::IAdaptor) )
+    fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor);
 
     /// Constructor
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
@@ -209,12 +209,6 @@ private:
     ::Ogre::SceneNode* m_rootSceneNode { nullptr };
 
     /// Scene node where point 1 is attached
-    ::Ogre::SceneNode* m_point1Node { nullptr };
-
-    /// Scene node where point 2 is attached
-    ::Ogre::SceneNode* m_point2Node { nullptr };
-
-    /// Scene node where point 1 is attached
     ::Ogre::SceneNode* m_sphere1Node { nullptr };
 
     /// Scene node where point 2 is attached
@@ -243,9 +237,6 @@ private:
 
     /// Position (begin/back) of the point which will move
     size_t m_isBeginMove { 0 };
-
-    /// User is moving a point
-    bool m_isMovingPoint {false};
 
     /// Defines whether interaction is possible or not.
     bool m_activeInteraction { false };

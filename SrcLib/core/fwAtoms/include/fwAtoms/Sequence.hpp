@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMS_SEQUENCE_HPP__
-#define __FWATOMS_SEQUENCE_HPP__
+#pragma once
 
 #include "fwAtoms/Base.hpp"
 #include "fwAtoms/config.hpp"
@@ -38,7 +37,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Sequence : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Sequence > );
+    fwCoreClassMacro(Sequence, ::fwAtoms::Base, ::fwAtoms::factory::New< Sequence >);
 
     typedef std::vector<Base::sptr> SequenceType;
 
@@ -67,7 +66,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    Sequence(::fwAtoms::Base::Key key)
+    Sequence(::fwAtoms::Base::Key)
     {
     }
 
@@ -164,5 +163,3 @@ protected:
 };
 
 }
-#endif //__FWATOMS_SEQUENCE_HPP__
-

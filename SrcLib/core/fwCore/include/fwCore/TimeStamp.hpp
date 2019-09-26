@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCORE_TIMESTAMP_HPP__
-#define __FWCORE_TIMESTAMP_HPP__
+#pragma once
 
 #include "fwCore/base.hpp"
 #include "fwCore/HiResClock.hpp"
@@ -37,14 +36,12 @@ class FWCORE_CLASS_API TimeStamp : public BaseObject
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TimeStamp)(BaseObject), (()), new TimeStamp);
+    fwCoreClassMacro(TimeStamp, BaseObject, new TimeStamp);
 
     /**
      * @brief Type used in logical typestamp.
      */
     typedef ::fwCore::HiResClock::HiResClockType TimeStampType;
-
-
 
     /**
      * @name Constructor/Destructor
@@ -58,12 +55,10 @@ public:
 
     /**  @} */
 
-
     /**
      * @brief Update the timestamp to the current EPOCH time
      */
     FWCORE_API void modified();
-
 
     /**
      * @return TimeStamp's current value
@@ -72,8 +67,6 @@ public:
     {
         return this->m_modifiedTime;
     }
-
-
 
     /**
      * @brief Greater than operator for TimeStamp.
@@ -103,7 +96,6 @@ public:
         return this->m_modifiedTime;
     }
 
-
     /**
      * @brief Setter for the life period
      *
@@ -124,7 +116,6 @@ public:
         return m_lifePeriod;
     }
 
-
     /**
      * @brief Check TimeStamp expiracy status
      *
@@ -135,7 +126,6 @@ public:
     {
         return (::fwCore::HiResClock::getTimeInMilliSec() - this->m_modifiedTime) > m_lifePeriod;
     }
-
 
 private:
     /**
@@ -150,7 +140,4 @@ private:
 
 };
 
-
 } //namespace fwCore
-
-#endif // __FWCORE_TIMESTAMP_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::TransformationMatrix3D );
 
@@ -31,7 +32,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3D::TransformationMatrix3D(::fwData::Object::Key key)
+TransformationMatrix3D::TransformationMatrix3D(::fwData::Object::Key)
 {
     //default initialization
     m_vCoefficients.fill(0.);
@@ -49,7 +50,7 @@ TransformationMatrix3D::~TransformationMatrix3D()
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3D::shallowCopy(const Object::csptr &_source )
+void TransformationMatrix3D::shallowCopy(const Object::csptr& _source )
 {
     TransformationMatrix3D::csptr other = TransformationMatrix3D::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -61,7 +62,7 @@ void TransformationMatrix3D::shallowCopy(const Object::csptr &_source )
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3D::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void TransformationMatrix3D::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     TransformationMatrix3D::csptr other = TransformationMatrix3D::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

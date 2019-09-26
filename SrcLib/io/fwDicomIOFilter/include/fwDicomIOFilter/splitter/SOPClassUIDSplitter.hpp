@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDICOMIOFILTER_SPLITTER_SOPCLASSUIDSPLITTER_HPP__
-#define __FWDICOMIOFILTER_SPLITTER_SOPCLASSUIDSPLITTER_HPP__
+#pragma once
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/splitter/TagValueSplitter.hpp"
@@ -39,8 +38,8 @@ namespace splitter
 class FWDICOMIOFILTER_CLASS_API SOPClassUIDSplitter : public ::fwDicomIOFilter::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SOPClassUIDSplitter)(::fwDicomIOFilter::splitter::TagValueSplitter),
-                                            (()), ::fwDicomIOFilter::factory::New< SOPClassUIDSplitter > );
+    fwCoreClassMacro(SOPClassUIDSplitter, ::fwDicomIOFilter::splitter::TagValueSplitter,
+                     ::fwDicomIOFilter::factory::New< SOPClassUIDSplitter >);
 
     /// Constructor
     FWDICOMIOFILTER_API SOPClassUIDSplitter(::fwDicomIOFilter::IFilter::Key key);
@@ -72,5 +71,3 @@ protected:
 
 } // namespace splitter
 } // namespace fwDicomIOFilter
-
-#endif /* __FWDICOMIOFILTER_SPLITTER_SOPCLASSUIDSPLITTER_HPP__ */

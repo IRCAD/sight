@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@ struct MsgData
 class EXTIMELINE_CLASS_API MessageTL : public ::arData::GenericTL< MsgData >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MessageTL)(::arData::TimeLine), (()), ::fwData::factory::New< MessageTL >)
+    fwCoreClassMacro(MessageTL, ::arData::TimeLine, ::fwData::factory::New< MessageTL >);
 
     /**
      * @brief Constructor

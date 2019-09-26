@@ -103,7 +103,7 @@ class UIPREFERENCES_CLASS_API SPreferencesConfiguration : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPreferencesConfiguration)(::fwGui::IActionSrv) )
+    fwCoreServiceMacro(SPreferencesConfiguration, ::fwGui::IActionSrv);
 
     /// Constructor. Do nothing.
     UIPREFERENCES_API SPreferencesConfiguration() noexcept;

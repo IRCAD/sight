@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,9 +50,8 @@ class SeriesDB : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Se
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SeriesDB)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >),
-        (()), ::fwDataIO::writer::factory::New< SeriesDB >);
+    fwCoreClassMacro(SeriesDB, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
+                     ::fwDataIO::writer::factory::New< SeriesDB >);
 
     /// Constructor
     FWGDCMIO_API SeriesDB(::fwDataIO::writer::IObjectWriter::Key key);

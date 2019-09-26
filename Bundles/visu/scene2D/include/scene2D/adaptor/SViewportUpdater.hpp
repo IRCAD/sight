@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_ADAPTOR_SVIEWPORTUPDATER_HPP__
-#define __SCENE2D_ADAPTOR_SVIEWPORTUPDATER_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -62,7 +61,7 @@ class SCENE2D_CLASS_API SViewportUpdater : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SViewportUpdater)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceMacro(SViewportUpdater, ::fwRenderQt::IAdaptor);
     SCENE2D_API SViewportUpdater() noexcept;
     SCENE2D_API ~SViewportUpdater() noexcept;
 
@@ -78,6 +77,3 @@ protected:
 
 }   // namespace adaptor
 }   // namespace scene2D
-
-#endif  // __SCENE2D_ADAPTOR_SVIEWPORTUPDATER_HPP__
-
