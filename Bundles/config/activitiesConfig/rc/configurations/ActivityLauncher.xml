@@ -66,6 +66,7 @@
         <param name="SEQUENCER_CONFIG" />
         <param name="ACTIVITY_READER_CONFIG" default="ActivityReaderConfig" />
         <param name="ACTIVITY_WRITER_CONFIG" default="ActivityWriterConfig" />
+        <param name="APPLICATION_ICON_PATH" default="media-0.1/icons/sight_logo.svg" />
     </parameters>
     <desc>Configuration to launch activities sequentially</desc>
     <config>
@@ -97,15 +98,21 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
+                    <view proportion="0" />
                     <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
                     <view proportion="0" />
                     <view proportion="0" />
                 </layout>
             </gui>
             <registry>
+                <view sid="appLogoView" start="yes" />
                 <view sid="activitySequencer" start="yes" />
                 <view sid="openButton" start="yes" />
                 <view sid="saveButton" start="yes" />
+                <view sid="ihuLogoView" start="yes" />
+                <view sid="ircadLogoView" start="yes" />
             </registry>
         </service>
 
@@ -125,6 +132,21 @@
                <iconWidth>40</iconWidth>
                <iconHeight>40</iconHeight>
             </config>
+        </service>
+
+        <service uid="appLogoView" type="::guiQt::editor::SImage" >
+            <path>${APPLICATION_ICON_PATH}</path>
+            <height>70</height>
+        </service>
+
+        <service uid="ihuLogoView" type="::guiQt::editor::SImage" >
+            <path>media-0.1/icons/ihu_logo.png</path>
+            <height>70</height>
+        </service>
+
+        <service uid="ircadLogoView" type="::guiQt::editor::SImage" >
+            <path>media-0.1/icons/ircad_logo.png</path>
+            <height>70</height>
         </service>
 
         <!-- ************************************* Begin reader/writer declaration *************************************** -->
