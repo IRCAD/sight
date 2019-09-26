@@ -172,6 +172,11 @@ void SActivitySequencer::updating()
     m_currentActivity = this->parseActivities(seriesDB);
     if (m_currentActivity >= 0)
     {
+        for (int i = 0; i <= m_currentActivity; ++i)
+        {
+            this->enableActivity(i);
+        }
+
         // launch the last series
         this->goTo(m_currentActivity);
     }
