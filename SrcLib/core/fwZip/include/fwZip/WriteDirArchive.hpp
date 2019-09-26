@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWZIP_WRITEDIRARCHIVE_HPP__
-#define __FWZIP_WRITEDIRARCHIVE_HPP__
+#pragma once
 
 #include "fwZip/config.hpp"
 #include "fwZip/IWriteArchive.hpp"
@@ -43,9 +42,14 @@ class FWZIP_CLASS_API WriteDirArchive : public IWriteArchive
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((WriteDirArchive)(IWriteArchive),
-                                           ((( const ::boost::filesystem::path& ))),
-                                           std::make_shared<WriteDirArchive> )
+    fwCoreClassMacro(WriteDirArchive, IWriteArchive);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const ::boost::filesystem::path& archive)
+    {
+        return std::make_shared<WriteDirArchive>(archive);
+    }
 
     /// Constructors. Initializes archive path and creates archive directories if doesn't exist.
     FWZIP_API WriteDirArchive( const ::boost::filesystem::path& archive );
@@ -60,7 +64,7 @@ public:
      *
      * @note Creates all parent directories of the path in archive.
      */
-    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path) override;
+    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
@@ -89,6 +93,3 @@ protected:
 };
 
 }
-
-#endif /* __FWZIP_WRITEDIRARCHIVE_HPP__ */
-

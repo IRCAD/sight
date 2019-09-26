@@ -281,7 +281,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                     {
                         OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
 
-                        ::Ogre::TextureUnitState* texUnitState = ogrePass->createTextureUnitState();
+                        texUnitState = ogrePass->createTextureUnitState();
                         texUnitState->setName(texUnitName);
                         texUnitState->setTexture(tex);
                         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);

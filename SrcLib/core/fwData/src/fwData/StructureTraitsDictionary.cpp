@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/StructureTraitsDictionary.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -35,7 +35,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-StructureTraitsDictionary::StructureTraitsDictionary (::fwData::Object::Key key)
+StructureTraitsDictionary::StructureTraitsDictionary (::fwData::Object::Key)
 {
 }
 
@@ -97,7 +97,7 @@ StructureTraitsDictionary::StructureTypeNameContainer StructureTraitsDictionary:
 
 //------------------------------------------------------------------------------
 
-void StructureTraitsDictionary::shallowCopy(const Object::csptr &source )
+void StructureTraitsDictionary::shallowCopy(const Object::csptr& source )
 {
     StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -109,7 +109,7 @@ void StructureTraitsDictionary::shallowCopy(const Object::csptr &source )
 
 //------------------------------------------------------------------------------
 
-void StructureTraitsDictionary::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+void StructureTraitsDictionary::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -125,7 +125,4 @@ void StructureTraitsDictionary::cachedDeepCopy(const Object::csptr &source, Deep
 
 //------------------------------------------------------------------------------
 
-
 } // namespace fwData
-
-

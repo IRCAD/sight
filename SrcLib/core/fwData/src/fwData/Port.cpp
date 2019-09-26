@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Port.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::Port );
 
@@ -30,8 +31,9 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Port::Port(::fwData::Object::Key key) : m_identifier("IDNOTdefined"),
-                                        m_type("TypeNotDefined")
+Port::Port(::fwData::Object::Key) :
+    m_identifier("IDNOTdefined"),
+    m_type("TypeNotDefined")
 {
 }
 
@@ -43,7 +45,7 @@ Port::~Port()
 
 //------------------------------------------------------------------------------
 
-void Port::shallowCopy(const Object::csptr &_source )
+void Port::shallowCopy(const Object::csptr& _source )
 {
     Port::csptr other = Port::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -57,7 +59,7 @@ void Port::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Port::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Port::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Port::csptr other = Port::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

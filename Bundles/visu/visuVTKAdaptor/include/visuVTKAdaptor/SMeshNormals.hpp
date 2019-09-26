@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SMESHNORMALS_HPP__
-#define __VISUVTKADAPTOR_SMESHNORMALS_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -79,7 +78,7 @@ public:
         CELL_NORMAL
     } NormalRepresentation;
 
-    fwCoreServiceClassDefinitionsMacro( (SMeshNormals)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SMeshNormals, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SMeshNormals() noexcept;
 
@@ -173,5 +172,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SMESHNORMALS_HPP__

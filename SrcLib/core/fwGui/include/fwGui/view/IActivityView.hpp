@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -70,7 +70,7 @@ class FWGUI_CLASS_API IActivityView : public ::fwGui::IGuiContainerSrv
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IActivityView)(::fwGui::IGuiContainerSrv) )
+    fwCoreClassMacro(IActivityView, ::fwGui::IGuiContainerSrv);
 
     FWGUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
     FWGUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;

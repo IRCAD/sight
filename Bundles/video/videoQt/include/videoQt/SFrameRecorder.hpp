@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VIDEOQT_SFRAMERECORDER_HPP__
-#define __VIDEOQT_SFRAMERECORDER_HPP__
+#pragma once
 
 #include "videoQt/config.hpp"
 
@@ -78,7 +77,7 @@ class VIDEOQT_CLASS_API SFrameRecorder : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameRecorder)(::fwServices::IController) );
+    fwCoreServiceMacro(SFrameRecorder, ::fwServices::IController);
 
     /// Contructor. Do nothing.
     VIDEOQT_API SFrameRecorder() noexcept;
@@ -161,5 +160,3 @@ private:
 };
 
 } //namespace videoQt
-
-#endif // __VIDEOQT_SFRAMERECORDER_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -83,7 +83,7 @@ class GUIQT_CLASS_API SSignalButton : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSignalButton)(::fwGui::editor::IEditor) );
+    fwCoreServiceMacro(SSignalButton, ::fwGui::editor::IEditor);
 
     /// Constructor. Do nothing.
     GUIQT_API SSignalButton() noexcept;

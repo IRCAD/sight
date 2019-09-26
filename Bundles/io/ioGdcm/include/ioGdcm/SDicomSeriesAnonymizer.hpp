@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ class IOGDCM_CLASS_API SDicomSeriesAnonymizer : public ::fwServices::IController
 public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesAnonymizer)( ::fwServices::IController) );
+    fwCoreServiceMacro(SDicomSeriesAnonymizer,  ::fwServices::IController);
 
     /// Constructor
     IOGDCM_API SDicomSeriesAnonymizer() noexcept;

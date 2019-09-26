@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VIDEOTOOLS_SFRAMEUPDATER_HPP__
-#define __VIDEOTOOLS_SFRAMEUPDATER_HPP__
+#pragma once
 
 #include "videoTools/config.hpp"
 
@@ -63,7 +62,7 @@ class VIDEOTOOLS_CLASS_API SFrameUpdater : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFrameUpdater)(::fwServices::IController) );
+    fwCoreServiceMacro(SFrameUpdater, ::fwServices::IController);
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
 
@@ -132,5 +131,3 @@ private:
 };
 
 } //namespace videoTools
-
-#endif /* __VIDEOTOOLS_SFRAMEUPDATER_HPP__ */

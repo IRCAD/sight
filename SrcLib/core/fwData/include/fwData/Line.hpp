@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,8 +41,7 @@ class FWDATA_CLASS_API Line : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
-                                            (()), ::fwData::factory::New< Line >);
+    fwCoreClassMacro(Line, ::fwData::Object, ::fwData::factory::New< Line >);
 
     /**
      * @brief Constructor

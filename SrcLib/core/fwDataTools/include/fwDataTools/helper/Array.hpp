@@ -42,9 +42,24 @@ class FWDATATOOLS_CLASS_API Array
 {
 
 public:
-    fwCoreClassFactoryMacro((Array), (((::fwData::Array::sptr))), new Array )
 
-    FWDATATOOLS_API Array( ::fwData::Array::sptr array );
+    /// Shared pointer type
+    typedef std::shared_ptr < ::fwDataTools::helper::Array > sptr;
+    /// Const shared pointer type
+    typedef std::shared_ptr < const ::fwDataTools::helper::Array > csptr;
+    /// Unique pointer type
+    typedef std::unique_ptr < ::fwDataTools::helper::Array > uptr;
+    /// Const unique pointer type
+    typedef std::unique_ptr < const ::fwDataTools::helper::Array > cuptr;
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(::fwData::Array::sptr array)
+    {
+        return std::make_shared< ::fwDataTools::helper::Array >(array);
+    }
+
+    FWDATATOOLS_API Array(const ::fwData::Array::sptr& array );
     FWDATATOOLS_API virtual ~Array();
 
     /**

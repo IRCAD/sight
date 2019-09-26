@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_HELPER_ARRAYGETTER_HPP__
-#define __FWDATATOOLS_HELPER_ARRAYGETTER_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
@@ -45,9 +44,24 @@ class FWDATATOOLS_CLASS_API ArrayGetter
 {
 
 public:
-    fwCoreClassFactoryMacro((ArrayGetter), (((::fwData::Array::sptr))), new ArrayGetter );
 
-    FWDATATOOLS_API ArrayGetter( ::fwData::Array::csptr array );
+    /// Shared pointer type
+    typedef std::shared_ptr < ArrayGetter > sptr;
+    /// Const shared pointer type
+    typedef std::shared_ptr < const ArrayGetter > csptr;
+    /// Unique pointer type
+    typedef std::unique_ptr < ArrayGetter > uptr;
+    /// Const unique pointer type
+    typedef std::unique_ptr < const ArrayGetter > cuptr;
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(::fwData::Array::csptr array)
+    {
+        return std::make_shared<ArrayGetter>(array);
+    }
+
+    FWDATATOOLS_API ArrayGetter(const ::fwData::Array::csptr& array );
 
     FWDATATOOLS_API virtual ~ArrayGetter();
 
@@ -139,7 +153,7 @@ const T* ArrayGetter::end() const
 //------------------------------------------------------------------------------
 
 template< typename T >
-const T* ArrayGetter::getItem(const  ::fwData::Array::IndexType& id, const size_t component) const
+const T* ArrayGetter::getItem(const ::fwData::Array::IndexType& id, const size_t component) const
 {
     return static_cast<const T*> (this->getItem(id, component));
 }
@@ -147,5 +161,3 @@ const T* ArrayGetter::getItem(const  ::fwData::Array::IndexType& id, const size_
 } // namespace helper
 
 } // namespace fwData
-
-#endif // __FWDATATOOLS_HELPER_ARRAYGETTER_HPP__

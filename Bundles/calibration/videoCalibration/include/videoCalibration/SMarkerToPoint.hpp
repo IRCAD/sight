@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SMarkerToPoint : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SMarkerToPoint)(::fwServices::IController));
+    fwCoreServiceMacro(SMarkerToPoint, ::fwServices::IController);
 
     /// Data xml keys
     static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT;

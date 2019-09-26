@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIGENERICQT_ACTION_SHOWHELPCONTENTS_HPP__
-#define __UIGENERICQT_ACTION_SHOWHELPCONTENTS_HPP__
+#pragma once
 
 #include "uiGenericQt/config.hpp"
 
@@ -40,7 +39,7 @@ namespace action
 class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (ShowHelpContents)( ::fwGui::IActionSrv) );
+    fwCoreServiceMacro(ShowHelpContents,  ::fwGui::IActionSrv);
     UIGENERICQT_API ShowHelpContents() noexcept;
 
     UIGENERICQT_API virtual ~ShowHelpContents() noexcept;
@@ -87,5 +86,3 @@ private:
 } // namespace action
 
 } // namespace uiGenericQt
-
-#endif /*__UIGENERICQT_ACTION_SHOWHELPCONTENTS_HPP__*/

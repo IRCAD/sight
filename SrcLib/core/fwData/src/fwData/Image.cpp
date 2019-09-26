@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ const ::fwCom::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "tran
 
 //------------------------------------------------------------------------------
 
-Image::Image(::fwData::Object::Key key) :
+Image::Image(::fwData::Object::Key) :
     m_type(),
     m_windowCenter(0.),
     m_windowWidth(0.),

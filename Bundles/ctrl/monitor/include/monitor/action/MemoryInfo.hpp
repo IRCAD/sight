@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __MONITOR_ACTION_MEMORYINFO_HPP__
-#define __MONITOR_ACTION_MEMORYINFO_HPP__
+#pragma once
 
 #include "monitor/config.hpp"
 
@@ -38,7 +37,7 @@ class MONITOR_CLASS_API MemoryInfo : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (MemoryInfo)( ::fwGui::IActionSrv ) );
+    fwCoreServiceMacro(MemoryInfo,  ::fwGui::IActionSrv );
 
     /// Does nothing
     MONITOR_API MemoryInfo() noexcept;
@@ -64,6 +63,3 @@ protected:
 
 } // namespace action
 } // namespace monitor
-
-#endif // __MONITOR_ACTION_MEMORYINFO_HPP__
-

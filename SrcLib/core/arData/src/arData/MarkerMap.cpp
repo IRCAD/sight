@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -105,7 +105,7 @@ const MarkerMap::MarkerType& MarkerMap::getMarker(size_t index) const
     SLM_ASSERT("Index is bigger than map's size", index < m_markers.size() );
 
     auto it = m_markers.begin();
-    std::advance(it, index);
+    std::advance(it, static_cast<ContainerType::iterator::difference_type>(index));
     return it->second;
 }
 
@@ -117,7 +117,7 @@ MarkerMap::MarkerType& MarkerMap::getMarker(size_t index)
     SLM_ASSERT("Index is bigger than map's size", index < m_markers.size() );
 
     auto it = m_markers.begin();
-    std::advance(it, index);
+    std::advance(it, static_cast<ContainerType::iterator::difference_type>(index));
     return it->second;
 }
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ class PREFERENCES_CLASS_API SPreferences : public ::fwPreferences::IPreferences
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SPreferences)(::fwPreferences::IPreferences) );
+    fwCoreServiceMacro(SPreferences, ::fwPreferences::IPreferences);
 
     ///Destructor
 

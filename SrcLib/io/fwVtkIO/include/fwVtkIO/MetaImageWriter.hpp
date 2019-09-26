@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_METAIMAGEWRITER_HPP__
-#define __FWVTKIO_METAIMAGEWRITER_HPP__
+#pragma once
 
 #include "fwVtkIO/config.hpp"
 
@@ -51,11 +50,8 @@ class MetaImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-        (()),
-        ::fwDataIO::writer::factory::New< MetaImageWriter >
-        );
+    fwCoreClassMacro(MetaImageWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
+                     ::fwDataIO::writer::factory::New< MetaImageWriter >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
@@ -81,5 +77,3 @@ private:
 };
 
 } // namespace fwVtkIO
-
-#endif // __FWVTKIO_METAIMAGEWRITER_HPP__

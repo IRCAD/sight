@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,8 +39,8 @@ namespace sorter
 class FWDICOMIOFILTERQT_CLASS_API TagValueConfigurableSorter : public ::fwDicomIOFilter::sorter::TagValueSorter
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TagValueConfigurableSorter)(::fwDicomIOFilter::sorter::TagValueSorter),
-                                            (()), ::fwDicomIOFilter::factory::New< TagValueConfigurableSorter > );
+    fwCoreClassMacro(TagValueConfigurableSorter, ::fwDicomIOFilter::sorter::TagValueSorter,
+                     ::fwDicomIOFilter::factory::New< TagValueConfigurableSorter >);
 
     /// Constructor
     FWDICOMIOFILTERQT_API TagValueConfigurableSorter(::fwDicomIOFilter::IFilter::Key key);

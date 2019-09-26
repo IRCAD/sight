@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,9 +65,9 @@ void Config::createConnections( const ::fwRuntime::ConfigurationElement::csptr& 
 
     for(SlotInfoType slotInfo : info.m_slots)
     {
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
-        SLM_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", obj);
-        ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+        ::fwTools::Object::sptr slotObj = ::fwTools::fwID::getObject(slotInfo.first);
+        SLM_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", slotObj);
+        ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(slotObj);
         SLM_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
 
         connections.connect(hasSignals, info.m_signal.second, hasSlots, slotInfo.second);
@@ -128,9 +128,11 @@ Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::Configuratio
 
 ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
                                            const std::string& errMsgHead,
-                                           std::function<std::string ()> generateChannelNameFn)
+                                           std::function<std::string()> generateChannelNameFn)
 {
-
+#ifndef _DEBUG
+    FwCoreNotUsedMacro(errMsgHead);
+#endif
     ::boost::regex re("(.*)/(.*)");
     ::boost::smatch match;
     std::string src, uid, key;
@@ -208,11 +210,11 @@ void Config::createProxy( const std::string& objectKey,
 
             SLM_ASSERT(src + " configuration is not correct for " + elem->getName(), !uid.empty() && !key.empty());
 
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+            ::fwTools::Object::sptr channelObj = ::fwTools::fwID::getObject(uid);
 
             if (elem->getName() == "signal")
             {
-                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(channelObj);
                 SLM_ASSERT("Can't find the holder of signal '" + key + "'", hasSignals);
                 ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
                 proxy->connect(channel, sig);
@@ -220,7 +222,7 @@ void Config::createProxy( const std::string& objectKey,
             }
             else if (elem->getName() == "slot")
             {
-                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(channelObj);
                 SLM_ASSERT("Can't find the holder of slot '" + key + "'", hasSlots);
                 ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
                 proxy->connect(channel, slot);
@@ -278,6 +280,9 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 ::fwServices::IService::Config Config::parseService(const ::fwRuntime::ConfigurationElement::csptr& srvElem,
                                                     const std::string& errMsgHead)
 {
+#ifndef _DEBUG
+    FwCoreNotUsedMacro(errMsgHead);
+#endif
     SLM_ASSERT("Configuration element is not a \"service\" node.", srvElem->getName() == "service");
 
     // Get attributes
@@ -390,7 +395,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
             if(!optionalStr.empty())
             {
                 SLM_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
-                           optionalStr=="" || optionalStr == "yes" || optionalStr == "no");
+                           optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
                 objConfig.m_optional = optionalStr == "yes" ? true : false;
             }
         }
@@ -432,7 +437,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
                     if(!optionalStr.empty())
                     {
                         SLM_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
-                                   optionalStr=="" || optionalStr == "yes" || optionalStr == "no");
+                                   optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
                         grouObjConfig.m_optional = optionalStr == "yes" ? true : false;
                     }
                 }
@@ -462,4 +467,3 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 
 } // namespace helper
 } // namespace fwServices
-

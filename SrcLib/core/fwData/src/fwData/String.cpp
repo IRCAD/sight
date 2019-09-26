@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
-
-#include "fwData/GenericField.hpp"
 #include "fwData/String.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/GenericField.hpp"
+#include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::String );
 
@@ -33,7 +33,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-String::String(::fwData::Object::Key key ) noexcept
+String::String(::fwData::Object::Key) noexcept
 {
 }
 
@@ -45,7 +45,7 @@ String::~String() noexcept
 
 //------------------------------------------------------------------------------
 
-void String::shallowCopy(const Object::csptr &_source )
+void String::shallowCopy(const Object::csptr& _source )
 {
     String::csptr other = String::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -57,7 +57,7 @@ void String::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void String::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void String::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     String::csptr other = String::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

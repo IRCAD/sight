@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_OBJECT_HPP__
-#define __FWDATA_OBJECT_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -68,7 +67,7 @@ public:
 
     typedef ::fwData::factory::Key Key;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwTools::Object) );
+    fwCoreClassMacro(Object, ::fwTools::Object);
     fwCoreAllowSharedFromThis();
     fwCampMakeFriendDataMacro((fwData)(Object));
 
@@ -135,7 +134,7 @@ public:
      * @return pointer to corresponding field, nullptr if field is not found.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) getField( const FieldNameType &name ) const;
+    SPTR(DATA_TYPE) getField( const FieldNameType& name ) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
@@ -144,7 +143,7 @@ public:
      * @return pointer to corresponding field, defaultValue if field is not found.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) getField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue ) const;
+    SPTR(DATA_TYPE) getField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const;
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if
@@ -154,7 +153,7 @@ public:
      * @return pointer to corresponding field.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) setDefaultField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue );
+    SPTR(DATA_TYPE) setDefaultField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
@@ -230,7 +229,7 @@ public:
     //-----------------------------------------------------------------------------
 
     /// Returns the object's mutex.
-    ::fwCore::mt::ReadWriteMutex &getMutex() const
+    ::fwCore::mt::ReadWriteMutex& getMutex() const
     {
         return m_mutex;
     }
@@ -288,7 +287,7 @@ SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) &source)
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getField( const FieldNameType &name ) const
+SPTR(DATA_TYPE) Object::getField( const FieldNameType& name ) const
 {
     ::fwData::Object::sptr field;
     field                  = this->getField( name, field );
@@ -299,7 +298,7 @@ SPTR(DATA_TYPE) Object::getField( const FieldNameType &name ) const
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue ) const
+SPTR(DATA_TYPE) Object::getField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const
 {
     ::fwData::Object::sptr field = defaultValue;
     field                        = this->getField( name, field );
@@ -310,7 +309,7 @@ SPTR(DATA_TYPE) Object::getField( const FieldNameType &name, SPTR(DATA_TYPE) def
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::setDefaultField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue )
+SPTR(DATA_TYPE) Object::setDefaultField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue )
 {
     SPTR(DATA_TYPE) result = getField< DATA_TYPE >(name);
     if( !result && defaultValue)
@@ -322,5 +321,3 @@ SPTR(DATA_TYPE) Object::setDefaultField( const FieldNameType &name, SPTR(DATA_TY
 }
 
 } // namespace fwData
-
-#endif //__FWDATA_OBJECT_HPP__

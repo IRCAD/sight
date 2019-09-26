@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_REGISTRY_PROXY_HPP__
-#define __FWSERVICES_REGISTRY_PROXY_HPP__
+#pragma once
 
-#include <vector>
-
-
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
+#include "fwServices/config.hpp"
 
 #include <fwCom/SignalBase.hpp>
 #include <fwCom/SlotBase.hpp>
 
-#include "fwServices/config.hpp"
+#include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
+
+#include <vector>
 
 namespace fwServices
 {
@@ -49,7 +47,7 @@ class FWSERVICES_CLASS_API Proxy : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((Proxy)(::fwCore::BaseObject), (()), std::make_shared< Proxy >);
+    fwCoreClassMacro(Proxy, ::fwCore::BaseObject, std::make_shared< Proxy >);
 
     typedef std::string ChannelKeyType;
 
@@ -106,5 +104,3 @@ protected:
 
 } // namespace registry
 } // namespace fwServices
-
-#endif // __FWSERVICES_REGISTRY_PROXY_HPP__

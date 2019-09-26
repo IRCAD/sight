@@ -82,7 +82,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SChessboardReprojection : public ::fwServices::IService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SChessboardReprojection)(fwServices::IService))
+    fwCoreServiceMacro(SChessboardReprojection, fwServices::IService);
 
     ///Constructor
     VIDEOCALIBRATION_API SChessboardReprojection();

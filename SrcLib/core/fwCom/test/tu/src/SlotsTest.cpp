@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,9 +23,9 @@
 #include "SlotsTest.hpp"
 
 #include <fwCom/HasSlots.hpp>
-
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+
 #include <fwTest/Exception.hpp>
 
 #include <fwThread/Worker.hpp>
@@ -40,23 +40,34 @@ namespace ut
 
 static ::fwTest::Exception fwTestException(""); // force link with fwTest
 
+//------------------------------------------------------------------------------
+
 void SlotsTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
+//------------------------------------------------------------------------------
+
 void SlotsTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 int slotsTestSum (int a, int b)
 {
     return a+b;
 }
 
-void slotsTestPrint(const std::string &str)
+//------------------------------------------------------------------------------
+
+void slotsTestPrint(const std::string& str)
 {
+#if !SLM_TRACE_ENABLED
+    FwCoreNotUsedMacro(str);
+#endif
     SLM_TRACE(str);
 }
 
@@ -65,6 +76,8 @@ struct SlotsTestBasic
     SlotsTestBasic()
     {
     }
+
+    //------------------------------------------------------------------------------
 
     int sum(int a, int b)
     {
@@ -78,8 +91,8 @@ void SlotsTest::buildTest()
 {
     ::fwCom::Slots slots;
 
-    ::fwCom::Slot< int (int, int) >::sptr slot1             = ::fwCom::newSlot( &slotsTestSum );
-    ::fwCom::Slot< void (const std::string &) >::sptr slot2 = ::fwCom::newSlot( &slotsTestPrint );
+    ::fwCom::Slot< int (int, int) >::sptr slot1            = ::fwCom::newSlot( &slotsTestSum );
+    ::fwCom::Slot< void (const std::string&) >::sptr slot2 = ::fwCom::newSlot( &slotsTestPrint );
 
     slots("sum", std::dynamic_pointer_cast< SlotBase >(slot1))
         ("print", std::dynamic_pointer_cast< SlotBase >(slot2))
@@ -90,11 +103,10 @@ void SlotsTest::buildTest()
     CPPUNIT_ASSERT(slots["sum"] == slots["another_key"]);
     CPPUNIT_ASSERT(!slots["wrong_slot"]);
 
-
     SlotsTestBasic slotsBasicStruct;
     slots("struct_sum", &SlotsTestBasic::sum, &slotsBasicStruct);
 
-    CPPUNIT_ASSERT_EQUAL(14, slots["struct_sum"]->call<int>(5,9));
+    CPPUNIT_ASSERT_EQUAL(14, slots["struct_sum"]->call<int>(5, 9));
 
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
 
@@ -124,10 +136,14 @@ struct SlotsTestHasSlots : public HasSlots
             ("getValue", slotGetValue );
     }
 
+    //------------------------------------------------------------------------------
+
     int sum(int a, int b)
     {
         return a+b;
     }
+
+    //------------------------------------------------------------------------------
 
     int getValue()
     {
@@ -149,10 +165,14 @@ struct SlotsTestHasSlots2 : public HasSlots
         CPPUNIT_ASSERT(slot);
     }
 
+    //------------------------------------------------------------------------------
+
     int sum(int a, int b)
     {
         return a+b;
     }
+
+    //------------------------------------------------------------------------------
 
     int getValue()
     {
@@ -165,11 +185,11 @@ struct SlotsTestHasSlots2 : public HasSlots
 void SlotsTest::hasSlotsTest()
 {
     SlotsTestHasSlots obj;
-    CPPUNIT_ASSERT_EQUAL(14, obj.slot("sum")->call<int>(5,9));
+    CPPUNIT_ASSERT_EQUAL(14, obj.slot("sum")->call<int>(5, 9));
     CPPUNIT_ASSERT_EQUAL(4, obj.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
 
     SlotsTestHasSlots2 obj2;
-    CPPUNIT_ASSERT_EQUAL(14, obj2.slot("sum")->call<int>(5,9));
+    CPPUNIT_ASSERT_EQUAL(14, obj2.slot("sum")->call<int>(5, 9));
     CPPUNIT_ASSERT_EQUAL(4, obj2.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
 }
 

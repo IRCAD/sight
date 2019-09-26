@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_CONTAINER_FWMENU_HPP__
-#define __FWGUI_CONTAINER_FWMENU_HPP__
+#pragma once
 
-#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 namespace fwGui
 {
@@ -32,17 +31,13 @@ namespace container
 {
 /**
  * @brief   Defines the menu for IHM.
- * @class   fwMenuBar
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API fwMenu : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (fwMenu)(::fwGui::GuiBaseObject) );
+    fwCoreClassMacro(fwMenu, ::fwGui::GuiBaseObject);
 
     FWGUI_API virtual void clean()            = 0;
     FWGUI_API virtual void destroyContainer() = 0;
@@ -50,7 +45,3 @@ public:
 };
 } // namespace container
 } // namespace fwGui
-
-#endif /*__FWGUI_CONTAINER_FWMENU_HPP__*/
-
-

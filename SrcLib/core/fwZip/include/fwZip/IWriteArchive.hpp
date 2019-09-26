@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWZIP_IWRITEARCHIVE_HPP__
-#define __FWZIP_IWRITEARCHIVE_HPP__
+#pragma once
 
 #include <fwCore/macros.hpp>
 
@@ -40,7 +39,7 @@ class IWriteArchive
 
 public:
 
-    fwCoreBaseClassDefinitionsMacro((IWriteArchive))
+    fwCoreClassMacro(IWriteArchive);
 
     virtual ~IWriteArchive()
     {
@@ -51,7 +50,7 @@ public:
      * @param path file in archive.
      * @return output stream of file entry in archive.
      */
-    virtual SPTR(std::ostream) createFile(const ::boost::filesystem::path &path) = 0;
+    virtual SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) = 0;
 
     /**
      * @brief Writes source file in archive.
@@ -73,6 +72,3 @@ public:
 };
 
 }
-
-#endif /* __FWZIP_IWRITEARCHIVE_HPP__ */
-

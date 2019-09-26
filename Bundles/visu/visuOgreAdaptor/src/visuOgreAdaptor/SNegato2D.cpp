@@ -232,14 +232,18 @@ void SNegato2D::newImage()
     this->updateCamera();
 
     // Update Slice
-    int axialIndex =
+    const auto axialIndex =
         image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-    int frontalIndex =
+    const auto frontalIndex =
         image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-    int sagittalIndex =
+    const auto sagittalIndex =
         image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
-    this->changeSliceIndex(axialIndex, frontalIndex, sagittalIndex);
+    this->changeSliceIndex(
+        static_cast<int>(axialIndex),
+        static_cast<int>(frontalIndex),
+        static_cast<int>(sagittalIndex)
+        );
     this->changeSliceType(0, m_orientation);
 
     // Update tranfer function in Gpu programs

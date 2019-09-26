@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __DATAREG_PARSER_TRANSFORMATIONMATRIX3D_HPP__
-#define __DATAREG_PARSER_TRANSFORMATIONMATRIX3D_HPP__
+#pragma once
 
 #include "dataReg/config.hpp"
 
@@ -46,7 +45,7 @@ class DATAREG_CLASS_API TransformationMatrix3D : public ::fwServices::IXMLParser
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (TransformationMatrix3D)(::fwServices::IXMLParser) );
+    fwCoreServiceMacro(TransformationMatrix3D, ::fwServices::IXMLParser);
 
     /// Constructor : does nothing.
     TransformationMatrix3D()
@@ -73,5 +72,3 @@ protected:
 
 } //namespace parser
 } //namespace dataReg
-
-#endif // __DATAREG_PARSER_TRANSFORMATIONMATRIX3D_HPP__

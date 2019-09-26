@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -78,7 +78,7 @@ namespace ioCalibration
 class IOCALIBRATION_CLASS_API SOpenCVWriter : public ::fwIO::IWriter
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SOpenCVWriter)(::fwIO::IWriter));
+    fwCoreServiceMacro(SOpenCVWriter, ::fwIO::IWriter);
 
     ///Constructor
     IOCALIBRATION_API SOpenCVWriter();

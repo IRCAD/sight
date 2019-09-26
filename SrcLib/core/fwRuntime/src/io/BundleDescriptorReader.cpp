@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -94,10 +94,16 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
             }
             catch(const RuntimeException& runtimeException)
             {
+#if !SLM_INFO_ENABLED
+                FwCoreNotUsedMacro(runtimeException);
+#endif
                 OSLM_INFO( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
             }
             catch(const ::fwCore::Exception& exception)
             {
+#if !SLM_INFO_ENABLED
+                FwCoreNotUsedMacro(exception);
+#endif
                 OSLM_INFO( "'"<< entryPath.string() << "': skipped. " << exception.what() );
             }
         }
@@ -165,7 +171,7 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw;
+        throw exception;
     }
     return bundle;
 }
@@ -176,19 +182,18 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
                                                                                const std::shared_ptr<Bundle> bundle)
 
 {
-    //xmlKeepBlanksDefault(0);
     // Creates the configuration element.
-    std::string name((const char*) node->name);
-    ConfigurationElement::sptr configurationElement(new ConfigurationElement(bundle, name));
+    const std::string nodeName((const char*) node->name);
+    ConfigurationElement::sptr configurationElement(new ConfigurationElement(bundle, nodeName));
 
     // Processes all attributes.
     xmlAttrPtr curAttr;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
-        std::string name((const char*) curAttr->name);
-        std::string value((const char*) curAttr->children->content);
+        const std::string attrName((const char*) curAttr->name);
+        const std::string value((const char*) curAttr->children->content);
 
-        configurationElement->setAttributeValue(name, value);
+        configurationElement->setAttributeValue(attrName, value);
     }
 
     // Process child nodes.
@@ -200,7 +205,7 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
             std::string value((const char*) curChild->content);
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
             OSLM_WARN_IF(
-                "Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
+                "Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << nodeName << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
                 (value.find("\n") != std::string::npos || value.find("\t") != std::string::npos));
 
             configurationElement->setValue( configurationElement->getValue() + value );
@@ -208,7 +213,7 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
         }
         else if(curChild->type == XML_CDATA_SECTION_NODE )
         {
-            std::string value((const char*) curChild->content);
+            const std::string value((const char*) curChild->content);
             configurationElement->setValue( configurationElement->getValue() + value );
             continue;
         }

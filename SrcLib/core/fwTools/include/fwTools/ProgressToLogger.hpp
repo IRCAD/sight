@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_PROGRESSTOLOGGER_HPP__
-#define __FWTOOLS_PROGRESSTOLOGGER_HPP__
+#pragma once
 
 #include <fwTools/config.hpp>
 
@@ -37,7 +36,7 @@ namespace fwTools
  * ProgressAdviser
  * and send the progress to the logging system ( SpyLog )
  */
-class FWTOOLS_CLASS_API ProgressToLogger  : public ::boost::signals2::trackable
+class FWTOOLS_CLASS_API ProgressToLogger : public ::boost::signals2::trackable
 {
 public:
 
@@ -46,7 +45,7 @@ public:
      * @param[in] prefix  allow to add a prefix in the formated log message
      * @param[in] postfix  allow to add a postfix in the formated log message
      */
-    FWTOOLS_API ProgressToLogger(std::string prefix, std::string postfix = " %");
+    FWTOOLS_API ProgressToLogger(const std::string& prefix, const std::string& postfix = " %");
 
     /// default destructor, do nothing
     FWTOOLS_API virtual ~ProgressToLogger();
@@ -55,7 +54,7 @@ public:
      * @brief the handler effective code : send formated progress information to the log system SpyLog.
      * The formated ouput look like [prefix] msg percent [postfix]
      */
-    FWTOOLS_API void operator()(float percent, std::string msg);
+    FWTOOLS_API void operator()(float percent, const std::string& msg);
 
 protected:
 
@@ -64,5 +63,3 @@ protected:
 };
 
 }
-
-#endif /* __FWTOOLS_PROGRESSTOLOGGER_HPP__ */

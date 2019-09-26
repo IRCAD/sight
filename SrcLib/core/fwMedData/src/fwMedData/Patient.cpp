@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ fwDataRegisterMacro( ::fwMedData::Patient );
 namespace fwMedData
 {
 
-Patient::Patient(::fwData::Object::Key key)
+Patient::Patient(::fwData::Object::Key)
 {
 }
 
@@ -42,7 +42,7 @@ Patient::~Patient()
 
 //------------------------------------------------------------------------------
 
-void Patient::shallowCopy(const ::fwData::Object::csptr &_source)
+void Patient::shallowCopy(const ::fwData::Object::csptr& _source)
 {
     Patient::csptr other = Patient::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -58,7 +58,7 @@ void Patient::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void Patient::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
+void Patient::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Patient::csptr other = Patient::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -75,4 +75,3 @@ void Patient::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCac
 //------------------------------------------------------------------------------
 
 } // namespace fwMedData
-

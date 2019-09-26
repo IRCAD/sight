@@ -300,7 +300,7 @@ int main(int argc, char* argv[])
     {
         bundlePaths.push_back(profileBundlePath);
     }
-#if (SPYLOG_LEVEL >= 4 ) // Log level info
+#if SLM_INFO_ENABLED
     for(const fs::path& bundlePath :  bundlePaths )
     {
         OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),

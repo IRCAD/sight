@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SLOTCONNECTION_HXX__
-#define __FWCOM_SLOTCONNECTION_HXX__
+#pragma once
 
 #ifndef __FWCOM_SLOTCONNECTION_HPP__
 #error fwCom/SlotConnection.hpp not included
@@ -137,7 +136,7 @@ inline void SlotConnection< void (A ...) >::disconnect()
 
     if(sig)
     {
-        ::fwCore::mt::WriteLock lock(sig->m_connectionsMutex);
+        ::fwCore::mt::WriteLock lockConnection(sig->m_connectionsMutex);
         this->disconnectSignalNoLock(sig);
     }
 
@@ -145,7 +144,7 @@ inline void SlotConnection< void (A ...) >::disconnect()
 
     if(slot)
     {
-        ::fwCore::mt::WriteLock lock(slot->m_connectionsMutex);
+        ::fwCore::mt::WriteLock lockConnection(slot->m_connectionsMutex);
         this->disconnectSlotNoLock(slot);
     }
 
@@ -172,7 +171,7 @@ inline void SlotConnection< void (A ...) >::disconnectWeakLock()
 
     if(slot)
     {
-        ::fwCore::mt::WriteLock lock(slot->m_connectionsMutex);
+        ::fwCore::mt::WriteLock lockConnection(slot->m_connectionsMutex);
         this->disconnectSlotNoLock(slot);
     }
 
@@ -204,7 +203,7 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A ...) >::getBl
 
             // signal has to be locked : signal got a pointer on m_pair
             SignalSptrType sig(m_signal);
-            ::fwCore::mt::ReadLock lock(sig->m_connectionsMutex);
+            ::fwCore::mt::ReadLock lockConnection(sig->m_connectionsMutex);
             m_pair.first = false;
         }
     }
@@ -226,6 +225,3 @@ inline void SlotConnection< void (A ...) >::unblock()
 //-----------------------------------------------------------------------------
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOTCONNECTION_HXX__ */
-

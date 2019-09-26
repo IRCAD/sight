@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_REGISTRAR_ACTIONREGISTRAR_HPP__
-#define __FWGUI_REGISTRAR_ACTIONREGISTRAR_HPP__
+#pragma once
 
-#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 namespace fwGui
 {
@@ -33,15 +32,20 @@ namespace registrar
 
 /**
  * @brief   Defines the action registrar for IHM.
- *
  */
 class FWGUI_CLASS_API ActionRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ActionRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
-                                            new ActionRegistrar );
+    fwCoreClassMacro(ActionRegistrar, ::fwGui::GuiBaseObject);
+
+    //------------------------------------------------------------------------------
+
+    static sptr New(const std::string& sid)
+    {
+        return std::make_shared<ActionRegistrar>(sid);
+    }
 
     /// Constructor.
     FWGUI_API ActionRegistrar( const std::string& sid);
@@ -72,6 +76,3 @@ protected:
 
 } // namespace registrar
 } // namespace fwGui
-
-#endif /*__FWGUI_REGISTRAR_ACTIONREGISTRAR_HPP__*/
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_EDGE_HPP__
-#define __FWDATA_EDGE_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -41,7 +40,7 @@ namespace fwData
 class FWDATA_CLASS_API Edge : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object), (()), ::fwData::factory::New< Edge >);
+    fwCoreClassMacro(Edge, ::fwData::Object, ::fwData::factory::New< Edge >);
     fwCampMakeFriendDataMacro((fwData)(Edge));
 
     FWDATA_API static std::string NATURE_FLOW;
@@ -98,6 +97,3 @@ protected:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_EDGE_HPP__
-

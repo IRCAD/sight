@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_CAMERASERIES_HPP__
-#define __ARDATA_CAMERASERIES_HPP__
+#pragma once
 
 #include "arData/Camera.hpp"
 #include "arData/config.hpp"
@@ -50,8 +49,7 @@ namespace arData
 class ARDATA_CLASS_API CameraSeries : public ::fwMedData::Series
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((CameraSeries)( ::fwData::Object), (()),
-                                           ::fwData::factory::New< CameraSeries >);
+    fwCoreClassMacro(CameraSeries, ::fwData::Object, ::fwData::factory::New< CameraSeries >);
 
     fwCampMakeFriendDataMacro((arData)(CameraSeries));
 
@@ -167,5 +165,3 @@ protected:
 };
 
 } //namespace arData
-
-#endif  // __ARDATA_CAMERASERIES_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,21 +20,21 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
-#include "fwData/Image.hpp"
 #include "fwData/Histogram.hpp"
 
+#include "fwData/Exception.hpp"
+#include "fwData/Image.hpp"
+#include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::Histogram );
-
 
 namespace fwData
 {
 
-Histogram::Histogram(::fwData::Object::Key key) : m_binsWidth(1.f),
-                                                  m_minValue(0.f),
-                                                  m_maxValue(100.f)
+Histogram::Histogram(::fwData::Object::Key) :
+    m_binsWidth(1.f),
+    m_minValue(0.f),
+    m_maxValue(100.f)
 {
 }
 
@@ -47,7 +47,7 @@ Histogram::~Histogram()
 
 //------------------------------------------------------------------------------
 
-void Histogram::shallowCopy(const Object::csptr &_source )
+void Histogram::shallowCopy(const Object::csptr& _source )
 {
     Histogram::csptr other = Histogram::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -62,7 +62,7 @@ void Histogram::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Histogram::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Histogram::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Histogram::csptr other = Histogram::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -88,7 +88,7 @@ void Histogram::addPixel( float _pixel )
 {
     if( this->isInRange( _pixel ) )
     {
-        int index = static_cast<int>(( _pixel - m_minValue ) / m_binsWidth);
+        size_t index = static_cast<size_t>(( _pixel - m_minValue ) / m_binsWidth);
         m_values[ index ]++;
     }
 }
@@ -107,7 +107,7 @@ void Histogram::initialize( float _min, float _max, float _binsWidth )
 
     if( m_binsWidth != 0 )
     {
-        int newSize = static_cast<int>(( m_maxValue - m_minValue ) / m_binsWidth);
+        size_t newSize = static_cast<size_t>(( m_maxValue - m_minValue ) / m_binsWidth);
         m_values.resize( newSize + 1, 0 );
     }
 }
@@ -146,4 +146,3 @@ bool Histogram::isInRange( float _pixel )
 }
 
 } // namespace fwData
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ class FWDATATOOLS_CLASS_API TransferFunction
 
 public:
 
-    fwCoreBaseClassDefinitionsMacro( (TransferFunction) );
+    fwCoreClassMacro(TransferFunction);
 
     /// Constructor.
     FWDATATOOLS_API TransferFunction(const std::function<void()>&);

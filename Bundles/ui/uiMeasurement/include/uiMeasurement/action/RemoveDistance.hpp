@@ -73,7 +73,7 @@ namespace action
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (RemoveDistance)( ::fwGui::IActionSrv) )
+    fwCoreServiceMacro(RemoveDistance,  ::fwGui::IActionSrv);
 
     UIMEASUREMENT_API RemoveDistance() noexcept;
 

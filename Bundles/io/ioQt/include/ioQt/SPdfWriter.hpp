@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -76,7 +76,7 @@ public:
     typedef std::vector< QWidget* > ContainersListType;
     typedef std::vector< std::string > ContainersIDsType;
 
-    fwCoreServiceClassDefinitionsMacro( (SPdfWriter)( ::fwIO::IWriter) );
+    fwCoreServiceMacro(SPdfWriter,  ::fwIO::IWriter);
     /**
      * @brief Constructor : does nothing
      */

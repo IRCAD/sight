@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Resection.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -40,9 +40,10 @@ const ::fwCom::Signals::SignalKeyType Resection::s_VISIBILITY_MODIFIED_SIG  = "p
 
 //------------------------------------------------------------------------------
 
-Resection::Resection (::fwData::Object::Key key) : m_isSafePart(true),
-                                                   m_isValid(false),
-                                                   m_isVisible(true)
+Resection::Resection (::fwData::Object::Key) :
+    m_isSafePart(true),
+    m_isValid(false),
+    m_isVisible(true)
 {
     m_planeList              = ::fwData::PlaneList::New();
     m_sigReconstructionAdded = ReconstructionAddedSignalType::New();
@@ -60,7 +61,7 @@ Resection::~Resection ()
 
 //------------------------------------------------------------------------------
 
-void Resection::shallowCopy(const Object::csptr &_source )
+void Resection::shallowCopy(const Object::csptr& _source )
 {
     Resection::csptr other = Resection::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -79,7 +80,7 @@ void Resection::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Resection::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Resection::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Resection::csptr other = Resection::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -94,13 +95,13 @@ void Resection::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
     m_planeList  = ::fwData::Object::copy(other->m_planeList, cache);
 
     this->m_vInputs.clear();
-    for(const ResectionInputs::value_type &resec : other->m_vInputs)
+    for(const ResectionInputs::value_type& resec : other->m_vInputs)
     {
         m_vInputs.push_back( ::fwData::Object::copy(resec, cache) );
     }
 
     this->m_vOutputs.clear();
-    for(const ResectionOutputs::value_type &resec : other->m_vOutputs)
+    for(const ResectionOutputs::value_type& resec : other->m_vOutputs)
     {
         m_vOutputs.push_back( ::fwData::Object::copy(resec, cache) );
     }
@@ -109,5 +110,3 @@ void Resection::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
 //------------------------------------------------------------------------------
 
 } // namespace fwData
-
-

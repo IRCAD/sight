@@ -243,6 +243,9 @@ fwData::Object::sptr AppConfigManager::getConfigRoot() const
 
 fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const std::string& errMsgTail) const
 {
+#ifndef _DEBUG
+    FwCoreNotUsedMacro(errMsgTail);
+#endif
     ::fwData::Object::sptr obj;
 
     // Look first in objects created in this appConfig
@@ -502,7 +505,10 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
             if(buildMode.first == "deferred")
             {
                 SLM_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
-                auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
+                const auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
+#ifndef _DEBUG
+                FwCoreNotUsedMacro(ret);
+#endif
                 SLM_ASSERT(this->msgHead() + "Object '" + id.first + "' already exists in this config.", ret.second);
             }
             else
@@ -893,12 +899,12 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
             if(m_createdObjects.find(objCfg.m_uid) == m_createdObjects.end())
             {
                 // Not found, now look in the objects that were marked as "deferred"
-                const auto itDeferredObj = m_deferredObjects.find(objCfg.m_uid);
+                const auto itLocalDeferredObj = m_deferredObjects.find(objCfg.m_uid);
                 SLM_ASSERT( this->msgHead() + "Object '" + objCfg.m_uid + "' used by service '" + uid +
                             "' has not been declared in this AppConfig.",
-                            itDeferredObj != m_deferredObjects.end());
+                            itLocalDeferredObj != m_deferredObjects.end());
 
-                const auto object = itDeferredObj->second.m_object;
+                const auto object = itLocalDeferredObj->second.m_object;
                 if(object == nullptr)
                 {
                     if(!objCfg.m_optional)

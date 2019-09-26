@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -203,10 +203,10 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
     {
         const auto& passes = targetPass->getPasses();
 
-        for(const auto targetPass : passes)
+        for(const auto pass : passes)
         {
             // We retrieve the parameters of the base material in a temporary material
-            const ::Ogre::MaterialPtr material = targetPass->getMaterial();
+            const ::Ogre::MaterialPtr material = pass->getMaterial();
 
             if(material)
             {

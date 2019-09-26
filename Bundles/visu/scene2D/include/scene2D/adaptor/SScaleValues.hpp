@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_ADAPTOR_SSCALEVALUES_HPP__
-#define __SCENE2D_ADAPTOR_SSCALEVALUES_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -68,7 +67,7 @@ class SCENE2D_CLASS_API SScaleValues : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SScaleValues)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceMacro(SScaleValues, ::fwRenderQt::IAdaptor);
 
     /// Constructor, set the x and y spacing to 10
     SCENE2D_API SScaleValues() noexcept;
@@ -151,5 +150,3 @@ private:
 
 } // namespace adaptor
 } // namespace scene2D
-
-#endif // __SCENE2D_ADAPTOR_SSCALEVALUES_HPP__

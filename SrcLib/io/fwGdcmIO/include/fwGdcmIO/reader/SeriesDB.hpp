@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,9 +61,8 @@ class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectRead
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (SeriesDB)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB > ),
-        (()), ::fwDataIO::reader::factory::New< SeriesDB >);
+    fwCoreClassMacro(SeriesDB, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+                     ::fwDataIO::reader::factory::New< SeriesDB >);
 
     typedef std::vector< SPTR(::fwMedData::DicomSeries) > DicomSeriesContainerType;
     typedef std::vector< std::string > FilenameContainerType;

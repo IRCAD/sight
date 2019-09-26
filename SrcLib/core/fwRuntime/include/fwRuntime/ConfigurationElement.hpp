@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,15 +55,20 @@ namespace fwRuntime
 struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,
                                                     public std::enable_shared_from_this< ConfigurationElement >
 {
-
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
-    fwCoreClassFactoryMacro((ConfigurationElement),
-                            ((( const std::shared_ptr< Bundle > ))(( const std::string ))),
-                            new ConfigurationElement)
-    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME((ConfigurationElement)), __FWCORE_TYPEDEF_ROOTCLASS_NAME)
-    fwCoreInterfaceMacro()
-    fwCoreInterfaceIsTypeOfMacro((ConfigurationElement))
+    fwCoreClassMacro(ConfigurationElement);
+
+    /**
+     * @brief       ConfigurationElement factory.
+     *
+     * @param[in]   bundle  a shared pointer to the bundle to the configuration element is attached to
+     * @param[in]   name    a string containing the configuration element name
+     */
+    static sptr New(const std::shared_ptr<Bundle>& bundle, const std::string& name)
+    {
+        return sptr(new ConfigurationElement(bundle, name));
+    }
 
     /**
      * @brief   Defines the attribute pair type.

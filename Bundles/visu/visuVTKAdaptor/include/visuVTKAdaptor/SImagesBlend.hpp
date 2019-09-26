@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -90,7 +90,7 @@ class VISUVTKADAPTOR_CLASS_API SImagesBlend : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImagesBlend)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SImagesBlend, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SImagesBlend() noexcept;
 
