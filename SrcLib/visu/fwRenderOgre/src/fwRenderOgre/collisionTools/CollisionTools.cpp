@@ -71,8 +71,6 @@ CollisionTools::CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _q
         return;
     }
     mRaySceneQuery->setSortByDistance(true);
-
-    mTSMRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray(), _queryMask);
 }
 
 CollisionTools::~CollisionTools()
@@ -80,11 +78,6 @@ CollisionTools::~CollisionTools()
     if (mRaySceneQuery != nullptr)
     {
         delete mRaySceneQuery;
-    }
-
-    if (mTSMRaySceneQuery != nullptr)
-    {
-        delete mTSMRaySceneQuery;
     }
 }
 

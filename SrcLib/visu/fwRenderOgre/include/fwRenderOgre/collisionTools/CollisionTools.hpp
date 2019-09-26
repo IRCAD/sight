@@ -67,33 +67,72 @@ class FWRENDEROGRE_CLASS_API CollisionTools
 
 public:
 
+    /// Use for querying along the ray.
     Ogre::RaySceneQuery* mRaySceneQuery {nullptr};
 
-    Ogre::RaySceneQuery* mTSMRaySceneQuery {nullptr};
-
+    /// The scene manager where launch the ray.
     Ogre::SceneManager* mSceneMgr {nullptr};
 
+    /**
+     * @brief Create the ray scene query.
+     * @param _sceneMgr The scene manager where launch the ray.
+     * @param _queryMask Mask used to query entities with matching flags.
+     */
     FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask);
 
+    /// Delete resources.
     FWRENDEROGRE_API ~CollisionTools();
 
+    /**
+     * @brief Check for collisions with entities along a cylinder.
+     * @param _fromPoint The ray origin.
+     * @param _toPoint The ray destination.
+     * @param _queryMask Mask used to query entities with matching flags.
+     * @param _collisionRadius Radius of the cylinder.
+     * @param _rayHeightLevel The height level of the ray.
+     * @return True if an entity collide the ray.
+     */
     FWRENDEROGRE_API bool collidesWithEntity(const Ogre::Vector3& _fromPoint,
                                              const Ogre::Vector3& _toPoint,
                                              const Ogre::uint32 _queryMask,
                                              const float _collisionRadius = 2.5f,
                                              const float _rayHeightLevel  = 0.0f);
 
+    /**
+     * @brief Check for collisions with entities along a ray define by a mousse position.
+     * @param _rw The render window used to retrieve width and height.
+     * @param _camera The camera use to get the origin of the ray.
+     * @param _mousecoords The mousse position used to get the ray destination.
+     * @param _queryMask Mask used to query entities with matching flags.
+     * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
+     * and the intersected object.
+     */
     FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
         ::Ogre::RenderWindow* _rw,
         Ogre::Camera* _camera,
         const Ogre::Vector2& _mousecoords,
         const Ogre::uint32 _queryMask);
 
+    /**
+     * @brief raycastFromPoint Check for collisions with entities along a ray define by an origin and a direction.
+     * @param _point The ray origin.
+     * @param _normal The ray direction.
+     * @param _queryMask Mask used to query entities with matching flags.
+     * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
+     * and the intersected object.
+     */
     FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(
         const Ogre::Vector3& _point,
         const Ogre::Vector3& _normal,
         const Ogre::uint32 _queryMask);
 
+    /**
+     * @brief Check for collisions with entities along a ray.
+     * @param _ray The ray used to check collisions.
+     * @param _queryMaskMask used to query entities with matching flags.
+     * @return A tuple containing a boolean to specify if there was an intersection, the position of the intersection,
+     * and the intersected object.
+     */
     FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(const Ogre::Ray& _ray,
                                                                                           const Ogre::uint32 _queryMask);
 
