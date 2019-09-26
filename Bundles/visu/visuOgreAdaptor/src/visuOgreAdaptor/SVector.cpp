@@ -47,8 +47,6 @@ const ::fwCom::Slots::SlotKeyType SVector::s_TOGGLE_VISIBILITY_SLOT = "toggleVis
 static const std::string s_COLOR_CONFIG  = "color";
 static const std::string s_LENGTH_CONFIG = "length";
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVector);
-
 //-----------------------------------------------------------------------------
 
 SVector::SVector() noexcept

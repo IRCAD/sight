@@ -67,7 +67,7 @@ class VISUOGREADAPTOR_CLASS_API SVector : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SVector)(::fwRenderOgre::IAdaptor))
+    fwCoreServiceMacro(SVector, ::fwRenderOgre::IAdaptor)
 
     /**
      * @name Slots API
