@@ -37,7 +37,7 @@ Item {
         anchors.right: parent.right
         anchors.fill: parent
         Layout.fillWidth: true
-        spacing: 2
+        anchors.margins: 10
 
         Button {
             id: colorButton
@@ -100,6 +100,7 @@ Item {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 60
                 verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignRight
 
                 text: transparencySlider.value  + " %"
             }
