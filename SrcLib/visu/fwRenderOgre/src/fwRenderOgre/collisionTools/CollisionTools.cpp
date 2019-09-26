@@ -472,7 +472,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
     return std::make_tuple(collisionSuccess, closestResult, target, closestDistance);
 }
 
-//====================================================================================================================
+//------------------------------------------------------------------------------
 
 std::pair<bool, float> CollisionTools::intersect(const ::Ogre::Ray& _ray,
                                                  const ::Ogre::Vector3& _a,
@@ -493,6 +493,6 @@ std::pair<bool, float> CollisionTools::intersect(const ::Ogre::Ray& _ray,
     return std::pair(false, hit.second);
 }
 
-//====================================================================================================================
+//------------------------------------------------------------------------------
 
 }
