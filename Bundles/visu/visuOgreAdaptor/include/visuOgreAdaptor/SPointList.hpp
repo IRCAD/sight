@@ -174,28 +174,28 @@ private:
     bool m_autoResetCamera;
 
     /// Whether the material was set by the user or not.
-    bool m_customMaterial { false };
+    bool m_customMaterial {false};
 
     /// Node in the scene graph
-    ::Ogre::Entity* m_entity;
+    ::Ogre::Entity* m_entity {nullptr};
 
     /// SMaterial attached to the mesh
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Ogre Material related to the mesh
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_material {nullptr};
 
     /// Attached Material's name
-    std::string m_materialTemplateName;
+    std::string m_materialTemplateName {"Billboard_Default"};
 
     /// Attached texture adaptor UID
-    std::string m_textureName;
+    std::string m_textureName {""};
 
     /// Is the entity visible or not ? We need to store it in the adaptor because the information may be received
     /// before the entity is created.
-    bool m_isVisible;
+    bool m_isVisible {true};
 
-    ::fwRenderOgre::Mesh::sptr m_meshGeometry;
+    ::fwRenderOgre::Mesh::sptr m_meshGeometry {nullptr};
 
     /// Allows to scale the billboards
     float m_radius {1.f};
@@ -207,7 +207,7 @@ private:
     float m_charHeight {0.03f};
 
     /// RGB Color for the labelPoint color
-    ::fwData::Color::sptr m_labelColor;
+    ::fwData::Color::sptr m_labelColor {nullptr};
 
     /// Mask for picking requests
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};

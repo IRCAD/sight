@@ -64,13 +64,7 @@ static const std::string s_MESH_INOUT = "mesh";
 
 //-----------------------------------------------------------------------------
 
-SMesh::SMesh() noexcept :
-    m_autoResetCamera(true),
-    m_entity(nullptr),
-    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_isReconstructionManaged(false),
-    m_useNewMaterialAdaptor(false),
-    m_isVisible(true)
+SMesh::SMesh() noexcept
 {
     m_material = ::fwData::Material::New();
 

@@ -193,38 +193,38 @@ private:
     void attachNode(::Ogre::MovableObject* _node);
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera;
+    bool m_autoResetCamera {true};
 
     /// Node in the scene graph
-    ::Ogre::Entity* m_entity;
+    ::Ogre::Entity* m_entity {nullptr};
 
     /// SMaterial attached to the mesh
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Attached material name (when configured by XML)
-    std::string m_materialName;
+    std::string m_materialName {""};
 
     /// Ogre Material related to the mesh
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_material {nullptr};
 
     /// Attached Material's name
-    std::string m_materialTemplateName;
+    std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
 
     /// Attached texture adaptor UID
-    std::string m_textureName;
+    std::string m_textureName {""};
 
     /// Indicates if the mesh adaptor is managed by a reconstruction adaptor
-    bool m_isReconstructionManaged;
+    bool m_isReconstructionManaged {false};
 
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
-    bool m_useNewMaterialAdaptor;
+    bool m_useNewMaterialAdaptor {false};
 
     /// Is the entity visible or not ? We need to store it in the adaptor because the information may be received
     /// before the entity is created.
-    bool m_isVisible;
+    bool m_isVisible {true};
 
     /// The configured shading mode
-    std::string m_shadingMode;
+    std::string m_shadingMode {""};
 
     /// defines if the mesh changes dynamically, defined in m_configuration
     bool m_isDynamic {false};
@@ -232,7 +232,7 @@ private:
     /// defines if the vertices change dynamically, defined in m_configuration
     bool m_isDynamicVertices {false};
 
-    ::fwRenderOgre::Mesh::sptr m_meshGeometry;
+    ::fwRenderOgre::Mesh::sptr m_meshGeometry {nullptr};
 
     /// SMaterial adaptors attached to the r2vb objects
     std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;

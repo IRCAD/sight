@@ -26,6 +26,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Material.hpp>
 
 namespace fwData
 {
@@ -114,19 +115,19 @@ private:
     ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Defines if the camera must be reset automatically
-    bool m_autoResetCamera;
+    bool m_autoResetCamera {true};
 
     /// Texture adaptor's UID
-    std::string m_textureAdaptorUID;
+    std::string m_textureAdaptorUID {""};
 
     /// Material name
-    std::string m_materialTemplateName;
+    std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
 
     /// Defines if the model series is dynamic
-    bool m_isDynamic;
+    bool m_isDynamic {false};
 
     /// Defines if the model series' vertices are dynamic
-    bool m_isDynamicVertices;
+    bool m_isDynamicVertices {false};
 
     /// Mask for picking requests
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};

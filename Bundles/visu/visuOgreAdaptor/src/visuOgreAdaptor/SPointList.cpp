@@ -67,11 +67,7 @@ static const ::fwServices::IService::KeyType s_LABEL_COLOR        = "labelColor"
 
 //-----------------------------------------------------------------------------
 
-SPointList::SPointList() noexcept :
-    m_autoResetCamera(true),
-    m_entity(nullptr),
-    m_materialTemplateName("Billboard_Default"),
-    m_isVisible(true)
+SPointList::SPointList() noexcept
 {
     m_material = ::fwData::Material::New();
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList::updateVisibility, this);

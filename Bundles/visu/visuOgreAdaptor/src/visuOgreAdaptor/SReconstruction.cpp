@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,11 +46,7 @@ static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
-SReconstruction::SReconstruction() noexcept :
-    m_autoResetCamera(true),
-    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_isDynamic(false),
-    m_isDynamicVertices(false)
+SReconstruction::SReconstruction() noexcept
 {
     m_slots(s_CHANGE_MESH_SLOT, &SReconstruction::changeMesh, this);
     m_slots(s_VISIBILITY_SLOT, &SReconstruction::modifyVisibility, this);

@@ -38,8 +38,6 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwRenderOgre/Material.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -59,11 +57,7 @@ static const std::string s_MODEL_INPUT = "model";
 
 //------------------------------------------------------------------------------
 
-SModelSeries::SModelSeries() noexcept :
-    m_autoResetCamera(true),
-    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_isDynamic(false),
-    m_isDynamicVertices(false)
+SModelSeries::SModelSeries() noexcept
 {
     newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeries::showReconstructions, this);
