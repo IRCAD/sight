@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,21 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDER_IRENDER_HPP__
-#define __FWRENDER_IRENDER_HPP__
-
-#include <fwTools/Failed.hpp>
-#include <fwServices/IService.hpp>
-
-#include <fwGui/IGuiContainerSrv.hpp>
+#pragma once
 
 #include "fwRender/config.hpp"
 
+#include <fwGui/IGuiContainerSrv.hpp>
+
+#include <fwServices/IService.hpp>
+
+#include <fwTools/Failed.hpp>
 
 namespace fwRender
 {
 
 /**
  * @brief   Defines the service interface managing the rendering service for object.
- * @class   IRender
- *
- * @date    2007-2009.
  *
  * Use the base service methods :
  * @li The service is configured with methods setConfiguration(cfg) and configure()
@@ -54,7 +50,7 @@ class FWRENDER_CLASS_API IRender : public ::fwGui::IGuiContainerSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IRender)(::fwGui::IGuiContainerSrv) );
+    fwCoreServiceMacro(IRender, ::fwGui::IGuiContainerSrv);
 
 protected:
 
@@ -71,7 +67,3 @@ protected:
 };
 
 } // namespace fwRenderVTK
-
-#endif /*__FWRENDER_IRENDER_HPP__*/
-
-

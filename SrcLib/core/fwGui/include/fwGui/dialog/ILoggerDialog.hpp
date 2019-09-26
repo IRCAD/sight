@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_DIALOG_ILOGGERDIALOG_HPP__
-#define __FWGUI_DIALOG_ILOGGERDIALOG_HPP__
+#pragma once
+
+#include "fwGui/config.hpp"
+#include <fwGui/GuiBaseObject.hpp>
+
+#include <fwLog/Logger.hpp>
 
 #include <string>
 #include <vector>
-
-#include <fwGui/GuiBaseObject.hpp>
-#include <fwLog/Logger.hpp>
-
-#include "fwGui/config.hpp"
 
 namespace fwGui
 {
@@ -44,7 +43,7 @@ class FWGUI_CLASS_API ILoggerDialog : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ILoggerDialog)(::fwGui::GuiBaseObject) );
+    fwCoreClassMacro(ILoggerDialog, ::fwGui::GuiBaseObject);
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -85,5 +84,3 @@ public:
 
 } //namespace dialog
 } //namespace fwGui
-
-#endif /*__FWGUI_DIALOG_ILOGGERDIALOG_HPP__*/

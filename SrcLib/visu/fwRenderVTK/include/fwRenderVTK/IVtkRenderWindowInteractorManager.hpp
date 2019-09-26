@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,28 +20,27 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP__
-#define __FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP__
+#pragma once
 
-#include <string>
-#include <fwServices/IService.hpp>
-
-#include <vtkRenderWindowInteractor.h>
+#include "fwRenderVTK/config.hpp"
+#include "fwRenderVTK/factory/new.hpp"
+#include "fwRenderVTK/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwGui/container/fwContainer.hpp>
 
-#include "fwRenderVTK/factory/new.hpp"
-#include "fwRenderVTK/registry/detail.hpp"
-#include "fwRenderVTK/config.hpp"
+#include <fwServices/IService.hpp>
+
+#include <vtkRenderWindowInteractor.h>
+
+#include <string>
 
 namespace fwRenderVTK
 {
 
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
- * @class   IVtkRenderWindowInteractorManager
  */
 class FWRENDERVTK_CLASS_API IVtkRenderWindowInteractorManager : public ::fwCore::BaseObject
 {
@@ -66,8 +65,7 @@ public:
         }
     };
 
-
-    fwCoreNonInstanciableClassDefinitionsMacro( (IVtkRenderWindowInteractorManager)(::fwCore::BaseObject) )
+    fwCoreClassMacro(IVtkRenderWindowInteractorManager, ::fwCore::BaseObject);
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -88,20 +86,17 @@ public:
     FWRENDERVTK_API virtual void uninstallInteractor() = 0;
 
     /// Return a pointer on interactor
-    FWRENDERVTK_API virtual ::vtkRenderWindowInteractor * getInteractor() = 0;
+    FWRENDERVTK_API virtual ::vtkRenderWindowInteractor* getInteractor() = 0;
+
+    //------------------------------------------------------------------------------
 
     virtual void setRenderService(::fwServices::IService::sptr srv)
     {
         m_renderService = srv;
     }
 
-
 protected:
     ::fwServices::IService::wptr m_renderService;
 };
 
 } // namespace fwRenderVTK
-
-#endif // __FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP__
-
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -85,7 +85,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SReprojectionError : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SReprojectionError)(fwServices::IController))
+    fwCoreServiceMacro(SReprojectionError, fwServices::IController);
 
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,8 @@
 #include "fwServices/registry/AppConfigParameters.hpp"
 
 #include <fwData/Composite.hpp>
-#include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
@@ -74,7 +74,9 @@ void AppConfigParameters::parseBundleInformation()
             parameters[name] = val;
         }
         ::fwCore::mt::WriteLock lock(m_registryMutex);
+#ifdef _DEBUG
         Registry::const_iterator iter = m_reg.find( extensionId );
+#endif
         SLM_ASSERT("The id " <<  extensionId
                              << " already exists in the application configuration parameter registry",
                    iter == m_reg.end());
@@ -98,7 +100,7 @@ void AppConfigParameters::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-const FieldAdaptorType & AppConfigParameters::getParameters( const std::string & extensionId ) const
+const FieldAdaptorType& AppConfigParameters::getParameters( const std::string& extensionId ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
@@ -112,4 +114,3 @@ const FieldAdaptorType & AppConfigParameters::getParameters( const std::string &
 } // namespace registry
 
 } // namespace fwServices
-

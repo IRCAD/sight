@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,7 +69,7 @@ class VISUVTKARADAPTOR_CLASS_API SVideo : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SVideo)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SVideo, ::fwRenderVTK::IAdaptor);
 
     /// Constructor
     SVideo() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,9 @@
 namespace fwTools
 {
 
-ProgressToLogger::ProgressToLogger(std::string prefix, std::string postfix) : m_prefix(prefix),
-                                                                              m_postfix(postfix)
+ProgressToLogger::ProgressToLogger(const std::string& prefix, const std::string& postfix) :
+    m_prefix(prefix),
+    m_postfix(postfix)
 {
 }
 
@@ -37,9 +38,14 @@ ProgressToLogger::~ProgressToLogger()
     // TODO Auto-generated destructor stub
 }
 
+//------------------------------------------------------------------------------
 
-void ProgressToLogger::operator()(float percent,std::string msg)
+void ProgressToLogger::operator()(float percent, const std::string& msg)
 {
+#if !SLM_INFO_ENABLED
+    FwCoreNotUsedMacro(percent);
+    FwCoreNotUsedMacro(msg);
+#endif
     // fixme io precision
     OSLM_INFO( m_prefix << msg << " " << (int) (percent*100) << m_postfix);
 }

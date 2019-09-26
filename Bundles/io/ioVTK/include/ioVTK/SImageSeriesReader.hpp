@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,7 +75,7 @@ public:
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro( (SImageSeriesReader)( ::fwIO::IReader) );
+    fwCoreServiceMacro(SImageSeriesReader,  ::fwIO::IReader);
 
     /**
      * @brief Configure the image path.

@@ -199,8 +199,6 @@ bool System::isProcessRunning(int pid) noexcept
 #else
     return kill(pid, 0) == 0;
 #endif
-
-    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -245,7 +243,7 @@ int System::tempFolderPID(const ::boost::filesystem::path& dir) noexcept
             }
         }
     }
-    catch (std::exception& e)
+    catch (std::exception&)
     {
         // The directory might have been removed by another process
         return 0;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,9 +28,11 @@ namespace fwDataTools
 namespace helper
 {
 
-Array::Array( ::fwData::Array::sptr array ) :
+Array::Array(const ::fwData::Array::sptr& array ) :
     m_array(array)
 {
+    FW_DEPRECATED_MSG("::fwDataTools::helper::Array is no longer supported, the methods have been moved to "
+                      "::fwData::Array", "22.0");
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
@@ -121,7 +123,7 @@ const char* Array::end() const
 
 //-----------------------------------------------------------------------------
 
-char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType )
+char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t )
 {
     size_t sizeOf = m_array->getType().sizeOf();
     size_t offset = m_array->getBufferOffset(id, component, sizeOf);
@@ -131,7 +133,7 @@ char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t componen
 
 //------------------------------------------------------------------------------
 
-const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType ) const
+const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t ) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     size_t offset    = m_array->getBufferOffset(id, component, sizeOf);

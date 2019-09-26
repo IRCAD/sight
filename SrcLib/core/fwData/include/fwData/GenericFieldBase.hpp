@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_GENERICFIELDBASE_HPP__
-#define __FWDATA_GENERICFIELDBASE_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <string>
 #include <ostream>
+#include <string>
 
 namespace fwData
 {
@@ -41,24 +40,21 @@ class FWDATA_CLASS_API GenericFieldBase : public Object
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericFieldBase) );
+    fwCoreClassMacro(GenericFieldBase);
 
-    FWDATA_API virtual bool operator== (const GenericFieldBase &lf ) = 0;
-    FWDATA_API virtual bool operator!= (const GenericFieldBase &lf ) = 0;
-    FWDATA_API virtual bool operator<  (const GenericFieldBase &lf ) = 0;
-    FWDATA_API virtual bool operator>  (const GenericFieldBase &lf ) = 0;
-    FWDATA_API virtual bool operator<= (const GenericFieldBase &lf ) = 0;
-    FWDATA_API virtual bool operator>= (const GenericFieldBase &lf ) = 0;
-    FWDATA_API friend std::ostream& operator<<( std::ostream &, const GenericFieldBase & );
+    FWDATA_API virtual bool operator== (const GenericFieldBase& lf ) = 0;
+    FWDATA_API virtual bool operator!= (const GenericFieldBase& lf ) = 0;
+    FWDATA_API virtual bool operator<  (const GenericFieldBase& lf ) = 0;
+    FWDATA_API virtual bool operator>  (const GenericFieldBase& lf ) = 0;
+    FWDATA_API virtual bool operator<= (const GenericFieldBase& lf ) = 0;
+    FWDATA_API virtual bool operator>= (const GenericFieldBase& lf ) = 0;
+    FWDATA_API friend std::ostream& operator<<( std::ostream&, const GenericFieldBase& );
 
-    FWDATA_API virtual ::std::string toString() const               = 0;
-    FWDATA_API virtual void fromString(const ::std::string &_value) = 0;
-
+    FWDATA_API virtual ::std::string toString() const = 0;
+    FWDATA_API virtual void fromString(const ::std::string& _value) = 0;
 
 private:
-    FWDATA_API virtual std::ostream & toOStream( std::ostream &_os ) const = 0;
+    FWDATA_API virtual std::ostream& toOStream( std::ostream& _os ) const = 0;
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_GENERICFIELDBASE_HPP__

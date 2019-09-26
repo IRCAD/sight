@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKSIMPLENEGATO_SRENDERER_HPP__
-#define __VTKSIMPLENEGATO_SRENDERER_HPP__
+#pragma once
 
 #include "vtkSimpleNegato/config.hpp"
 
@@ -54,7 +53,7 @@ namespace vtkSimpleNegato
 class VTKSIMPLENEGATO_CLASS_API SRenderer : public fwRender::IRender
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SRenderer)(::fwRender::IRender) );
+    fwCoreServiceMacro(SRenderer, ::fwRender::IRender);
 
     /// Constructor
     VTKSIMPLENEGATO_API SRenderer() noexcept;
@@ -143,5 +142,3 @@ private:
 };
 
 }
-
-#endif /* __VTKSIMPLENEGATO_SRENDERER_HPP__ */

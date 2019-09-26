@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,7 +73,7 @@ public:
         }
     };
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMovementInteractor)(::fwCore::BaseObject) )
+    fwCoreClassMacro(IMovementInteractor, ::fwCore::BaseObject);
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IMovementInteractor();

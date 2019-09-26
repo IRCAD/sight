@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKSIMPLEMESH_SSIMPLEMESHDEFORMATION_HPP__
-#define __VTKSIMPLEMESH_SSIMPLEMESHDEFORMATION_HPP__
+#pragma once
 
 #include "vtkSimpleMesh/config.hpp"
 
@@ -55,7 +54,7 @@ class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::ICon
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSimpleMeshDeformation)(::fwServices::IController) );
+    fwCoreServiceMacro(SSimpleMeshDeformation, ::fwServices::IController);
 
     // Key used to register the 'startDeformation' slot
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_START_DEFORMATION_SLOT;
@@ -125,5 +124,3 @@ private:
 };
 
 }
-
-#endif /* __VTKSIMPLEMESH_SSIMPLEMESHDEFORMATION_HPP__ */

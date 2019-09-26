@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SCUBE_HPP__
-#define __VISUVTKADAPTOR_SCUBE_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -49,7 +48,7 @@ class VISUVTKADAPTOR_CLASS_API SCube : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCube)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SCube, ::fwRenderVTK::IAdaptor);
 
     VISUVTKADAPTOR_API SCube() noexcept;
 
@@ -62,7 +61,5 @@ protected:
     VISUVTKADAPTOR_API void updating() override;
     VISUVTKADAPTOR_API void stopping() override;
 };
-
-#endif //__VISUVTKADAPTOR_SCUBE_HPP__
 
 } //namespace visuVTKAdaptor

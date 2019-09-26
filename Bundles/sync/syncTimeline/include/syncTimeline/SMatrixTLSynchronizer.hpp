@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SYNCTIMELINE_SMATRIXTLSYNCHRONIZER_HPP__
-#define __SYNCTIMELINE_SMATRIXTLSYNCHRONIZER_HPP__
+#pragma once
 
 #include "syncTimeline/config.hpp"
 
@@ -82,7 +81,7 @@ class SYNCTIMELINE_CLASS_API SMatrixTLSynchronizer : public ::arServices::ISynch
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SMatrixTLSynchronizer)(::arServices::ISynchronizer));
+    fwCoreServiceMacro(SMatrixTLSynchronizer, ::arServices::ISynchronizer);
 
     typedef ::fwCom::Signal< void (int) > MatrixSynchronizedSignalType;
     typedef ::fwCom::Signal< void (int) > MatrixUnsynchronizedSignalType;
@@ -126,4 +125,3 @@ private:
 };
 
 } //namespace syncTimeline
-#endif  // __SYNCTIMELINE_SMATRIXTLSYNCHRONIZER_HPP__

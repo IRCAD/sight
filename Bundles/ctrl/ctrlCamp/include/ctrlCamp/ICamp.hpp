@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLCAMP_ICAMP_HPP__
-#define __CTRLCAMP_ICAMP_HPP__
+#pragma once
 
 #include "ctrlCamp/config.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwServices/IService.hpp>
-
-
 
 namespace ctrlCamp
 {
@@ -40,7 +37,7 @@ class CTRLCAMP_CLASS_API ICamp : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ICamp)(::fwServices::IService) );
+    fwCoreServiceMacro(ICamp, ::fwServices::IService);
 
     /// Constructor
     CTRLCAMP_API ICamp();
@@ -51,6 +48,3 @@ public:
 };
 
 }// namespace ctrlCamp
-
-
-#endif /* __CTRLCAMP_ICAMP_HPP__ */

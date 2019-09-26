@@ -53,7 +53,7 @@ class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interact
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IPickerInteractor)(::fwCore::BaseObject) )
+    fwCoreClassMacro(IPickerInteractor, ::fwCore::BaseObject);
 
     /**
      * @brief Class used to register a class factory in factory registry.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ class FWACTIVITIES_CLASS_API IActivityValidator : public ::fwActivities::IValida
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IActivityValidator)(::fwActivities::IValidator) )
+    fwCoreClassMacro(IActivityValidator, ::fwActivities::IValidator);
 
     /// Does nothing.
     FWACTIVITIES_API virtual ValidationType validate(

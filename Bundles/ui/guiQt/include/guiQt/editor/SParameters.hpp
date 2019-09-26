@@ -118,7 +118,7 @@ class GUIQT_CLASS_API SParameters : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro( (SParameters)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(SParameters, ::fwGui::editor::IEditor);
 
     /// Boolean changed signal type
     typedef ::fwCom::Signal< void (bool, std::string) > BooleanChangedSignalType;

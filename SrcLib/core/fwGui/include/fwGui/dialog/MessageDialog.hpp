@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ class FWGUI_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog)
+    fwCoreClassMacro(MessageDialog, ::fwGui::dialog::IMessageDialog, new MessageDialog);
 
     /**
      * Opens a default message box with the specified title, text and icon.

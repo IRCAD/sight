@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ FrameTL::~FrameTL ()
 
 //------------------------------------------------------------------------------
 
-void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     FrameTL::csptr other = FrameTL::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -96,10 +96,9 @@ void FrameTL::initPoolSize(size_t width, size_t height, const ::fwTools::Type& t
 
 //------------------------------------------------------------------------------
 
-void FrameTL::initPoolSize(unsigned int maxElementNum)
+void FrameTL::initPoolSize(unsigned int)
 {
     SLM_ERROR("This function should not be called");
 }
 
 } // namespace arData
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKADAPTOR_SMODELSERIES_HPP__
-#define __VISUVTKADAPTOR_SMODELSERIES_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -70,7 +69,7 @@ class VISUVTKADAPTOR_CLASS_API SModelSeries : public ::fwRenderVTK::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SModelSeries)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceMacro(SModelSeries, ::fwRenderVTK::IAdaptor);
 
     /**
      * @name Signals API
@@ -147,5 +146,3 @@ private:
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SMODELSERIES_HPP__

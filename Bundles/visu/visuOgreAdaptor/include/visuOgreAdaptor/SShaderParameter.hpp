@@ -65,7 +65,7 @@ class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::fwRenderOgre::IParam
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShaderParameter)(::fwRenderOgre::IParameter) )
+    fwCoreServiceMacro(SShaderParameter, ::fwRenderOgre::IParameter);
 
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() noexcept;

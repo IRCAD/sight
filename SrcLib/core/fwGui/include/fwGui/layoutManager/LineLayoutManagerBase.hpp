@@ -42,7 +42,7 @@ class FWGUI_CLASS_API LineLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (LineLayoutManagerBase)(::fwGui::layoutManager::IViewLayoutManager) )
+    fwCoreClassMacro(LineLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager);
 
     /// Defines all possible orientation for a LineLayout
     typedef enum

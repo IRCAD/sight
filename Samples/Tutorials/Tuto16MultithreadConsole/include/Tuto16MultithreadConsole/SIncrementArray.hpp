@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __TUTO16MULTITHREADCONSOLE_SINCREMENTARRAY_HPP__
-#define __TUTO16MULTITHREADCONSOLE_SINCREMENTARRAY_HPP__
+#pragma once
 
 #include "Tuto16MultithreadConsole/config.hpp"
 
@@ -55,7 +54,7 @@ class TUTO16MULTITHREADCONSOLE_CLASS_API SIncrementArray : public ::fwServices::
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SIncrementArray)(::fwServices::IController) );
+    fwCoreServiceMacro(SIncrementArray, ::fwServices::IController);
 
     TUTO16MULTITHREADCONSOLE_API SIncrementArray() noexcept;
     TUTO16MULTITHREADCONSOLE_API virtual ~SIncrementArray() noexcept;
@@ -84,6 +83,3 @@ private:
 };
 
 }  // namespace Tuto16MultithreadConsole
-
-#endif  // __TUTO16MULTITHREADCONSOLE_SINCREMENTARRAY_HPP__
-

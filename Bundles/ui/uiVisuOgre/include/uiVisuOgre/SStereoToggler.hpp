@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ class UIVISUOGRE_CLASS_API SStereoToggler : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SStereoToggler)(::fwGui::IActionSrv) )
+    fwCoreServiceMacro(SStereoToggler, ::fwGui::IActionSrv);
 
     /// Constructor.
     UIVISUOGRE_API SStereoToggler();

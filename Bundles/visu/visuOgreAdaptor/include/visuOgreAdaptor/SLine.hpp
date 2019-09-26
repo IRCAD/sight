@@ -67,7 +67,7 @@ class VISUOGREADAPTOR_CLASS_API SLine : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SLine)(::fwRenderOgre::IAdaptor))
+    fwCoreServiceMacro(SLine, ::fwRenderOgre::IAdaptor);
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SLine() noexcept;

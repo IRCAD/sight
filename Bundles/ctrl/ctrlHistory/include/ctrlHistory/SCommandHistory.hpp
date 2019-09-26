@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLHISTORY_SCOMMANDHISTORY_HPP__
-#define __CTRLHISTORY_SCOMMANDHISTORY_HPP__
+#pragma once
 
 #include "ctrlHistory/config.hpp"
 
@@ -68,7 +67,7 @@ class CTRLHISTORY_CLASS_API SCommandHistory : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCommandHistory)(::fwServices::IService) );
+    fwCoreServiceMacro(SCommandHistory, ::fwServices::IService);
 
     /// Constructor.
     CTRLHISTORY_API SCommandHistory();
@@ -117,5 +116,3 @@ private:
 };
 
 } // namespace ctrlHistory
-
-#endif /* __CTRLHISTORY_SCOMMANDHISTORY_HPP__ */

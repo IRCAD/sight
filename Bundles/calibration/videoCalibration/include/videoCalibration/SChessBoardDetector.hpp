@@ -77,7 +77,7 @@ namespace videoCalibration
 class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SChessBoardDetector)(::fwServices::IController))
+    fwCoreServiceMacro(SChessBoardDetector, ::fwServices::IController);
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
     typedef ::fwCom::Signal<void (bool)> ChessboardDetectedSignalType;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __MONITORQT_ACTION_CLASSFACTORYREGISTRYINFO_HPP__
-#define __MONITORQT_ACTION_CLASSFACTORYREGISTRYINFO_HPP__
+#pragma once
 
 #include "monitorQt/config.hpp"
 
@@ -43,7 +42,7 @@ class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ClassFactoryRegistryInfo)( ::fwGui::IActionSrv ) );
+    fwCoreServiceMacro(ClassFactoryRegistryInfo,  ::fwGui::IActionSrv );
 
     /// Does nothing
     MONITORQT_API ClassFactoryRegistryInfo() noexcept;
@@ -77,6 +76,3 @@ private:
 
 } // namespace action
 } // namespace monitorQt
-
-#endif // __MONITORQT_ACTION_CLASSFACTORYREGISTRYINFO_HPP__
-

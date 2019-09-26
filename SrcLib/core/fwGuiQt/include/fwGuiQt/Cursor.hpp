@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_CURSOR_HPP__
-#define __FWGUIQT_CURSOR_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 
@@ -40,9 +39,7 @@ class FWGUIQT_CLASS_API Cursor : public ::fwGui::ICursor
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor),
-                                            (()),
-                                            ::fwGui::factory::New< Cursor > );
+    fwCoreClassMacro(Cursor, ::fwGui::ICursor, ::fwGui::factory::New< Cursor >);
 
     FWGUIQT_API Cursor(::fwGui::GuiBaseObject::Key key);
 
@@ -57,6 +54,3 @@ public:
 };
 
 } // namespace fwGuiQt
-
-#endif /*__FWGUIQT_CURSOR_HPP__*/
-

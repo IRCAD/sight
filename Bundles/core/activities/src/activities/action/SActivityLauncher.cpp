@@ -266,6 +266,7 @@ void SActivityLauncher::configuring()
 
     return info;
 #endif
+    return ::fwActivities::registry::ActivityInfo();
 }
 
 //------------------------------------------------------------------------------

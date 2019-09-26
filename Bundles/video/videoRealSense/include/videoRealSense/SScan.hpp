@@ -181,7 +181,7 @@ class VIDEOREALSENSE_CLASS_API SScan : public ::arServices::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IRGBDGrabber) )
+    fwCoreServiceMacro(SScan, ::arServices::IRGBDGrabber);
 
     /// Signal send when Distance is computed.
     typedef ::fwCom::Signal< void (double) > DistanceComputedSignalType;

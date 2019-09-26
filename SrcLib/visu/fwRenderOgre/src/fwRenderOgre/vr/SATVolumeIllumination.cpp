@@ -178,11 +178,11 @@ void SATVolumeIllumination::updateVolIllum()
             "VolumeIllumination");
 
         const auto& passes = compInstance->getTechnique()->getOutputTargetPass()->getPasses();
-        ::Ogre::CompositionPass* pass = passes[0];
+        ::Ogre::CompositionPass* compPass = passes[0];
 
-        if(pass->getMaterial()->getName() != currentMaterialName)
+        if(compPass->getMaterial()->getName() != currentMaterialName)
         {
-            pass->setMaterialName(currentMaterialName);
+            compPass->setMaterialName(currentMaterialName);
         }
 
         compInstance->addListener(&volIllumListener);

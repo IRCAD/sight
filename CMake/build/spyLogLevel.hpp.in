@@ -15,9 +15,13 @@
 // We undef first the macro to remove the definition from the PCH
 // So far indeed, the log level of the PCH was used
 #undef __FWCORE_IF_ENABLED
+#undef __FWCORE_IF_ELSE_ENABLED
 
 // Now define the macro with the log level of this target
 #define __FWCORE_IF_ENABLED( level, expr ) \
     BOOST_PP_EXPR_IIF( BOOST_PP_GREATER_EQUAL(SPYLOG_LEVEL_@FWPROJECT_NAME@, level), expr)
+
+#define __FWCORE_IF_ELSE_ENABLED( level, expr1, expr2 ) \
+    BOOST_PP_IIF( BOOST_PP_GREATER_EQUAL(SPYLOG_LEVEL_@FWPROJECT_NAME@, level), expr1, expr2)
 
 #endif // __@PROJECT_NAME_UPCASE@_SPYLOGLEVEL_HPP__

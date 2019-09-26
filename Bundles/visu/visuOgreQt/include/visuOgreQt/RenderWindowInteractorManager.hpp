@@ -55,8 +55,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (RenderWindowInteractorManager)
-                                                (::fwRenderOgre::IRenderWindowInteractorManager) )
+    fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager);
 
     /// Constructor
     VISUOGREQT_API RenderWindowInteractorManager(::fwRenderOgre::IRenderWindowInteractorManager::Key key);

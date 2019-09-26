@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -97,7 +97,7 @@ class IOATOMS_CLASS_API SWriter : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SWriter)(::fwIO::IWriter) )
+    fwCoreServiceMacro(SWriter, ::fwIO::IWriter);
 
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;

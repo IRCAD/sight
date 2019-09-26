@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
- * Copyright (C) 2016 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUI_BUILDER_ISLIDEVIEWBUILDER_HPP__
-#define __FWGUI_BUILDER_ISLIDEVIEWBUILDER_HPP__
+#pragma once
 
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -54,7 +53,7 @@ namespace builder
 class FWGUI_CLASS_API ISlideViewBuilder : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (ISlideViewBuilder)(::fwGui::GuiBaseObject) )
+    fwCoreClassMacro(ISlideViewBuilder, ::fwGui::GuiBaseObject);
 
     typedef std::string RegistryKeyType;
 
@@ -67,7 +66,6 @@ public:
         RIGHT,
         LEFT
     };
-
 
     /// Constructor. Do nothing.
     FWGUI_API ISlideViewBuilder();
@@ -110,5 +108,3 @@ protected:
 
 } // namespace builder
 } // namespace fwGui
-
-#endif /*__FWGUI_BUILDER_ISLIDEVIEWBUILDER_HPP__*/

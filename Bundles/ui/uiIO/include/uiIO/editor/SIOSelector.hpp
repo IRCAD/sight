@@ -100,7 +100,7 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceClassDefinitionsMacro( (SIOSelector)( ::fwGui::editor::IDialogEditor) )
+    fwCoreServiceMacro(SIOSelector,  ::fwGui::editor::IDialogEditor);
 
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
     typedef ::fwCom::Signal< void ( ) > JobFailedSignalType;

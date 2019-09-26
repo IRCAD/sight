@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef  __FWATOMS_OBJECT_HXX__
-#define  __FWATOMS_OBJECT_HXX__
+#pragma once
 
-#include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/config.hpp"
 #include "fwAtoms/factory/new.hpp"
-
-#ifndef __FWATOMS_OBJECT_HPP__
-#error fwAtoms/Object.hpp not included
-#endif
 
 namespace fwAtoms
 {
@@ -42,6 +37,3 @@ SPTR(OBJECT_TYPE) Object::getAttribute(const std::string& key) const
 }
 
 }
-
-#endif /*  __FWATOMS_OBJECT_HXX__ */
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
+#include "fwData/ProcessObject.hpp"
 
 #include "fwData/Exception.hpp"
-#include "fwData/ProcessObject.hpp"
 #include "fwData/registry/macros.hpp"
 
 #include <fwCore/base.hpp>
@@ -36,7 +36,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-ProcessObject::ProcessObject(::fwData::Object::Key key)
+ProcessObject::ProcessObject(::fwData::Object::Key)
 {
 }
 
@@ -147,7 +147,7 @@ void ProcessObject::clearParams(ProcessObjectMapType& params)
 
 //-----------------------------------------------------------------------------
 
-void ProcessObject::shallowCopy(const Object::csptr &source )
+void ProcessObject::shallowCopy(const Object::csptr& source )
 {
     ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -161,7 +161,7 @@ void ProcessObject::shallowCopy(const Object::csptr &source )
 
 //-----------------------------------------------------------------------------
 
-void ProcessObject::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+void ProcessObject::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -186,4 +186,3 @@ void ProcessObject::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheTyp
 //------------------------------------------------------------------------------
 
 } // namespace fwData
-

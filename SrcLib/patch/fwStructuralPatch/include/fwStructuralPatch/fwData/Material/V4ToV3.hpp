@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2017 IRCAD France
- * Copyright (C) 2015-2017 IHU Strasbourg
+ * Copyright (C) 2015-2019 IRCAD France
+ * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSTRUCTURALPATCH_FWDATA_MATERIAL_V4TOV3_HPP__
-#define __FWSTRUCTURALPATCH_FWDATA_MATERIAL_V4TOV3_HPP__
+#pragma once
 
 #include "fwStructuralPatch/config.hpp"
 
@@ -40,8 +39,7 @@ namespace Material
 class FWSTRUCTURALPATCH_CLASS_API V4ToV3 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (V4ToV3)(::fwStructuralPatch::fwData::Material::V4ToV3), (()), new V4ToV3);
+    fwCoreClassMacro(V4ToV3, ::fwStructuralPatch::fwData::Material::V4ToV3, new V4ToV3);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V4ToV3();
@@ -69,5 +67,3 @@ public:
 } // namespace fwData
 
 } // namespace fwStructuralPatch
-
-#endif /* __FWSTRUCTURALPATCH_FWDATA_MATERIAL_V4TOV3_HPP__ */

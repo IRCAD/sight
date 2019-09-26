@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@ namespace arServices
 class ARSERVICES_CLASS_API ICalibration : public fwServices::IService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((ICalibration)(fwServices::IService))
+    fwCoreServiceMacro(ICalibration, fwServices::IService);
 
     /// Constructor.
     ARSERVICES_API ICalibration() noexcept;

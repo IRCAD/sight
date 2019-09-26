@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -93,7 +93,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SRepresentationEditor)(::fwQml::IQmlEditor) )
+    fwCoreServiceMacro(SRepresentationEditor, ::fwQml::IQmlEditor);
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQML_API SRepresentationEditor() noexcept;

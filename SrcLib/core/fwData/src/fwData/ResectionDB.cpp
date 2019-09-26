@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/ResectionDB.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -39,7 +40,7 @@ const ::fwCom::Signals::SignalKeyType ResectionDB::s_SAFE_PART_ADDED_SIG = "safe
 
 //------------------------------------------------------------------------------
 
-ResectionDB::ResectionDB(::fwData::Object::Key key)
+ResectionDB::ResectionDB(::fwData::Object::Key)
 {
     m_sigResectionAdded = ResectionAddedSignalType::New();
     m_sigSafePartAdded  = SafePartAddedSignalType::New();
@@ -56,7 +57,7 @@ ResectionDB::~ResectionDB()
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::shallowCopy(const Object::csptr &_source )
+void ResectionDB::shallowCopy(const Object::csptr& _source )
 {
     ResectionDB::csptr other = ResectionDB::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -67,7 +68,7 @@ void ResectionDB::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void ResectionDB::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     ResectionDB::csptr other = ResectionDB::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_GENERICFIELD_HPP__
-#define __FWDATA_GENERICFIELD_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -48,7 +47,7 @@ class FWDATA_CLASS_API GenericField : public GenericFieldBase
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericField<T>)(::fwData::Object) );
+    fwCoreClassMacro(GenericField<T>, ::fwData::Object);
 
     typedef T ValueType;
 
@@ -83,54 +82,120 @@ public:
 
     bool operator== (const GenericFieldBase& lf) override
     {
-        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
-        SLM_ASSERT("GenericField must have same ValueType.", &gField );
-        return ( this->m_value == gField.value() );
+        bool result = false;
+        try
+        {
+            const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
+            result = ( this->m_value == gField.value() );
+        }
+        catch(const std::bad_cast& exp)
+        {
+#ifndef _DEBUG
+            FwCoreNotUsedMacro(exp);
+#endif
+            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+        }
+        return result;
     }
 
     //------------------------------------------------------------------------------
 
     bool operator!= (const GenericFieldBase& lf ) override
     {
-        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
-        SLM_ASSERT("GenericField must have same ValueType.", &gField);
-        return ( this->m_value != gField.value() );
+        bool result = false;
+        try
+        {
+            const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
+            result = ( this->m_value != gField.value() );
+        }
+        catch(const std::bad_cast& exp)
+        {
+#ifndef _DEBUG
+            FwCoreNotUsedMacro(exp);
+#endif
+            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+        }
+        return result;
     }
 
     //------------------------------------------------------------------------------
 
     bool operator< (const GenericFieldBase& lf ) override
     {
-        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
-        SLM_ASSERT("GenericField must have same ValueType.", &gField);
-        return ( this->m_value < gField.value() );
+        bool result = false;
+        try
+        {
+            const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
+            result = ( this->m_value < gField.value() );
+        }
+        catch(const std::bad_cast& exp)
+        {
+#ifndef _DEBUG
+            FwCoreNotUsedMacro(exp);
+#endif
+            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+        }
+        return result;
     }
 
     //------------------------------------------------------------------------------
 
     bool operator> (const GenericFieldBase& lf) override
     {
-        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
-        SLM_ASSERT("GenericField must have same ValueType.", &gField);
-        return ( this->m_value > gField.value() );
+        bool result = false;
+        try
+        {
+            const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
+            result = ( this->m_value > gField.value() );
+        }
+        catch(const std::bad_cast& exp)
+        {
+#ifndef _DEBUG
+            FwCoreNotUsedMacro(exp);
+#endif
+            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+        }
+        return result;
     }
 
     //------------------------------------------------------------------------------
 
     bool operator<= (const GenericFieldBase& lf) override
     {
-        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
-        SLM_ASSERT("GenericField must have same ValueType.", &gField);
-        return ( this->m_value <= gField.value() );
+        bool result = false;
+        try
+        {
+            const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
+            result = ( this->m_value <= gField.value() );
+        }
+        catch(const std::bad_cast& exp)
+        {
+#ifndef _DEBUG
+            FwCoreNotUsedMacro(exp);
+#endif
+            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+        }
+        return result;
     }
 
     //------------------------------------------------------------------------------
 
     bool operator>= (const GenericFieldBase& lf ) override
     {
-        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
-        SLM_ASSERT("GenericField must have same ValueType.", &gField);
-        return ( this->m_value >= gField.value() );
+        bool result = false;
+        try
+        {
+            const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
+            result = ( this->m_value >= gField.value() );
+        }
+        catch(const std::bad_cast& exp)
+        {
+#ifndef _DEBUG
+            FwCoreNotUsedMacro(exp);
+#endif
+            OSLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+        }
+        return result;
     }
 
     //------------------------------------------------------------------------------
@@ -205,6 +270,3 @@ typename GenericField<T>::sptr GenericField<T>::GenericFieldFactory(const T valu
 }
 
 } // namespace fwData
-
-#endif // __FWDATA_GENERICFIELD_HPP__
-

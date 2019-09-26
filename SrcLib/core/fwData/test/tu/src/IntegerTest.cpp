@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,6 @@
 
 #include <limits>
 
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::IntegerTest );
 
@@ -35,25 +34,31 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void IntegerTest::setUp()
 {
     // Set up context before running a test.
 }
+
+//------------------------------------------------------------------------------
 
 void IntegerTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
+
 void IntegerTest::methode1()
 {
-    const int VALUES[] = {
-        std::numeric_limits< int >::min(),
+    const std::int64_t VALUES[] = {
+        std::numeric_limits< std::int64_t >::min(),
         -1654, 0, 123456,
-        std::numeric_limits< int >::max()
+        std::numeric_limits< std::int64_t >::max()
     };
 
-    for ( int VALUE : VALUES )
+    for ( std::int64_t VALUE : VALUES )
     {
         ::fwData::Integer::sptr i0 = ::fwData::Integer::New();
         i0->value()                = VALUE;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Plane.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -38,7 +39,8 @@ const ::fwCom::Signals::SignalKeyType Plane::s_SELECTED_SIG = "selected";
 
 //------------------------------------------------------------------------------
 
-Plane::Plane (::fwData::Object::Key key) : m_isIntersection(true)
+Plane::Plane (::fwData::Object::Key) :
+    m_isIntersection(true)
 {
     m_vPoints[0] = ::fwData::Point::New();
     m_vPoints[1] = ::fwData::Point::New();
@@ -55,7 +57,7 @@ Plane::~Plane ()
 
 //------------------------------------------------------------------------------
 
-void Plane::shallowCopy(const Object::csptr &_source )
+void Plane::shallowCopy(const Object::csptr& _source )
 {
     Plane::csptr other = Plane::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -67,7 +69,7 @@ void Plane::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Plane::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Plane::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Plane::csptr other = Plane::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -91,5 +93,3 @@ void Plane::setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point
 //------------------------------------------------------------------------------
 
 } // namespace fwData
-
-

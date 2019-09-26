@@ -90,7 +90,7 @@ class ACTIVITIES_CLASS_API SActivitySequencer : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivitySequencer)(::fwServices::IController) )
+    fwCoreServiceMacro(SActivitySequencer, ::fwServices::IController);
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SActivitySequencer() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCAMP_MAPPER_VALUEMAPPER_HPP__
-#define __FWCAMP_MAPPER_VALUEMAPPER_HPP__
+#pragma once
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/path.hpp>
@@ -63,7 +62,7 @@ struct wrapperTribbol
 {
     //------------------------------------------------------------------------------
 
-    static ::boost::logic::tribool get(const T& source)
+    static ::boost::logic::tribool get(const T&)
     {
         return ::boost::logic::tribool();
     }
@@ -149,31 +148,31 @@ struct ValueMapper< ::boost::posix_time::ptime >
 
     //------------------------------------------------------------------------------
 
-    static ReturnType from(bool source)
+    static ReturnType from(bool)
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(long source)
+    static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(double source)
+    static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::EnumObject& source)
+    static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::UserObject& source)
+    static ReturnType from(const camp::UserObject&)
     {
         CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
     }
@@ -201,31 +200,31 @@ struct ValueMapper< ::boost::filesystem::path >
 
     //------------------------------------------------------------------------------
 
-    static ReturnType from(bool source)
+    static ReturnType from(bool)
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(long source)
+    static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(double source)
+    static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::EnumObject& source)
+    static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::UserObject& source)
+    static ReturnType from(const camp::UserObject&)
     {
         CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
     }
@@ -310,31 +309,31 @@ struct ValueMapper<std::shared_ptr<T> >
 
     //------------------------------------------------------------------------------
 
-    static ReturnType from(bool source)
+    static ReturnType from(bool)
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(long source)
+    static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(double source)
+    static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const std::string& source)
+    static ReturnType from(const std::string&)
     {
         CAMP_ERROR(camp::BadType(camp::stringType, camp::mapType<ReturnType>()));
     }
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::EnumObject& source)
+    static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
@@ -357,6 +356,3 @@ struct ValueMapper<std::shared_ptr<T> >
     }
 };
 }  // namespace camp_ext
-
-#endif /* __FWCAMP_MAPPER_VALUEMAPPER_HPP__ */
-

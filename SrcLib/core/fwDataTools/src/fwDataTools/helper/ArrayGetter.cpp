@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,8 @@ namespace fwDataTools
 namespace helper
 {
 
-ArrayGetter::ArrayGetter( ::fwData::Array::csptr array ) : m_array (array)
+ArrayGetter::ArrayGetter(const ::fwData::Array::csptr& array ) :
+    m_array(array)
 {
     SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
@@ -64,7 +65,7 @@ const char* ArrayGetter::end() const
 
 //-----------------------------------------------------------------------------
 
-const char* ArrayGetter::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType ) const
+const char* ArrayGetter::getBufferPtr( const ::fwData::Array::IndexType& id, size_t component, size_t ) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     size_t offset    = m_array->getBufferOffset(id, component, sizeOf);

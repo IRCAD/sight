@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Point.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -33,7 +34,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Point::Point(::fwData::Object::Key key)
+Point::Point(::fwData::Object::Key)
 {
     m_vCoord[0] = 0.0;
     m_vCoord[1] = 0.0;
@@ -42,7 +43,7 @@ Point::Point(::fwData::Object::Key key)
 
 //------------------------------------------------------------------------------
 
-Point::sptr Point::PointFactory(float x, float y, float z)
+Point::sptr Point::New(float x, float y, float z)
 {
     Point::sptr point = ::fwData::Point::New();
     point->m_vCoord[0] = x;
@@ -53,7 +54,7 @@ Point::sptr Point::PointFactory(float x, float y, float z)
 
 //------------------------------------------------------------------------------
 
-Point::sptr Point::PointFactory(double x, double y, double z)
+Point::sptr Point::New(double x, double y, double z)
 {
     Point::sptr point = ::fwData::Point::New();
     point->m_vCoord[0] = x;
@@ -64,7 +65,7 @@ Point::sptr Point::PointFactory(double x, double y, double z)
 
 //------------------------------------------------------------------------------
 
-Point::sptr Point::PointFactory(const PointCoordArrayType& coord)
+Point::sptr Point::New(const PointCoordArrayType& coord)
 {
     Point::sptr point = ::fwData::Point::New();
     point->m_vCoord = coord;
@@ -73,7 +74,7 @@ Point::sptr Point::PointFactory(const PointCoordArrayType& coord)
 
 //------------------------------------------------------------------------------
 
-Point::sptr Point::PointFactory( Point::sptr p )
+Point::sptr Point::New(const Point::sptr& p )
 {
     Point::sptr point = ::fwData::Point::New();
     point->m_vCoord[0] = p->m_vCoord[0];
@@ -90,7 +91,7 @@ Point::~Point ()
 
 //------------------------------------------------------------------------------
 
-void Point::shallowCopy(const Object::csptr &_source )
+void Point::shallowCopy(const Object::csptr& _source )
 {
     Point::csptr other = Point::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -102,7 +103,7 @@ void Point::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Point::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Point::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Point::csptr other = Point::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -115,5 +116,3 @@ void Point::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 //------------------------------------------------------------------------------
 
 } // namespace fwData
-
-

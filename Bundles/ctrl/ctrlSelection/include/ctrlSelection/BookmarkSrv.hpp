@@ -39,7 +39,7 @@ class CTRLSELECTION_CLASS_API BookmarkSrv : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (BookmarkSrv)(::fwServices::IController) )
+    fwCoreServiceMacro(BookmarkSrv, ::fwServices::IController);
 
     CTRLSELECTION_API BookmarkSrv() noexcept;
 

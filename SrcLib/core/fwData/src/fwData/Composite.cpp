@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/Composite.hpp"
+
+#include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
 #include <algorithm>
-
 
 fwDataRegisterMacro( ::fwData::Composite );
 
@@ -41,7 +41,7 @@ const ::fwCom::Signals::SignalKeyType Composite::s_REMOVED_OBJECTS_SIG = "remove
 
 //------------------------------------------------------------------------------
 
-Composite::Composite( ::fwData::Object::Key key )
+Composite::Composite( ::fwData::Object::Key )
 {
     newSignal< AddedObjectsSignalType >(s_ADDED_OBJECTS_SIG);
     newSignal< ChangedObjectsSignalType >(s_CHANGED_OBJECTS_SIG);
@@ -56,7 +56,7 @@ Composite::~Composite()
 
 //------------------------------------------------------------------------------
 
-void Composite::shallowCopy(const Object::csptr &_source )
+void Composite::shallowCopy(const Object::csptr& _source )
 {
     Composite::csptr other = Composite::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -70,7 +70,7 @@ void Composite::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Composite::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Composite::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Composite::csptr other = Composite::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -80,7 +80,7 @@ void Composite::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
 
     m_container.clear();
 
-    for(const ValueType &elem : *other)
+    for(const ValueType& elem : *other)
     {
         m_container.insert( ValueType(elem.first, ::fwData::Object::copy(elem.second, cache) ) );
     }

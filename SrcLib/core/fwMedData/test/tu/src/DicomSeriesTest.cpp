@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,9 +71,10 @@ void DicomSeriesTest::dicomTest()
     file.close();
 
     //None
+    const size_t nbInstances = 100;
     CPPUNIT_ASSERT(!m_series->isInstanceAvailable(42));
-    m_series->setNumberOfInstances(100);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(100, m_series->getNumberOfInstances(), 0);
+    m_series->setNumberOfInstances(nbInstances);
+    CPPUNIT_ASSERT_EQUAL(nbInstances, m_series->getNumberOfInstances());
 
     //Paths
     m_series->addDicomPath(42, filename);

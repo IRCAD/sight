@@ -72,7 +72,7 @@ class FWGUI_CLASS_API IActivityView : public ::fwGui::IGuiContainerSrv,
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IActivityView)(::fwGui::IGuiContainerSrv) )
+    fwCoreClassMacro(IActivityView, ::fwGui::IGuiContainerSrv);
 
     FWGUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
     FWGUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;

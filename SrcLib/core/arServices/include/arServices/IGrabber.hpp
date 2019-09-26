@@ -61,7 +61,7 @@ class ARSERVICES_CLASS_API IGrabber : public fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((IGrabber)(fwServices::IService))
+    fwCoreServiceMacro(IGrabber, fwServices::IService);
 
     /**
      * @name Slots API

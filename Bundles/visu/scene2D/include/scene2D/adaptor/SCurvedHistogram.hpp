@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_ADAPTOR_SCURVEDHISTOGRAM_HPP__
-#define __SCENE2D_ADAPTOR_SCURVEDHISTOGRAM_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -71,7 +70,7 @@ namespace adaptor
 class SCENE2D_CLASS_API SCurvedHistogram : public ::fwRenderQt::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SCurvedHistogram)( ::fwRenderQt::IAdaptor) );
+    fwCoreServiceMacro(SCurvedHistogram,  ::fwRenderQt::IAdaptor);
 
     typedef ::fwRenderQt::IAdaptor::Point2DType Point;
     typedef std::vector< Point > Points;
@@ -167,6 +166,3 @@ private:
 }   // namespace adaptor
 
 }   // namespace scene2D
-
-#endif  // __SCENE2D_ADAPTOR_SCURVEDHISTOGRAM_HPP__
-

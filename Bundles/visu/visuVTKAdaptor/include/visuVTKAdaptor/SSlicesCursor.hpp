@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,7 +73,7 @@ class VISUVTKADAPTOR_CLASS_API SSlicesCursor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSlicesCursor)(::fwRenderVTK::IAdaptor) )
+    fwCoreServiceMacro(SSlicesCursor, ::fwRenderVTK::IAdaptor);
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation Orientation;
 

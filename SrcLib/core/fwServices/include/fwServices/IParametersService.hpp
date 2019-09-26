@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ class FWSERVICES_CLASS_API IParametersService : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IParametersService)(::fwServices::IService) );
+    fwCoreServiceMacro(IParametersService, ::fwServices::IService);
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;

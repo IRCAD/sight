@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,7 +60,7 @@ public:
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::arServices::ICalibration));
+    fwCoreServiceMacro(SOpenCVIntrinsic, ::arServices::ICalibration);
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVIntrinsic() noexcept;

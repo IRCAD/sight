@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIIO_ACTION_SFOLDERSELECTOR_HPP__
-#define __UIIO_ACTION_SFOLDERSELECTOR_HPP__
+#pragma once
 
 #include "uiIO/config.hpp"
 
@@ -53,7 +52,7 @@ namespace action
 class UIIO_CLASS_API SFolderSelector : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SFolderSelector)( ::fwGui::IActionSrv) )
+    fwCoreServiceMacro(SFolderSelector,  ::fwGui::IActionSrv);
 
     /**
      * @name Signals API
@@ -88,5 +87,3 @@ private:
 
 } // namespace action
 } // namespace uiIO
-
-#endif // __UIIO_ACTION_SFOLDERSELECTOR_HPP__

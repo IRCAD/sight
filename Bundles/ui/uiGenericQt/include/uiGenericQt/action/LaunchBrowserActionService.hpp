@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIGENERICQT_ACTION_LAUNCHBROWSERACTIONSERVICE_HPP__
-#define __UIGENERICQT_ACTION_LAUNCHBROWSERACTIONSERVICE_HPP__
+#pragma once
 
 #include "uiGenericQt/config.hpp"
 
@@ -43,7 +42,7 @@ class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::fwGui::IAction
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (LaunchBrowserActionService)(::fwGui::IActionSrv) );
+    fwCoreServiceMacro(LaunchBrowserActionService, ::fwGui::IActionSrv);
 
     /// Constructor. Do nothing.
     UIGENERICQT_API LaunchBrowserActionService() noexcept;
@@ -85,6 +84,3 @@ private:
 } // action
 
 } // uiGenericQt
-
-#endif /*__UIGENERICQT_ACTION_LAUNCHBROWSERACTIONSERVICE_HPP__*/
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,14 +22,14 @@
 
 #include "GenericTLTest.hpp"
 
-#include <arData/timeline/GenericObject.hpp>
-#include <arData/timeline/GenericObject.hxx>
 #include <arData/GenericTL.hpp>
 #include <arData/GenericTL.hxx>
+#include <arData/timeline/GenericObject.hpp>
+#include <arData/timeline/GenericObject.hxx>
 
-#include <fwTest/Exception.hpp>
 #include <fwData/registry/macros.hpp>
 
+#include <fwTest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::GenericTLTest );
@@ -42,8 +42,9 @@ namespace arData
 class Float3TL : public GenericTL< float[3] >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Float3TL)(::arData::TimeLine),(()), ::fwData::factory::New< Float3TL >)
-    Float3TL( ::fwData::Object::Key key ) : GenericTL< float[3] >(key)
+    fwCoreClassMacro(Float3TL, ::arData::TimeLine, ::fwData::factory::New< Float3TL >);
+    Float3TL( ::fwData::Object::Key key ) :
+        GenericTL< float[3] >(key)
     {
     }
 };
@@ -56,8 +57,9 @@ typedef float float4[4];
 class Float4TL : public GenericTL< float4 >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Float4TL)(::arData::TimeLine),(()), ::fwData::factory::New< Float4TL >)
-    Float4TL( ::fwData::Object::Key key ) : GenericTL< float4 >(key)
+    fwCoreClassMacro(Float4TL, ::arData::TimeLine, ::fwData::factory::New< Float4TL >);
+    Float4TL( ::fwData::Object::Key key ) :
+        GenericTL< float4 >(key)
     {
     }
 };
@@ -76,9 +78,10 @@ public:
 class TestClassTL : public GenericTL< TestContained >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TestClassTL)(::arData::TimeLine),(()),
-                                            ::fwData::factory::New< TestClassTL >)
-    TestClassTL( ::fwData::Object::Key key ) : GenericTL< TestContained >(key)
+    fwCoreClassMacro(TestClassTL, ::arData::TimeLine, ::fwData::factory::New< TestClassTL >);
+
+    TestClassTL( ::fwData::Object::Key key ) :
+        GenericTL< TestContained >(key)
     {
     }
 };
@@ -275,7 +278,6 @@ void GenericTLTest::pushPopTest()
         CSPTR(::arData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1);
         CPPUNIT_ASSERT(data1 == dataPushed1Bis);
     }
-
 
     timeline->clearTimeline();
     CSPTR(::arData::timeline::Object) nullObj = timeline->getNewerObject();
@@ -705,4 +707,3 @@ void GenericTLTest::objectValid()
 
 } //namespace ut
 } //namespace arData
-
