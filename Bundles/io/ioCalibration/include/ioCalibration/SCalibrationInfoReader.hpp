@@ -55,7 +55,7 @@ class IOCALIBRATION_CLASS_API SCalibrationInfoReader : public ::fwIO::IReader
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCalibrationInfoReader)( ::fwIO::IReader) )
+    fwCoreServiceMacro(SCalibrationInfoReader, ::fwIO::IReader );
 
     /// Constructor.
     IOCALIBRATION_API SCalibrationInfoReader() noexcept;

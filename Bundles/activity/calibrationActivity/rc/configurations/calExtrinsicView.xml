@@ -359,7 +359,7 @@
 
         <service uid="extrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" >
             <inout key="calInfo1" uid="${calibrationInfo1}" />
-            <inout key="calInfo2" uid="${calibrationInfo2}" autoConnect="yes" />
+            <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
         <service uid="detectionStatus" type="::uiTools::editor::SStatus">
@@ -482,6 +482,7 @@
             <signal>${calibrationInfo2}/addedRecord</signal>
             <signal>${calibrationInfo2}/removedRecord</signal>
             <signal>${calibrationInfo2}/resetRecord</signal>
+            <signal>calibrationDataReader2/updated</signal>
             <slot>extrinsicCalibrationInfoEditor/update</slot>
         </connect>
 

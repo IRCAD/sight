@@ -203,7 +203,7 @@ void SCalibrationInfoReader::updating()
             }
 
             auto sig = calibInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >
-                           (::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
+                           (::arData::CalibrationInfo::s_MODIFIED_SIG);
 
             sig->asyncEmit();
         }
