@@ -382,8 +382,10 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
 {
     SLM_ASSERT("This case is not managed ", object != "::fwData::Object" );
 
-    std::string serviceImpl  = "";
-    bool genericImplIsFound  = false;
+    std::string serviceImpl = "";
+#ifdef _DEBUG
+    bool genericImplIsFound = false;
+#endif
     bool specificImplIsFound = false;
 
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
@@ -410,8 +412,9 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
                     OSLM_ASSERT("Method has already found a generic service for the object ("
                                 << oimpl << ").",
                                 !genericImplIsFound );
-
+#ifdef _DEBUG
                     genericImplIsFound = true;
+#endif
                     if ( !specificImplIsFound )
                     {
                         serviceImpl = srv.first;

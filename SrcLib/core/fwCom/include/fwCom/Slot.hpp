@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,8 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SLOT_HPP__
+#pragma once
+
 #define __FWCOM_SLOT_HPP__
 
 #include "fwCom/SlotCall.hpp"
@@ -117,6 +118,3 @@ template<typename F, typename ... Bindings>
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ... bindings);
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOT_HPP__ */
-
