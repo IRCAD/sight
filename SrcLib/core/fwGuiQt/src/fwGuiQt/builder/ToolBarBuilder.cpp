@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "fwGuiQt/builder/ToolBarBuilder.hpp"
+
+#include "fwGuiQt/App.hpp"
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
 
@@ -30,9 +32,7 @@
 #include <QMainWindow>
 #include <QToolBar>
 
-
 fwGuiRegisterMacro( ::fwGui::builder::ToolBarBuilder, ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
-
 
 namespace fwGui
 {
@@ -57,11 +57,18 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
 {
     m_parent = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("The parent container is not a QtContainer", m_parent);
-    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
+    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
-    QToolBar *toolBar = new QToolBar(QObject::tr("ToolBar"));
+    QToolBar* toolBar = new QToolBar(QObject::tr("ToolBar"));
     toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
     toolBar->setFloatable(false);
+
+    if(m_backgroundColor != "default")
+    {
+        const QString style = qApp->styleSheet() + QString::fromStdString(
+            "QWidget, QToolButton:disabled { background-color: " + m_backgroundColor + "; } ");
+        toolBar->setStyleSheet(style);
+    }
 
     ::fwGuiQt::container::QtToolBarContainer::sptr toolBarContainer = ::fwGuiQt::container::QtToolBarContainer::New();
     if (window)
@@ -91,9 +98,9 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     }
     else // parent is not a QMainWindow
     {
-        QWidget * widget = m_parent->getQtContainer();
+        QWidget* widget = m_parent->getQtContainer();
         SLM_ASSERT("Parent container must have a layout", widget->layout());
-        QBoxLayout * layout = qobject_cast<QBoxLayout*> ( widget->layout() );
+        QBoxLayout* layout = qobject_cast<QBoxLayout*> ( widget->layout() );
         switch (m_aligment)
         {
             case TOP:
@@ -128,13 +135,13 @@ void ToolBarBuilder::destroyToolBar()
 {
     SLM_ASSERT("The ToolBar is not initialized", m_toolBar);
     SLM_ASSERT("The parent's container is not a QtContainer", m_parent);
-    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
+    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
     if (window)
     {
         ::fwGuiQt::container::QtToolBarContainer::sptr qtToolBar =
             ::fwGuiQt::container::QtToolBarContainer::dynamicCast(m_toolBar);
-        QToolBar * toolbar = qtToolBar->getQtToolBar();
+        QToolBar* toolbar = qtToolBar->getQtToolBar();
         window->removeToolBar( toolbar );
     }
     m_toolBar->destroyContainer();
@@ -142,9 +149,5 @@ void ToolBarBuilder::destroyToolBar()
 
 //-----------------------------------------------------------------------------
 
-
 } // namespace builder
 } // namespace fwGui
-
-
-

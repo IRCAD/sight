@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,6 @@
 #include <fwCore/base.hpp>
 
 #include <boost/lexical_cast.hpp>
-
 
 namespace fwGui
 {
@@ -107,7 +106,21 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
                 std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
                 OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
                             (useScrollBar == "yes") || (useScrollBar == "no"));
-                vi.m_useScrollBar = (useScrollBar=="yes");
+                vi.m_useScrollBar = (useScrollBar == "yes");
+            }
+            if( view->hasAttribute("backgroundColor") )
+            {
+                const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
+                if(hexaColor != "default")
+                {
+                    OSLM_ASSERT(
+                        "Color string should start with '#' and followed by 6 ou 8 "
+                        "hexadecimal digits. Given color : " << hexaColor,
+                            hexaColor[0] == '#'
+                            && ( hexaColor.length() == 7 || hexaColor.length() == 9)
+                        );
+                    vi.m_backgroundColor = hexaColor;
+                }
             }
             m_views.push_back(vi);
         }
@@ -118,6 +131,3 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
-

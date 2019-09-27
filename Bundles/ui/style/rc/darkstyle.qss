@@ -1425,3 +1425,8 @@ QDateEdit::down-arrow:focus
 {
     image: url(:/darkstyle/down_arrow.png);
 }
+
+QScrollArea
+{
+    border: none;
+}
