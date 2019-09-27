@@ -69,10 +69,6 @@ public:
 
     fwCoreServiceMacro(SVector, ::fwRenderOgre::IAdaptor)
 
-    /**
-     * @name Slots API
-     * @{
-     */
     /// Slot used to set visibility.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
@@ -81,9 +77,6 @@ public:
 
     /// Slot used to update length of the line.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
-    /**
-     * @}
-     */
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
