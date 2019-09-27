@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -92,18 +92,25 @@ public:
 
 private:
 
-    /** return mesh properties
-     * @param mesh pointer to Ogre Mesh
-     * @param position world position of the entity using the mesh
-     * @param orientation world orientation of the entity using the mesh
-     * @param scale world scale of the entity using the mesh
-     * @return tuple containing <list of points, list of triangles, list of quads>
+    /**
+     * @brief Compute the intersection between a ray and a triangle.
+     * @param _ray The ray used to compute the intersection.
+     * @param _a The first vertex of the triangle.
+     * @param _b The second vertex of the triangle.
+     * @param _c The third vertex of the triangle.
+     * @param _closestDistance The current closest intersection distance with the ray.
+     * @param _positiveSide Set to true to intersect with the positive side of the triangle.
+     * @param _negativeSide Set to true to intersect with the negative side of the triangle.
+     * @return A pair containing a boolean to specify if there was an intersection, and the distance of between the ray
+     * origin and the intersection.
      */
-    std::tuple<std::vector<Ogre::Vector3>, std::vector<Ogre::uint32>, std::vector< Ogre::uint32> >
-    getMeshInformation(const Ogre::MeshPtr mesh,
-                       const Ogre::Vector3& position,
-                       const Ogre::Quaternion& orient,
-                       const Ogre::Vector3& scale);
+    static std::pair<bool, float> intersect(const ::Ogre::Ray& _ray,
+                                            const ::Ogre::Vector3& _a,
+                                            const ::Ogre::Vector3& _b,
+                                            const ::Ogre::Vector3& _c,
+                                            const float _closestDistance,
+                                            bool _positiveSide,
+                                            bool _negativeSide);
 
 };
 
