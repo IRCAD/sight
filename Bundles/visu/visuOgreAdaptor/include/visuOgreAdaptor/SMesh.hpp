@@ -74,8 +74,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SMesh" >
         <inout key="mesh" uid="..." />
-        <config layer="layerId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureName="texAdaptorUID" />
+        <config layer="..." transform="..." materialName="..." shadingMode="gouraud" textureName="..."
+ * queryFlags="1073741824" />
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -101,7 +101,8 @@ class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceMacro(SMesh, ::fwRenderOgre::IAdaptor);
+
+    fwCoreServiceMacro(SMesh, ::fwRenderOgre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SMesh() noexcept;
@@ -187,10 +188,6 @@ public:
 
 private:
 
-    /**
-     * @name Slots methods
-     * @{
-     */
     /// Called when the vertices are modified.
     void modifyVertices();
 
@@ -199,7 +196,6 @@ private:
 
     /// Called when the texture coordinates are modified.
     void modifyTexCoords();
-    /** @} */
 
     /// Configures the adaptor
     void configuring() override;

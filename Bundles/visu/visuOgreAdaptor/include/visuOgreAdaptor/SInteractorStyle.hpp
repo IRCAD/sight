@@ -48,7 +48,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type=" ::visuOgreAdaptor::SInteractorStyle ">
-            <config layer=" ... " movement=" ... " picker=" ..." queryMask="..."/>
+            <config layer="..." movement="..." picker="..." queryMask="1073741824" />
        </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -64,24 +64,14 @@ class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdapt
 
 public:
 
-    fwCoreServiceMacro(SInteractorStyle, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SInteractorStyle, ::fwRenderOgre::IAdaptor)
 
-    /**
-     * @name Slots API
-     * @{
-     */
     /// Slots used to forward the picker sinal.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
-    /** @} */
 
-    /**
-     * @name Signals API
-     * @{
-     */
     /// Signal used to forward the interactor sinal.
     typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
-    /** @} */
 
     /// Creates signals and slots.
     VISUOGREADAPTOR_API SInteractorStyle() noexcept;
@@ -106,30 +96,16 @@ protected:
 private:
 
     /**
-     * @name Slots methods
-     * @{
-     */
-    /**
      * @brief Called by the interactor, forward the signal.
      * @param _info Picking informations.
      */
     void picked(::fwDataTools::PickingInfo _info);
-    /**
-     * @}
-     */
 
     /// Set interactor style.
     void setInteractorStyle();
 
-    /**
-     * @name Signals attributes
-     * @{
-     */
     /// Pointer to the generic signal.
     PointClickedSigType::sptr m_sigPicked;
-    /**
-     * @}
-     */
 
     /// Type of the picker style.
     std::string m_pickerStyle {""};

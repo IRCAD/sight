@@ -47,7 +47,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SModelSeries">
             <in key="model" uid="..." />
-            <config layer="..." transform="transform" material="mat" autoresetcamera="yes|no" dynamic="yes|no" />
+            <config layer="..." transform="..." material="..." autoresetcamera="yes" dynamic="no" dynamicVertices="no"
+ * queryFlags="1073741824" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
@@ -70,17 +71,10 @@ class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
 
 public:
 
-    fwCoreServiceMacro(SModelSeries, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SModelSeries, ::fwRenderOgre::IAdaptor)
 
-    /**
-     * @name Slots API
-     * @{
-     */
     /// Slot used to show the reconstruction.
     static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
-    /**
-     * @}
-     */
 
     /// Initialisa slots.
     VISUOGREADAPTOR_API SModelSeries() noexcept;
@@ -111,10 +105,6 @@ protected:
 private:
 
     /**
-     * @name Slots methods
-     * @{
-     */
-    /**
      * @brief Update all reconstructions visibility.
      * @param _show Set to true to show reconstructions.
      */
@@ -122,9 +112,6 @@ private:
 
     /// Update all reconstructions visibility using "ShowReconstructions" field.
     void showReconstructionsOnFieldChanged();
-    /**
-     * @}
-     */
 
     /// Defines if the camera must be reset automatically
     bool m_autoResetCamera {true};

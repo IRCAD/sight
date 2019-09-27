@@ -39,7 +39,6 @@
 
 namespace fwRenderOgre
 {
-
 namespace interactor
 {
 
@@ -53,7 +52,7 @@ class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interact
 
 public:
 
-    fwCoreClassMacro(IPickerInteractor, ::fwCore::BaseObject);
+    fwCoreClassMacro(IPickerInteractor, ::fwCore::BaseObject)
 
     /**
      * @brief Class used to register a class factory in factory registry. This class defines also the object factory (
@@ -72,14 +71,9 @@ public:
         }
     };
 
-    /**
-     * @name Signals API
-     * @{
-     */
     /// Used to send picking info.
     typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
-    /** @} */
 
     /// Retrieves the Ogre root and the \<sceneID\> scene manager.
     FWRENDEROGRE_API IPickerInteractor();
@@ -101,18 +95,11 @@ public:
 
 protected:
 
-    /**
-     * @name Signals attributes
-     * @{
-     */
     /// Signal triggered when an action has been triggered.
     PointClickedSigType::sptr m_picked {nullptr};
 
     /// Signal triggered when a render is requested.
     RenderRequestedSigType::sptr m_sigRenderRequested {nullptr};
-    /**
-     * @}
-     */
 
     /// Ogre picker.
     ::fwRenderOgre::picker::IPicker* m_picker {nullptr};

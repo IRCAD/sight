@@ -62,9 +62,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SPointList" >
         <in key="pointList" uid="..." />
-        <config layer="..." transform="..."
-                textureName="..." radius="2.4" displayLabel="true" charHeight="0.02" labelColor="#0000ff"
-                visible="true"/>
+        <config layer="..." transform="..." textureName="..." radius="1.0" displayLabel="false" charHeight="0.03"
+ * labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="1073741824" />
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -98,7 +97,7 @@ class VISUOGREADAPTOR_CLASS_API SPointList : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceMacro(SPointList, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SPointList, ::fwRenderOgre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SPointList() noexcept;

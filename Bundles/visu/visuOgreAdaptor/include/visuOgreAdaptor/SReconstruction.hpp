@@ -32,6 +32,7 @@
 
 namespace fwData
 {
+
 class Mesh;
 }
 
@@ -42,14 +43,14 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * - \b changeMesh(::fwData::Mesh::sptr) : called when the associated mesh changes.
- * - \b modifyVisibility(int) : called to show or hide the reconstruction.
+ * - \b modifyVisibility() : called to show or hide the reconstruction.
 
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="::visuOgreAdaptor::SReconstruction">
             <in key="reconstruction" uid="..." />
-            <config layer="..." transform="..." autoresetcamera="yes" />
+            <config layer="..." transform="..." autoresetcamera="yes" queryFlags="1073741824" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -61,24 +62,18 @@ namespace visuOgreAdaptor
  * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
  * flag.
  */
-
 class VISUOGREADAPTOR_CLASS_API SReconstruction : public ::fwRenderOgre::IAdaptor,
                                                   public ::fwRenderOgre::ITransformable
 {
 public:
 
-    fwCoreServiceMacro(SReconstruction, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SReconstruction, ::fwRenderOgre::IAdaptor)
 
-    /**
-     * @name Slots API
-     * @{
-     */
     /// Slot used when the mesh has changed.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT;
 
     /// Slot used to change the reconstruciton visibility.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT;
-    /** @} */
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SReconstruction() noexcept;
@@ -151,9 +146,7 @@ protected:
 
 private:
 
-    /**
-     * @brief Changes the attached mesh.
-     */
+    /// Changes the attached mesh.
     void changeMesh(::fwData::Mesh::sptr);
 
     /// Modify the visibility.
