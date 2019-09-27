@@ -403,6 +403,8 @@ void SRender::requestRender()
 
             {
                 ::fwData::mt::ObjectWriteLock lock(image);
+
+                this->makeCurrent();
                 ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
                 SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
                 ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image, m_flip);

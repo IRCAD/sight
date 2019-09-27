@@ -361,5 +361,12 @@ const Ogre::String& GridProxyGeometry::getMovableType() const
 
 //------------------------------------------------------------------------------
 
+void GridProxyGeometry::set3DImageTexture(const ::Ogre::TexturePtr& _texture)
+{
+    m_3DImageTexture = _texture;
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace vr
 } // namespace fwRenderOgre
