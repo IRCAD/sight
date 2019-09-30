@@ -138,7 +138,7 @@ public:
     UIACTIVITIESQT_API SActivityLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    UIACTIVITIESQT_API virtual ~SActivityLauncher() noexcept;
+    UIACTIVITIESQT_API virtual ~SActivityLauncher() noexcept override;
 
     /**
      * @name Slot API

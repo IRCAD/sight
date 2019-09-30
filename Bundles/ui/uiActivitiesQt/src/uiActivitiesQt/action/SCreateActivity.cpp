@@ -201,7 +201,7 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
     {
         const bool isIncludeMode = m_filterMode == "include";
 
-        for(auto info : infos)
+        for(const auto& info : infos)
         {
             KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
 

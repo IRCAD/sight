@@ -188,7 +188,7 @@
 
         <connect>
             <signal>list_organ_editor/reconstructionSelected</signal>
-            <slot>updater_reconst_UID/addOrSwap</slot>
+            <slot>updater_reconst_UID/add</slot>
         </connect>
 
         <connect>
