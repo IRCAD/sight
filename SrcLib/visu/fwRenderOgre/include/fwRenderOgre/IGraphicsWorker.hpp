@@ -22,38 +22,42 @@
 
 #pragma once
 
-#include "visuOgreQt/config.hpp"
+#include "fwRenderOgre/config.hpp"
 
-#include <QOpenGLContext>
+#include <functional>
 
-#include <memory>
-
-namespace visuOgreQt
+namespace fwRenderOgre
 {
 
 /**
- * @brief Static class to manage the OpenGL context shared by all render windows.
+ * @brief Interface for graphics worker.
+ *
+ * Graphics worker are used to run gpu resource handling tasks in parallel.
+ *
+ * /!\ DISCLAIMER: can not be used for parallel rendering as it is not supported by OGRE.
+ * graphics workers should mainly be used to fill large gpu buffers in the background.
  */
-class OpenGLContext
+class FWRENDEROGRE_CLASS_API IGraphicsWorker
 {
 public:
 
-    /// Retrieves a shared pointer to Ogre's OpenGL context, creates it if does not exist or has expired.
-    static std::shared_ptr<QOpenGLContext> getGlobalOgreOpenGLContext();
+    using TaskType = std::function<void()>;
 
-    /**
-     * @brief Creates an OpenGL 4.1 context.
-     *
-     * @param _sharedContext context to share resources with or nullptr for no context sharing.
-     * @pre   if a _sharedContext is used then it must be on the same thread as the one calling this method.
-     */
-    static QOpenGLContext* createOgreGLContext(QOpenGLContext* _sharedContext = nullptr);
+    /// Constructor, initializes the worker.
+    FWRENDEROGRE_API IGraphicsWorker()
+    {
+    }
 
-private:
+    /// Destructor, clears all waiting tasks and waits on the one being executed.
+    FWRENDEROGRE_API virtual ~IGraphicsWorker()
+    {
+    }
 
-    /// Weak reference to the OpenGL context, expires when no more windows hold the context.
-    static std::weak_ptr<QOpenGLContext> s_globalOgreOpenGLContext;
+    /// Adds a task at the back of the worker's task queue.
+    FWRENDEROGRE_API virtual void pushTask(TaskType _task) = 0;
 
 };
 
-} // namespace visuOgreQt
+//------------------------------------------------------------------------------
+
+} // namespace fwRenderOgre

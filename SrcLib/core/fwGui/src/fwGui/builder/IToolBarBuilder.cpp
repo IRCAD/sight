@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,9 +23,6 @@
 /**
  * @file fwGui/builder/IToolBarBuilder.cpp
  * @brief This file defines the implementation of the interface class  for the toolbar builder.
- *
- *
- * @date 2009-2010
  */
 
 #include "fwGui/builder/IToolBarBuilder.hpp"
@@ -41,7 +38,8 @@ const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::fwGui:
 
 //-----------------------------------------------------------------------------
 
-IToolBarBuilder::IToolBarBuilder() : m_aligment(TOP)
+IToolBarBuilder::IToolBarBuilder() :
+    m_aligment(TOP)
 {
     m_toolBitmapSize = std::make_pair(32, 32);
 }
@@ -58,7 +56,6 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be toolBar",
                 configuration->getName() == "toolBar");
-
 
     if (configuration->hasAttribute("align"))
     {
@@ -82,6 +79,21 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         else
         {
             OSLM_FATAL("Wrong value '"<< aligment <<"' for 'align' attribute (require top, bottom, right or left)");
+        }
+    }
+
+    if (configuration->hasAttribute("backgroundColor"))
+    {
+        const std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
+        if(hexaColor != "default")
+        {
+            OSLM_ASSERT(
+                "Color string should start with '#' and followed by 6 ou 8 "
+                "hexadecimal digits. Given color : " << hexaColor,
+                    hexaColor[0] == '#'
+                    && ( hexaColor.length() == 7 || hexaColor.length() == 9)
+                );
+            m_backgroundColor = hexaColor;
         }
     }
 
@@ -113,6 +125,3 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 
 } // namespace builder
 } // namespace fwGui
-
-
-

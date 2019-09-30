@@ -71,11 +71,12 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-        <toolBar align="top">
+        <toolBar align="top" backgroundColor="default" >
             <toolBitmapSize height= "50" width="50" />
         </toolBar>
        @endcode
-        - \b align : toolbar alignment (top, bottom, left, right)
+        - \b align : toolbar alignment (top, bottom, left, right).
+        - \b backgroundColor (optional) : (hexa) background color.
      *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
@@ -102,6 +103,9 @@ protected:
     std::pair< int, int > m_toolBitmapSize;
 
     Aligment m_aligment;
+
+    /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
+    std::string m_backgroundColor {"default"};
 
 };
 

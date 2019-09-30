@@ -127,6 +127,20 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
                 const std::string toolTip = view->getExistingAttributeValue("toolTip");
                 vi.m_toolTip = toolTip;
             }
+            if( view->hasAttribute("backgroundColor") )
+            {
+                const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
+                if(hexaColor != "default")
+                {
+                    OSLM_ASSERT(
+                        "Color string should start with '#' and followed by 6 ou 8 "
+                        "hexadecimal digits. Given color : " << hexaColor,
+                            hexaColor[0] == '#'
+                            && ( hexaColor.length() == 7 || hexaColor.length() == 9)
+                        );
+                    vi.m_backgroundColor = hexaColor;
+                }
+            }
             m_views.push_back(vi);
         }
     }
