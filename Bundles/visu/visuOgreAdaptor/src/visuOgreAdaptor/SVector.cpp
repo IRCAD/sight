@@ -134,8 +134,8 @@ void SVector::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    deleteVector();
-    createVector();
+    this->deleteVector();
+    this->createVector();
 
     this->requestRender();
 }
