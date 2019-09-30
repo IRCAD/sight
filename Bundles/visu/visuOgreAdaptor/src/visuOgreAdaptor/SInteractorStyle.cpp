@@ -82,17 +82,19 @@ void SInteractorStyle::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count(s_PICKER_CONFIG))
-    {
-        m_pickerStyle = config.get<std::string>(s_PICKER_CONFIG);
-    }
+    m_pickerStyle   = config.get<std::string>(s_PICKER_CONFIG, m_pickerStyle);
+    m_movementStyle = config.get<std::string>(s_MOVEMENT_CONFIG, m_movementStyle);
 
-    if(config.count(s_MOVEMENT_CONFIG))
+    if(config.count(s_QUERY_CONFIG))
     {
-        m_movementStyle = config.get<std::string>(s_MOVEMENT_CONFIG);
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask[0] == '0' && hexaMask[1] == 'x');
+        m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
-
-    m_queryMask = config.get<std::uint32_t>(s_QUERY_CONFIG, m_queryMask);
 }
 
 //------------------------------------------------------------------------------

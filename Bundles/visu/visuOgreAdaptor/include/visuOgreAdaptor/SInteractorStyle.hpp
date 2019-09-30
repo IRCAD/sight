@@ -48,7 +48,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type=" ::visuOgreAdaptor::SInteractorStyle ">
-            <config layer="..." movement="..." picker="..." queryMask="1073741824" />
+            <config layer="..." movement="..." picker="..." queryMask="0x40000000" />
        </service>
    @endcode
  * @subsection Configuration Configuration:

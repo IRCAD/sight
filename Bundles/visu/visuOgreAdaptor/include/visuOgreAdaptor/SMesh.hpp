@@ -75,7 +75,7 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SMesh" >
         <inout key="mesh" uid="..." />
         <config layer="..." transform="..." materialName="..." shadingMode="gouraud" textureName="..."
- * queryFlags="1073741824" />
+        queryFlags="0x40000000" />
     </service>
    @endcode
  * @subsection In-Out In-Out

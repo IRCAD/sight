@@ -152,7 +152,17 @@ void SPointList::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_queryFlags   = config.get<std::uint32_t>(s_QUERY_CONFIG, m_queryFlags);
+    if(config.count(s_QUERY_CONFIG))
+    {
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask[0] == '0' && hexaMask[1] == 'x');
+        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
+
     m_radius       = config.get(s_RADIUS_CONFIG, 1.f);
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
     m_charHeight   = config.get(s_CHARACTER_HEIGHT_CONFIG, m_charHeight);

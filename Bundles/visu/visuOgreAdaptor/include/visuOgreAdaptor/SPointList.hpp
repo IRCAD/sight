@@ -63,7 +63,7 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SPointList" >
         <in key="pointList" uid="..." />
         <config layer="..." transform="..." textureName="..." radius="1.0" displayLabel="false" charHeight="0.03"
- * labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="1073741824" />
+ * labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" />
     </service>
    @endcode
  * @subsection In-Out In-Out

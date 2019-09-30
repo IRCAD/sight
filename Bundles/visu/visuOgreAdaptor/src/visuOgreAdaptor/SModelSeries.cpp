@@ -94,7 +94,17 @@ void SModelSeries::configuring()
     m_materialTemplateName = config.get<std::string>(s_MATERIAL_CONFIG, m_materialTemplateName);
     m_isDynamic            = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
     m_isDynamicVertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
-    m_queryFlags           = config.get<std::uint32_t>(s_QUERY_CONFIG, m_queryFlags);
+
+    if(config.count(s_QUERY_CONFIG))
+    {
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask[0] == '0' && hexaMask[1] == 'x');
+        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
 }
 
 //------------------------------------------------------------------------------

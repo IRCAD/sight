@@ -213,12 +213,12 @@
         </service>
 
         <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" picker="Mesh" queryMask="1"/>
+            <config layer="default" picker="Mesh" queryMask="0x1"/>
         </service>
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
             <in key="model" uid="${modelSeries}" />
-            <config layer="default" queryFlags="1" />
+            <config layer="default" queryFlags="0x1" />
         </service>
 
         <service uid="volumeAdp" type="::visuOgreAdaptor::SVolumeRender">
