@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "activities/action/SCreateActivity.hpp"
+#include "uiActivitiesQt/action/SCreateActivity.hpp"
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -48,8 +48,6 @@
 
 #include <boost/foreach.hpp>
 
-#ifdef KEEP_OLD_SERVICE
-
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -60,16 +58,10 @@
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
-#endif
-
-namespace activities
+namespace uiActivitiesQt
 {
 namespace action
 {
-
-//------------------------------------------------------------------------------
-
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, ::fwData::Vector);
 
 //------------------------------------------------------------------------------
 
@@ -80,13 +72,8 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG  
 
 SCreateActivity::SCreateActivity() noexcept
 {
-#ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Use '::uiActivitiesQt::action::SCreateActivity' instead of '::activities::action::SCreateActivity'");
-#else
-    FW_DEPRECATED("::activities::action::SCreateActivity", "::uiActivitiesQt::action::SCreateActivity", "21.0");
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     m_sigActivitySelected   = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SIG);
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -140,15 +127,13 @@ void SCreateActivity::configuring()
 
 ::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
-#ifdef KEEP_OLD_SERVICE
-
     QWidget* parent = qApp->activeWindow();
 
-    QDialog* dialog = new QDialog(parent);
+    QDialog* const dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
     dialog->resize(600, 400);
 
-    QStandardItemModel* model = new QStandardItemModel(dialog);
+    QStandardItemModel* const model = new QStandardItemModel(dialog);
     for( const ::fwActivities::registry::ActivityInfo& info :  infos)
     {
         std::string text;
@@ -161,13 +146,13 @@ void SCreateActivity::configuring()
             text = info.title + (info.description.empty() ? "" : "\n" + info.description);
         }
 
-        QStandardItem* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(text));
+        QStandardItem* const item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(text));
         item->setData(QVariant::fromValue(info));
         item->setEditable(false);
         model->appendRow(item);
     }
 
-    QListView* selectionList = new QListView();
+    QListView* const selectionList = new QListView();
     selectionList->setIconSize(QSize(40, 40));
     selectionList->setUniformItemSizes(true);
     selectionList->setModel(model);
@@ -178,14 +163,14 @@ void SCreateActivity::configuring()
         selectionList->selectionModel()->select( index, QItemSelectionModel::Select );
     }
 
-    QPushButton* okButton     = new QPushButton("Ok");
-    QPushButton* cancelButton = new QPushButton("Cancel");
+    QPushButton* const okButton     = new QPushButton("Ok");
+    QPushButton* const cancelButton = new QPushButton("Cancel");
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
+    QHBoxLayout* const hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);
     hLayout->addWidget(cancelButton);
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    QVBoxLayout* const vLayout = new QVBoxLayout();
     vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
@@ -204,9 +189,6 @@ void SCreateActivity::configuring()
     }
 
     return info;
-
-#endif
-    return ::fwActivities::registry::ActivityInfo();
 }
 
 //------------------------------------------------------------------------------
@@ -219,7 +201,7 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
     {
         const bool isIncludeMode = m_filterMode == "include";
 
-        for(auto info : infos)
+        for(const auto& info : infos)
         {
             KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
 

@@ -1,8 +1,7 @@
 
-set( NAME activities )
+set( NAME uiActivitiesQt )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-
 set( DEPENDENCIES
     fwCore
     fwActivities
@@ -10,27 +9,19 @@ set( DEPENDENCIES
     fwData
     fwDataCamp
     fwGui
+    fwGuiQt
     fwMedData
     fwRuntime
     fwServices
     fwTools
     fwMedDataTools
-    )
+)
 set( REQUIREMENTS
+    guiQt
     dataReg
     servicesReg
-    )
+)
 
-if(NOT ${ENABLE_QML_APPLICATION})
-
-    list(APPEND DEPENDENCIES
-        fwGuiQt
-        )
-    list(APPEND REQUIREMENTS
-        guiQt
-        )
-    add_definitions ( -DKEEP_OLD_SERVICE )
-endif()
 set( CONAN_DEPS
     ${CONAN_QT}
-    )
+)

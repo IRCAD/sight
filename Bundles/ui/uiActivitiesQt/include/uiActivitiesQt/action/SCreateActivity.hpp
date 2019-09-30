@@ -22,31 +22,25 @@
 
 #pragma once
 
-#include "activities/config.hpp"
+#include "uiActivitiesQt/config.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <fwData/Vector.hpp>
 
-#ifdef KEEP_OLD_SERVICE
+#include <fwGui/IActionSrv.hpp>
 
-#include <QButtonGroup>
-#include <QObject>
-#include <QPointer>
-
-#endif
-
-namespace activities
+namespace uiActivitiesQt
 {
-namespace editor
+namespace action
 {
 
 /**
- * @brief This editor launchs an activity according to the given configuration
+ * @brief This action launchs an activity according to the given configuration
  *
- * This editor proposes all the available activities according to the given configuration.
- * It sends a signal with the activity identifier when a button is pushed.
+ * This action works on a ::fwData::Vector. It proposes all the available activity according to the given configuration.
+ * And then, it sends a signal with the activity identifier.
  *
  * It should work with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
  *
@@ -54,12 +48,15 @@ namespace editor
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
  *      contains all activity identifier. It should be connected to the slot 'createActivity' of the service
  *     'SActivityWizard'.
- * - \b loadRequested() : This signal is emitted when the "load activity" button is pushed.
+ * - \b activitySelected(::fwMedData::ActivitySeries::sptr) : This signal is emitted when the activity is selected in
+ *      the current vector. It should be connected to the slot 'updateActivity' of the service 'SActivityWizard'.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="editor_newActivity" type="::activities::editor::SCreateActivity" >
+   <service uid="..." type="::uiActivitiesQt::action::SCreateActivity" >
+       <!-- Filter mode 'include' allows all given activity id-s.
+            Filter mode 'exclude' allows all activity id-s excepted given ones. -->
        <filter>
            <mode>include</mode>
            <id>2DVisualizationActivity</id>
@@ -70,62 +67,54 @@ namespace editor
    @endcode
  *
  * - \b filter (optional): it allows to filter the activity that can be proposed.
- *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
+ *    - \b mode: 'include' or 'exclude'. Defines if the activities in the following list are proposed (include) or not
  *      (exclude).
  *    - \b id: id of the activity
  */
-#ifdef KEEP_OLD_SERVICE
-class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
-                                             public ::fwGui::editor::IEditor
-#else
-class ACTIVITIES_CLASS_API SCreateActivity
-#endif
+class UIACTIVITIESQT_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
 {
-#ifdef KEEP_OLD_SERVICE
-Q_OBJECT;
-#endif
+
 public:
 
-#ifdef KEEP_OLD_SERVICE
-    fwCoreServiceMacro(SCreateActivity, ::fwGui::editor::IEditor)
-#endif
+    fwCoreServiceMacro(SCreateActivity, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SCreateActivity() noexcept;
+    UIACTIVITIESQT_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SCreateActivity() noexcept;
-#ifdef KEEP_OLD_SERVICE
+    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept;
+
     /**
      * @name Signals API
      * @{
      */
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
-    typedef ::fwCom::Signal< void (std::string) > ActivityIDSelectedSignalType;
+    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
+    typedef ::fwCom::Signal< void ( ::fwMedData::ActivitySeries::sptr ) > ActivitySelectedSignalType;
 
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_LOAD_REQUESTED_SIG;
-    typedef ::fwCom::Signal< void () > LoadRequestedSignalType;
+    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
+    typedef ::fwCom::Signal< void (std::string) > ActivityIDSelectedSignalType;
     /// @}
 
 protected:
 
-    /// Initialize the editor.
-    virtual void configuring() override;
-
-    /// This method launches the IEditor::starting method.
+    ///This method launches the IAction::starting method.
     virtual void starting() override;
 
-    /// This method launches the IEditor::stopping method.
+    ///This method launches the IAction::stopping method.
     virtual void stopping() override;
 
-    /// Show activity selector.
+    /**
+     * @brief Show activity selector.
+     */
     virtual void updating() override;
 
+    /**
+     * @brief Initialize the action.
+     * @see fwGui::IActionSrv::initialize()
+     */
+    virtual void configuring() override;
+
     typedef std::vector< std::string > KeysType;
-
-private Q_SLOTS:
-
-    void onClicked(int id);
 
 private:
 
@@ -136,6 +125,9 @@ private:
     void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries);
 
     typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
+
+    /// Show custom dialog box
+    ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);
@@ -149,13 +141,12 @@ private:
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
     KeysType m_keys;
 
-    /// Informations used to launch activities
-    ActivityInfoContainer m_activitiesInfo;
+    /// Signal emitted when activity is selected. Contains the activity identifier.
+    ActivityIDSelectedSignalType::sptr m_sigActivityIDSelected;
 
-    /// Pointer on the buttons group
-    QPointer<QButtonGroup> m_buttonGroup;
-#endif
+    /// Signal emitted when activity is selected. Contains the activity.
+    ActivitySelectedSignalType::sptr m_sigActivitySelected;
 };
 
-} // namespace editor
-} // namespace activities
+} // namespace action
+} // namespace uiActivitiesQt

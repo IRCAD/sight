@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "activities/action/SActivityLauncher.hpp"
+#include "uiActivitiesQt/action/SActivityLauncher.hpp"
 
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IBuilder.hpp>
@@ -56,8 +56,6 @@
 
 #include <boost/foreach.hpp>
 
-#ifdef KEEP_OLD_SERVICE
-
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -68,16 +66,10 @@
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
-#endif
-
-namespace activities
+namespace uiActivitiesQt
 {
 namespace action
 {
-
-//------------------------------------------------------------------------------
-
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLauncher, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -93,16 +85,11 @@ static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 SActivityLauncher::SActivityLauncher() noexcept :
     m_mode("message")
 {
-#ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Use '::uiActivitiesQt::action::SActivityLauncher' instead of '::activities::action::SActivityLauncher'");
-#else
-    FW_DEPRECATED("::activities::action::SActivityLauncher", "::uiActivitiesQt::action::SActivityLauncher", "21.0");
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
 
     newSlot(s_LAUNCH_SERIES_SLOT, &SActivityLauncher::launchSeries, this);
     newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SActivityLauncher::launchActivitySeries, this);
     newSlot(s_UPDATE_STATE_SLOT, &SActivityLauncher::updateState, this);
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +110,6 @@ void SActivityLauncher::starting()
 
 void SActivityLauncher::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -131,7 +117,6 @@ void SActivityLauncher::stopping()
 
 void SActivityLauncher::configuring()
 {
-#ifdef KEEP_OLD_SERVICE
     this->::fwGui::IActionSrv::initialize();
     typedef ::fwServices::IService::ConfigType ConfigType;
 
@@ -196,21 +181,19 @@ void SActivityLauncher::configuring()
         }
         SLM_ASSERT("A maximum of 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
     }
-#endif
 }
 
 //------------------------------------------------------------------------------
 
 ::fwActivities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
 {
-#ifdef KEEP_OLD_SERVICE
     QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
 
     QStandardItemModel* model = new QStandardItemModel(dialog);
-    for( ::fwActivities::registry::ActivityInfo info :  infos)
+    for( const ::fwActivities::registry::ActivityInfo& info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -265,8 +248,6 @@ void SActivityLauncher::configuring()
     }
 
     return info;
-#endif
-    return ::fwActivities::registry::ActivityInfo();
 }
 
 //------------------------------------------------------------------------------
@@ -308,7 +289,7 @@ void SActivityLauncher::updating()
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
-    bool launchAS = this->launchAS(selection);
+    const bool launchAS = this->launchAS(selection);
     if (!launchAS)
     {
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
@@ -413,11 +394,11 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
     if( !actSeries )
     {
-        std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
-                          "> failed.";
+        const std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
+                                "> failed.";
         ::fwGui::dialog::MessageDialog::showMessageDialog( "Activity can not be launched", msg,
                                                            ::fwGui::dialog::IMessageDialog::WARNING);
-        OSLM_ERROR(msg);
+        SLM_ERROR(msg);
         return;
     }
 
@@ -437,8 +418,8 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
                 ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(actSeries);
                 if(!validation.first)
                 {
-                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
-                                          validation.second;
+                    const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                                validation.second;
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
                                                                       message,
                                                                       ::fwGui::dialog::IMessageDialog::CRITICAL);
@@ -459,7 +440,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     {
         ::fwGui::LockAction lock(this->getSptr());
 
-        std::string viewConfigID = msg.getAppConfigID();
+        const std::string viewConfigID = msg.getAppConfigID();
         ::fwActivities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
         replaceMap["GENERIC_UID"]                                        =
             ::fwServices::registry::AppConfig::getUniqueIdentifier();
@@ -603,8 +584,8 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
                 ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(series);
                 if(!validation.first)
                 {
-                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
-                                          validation.second;
+                    const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                                validation.second;
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
                                                                       message,
                                                                       ::fwGui::dialog::IMessageDialog::CRITICAL);
