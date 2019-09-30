@@ -120,7 +120,7 @@ namespace fwServices
         }
         else
         {
-            const std::string msg = "All the required inputs are not present, '" + this->getInputID("") +
+            const std::string msg = "All the required inputs are not present, '" + this->getID() +
                                     "' activity will not be launched";
             ::fwGui::dialog::MessageDialog::showMessageDialog("Manager Initialization",
                                                               msg,
@@ -291,6 +291,9 @@ public:
     /// Check if all the required inputs are present and add the object in the manager
     FWSERVICES_API bool checkInputs();
 
+    /// Return the AppManager unique identifier
+    FWSERVICES_API const std::string& getID() const;
+
 protected:
 
     enum class InputType
@@ -395,7 +398,7 @@ private:
     std::mutex m_serviceMutex;
 
     /// Unique human readable identifier (ex: AppManager-<count>)
-    std::string m_uid;
+    mutable std::string m_uid;
 
     /// Number of instantiated AppManager, it allows to create unique identifier for object and channels
     static size_t s_counter;

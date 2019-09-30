@@ -49,7 +49,7 @@ void IQmlAppManager::initialize()
     m_isInitialized = this->checkInputs();
     if (!m_isInitialized)
     {
-        const std::string msg = "All the required inputs are not present, '" + this->getInputID("") +
+        const std::string msg = "All the required inputs are not present, '" +this->getID() +
                                 "' activity will not be launched";
         ::fwGui::dialog::MessageDialog::showMessageDialog("Manager Initialization",
                                                           msg,
