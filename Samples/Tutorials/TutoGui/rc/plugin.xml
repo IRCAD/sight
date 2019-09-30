@@ -43,6 +43,7 @@
         </service>
 
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+        <style>ToolButtonTextUnderIcon</style>
             <gui>
                 <layout>
                     <menuItem name="start" icon="TutoGui-0.1/icons/start.svg" />

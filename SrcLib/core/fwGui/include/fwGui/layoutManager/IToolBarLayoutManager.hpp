@@ -117,6 +117,7 @@ public:
      * Example of configuration
      * @code{.xml}
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
+            <style>ToolButtonIconOnly</style>
            <gui>
                <layout>
                    <menuItem name="My item 2" style="check" icon="TutoGui-0.1/icons/system.png"
@@ -143,6 +144,8 @@ public:
        @endcode
      * This method analyzes the gui section of the configuration.
      *
+     *  - \<style\> \</style\> : (optional) describe the style of the tool button (possible values: ToolButtonIconOnly/
+     * ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon/ToolButtonFollowStyle )
      *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
      *  - \<menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
@@ -160,7 +163,7 @@ public:
     /**
      * @brief Instantiate actions with parent toolBar.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent, std::string style ) = 0;
 
     /**
      * @brief Destroy local actions.
