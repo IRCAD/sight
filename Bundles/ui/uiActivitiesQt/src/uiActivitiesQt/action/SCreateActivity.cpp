@@ -129,11 +129,11 @@ void SCreateActivity::configuring()
 {
     QWidget* parent = qApp->activeWindow();
 
-    QDialog* dialog = new QDialog(parent);
+    QDialog* const dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
     dialog->resize(600, 400);
 
-    QStandardItemModel* model = new QStandardItemModel(dialog);
+    QStandardItemModel* const model = new QStandardItemModel(dialog);
     for( const ::fwActivities::registry::ActivityInfo& info :  infos)
     {
         std::string text;
@@ -146,13 +146,13 @@ void SCreateActivity::configuring()
             text = info.title + (info.description.empty() ? "" : "\n" + info.description);
         }
 
-        QStandardItem* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(text));
+        QStandardItem* const item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(text));
         item->setData(QVariant::fromValue(info));
         item->setEditable(false);
         model->appendRow(item);
     }
 
-    QListView* selectionList = new QListView();
+    QListView* const selectionList = new QListView();
     selectionList->setIconSize(QSize(40, 40));
     selectionList->setUniformItemSizes(true);
     selectionList->setModel(model);
@@ -163,14 +163,14 @@ void SCreateActivity::configuring()
         selectionList->selectionModel()->select( index, QItemSelectionModel::Select );
     }
 
-    QPushButton* okButton     = new QPushButton("Ok");
-    QPushButton* cancelButton = new QPushButton("Cancel");
+    QPushButton* const okButton     = new QPushButton("Ok");
+    QPushButton* const cancelButton = new QPushButton("Cancel");
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
+    QHBoxLayout* const hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);
     hLayout->addWidget(cancelButton);
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    QVBoxLayout* const vLayout = new QVBoxLayout();
     vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
