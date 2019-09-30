@@ -41,7 +41,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SModelSeries, ::fwMedData::ModelSeries);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SModelSeries, ::fwMedData::ModelSeries)
 
 namespace visuOgreAdaptor
 {
@@ -54,6 +54,12 @@ static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
 const ::fwCom::Slots::SlotKeyType SModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
 static const std::string s_MODEL_INPUT = "model";
+
+static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
+static const std::string s_MATERIAL_CONFIG         = "material";
+static const std::string s_DYNAMIC_CONFIG          = "dynamic";
+static const std::string s_DYNAMIC_VERTICES_CONFIG = "dynamicVertices";
+static const std::string s_QUERY_CONFIG            = "queryFlags";
 
 //------------------------------------------------------------------------------
 
@@ -80,19 +86,15 @@ void SModelSeries::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    if (config.count("autoresetcamera"))
+    if (config.count(s_AUTORESET_CAMERA_CONFIG))
     {
         m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 
-    if (config.count("material"))
-    {
-        m_materialTemplateName = config.get<std::string>("material");
-    }
-
-    m_isDynamic         = config.get<bool>("dynamic", m_isDynamic);
-    m_isDynamicVertices = config.get<bool>("dynamicVertices", m_isDynamicVertices);
-    m_queryFlags        = config.get<std::uint32_t>("queryFlags", m_queryFlags);
+    m_materialTemplateName = config.get<std::string>(s_MATERIAL_CONFIG, m_materialTemplateName);
+    m_isDynamic            = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
+    m_isDynamicVertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
+    m_queryFlags           = config.get<std::uint32_t>(s_QUERY_CONFIG, m_queryFlags);
 }
 
 //------------------------------------------------------------------------------

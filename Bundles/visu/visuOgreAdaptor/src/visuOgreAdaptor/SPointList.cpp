@@ -49,7 +49,7 @@
 
 #include <cstdint>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SPointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SPointList, ::fwData::PointList )
 //-----------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
@@ -58,12 +58,21 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwServices::IService::KeyType s_POINTLIST_INPUT    = "pointList";
-static const ::fwServices::IService::KeyType s_MESH_INPUT         = "mesh";
-static const ::fwServices::IService::KeyType s_RADIUS             = "radius";
-static const ::fwServices::IService::KeyType s_DISPLAY_LABEL_BOOL = "displayLabel";
-static const ::fwServices::IService::KeyType s_CHARACTER_HEIGHT   = "charHeight";
-static const ::fwServices::IService::KeyType s_LABEL_COLOR        = "labelColor";
+
+static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
+static const ::fwServices::IService::KeyType s_MESH_INPUT      = "mesh";
+
+static const std::string s_COLOR_CONFIG             = "color";
+static const std::string s_VISIBLE_CONFIG           = "visible";
+static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
+static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
+static const std::string s_FIXED_SIZE_CONFIG        = "fixedSize";
+static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
+static const std::string s_QUERY_CONFIG             = "queryFlags";
+static const std::string s_RADIUS_CONFIG            = "radius";
+static const std::string s_DISPLAY_LABEL_CONFIG     = "displayLabel";
+static const std::string s_CHARACTER_HEIGHT_CONFIG  = "charHeight";
+static const std::string s_LABEL_COLOR_CONFIG       = "labelColor";
 
 //-----------------------------------------------------------------------------
 
@@ -110,45 +119,45 @@ void SPointList::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    const std::string color = config.get<std::string>("color", "");
+    const std::string color = config.get<std::string>(s_COLOR_CONFIG, "");
 
-    const bool visible = config.get<bool>("visible", m_isVisible);
+    const bool visible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
     this->updateVisibility(visible);
 
     SLM_ASSERT("Material not found", m_material);
-    m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
+    m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
-    if(config.count("autoresetcamera"))
+    if(config.count(s_AUTORESET_CAMERA_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG) == "yes";
     }
 
-    if( config.count("materialTemplate"))
+    if( config.count(s_MATERIAL_TEMPLATE_CONFIG))
     {
         // An existing Ogre material will be used for this mesh
         m_customMaterial       = true;
-        m_materialTemplateName = config.get<std::string>("materialTemplate");
+        m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG);
     }
-    else if(config.get("fixedSize", false))
+    else if(config.get(s_FIXED_SIZE_CONFIG, false))
     {
         m_materialTemplateName = "Billboard_FixedSize";
     }
 
     // The mesh adaptor will pass the texture name to the created material adaptor
-    if ( config.count("textureName"))
+    if ( config.count(s_TEXTURE_NAME_CONFIG))
     {
-        m_textureName = config.get<std::string>("textureName");
+        m_textureName = config.get<std::string>(s_TEXTURE_NAME_CONFIG);
     }
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_queryFlags   = config.get<std::uint32_t>("queryFlags", m_queryFlags);
-    m_radius       = config.get(s_RADIUS, 1.f);
-    m_displayLabel = config.get(s_DISPLAY_LABEL_BOOL, m_displayLabel);
-    m_charHeight   = config.get(s_CHARACTER_HEIGHT, m_charHeight);
+    m_queryFlags   = config.get<std::uint32_t>(s_QUERY_CONFIG, m_queryFlags);
+    m_radius       = config.get(s_RADIUS_CONFIG, 1.f);
+    m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
+    m_charHeight   = config.get(s_CHARACTER_HEIGHT_CONFIG, m_charHeight);
 
-    const std::string labelColor = config.get(s_LABEL_COLOR, "#ffffff");
+    const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
     m_labelColor = ::fwData::Color::New();
     m_labelColor->setRGBA(labelColor);
 }

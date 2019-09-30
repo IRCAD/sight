@@ -37,12 +37,15 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SReconstruction, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SReconstruction, ::fwData::Reconstruction)
 
 const ::fwCom::Slots::SlotKeyType SReconstruction::s_CHANGE_MESH_SLOT = "changeMesh";
-const ::fwCom::Slots::SlotKeyType SReconstruction::s_VISIBILITY_SLOT  = "modifyVisibility";
+const ::fwCom::Slots::SlotKeyType SReconstruction::s_VISIBILITY_SLOT = "modifyVisibility";
 
 static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
+
+static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
+static const std::string s_QUERY_CONFIG            = "queryFlags";
 
 //------------------------------------------------------------------------------
 
@@ -66,12 +69,14 @@ void SReconstruction::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
-    if (config.count("autoresetcamera"))
+    this->setTransformId(config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                 this->getID() + "_transform"));
+    if (config.count(s_AUTORESET_CAMERA_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG) == "yes";
     }
+
+    m_queryFlags = config.get<std::uint32_t>(s_QUERY_CONFIG, m_queryFlags);
 }
 
 //------------------------------------------------------------------------------
