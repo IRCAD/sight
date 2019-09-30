@@ -77,7 +77,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(SCreateActivity, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQT_API SCreateActivity() noexcept;

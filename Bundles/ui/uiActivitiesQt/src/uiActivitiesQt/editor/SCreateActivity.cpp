@@ -114,7 +114,7 @@ void SCreateActivity::configuring()
 
 void SCreateActivity::starting()
 {
-    fwGui::IGuiContainerSrv::create();
+    ::fwGui::IGuiContainerSrv::create();
 
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
@@ -141,15 +141,16 @@ void SCreateActivity::starting()
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);
 
     size_t indexButton = 0;
-    size_t numCols     = static_cast<size_t>(std::ceil(std::sqrt(static_cast<float>(m_activitiesInfo.size()))));
-    int numRows        = static_cast<int>(std::floor(std::sqrt(static_cast<float>(m_activitiesInfo.size()))));
-    numCols = numCols + numCols + 1;
+    const float rows   = std::sqrt(static_cast<float>(m_activitiesInfo.size()));
+    int numCols        = static_cast<int>(std::ceil(rows));
+    const int numRows  = static_cast<int>(std::floor(rows));
+    numCols = 2 * numCols + 1;
 
     QWidget* const container = qtContainer->getQtContainer();
     container->setObjectName("activities");
-    std::string styleGrid("QGridLayout#activities {"
-                          "border-width: 4px;"
-                          "}");
+    const std::string styleGrid("QGridLayout#activities {"
+                                "border-width: 4px;"
+                                "}");
     container->setStyleSheet(QString::fromUtf8(styleGrid.c_str()));
 
     QGridLayout* activitiesLayout = new QGridLayout();
@@ -189,7 +190,7 @@ void SCreateActivity::starting()
 
         activitiesLayout->addWidget(label, i + 1, j + 1);
         j += 2;
-        if(j == static_cast<int>(numCols) - 1 )
+        if(j == numCols - 1 )
         {
             activitiesLayout->setColumnMinimumWidth(j, 10);
             activitiesLayout->setColumnStretch(j, 5);
@@ -251,17 +252,17 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
     {
         const bool isIncludeMode = m_filterMode == "include";
 
-        for(ActivityInfoContainer::const_iterator iter = infos.begin(); iter != infos.end(); ++iter)
+        for(const auto& info: infos)
         {
-            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), iter->id);
+            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
 
             if(keyIt != m_keys.end() && isIncludeMode)
             {
-                configs.push_back(*iter);
+                configs.push_back(info);
             }
             else if(keyIt == m_keys.end() && !isIncludeMode)
             {
-                configs.push_back(*iter);
+                configs.push_back(info);
             }
         }
     }
