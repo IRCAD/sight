@@ -25,6 +25,7 @@ set( REQUIREMENTS
     uiGenericQt
     uiMedDataQt
     uiPreferences
+    uiActivitiesQt
 
     2DVisualizationActivity
     3DVisualizationActivity

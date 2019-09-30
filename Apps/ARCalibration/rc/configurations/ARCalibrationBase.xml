@@ -107,7 +107,7 @@
         </service>
 
         <!-- Action to create/update an activity. -->
-        <service uid="actionNewActivity" type="::activities::action::SCreateActivity">
+        <service uid="actionNewActivity" type="::uiActivitiesQt::action::SCreateActivity">
             <in key="series" uid="selections" />
             <filter>
                 <mode>include</mode>

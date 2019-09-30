@@ -29,7 +29,7 @@
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="action_newActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_newActivity" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>

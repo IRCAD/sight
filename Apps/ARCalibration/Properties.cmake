@@ -8,6 +8,8 @@ set( REQUIREMENTS
     arDataReg
     servicesReg
 
+    ctrlSelection
+
     patchMedicalData
     arPatchMedicalData
 
@@ -21,6 +23,7 @@ set( REQUIREMENTS
     uiIO
     uiGenericQt
     uiMedDataQt
+    uiActivitiesQt
 
     media
     arMedia

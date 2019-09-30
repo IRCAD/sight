@@ -21,6 +21,7 @@ set( REQUIREMENTS
     uiIO
     uiGenericQt
     uiMedDataQt
+    uiActivitiesQt
     appXml
     activities
     ctrlSelection
