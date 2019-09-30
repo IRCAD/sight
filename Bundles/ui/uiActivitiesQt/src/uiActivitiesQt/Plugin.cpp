@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,16 @@
  *
  ***********************************************************************/
 
-#include "activities/Plugin.hpp"
+#include "uiActivitiesQt/Plugin.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace activities
+namespace uiActivitiesQt
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::activities::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiActivitiesQt::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -39,15 +39,12 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwActivities::registry::Activities::getDefault()->parseBundleInformation();
 }
 
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
-    // Clear all operator configurations
-    ::fwActivities::registry::Activities::getDefault()->clearRegistry();
 }
 
-} // namespace activities
+} // namespace uiActivitiesQt

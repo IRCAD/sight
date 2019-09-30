@@ -22,22 +22,18 @@
 
 #pragma once
 
-#include "activities/config.hpp"
+#include "uiActivitiesQt/config.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
 
 #include <fwGui/editor/IEditor.hpp>
 
-#ifdef KEEP_OLD_SERVICE
-
 #include <QButtonGroup>
 #include <QObject>
 #include <QPointer>
 
-#endif
-
-namespace activities
+namespace uiActivitiesQt
 {
 namespace editor
 {
@@ -59,7 +55,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="editor_newActivity" type="::activities::editor::SCreateActivity" >
+   <service uid="editor_newActivity" type="::uiActivitiesQt::editor::SCreateActivity" >
        <filter>
            <mode>include</mode>
            <id>2DVisualizationActivity</id>
@@ -74,36 +70,29 @@ namespace editor
  *      (exclude).
  *    - \b id: id of the activity
  */
-#ifdef KEEP_OLD_SERVICE
-class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
-                                             public ::fwGui::editor::IEditor
-#else
-class ACTIVITIES_CLASS_API SCreateActivity
-#endif
+class UIACTIVITIESQT_CLASS_API SCreateActivity : public QObject,
+                                                 public ::fwGui::editor::IEditor
 {
-#ifdef KEEP_OLD_SERVICE
 Q_OBJECT;
-#endif
+
 public:
 
-#ifdef KEEP_OLD_SERVICE
     fwCoreServiceMacro(SCreateActivity, ::fwGui::editor::IEditor)
-#endif
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SCreateActivity() noexcept;
+    UIACTIVITIESQT_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SCreateActivity() noexcept;
-#ifdef KEEP_OLD_SERVICE
+    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept;
+
     /**
      * @name Signals API
      * @{
      */
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
+    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
     typedef ::fwCom::Signal< void (std::string) > ActivityIDSelectedSignalType;
 
-    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_LOAD_REQUESTED_SIG;
+    UIACTIVITIESQT_API static const ::fwCom::Signals::SignalKeyType s_LOAD_REQUESTED_SIG;
     typedef ::fwCom::Signal< void () > LoadRequestedSignalType;
     /// @}
 
@@ -154,8 +143,7 @@ private:
 
     /// Pointer on the buttons group
     QPointer<QButtonGroup> m_buttonGroup;
-#endif
 };
 
 } // namespace editor
-} // namespace activities
+} // namespace uiActivitiesQt
