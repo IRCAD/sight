@@ -93,12 +93,11 @@ protected:
            </registry>
        </service>
        @endcode
-     * - \<style\> \</style\> : (optional) describe the style of the tool button (possible values: ToolButtonIconOnly/
-     * ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon/ToolButtonFollowStyle )
      * - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
      *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
-     *     - \b style: (optional, default=ToolButtonIconOnly):
+     *     - \b style: (optional, default=ToolButtonIconOnly):  describe the style of the tool button (possible values:
+     * ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon/ToolButtonFollowStyle )
      * - \<registry\> \</registry\> : (mandatory) describe the service management.
      *   - \<menuItem\> represents IActionSrv
      *   - \<menu\> represents IMenuSrv
