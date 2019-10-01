@@ -53,27 +53,26 @@ class PointList;
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassMacro(Image, ::fwData::Object, ::fwData::factory::New< Image >);
-    fwCoreAllowSharedFromThis();
-    fwCampMakeFriendDataMacro((fwData)(Image));
+    fwCoreClassMacro(Image, ::fwData::Object, ::fwData::factory::New< Image >)
+    fwCoreAllowSharedFromThis()
+    fwCampMakeFriendDataMacro((fwData)(Image))
 
-    /**
-     * @brief Image size type
-     */
-    typedef ::fwData::Array::SizeType SizeType;
+    /// Image format
+    enum class PixelFormat
+    {
+        UNDEFINED = 0,
+        RGB,           ///< Image with 3 component RGB.
+        RGBA,          ///< Image with 4 component RGBA.
+        BGR,           ///< Image with 3 component BGR.
+        BGRA,          ///< Image with 4 component BGRA.
+        GRAY_SCALE     ///< Image with 1 component.
+    };
 
-    /**
-     * @brief Image spacing type
-     */
-    typedef std::vector< double > SpacingType;
+    typedef std::array<size_t, 3> Size;
+    typedef std::array<double, 3> Origin;
+    typedef std::array<double, 3> Spacing;
 
-    /**
-     * @brief Image origin type
-     */
-    typedef std::vector< double > OriginType;
-
-    typedef SizeType::value_type IndexType;
-    typedef size_t BufferIndexType;
+    typedef Size::value_type IndexType;
     typedef std::uint8_t BufferType;
     typedef ::boost::shared_array< BufferType > SharedArray;
 
@@ -86,7 +85,7 @@ public:
     /**
      * @brief Destructor
      */
-    FWDATA_API virtual ~Image() noexcept;
+    FWDATA_API virtual ~Image() noexcept override;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
@@ -97,30 +96,32 @@ public:
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     FWDATA_API void copyInformation( Image::csptr _source );
 
-    /// Number of dimension of the image (3 for 3D image)
+    /**
+     * @brief Get image spacing
+     * @todo Rename to getSpacing when the deprecated API is removed
+     */
+    const Spacing& getSpacing2() const;
+    /// Set image spacing
+    void setSpacing(const Spacing& spacing);
+
+    /**
+     * @brief Get image origin
+     * @todo Rename to getOrigin when the deprecated API is removed
+     */
+    const Origin& getOrigin2() const;
+    /// Set image origin
+    void setOrigin(const Origin& origin);
+
+    /**
+     * @brief Get image size
+     * @todo Rename to getSize when the deprecated API is removed
+     */
+    const Size& getSize2() const;
+    /// Set image size
+    void setSize(const Size& size);
+
+    /// Number of dimensions of the image (3 for 3D image)
     FWDATA_API size_t getNumberOfDimensions() const;
-
-    /** @{
-     * @brief get/set image spacing
-     */
-
-    FWDATA_API const SpacingType& getSpacing() const;
-    FWDATA_API void setSpacing(const SpacingType& spacing);
-    /// @}
-
-    /** @{
-     *  @brief get/set image origin
-     */
-    FWDATA_API const OriginType& getOrigin() const;
-    FWDATA_API void setOrigin(const OriginType& origin);
-    /// @}
-
-    /** @{
-     * @brief get/set image size
-     */
-    FWDATA_API const SizeType& getSize() const;
-    FWDATA_API void setSize(const SizeType& size);
-    /// @}
 
     /** @{
      *  @brief Get/set preferred window center
@@ -145,18 +146,6 @@ public:
     void setNumberOfComponents(size_t val);
     /// @}
 
-    /**
-     * @brief set data array
-     *
-     * @param[in] array data array
-     * @param[in] copyArrayInfo if true, the image will copy the size and type information from the array
-     *
-     */
-    FWDATA_API void setDataArray(::fwData::Array::sptr array, bool copyArrayInfo = true);
-
-    ///get data array
-    FWDATA_API ::fwData::Array::sptr getDataArray() const;
-
     /** @{
      * @brief get/set image type
      */
@@ -165,10 +154,8 @@ public:
     FWDATA_API ::fwTools::Type getType() const;
     /// @}
 
-    /// get a DynamicType for retrocompatibility
-    FWDATA_API ::fwTools::DynamicType getPixelType() const;
-
-    /** @{
+    /**
+       @{
      * @brief Allocate image
      *
      * If the data array owns its buffer, these methods will always work (until it remain free memory)
@@ -179,9 +166,11 @@ public:
      * @return Allocated size in bytes
      */
     FWDATA_API size_t allocate();
-    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                               const ::fwTools::Type& type, size_t numberOfComponents = 1);
-    FWDATA_API size_t allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents = 1);
+
+    FWDATA_API size_t allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format,
+                               size_t numberOfComponents = 1);
+    FWDATA_API size_t allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format,
+                               size_t numberOfComponents = 1);
     /// @}
 
     /// @brief return image size in bytes
@@ -241,28 +230,200 @@ public:
      * @}
      */
 
-protected:
+    template <typename TYPE>
+    using Iterator = Array::IteratorBase<TYPE, false>;
+    template <typename TYPE>
+    using ConstIterator = Array::IteratorBase<TYPE, true>;
+
+    /**
+     * @brief Returns the begin/end iterators to the image buffer, cast to T
+     *
+     * Iterate through all the element of the buffer.
+     *
+     * @warning Print a warning if T is different from the array type
+     * @note These functions lock the buffer
+     * @{
+     */
+    template< typename T > Iterator<T> begin();
+    template< typename T > Iterator<T> end();
+    template< typename T > ConstIterator<T> begin() const;
+    template< typename T > ConstIterator<T> end() const;
+    /// @}
+    /**
+     * @brief Returns the begin/end iterators to the array buffer, cast to char
+     *
+     * Iterate through all the element of the buffer.
+     *
+     * @note These functions lock the buffer
+     * @{
+     */
+    Iterator<char> begin();
+    Iterator<char> end();
+    ConstIterator<char> begin() const;
+    ConstIterator<char> end() const;
+    /// @}
+
+    ///
+    /// @{
+    /// Returns image buffer
+    FWDATA_API void* getBuffer();
+    FWDATA_API void* getBuffer() const;
+    /// @}
+
+    /** @{
+     *  @brief Get/set pixel format
+     */
+    PixelFormat  getPixelFormat() const;
+    void setPixelFormat(PixelFormat format);
+    /// @}
+
+    /**
+     * @{
+     * @brief Get the value of an element
+     *
+     * @tparam T Type in which the pointer will be returned
+     * @param id Item image index
+     *
+     * @return Buffer value cast to T
+     * @warning This method is slow and should not be used intensively
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception Index out of bounds
+     */
+    template< typename T > T& at(IndexType id);
+    template< typename T > T at(IndexType id) const;
+    /// @}
+    /**
+     * @{
+     * @brief Get the value of an element
+     *
+     * @tparam T Type in which the pointer will be returned
+     *
+     * @return Buffer value cast to T
+     * @warning This method is slow and should not be used intensively
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception Index out of bounds
+     */
+    template< typename T > T& at(IndexType x, IndexType y, IndexType z);
+    template< typename T > T at(IndexType x, IndexType y, IndexType z) const;
+    /// @}
+    ///
+
+    /// Return the pixel value in a std::string
+    FWDATA_API const std::string getPixelAsString(IndexType x,
+                                                  IndexType y,
+                                                  IndexType z );
+
+    /**
+     * @brief Return a lock on the image to prevent from dumping the buffer on the disk
+     *
+     * The buffer cannot be accessed if the image is not locked
+     */
+    FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+
+    // ---------------------------------------
+    // Deprecated API
+    // ---------------------------------------
+
+    /**
+     * @brief Image size type
+     */
+    typedef ::fwData::Array::SizeType SizeType;
+
+    typedef size_t BufferIndexType;
+
+    /**
+     * @brief Image spacing type
+     */
+    typedef std::vector< double > SpacingType;
+
+    /**
+     * @brief Image origin type
+     */
+    typedef std::vector< double > OriginType;
+    /** @{
+     * @brief get/set image spacing
+     */
+
+    FWDATA_API const SpacingType getSpacing() const;
+    FWDATA_API void setSpacing(const SpacingType& spacing);
+    /// @}
+
+    /** @{
+     *  @brief get/set image origin
+     */
+    FWDATA_API const OriginType getOrigin() const;
+    FWDATA_API void setOrigin(const OriginType& origin);
+    /// @}
+
+    /** @{
+     * @brief get/set image size
+     */
+    FWDATA_API const SizeType getSize() const;
+    FWDATA_API void setSize(const SizeType& size);
+    /// @}
+
+    /** @{
+     * @brief Allocate image
+     *
+     * If the data array owns its buffer, these methods will always work (until it remain free memory)
+     * Otherwise an exception is thrown :
+     *  - if m_dataArray does not own it buffer and image's size and type combination do not match anymore array's one
+     *  - if there is no memory left
+     *
+     * @return Allocated size in bytes
+     */
+    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
+                               const ::fwTools::Type& type, size_t numberOfComponents = 1);
+    FWDATA_API size_t allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents = 1);
+    /// @}
+
+    /**
+     * @brief get a DynamicType for retrocompatibility
+     * @deprecated Use getType()
+     */
+    FWDATA_API ::fwTools::DynamicType getPixelType() const;
+
+    /**
+     * @brief set data array
+     *
+     * @param[in] array data array
+     * @param[in] copyArrayInfo if true, the image will copy the size and type information from the array
+     *
+     */
+    FWDATA_API void setDataArray(::fwData::Array::sptr array, bool copyArrayInfo = true);
+
+    ///get data array
+    FWDATA_API ::fwData::Array::sptr getDataArray() const;
+
+private:
+
+    /// Get Pixel buffer
+    FWDATA_API void* getPixelBuffer( IndexType index );
+    FWDATA_API void* getPixelBuffer( IndexType index ) const;
 
     //! Size of the image (in terms of points)
-    SizeType m_size;
-
-    //! type of image pixel
-    ::fwTools::Type m_type;
+    Size m_size{0, 0, 0};
 
     //! An array on the voxel size of the image
-    SpacingType m_spacing;
+    Spacing m_spacing{0., 0., 0.};
 
     //! Origin of the image in 3D repair
-    OriginType m_origin;
+    Origin m_origin{0., 0., 0.};
 
     //! Preferred window center/with
     ///@{
-    double m_windowCenter;
-    double m_windowWidth;
+    double m_windowCenter{0.};
+    double m_windowWidth{0.};
     ///@}
 
     //! Number of components
-    size_t m_numberOfComponents;
+    size_t m_numberOfComponents{1};
+
+    //! type of image pixel
+    ::fwTools::Type m_type{::fwTools::Type::s_UNSPECIFIED_TYPE};
+
+    //! image format
+    PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
 
     //! image buffer
     ::fwData::Array::sptr m_dataArray;
@@ -308,6 +469,127 @@ inline size_t Image::getNumberOfComponents() const
 inline void Image::setNumberOfComponents(size_t val)
 {
     m_numberOfComponents = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Image::setPixelFormat(PixelFormat format)
+{
+    m_pixelFormat = format;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Image::PixelFormat Image::getPixelFormat() const
+{
+    return m_pixelFormat;
+}
+
+//------------------------------------------------------------------------------
+
+inline const Image::Spacing& Image::getSpacing2() const
+{
+    return m_spacing;
+}
+//------------------------------------------------------------------------------
+
+inline void Image::setSpacing(const Spacing& spacing)
+{
+    m_spacing = spacing;
+}
+
+//------------------------------------------------------------------------------
+
+inline const Image::Origin& Image::getOrigin2() const
+{
+    return m_origin;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Image::setOrigin(const Origin& origin)
+{
+    m_origin = origin;
+}
+
+//------------------------------------------------------------------------------
+
+inline const Image::Size& Image::getSize2() const
+{
+    return m_size;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Image::setSize(const Size& size)
+{
+    m_size = size;
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline Image::Iterator<T> Image::begin()
+{
+    return m_dataArray->begin<T>();
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline Image::Iterator<T> Image::end()
+{
+    return m_dataArray->end<T>();
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline Image::ConstIterator<T> Image::begin() const
+{
+    return m_dataArray->begin<T>();
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline Image::ConstIterator<T> Image::end() const
+{
+    return m_dataArray->end<T>();
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline T& Image::at(IndexType id)
+{
+    return *reinterpret_cast<T*>(this->getPixelBuffer(id));
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline T Image::at(IndexType id) const
+{
+    return *reinterpret_cast<T*>(this->getPixelBuffer(id));
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline T& Image::at(IndexType x, IndexType y, IndexType z)
+{
+    const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
+    return *reinterpret_cast<T*>(this->getPixelBuffer(offset));
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline T Image::at(IndexType x, IndexType y, IndexType z) const
+{
+    const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
+    return *reinterpret_cast<T*>(this->getPixelBuffer(offset));
 }
 
 //-----------------------------------------------------------------------------

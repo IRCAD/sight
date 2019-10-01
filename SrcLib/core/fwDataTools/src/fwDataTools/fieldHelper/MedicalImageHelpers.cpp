@@ -23,12 +23,15 @@
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 
 #include "fwDataTools/fieldHelper/Image.hpp"
+#include "fwDataTools/helper/Composite.hpp"
+#include "fwDataTools/helper/Field.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/ResectionDB.hpp>
 #include <fwData/String.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwMath/MeshFunctions.hpp>
 
@@ -214,6 +217,54 @@ bool MedicalImageHelpers::isBufNull(const ::fwData::Image::BufferType* buf, cons
         std::bit_or< ::fwData::Image::BufferType>()
         );
     return isNull;
+}
+
+//------------------------------------------------------------------------------
+
+bool MedicalImageHelpers::checkTransferFunctionPool(const ::fwData::Image::sptr& image)
+{
+    bool fieldIsCreated             = false;
+    const std::string poolFieldName = ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId;
+    ::fwData::Composite::sptr tfPool;
+
+    tfPool = image->getField< ::fwData::Composite >(poolFieldName);
+    // Transfer functions
+    if ( !tfPool )
+    {
+        tfPool = ::fwData::Composite::New();
+
+        // Set in selected image
+        ::fwDataTools::helper::Field fieldHelper(image);
+        fieldHelper.setField(poolFieldName, tfPool);
+        fieldHelper.notify();
+
+        // TF pool is modified
+        fieldIsCreated = true;
+    }
+
+    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    if(tfPool->find(defaultTFName) == tfPool->end())
+    {
+        ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
+        if (image->getWindowWidth() != 0. )
+        {
+            tf->setWindow( image->getWindowWidth() );
+            tf->setLevel( image->getWindowCenter() );
+        }
+        else if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        {
+            double min, max;
+            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+            tf->setWLMinMax(wlMinMax);
+        }
+        // Set in TFPool
+        ::fwDataTools::helper::Composite compositeHelper(tfPool);
+        compositeHelper.add(defaultTFName, tf);
+        compositeHelper.notify();
+    }
+
+    return fieldIsCreated;
 }
 
 //------------------------------------------------------------------------------

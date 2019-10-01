@@ -62,60 +62,73 @@ void ImageTest::tearDown()
 
 void ImageTest::testGetterSetter()
 {
-    const size_t DIMENSION = 2;
-    ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
-    double CREFSPACING = 2.5;
-    std::vector<double> VECTORSPACING(DIMENSION, CREFSPACING);
-    double CREFORIGIN = 2.7;
-    std::vector<double> VECTORORIGIN(DIMENSION, CREFORIGIN);
-    const size_t CREFSIZE = 42;
-    const ::fwData::Image::SizeType VECTORSIZE(DIMENSION, CREFSIZE);
-    const double WINDOWCENTER = 10.10;
-    const double WINDOWWIDTH  = 11.34;
+    const size_t DIMENSION                    = 2;
+    const ::fwTools::Type TYPE                = ::fwTools::Type::create("int16");
+    const ::fwData::Image::Spacing SPACING    = {2.5, 2.6};
+    const ::fwData::Image::Origin ORIGIN      = {2.7, 2.8};
+    const ::fwData::Image::Size SIZE          = {42, 43};
+    const double WINDOWCENTER                 = 10.10;
+    const double WINDOWWIDTH                  = 11.34;
+    const ::fwData::Image::PixelFormat FORMAT = ::fwData::Image::PixelFormat::GRAY_SCALE;
+
+    // Old API
+    const ::fwData::Image::SpacingType VECTORSPACING = {2.5, 2.6};
+    const ::fwData::Image::OriginType VECTORORIGIN   = {2.7, 2.8};
+    const ::fwData::Image::SizeType VECTORSIZE       = {42, 43};
 
     // process
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
     img1->setType( TYPE);
-    img1->setSpacing(VECTORSPACING);
-    img1->setOrigin(VECTORORIGIN);
-    img1->setSize(VECTORSIZE);
+    img1->setSpacing(SPACING);
+    img1->setOrigin(ORIGIN);
+    img1->setSize(SIZE);
     img1->setWindowCenter(WINDOWCENTER);
     img1->setWindowWidth( WINDOWWIDTH );
+    img1->setPixelFormat(FORMAT );
 
     // check
-    CPPUNIT_ASSERT_EQUAL(img1->getNumberOfDimensions(), DIMENSION);
-
+    CPPUNIT_ASSERT_EQUAL(DIMENSION, img1->getNumberOfDimensions());
     CPPUNIT_ASSERT(img1->getType() == TYPE);
+    CPPUNIT_ASSERT(img1->getSpacing2() == SPACING);
+    CPPUNIT_ASSERT(img1->getOrigin2() == ORIGIN);
+    CPPUNIT_ASSERT(img1->getSize2() == SIZE);
+    CPPUNIT_ASSERT_EQUAL(WINDOWCENTER, img1->getWindowCenter());
+    CPPUNIT_ASSERT_EQUAL(WINDOWWIDTH, img1->getWindowWidth());
+    CPPUNIT_ASSERT_EQUAL(FORMAT, img1->getPixelFormat());
 
-    CPPUNIT_ASSERT(img1->getSpacing() == VECTORSPACING);
+    // Old API
 
-    CPPUNIT_ASSERT(img1->getOrigin() == VECTORORIGIN);
+    ::fwData::Image::sptr img2 = ::fwData::Image::New();
+    img2->setType( TYPE);
+    img2->setSpacing(VECTORSPACING);
+    img2->setOrigin(VECTORORIGIN);
+    img2->setSize(VECTORSIZE);
+    img2->setWindowCenter(WINDOWCENTER);
+    img2->setWindowWidth( WINDOWWIDTH );
 
-    CPPUNIT_ASSERT(img1->getSize() == VECTORSIZE);
-
-    CPPUNIT_ASSERT_EQUAL(img1->getWindowCenter(), WINDOWCENTER);
-
-    CPPUNIT_ASSERT_EQUAL(img1->getWindowWidth(), WINDOWWIDTH);
+    // check
+    CPPUNIT_ASSERT_EQUAL(DIMENSION, img2->getNumberOfDimensions());
+    CPPUNIT_ASSERT(img2->getType() == TYPE);
+    CPPUNIT_ASSERT(img2->getSpacing() == VECTORSPACING);
+    CPPUNIT_ASSERT(img2->getOrigin() == VECTORORIGIN);
+    CPPUNIT_ASSERT(img2->getSize() == VECTORSIZE);
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::testAllocation()
 {
-    const std::uint8_t DIMENSION = 3;
-    ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
-    ::fwData::Image::SizeType VECTORSIZE(DIMENSION);
-    VECTORSIZE[0] = 14;
-    VECTORSIZE[1] = 15;
-    VECTORSIZE[2] = 26;
+    ::fwTools::Type TYPE                 = ::fwTools::Type::create("int16");
+    ::fwData::Image::Size IMG_SIZE       = {14, 15, 26};
+    ::fwData::Image::SizeType VECTORSIZE = {14, 15, 26};
     size_t SIZE = 14*15*26*TYPE.sizeOf();
 
     // process
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
     img1->setType(TYPE);
-    img1->setSize(VECTORSIZE);
+    img1->setSize(IMG_SIZE);
 
     img1->allocate();
 
@@ -126,22 +139,23 @@ void ImageTest::testAllocation()
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
 
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
-    img2->allocate(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE);
+    img2->allocate(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     array = img2->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
     CPPUNIT_ASSERT(array->getType() == TYPE);
-    CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE);
-    CPPUNIT_ASSERT(img2->getSizeInBytes() == SIZE);
+    CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE, img2->getSizeInBytes());
 
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
-    img3->allocate(VECTORSIZE, TYPE);
+    img3->allocate(IMG_SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     array = img3->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
     CPPUNIT_ASSERT(array->getType() == TYPE);
-    CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE);
-    CPPUNIT_ASSERT(img3->getSizeInBytes() == SIZE);
+    CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE, img3->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(::fwData::Image::PixelFormat::GRAY_SCALE, img3->getPixelFormat());
 }
 
 //------------------------------------------------------------------------------
@@ -227,66 +241,63 @@ void ImageTest::testPixelType()
 void ImageTest::testSetGetPixel()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwDataTools::helper::Image imgHelper(img);
 
-    const std::uint8_t DIMENSION = 3;
-    ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
-    ::fwData::Image::SizeType VECTORSIZE(DIMENSION);
-    VECTORSIZE[0] = 10;
-    VECTORSIZE[1] = 20;
-    VECTORSIZE[2] = 30;
+    ::fwTools::Type TYPE       = ::fwTools::Type::create("int16");
+    ::fwData::Image::Size SIZE = {10, 20, 30};
 
-    img->allocate(VECTORSIZE, TYPE);
+    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
-    ::fwData::Array::sptr array = img->getDataArray();
-    ::fwDataTools::helper::Array arrayHelper(array);
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
+
+    auto lock    = img->lock();
+    auto iter    = img->begin<std::int16_t>();
+    auto iterEnd = img->end<std::int16_t>();
 
     // test 1 : use getPixelBuffer
-    short count = 0;
-    short* iter = arrayHelper.begin<short>();
-    for (; iter != arrayHelper.end<short>(); ++iter)
+    std::int16_t count = 0;
+    for (; iter != iterEnd; ++iter)
     {
         *iter = count++;
     }
 
-    for (size_t x = 0; x < VECTORSIZE[0]; ++x)
+    for (size_t x = 0; x < SIZE[0]; ++x)
     {
-        for (size_t y = 0; y < VECTORSIZE[1]; ++y)
+        for (size_t y = 0; y < SIZE[1]; ++y)
         {
-            for (size_t z = 0; z < VECTORSIZE[2]; ++z)
+            for (size_t z = 0; z < SIZE[2]; ++z)
             {
-                const ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
-                const short val                        = static_cast<short>(index);
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(x, y, z)));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
+                const ::fwData::Image::IndexType index = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
+                const std::int16_t val                 = static_cast<std::int16_t>(index);
+                CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(x, y, z));
+                CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
+                CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
 
                 std::stringstream ss;
                 ss << val;
-                CPPUNIT_ASSERT_EQUAL( ss.str(), imgHelper.getPixelAsString(x, y, z));
+                CPPUNIT_ASSERT_EQUAL( ss.str(), img->getPixelAsString(x, y, z));
             }
         }
     }
 
     // test 2 : use setPixelBuffer
-    for (size_t x = 0; x < VECTORSIZE[0]; ++x)
+    for (size_t x = 0; x < SIZE[0]; ++x)
     {
-        for (size_t y = 0; y < VECTORSIZE[1]; ++y)
+        for (size_t y = 0; y < SIZE[1]; ++y)
         {
-            for (size_t z = 0; z < VECTORSIZE[2]; ++z)
+            for (size_t z = 0; z < SIZE[2]; ++z)
             {
-                const ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
-                short val                              = static_cast<short>(index * 2);
-                imgHelper.setPixelBuffer(index, reinterpret_cast< ::fwData::Image::BufferType* >(&val));
+                const auto index = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
+                std::int16_t val = static_cast<std::int16_t>(index * 2);
+                img->at<std::int16_t>(index) = val;
             }
         }
     }
 
     count = 0;
-    iter  = arrayHelper.begin<short>();
-    for (; iter != arrayHelper.end<short>(); ++iter)
+    auto iter2 = img->begin<std::int16_t>();
+    for (; iter2 != iterEnd; ++iter2)
     {
-        CPPUNIT_ASSERT_EQUAL(static_cast<short>(count++ *2), *iter);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), *iter2);
     }
 }
 

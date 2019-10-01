@@ -58,10 +58,6 @@ const ::fwCom::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "tran
 //------------------------------------------------------------------------------
 
 Image::Image(::fwData::Object::Key) :
-    m_type(),
-    m_windowCenter(0.),
-    m_windowWidth(0.),
-    m_numberOfComponents(1),
     m_dataArray( ::fwData::Array::New() )
 {
     newSignal< BufferModifiedSignalType >(s_BUFFER_MODIFIED_SIG);
@@ -81,7 +77,6 @@ Image::Image(::fwData::Object::Key) :
 
 Image::~Image() noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -121,29 +116,6 @@ void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
-::fwData::Array::sptr Image::getDataArray() const
-{
-    return m_dataArray;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
-{
-    if( !array )
-    {
-        array = ::fwData::Array::New();
-    }
-    m_dataArray = array;
-    if (copyArrayInfo)
-    {
-        m_size = array->getSize();
-        m_type = array->getType();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 size_t Image::allocate()
 {
     if (!m_dataArray)
@@ -152,69 +124,46 @@ size_t Image::allocate()
     }
 
     SLM_ASSERT( "NumberOfComponents must be > 0", m_numberOfComponents > 0 );
-    return m_dataArray->resize(m_type, m_size, m_numberOfComponents, true);
+
+    const size_t imageDims = this->getNumberOfDimensions();
+
+    ::fwData::Array::SizeType arraySize(imageDims);
+    size_t count = 0;
+    if (m_numberOfComponents > 1)
+    {
+        arraySize.resize(imageDims+1);
+        arraySize[0] = m_numberOfComponents;
+        count        = 1;
+    }
+
+    for (size_t i = 0; i < imageDims; ++i)
+    {
+        arraySize[count] = m_size[i];
+        ++count;
+    }
+    return m_dataArray->resize(arraySize, m_type, true);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                       const ::fwTools::Type& type, size_t numberOfComponents)
+size_t Image::allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format,
+                       size_t numberOfComponents)
 {
     m_size               = { x, y, z};
     m_type               = type;
+    m_pixelFormat        = format;
     m_numberOfComponents = numberOfComponents;
     return allocate();
 }
-
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents)
+size_t Image::allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format, size_t numberOfComponents)
 {
     m_size               = size;
     m_type               = type;
+    m_pixelFormat        = format;
     m_numberOfComponents = numberOfComponents;
     return allocate();
-}
-
-//------------------------------------------------------------------------------
-
-::fwTools::DynamicType Image::getPixelType() const
-{
-    typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
-
-    static DynamicTypeMapType dynamicTypeMap = ::boost::assign::map_list_of
-                                                   (::fwTools::Type().string(), ::fwTools::DynamicType() )
-                                                   ("uint8", ::fwTools::makeDynamicType<std::string>("unsigned char")  )
-                                                   ("uint16",
-                                                   ::fwTools::makeDynamicType<std::string>("unsigned short") )
-                                                   ("uint32",
-                                                   ::fwTools::makeDynamicType<std::string>("unsigned int")   )
-                                                   ("int8",  ::fwTools::makeDynamicType<std::string>("signed char")    )
-                                                   ("int16",
-                                                   ::fwTools::makeDynamicType<std::string>("signed short")   )
-                                                   ("int32",
-                                                   ::fwTools::makeDynamicType<std::string>("signed int")     )
-                                                   ("float",
-                                                   ::fwTools::makeDynamicType<std::string>("float")          )
-                                                   ("double",
-                                                   ::fwTools::makeDynamicType<std::string>("double")         )
-
-//special case for dynamic type : 64bits integers was not managed by dynamic type.
-#if ( INT_MAX < LONG_MAX )
-                                               ("uint64", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
-                                                   ("int64",
-                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
-#else
-                                               ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
-                                                   ("int32",
-                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
-                                                   ("uint64", ::fwTools::DynamicType() )
-                                                   ("int64",  ::fwTools::DynamicType() )
-#endif
-    ;
-
-    ::fwTools::DynamicType dtype = dynamicTypeMap[getType().string()];
-    return dtype;
 }
 
 //------------------------------------------------------------------------------
@@ -255,57 +204,27 @@ void Image::copyInformation( Image::csptr _source )
 
 size_t Image::getNumberOfDimensions() const
 {
-    return m_size.size();
-}
+    size_t dims = 0;
 
-//------------------------------------------------------------------------------
+    for (const auto& val: m_size)
+    {
+        if(val > 0)
+        {
+            ++dims;
+        }
+        else
+        {
+            break;
+        }
+    }
 
-const Image::SpacingType& Image::getSpacing() const
-{
-    return m_spacing;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setSpacing(const SpacingType& spacing)
-{
-    m_spacing = spacing;
-}
-
-//------------------------------------------------------------------------------
-
-const Image::OriginType& Image::getOrigin() const
-{
-    return m_origin;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setOrigin(const OriginType& origin)
-{
-    m_origin = origin;
-}
-
-//------------------------------------------------------------------------------
-
-const Image::SizeType& Image::getSize() const
-{
-    return m_size;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setSize(const SizeType& size)
-{
-    m_size = size;
+    return dims;
 }
 
 //------------------------------------------------------------------------------
 
 size_t Image::getSizeInBytes() const
 {
-    SLM_TRACE_FUNC();
-
     size_t size = std::accumulate(
         m_size.begin(), m_size.end(),
         static_cast<size_t>(m_type.sizeOf()) * m_numberOfComponents,
@@ -317,13 +236,310 @@ size_t Image::getSizeInBytes() const
 
 size_t Image::getAllocatedSizeInBytes() const
 {
-    SLM_TRACE_FUNC();
     size_t size = 0;
     if (m_dataArray)
     {
         size = m_dataArray->getSizeInBytes();
     }
     return size;
+}
+
+//------------------------------------------------------------------------------
+
+::fwMemory::BufferObject::Lock Image::lock() const
+{
+    return m_dataArray->lock();
+}
+
+//-----------------------------------------------------------------------------
+
+void* Image::getBuffer()
+{
+    return m_dataArray->getBuffer();
+}
+
+//-----------------------------------------------------------------------------
+
+void* Image::getBuffer() const
+{
+    return m_dataArray->getBuffer();
+}
+
+//------------------------------------------------------------------------------
+
+void* Image::getPixelBuffer( IndexType index )
+{
+    size_t imagePixelSize    = m_type.sizeOf() * m_numberOfComponents;
+    BufferType* buf          = static_cast < BufferType* > (this->getBuffer());
+    BufferIndexType bufIndex = index * imagePixelSize;
+    return buf + bufIndex;
+}
+
+//------------------------------------------------------------------------------
+
+void* Image::getPixelBuffer( IndexType index ) const
+{
+    size_t imagePixelSize    = m_type.sizeOf() * m_numberOfComponents;
+    BufferType* buf          = static_cast < BufferType* > (this->getBuffer());
+    BufferIndexType bufIndex = index * imagePixelSize;
+    return buf + bufIndex;
+}
+
+//------------------------------------------------------------------------------
+
+const std::string Image::getPixelAsString(IndexType x,
+                                          IndexType y,
+                                          IndexType z )
+{
+    const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
+    return m_type.toString(this->getPixelBuffer(offset));
+}
+
+//------------------------------------------------------------------------------
+
+Image::Iterator<char> Image::begin()
+{
+    return m_dataArray->begin();
+}
+
+//------------------------------------------------------------------------------
+
+Image::Iterator<char> Image::end()
+{
+    return m_dataArray->end();
+}
+
+//------------------------------------------------------------------------------
+
+Image::ConstIterator<char> Image::begin() const
+{
+    return m_dataArray->begin();
+}
+
+//------------------------------------------------------------------------------
+
+Image::ConstIterator<char> Image::end() const
+{
+    return m_dataArray->end();
+}
+
+//------------------------------------------------------------------------------
+// Deprecated API
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Image::getDataArray() const
+{
+    FW_DEPRECATED_MSG("Image's Array can no longer be accessed.", "22.0")
+
+    return m_dataArray;
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
+{
+    FW_DEPRECATED_MSG("Image's Array can no longer be accessed.", "22.0")
+
+    if( !array )
+    {
+        array = ::fwData::Array::New();
+    }
+    m_dataArray = array;
+    if (copyArrayInfo)
+    {
+        FW_RAISE_EXCEPTION_IF(::fwData::Exception("Data array must have a maximum of 3 dimensions"),
+                              array->getNumberOfDimensions() > 3);
+
+        const ::fwData::Array::SizeType arraySize = array->getSize();
+        for (size_t i = 0; i < arraySize.size(); ++i)
+        {
+            m_size[i] = arraySize[i];
+        }
+        m_type = array->getType();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
+                       const ::fwTools::Type& type, size_t numberOfComponents)
+{
+    FW_DEPRECATED("allocate(x, y, z, type, numberOfComponents)",
+                  "allocate(x, y,  z, type, format, numberOfComponents);",
+                  "22.0")
+
+    m_size               = { x, y, z};
+    m_type               = type;
+    m_numberOfComponents = numberOfComponents;
+    return allocate();
+}
+
+//------------------------------------------------------------------------------
+
+size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents)
+{
+    FW_DEPRECATED("allocate(size, type, numberOfComponents)",
+                  "allocate(size, type, format, numberOfComponents);",
+                  "22.0")
+    for (size_t i = 0; i < size.size(); ++i)
+    {
+        m_size[i] = size[i];
+    }
+    m_type               = type;
+    m_numberOfComponents = numberOfComponents;
+    return allocate();
+}
+
+//------------------------------------------------------------------------------
+
+const Image::SpacingType Image::getSpacing() const
+{
+    FW_DEPRECATED_MSG("Spacing parameter in now a std::array<double, 3>, use getSpacing2()", "22.0")
+
+    const size_t dims = this->getNumberOfDimensions();
+    SpacingType spacing(dims);
+    for (size_t i = 0; i < dims; ++i)
+    {
+        spacing[i] = m_spacing[i];
+    }
+    return spacing;
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setSpacing(const SpacingType& spacing)
+{
+    FW_DEPRECATED_MSG("Spacing parameter in now a std::array<double, 3>", "22.0")
+
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Spacing must have a maximum of 3 dimensions"),
+                          spacing.size() > 3);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        if (i < spacing.size())
+        {
+            m_spacing[i] = spacing[i];
+        }
+        else
+        {
+            m_spacing[i] = 0.;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+const Image::OriginType Image::getOrigin() const
+{
+    FW_DEPRECATED_MSG("Origin parameter in now a std::array<double, 3>, use getOrigin2()", "22.0")
+
+    const size_t dims = this->getNumberOfDimensions();
+    OriginType origin(dims);
+    for (size_t i = 0; i < dims; ++i)
+    {
+        origin[i] = m_origin[i];
+    }
+    return origin;
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setOrigin(const OriginType& origin)
+{
+    FW_DEPRECATED_MSG("Origin parameter in now a std::array<double, 3>", "22.0")
+
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Origin must have a maximum of 3 dimensions"),
+                          origin.size() > 3);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        if (i < origin.size())
+        {
+            m_origin[i] = origin[i];
+        }
+        else
+        {
+            m_origin[i] = 0.;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+const Image::SizeType Image::getSize() const
+{
+    FW_DEPRECATED_MSG("Size parameter in now a std::array<size_t, 3>, use getSize2()", "22.0")
+
+    const size_t dims = this->getNumberOfDimensions();
+    SizeType size(dims);
+    for (size_t i = 0; i < dims; ++i)
+    {
+        size[i] = m_size[i];
+    }
+    return size;
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setSize(const SizeType& size)
+{
+    FW_DEPRECATED_MSG("Size parameter in now a std::array<size_t, 3>", "22.0")
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Origin must have a maximum of 3 dimensions"),
+                          size.size() > 3);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        if (i < size.size())
+        {
+            m_size[i] = size[i];
+        }
+        else
+        {
+            m_size[i] = 0;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+::fwTools::DynamicType Image::getPixelType() const
+{
+    FW_DEPRECATED("getPixelType(", "getType()", "22.0")
+    typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
+
+    static DynamicTypeMapType dynamicTypeMap = ::boost::assign::map_list_of
+                                                   (::fwTools::Type().string(), ::fwTools::DynamicType() )
+                                                   ("uint8", ::fwTools::makeDynamicType<std::string>("unsigned char")  )
+                                                   ("uint16",
+                                                   ::fwTools::makeDynamicType<std::string>("unsigned short") )
+                                                   ("uint32",
+                                                   ::fwTools::makeDynamicType<std::string>("unsigned int")   )
+                                                   ("int8",  ::fwTools::makeDynamicType<std::string>("signed char")    )
+                                                   ("int16",
+                                                   ::fwTools::makeDynamicType<std::string>("signed short")   )
+                                                   ("int32",
+                                                   ::fwTools::makeDynamicType<std::string>("signed int")     )
+                                                   ("float",
+                                                   ::fwTools::makeDynamicType<std::string>("float")          )
+                                                   ("double",
+                                                   ::fwTools::makeDynamicType<std::string>("double")         )
+
+//special case for dynamic type : 64bits integers was not managed by dynamic type.
+#if ( INT_MAX < LONG_MAX )
+                                               ("uint64", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
+                                                   ("int64",
+                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
+#else
+                                               ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
+                                                   ("int32",
+                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
+                                                   ("uint64", ::fwTools::DynamicType() )
+                                                   ("int64",  ::fwTools::DynamicType() )
+#endif
+    ;
+
+    ::fwTools::DynamicType dtype = dynamicTypeMap[getType().string()];
+    return dtype;
 }
 
 //------------------------------------------------------------------------------
