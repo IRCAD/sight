@@ -63,7 +63,7 @@ ToolBarLayoutManager::~ToolBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent, std::string toolButtonStyle )
+void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent)
 {
     SLM_TRACE_FUNC();
 
@@ -72,19 +72,19 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
 
     QToolBar* toolBar = m_parent->getQtToolBar();
 
-    if(toolButtonStyle == "ToolButtonTextOnly")
+    if(m_style == "ToolButtonTextOnly")
     {
         toolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
     }
-    else if(toolButtonStyle == "ToolButtonTextBesideIcon")
+    else if(m_style == "ToolButtonTextBesideIcon")
     {
         toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     }
-    else if(toolButtonStyle == "ToolButtonTextUnderIcon")
+    else if(m_style == "ToolButtonTextUnderIcon")
     {
         toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     }
-    else if(toolButtonStyle == "ToolButtonFollowStyle")
+    else if(m_style == "ToolButtonFollowStyle")
     {
         toolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     }

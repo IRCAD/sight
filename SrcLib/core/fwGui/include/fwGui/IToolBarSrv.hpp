@@ -70,9 +70,8 @@ protected:
      * Example of configuration
      * @code{.xml}
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
-            <style>ToolButtonIconOnly</style>
            <gui>
-               <layout hideAction="false">
+               <layout hideAction="false" style="ToolButtonIconOnly">
                    <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/>
                    <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/icons/system.png"/>
                    <separator />
@@ -99,6 +98,7 @@ protected:
      * - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
      *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
+     *     - \b style: (optional, default=ToolButtonIconOnly):
      * - \<registry\> \</registry\> : (mandatory) describe the service management.
      *   - \<menuItem\> represents IActionSrv
      *   - \<menu\> represents IMenuSrv
@@ -132,9 +132,6 @@ private:
 
     /// Flag to hide or disable the actions if the service is stopped
     bool m_hideActions;
-
-    /// String to describe the tool button style
-    std::string m_style{"ToolButtonIconOnly"};
 };
 
 } // namespace fwGui

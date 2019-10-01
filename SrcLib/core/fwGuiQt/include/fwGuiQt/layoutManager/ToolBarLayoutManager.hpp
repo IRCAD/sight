@@ -55,8 +55,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    FWGUIQT_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent,
-                                           std::string toolButtonStyle = "ToolButtonIconOnly" ) override;
+    FWGUIQT_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent ) override;
 
     /**
      * @brief Destroy local toolBars.

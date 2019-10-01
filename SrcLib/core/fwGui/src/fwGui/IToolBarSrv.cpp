@@ -88,19 +88,6 @@ void IToolBarSrv::initialize()
         }
     }
 
-    const auto configTree   = this->getConfigTree();
-    const std::string style = configTree.get< std::string >("style", m_style);
-    if(style == "ToolButtonTextOnly" || style == "ToolButtonTextBesideIcon" ||
-       style == "ToolButtonTextUnderIcon" || style == "ToolButtonFollowStyle")
-    {
-        m_style = style;
-    }
-    else
-    {
-        OSLM_ERROR(
-            "`Style` attribute value must be `ToolButtonIconOnly` or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`");
-    }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -115,7 +102,7 @@ void IToolBarSrv::create()
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
-            m_layoutManager->createLayout(toolBar, m_style);
+            m_layoutManager->createLayout(toolBar);
         })).wait();
 
     m_registrar->manage(m_layoutManager->getMenuItems());
