@@ -59,6 +59,13 @@ const ::fwCom::Slots::SlotKeyType s_NEXT_SLOT       = "next";
 const ::fwCom::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
 const ::fwCom::Slots::SlotKeyType s_SEND_INFO_SLOT  = "sendInfo";
 
+static const std::string s_THEME_CONFIG      = "theme";
+static const std::string s_ACCENT_CONFIG     = "accent";
+static const std::string s_FOREGROUND_CONFIG = "foreground";
+static const std::string s_BACKGROUND_CONFIG = "background";
+static const std::string s_PRIMARY_CONFIG    = "primary";
+static const std::string s_ELEVATION_CONFIG  = "elevation";
+
 //------------------------------------------------------------------------------
 
 SActivitySequencer::SActivitySequencer() noexcept
@@ -95,6 +102,13 @@ void SActivitySequencer::configuring()
         m_activityIds.push_back(it->second.get<std::string>("<xmlattr>.id"));
         m_activityNames.push_back(it->second.get<std::string>("<xmlattr>.name", ""));
     }
+
+    m_theme      = config.get<std::string>(s_THEME_CONFIG, m_theme);
+    m_accent     = config.get<std::string>(s_ACCENT_CONFIG, m_accent);
+    m_foreground = config.get<std::string>(s_FOREGROUND_CONFIG, m_foreground);
+    m_background = config.get<std::string>(s_BACKGROUND_CONFIG, m_background);
+    m_primary    = config.get<std::string>(s_PRIMARY_CONFIG, m_primary);
+    m_elevation  = config.get<std::string>(s_ELEVATION_CONFIG, m_elevation);
 }
 
 //------------------------------------------------------------------------------
@@ -116,17 +130,35 @@ void SActivitySequencer::starting()
     auto engine     = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
-    QColor color = parent->palette().color(QPalette::Background);
-
-    QString style = "light";
-    // styleSheet override QPalette
-    // we assume that styleSheet is the dark style
-    if(!qApp->styleSheet().isEmpty())
+    QColor background;
+    if(m_background == "")
     {
-        color = QColor("#31363b");
-        style = "dark";
+        background = parent->palette().color(QPalette::Background);
+        // styleSheet override QPalette
+        // we assume that styleSheet is the dark style
+        if(!qApp->styleSheet().isEmpty())
+        {
+            background = QColor("#31363b");
+        }
     }
-    m_widget->setClearColor(color);
+    else
+    {
+        background = QColor(QString::fromStdString(m_background));
+    }
+
+    m_widget->setClearColor(background);
+
+    QString theme = QString::fromStdString(m_theme);
+    if(theme.isEmpty())
+    {
+        theme = "light";
+        // styleSheet override QPalette
+        // we assume that styleSheet is the dark style
+        if(!qApp->styleSheet().isEmpty())
+        {
+            theme = "dark";
+        }
+    }
 
     engine->addImportPath(QML_IMPORT_PATH);
 
@@ -146,7 +178,17 @@ void SActivitySequencer::starting()
 
     engine->rootContext()->setContextProperty("activityNameList", activitiesName);
     engine->rootContext()->setContextProperty("widgetWidth", m_widget->width());
-    engine->rootContext()->setContextProperty("style", style);
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_THEME_CONFIG), QColor(theme));
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_ACCENT_CONFIG),
+                                              QString::fromStdString(m_accent));
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_FOREGROUND_CONFIG),
+                                              QString::fromStdString(m_foreground));
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_BACKGROUND_CONFIG),
+                                              QString::fromStdString(m_background));
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_PRIMARY_CONFIG), QString::fromStdString(
+                                                  m_primary));
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_ELEVATION_CONFIG),
+                                              QString::fromStdString(m_elevation));
 
     m_widget->setSource(QUrl::fromLocalFile(QString::fromStdString(path.string())));
 

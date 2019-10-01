@@ -105,6 +105,7 @@ public:
 
     /// Destructor. Do nothing.
     UIACTIVITIESQT_API virtual ~SActivitySequencer() noexcept override;
+
     /**
      * @name Signals API
      * @{
@@ -170,6 +171,13 @@ private:
     std::vector<std::string> m_activityNames;
 
     QPointer<QQuickWidget> m_widget;
+
+    std::string m_theme {""};
+    std::string m_accent {""};
+    std::string m_foreground {""};
+    std::string m_background {""};
+    std::string m_primary {""};
+    std::string m_elevation {""};
 };
 
 } // namespace editor

@@ -22,12 +22,12 @@ Item{
     }
 
     Component.onCompleted: {
-        Material.theme = (style === "light") ? Material.Light : Material.Dark
-        Material.accent = Material.color(Material.Teal, Material.Shade900)
-        Material.foreground =  Material.color(Material.BlueGrey, Material.Shade900)
-        Material.background = Material.background
-        Material.primary = Material.color(Material.Teal)
-        Material.elevation = Material.elevation
+        Material.theme = (theme === "light") ? Material.Light : Material.Dark
+        Material.accent = (accent != "") ? accent : Material.color(Material.Teal, Material.Shade900)
+        Material.foreground =  (foreground != "") ? foreground : Material.color(Material.BlueGrey, Material.Shade900)
+        Material.background = (background != "") ? background : Material.background
+        Material.primary = (primary != "") ? primary : Material.color(Material.Teal)
+        Material.elevation = (elevation != "") ? elevation : Material.elevation
     }
 
     RowLayout {
