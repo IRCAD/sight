@@ -130,10 +130,11 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 # Because of PCH, we need also to specify default visibility in compile options
+# On macOS fwComTest fails without -fvisibility-ms-compat and -fvisibility=hidden
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU>:-fvisibility=hidden;-fvisibility-inlines-hidden>"
     "$<$<CXX_COMPILER_ID:Clang>:-fvisibility=hidden;-fvisibility-inlines-hidden>"
-    "$<$<CXX_COMPILER_ID:AppleClang>:-fvisibility=hidden;-fvisibility-inlines-hidden>"
+    "$<$<CXX_COMPILER_ID:AppleClang>:-fvisibility-ms-compat;-fvisibility-inlines-hidden>"
 )
 
 # Warning level
