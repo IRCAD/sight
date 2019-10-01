@@ -40,7 +40,6 @@ namespace visuOgreQt
 {
 
 int Window::m_counter = 0;
-::Ogre::OverlaySystem* Window::m_ogreOverlaySystem = nullptr;
 
 // ----------------------------------------------------------------------------
 
@@ -69,12 +68,6 @@ Window::~Window()
     destroy();
 }
 
-// ----------------------------------------------------------------------------
-
-void Window::setEnabledOverlays(const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays)
-{
-    m_enabledOverlays = enabledOverlays;
-}
 // ----------------------------------------------------------------------------
 
 void Window::render(QPainter* painter)
@@ -125,7 +118,6 @@ void Window::initialise()
 
     m_ogreRenderWindow->setVisible(true);
     m_ogreRenderWindow->setAutoUpdated(false);
-    m_ogreRenderWindow->addListener(this);
 
     ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
     mgr->registerWindow(m_ogreRenderWindow);
@@ -614,50 +606,11 @@ Ogre::RenderWindow* Window::getOgreRenderWindow()
 
 // ----------------------------------------------------------------------------
 
-Ogre::OverlaySystem* Window::getOgreOverlaySystem()
-{
-    return m_ogreOverlaySystem;
-}
-
-// ----------------------------------------------------------------------------
-
 int Window::getId()
 {
     return m_id;
 }
 
-//-----------------------------------------------------------------------------
-
-void Window::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt)
-{
-    auto overlayIterator = ::Ogre::OverlayManager::getSingleton().getOverlayIterator();
-    for(auto overlayMapElt : overlayIterator)
-    {
-        ::Ogre::Overlay* overlay = overlayMapElt.second;
-
-        if(m_enabledOverlays.find(overlay) != m_enabledOverlays.end())
-        {
-            overlay->show();
-        }
-        else
-        {
-            overlay->hide();
-        }
-    }
-
-    ::Ogre::RenderTargetListener::preViewportUpdate(evt);
-}
-
-//-----------------------------------------------------------------------------
-
-void Window::postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt)
-{
-    for(::Ogre::Overlay* o : m_enabledOverlays)
-    {
-        o->hide();
-    }
-
-    ::Ogre::RenderTargetListener::postViewportUpdate(evt);
-}
+// ----------------------------------------------------------------------------
 
 } // namespace visuOgreQt

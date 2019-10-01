@@ -194,14 +194,6 @@ int RenderWindowInteractorManager::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::setEnabledOverlays(
-    const fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays)
-{
-    m_qOgreWidget->setEnabledOverlays(enabledOverlays);
-}
-
-//-----------------------------------------------------------------------------
-
 void RenderWindowInteractorManager::onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo _info)
 {
     ::fwServices::IService::sptr renderService      = m_renderService.lock();

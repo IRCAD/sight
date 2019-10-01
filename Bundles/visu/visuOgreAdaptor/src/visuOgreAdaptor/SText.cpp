@@ -92,10 +92,9 @@ void SText::starting()
 {
     this->initialize();
 
-    ::fwRenderOgre::SRender::sptr renderSrv = this->getRenderService();
-    renderSrv->makeCurrent();
+    this->getRenderService()->makeCurrent();
 
-    ::Ogre::OverlayContainer* textContainer = renderSrv->getOverlayTextPanel();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
     ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", m_fontSize);
 
     m_text = ::fwRenderOgre::Text::New(this->getID() + "_text",

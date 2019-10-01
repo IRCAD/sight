@@ -180,10 +180,12 @@
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender">
-            <scene overlays="LogoOverlay">
+            <scene>
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                <layer id="video" depth="1" />
-                <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3"/>
+                <layer id="video" depth="1" >
+                    <viewport hOffset="0.03" vOffset="0.03" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
+                </layer>
+                <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3" overlays="LogoOverlay" />
                 <adaptor uid="videoAdp" />
                 <adaptor uid="videoInteractorAdp" />
                 <adaptor uid="defaultInteractorAdp" />

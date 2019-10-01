@@ -42,8 +42,10 @@
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreViewport.h>
+#include <OGRE/Overlay/OgreOverlay.h>
 
 #include <cstdint>
+#include <unordered_set>
 #include <vector>
 
 namespace fwData
@@ -80,7 +82,14 @@ public:
     fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer);
     fwCoreAllowSharedFromThis()
 
+    /// Extrinsic x Intrinsic camera calibrations.
     using CameraCalibrationsType = std::vector< ::Ogre::Matrix4 >;
+
+    /// Set of overlays enabled on a layer.
+    using OverlaySetType = std::unordered_set< ::Ogre::Overlay* >;
+
+    /// Viewport parameters relatively to the screen: left, top, width ,height.
+    using ViewportConfigType = std::tuple<float, float, float, float>;
 
     /**
      * @name Signals API
@@ -215,6 +224,9 @@ public:
     /// Sets if this layer has a configured compositor chain.
     FWRENDEROGRE_API void setCompositorChainEnabled(const std::string& compositorChain);
 
+    /// Sets the viewport parameters for this layer: left, top, width, height.
+    FWRENDEROGRE_API void setViewportConfig(const ViewportConfigType& _vpCfg);
+
     /// Gets if this layer needs a layer's 3D scene.
     FWRENDEROGRE_API bool isCoreCompositorEnabled();
 
@@ -283,6 +295,15 @@ public:
     /// Remove the default light in the layer.
     FWRENDEROGRE_API void removeDefaultLight();
 
+    /// Creates or retrieves the overlay panel in which adaptors can render 2D text.
+    FWRENDEROGRE_API ::Ogre::OverlayContainer* getOverlayTextPanel();
+
+    /// Defines the overlay scripts to enable on this layer's viewport.
+    FWRENDEROGRE_API void setEnabledOverlays(const std::vector<std::string>& _overlayScripts);
+
+    /// Retrieves the overlays enabled on this layer's viewport.
+    FWRENDEROGRE_API const OverlaySetType& getEnabledOverlays() const;
+
 private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
@@ -304,6 +325,9 @@ private:
 
     /// Ogre viewport representing this layer.
     ::Ogre::Viewport* m_viewport;
+
+    /// Overlay panel to which all the UI's text is attached.
+    ::Ogre::OverlayContainer* m_overlayTextPanel { nullptr };
 
     /// Boolean used to set stereoscopic rendering.
     compositor::Core::StereoModeType m_stereoMode;
@@ -387,6 +411,15 @@ private:
     /// Holds pairs of intrinsic/extrinsic calibrations for stereo cameras.
     CameraCalibrationsType m_stereoCameraCalibration;
 
+    /// Names of the enabled overlay scripts.
+    std::vector<std::string> m_overlayScripts;
+
+    /// Overlays enabled on this layer's viewport.
+    OverlaySetType m_enabledOverlays;
+
+    /// Viewport parameters: left, top, width, height.
+    ViewportConfigType m_viewportCfg { 0.f, 0.f, 1.f, 1.f};
+
 };
 
-}
+} // namespace fwRenderOgre

@@ -260,11 +260,26 @@ void Layer::createScene()
 
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
+    for(const auto& overlayName : m_overlayScripts)
+    {
+        ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingleton().getByName(overlayName);
+        if(overlay)
+        {
+            m_enabledOverlays.insert(overlay);
+        }
+        else
+        {
+            SLM_ERROR("No overlay script named: '" + overlayName + "'.");
+        }
+    }
+
     // Create the camera
     m_camera = m_sceneManager->createCamera(Layer::DEFAULT_CAMERA_NAME);
     m_camera->setNearClipDistance(1);
 
-    m_viewport = m_renderTarget->addViewport(m_camera, m_depth);
+    const auto&[left, top, width, height] = m_viewportCfg;
+    m_viewport                            = m_renderTarget->addViewport(m_camera, m_depth, left, top, width, height);
+    m_viewport->setOverlaysEnabled(m_enabledOverlays.size() > 0);
 
     m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
@@ -1044,6 +1059,13 @@ void Layer::setCompositorChainEnabled(const std::string& compositorChain)
 
 //-------------------------------------------------------------------------------------
 
+void Layer::setViewportConfig(const ViewportConfigType& _vpCfg)
+{
+    m_viewportCfg = _vpCfg;
+}
+
+//-------------------------------------------------------------------------------------
+
 bool Layer::isCoreCompositorEnabled()
 {
     return m_hasCoreCompositor;
@@ -1260,6 +1282,46 @@ std::vector< ::fwRenderOgre::ILight::sptr > Layer::getLightAdaptors() const
     return layerLightAdaptors;
 }
 
-//-------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+::Ogre::OverlayContainer* Layer::getOverlayTextPanel()
+{
+    if(m_overlayTextPanel == nullptr)
+    {
+        auto& overlayManager   = ::Ogre::OverlayManager::getSingleton();
+        const auto textPanelId = m_renderService.lock()->getID() + m_id + "_GUI";
+
+        m_overlayTextPanel =
+            static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel", textPanelId));
+
+        m_overlayTextPanel->setMetricsMode(::Ogre::GMM_PIXELS);
+        m_overlayTextPanel->setPosition(0, 0);
+        m_overlayTextPanel->setDimensions(1.0f, 1.0f);
+
+        ::Ogre::Overlay* uiOverlay = overlayManager.create(textPanelId + "_UIOverlay");
+        uiOverlay->add2D(m_overlayTextPanel);
+
+        m_enabledOverlays.insert(uiOverlay);
+        m_viewport->setOverlaysEnabled(true);
+    }
+
+    return m_overlayTextPanel;
+}
+
+//-----------------------------------------------------------------------------
+
+void Layer::setEnabledOverlays(const std::vector<std::string>& _overlayScripts)
+{
+    m_overlayScripts = _overlayScripts;
+}
+
+//-----------------------------------------------------------------------------
+
+const Layer::OverlaySetType& Layer::getEnabledOverlays() const
+{
+    return m_enabledOverlays;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwRenderOgre

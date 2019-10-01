@@ -209,7 +209,7 @@ void SAxis::starting()
     zLineNode->attachObject(zLine);
     zLineNode->yaw(::Ogre::Degree(-90));
 
-    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
     ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
 
