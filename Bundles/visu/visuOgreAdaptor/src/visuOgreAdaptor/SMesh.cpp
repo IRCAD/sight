@@ -158,7 +158,7 @@ void SMesh::configuring()
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
-            hexaMask[0] == '0' && hexaMask[1] == 'x');
+            hexaMask.substr(0, 2) == "0x");
         m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 }

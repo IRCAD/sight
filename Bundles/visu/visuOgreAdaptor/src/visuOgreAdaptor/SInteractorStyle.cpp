@@ -92,8 +92,13 @@ void SInteractorStyle::configuring()
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
-            hexaMask[0] == '0' && hexaMask[1] == 'x');
+            hexaMask.substr(0, 2) == "0x");
         m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
+    if(config.count("queryFlags"))
+    {
+        m_queryMask = config.get<int>("queryFlags");
+        FW_DEPRECATED_MSG("The config `queryFlags` is deprecated, please use `" + s_QUERY_CONFIG +"`", "21.0");
     }
 }
 
