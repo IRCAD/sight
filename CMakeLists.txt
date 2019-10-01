@@ -52,7 +52,7 @@ mark_as_advanced(VERBOSE_PCH)
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our bundles
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
-set( QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
+set( ENABLE_QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
 

@@ -21,7 +21,7 @@ set( REQUIREMENTS
     servicesReg
     )
 
-if(NOT ${QML_APPLICATION})
+if(NOT ${ENABLE_QML_APPLICATION})
 
     list(APPEND DEPENDENCIES
         fwGuiQt

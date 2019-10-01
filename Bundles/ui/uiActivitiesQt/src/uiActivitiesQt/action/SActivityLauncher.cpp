@@ -110,7 +110,6 @@ void SActivityLauncher::starting()
 
 void SActivityLauncher::stopping()
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStopping();
 }
 
@@ -194,7 +193,7 @@ void SActivityLauncher::configuring()
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
 
     QStandardItemModel* model = new QStandardItemModel(dialog);
-    for( ::fwActivities::registry::ActivityInfo info :  infos)
+    for( const ::fwActivities::registry::ActivityInfo& info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -290,7 +289,7 @@ void SActivityLauncher::updating()
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
-    bool launchAS = this->launchAS(selection);
+    const bool launchAS = this->launchAS(selection);
     if (!launchAS)
     {
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
@@ -395,11 +394,11 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
     if( !actSeries )
     {
-        std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
-                          "> failed.";
+        const std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
+                                "> failed.";
         ::fwGui::dialog::MessageDialog::showMessageDialog( "Activity can not be launched", msg,
                                                            ::fwGui::dialog::IMessageDialog::WARNING);
-        OSLM_ERROR(msg);
+        SLM_ERROR(msg);
         return;
     }
 
@@ -419,8 +418,8 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
                 ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(actSeries);
                 if(!validation.first)
                 {
-                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
-                                          validation.second;
+                    const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                                validation.second;
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
                                                                       message,
                                                                       ::fwGui::dialog::IMessageDialog::CRITICAL);
@@ -441,7 +440,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     {
         ::fwGui::LockAction lock(this->getSptr());
 
-        std::string viewConfigID = msg.getAppConfigID();
+        const std::string viewConfigID = msg.getAppConfigID();
         ::fwActivities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
         replaceMap["GENERIC_UID"]                                        =
             ::fwServices::registry::AppConfig::getUniqueIdentifier();
@@ -585,8 +584,8 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
                 ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(series);
                 if(!validation.first)
                 {
-                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
-                                          validation.second;
+                    const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                                validation.second;
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
                                                                       message,
                                                                       ::fwGui::dialog::IMessageDialog::CRITICAL);

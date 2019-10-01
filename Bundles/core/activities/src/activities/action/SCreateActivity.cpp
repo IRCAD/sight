@@ -81,7 +81,7 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG  
 SCreateActivity::SCreateActivity() noexcept
 {
 #ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Do not use activities::SCreateActivity with Qml");
+    SLM_FATAL("Use '::uiActivitiesQt::action::SCreateActivity' instead of '::activities::action::SCreateActivity'");
 #else
     FW_DEPRECATED("::activities::action::SCreateActivity", "::uiActivitiesQt::action::SCreateActivity", "21.0");
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);

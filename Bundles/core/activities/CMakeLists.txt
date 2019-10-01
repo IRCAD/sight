@@ -12,7 +12,7 @@ fwLink(
     ${Qt5Gui_LIBRARIES}
 )
 
-if(NOT ${QML_APPLICATION})
+if(NOT ${ENABLE_QML_APPLICATION})
     find_package(Qt5 QUIET COMPONENTS Widgets REQUIRED)
     fwForwardInclude(
         ${Qt5Widgets_INCLUDE_DIRS}

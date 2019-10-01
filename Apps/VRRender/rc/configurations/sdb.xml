@@ -82,7 +82,7 @@
             </configs>
         </service>
 
-        <service uid="action_newActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_newActivity" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -100,7 +100,7 @@
             </config>
         </service>
 
-        <service uid="action_2DVisualization" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_2DVisualization" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -115,7 +115,7 @@
         </service>
 
 
-        <service uid="action_3DVisualization" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_3DVisualization" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -129,7 +129,7 @@
             </config>
         </service>
 
-        <service uid="action_volumeRendering" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_volumeRendering" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -143,7 +143,7 @@
             </config>
         </service>
 
-        <service uid="action_blend" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_blend" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -157,7 +157,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomPacsReader" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_dicomPacsReader" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -172,7 +172,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomPacsWriter" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_dicomPacsWriter" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -187,7 +187,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomFiltering" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_dicomFiltering" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -202,7 +202,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomWebReader" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_dicomWebReader" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -217,7 +217,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomWebWriter" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_dicomWebWriter" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -232,7 +232,7 @@
             </config>
         </service>
 
-        <service uid="action_exportSeries" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_exportSeries" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <mode>immediate</mode>

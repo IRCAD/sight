@@ -94,7 +94,7 @@ SActivityLauncher::SActivityLauncher() noexcept :
     m_mode("message")
 {
 #ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Do not use activities::SActivityLauncher with Qml");
+    SLM_FATAL("Use '::uiActivitiesQt::action::SActivityLauncher' instead of '::activities::action::SActivityLauncher'");
 #else
     FW_DEPRECATED("::activities::action::SActivityLauncher", "::uiActivitiesQt::action::SActivityLauncher", "21.0");
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);

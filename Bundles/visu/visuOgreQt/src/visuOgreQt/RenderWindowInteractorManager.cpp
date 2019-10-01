@@ -23,6 +23,7 @@
 #include "visuOgreQt/RenderWindowInteractorManager.hpp"
 
 #include "visuOgreQt/OpenGLContext.hpp"
+#include "visuOgreQt/OpenGLWorker.hpp"
 
 #include <fwData/String.hpp>
 
@@ -222,6 +223,13 @@ void RenderWindowInteractorManager::onCameraClippingComputation()
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
     ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
+}
+
+//-----------------------------------------------------------------------------
+
+::fwRenderOgre::IGraphicsWorker* RenderWindowInteractorManager::createGraphicsWorker()
+{
+    return new OpenGLWorker(m_qOgreWidget);
 }
 
 //-----------------------------------------------------------------------------

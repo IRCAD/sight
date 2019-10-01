@@ -66,6 +66,8 @@ public:
         bool m_visible;
         bool m_expanded;
         bool m_useScrollBar;
+        /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
+        std::string m_backgroundColor {"default"};
     };
 
     /// Constructor. Do nothing.

@@ -98,6 +98,9 @@ public:
     VISUOGREQT_API virtual void setEnabledOverlays(
         const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays) final;
 
+    /// Creates a worker able to handle resources from the window's OpenGL context.
+    VISUOGREQT_API ::fwRenderOgre::IGraphicsWorker* createGraphicsWorker() final;
+
 private Q_SLOTS:
 
     /// When the render window is created
