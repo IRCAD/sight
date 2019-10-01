@@ -84,6 +84,46 @@ macro(installConanDeps CONAN_DEPS_LIST)
         list(APPEND CONAN_SETTINGS "compiler.cppstd=gnu17")
     endif()
 
+    # Save compiler id in case we trick conan
+    set(SAVE_CMAKE_C_COMPILER_ID ${CMAKE_C_COMPILER_ID})
+    set(SAVE_CMAKE_CXX_COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
+    set(SAVE_CMAKE_C_COMPILER_VERSION ${CMAKE_C_COMPILER_VERSION})
+    set(SAVE_CMAKE_CXX_COMPILER_VERSION ${CMAKE_CXX_COMPILER_VERSION})
+
+    if(CONAN_DISTRO STREQUAL "linuxmint19" AND NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
+        include(CheckCXXSourceCompiles)
+
+        # Check stdlib version
+        set(CODE "
+            #include <bits/c++config.h>
+            #if _GLIBCXX_RELEASE < 8
+            #error _GLIBCXX_RELEASE < 8
+            #endif
+
+            #if _GLIBCXX_USE_CXX11_ABI < 1
+            #error _GLIBCXX_USE_CXX11_ABI < 1
+            #endif
+
+            int main()
+            {
+                return 0;
+            }
+            "
+        )
+
+        check_cxx_source_compiles("${CODE}" STDLIB_VERSION_8_SUPPORTED)
+
+        # If we have a supported stdlib, but a different compiler than gcc 8,
+        # allow to download and use conan package built with gcc 8
+        if(STDLIB_VERSION_8_SUPPORTED)
+            # Force use gcc 8 for conan package
+            set(CMAKE_C_COMPILER_ID GNU)
+            set(CMAKE_CXX_COMPILER_ID GNU)
+            set(CMAKE_C_COMPILER_VERSION 8.0)
+            set(CMAKE_CXX_COMPILER_VERSION 8.0)
+        endif()
+    endif()
+
     conan_cmake_run(
         REQUIRES ${CONAN_DEPS_LIST}
         BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
@@ -91,6 +131,12 @@ macro(installConanDeps CONAN_DEPS_LIST)
         BUILD ${CONAN_BUILD_OPTION}
         SETTINGS ${CONAN_SETTINGS}
     )
+
+    # Restore backup
+    set(CMAKE_C_COMPILER_ID ${SAVE_CMAKE_C_COMPILER_ID})
+    set(CMAKE_CXX_COMPILER_ID ${SAVE_CMAKE_CXX_COMPILER_ID})
+    set(CMAKE_C_COMPILER_VERSION ${SAVE_CMAKE_C_COMPILER_VERSION})
+    set(CMAKE_CXX_COMPILER_VERSION ${SAVE_CMAKE_CXX_COMPILER_VERSION})
 endmacro()
 
 macro(installConanDepsForSDK)
