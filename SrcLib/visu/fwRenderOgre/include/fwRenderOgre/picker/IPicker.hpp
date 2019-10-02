@@ -41,10 +41,10 @@ class FWRENDEROGRE_CLASS_API IPicker
 
 public:
 
-    /// Does nothing.
+    /// Construct all members.
     FWRENDEROGRE_API IPicker();
 
-    /// Does nothing.
+    /// Destruct all members.
     FWRENDEROGRE_API virtual ~IPicker();
 
     /**
