@@ -60,7 +60,7 @@ Item {
                 border.color: colorDialog.color
                 border.width: 5
                 radius: 8
-                color: "transparent"
+                color: Theme.background
             }
         }
 

@@ -76,7 +76,7 @@ private:
     typedef ::fwCom::Signal<void ()> VoidSignalType;
 
     bool m_vtkSceneCreated {false};
-    ::fwVTKQml::FrameBufferItem* m_frameBuffer;
+    ::fwVTKQml::FrameBufferItem* m_frameBuffer{nullptr};
 
     ::fwServices::IService::sptr m_imageAdaptor;
 };

@@ -70,15 +70,25 @@ AppManager::~AppManager()
 
 void AppManager::create()
 {
-    SLM_ASSERT("create() method should not be called twice", m_uid.empty());
-    const std::string classname = ::fwCore::Demangler(*this).getLeafClassname();
-    m_uid = "AppManager-" + classname + "-" + std::to_string(++s_counter);
+    SLM_ASSERT("create() method should not be called twice", m_addObjectConnection.expired());
 
     m_addObjectConnection    = ::fwServices::OSR::getRegisterSignal()->connect( this->slot(s_ADD_OBJECT_SLOT) );
     m_removeObjectConnection = ::fwServices::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECT_SLOT) );
 
     auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
     ::fwCom::HasSlots::m_slots.setWorker( defaultWorker );
+}
+
+//------------------------------------------------------------------------------
+
+const std::string& AppManager::getID() const
+{
+    if (m_uid.empty())
+    {
+        const std::string classname = ::fwCore::Demangler(*this).getLeafClassname();
+        m_uid = "AppManager-" + classname + "-" + std::to_string(++s_counter);
+    }
+    return m_uid;
 }
 
 //------------------------------------------------------------------------------
@@ -113,8 +123,6 @@ void AppManager::requireInput(const std::string& key, const InputType& type, con
 
 bool AppManager::checkInputs()
 {
-    SLM_ASSERT("AppManager should be initialized (call create())", !m_uid.empty());
-
     bool isOK = true;
     for (const auto& elt: m_inputs)
     {
@@ -138,7 +146,7 @@ bool AppManager::checkInputs()
                     else
                     {
                         // TODO print a message
-                        SLM_DEBUG("[" + m_uid + "] missing input for : '" + input.key + "'")
+                        SLM_DEBUG("[" + this->getID() + "] missing input for : '" + input.key + "'")
                         isOK = false;
                     }
                 }
@@ -571,9 +579,7 @@ const AppManager::ServiceInfo& AppManager::getServiceInfo(const ::fwServices::IS
 
 std::string AppManager::getInputID(const std::string& id) const
 {
-    SLM_ASSERT("AppManager should be initialized (call create())", !m_uid.empty());
-
-    std::string uid = m_uid + "-" + id;
+    std::string uid = this->getID() + "-" + id;
     const auto itr  = m_inputs.find(id);
     if (itr != m_inputs.end())
     {

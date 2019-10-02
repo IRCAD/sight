@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 
 #include "calibration3d/config.hpp"
 
+#include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
@@ -120,6 +121,22 @@ CALIBRATION3D_API void calibratePointingTool(
 CALIBRATION3D_API ::cv::Ptr< ::cv::aruco::Dictionary > generateArucoDictionary(const size_t _width,
                                                                                const size_t _height,
                                                                                const int _markerSizeInBits);
+
+/**
+ * @brief Tries to detect a chessboard with the given dimensions in the image.
+ *
+ * @param[in] _img Image in which to search for a chessboard.
+ * @param[in] _xDim Width of the chessboard in number of tiles.
+ * @param[in] _yDim Height of the chessboard in number of tiles.
+ * @param[in] _scale Scale applied to the input image. Downscaling speeds up the detection.
+ *
+ * @pre _img must have 8bit RGB, RGBA or grayscale pixels.
+ *
+ * @return List of detected chessboard points. nullptr if detection failed.
+ */
+CALIBRATION3D_API ::fwData::PointList::sptr detectChessboard(const ::cv::Mat& _img,
+                                                             size_t _xDim, size_t _yDim,
+                                                             float _scale);
 
 }
 

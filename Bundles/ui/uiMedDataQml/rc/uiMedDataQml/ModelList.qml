@@ -25,21 +25,40 @@ Item {
         }
     }
 
+    Component {
+        id: highlight
+        Rectangle {
+            width: listView.width; height: 40
+            color: "lightsteelblue"; radius: 5
+            y: listView.currentItem ? listView.currentItem.y: 0
+            Behavior on y {
+                SpringAnimation {
+                    spring: 3
+                    damping: 0.2
+                }
+            }
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
 
-        RowLayout {
-
+        Rectangle {
             Layout.fillWidth: true
-            Layout.maximumHeight: 30
+            Layout.minimumHeight: 30
+            color: Theme.background
+            z: 2
 
-            CheckBox {
-                id: hideAll
-                text: "Hide all"
-                Layout.fillHeight: true
-                Layout.fillWidth: true
+            RowLayout {
+                anchors.fill: parent
 
-                contentItem: Text {
+                CheckBox {
+                    id: hideAll
+                    text: "Hide all"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    contentItem: Text {
                         text: hideAll.text
                         font: hideAll.font
                         opacity: enabled ? 1.0 : 0.3
@@ -48,44 +67,30 @@ Item {
                         leftPadding: hideAll.indicator.width + hideAll.spacing
                     }
 
-                onCheckedChanged: {
-                    modelSeriesList.onShowReconstructions(checked)
-                    checkAll.enabled = !checked
-                    uncheckAll.enabled = !checked
+                    onCheckedChanged: {
+                        modelSeriesList.onShowReconstructions(checked)
+                        checkAll.enabled = !checked
+                        uncheckAll.enabled = !checked
+                    }
                 }
-            }
 
-            Button {
-                id: checkAll
-                text: "Check all"
-                Layout.fillHeight: true
-                Layout.preferredWidth: 100
-                onClicked: {
-                    modelSeriesList.onCheckAllBoxes(true)
+                Button {
+                    id: checkAll
+                    text: "Check all"
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 120
+                    onClicked: {
+                        modelSeriesList.onCheckAllBoxes(true)
+                    }
                 }
-            }
 
-            Button {
-                id: uncheckAll
-                text: "Uncheck all"
-                Layout.fillHeight: true
-                Layout.preferredWidth: 100
-                onClicked: {
-                    modelSeriesList.onCheckAllBoxes(false)
-                }
-            }
-        }
-
-        Component {
-            id: highlight
-            Rectangle {
-                width: listView.width; height: 40
-                color: "lightsteelblue"; radius: 5
-                y: listView.currentItem ? listView.currentItem.y: 0
-                Behavior on y {
-                    SpringAnimation {
-                        spring: 3
-                        damping: 0.2
+                Button {
+                    id: uncheckAll
+                    text: "Uncheck all"
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 120
+                    onClicked: {
+                        modelSeriesList.onCheckAllBoxes(false)
                     }
                 }
             }
