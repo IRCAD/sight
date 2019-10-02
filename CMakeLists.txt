@@ -350,6 +350,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/flags.cmake)
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################
 
+# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
+setExternalLibrariesDir()
+
 foreach(PROJECT ${PROJECT_LIST})
     addProject(${PROJECT})
 endforeach()
