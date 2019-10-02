@@ -45,7 +45,6 @@
 #include <OGRE/Overlay/OgreOverlay.h>
 
 #include <cstdint>
-#include <unordered_set>
 #include <vector>
 
 namespace fwData
@@ -86,7 +85,7 @@ public:
     using CameraCalibrationsType = std::vector< ::Ogre::Matrix4 >;
 
     /// Set of overlays enabled on a layer.
-    using OverlaySetType = std::unordered_set< ::Ogre::Overlay* >;
+    using OverlaySetType = std::vector< ::Ogre::Overlay* >;
 
     /// Viewport parameters relatively to the screen: left, top, width ,height.
     using ViewportConfigType = std::tuple<float, float, float, float>;

@@ -53,19 +53,9 @@ void ViewportListener::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent
         Layer::sptr ogreLayer       = m_viewportLayerMap.at(evt.source);
         const auto& enabledOverlays = ogreLayer->getEnabledOverlays();
 
-        auto overlayIterator = ::Ogre::OverlayManager::getSingleton().getOverlayIterator();
-        for(auto overlayMapElt : overlayIterator)
+        for(::Ogre::Overlay* const overlay : enabledOverlays)
         {
-            ::Ogre::Overlay* overlay = overlayMapElt.second;
-
-            if(enabledOverlays.find(overlay) != enabledOverlays.end())
-            {
-                overlay->show();
-            }
-            else
-            {
-                overlay->hide();
-            }
+            overlay->show();
         }
     }
 
@@ -83,7 +73,7 @@ void ViewportListener::postViewportUpdate(const Ogre::RenderTargetViewportEvent&
         Layer::sptr ogreLayer       = m_viewportLayerMap.at(evt.source);
         const auto& enabledOverlays = ogreLayer->getEnabledOverlays();
 
-        for(::Ogre::Overlay* o : enabledOverlays)
+        for(::Ogre::Overlay* const o : enabledOverlays)
         {
             o->hide();
         }

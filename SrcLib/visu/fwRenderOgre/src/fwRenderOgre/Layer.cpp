@@ -265,7 +265,8 @@ void Layer::createScene()
         ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingleton().getByName(overlayName);
         if(overlay)
         {
-            m_enabledOverlays.insert(overlay);
+            overlay->hide(); // Hide the overlay for now and display it when rendering in this layer's viewport.
+            m_enabledOverlays.push_back(overlay);
         }
         else
         {
@@ -1301,7 +1302,7 @@ std::vector< ::fwRenderOgre::ILight::sptr > Layer::getLightAdaptors() const
         ::Ogre::Overlay* uiOverlay = overlayManager.create(textPanelId + "_UIOverlay");
         uiOverlay->add2D(m_overlayTextPanel);
 
-        m_enabledOverlays.insert(uiOverlay);
+        m_enabledOverlays.push_back(uiOverlay);
         m_viewport->setOverlaysEnabled(true);
     }
 
