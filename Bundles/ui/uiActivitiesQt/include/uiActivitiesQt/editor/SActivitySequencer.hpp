@@ -172,12 +172,12 @@ private:
 
     QPointer<QQuickWidget> m_widget;
 
-    std::string m_theme {""};
-    std::string m_accent {""};
-    std::string m_foreground {""};
-    std::string m_background {""};
-    std::string m_primary {""};
-    std::string m_elevation {""};
+    std::string m_theme;
+    std::string m_accent;
+    std::string m_foreground;
+    std::string m_background;
+    std::string m_primary;
+    std::string m_elevation;
 };
 
 } // namespace editor

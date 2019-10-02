@@ -131,7 +131,7 @@ void SActivitySequencer::starting()
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
     QColor background;
-    if(m_background == "")
+    if(m_background.empty())
     {
         background = parent->palette().color(QPalette::Background);
         // styleSheet override QPalette
@@ -178,7 +178,7 @@ void SActivitySequencer::starting()
 
     engine->rootContext()->setContextProperty("activityNameList", activitiesName);
     engine->rootContext()->setContextProperty("widgetWidth", m_widget->width());
-    engine->rootContext()->setContextProperty(QString::fromStdString(s_THEME_CONFIG), QColor(theme));
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_THEME_CONFIG), theme);
     engine->rootContext()->setContextProperty(QString::fromStdString(s_ACCENT_CONFIG),
                                               QString::fromStdString(m_accent));
     engine->rootContext()->setContextProperty(QString::fromStdString(s_FOREGROUND_CONFIG),
