@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,10 +19,10 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_SLOTBASE_HXX__
-#define __FWCOM_SLOTBASE_HXX__
 
-#ifndef __FWCOM_SLOTBASE_HPP__
+#pragma once
+
+#if !defined(__FWCOM_SLOTBASE_HPP__)
 #error fwCom/SlotBase.hpp not included
 #endif
 
@@ -294,6 +294,3 @@ std::shared_future< R > SlotBase::asyncCall() const
 //-----------------------------------------------------------------------------
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOTBASE_HXX__ */
-

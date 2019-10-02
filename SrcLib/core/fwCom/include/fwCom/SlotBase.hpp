@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,8 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SLOTBASE_HPP__
+#pragma once
+
 #define __FWCOM_SLOTBASE_HPP__
 
 #include "fwCom/config.hpp"
@@ -246,6 +247,3 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
 };
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOTBASE_HPP__ */
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,50 +20,39 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_IEXECUTABLE_HPP__
-#define __FWRUNTIME_IEXECUTABLE_HPP__
-
-#include <string>
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp"
 
-
+#include <string>
 
 namespace fwRuntime
 {
 
-
 #define REGISTER_EXECUTABLE( type, id ) static ::fwRuntime::utils::GenericExecutableFactoryRegistrar< type > registrar( \
         id );
-
-
 
 struct Bundle;
 struct ConfigurationElement;
 struct Runtime;
 
-
 /**
  * @brief   Defines the base executable interface.
- * @struct  IExecutable
  *
  * An executable object is an instance created by an extension
  * point of a plugin.
  *
- * @date    2004-2009
  *
  */
 struct FWRUNTIME_CLASS_API IExecutable
 {
     friend struct Runtime;
 
-
     /**
      * @brief   Destructor : does nothing.
      */
     FWRUNTIME_API virtual ~IExecutable();
-
 
     /**
      * @brief   Retrieves the bundle the executable originates from.
@@ -81,7 +70,6 @@ struct FWRUNTIME_CLASS_API IExecutable
      */
     virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) noexcept = 0;
 
-
     protected:
 
         /**
@@ -93,10 +81,4 @@ struct FWRUNTIME_CLASS_API IExecutable
 
 };
 
-
-
 } // namespace fwRuntime
-
-
-
-#endif // __FWRUNTIME_IEXECUTABLE_HPP__

@@ -17,8 +17,8 @@ stages:
     - export CCACHE_NOHASHDIR=1
     - export CCACHE_DIR=/cache/ccache
     - conan config set storage.path=/cache/conan-cache/data
-    - export CC=/usr/local/lib/ccache/gcc
-    - export CXX=/usr/local/lib/ccache/g++
+    - export CC=/usr/local/lib/ccache/gcc-8
+    - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -39,16 +39,19 @@ stages:
     - export CXX=/usr/local/opt/ccache/libexec/clang++
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
   tags:
-    - mojave
+    - apple-clang-11.0
 
 .windows_template: &windows_job
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
     FW_IGNORE_SLOW_TESTS: 1
+    CUDA_PATH: "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1"
   before_script:
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
     - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - chcp 1252
   tags:
     - shell
     - windows
@@ -90,7 +93,7 @@ build:debug-linux:
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
-    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >
@@ -120,7 +123,7 @@ build:release-linux:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=OFF
-    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >
@@ -141,8 +144,6 @@ build:debug-windows:
   dependencies: []
   script:
     - cd "%CI_PROJECT_DIR%/build"
-    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
-    - chcp 1252
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja
@@ -171,8 +172,6 @@ build:release-windows:
   dependencies: []
   script:
     - cd "%CI_PROJECT_DIR%/build"
-    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
-    - chcp 1252
     - >
      cmake %CI_PROJECT_DIR%
      -G Ninja
@@ -210,6 +209,7 @@ build:debug-macos:
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
      -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >
@@ -239,6 +239,7 @@ build:release-macos:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
     - >

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SIGNAL_HXX__
-#define __FWCOM_SIGNAL_HXX__
+#pragma once
 
-#ifndef __FWCOM_SIGNAL_HPP__
+#if !defined(__FWCOM_SIGNAL_HPP__)
 #error fwCom/Signal.hpp not included
 #endif
 
@@ -40,16 +39,18 @@
 namespace fwCom
 {
 
+//------------------------------------------------------------------------------
+
 template < typename R, typename ... A >
-typename Signal< R (A ...) >::sptr Signal< R (A ...) >::New()
+typename Signal< R(A ...) >::sptr Signal< R(A ...) >::New()
 {
-    return std::make_shared< Signal< R (A ...) > > ();
+    return std::make_shared< Signal< R(A ...) > > ();
 }
 
 //-----------------------------------------------------------------------------
 
 template < typename R, typename ... A >
-Connection Signal< R (A ...) >::connect( SlotBase::sptr slot )
+Connection Signal< R(A ...) >::connect( SlotBase::sptr slot )
 {
     return this->connect< SignatureType >(slot);
 }
@@ -57,7 +58,7 @@ Connection Signal< R (A ...) >::connect( SlotBase::sptr slot )
 //-----------------------------------------------------------------------------
 
 template < typename R, typename ... A >
-void Signal< R (A ...) >::disconnect( SlotBase::sptr slot )
+void Signal< R(A ...) >::disconnect( SlotBase::sptr slot )
 {
     ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
 
@@ -65,7 +66,7 @@ void Signal< R (A ...) >::disconnect( SlotBase::sptr slot )
 
     if (iter != m_connections.end())
     {
-        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SlotConnectionBase::sptr connection( iter->second.lock() );
         SLM_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
@@ -83,13 +84,13 @@ void Signal< R (A ...) >::disconnect( SlotBase::sptr slot )
 //-----------------------------------------------------------------------------
 
 template < typename R, typename ... A >
-void Signal< R (A ...) >::disconnectAll()
+void Signal< R(A ...) >::disconnectAll()
 {
     ::fwCore::mt::WriteLock lock(m_connectionsMutex);
 
     ConnectionMapType connections = m_connections;
 
-    for( const typename ConnectionMapType::value_type &conn : connections )
+    for( const typename ConnectionMapType::value_type& conn : connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 
@@ -103,7 +104,7 @@ void Signal< R (A ...) >::disconnectAll()
 //-----------------------------------------------------------------------------
 
 template < typename R, typename ... A >
-void Signal< R (A ...) >::emit( A ... a ) const
+void Signal< R(A ...) >::emit( A ... a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
@@ -120,7 +121,7 @@ void Signal< R (A ...) >::emit( A ... a ) const
 //-----------------------------------------------------------------------------
 
 template < typename R, typename ... A >
-void Signal< R (A ...) >::asyncEmit( A ... a ) const
+void Signal< R(A ...) >::asyncEmit( A ... a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
@@ -181,7 +182,7 @@ Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
         if(wrappedSlot)
         {
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
-            SlotSptr slotToConnect = Slot < Slot < void (A ...) > >::New(wrappedSlot);
+            SlotSptr slotToConnect                  = Slot < Slot < void (A ...) > >::New(wrappedSlot);
             typename Signal< R( A ... ) >::sptr sig =
                 std::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
@@ -223,7 +224,7 @@ Connection Signal< R( A ... ) >::getConnection( SlotBase::sptr slot, bool throws
     }
     else
     {
-        SlotConnectionBase::sptr slotConnection (iter->second);
+        SlotConnectionBase::sptr slotConnection(iter->second);
         connection = Connection( slotConnection );
     }
     return connection;
@@ -232,7 +233,3 @@ Connection Signal< R( A ... ) >::getConnection( SlotBase::sptr slot, bool throws
 //-----------------------------------------------------------------------------
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SIGNAL_HXX__ */
-
-

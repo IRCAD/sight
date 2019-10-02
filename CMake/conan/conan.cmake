@@ -40,9 +40,10 @@ endmacro()
 
 macro(installConanDeps CONAN_DEPS_LIST)
 
-    set(CONAN_BUILD_OPTION "never")
     if(CONAN_BUILD_MISSING)
         set(CONAN_BUILD_OPTION "missing")
+    else()
+        set(CONAN_BUILD_OPTION "never")
     endif()
 
     if(UNIX AND NOT APPLE AND NOT CONAN_SETTINGS)
@@ -75,47 +76,80 @@ macro(installConanDeps CONAN_DEPS_LIST)
         set(CONAN_DISTRO "${LSB_RELEASE_ID_LOWER}${LSB_MAJOR_RELEASE_NUMBER}" CACHE INTERNAL "custom conan distro" FORCE)
         set(CONAN_SETTINGS "os.distro=${CONAN_DISTRO}" CACHE INTERNAL "custom conan settings" FORCE)
     endif()
+    
+    # Force use of c++17 as standard
+    if(MSVC)
+        list(APPEND CONAN_SETTINGS "compiler.cppstd=17")
+    else()
+        list(APPEND CONAN_SETTINGS "compiler.cppstd=gnu17")
+    endif()
 
-    # Override compiler to only use one per distro
+    # Save compiler id in case we trick conan
     set(SAVE_CMAKE_C_COMPILER_ID ${CMAKE_C_COMPILER_ID})
     set(SAVE_CMAKE_CXX_COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
     set(SAVE_CMAKE_C_COMPILER_VERSION ${CMAKE_C_COMPILER_VERSION})
     set(SAVE_CMAKE_CXX_COMPILER_VERSION ${CMAKE_CXX_COMPILER_VERSION})
 
-    if(CONAN_DISTRO STREQUAL "linuxmint19")
-        set(CMAKE_C_COMPILER_ID GNU)
-        set(CMAKE_CXX_COMPILER_ID GNU)
-        set(CMAKE_C_COMPILER_VERSION 7.3)
-        set(CMAKE_CXX_COMPILER_VERSION 7.3)
-    elseif(CONAN_DISTRO STREQUAL "linuxmint18")
-        set(CMAKE_C_COMPILER_ID Clang)
-        set(CMAKE_CXX_COMPILER_ID Clang)
-        set(CMAKE_C_COMPILER_VERSION 6.0)
-        set(CMAKE_CXX_COMPILER_VERSION 6.0)
+    if(CONAN_DISTRO STREQUAL "linuxmint19" AND NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" )
+        include(CheckCXXSourceCompiles)
+
+        # Check stdlib version
+        set(CODE "
+            #include <bits/c++config.h>
+            #if _GLIBCXX_RELEASE < 8
+            #error _GLIBCXX_RELEASE < 8
+            #endif
+
+            #if _GLIBCXX_USE_CXX11_ABI < 1
+            #error _GLIBCXX_USE_CXX11_ABI < 1
+            #endif
+
+            int main()
+            {
+                return 0;
+            }
+            "
+        )
+
+        check_cxx_source_compiles("${CODE}" STDLIB_VERSION_8_SUPPORTED)
+
+        # If we have a supported stdlib, but a different compiler than gcc 8,
+        # allow to download and use conan package built with gcc 8
+        if(STDLIB_VERSION_8_SUPPORTED)
+            # Force use gcc 8 for conan package
+            set(CMAKE_C_COMPILER_ID GNU)
+            set(CMAKE_CXX_COMPILER_ID GNU)
+            set(CMAKE_C_COMPILER_VERSION 8.0)
+            set(CMAKE_CXX_COMPILER_VERSION 8.0)
+        endif()
     endif()
 
-    # We do not build RelWithDebInfo packages for now, so we switch to release in order to allow people
-    # to use at least a RelWithDebInfo in Sight
-    set(SAVE_CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE})
-    if(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-        set(CMAKE_BUILD_TYPE "Release")
+    option(VERBOSE_CONAN "Verbose conan output" OFF)
+    mark_as_advanced(VERBOSE_CONAN)
+
+    if(VERBOSE_CONAN)
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+            OPTIONS ${CONAN_OPTIONS}
+            BUILD ${CONAN_BUILD_OPTION}
+            SETTINGS ${CONAN_SETTINGS}
+        )
+    else()
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
+            OPTIONS ${CONAN_OPTIONS}
+            BUILD ${CONAN_BUILD_OPTION}
+            SETTINGS ${CONAN_SETTINGS}
+        )
     endif()
 
-    conan_cmake_run(
-        REQUIRES ${CONAN_DEPS_LIST}
-        BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
-        OPTIONS ${CONAN_OPTIONS}
-        BUILD ${CONAN_BUILD_OPTION}
-        SETTINGS ${CONAN_SETTINGS}
-    )
-
-    # Restore the compiler settings to build sight
+    # Restore backup
     set(CMAKE_C_COMPILER_ID ${SAVE_CMAKE_C_COMPILER_ID})
     set(CMAKE_CXX_COMPILER_ID ${SAVE_CMAKE_CXX_COMPILER_ID})
     set(CMAKE_C_COMPILER_VERSION ${SAVE_CMAKE_C_COMPILER_VERSION})
     set(CMAKE_CXX_COMPILER_VERSION ${SAVE_CMAKE_CXX_COMPILER_VERSION})
-    set(CMAKE_BUILD_TYPE ${SAVE_CMAKE_BUILD_TYPE})
-
 endmacro()
 
 macro(installConanDepsForSDK)

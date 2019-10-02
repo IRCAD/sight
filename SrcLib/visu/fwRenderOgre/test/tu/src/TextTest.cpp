@@ -123,8 +123,7 @@ void TextTest::factoryTest()
     sceneManager->destroyMovableObject(textObj1);
     CPPUNIT_ASSERT_EQUAL(false, sceneManager->hasMovableObject(textName1, factoryName));
 
-    auto movableObjIterator = sceneManager->getMovableObjectIterator(factoryName);
-    CPPUNIT_ASSERT(movableObjIterator.end() == movableObjIterator.current());
+    CPPUNIT_ASSERT(sceneManager->getMovableObjects(factoryName).empty());
 
     m_ogreRoot->destroySceneManager(sceneManager);
 

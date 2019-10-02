@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,8 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SIGNAL_HPP__
+#pragma once
+
 #define __FWCOM_SIGNAL_HPP__
 
 #include "fwCom/SignalBase.hpp"
@@ -50,7 +51,7 @@ struct SlotRun;
  * Template parameter T must always be void.
  */
 template < typename R, typename ... A >
-struct Signal< R(A ...) > : SignalBase
+struct FWCOM_CLASS_API Signal< R(A ...) > : SignalBase
 {
     /**
      * @name Typedefs
@@ -148,6 +149,3 @@ struct Signal< R(A ...) > : SignalBase
 };
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SIGNAL_HPP__ */
-

@@ -8,16 +8,16 @@ uniform vec3 u_lightDir;
 uniform int u_roughness;
 
 // Input semantics
-layout(location = 0) in vec3 inNormal_WS;
-layout(location = 1) in vec3 inPosition_WS;
+layout(location = 0) in vec3 v_f3Normal_Ws;
+layout(location = 1) in vec3 v_f3Position_Ws;
 
 // Compute illumination or forward illumination received from the vertex shader
 vec4 getFragmentColor()
 {
     // Input vectors
-    vec3 normal = normalize(inNormal_WS);
+    vec3 normal = normalize(v_f3Normal_Ws);
     vec3 light = normalize(u_lightDir);
-    vec3 view = normalize(u_cameraPos - inPosition_WS);
+    vec3 view = normalize(u_cameraPos - v_f3Position_Ws);
 
     // Roughness, A and B
     float roughness = u_roughness/100.;

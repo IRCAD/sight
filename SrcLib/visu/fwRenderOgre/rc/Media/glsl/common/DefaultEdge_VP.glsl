@@ -6,7 +6,7 @@ uniform vec4 u_diffuse;
 
 in vec4 vertex;
 
-layout(location = 2) out vec4 outColor;
+layout(location = 2) out vec4 v_f4Color;
 
 void main()
 {
@@ -15,5 +15,5 @@ void main()
     gl_Position = u_proj * position;
 
     // Default to black, only keep opacity setting
-    outColor = vec4(0, 0, 0, u_diffuse.a);
+    v_f4Color = vec4(0, 0, 0, u_diffuse.a);
 }

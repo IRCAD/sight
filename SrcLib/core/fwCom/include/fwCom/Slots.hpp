@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SLOTS_HPP__
+#pragma once
+
 #define __FWCOM_SLOTS_HPP__
 
-#include <map>
-#include <vector>
-#include <string>
+#include "fwCom/config.hpp"
 
 #include "fwCore/macros.hpp"
-#include "fwCom/config.hpp"
+
+#include <map>
+#include <string>
+#include <vector>
 
 namespace fwThread
 {
@@ -65,7 +67,7 @@ public:
 
     /// Registers Slot  in m_slots (defined here to avoid compiler error C2244)
     template<typename R, typename ... A>
-    Slots& operator()( const SlotKeyType& key, SPTR(Slot< R (A ...) >)slot )
+    Slots& operator()( const SlotKeyType& key, SPTR(Slot< R(A ...) >)slot )
     {
         SPTR( SlotBase ) slotBase = std::dynamic_pointer_cast< SlotBase >( slot );
         return this->operator()(key, slotBase);
@@ -76,7 +78,7 @@ public:
     Slots& operator()( const SlotKeyType& key, F f, A ... a );
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
-    FWCOM_API SPTR( SlotBase ) operator[]( const SlotKeyType &key ) const;
+    FWCOM_API SPTR( SlotBase ) operator[]( const SlotKeyType& key ) const;
 
     /// Assigns the worker to all slots stored in m_slots
     FWCOM_API void setWorker( const SPTR(::fwThread::Worker)& worker );
@@ -97,5 +99,3 @@ protected:
 };
 
 } // namespace fwCom
-
-#endif //__FWCOM_SLOTS_HPP__
