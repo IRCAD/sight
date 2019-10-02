@@ -72,6 +72,12 @@ namespace editor
         <activity id="..." name="..." />
         <activity id="..." name="..." />
         <activity id="..." name="..." />
+        <theme>#FF00FF</theme>
+        <accent>#FF00FF</accent>
+        <foreground>#FF00FF</foreground>
+        <background>#FF00FF</background>
+        <primary>#FF00FF</primary>
+        <elevation>#FF00FF</elevation>
     </service>
    @endcode
  * @subsection In In
@@ -87,6 +93,12 @@ namespace editor
  *     - \b id: id of the activities to launch. The first activity in the list is the first that will be launched.
  *     - \b name(optional): name of the activity to display in the editor. If it is empty, the the activity's will be
  *          used
+ * - \b theme (optional, lihgt/dark): the global theme used by the sequencer.
+ * - \b accent (optional): the accent color used by the sequencer.
+ * - \b foreground (optional): the foreground color used by the sequencer.
+ * - \b background (optional): the background color used by the sequencer.
+ * - \b primary (optional): the primary color used by the sequencer.
+ * - \b elevation (optional): the elevation color used by the sequencer.
  *
  * @todo listen the current activity data to notify when the next activity can be created
  */
