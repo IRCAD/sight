@@ -9,14 +9,14 @@ GroupBox {
             width: parent.width
             height: parent.height - control.topPadding + control.bottomPadding
             color: "transparent"
-            border.color: Material.primary
+            border.color: Theme.primary
             radius: 2
         }
     label: Label {
             x: control.leftPadding
             width: control.availableWidth
             text: control.title
-            color: Material.primary
+            color: Theme.primary
             elide: Text.ElideRight
         }
 }

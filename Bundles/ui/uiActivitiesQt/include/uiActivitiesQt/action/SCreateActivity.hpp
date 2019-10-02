@@ -82,7 +82,7 @@ public:
     UIACTIVITIESQT_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept;
+    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept override;
 
     /**
      * @name Signals API

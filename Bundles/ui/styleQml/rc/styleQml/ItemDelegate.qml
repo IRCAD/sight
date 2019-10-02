@@ -5,7 +5,6 @@ import QtQuick.Controls.Material 2.12
 ItemDelegate {
     id: control
 
-//    highlighted: true
     contentItem: Label {
         rightPadding: control.spacing
         font: control.font
@@ -16,7 +15,7 @@ ItemDelegate {
     }
     background: Rectangle {
         implicitHeight: control.Material.delegateHeight
-
+        opacity: 0.5
         color: control.down ? Material.color(Material.Grey, Material.Shade400) : Material.color(Material.Grey, Material.Shade200)
     }
     Rectangle {

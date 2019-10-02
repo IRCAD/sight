@@ -453,7 +453,7 @@ void AppManagerTest::managerWithOutputCreationTest()
 
 //------------------------------------------------------------------------------
 
-void AppManagerTest::managerWithGroup()
+void AppManagerTest::managerWithGroupTest()
 {
     m_appMgr = std::unique_ptr< ::fwServices::AppManager >(new ::fwServices::AppManager);
     CPPUNIT_ASSERT(m_appMgr);
@@ -525,6 +525,87 @@ void AppManagerTest::managerWithGroup()
                              KEY_GROUP_NAME(::fwServices::ut::TestServiceWithData::s_INOUT_GROUP, 0)));
 
     m_appMgr->destroy();
+}
+
+//------------------------------------------------------------------------------
+
+void AppManagerTest::managerWithInputsTest()
+{
+    const std::string INPUT_OBJ1         = "object1";
+    const std::string INPUT_OBJ2         = "object2";
+    const std::string OPTIONAL_INPUT_OBJ = "optionalObject";
+    const std::string INPUT_CHANNEL1     = "channel1";
+    const std::string INPUT_CHANNEL2     = "channel2";
+    const std::string INPUT_STR          = "inputStr";
+
+    auto appMgr = std::unique_ptr< AppManagerForTest >(new AppManagerForTest);
+    CPPUNIT_ASSERT(appMgr);
+
+    appMgr->create();
+
+    CPPUNIT_ASSERT(appMgr->checkInputs());
+
+    appMgr->requireInput(INPUT_STR, AppManagerForTest::InputType::OTHER);
+
+    CPPUNIT_ASSERT(!appMgr->checkInputs());
+
+    const std::string STR = "MyString";
+    appMgr->replaceInput(INPUT_STR, STR);
+
+    CPPUNIT_ASSERT(appMgr->checkInputs());
+    CPPUNIT_ASSERT_EQUAL(STR, appMgr->getInputID(INPUT_STR));
+
+    appMgr->requireInput(INPUT_OBJ1, AppManagerForTest::InputType::OBJECT);
+    appMgr->requireInput(INPUT_OBJ2, AppManagerForTest::InputType::OBJECT);
+    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "::fwData::Image");
+
+    CPPUNIT_ASSERT(!appMgr->checkInputs());
+
+    ::fwData::Boolean::sptr boolean1 = ::fwData::Boolean::New();
+    ::fwData::Boolean::sptr boolean2 = ::fwData::Boolean::New();
+
+    appMgr->replaceInput(INPUT_OBJ1, boolean1->getID());
+    appMgr->replaceInput(INPUT_OBJ2, boolean2->getID());
+
+    CPPUNIT_ASSERT(appMgr->checkInputs());
+    CPPUNIT_ASSERT_EQUAL(boolean1->getID(), appMgr->getInputID(INPUT_OBJ1));
+    CPPUNIT_ASSERT_EQUAL(boolean2->getID(), appMgr->getInputID(INPUT_OBJ2));
+    CPPUNIT_ASSERT_EQUAL(appMgr->getInputID(INPUT_OBJ2), appMgr->getInputID(INPUT_OBJ2));
+
+    const auto image = appMgr->getObject(appMgr->getInputID(INPUT_OBJ2));
+    CPPUNIT_ASSERT(image);
+
+    appMgr->requireInput(INPUT_CHANNEL2, AppManagerForTest::InputType::CHANNEL, INPUT_CHANNEL2);
+    CPPUNIT_ASSERT(appMgr->checkInputs());
+
+    CPPUNIT_ASSERT_EQUAL(INPUT_CHANNEL2, INPUT_CHANNEL2);
+
+    appMgr->replaceInput(INPUT_CHANNEL2, appMgr->getInputID(INPUT_CHANNEL2));
+    CPPUNIT_ASSERT_EQUAL(INPUT_CHANNEL2, INPUT_CHANNEL2);
+    CPPUNIT_ASSERT(appMgr->checkInputs());
+
+    appMgr->requireInput(INPUT_CHANNEL1, AppManagerForTest::InputType::CHANNEL);
+    CPPUNIT_ASSERT(!appMgr->checkInputs());
+
+    appMgr->replaceInput(INPUT_CHANNEL1, appMgr->getInputID("INPUT_CHANNEL1"));
+    CPPUNIT_ASSERT(appMgr->checkInputs());
+
+    // Check that getInputID return the same string on each iteration
+    const std::string testSTR = appMgr->getInputID("myString");
+    for (size_t i = 0; i < 10; ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL(testSTR, appMgr->getInputID("myString"));
+    }
+
+    // Check that getInputID does not return the same string on another instance of the manager
+    auto appMgr2 = std::unique_ptr< AppManagerForTest >(new AppManagerForTest);
+    CPPUNIT_ASSERT(appMgr2);
+    appMgr2->create();
+
+    CPPUNIT_ASSERT(appMgr->getInputID("myString") != appMgr2->getInputID("myString"));
+
+    appMgr->destroy();
+    appMgr2->destroy();
 }
 
 //------------------------------------------------------------------------------

@@ -73,7 +73,7 @@ namespace editor
 class UIACTIVITIESQT_CLASS_API SCreateActivity : public QObject,
                                                  public ::fwGui::editor::IEditor
 {
-Q_OBJECT;
+Q_OBJECT
 
 public:
 
@@ -83,7 +83,7 @@ public:
     UIACTIVITIESQT_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept;
+    UIACTIVITIESQT_API virtual ~SCreateActivity() noexcept override;
 
     /**
      * @name Signals API
