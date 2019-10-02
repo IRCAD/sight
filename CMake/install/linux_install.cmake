@@ -69,13 +69,13 @@ macro(linux_install PRJ_NAME)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh @ONLY)
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh @ONLY)
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 
     include(CPack)
