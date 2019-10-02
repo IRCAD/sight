@@ -48,7 +48,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type=" ::visuOgreAdaptor::SInteractorStyle ">
-            <config layer="..." movement="..." picker="..." queryMask="0x40000000" />
+            <config layer="..." movement="..." picker="..." queryMask="0x44444444" />
        </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -56,7 +56,7 @@ namespace visuOgreAdaptor
  * - \b movement (optional, 'Trackball'/'Fixed'/'Negato2D'/'VR', default=''): Style of the movement
  * interactor.
  * - \b picker (optional, 'Mesh'/'Video', default=''): Style of the picker interactor.
- * - \b queryMask (optional, uint32, default=0x40000000): (uint32) Used for picking. Picked only displayed entities with
+ * - \b queryMask (optional, uint32, default=0x44444444): (uint32) Used for picking. Picked only displayed entities with
  * the matching flag.
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
@@ -113,11 +113,11 @@ private:
     /// Type of the movement style.
     std::string m_movementStyle {""};
 
-    ///Connection service, needed for slot/signal association.
+    /// Connection service, needed for slot/signal association.
     ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Mask for picking requests.
-    std::uint32_t m_queryMask {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryMask {0x44444444};
 
     /// Pointer on move interactor.
     ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor {nullptr};

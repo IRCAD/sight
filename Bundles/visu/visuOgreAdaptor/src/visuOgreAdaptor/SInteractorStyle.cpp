@@ -97,7 +97,7 @@ void SInteractorStyle::configuring()
     }
     if(config.count("queryFlags"))
     {
-        m_queryMask = config.get<int>("queryFlags");
+        m_queryMask = config.get< std::uint32_t >("queryFlags");
         FW_DEPRECATED_MSG("The config `queryFlags` is deprecated, please use `" + s_QUERY_CONFIG +"`", "21.0");
     }
 }
@@ -186,7 +186,6 @@ void SInteractorStyle::setInteractorStyle()
     {
         SLM_WARN(this->getID() + " : '" + s_MOVEMENT_CONFIG +"' is not set.");
     }
-
 }
 
 //------------------------------------------------------------------------------
