@@ -292,6 +292,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
+        qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each bundles
         install(
             TARGETS ${FWPROJECT_NAME}
             RUNTIME DESTINATION bin
@@ -980,6 +981,15 @@ macro(fwLoadProperties)
     if(WIN32)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/setpath.bat.in ${CMAKE_BINARY_DIR}/bin/setpath.bat @ONLY)
     endif()
+
+    if( TYPE STREQUAL "EXECUTABLE" OR TYPE STREQUAL "APP" )
+        # Only execute install for the required targets, and not implicit dependencies
+        if(${NAME} IN_LIST PROJECTS_TO_BUILD)
+            generic_install()
+        endif()
+    endif()
+
+
 endmacro()
 
 

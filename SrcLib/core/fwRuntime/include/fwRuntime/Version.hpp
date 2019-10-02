@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_VERSION_HPP__
-#define __FWRUNTIME_VERSION_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 
@@ -34,7 +33,7 @@ namespace fwRuntime
 /**
  * @brief   Holds version information for libraries and bundles.
  */
-struct Version
+struct FWRUNTIME_CLASS_API Version
 {
 
     /**
@@ -84,5 +83,3 @@ struct Version
 };
 
 } // namespace fwRuntime
-
-#endif /*__FWRUNTIME_VERSION_HPP__*/

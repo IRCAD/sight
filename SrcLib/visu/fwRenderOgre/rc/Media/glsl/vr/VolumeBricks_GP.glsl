@@ -3,11 +3,6 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 24) out;
 
-in VertexDataIn
-{
-    ivec3 vs_gridPos;
-} vertexIn[];
-
 uniform sampler3D u_bricksGrid;
 
 uniform ivec3 u_imageResolution;
@@ -15,6 +10,8 @@ uniform ivec3 u_brickSize;
 
 uniform vec3 u_boundingBoxMin;
 uniform vec3 u_boundingBoxMax;
+
+layout(location = 0) in ivec3 vs_gridPos[];
 
 out vec3 oPos;
 
@@ -42,7 +39,7 @@ bool isInsideBox(in ivec3 gridVoxel)
 
 void main()
 {
-    ivec3 gridPos = vertexIn[0].vs_gridPos;
+    ivec3 gridPos = vs_gridPos[0];
 
     // Stop now if the current position in the brick is empty or if it is out of the clipping box.
     if(getOpacity(gridPos) == 0 || !isInsideBox(gridPos))

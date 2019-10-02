@@ -127,9 +127,6 @@ protected:
     /// Qt event to manage focus
     virtual void focusOutEvent(QFocusEvent* event) override;
 
-    /// We use an event filter to be able to capture keyboard/mouse events. More on this later.
-    virtual bool eventFilter(QObject* target, QEvent* event) override;
-
 Q_SIGNALS:
     /// When the render window is created
     void renderWindowCreated();
@@ -193,6 +190,9 @@ private:
     int m_frameId;
 
     std::shared_ptr<QOpenGLContext> m_glContext;
+
+    /// Last size sent to ogre
+    QSize m_ogreSize;
 
 private Q_SLOTS:
 

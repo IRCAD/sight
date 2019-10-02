@@ -18,3 +18,12 @@ target_link_libraries(${FWPROJECT_NAME} PRIVATE Qt5::Test)
 fwInclude(
     ${OPENNI2_INCLUDE_DIRS}
 )
+if(WIN32)
+    if(OPENNI2_FOUND)
+        install(DIRECTORY ${OPENNI2_DRIVERS_DIR} DESTINATION "bin")
+    endif()
+else()
+    if(OPENNI2_FOUND)
+        install(DIRECTORY ${OPENNI2_DRIVERS_DIR} DESTINATION "lib")
+    endif()
+endif()

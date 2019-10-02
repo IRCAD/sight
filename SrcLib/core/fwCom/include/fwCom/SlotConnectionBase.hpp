@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,12 +19,12 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_SLOTCONNECTIONBASE_HPP__
-#define __FWCOM_SLOTCONNECTIONBASE_HPP__
 
-#include <fwCore/BaseObject.hpp>
+#pragma once
 
 #include "fwCom/config.hpp"
+
+#include <fwCore/BaseObject.hpp>
 
 namespace fwCom
 {
@@ -33,7 +33,7 @@ namespace fwCom
  * @brief Base class for Slot connection implementation.
  * This class is for internal use purpose.
  */
-struct SlotConnectionBase : virtual fwCore::BaseObject
+struct FWCOM_CLASS_API SlotConnectionBase : virtual fwCore::BaseObject
 {
     /**
      * @name Typedefs
@@ -75,12 +75,8 @@ struct SlotConnectionBase : virtual fwCore::BaseObject
         /// *NOT THREAD SAFE* Disconnect a Slot from this connection.
         virtual void disconnectWeakLock() = 0;
 
-
         /// *NOT THREAD SAFE* Connect the related Signal and Slot together.
         virtual void connectNoLock() = 0;
 };
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOTCONNECTIONBASE_HPP__ */
-

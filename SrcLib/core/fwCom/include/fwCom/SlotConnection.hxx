@@ -22,7 +22,7 @@
 
 #pragma once
 
-#ifndef __FWCOM_SLOTCONNECTION_HPP__
+#if !defined(__FWCOM_SLOTCONNECTION_HPP__)
 #error fwCom/SlotConnection.hpp not included
 #endif
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,6 +51,21 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
                 configuration->getName() == "layout");
+
+    if(configuration->hasAttribute("style"))
+    {
+        const std::string style = configuration->getAttributeValue("style");
+        if(style == "ToolButtonIconOnly" || style == "ToolButtonTextOnly" || style == "ToolButtonTextBesideIcon" ||
+           style == "ToolButtonTextUnderIcon" || style == "ToolButtonFollowStyle")
+        {
+            m_style = style;
+        }
+        else
+        {
+            OSLM_ERROR(
+                "`Style` attribute value must be `ToolButtonIconOnly` or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`");
+        }
+    }
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for( iter = configuration->begin(); iter != configuration->end(); ++iter )
@@ -181,4 +196,3 @@ std::vector< ::fwGui::container::fwContainer::sptr > IToolBarLayoutManager::getC
 
 } // namespace layoutManager
 } // namespace fwGui
-

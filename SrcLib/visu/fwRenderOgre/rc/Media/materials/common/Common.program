@@ -47,6 +47,10 @@ vertex_program Default/Edge_VP glsl
 vertex_program Default/Normal_VP glsl
 {
     source NormalsDisplay_VP.glsl
+    default_params
+    {
+
+    }
 }
 
 //-----------------------------------------------------------------------------

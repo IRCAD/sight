@@ -118,7 +118,7 @@ public:
      * @code{.xml}
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
-               <layout>
+               <layout style="ToolButtonIconOnly">
                    <menuItem name="My item 2" style="check" icon="TutoGui-0.1/icons/system.png"
      * icon2="TutoGui-0.1/icons/monkey.png" />
                    <menuItem name="My item 3" style="check" icon="TutoGui-0.1/icons/system.png"/>
@@ -144,6 +144,9 @@ public:
      * This method analyzes the gui section of the configuration.
      *
      *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
+     *   - \b style : (optional, default=ToolButtonIconOnly) describe the style of the tool button
+     * (possible values: ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon
+     * /ToolButtonFollowStyle )
      *  - \<menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
@@ -160,7 +163,7 @@ public:
     /**
      * @brief Instantiate actions with parent toolBar.
      */
-    FWGUI_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent ) = 0;
+    FWGUI_API virtual void createLayout( ::fwGui::container::fwToolBar::sptr parent) = 0;
 
     /**
      * @brief Destroy local actions.
@@ -212,6 +215,9 @@ protected:
 
     /// Callbacks associate with toolBar items
     CallbacksType m_callbacks;
+
+    /// String to describe the tool button style
+    std::string m_style{"ToolButtonIconOnly"};
 };
 
 } // namespace layoutManager

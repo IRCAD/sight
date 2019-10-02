@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "activities/editor/SCreateActivity.hpp"
+
+#ifdef KEEP_OLD_SERVICE
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -60,10 +62,14 @@
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
+#endif
+
 namespace activities
 {
 namespace editor
 {
+
+#ifdef KEEP_OLD_SERVICE
 
 //------------------------------------------------------------------------------
 
@@ -76,10 +82,17 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG     
 
 //------------------------------------------------------------------------------
 
+#endif
+
 SCreateActivity::SCreateActivity() noexcept
 {
+#ifndef KEEP_OLD_SERVICE
+    SLM_FATAL("Use '::uiActivitiesQt::editor::SCreateActivity' instead of '::activities::editor::SCreateActivity'");
+#else
+    FW_DEPRECATED("::activities::editor::SCreateActivity", "::uiActivitiesQt::editor::SCreateActivity", "21.0");
     newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     newSignal< LoadRequestedSignalType >(s_LOAD_REQUESTED_SIG);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -87,6 +100,8 @@ SCreateActivity::SCreateActivity() noexcept
 SCreateActivity::~SCreateActivity() noexcept
 {
 }
+
+#ifdef KEEP_OLD_SERVICE
 
 //------------------------------------------------------------------------------
 
@@ -278,6 +293,8 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 }
 
 //------------------------------------------------------------------------------
+
+#endif
 
 } // namespace editor
 } // namespace activities

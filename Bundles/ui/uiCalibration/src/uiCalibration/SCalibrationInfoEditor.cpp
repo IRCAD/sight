@@ -30,6 +30,10 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
@@ -64,6 +68,7 @@ void SCalibrationInfoEditor::updating()
 {
     ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
     SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
+    ::fwData::mt::ObjectReadLock calib1Lock(calInfo1);
 
     ::arData::CalibrationInfo::PointListContainerType plList1 = calInfo1->getPointListContainer();
 
@@ -72,6 +77,7 @@ void SCalibrationInfoEditor::updating()
     ::arData::CalibrationInfo::sptr calInfo2 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
     if(calInfo2)
     {
+        ::fwData::mt::ObjectReadLock calib2Lock(calInfo2);
         ::arData::CalibrationInfo::PointListContainerType plList2 = calInfo2->getPointListContainer();
 
         size_t captureIdx = 0;
@@ -89,6 +95,17 @@ void SCalibrationInfoEditor::updating()
             m_capturesListWidget->addItem(countString);
             ++captureIdx;
         }
+
+        m_nbCapturesLabel->setText(QString().setNum(captureIdx));
+
+        if(plList1.size() != plList2.size())
+        {
+            const auto errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
+                                "Your images may be out of sync.";
+
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Inputs do not match",
+                                                              errMsg, ::fwGui::dialog::MessageDialog::WARNING);
+        }
     }
     else
     {
@@ -103,6 +120,8 @@ void SCalibrationInfoEditor::updating()
             m_capturesListWidget->addItem(countString);
             ++captureIdx;
         }
+
+        m_nbCapturesLabel->setText(QString().setNum(captureIdx));
     }
 }
 
@@ -232,6 +251,7 @@ void SCalibrationInfoEditor::reset()
     }
 
     m_capturesListWidget->clear();
+    m_nbCapturesLabel->setText("0");
 }
 
 // ----------------------------------------------------------------------------

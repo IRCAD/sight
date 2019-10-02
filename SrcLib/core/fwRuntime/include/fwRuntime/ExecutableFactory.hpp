@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,30 +20,24 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_EXECUTABLEFACTORY_HPP__
-#define __FWRUNTIME_EXECUTABLEFACTORY_HPP__
+#pragma once
+
+#include "fwRuntime/BundleElement.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/RuntimeException.hpp"
 
 #include <string>
-
-#include "fwRuntime/config.hpp"
-#include "fwRuntime/BundleElement.hpp"
-#include "fwRuntime/RuntimeException.hpp"
 
 namespace fwRuntime
 {
 struct IExecutable;
 }
 
-
-
 namespace fwRuntime
 {
 
-
 /**
  * @brief   Defines the abstract executable factory class.
- * @struct  ExecutableFactory
- * @date    2004-2009
  *
  */
 struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
@@ -60,7 +54,7 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
      *
      * @param[in]   type    a string containing a type identifier
      */
-    FWRUNTIME_API ExecutableFactory( const std::string & type );
+    FWRUNTIME_API ExecutableFactory( const std::string& type );
 
     /**
      * @brief   Destructor : does nothing
@@ -75,7 +69,6 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
      */
     virtual IExecutable* createExecutable() const = 0;
 
-
     /**
      * @brief   Retrieves the type of executable the factory is able to create.
      *
@@ -83,16 +76,10 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
      */
     FWRUNTIME_API const std::string getType() const;
 
-
     private:
-
 
         std::string m_type; ///< a string containing the type identifier managed by the factory
 
 };
 
-
 } // namespace fwRuntime
-
-
-#endif // __FWRUNTIME_EXECUTABLEFACTORY_HPP__

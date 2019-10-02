@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.2
 import uiImageQml 1.0
+import styleQml 1.0
 
 Item {
     id: sliceIndexSelector
@@ -18,21 +19,17 @@ Item {
     SSliceIndexPositionEditor {
         id: sliceIndexEditor
 
-        // @disable-check M16
         sliceIndex: sliceIndexSelector.sliceOrientation
 
-        // @disable-check M16
         onSetSliceRange: {
             slider.from = min
             slider.to = max
         }
 
-        // @disable-check M16
         onSetSliceValue: {
             slider.value = value
         }
 
-        // @disable-check M16
         onSetSliceType: {
             sliceType.currentIndex = type
         }
@@ -99,7 +96,7 @@ Item {
                 horizontalAlignment: Text.AlignHCenter
                 text: slider.value + " / " + slider.to
                 enabled: false
-                color: Material.color(Material.Green)
+                color: Theme.accent
                 font.bold: true
             }
         }

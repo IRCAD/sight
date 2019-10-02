@@ -45,10 +45,10 @@
         </service>
 
         <service uid="action_import" type="::uiIO::action::SSeriesDBMerger">
-            <in key="seriesDB" uid="${SERIESDB}" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
-        <service uid="action_export" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_export" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
@@ -62,7 +62,7 @@
                 </filter>
             </config>
         </service>
-        <service uid="action_mesher" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_mesher" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -74,7 +74,7 @@
                 </filter>
             </config>
         </service>
-        <service uid="action_threshold" type="::activities::action::SActivityLauncher" autoConnect="yes">
+        <service uid="action_threshold" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes">
             <in key="series" uid="selection" />
             <config>
                 <parameters>

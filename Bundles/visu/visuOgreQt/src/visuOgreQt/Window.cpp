@@ -56,7 +56,6 @@ Window::Window(QWindow* parent) :
     m_frameId(0)
 {
     setAnimating(false);
-    installEventFilter(this);
 
     connect(this,  &Window::screenChanged, this, &Window::onScreenChanged);
 }
@@ -252,9 +251,23 @@ bool Window::event(QEvent* event)
             renderNow();
             return true;
 
+        case QEvent::Resize:
+        {
+            bool result = QWindow::event(event);
+
+            if(m_ogreRenderWindow != nullptr && m_ogreSize != this->size())
+            {
+                this->ogreResize(this->size());
+            }
+
+            return result;
+        }
+
         default:
-            return QWindow::event(event);
+            break;
     }
+
+    return QWindow::event(event);
 }
 // ----------------------------------------------------------------------------
 
@@ -286,26 +299,18 @@ void Window::renderNow(const bool force)
         return;
     }
 
+    if(m_ogreSize != this->size())
+    {
+        this->ogreResize(this->size());
+        return;
+    }
+
     this->render();
 
     if (m_animating)
     {
         this->renderLater();
     }
-}
-
-// ----------------------------------------------------------------------------
-
-bool Window::eventFilter(QObject* target, QEvent* event)
-{
-    if (target == this
-        && m_ogreRenderWindow != nullptr
-        && event->type() == QEvent::Resize)
-    {
-        this->ogreResize(static_cast<QResizeEvent*>(event)->size());
-    }
-
-    return QWindow::eventFilter(target, event);
 }
 
 // ----------------------------------------------------------------------------
@@ -522,8 +527,10 @@ void Window::ogreResize(const QSize& newSize)
         return;
     }
 
+    m_ogreSize = newSize;
+
     int newWidth, newHeight;
-    std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(newSize.width(), newSize.height());
+    std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(m_ogreSize.width(), m_ogreSize.height());
 
     this->makeCurrent();
 

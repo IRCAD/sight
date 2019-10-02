@@ -4,7 +4,7 @@ import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 
-import guiQml 1.0
+import styleQml 1.0
 import Dialog 1.0
 
 Window {

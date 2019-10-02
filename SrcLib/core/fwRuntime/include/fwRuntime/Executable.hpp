@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,29 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_EXECUTABLE_HPP__
-#define __FWRUNTIME_EXECUTABLE_HPP__
-
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/IExecutable.hpp"
 
-
-
 namespace fwRuntime
 {
 
-
-
 /**
  * @brief   Provides a default ::fwRuntime::IExecutable interface implementation.
- * @struct  Executable
  *
  * This class provides a default implementation of the ::fwRuntime::IExecutable
  * interface and is intended to be used as base class for user defined executable
  * classes being exported by bundles.
- *
- * @date    2004-2009
  *
  */
 struct FWRUNTIME_CLASS_API Executable : public IExecutable
@@ -56,7 +47,6 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
      */
     FWRUNTIME_API const std::shared_ptr< ConfigurationElement > getInitializationData() const noexcept;
 
-
     /**
      * @name    Overrides.
      */
@@ -69,12 +59,10 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
 
     /// @}
 
-
     protected:
 
         // Overrides
         FWRUNTIME_API virtual void setBundle( std::shared_ptr< Bundle > bundle );
-
 
     private:
 
@@ -90,10 +78,4 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
 
 };
 
-
-
 } // namespace fwRuntime
-
-
-
-#endif //__FWRUNTIME_EXECUTABLE_HPP__

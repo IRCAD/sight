@@ -688,16 +688,14 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr in
             }
         }
 
-        // Retrieves an iterator pointing to the child nodes of the current scene node
-        ::Ogre::SceneNode::ConstChildNodeIterator childNodesIt = tempSceneNode->getChildIterator();
-        while(childNodesIt.hasMoreElements())
+        for(auto* const childNode : tempSceneNode->getChildren())
         {
             // First, we must cast the Node* into a SceneNode*
-            const ::Ogre::SceneNode* childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
-            if(childNode)
+            const ::Ogre::SceneNode* childSceneNode = dynamic_cast< ::Ogre::SceneNode* >(childNode);
+            if(childSceneNode)
             {
                 // Push the current node into the stack in order to continue iteration
-                childrenStack.push(childNode);
+                childrenStack.push(childSceneNode);
             }
         }
     }

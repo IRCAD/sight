@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_RUNTIME_HPP__
-#define __FWRUNTIME_RUNTIME_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
@@ -50,7 +49,7 @@ namespace fwRuntime
  * @brief   Defines the runtime class.
  *
  */
-struct Runtime
+struct FWRUNTIME_CLASS_API Runtime
 {
     /**
      * @name    Type Definitions
@@ -337,5 +336,3 @@ struct Runtime
 };
 
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_RUNTIME_HPP__

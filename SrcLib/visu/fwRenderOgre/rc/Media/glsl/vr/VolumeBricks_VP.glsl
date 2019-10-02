@@ -1,11 +1,9 @@
-#version 330
-
-in int position;
+#version 410
 
 #ifndef FP_OUTPUT
 uniform ivec3 u_gridResolution;
 
-out ivec3 vs_gridPos;
+layout(location = 0) out ivec3 vs_gridPos;
 #endif
 
 //-----------------------------------------------------------------------------
