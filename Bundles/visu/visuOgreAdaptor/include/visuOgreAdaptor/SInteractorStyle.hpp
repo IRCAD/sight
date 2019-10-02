@@ -66,10 +66,10 @@ public:
 
     fwCoreServiceMacro(SInteractorStyle, ::fwRenderOgre::IAdaptor)
 
-    /// Slots used to forward the picker sinal.
+    /// Slots used to forward the picker signal.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
 
-    /// Signal used to forward the interactor sinal.
+    /// Signal used to forward the interactor signal.
     typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
 
@@ -84,7 +84,7 @@ protected:
     /// Select the interactor style.
     VISUOGREADAPTOR_API void configuring() override;
 
-    /// Starting method.
+    /// Create signals and slots.
     VISUOGREADAPTOR_API void starting() override;
 
     /// Update the interactor.
