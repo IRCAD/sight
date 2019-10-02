@@ -89,7 +89,7 @@ Item {
 
                             Text {
                                 anchors.fill: parent
-                                text: index
+                                text: index + 1
                                 font: toolButton.font
                                 opacity: enabled ? 1.0 : 0.3
                                 color: Theme.background

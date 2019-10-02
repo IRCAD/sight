@@ -112,7 +112,7 @@ public:
 
     fwCoreServiceMacro(SActivitySequencer, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
+    /// Initialize signals and slots
     UIACTIVITIESQT_API SActivitySequencer() noexcept;
 
     /// Destructor. Do nothing.
@@ -137,13 +137,13 @@ public Q_SLOTS:
 
 protected:
 
-    /// Do nothing
+    /// Parse the configuration
     virtual void configuring() override;
 
-    /// Parse the Activity ids list
+    /// Create the sequencer widgets: launch Qml file
     virtual void starting() override;
 
-    /// Do nothing
+    /// Destroy the container
     virtual void stopping() override;
 
     /**
@@ -160,7 +160,7 @@ protected:
 
 private:
 
-    /// Slot: Chech if the next activities can be enabled
+    /// Slot: Check if the next activities can be enabled
     void checkNext();
 
     /// Slot: Create the next activity series, emit 'dataRequired' signal if the activity require additional data

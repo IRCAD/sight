@@ -149,7 +149,7 @@ protected:
 
 private:
 
-    /// Slot: Chech if the next activities can be enabled
+    /// Slot: Check if the next activities can be enabled
     void checkNext();
 
     /// Slot: Create the next activity series, emit 'dataRequired' signal if the activity require additional data
