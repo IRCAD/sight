@@ -89,6 +89,7 @@ Activity {
             transformOrigin: Item.Center
             Layout.preferredWidth: 400
             Layout.fillHeight: true
+            z:-1
 
             ColumnLayout {
                 spacing: 2

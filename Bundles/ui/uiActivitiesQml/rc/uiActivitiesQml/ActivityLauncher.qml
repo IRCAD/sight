@@ -39,46 +39,55 @@ Item {
         anchors.fill: parent
         spacing: 0
 
-        RowLayout {
+        Rectangle{
+            Layout.fillWidth: true
+            Layout.preferredHeight: 50
+            color: Theme.background
+            z: 100 // To be drawn on top of the other copmponent
 
-            // Sequencer Object that displays the activity stepper
-            ActivitySequencer {
-                Layout.fillWidth: true
-                activityIdsList: activityLauncher.activityIdsList
-                activityNameList: activityLauncher.activityNameList
+            RowLayout {
+                anchors.fill: parent
+                // Sequencer Object that displays the activity stepper
+                ActivitySequencer {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    activityIdsList: activityLauncher.activityIdsList
+                    activityNameList: activityLauncher.activityNameList
 
-                onServiceCreated: {
-                    appManager.onServiceCreated(srv)
-                }
-            }
-            Button{
-                id: menuButton
-                text: ""
-                icon.source: "icons/menu.svg"
-
-                onClicked: {
-                    if (menu.visible){
-                        menu.close()
-                    } else {
-                        menu.open()
+                    onServiceCreated: {
+                        appManager.onServiceCreated(srv)
                     }
                 }
-            }
+                Button{
+                    id: menuButton
+                    text: ""
+                    icon.source: "icons/menu.svg"
+                    Layout.fillHeight: true
 
-            Menu{
-                id: menu
-                x: menuButton.x
-                y: menuButton.y + menuButton.height
-                width: menuButton.width
-                Action {
-                    text: ""
-                    icon.source: "icons/open.svg"
-                    onTriggered: appManager.open()
+                    onClicked: {
+                        if (menu.visible){
+                            menu.close()
+                        } else {
+                            menu.open()
+                        }
+                    }
                 }
-                Action {
-                    text: ""
-                    icon.source: "icons/save.svg"
-                    onTriggered: appManager.save()
+
+                Menu{
+                    id: menu
+                    x: menuButton.x
+                    y: menuButton.y + menuButton.height
+                    width: menuButton.width
+                    Action {
+                        text: ""
+                        icon.source: "icons/open.svg"
+                        onTriggered: appManager.open()
+                    }
+                    Action {
+                        text: ""
+                        icon.source: "icons/save.svg"
+                        onTriggered: appManager.save()
+                    }
                 }
             }
         }
@@ -88,6 +97,7 @@ Item {
             id: activityStackView
             Layout.fillHeight: true
             Layout.fillWidth: true
+            z:0
         }
     }
 
