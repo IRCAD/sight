@@ -124,13 +124,26 @@ macro(installConanDeps CONAN_DEPS_LIST)
         endif()
     endif()
 
-    conan_cmake_run(
-        REQUIRES ${CONAN_DEPS_LIST}
-        BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
-        OPTIONS ${CONAN_OPTIONS}
-        BUILD ${CONAN_BUILD_OPTION}
-        SETTINGS ${CONAN_SETTINGS}
-    )
+    option(VERBOSE_CONAN "Verbose conan output" OFF)
+    mark_as_advanced(VERBOSE_CONAN)
+
+    if(VERBOSE_CONAN)
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS
+            OPTIONS ${CONAN_OPTIONS}
+            BUILD ${CONAN_BUILD_OPTION}
+            SETTINGS ${CONAN_SETTINGS}
+        )
+    else()
+        conan_cmake_run(
+            REQUIRES ${CONAN_DEPS_LIST}
+            BASIC_SETUP CMAKE_TARGETS NO_OUTPUT_DIRS OUTPUT_QUIET
+            OPTIONS ${CONAN_OPTIONS}
+            BUILD ${CONAN_BUILD_OPTION}
+            SETTINGS ${CONAN_SETTINGS}
+        )
+    endif()
 
     # Restore backup
     set(CMAKE_C_COMPILER_ID ${SAVE_CMAKE_C_COMPILER_ID})
