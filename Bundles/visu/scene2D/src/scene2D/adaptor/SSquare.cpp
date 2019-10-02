@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,10 +22,11 @@
 
 #include "scene2D/adaptor/SSquare.hpp"
 
+#include <fwCom/Slots.hxx>
+
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
-#include <fwCom/Slots.hxx>
 
 fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SSquare);
 
@@ -33,7 +34,7 @@ namespace scene2D
 {
 namespace adaptor
 {
-const ::fwCom::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT   = "setDoubleParameter";
+const ::fwCom::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 //-----------------------------------------------------------------------------
 
 SSquare::SSquare() noexcept :
@@ -96,7 +97,7 @@ void SSquare::starting()
 
 void SSquare::updating()
 {
-     this->getScene2DRender()->getScene()->removeItem(m_layer);
+    this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
 //-----------------------------------------------------------------------------
@@ -177,11 +178,11 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     this->configureParams();
     if(_key == "minDepth")
     {
-      m_coord.setX(_val);
+        m_coord.setX(_val);
     }
     else if(_key == "maxDepth")
     {
-     m_coord.setY(_val);
+        m_coord.setY(_val);
     }
     else
     {
@@ -192,4 +193,3 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
 }
 } // namespace adaptor
 } // namespace scene2D
-

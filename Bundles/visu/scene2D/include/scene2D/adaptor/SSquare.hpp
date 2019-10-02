@@ -27,8 +27,9 @@
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
 
-#include <QGraphicsItem>
 #include <fwServices/macros.hpp>
+
+#include <QGraphicsItem>
 
 namespace scene2D
 {
