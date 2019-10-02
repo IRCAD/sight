@@ -28,6 +28,7 @@
 #include <fwRenderQt/IAdaptor.hpp>
 
 #include <QGraphicsItem>
+#include <fwServices/macros.hpp>
 
 namespace scene2D
 {
@@ -87,6 +88,8 @@ private:
     ::fwRenderQt::data::Coord m_oldCoord;
 
     bool m_pointIsCaptured;
+    static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    void setDoubleParameter(const double val, std::string key);
 };
 
 } // namespace adaptor

@@ -25,6 +25,7 @@
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
+#include <fwCom/Slots.hxx>
 
 fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SSquare);
 
@@ -32,7 +33,7 @@ namespace scene2D
 {
 namespace adaptor
 {
-
+const ::fwCom::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT   = "setDoubleParameter";
 //-----------------------------------------------------------------------------
 
 SSquare::SSquare() noexcept :
@@ -41,6 +42,7 @@ SSquare::SSquare() noexcept :
     m_rec(nullptr),
     m_pointIsCaptured(false)
 {
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SSquare::setDoubleParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,6 +96,7 @@ void SSquare::starting()
 
 void SSquare::updating()
 {
+     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +172,24 @@ bool SSquare::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphi
 }
 //-----------------------------------------------------------------------------
 
+void SSquare::setDoubleParameter(const double _val, std::string _key)
+{
+    this->configureParams();
+    if(_key == "minDepth")
+    {
+      m_coord.setX(_val);
+    }
+    else if(_key == "maxDepth")
+    {
+     m_coord.setY(_val);
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+    this->updating();
+    this->starting();
+}
 } // namespace adaptor
 } // namespace scene2D
 
