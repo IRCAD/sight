@@ -101,24 +101,33 @@ public:
      * @todo Rename to getSpacing when the deprecated API is removed
      */
     const Spacing& getSpacing2() const;
-    /// Set image spacing
-    void setSpacing(const Spacing& spacing);
+    /**
+     * @brief Set image spacing
+     * @todo Rename to setSpacing when the deprecated API is removed
+     */
+    void setSpacing2(const Spacing& spacing);
 
     /**
      * @brief Get image origin
      * @todo Rename to getOrigin when the deprecated API is removed
      */
     const Origin& getOrigin2() const;
-    /// Set image origin
-    void setOrigin(const Origin& origin);
+    /**
+     * @brief Set image origin
+     * @todo Rename to setOrigin when the deprecated API is removed
+     */
+    void setOrigin2(const Origin& origin);
 
     /**
      * @brief Get image size
      * @todo Rename to getSize when the deprecated API is removed
      */
     const Size& getSize2() const;
-    /// Set image size
-    void setSize(const Size& size);
+    /**
+     * @brief Set image size
+     * @todo Rename to setSize when the deprecated API is removed
+     */
+    void setSize2(const Size& size);
 
     /// Number of dimensions of the image (3 for 3D image)
     FWDATA_API size_t getNumberOfDimensions() const;
@@ -493,7 +502,7 @@ inline const Image::Spacing& Image::getSpacing2() const
 }
 //------------------------------------------------------------------------------
 
-inline void Image::setSpacing(const Spacing& spacing)
+inline void Image::setSpacing2(const Spacing& spacing)
 {
     m_spacing = spacing;
 }
@@ -507,7 +516,7 @@ inline const Image::Origin& Image::getOrigin2() const
 
 //------------------------------------------------------------------------------
 
-inline void Image::setOrigin(const Origin& origin)
+inline void Image::setOrigin2(const Origin& origin)
 {
     m_origin = origin;
 }
@@ -521,7 +530,7 @@ inline const Image::Size& Image::getSize2() const
 
 //------------------------------------------------------------------------------
 
-inline void Image::setSize(const Size& size)
+inline void Image::setSize2(const Size& size)
 {
     m_size = size;
 }

@@ -80,9 +80,9 @@ void ImageTest::testGetterSetter()
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
     img1->setType( TYPE);
-    img1->setSpacing(SPACING);
-    img1->setOrigin(ORIGIN);
-    img1->setSize(SIZE);
+    img1->setSpacing2(SPACING);
+    img1->setOrigin2(ORIGIN);
+    img1->setSize2(SIZE);
     img1->setWindowCenter(WINDOWCENTER);
     img1->setWindowWidth( WINDOWWIDTH );
     img1->setPixelFormat(FORMAT );
@@ -128,7 +128,7 @@ void ImageTest::testAllocation()
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
     img1->setType(TYPE);
-    img1->setSize(IMG_SIZE);
+    img1->setSize2(IMG_SIZE);
 
     img1->allocate();
 
