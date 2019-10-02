@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,6 +48,8 @@
 
 #include <boost/foreach.hpp>
 
+#ifdef KEEP_OLD_SERVICE
+
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -58,6 +60,8 @@
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
+#endif
+
 namespace activities
 {
 namespace action
@@ -65,7 +69,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, ::fwData::Vector);
 
 //------------------------------------------------------------------------------
 
@@ -76,8 +80,13 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG  
 
 SCreateActivity::SCreateActivity() noexcept
 {
+#ifndef KEEP_OLD_SERVICE
+    SLM_FATAL("Use '::uiActivitiesQt::action::SCreateActivity' instead of '::activities::action::SCreateActivity'");
+#else
+    FW_DEPRECATED("::activities::action::SCreateActivity", "::uiActivitiesQt::action::SCreateActivity", "21.0");
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     m_sigActivitySelected   = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SIG);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -131,6 +140,8 @@ void SCreateActivity::configuring()
 
 ::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
+#ifdef KEEP_OLD_SERVICE
+
     QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
@@ -193,6 +204,9 @@ void SCreateActivity::configuring()
     }
 
     return info;
+
+#endif
+    return ::fwActivities::registry::ActivityInfo();
 }
 
 //------------------------------------------------------------------------------

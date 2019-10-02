@@ -4,7 +4,7 @@ import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 
-import guiQml 1.0
+import styleQml 1.0
 import PoCDialog 1.0
 
 Item {

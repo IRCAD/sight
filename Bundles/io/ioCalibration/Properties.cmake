@@ -10,10 +10,11 @@ set( DEPENDENCIES
     fwServices
     fwTools
     arData
-    fwCom
     fwGui
+    fwPreferences
     fwIO
     cvIO
+    calibration3d
 )
 set( REQUIREMENTS dataReg servicesReg)
 set( CONAN_DEPS

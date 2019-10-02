@@ -29,7 +29,7 @@
 namespace activities
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("activities::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::activities::Plugin");
 
 Plugin::~Plugin() noexcept
 {

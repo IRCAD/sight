@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,6 +56,8 @@
 
 #include <boost/foreach.hpp>
 
+#ifdef KEEP_OLD_SERVICE
+
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -65,6 +67,8 @@
 #include <QVBoxLayout>
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
+
+#endif
 
 namespace activities
 {
@@ -89,11 +93,16 @@ static const ::fwServices::IService::KeyType s_SERIES_INPUT = "series";
 SActivityLauncher::SActivityLauncher() noexcept :
     m_mode("message")
 {
+#ifndef KEEP_OLD_SERVICE
+    SLM_FATAL("Use '::uiActivitiesQt::action::SActivityLauncher' instead of '::activities::action::SActivityLauncher'");
+#else
+    FW_DEPRECATED("::activities::action::SActivityLauncher", "::uiActivitiesQt::action::SActivityLauncher", "21.0");
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
 
     newSlot(s_LAUNCH_SERIES_SLOT, &SActivityLauncher::launchSeries, this);
     newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SActivityLauncher::launchActivitySeries, this);
     newSlot(s_UPDATE_STATE_SLOT, &SActivityLauncher::updateState, this);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -122,6 +131,7 @@ void SActivityLauncher::stopping()
 
 void SActivityLauncher::configuring()
 {
+#ifdef KEEP_OLD_SERVICE
     this->::fwGui::IActionSrv::initialize();
     typedef ::fwServices::IService::ConfigType ConfigType;
 
@@ -186,12 +196,14 @@ void SActivityLauncher::configuring()
         }
         SLM_ASSERT("A maximum of 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
     }
+#endif
 }
 
 //------------------------------------------------------------------------------
 
 ::fwActivities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
 {
+#ifdef KEEP_OLD_SERVICE
     QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
@@ -253,6 +265,8 @@ void SActivityLauncher::configuring()
     }
 
     return info;
+#endif
+    return ::fwActivities::registry::ActivityInfo();
 }
 
 //------------------------------------------------------------------------------

@@ -6,6 +6,8 @@ cmake_policy(SET CMP0068 NEW)
 cmake_policy(SET CMP0072 NEW)
 # Use new policy for 'Honor visibility properties for all target types.' (use `cmake --help-policy CMP0063` for details)
 cmake_policy(SET CMP0063 NEW)
+# Adds support for the new IN_LIST operator.
+cmake_policy(SET CMP0057 NEW)
 
 # On Windows, if the user doesn't specify a value,
 # 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
@@ -54,6 +56,7 @@ mark_as_advanced(VERBOSE_PCH)
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our bundles
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
+set( ENABLE_QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
 
@@ -347,10 +350,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/flags.cmake)
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################
 
-# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
-setExternalLibrariesDir()
-
-unset(APP_TO_BUILD)
 foreach(PROJECT ${PROJECT_LIST})
     addProject(${PROJECT})
 endforeach()

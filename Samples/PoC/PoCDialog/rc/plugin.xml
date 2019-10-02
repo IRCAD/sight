@@ -2,4 +2,6 @@
 
     <library name="PoCDialog" />
 
+    <requirement id="styleQml" />
+
 </plugin>

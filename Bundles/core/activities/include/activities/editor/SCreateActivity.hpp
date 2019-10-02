@@ -29,9 +29,13 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
+#ifdef KEEP_OLD_SERVICE
+
 #include <QButtonGroup>
 #include <QObject>
 #include <QPointer>
+
+#endif
 
 namespace activities
 {
@@ -70,21 +74,28 @@ namespace editor
  *      (exclude).
  *    - \b id: id of the activity
  */
+#ifdef KEEP_OLD_SERVICE
 class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
                                              public ::fwGui::editor::IEditor
+#else
+class ACTIVITIES_CLASS_API SCreateActivity
+#endif
 {
+#ifdef KEEP_OLD_SERVICE
 Q_OBJECT;
-
+#endif
 public:
 
-    fwCoreServiceMacro(SCreateActivity, ::fwGui::editor::IEditor);
+#ifdef KEEP_OLD_SERVICE
+    fwCoreServiceMacro(SCreateActivity, ::fwGui::editor::IEditor)
+#endif
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
     ACTIVITIES_API virtual ~SCreateActivity() noexcept;
-
+#ifdef KEEP_OLD_SERVICE
     /**
      * @name Signals API
      * @{
@@ -143,6 +154,7 @@ private:
 
     /// Pointer on the buttons group
     QPointer<QButtonGroup> m_buttonGroup;
+#endif
 };
 
 } // namespace editor
