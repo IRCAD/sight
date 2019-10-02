@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,7 @@ ToolBarLayoutManager::~ToolBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent )
+void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr parent)
 {
     SLM_TRACE_FUNC();
 
@@ -71,6 +71,27 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
     SLM_ASSERT("dynamicCast fwToolBar to QtToolBarContainer failed", m_parent);
 
     QToolBar* toolBar = m_parent->getQtToolBar();
+
+    if(m_style == "ToolButtonTextOnly")
+    {
+        toolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
+    }
+    else if(m_style == "ToolButtonTextBesideIcon")
+    {
+        toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    }
+    else if(m_style == "ToolButtonTextUnderIcon")
+    {
+        toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    }
+    else if(m_style == "ToolButtonFollowStyle")
+    {
+        toolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
+    }
+    else
+    {
+        toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    }
 
     QActionGroup* actionGroup  = 0;
     unsigned int menuItemIndex = 0;
@@ -241,4 +262,3 @@ void ToolBarLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sp
 
 } // namespace layoutManager
 } // namespace fwGui
-
