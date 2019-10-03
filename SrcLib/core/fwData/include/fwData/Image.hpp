@@ -59,7 +59,7 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Image))
 
     /// Image format
-    enum class PixelFormat
+    enum PixelFormat
     {
         UNDEFINED = 0,
         RGB,           ///< Image with 3 component RGB.
@@ -149,7 +149,7 @@ public:
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
-    size_t getNumElements() const;
+    FWDATA_API size_t getNumElements() const;
 
     /** @{
      *  @brief Get/set preferred window center

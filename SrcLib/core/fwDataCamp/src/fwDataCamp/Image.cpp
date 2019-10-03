@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#include <fwMemory/camp/mapper.hpp>
+#include "fwDataCamp/Image.hpp"
 
 #include <fwCamp/UserObject.hpp>
 
-#include "fwDataCamp/Image.hpp"
-
+#include <fwMemory/camp/mapper.hpp>
 
 fwCampImplementDataMacro((fwData)(Image))
 {
     builder
-    .tag("object_version", "2")
+    .tag("object_version", "3")
     .tag("lib_name", "fwData")
     .base< ::fwData::Object>()
     .property("size", &::fwData::Image::m_size)
@@ -41,5 +40,18 @@ fwCampImplementDataMacro((fwData)(Image))
     .property("nb_components", &::fwData::Image::m_numberOfComponents)
     .property("window_center", &::fwData::Image::m_windowCenter)
     .property("window_width", &::fwData::Image::m_windowWidth)
+    .property("pixel_format", &::fwData::Image::m_pixelFormat)
+    ;
+}
+
+fwCampImplementEnumMacro((fwData)(Image)(PixelFormat))
+{
+    builder
+    .value("UNDEFINED", ::fwData::Image::PixelFormat::UNDEFINED)
+    .value("GRAY_SCALE", ::fwData::Image::PixelFormat::GRAY_SCALE)
+    .value("RGB", ::fwData::Image::PixelFormat::RGB)
+    .value("RGBA", ::fwData::Image::PixelFormat::RGBA)
+    .value("BGR", ::fwData::Image::PixelFormat::BGR)
+    .value("BGRA", ::fwData::Image::PixelFormat::BGRA)
     ;
 }

@@ -22,11 +22,35 @@
 
 #pragma once
 
-#include "fwDataCamp/config.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <fwCamp/macros.hpp>
+namespace fwStructuralPatch
+{
+namespace ut
+{
+namespace fwData
+{
+namespace Image
+{
 
-#include <fwData/Image.hpp>
+/**
+ * @brief Test patch to convert fwData::Image from version 2 to version 3.
+ */
+class V2ToV3Test : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE( V2ToV3Test );
+CPPUNIT_TEST( applyPatchTest );
+CPPUNIT_TEST_SUITE_END();
 
-fwCampAutoDeclareEnumMacro((fwData)(Image)(PixelFormat));
-fwCampDeclareAccessor((fwData)(Image), (fwData)(Array));
+public:
+    // interface
+    void setUp();
+    void tearDown();
+
+    void applyPatchTest();
+};
+
+} //namespace Image
+} //namespace fwData
+} //namespace ut
+} //namespace fwStructuralPatch
