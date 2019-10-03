@@ -23,9 +23,11 @@
 #include "fwRenderOgre/Layer.hpp"
 
 #include "fwRenderOgre/compositor/Core.hpp"
+#include "fwRenderOgre/factory/Text.hpp"
 #include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/ILight.hpp"
+#include "fwRenderOgre/Text.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -251,8 +253,10 @@ void Layer::createScene()
 {
     namespace fwc = ::fwRenderOgre::compositor;
 
+    auto renderService = m_renderService.lock();
+
     auto root = ::fwRenderOgre::Utils::getOgreRoot();
-    m_sceneManager = root->createSceneManager("DefaultSceneManager", m_renderService.lock()->getID() + "_" + m_id);
+    m_sceneManager = root->createSceneManager("DefaultSceneManager", renderService->getID() + "_" + m_id);
     m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
 
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
@@ -360,7 +364,7 @@ void Layer::createScene()
         m_lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         m_lightAdaptor->setParentTransformName(cameraNode->getName());
         m_lightAdaptor->setLayerID(this->getLayerID());
-        m_lightAdaptor->setRenderService(m_renderService.lock());
+        m_lightAdaptor->setRenderService(renderService);
         m_lightAdaptor->start();
     }
 
@@ -399,8 +403,10 @@ void Layer::createScene()
             ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
 
-        m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
+        m_compositorChainManager->setCompositorChain(compositorChain, m_id, renderService);
     }
+
+    m_dpi = renderService->getInteractorManager()->getLogicalDotsPerInch();
 
     m_sceneCreated = true;
 
@@ -469,6 +475,22 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             {
                 interactor.lock()->resizeEvent(info.x, info.y);
             }
+
+            auto renderService = m_renderService.lock();
+            const float newDpi = renderService->getInteractorManager()->getLogicalDotsPerInch();
+
+            if(m_dpi != newDpi)
+            {
+                m_dpi = newDpi;
+                auto& movableTextObjects = m_sceneManager->getMovableObjects(factory::Text::FACTORY_TYPE_NAME);
+                for(auto& [name, movObj] : movableTextObjects)
+                {
+                    Text* const textObj = dynamic_cast<Text*>(movObj);
+                    SLM_ASSERT("Movable object should be of type '::fwRenderOgre::Text'", textObj);
+                    textObj->setDotsPerInch(newDpi);
+                }
+            }
+
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:

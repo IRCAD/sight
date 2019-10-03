@@ -58,8 +58,9 @@ namespace visuOgreAdaptor
  * - \b layer (mandatory) : defines the mesh's layer
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
- * - \b length (optional) : (float) axis length in mm (default 50)
- * - \b label (optional) : (boolean) display axis names (default : true)
+ * - \b length (optional, float, default=50.f): axis length in scene units
+ * - \b label (optional, bool, default=true): display axis names
+ * - \b fontSize (optional, default=16): label font size in points
  *
  */
 class VISUOGREADAPTOR_CLASS_API SAxis : public ::fwRenderOgre::IAdaptor,
@@ -128,6 +129,10 @@ private:
 
     /// Labels attached to each axis
     std::array< ::fwRenderOgre::Text*, 3> m_axisLabels {{ nullptr, nullptr, nullptr }};
+
+    /// Label font size in points
+    size_t m_fontSize { 16 };
+
 };
 
 } //namespace visuOgreAdaptor

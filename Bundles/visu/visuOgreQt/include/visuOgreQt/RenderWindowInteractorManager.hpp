@@ -97,6 +97,10 @@ public:
     /// Creates a worker able to handle resources from the window's OpenGL context.
     VISUOGREQT_API ::fwRenderOgre::IGraphicsWorker* createGraphicsWorker() final;
 
+    /// Gets the vertical logical DPI of the monitor on which the window is displayed.
+    /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
+    VISUOGREQT_API virtual float getLogicalDotsPerInch() const final;
+
 private Q_SLOTS:
 
     /// When the render window is created

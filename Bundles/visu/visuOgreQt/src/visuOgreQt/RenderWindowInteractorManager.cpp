@@ -194,6 +194,14 @@ int RenderWindowInteractorManager::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
+float RenderWindowInteractorManager::getLogicalDotsPerInch() const
+{
+    SLM_ASSERT("Trying to query dots per inch on a non-existing windows.", m_qOgreWidget);
+    return static_cast<float>(m_qOgreWidget->screen()->logicalDotsPerInchY());
+}
+
+//-----------------------------------------------------------------------------
+
 void RenderWindowInteractorManager::onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo _info)
 {
     ::fwServices::IService::sptr renderService      = m_renderService.lock();

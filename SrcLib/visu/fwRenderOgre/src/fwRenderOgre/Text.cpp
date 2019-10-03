@@ -32,10 +32,65 @@
 #include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreViewport.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 
 namespace fwRenderOgre
 {
+
+class ResizeListener : public ::Ogre::Viewport::Listener
+{
+
+public:
+    ResizeListener(Text& _text) :
+        m_text(_text)
+    {
+
+    }
+
+    virtual ~ResizeListener()
+    {
+
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void viewportDimensionsChanged(::Ogre::Viewport*)
+    {
+        m_text.resize();
+    }
+
+private:
+
+    Text& m_text;
+};
+
+//------------------------------------------------------------------------------
+
+Text* Text::New(const std::string& _id, ::Ogre::SceneManager* _sm, ::Ogre::OverlayContainer* _parent,
+                const std::string& _fontSource, size_t _fontSize, float _fontResolution, ::Ogre::Camera* _cam)
+{
+    const auto& factoryName = ::fwRenderOgre::factory::Text::FACTORY_TYPE_NAME;
+    Text* instance          = static_cast< ::fwRenderOgre::Text* >(_sm->createMovableObject(_id, factoryName));
+
+    instance->m_parentContainer = _parent;
+    instance->m_camera          = _cam;
+
+    const std::uint32_t fontMapResolution = static_cast<std::uint32_t>(std::round(_fontResolution));
+    auto font                             = helper::Font::getFont(_fontSource, _fontSize, fontMapResolution);
+    instance->setFont(font);
+
+    instance->m_overlayText->setDimensions(1.0f, 1.0f);
+    instance->m_overlayText->setMetricsMode(Ogre::GMM_RELATIVE);
+    instance->setDotsPerInch(_fontResolution);
+
+    instance->m_listener = new ResizeListener(*instance);
+    _cam->getViewport()->addListener(instance->m_listener);
+
+    _parent->addChild(instance->m_overlayText);
+
+    return instance;
+}
 
 //------------------------------------------------------------------------------
 
@@ -50,15 +105,7 @@ Text* Text::New(const std::string& _id, ::Ogre::SceneManager* _sm, ::Ogre::Overl
 
     instance->m_overlayText->setDimensions(1.0f, 1.0f);
     instance->m_overlayText->setMetricsMode(Ogre::GMM_RELATIVE);
-    instance->m_overlayText->setCharHeight(0.03f);
     instance->m_overlayText->setPosition(0.5, 0.5);
-
-    instance->m_overlayText->setFontName(_font->getName());
-
-    // Clone the font material, thereby allowing each text object to have its own color.
-    const ::Ogre::MaterialPtr& fontMtl = ::fwRenderOgre::helper::Font::getFontMtl(_font->getName());
-    const ::Ogre::MaterialPtr& textMtl = fontMtl->clone(_id + "_TextMaterial");
-    instance->m_overlayText->setMaterial(textMtl);
 
     _parent->addChild(instance->m_overlayText);
 
@@ -84,6 +131,12 @@ Text::~Text()
     ::Ogre::OverlayManager::getSingleton().destroyOverlayElement(m_overlayText);
 
     ::Ogre::MaterialManager::getSingleton().remove(material);
+
+    if(m_listener)
+    {
+        m_camera->getViewport()->removeListener(m_listener);
+        delete m_listener;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +150,52 @@ void Text::setText(const std::string& _text)
 
 void Text::setPosition(float _x, float _y)
 {
-    m_overlayText->setPosition(_x, _y);
+    m_position = ::Ogre::Vector2(_x, _y);
+
+    // Ogre doesn't handle vertical alignment for text elements so we have to do it ourselves ..
+    const float textHeight = this->getTextHeight();
+    const auto vAlign      = m_overlayText->getVerticalAlignment();
+    const float alignedY   = vAlign == ::Ogre::GVA_BOTTOM ? _y - textHeight :
+                             vAlign == ::Ogre::GVA_CENTER ? _y - textHeight * 0.5f : _y;
+
+    m_overlayText->setPosition(_x, alignedY);
+}
+
+//------------------------------------------------------------------------------
+
+float Text::getTextHeight() const
+{
+    auto& caption = m_overlayText->getCaption();
+
+#pragma warning(push)
+#pragma warning( disable : 4996 ) // Ogre still uses the old iterator API deprecated in c++17.
+    const size_t nbLineEnds = std::count(caption.begin(), caption.end(), '\n') + 1;
+#pragma warning(pop)
+
+    return static_cast<float>(nbLineEnds) * m_overlayText->getCharHeight();
+}
+
+//------------------------------------------------------------------------------
+
+void Text::setDotsPerInch(float _dpi)
+{
+    constexpr float pointsPerInch = 72.f; // a standard DTP points is equal to 1/72th of an inch (US).
+    const float fontSize          = m_font->getTrueTypeSize(); // in dots
+
+    _dpi = std::round(_dpi);
+
+    m_heightInPixels = (fontSize / pointsPerInch) * _dpi;
+
+    this->resize();
+
+    std::uint32_t fontRes = static_cast<std::uint32_t>(_dpi);
+    if(m_font->getTrueTypeResolution() != fontRes)
+    {
+        auto newFont = helper::Font::getFont(m_font->getSource(),
+                                             m_font->getSize(),
+                                             fontRes);
+        this->setFont(newFont);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -140,9 +238,11 @@ void Text::setVisible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void Text::setTextAlignment(const ::Ogre::TextAreaOverlayElement::Alignment _alignement)
+void Text::setTextAlignment(const ::Ogre::TextAreaOverlayElement::Alignment _hAlignement,
+                            const ::Ogre::GuiVerticalAlignment _vAlignement)
 {
-    m_overlayText->setAlignment(_alignement);
+    m_overlayText->setVerticalAlignment(_vAlignement);
+    m_overlayText->setAlignment(_hAlignement);
 }
 
 //------------------------------------------------------------------------------
@@ -180,7 +280,7 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
         const auto projPos    = viewProjMx * pos;
 
         const ::Ogre::Vector2 screenPos(0.5f + projPos.x/2.f, 0.5f - projPos.y/2.f);
-        m_overlayText->setPosition(screenPos.x, screenPos.y);
+        this->setPosition(screenPos.x, screenPos.y);
 
         // Clipping test.
         if(projPos.z < -1.f || projPos.z > 1.f)
@@ -201,5 +301,33 @@ void Text::visitRenderables(Ogre::Renderable::Visitor*, bool)
 }
 
 //------------------------------------------------------------------------------
+
+void Text::setFont(::Ogre::FontPtr _font)
+{
+    m_font = _font;
+    m_overlayText->setFontName(_font->getName());
+
+    // Clone the font material, thereby allowing each text object to have its own color.
+    const ::Ogre::MaterialPtr& fontMtl = ::fwRenderOgre::helper::Font::getFontMtl(_font->getName());
+
+    const auto& textMtlName = this->getName() + "_TextMaterial";
+    ::Ogre::MaterialPtr textMtl = ::Ogre::MaterialManager::getSingleton().getByName(textMtlName);
+    if(!textMtl)
+    {
+        textMtl = fontMtl->clone(textMtlName);
+    }
+
+    m_overlayText->setMaterial(textMtl);
+}
+
+//------------------------------------------------------------------------------
+
+void Text::resize()
+{
+    float newSize = m_heightInPixels / m_camera->getViewport()->getActualHeight();
+
+    m_overlayText->setCharHeight(newSize);
+    this->setPosition(m_position.x, m_position.y);
+}
 
 } // namespace fwRenderOgre

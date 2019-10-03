@@ -45,14 +45,14 @@ class PostWindowRenderListener;
  *
  * @code{.xml}
     <service uid="renderStatsAdaptor" type="::visuOgreAdaptor::SRenderStats">
-        <config layer="default" color="#ff0000" height="0.02"/>
+        <config layer="default" color="#ff0000" fontSize="12"/>
     </service>
    @endcode
 
  * @subsection Configuration Configuration:
  * - \b layer (mandatory) : not really used but it is needed to be bound to a render service.
  * - \b color (optional, default=#ffffff): stats' text color
- * - \b height (optional, default=0.03) : stats' text height, representing a fraction of the viewport's height.
+ * - \b fontSize (optional, uint, default=12): stats font size in points.
  */
 class VISUOGREADAPTOR_CLASS_API SRenderStats : public ::fwRenderOgre::IAdaptor
 {
@@ -92,8 +92,9 @@ private:
     /// The text's color.
     ::Ogre::ColourValue m_textColor;
 
-    /// The text's height, expressed as a fraction of the viewport height.
-    float m_textHeight;
+    /// The text's font height in points.
+    size_t m_fontSize { 12 };
+
 };
 
 } //namespace visuOgreAdaptor

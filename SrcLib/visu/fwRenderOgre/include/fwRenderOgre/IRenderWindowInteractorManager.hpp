@@ -183,6 +183,10 @@ public:
     /// Spawns a worker able to handle graphics resources in parallel.
     FWRENDEROGRE_API virtual IGraphicsWorker* createGraphicsWorker() = 0;
 
+    /// Gets the vertical logical DPI of the monitor on which the window is displayed.
+    /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
+    FWRENDEROGRE_API virtual float getLogicalDotsPerInch() const = 0;
+
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)
     {

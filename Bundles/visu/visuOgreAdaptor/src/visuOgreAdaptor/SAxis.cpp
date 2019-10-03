@@ -41,10 +41,6 @@ namespace visuOgreAdaptor
 const ::fwCom::Slots::SlotKeyType SAxis::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-static const std::string s_BILLBOARD_CONFIG = "billboard";
-static const std::string s_LABEL_CONFIG     = "label";
-static const std::string s_LENGTH_CONFIG    = "length";
-
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
 //-----------------------------------------------------------------------------
@@ -120,8 +116,9 @@ void SAxis::configuring()
                                                             this->getID() + "_transform");
 
     this->setTransformId(transformId);
-    m_length      = config.get<float>(s_LENGTH_CONFIG, m_length);
-    m_enableLabel = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
+    m_length      = config.get<float>("length", m_length);
+    m_enableLabel = config.get<bool>("label", m_enableLabel);
+    m_fontSize    = config.get<size_t>("fontSize", m_fontSize);
 }
 
 //-----------------------------------------------------------------------------
@@ -161,6 +158,9 @@ void SAxis::starting()
 
     materialAdaptor->getMaterialFw()->setHasVertexColor(true);
     materialAdaptor->update();
+
+    const float dpi       = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
+    const auto fontSource = "DejaVuSans.ttf";
 
     // Size
     const float cylinderLength = m_length - m_length/10;
@@ -224,9 +224,8 @@ void SAxis::starting()
     if(m_enableLabel)
     {
         m_axisLabels[0] = ::fwRenderOgre::Text::New(
-            this->getID() + "_xAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+            this->getID() + "_xAxisLabel", sceneMgr, textContainer, fontSource, m_fontSize, dpi, cam);
         m_axisLabels[0]->setText("X");
-        m_axisLabels[0]->setCharHeight(0.1f);
         xConeNode->attachObject(m_axisLabels[0]);
     }
 
@@ -245,9 +244,8 @@ void SAxis::starting()
     if(m_enableLabel)
     {
         m_axisLabels[1] = ::fwRenderOgre::Text::New(
-            this->getID() + "_yAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+            this->getID() + "_yAxisLabel", sceneMgr, textContainer, fontSource, m_fontSize, dpi, cam);
         m_axisLabels[1]->setText("Y");
-        m_axisLabels[1]->setCharHeight(0.1f);
         yConeNode->attachObject(m_axisLabels[1]);
     }
 
@@ -266,9 +264,8 @@ void SAxis::starting()
     if(m_enableLabel)
     {
         m_axisLabels[2] = ::fwRenderOgre::Text::New(
-            this->getID() + "_zAxisLabel", sceneMgr, textContainer, dejaVuSansFont, cam);
+            this->getID() + "_zAxisLabel", sceneMgr, textContainer, fontSource, m_fontSize, dpi, cam);
         m_axisLabels[2]->setText("Z");
-        m_axisLabels[2]->setCharHeight(0.1f);
         zConeNode->attachObject(m_axisLabels[2]);
     }
 
