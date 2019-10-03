@@ -29,11 +29,13 @@
                         <orientation value="vertical" />
                         <view caption="Scene2D" />
                         <view proportion="0" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="Scene2D" start="no" />
                     <view sid="spacingEditor" start="no" />
+                    <view sid="depthRangeSlider" start="no" />
                 </registry>
             </service>
             <!-- ***************************************** End layouts declaration ***************************************** -->
@@ -69,7 +71,7 @@
             </service>
 
             <service uid="square2" type="::scene2D::adaptor::SSquare" >
-                <config x="20" y="20" size="30" color="blue" zValue="3" />
+                <config x="20" y="20" size="30" color="blue" zValue="4" />
             </service>
 
             <service uid="abscissa" type="::scene2D::adaptor::SLine" >
@@ -83,15 +85,27 @@
 
             <!-- ***************************************** End services declarations  ************************************************ -->
 
+            <service uid="depthRangeSlider" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double" name="X" key="minDepth" defaultValue="0." min="-500." max="1000." />
+                    <param type="double" name="Y" key="maxDepth" defaultValue="0." min="-500." max="1000." />
+                </parameters>
+            </service>
+
+
             <connect>
                 <signal>spacingEditor/double2Changed</signal>
                 <slot>grid/setGridSpacing</slot>
             </connect>
 
+            <connect>
+                <signal>depthRangeSlider/doubleChanged</signal>
+                <slot>square1/setDoubleParameter</slot>
+            </connect>
             <start uid="mainFrame" />
             <start uid="Scene2D" />
             <start uid="spacingEditor" />
-
+            <start uid="depthRangeSlider" />
             <start uid="grid" />
             <start uid="square1" />
             <start uid="square2" />
