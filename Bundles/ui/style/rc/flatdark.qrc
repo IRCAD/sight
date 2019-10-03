@@ -41,6 +41,6 @@
     <file>resources/radio_unchecked.png</file>
   </qresource>
   <qresource>
-      <file>darkstyle.qss</file>
+      <file>flatdark.qss</file>
   </qresource>
 </RCC>
