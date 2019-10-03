@@ -1,3 +1,5 @@
+#version 150
+
 uniform vec4 u_viewportSize;
 
 uniform float u_clippingNearDis;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_HASSIGNALS_HPP__
-#define __FWCOM_HASSIGNALS_HPP__
+#pragma once
 
 #include "fwCom/config.hpp"
 #include "fwCom/Signals.hpp"
@@ -34,7 +33,7 @@ struct SignalBase;
 /**
  * @brief   This class proposes a mapping between a SignalKeyType and a SignalBase.
  */
-class HasSignals
+class FWCOM_CLASS_API HasSignals
 {
 
 public:
@@ -49,20 +48,20 @@ public:
     {
     }
 
-    SPTR( SignalBase ) signal( const Signals::SignalKeyType & key ) const
+    SPTR( SignalBase ) signal( const Signals::SignalKeyType& key ) const
     {
         return m_signals[key];
     }
 
     template< typename SignalType >
-    SPTR( SignalType ) signal( const Signals::SignalKeyType & key ) const
+    SPTR( SignalType ) signal( const Signals::SignalKeyType& key ) const
     {
         SPTR( SignalType ) Signal = std::dynamic_pointer_cast< SignalType >( this->signal(key) );
         return Signal;
     }
 
     template<typename SignalType>
-    SPTR( SignalType ) newSignal(const Signals::SignalKeyType & key)
+    SPTR( SignalType ) newSignal(const Signals::SignalKeyType& key)
     {
         SPTR( SignalType ) sig = std::make_shared< SignalType > ();
         m_signals(key, sig);
@@ -81,5 +80,3 @@ protected:
 };
 
 } // namespace fwCom
-
-#endif // __FWCOM_HASSIGNALS_HPP__

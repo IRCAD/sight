@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,8 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SLOTCALL_HPP__
+#pragma once
+
 #define __FWCOM_SLOTCALL_HPP__
 
 #include "fwCom/SlotRun.hpp"
@@ -43,7 +44,7 @@ struct SlotCall;
  * @tparam A Slot's arguments types.
  */
 template< typename R, typename ... A >
-struct SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
+struct FWCOM_CLASS_API SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
 {
     /**
      * @name Typedefs
@@ -105,6 +106,3 @@ struct SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
 };
 
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOTCALL_HPP__ */
-

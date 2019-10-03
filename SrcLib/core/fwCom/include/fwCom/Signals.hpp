@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWCOM_SIGNALS_HPP__
-#define __FWCOM_SIGNALS_HPP__
+#pragma once
+
+#include "fwCom/config.hpp"
+
+#include "fwCore/macros.hpp"
 
 #include <map>
 #include <vector>
-
-#include "fwCore/macros.hpp"
-#include "fwCom/config.hpp"
 
 namespace fwCom
 {
@@ -35,11 +35,7 @@ namespace fwCom
 struct SignalBase;
 
 /**
- * @class   Signals
  * @brief   This class proposes a mapping between a SignalKeyType and a SignalBase.
- *
- *
- * @date   2012.
  */
 class FWCOM_CLASS_API Signals
 {
@@ -56,15 +52,13 @@ public:
     FWCOM_API virtual ~Signals();
 
     /// Registers SignalBase in m_signals
-    FWCOM_API Signals& operator()( const SignalKeyType &key, const SPTR( SignalBase ) &Signal );
+    FWCOM_API Signals& operator()( const SignalKeyType& key, const SPTR( SignalBase )& Signal );
 
     /// Returns the SignalBase associated to the key, if key does not exist, the ptr is null
-    FWCOM_API SPTR( SignalBase ) operator[]( const SignalKeyType &key ) const;
+    FWCOM_API SPTR( SignalBase ) operator[]( const SignalKeyType& key ) const;
 
     /// Returns all SignalKeyType registered in m_signals
     FWCOM_API SignalKeyContainerType getSignalKeys() const;
-
-
 
 protected:
 
@@ -79,5 +73,3 @@ protected:
 };
 
 } // namespace fwCom
-
-#endif //__FWCOM_SIGNALS_HPP__

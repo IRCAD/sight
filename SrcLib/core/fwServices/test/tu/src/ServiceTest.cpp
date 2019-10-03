@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -561,7 +561,7 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
     {
         _service->update().get();
     }
-    catch(::fwCore::Exception e)
+    catch(::fwCore::Exception& e)
     {
         exceptionCaught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("update error"), std::string(e.what()));
@@ -585,7 +585,7 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
     {
         _service->stop().get();
     }
-    catch(::fwCore::Exception e)
+    catch(::fwCore::Exception& e)
     {
         exceptionCaught = true;
         CPPUNIT_ASSERT_EQUAL(std::string("stop error"), std::string(e.what()));

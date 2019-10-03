@@ -58,13 +58,13 @@ class GUIQT_CLASS_API SImage : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImage)(::fwGui::editor::IEditor) )
+    fwCoreServiceMacro(SImage, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     GUIQT_API SImage() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~SImage() noexcept;
+    GUIQT_API virtual ~SImage() noexcept override;
 
 protected:
 

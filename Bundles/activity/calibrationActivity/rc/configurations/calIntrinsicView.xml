@@ -127,6 +127,7 @@
                     <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
                     <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
                     <menuItem name="Save calibration images" icon="arMedia-0.1/icons/save.svg" />
+                    <menuItem name="Load calibration images" icon="media-0.1/icons/LoadActivity.svg" />
                 </layout>
             </gui>
             <registry>
@@ -138,6 +139,7 @@
                 <menuItem sid="actionDisplayImage" start="yes" />
                 <menuItem sid="actionEdition" start="yes" />
                 <menuItem sid="actionSaveInputs" start="yes" />
+                <menuItem sid="actionLoadInputs" start="yes" />
             </registry>
         </service>
 
@@ -222,6 +224,14 @@
             <slots>
                 <slot>calibrationDataWriter/configureWithIHM</slot>
                 <slot>calibrationDataWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionLoadInputs" type="::gui::action::SSlotCaller">
+            <sync>true</sync>
+            <slots>
+                <slot>calibrationDataReader/configureWithIHM</slot>
+                <slot>calibrationDataReader/update</slot>
             </slots>
         </service>
 
@@ -312,6 +322,11 @@
         <service uid="calibrationDataWriter" type="::ioCalibration::SCalibrationImagesWriter">
             <in key="data" uid="${calibrationInfo}" />
             <format>.tiff</format>
+        </service>
+
+        <service uid="calibrationDataReader" type="::ioCalibration::SCalibrationInfoReader">
+            <inout key="data" uid="${calibrationInfo}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
         </service>
 
         <service uid="videoGrabber" type="::videoTools::SGrabberProxy">
@@ -429,6 +444,7 @@
             <slot>intrinsicCalibration/updateChessboardSize</slot>
             <slot>chessboardDetector/updateChessboardSize</slot>
             <slot>chessboardReprojection/updateChessboardSize</slot>
+            <slot>calibrationDataReader/updateChessboardSize</slot>
             <slot>detectionFrameUpdater/synchronize</slot>
         </connect>
 
@@ -439,6 +455,7 @@
         <start uid="displayCalibrationInfo" />
         <start uid="intrinsicEdition" />
         <start uid="calibrationDataWriter" />
+        <start uid="calibrationDataReader" />
         <start uid="videoGrabber" />
         <start uid="detectionFrameUpdater" />
         <start uid="distorter" />

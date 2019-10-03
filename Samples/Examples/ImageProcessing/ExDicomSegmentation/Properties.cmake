@@ -8,6 +8,7 @@ set( REQUIREMENTS
     servicesReg
     gui
     guiQt
+    ctrlSelection
     ioData
     ioGdcm
     ioVTK
@@ -15,6 +16,8 @@ set( REQUIREMENTS
     uiVisuQt
     uiReconstructionQt
     uiMedDataQt
+    uiActivitiesQt
+    uiImageQt
     visuVTKAdaptor
     visuVTKQt
     opVTKMesh

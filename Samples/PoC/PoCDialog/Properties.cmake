@@ -11,6 +11,7 @@ set( REQUIREMENTS
     gui
     guiQml
     fwlauncher
+    styleQml
 )
 set( PLUGINS
     QtQml

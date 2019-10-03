@@ -1,10 +1,9 @@
-<plugin id="activities" class="activities::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="activities" class="::activities::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="activities" />
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
-    <requirement id="guiQt"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>

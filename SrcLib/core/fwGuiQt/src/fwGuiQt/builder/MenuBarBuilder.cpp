@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include "fwGuiQt/builder/MenuBarBuilder.hpp"
+
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtMenuBarContainer.hpp"
 
@@ -30,7 +31,6 @@
 #include <QMenuBar>
 
 fwGuiRegisterMacro(::fwGui::builder::MenuBarBuilder, ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY);
-
 
 namespace fwGui
 {
@@ -55,7 +55,7 @@ void MenuBarBuilder::createMenuBar( ::fwGui::container::fwContainer::sptr parent
 {
     m_parent = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("The parent container is not a QtContainer", m_parent);
-    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
+    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
     if ( !window )
     {
         window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() );
@@ -65,10 +65,17 @@ void MenuBarBuilder::createMenuBar( ::fwGui::container::fwContainer::sptr parent
     {
         ::fwGuiQt::container::QtMenuBarContainer::sptr menuBarContainer =
             ::fwGuiQt::container::QtMenuBarContainer::New();
-        QMenuBar *menuBar = new QMenuBar(0);
+        QMenuBar* menuBar = new QMenuBar(0);
         menuBarContainer->setQtMenuBar(menuBar);
         window->setMenuBar( menuBar );
         m_menuBar = menuBarContainer;
+
+        if(m_backgroundColor != "default")
+        {
+            const QString style = QString::fromStdString("QMenuBar { background-color: " + m_backgroundColor + ";}");
+            menuBar->setStyleSheet(style);
+        }
+
     }
 }
 
@@ -78,7 +85,7 @@ void MenuBarBuilder::destroyMenuBar()
 {
     SLM_ASSERT("The menu is not initialized", m_menuBar);
     SLM_ASSERT("The parent container is not a QtContainer", m_parent);
-    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
+    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
     if ( !window )
     {
         window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() );
@@ -93,9 +100,5 @@ void MenuBarBuilder::destroyMenuBar()
 
 //-----------------------------------------------------------------------------
 
-
 } // namespace builder
 } // namespace fwGui
-
-
-

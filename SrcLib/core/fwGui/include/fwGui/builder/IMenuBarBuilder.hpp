@@ -80,6 +80,9 @@ protected:
     /// MenuBar.
     ::fwGui::container::fwMenuBar::sptr m_menuBar;
 
+    /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
+    std::string m_backgroundColor {"default"};
+
 };
 
 } // namespace builder

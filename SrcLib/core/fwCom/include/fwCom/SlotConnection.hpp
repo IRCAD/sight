@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,12 +19,13 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_SLOTCONNECTION_HPP__
+
+#pragma once
+
 #define __FWCOM_SLOTCONNECTION_HPP__
 
-#include "fwCom/SlotConnectionBase.hpp"
-
 #include "fwCom/SlotBase.hpp"
+#include "fwCom/SlotConnectionBase.hpp"
 
 namespace fwCom
 {
@@ -40,7 +41,7 @@ struct SlotConnection;
  * This class is for internal use purpose.
  */
 template < typename ... A >
-struct SlotConnection< void (A ...) > : SlotConnectionBase
+struct FWCOM_CLASS_API SlotConnection< void (A ...) > : SlotConnectionBase
 {
     /**
      * @name Typedefs
@@ -64,12 +65,12 @@ struct SlotConnection< void (A ...) > : SlotConnectionBase
     /**  @} */
 
     /// Build a new connection with the given signal and slot.
-    static sptr New( const SignalSptrType &signal, const SlotRunSptrType &slot );
+    static sptr New( const SignalSptrType& signal, const SlotRunSptrType& slot );
 
     /// Build a new connection with the given signal, slot and wrapper.
-    static sptr New( const SignalSptrType &signal,
-                     const SPTR( SlotBase ) &slot,
-                     const SlotWrapperSptrType &slotWrapper
+    static sptr New( const SignalSptrType& signal,
+                     const SPTR( SlotBase )& slot,
+                     const SlotWrapperSptrType& slotWrapper
                      );
 
     /// Disconnect the related slot.
@@ -77,16 +78,14 @@ struct SlotConnection< void (A ...) > : SlotConnectionBase
 
     ~SlotConnection();
 
-
     /// Build a new connection with the given signal and slot.
-    SlotConnection( const SignalSptrType &signal, const SlotRunSptrType &slot );
+    SlotConnection( const SignalSptrType& signal, const SlotRunSptrType& slot );
 
     /// Build a new connection with the given signal, slot and wrapper.
-    SlotConnection( const SignalSptrType &signal,
-                    const SPTR( SlotBase ) &slot,
-                    const SlotWrapperSptrType &slotWrapper
+    SlotConnection( const SignalSptrType& signal,
+                    const SPTR( SlotBase )& slot,
+                    const SlotWrapperSptrType& slotWrapper
                     );
-
 
     protected:
 
@@ -96,12 +95,11 @@ struct SlotConnection< void (A ...) > : SlotConnectionBase
         /// Connect the related Signal and Slot together.
         void connectNoLock();
 
-
         /// *NOT THREAD SAFE* Disconnect the related signal.
-        void disconnectSignalNoLock(const SignalSptrType &sig);
+        void disconnectSignalNoLock(const SignalSptrType& sig);
 
         /// *NOT THREAD SAFE* Disconnect the related slot.
-        void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
+        void disconnectSlotNoLock(const SPTR( SlotBase )& slot);
 
         /// *NOT THREAD SAFE* Disconnect the related slot and signal.
         void disconnectWeakLock();
@@ -136,8 +134,4 @@ struct SlotConnection< void (A ...) > : SlotConnectionBase
         mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 
-
 } // namespace fwCom
-
-#endif /* __FWCOM_SLOTCONNECTION_HPP__ */
-

@@ -95,7 +95,6 @@ ApplicationWindow {
                     id: scene3D
                     anchors.fill: parent
 
-                    // @disable-check M16
                     onReady: appManager.createVtkScene()
                 }
             }
@@ -104,48 +103,29 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.maximumHeight: 50
 
-                Rectangle {
+                ComboBox {
+                    id: sliceEditor
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 150
+                    visible: false
 
-                    color: "transparent"
-                    ComboBox {
-                        id: sliceEditor
-                        anchors.fill: parent
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin: 4
-                        visible: false
+                    model: ["One slice", "Three slice"]
 
-                        model: ["One slice", "Three slice"]
-
-                        currentIndex: 1
-                        onActivated: {
-                            appManager.onUpdateSliceMode((index == 0) ? 1 : 3)
-                        }
+                    currentIndex: 1
+                    onActivated: {
+                        appManager.onUpdateSliceMode((index == 0) ? 1 : 3)
                     }
                 }
 
-                Rectangle {
+                Button {
+                    id: displayScanButton
+                    checkable: true
+                    checked: true
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 75
 
-                    color: "transparent"
-                    Button {
-                        id: displayScanButton
-                        visible: false
-                        checkable: true
-                        checked: true
-                        anchors.fill: parent
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        text: "Scan"
-                        onCheckedChanged: {
-                            sliceEditor.enabled = checked
-                            appManager.onShowScan(checked)
-                        }
+                    text: "Scan"
+                    onCheckedChanged: {
+                        sliceEditor.enabled = checked
+                        appManager.onShowScan(checked)
                     }
                 }
 
@@ -160,20 +140,13 @@ ApplicationWindow {
                     }
                 }
 
-                Rectangle {
+                Button {
+                    id: snapButton
+                    text: "Snap"
                     Layout.fillHeight: true
                     Layout.preferredWidth: 70
-                    color: "transparent"
-
-                    Button {
-                        id: snapButton
-                        text: "Snap"
-                        anchors.fill: parent
-                        anchors.rightMargin: 4
-                        anchors.left: parent.left
-                        onClicked: {
-                            snapFileDialog.open()
-                        }
+                    onClicked: {
+                        snapFileDialog.open()
                     }
                 }
             }
@@ -189,62 +162,37 @@ ApplicationWindow {
 
             ColumnLayout {
                 spacing: 2
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                anchors.bottomMargin: 0
-                anchors.topMargin: 0
-                anchors.fill: parent
+                Layout.fillWidth: true
 
-                Rectangle {
-                    Layout.preferredHeight: 300
-                    Layout.preferredWidth: 300
-                    color: "transparent"
-
-                    ModelList {
-                        id: modelList
-                        anchors.rightMargin: 5
-                        anchors.leftMargin: 5
-                        anchors.fill: parent
-
-                        onServiceCreated: {
-                            appManager.onServiceCreated(srv)
-                        }
+                ModelList {
+                    id: modelList
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 200
+                    onServiceCreated: {
+                        // register the service in the activity manager
+                        appManager.onServiceCreated(srv)
                     }
                 }
 
-                Rectangle {
-                    Layout.preferredHeight: 60
-                    Layout.preferredWidth: 300
+                OrganMaterialEditor {
+                    id: organMaterialEditor
+                    Layout.preferredWidth: 400
+                    Layout.preferredHeight: 120
 
-                    color: "transparent"
-
-                    OrganMaterialEditor {
-                        id: organMaterialEditor
-                        anchors.rightMargin: 5
-                        anchors.leftMargin: 5
-                        anchors.fill: parent
-
-                        onServiceCreated: {
-                            appManager.onServiceCreated(srv)
-                        }
+                    onServiceCreated: {
+                        // register the service in the activity manager
+                        appManager.onServiceCreated(srv)
                     }
                 }
 
-                Rectangle {
-                    Layout.preferredHeight: 400
-                    Layout.preferredWidth: 300
+                RepresentationEditor {
+                    id: representationEditor
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 800
 
-                    color: "transparent"
-
-                    RepresentationEditor {
-                        id: representationEditor
-                        anchors.rightMargin: 5
-                        anchors.leftMargin: 5
-                        anchors.fill: parent
-
-                        onServiceCreated: {
-                            appManager.onServiceCreated(srv)
-                        }
+                    onServiceCreated: {
+                        // register the service in the activity manager
+                        appManager.onServiceCreated(srv)
                     }
                 }
             }

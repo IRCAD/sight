@@ -49,13 +49,9 @@
 #ifdef __APPLE__
 #define PLUGIN_PATH "plugins_osx.cfg"
 #elif _WIN32
-#   ifdef _DEBUG
-#       define PLUGIN_PATH "plugins_win32_d.cfg"
-#   else
-#       define PLUGIN_PATH "plugins_win32.cfg"
-#   endif
+#define PLUGIN_PATH "plugins_win32.cfg"
 #else
-#   define PLUGIN_PATH "plugins.cfg"
+#define PLUGIN_PATH "plugins.cfg"
 #endif
 
 namespace fwRenderOgre
@@ -632,8 +628,8 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
         for(::Ogre::int32 i = 0; i < size; ++i)
         {
             OSLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
-                        *srcBuffer > std::numeric_limits< DST_TYPE >::min() &&
-                        *srcBuffer < std::numeric_limits< DST_TYPE >::max());
+                        *srcBuffer >= std::numeric_limits< DST_TYPE >::min() &&
+                        *srcBuffer <= std::numeric_limits< DST_TYPE >::max());
             pDest[i] = static_cast< unsignedType >(srcBuffer[i] - lowBound);
         }
 

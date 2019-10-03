@@ -294,6 +294,30 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::set3DTexture(const ::Ogre::TexturePtr& _texture)
+{
+    if(m_3DOgreTexture != _texture)
+    {
+        m_3DOgreTexture = _texture;
+
+        ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
+        ::Ogre::MaterialPtr mat     = mm.getByName(m_currentMtlName);
+        SLM_ASSERT("Missing material '" + m_currentMtlName + "'.", mat);
+        const ::Ogre::Technique* const tech = mat->getTechnique(0);
+        SLM_ASSERT("Material '" + m_currentMtlName + "' has no techniques.", tech);
+        ::Ogre::Pass* const pass = tech->getPass(0);
+        SLM_ASSERT("Material '" + m_currentMtlName + "' has no passes.", pass);
+
+        ::Ogre::TextureUnitState* const texUnitState = pass->getTextureUnitState(0);
+        SLM_ASSERT("Material '" + m_currentMtlName + "' has no texture units.", texUnitState);
+        texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
+
+        m_proxyGeometry->set3DImageTexture(m_3DOgreTexture);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::updateVolumeTF()
 {
     FW_PROFILE("TF Update")

@@ -39,6 +39,8 @@ namespace fwServices
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECT_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECT_SLOT = "removeObject";
 
+size_t AppManager::s_counter = 0;
+
 //------------------------------------------------------------------------------
 
 AppManager::ServiceInfo::ServiceInfo(const ::fwServices::IService::sptr& srv, const bool autoStart,
@@ -68,11 +70,25 @@ AppManager::~AppManager()
 
 void AppManager::create()
 {
+    SLM_ASSERT("create() method should not be called twice", m_addObjectConnection.expired());
+
     m_addObjectConnection    = ::fwServices::OSR::getRegisterSignal()->connect( this->slot(s_ADD_OBJECT_SLOT) );
     m_removeObjectConnection = ::fwServices::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECT_SLOT) );
 
     auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
     ::fwCom::HasSlots::m_slots.setWorker( defaultWorker );
+}
+
+//------------------------------------------------------------------------------
+
+const std::string& AppManager::getID() const
+{
+    if (m_uid.empty())
+    {
+        const std::string classname = ::fwCore::Demangler(*this).getLeafClassname();
+        m_uid = "AppManager-" + classname + "-" + std::to_string(++s_counter);
+    }
+    return m_uid;
 }
 
 //------------------------------------------------------------------------------
@@ -89,6 +105,82 @@ void AppManager::destroy()
         this->removeObject(firstObj->second, firstObj->first);
     }
     m_registeredObject.clear();
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::requireInput(const std::string& key, const InputType& type, const std::string& defaultValue)
+{
+    Input input;
+    input.key          = key;
+    input.type         = type;
+    input.defaultValue = defaultValue;
+    input.isOptional   = !defaultValue.empty();
+    m_inputs[key]      = input;
+}
+
+//------------------------------------------------------------------------------
+
+bool AppManager::checkInputs()
+{
+    bool isOK = true;
+    for (const auto& elt: m_inputs)
+    {
+        const Input& input = elt.second;
+        switch (input.type)
+        {
+            case InputType::OBJECT:
+            {
+                const auto obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(input.value));
+                if (obj)
+                {
+                    this->addObject(obj, input.value);
+                }
+                else if(!input.isOptional)
+                {
+                    const ::fwData::Object::sptr newObj = ::fwData::factory::New(input.defaultValue);
+                    if (newObj)
+                    {
+                        this->addObject(obj, this->getInputID(input.key));
+                    }
+                    else
+                    {
+                        // TODO print a message
+                        SLM_DEBUG("[" + this->getID() + "] missing input for : '" + input.key + "'")
+                        isOK = false;
+                    }
+                }
+                break;
+            }
+            case InputType::CHANNEL:
+                if (input.value.empty() && !input.isOptional)
+                {
+                    SLM_DEBUG("missing input: '" + input.key + "'")
+                    isOK = false;
+                }
+                break;
+            case InputType::OTHER:
+                if (input.value.empty() && !input.isOptional)
+                {
+                    SLM_DEBUG("missing input: '" + input.key + "'")
+                    isOK = false;
+                }
+                break;
+        }
+    }
+    return isOK;
+}
+
+//------------------------------------------------------------------------------
+
+void AppManager::replaceInput(const std::string& key, const std::string& value)
+{
+    auto itr = m_inputs.find(key);
+    if (itr != m_inputs.end())
+    {
+        Input& input = itr->second;
+        input.value = value;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -481,6 +573,19 @@ const AppManager::ServiceInfo& AppManager::getServiceInfo(const ::fwServices::IS
 
     SLM_ASSERT("Service '" + srv->getID() + "' is not registered.", itr != m_services.end());
     return *itr;
+}
+
+//------------------------------------------------------------------------------
+
+std::string AppManager::getInputID(const std::string& id) const
+{
+    std::string uid = this->getID() + "-" + id;
+    const auto itr  = m_inputs.find(id);
+    if (itr != m_inputs.end())
+    {
+        uid = itr->second.value;
+    }
+    return uid;
 }
 
 //------------------------------------------------------------------------------

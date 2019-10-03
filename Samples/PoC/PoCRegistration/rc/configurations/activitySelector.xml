@@ -41,7 +41,7 @@
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="selector" type="::activities::editor::SCreateActivity">
+        <service uid="selector" type="::uiActivitiesQt::editor::SCreateActivity">
             <filter>
                 <mode>include</mode>
                 <id>registrationActivity</id>

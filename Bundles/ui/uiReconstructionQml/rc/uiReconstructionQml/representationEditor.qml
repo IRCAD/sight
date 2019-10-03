@@ -1,11 +1,12 @@
 import QtQuick 2.7
-import QtQuick.Layouts 1.1
-import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.0
 import uiReconstructionQml 1.0
 
 Item {
     id: representationEditor
+
     enabled: false
 
     signal serviceCreated(var srv)
@@ -78,19 +79,14 @@ Item {
         GroupBox {
             Layout.fillWidth: true
             title: "Representation"
-            checked: true
 
             ColumnLayout {
                 anchors.fill: parent
 
-                ExclusiveGroup {
-                    id: representationGroup
-                }
                 RadioButton {
                     id: surfaceButton
                     text: "Surface"
                     Layout.fillWidth: true
-                    exclusiveGroup: representationGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeRepresentation(1)
@@ -101,7 +97,6 @@ Item {
                     id: pointButton
                     text: "Point"
                     Layout.fillWidth: true
-                    exclusiveGroup: representationGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeRepresentation(2)
@@ -112,7 +107,6 @@ Item {
                     id: wireframeButton
                     text: "Wireframe"
                     Layout.fillWidth: true
-                    exclusiveGroup: representationGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeRepresentation(3)
@@ -124,7 +118,6 @@ Item {
                     id: edgeButton
                     text: "Edge"
                     Layout.fillWidth: true
-                    exclusiveGroup: representationGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeRepresentation(4)
@@ -141,14 +134,10 @@ Item {
             ColumnLayout {
                 anchors.fill: parent
 
-                ExclusiveGroup {
-                    id: shadingGroup
-                }
                 RadioButton {
                     id: ambientButton
                     text: "Ambient"
                     Layout.fillWidth: true
-                    exclusiveGroup: shadingGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeShading(0)
@@ -159,7 +148,6 @@ Item {
                     id: flatButton
                     text: "Flat"
                     Layout.fillWidth: true
-                    exclusiveGroup: shadingGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeShading(1)
@@ -170,7 +158,6 @@ Item {
                     id: gouraudButton
                     text: "Gouraud"
                     Layout.fillWidth: true
-                    exclusiveGroup: shadingGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeShading(2)
@@ -182,7 +169,6 @@ Item {
                     id: phongButton
                     text: "Phong"
                     Layout.fillWidth: true
-                    exclusiveGroup: shadingGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onChangeShading(3)
@@ -199,14 +185,10 @@ Item {
             ColumnLayout {
                 anchors.fill: parent
 
-                ExclusiveGroup {
-                    id: optionGroup
-                }
                 RadioButton {
                     id: pointNormalButton
                     text: "Show point normals"
                     Layout.fillWidth: true
-                    exclusiveGroup: optionGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onShowNormals(2)
@@ -217,7 +199,6 @@ Item {
                     id: cellNormalButton
                     text: "Show cell normals"
                     Layout.fillWidth: true
-                    exclusiveGroup: optionGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onShowNormals(3)
@@ -228,7 +209,6 @@ Item {
                     id: hideNormalButton
                     text: "Hide normals"
                     Layout.fillWidth: true
-                    exclusiveGroup: optionGroup
                     onCheckedChanged:  {
                         if (checked) {
                             representationService.onShowNormals(1)

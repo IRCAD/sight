@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,8 @@ CPPUNIT_TEST( managerWithObjectTest );
 CPPUNIT_TEST( managerWithObjectConnectionTest );
 CPPUNIT_TEST( managerWithServiceConnectionTest );
 CPPUNIT_TEST( managerWithOutputCreationTest );
-CPPUNIT_TEST( managerWithGroup );
+CPPUNIT_TEST( managerWithGroupTest );
+CPPUNIT_TEST( managerWithInputsTest );
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -58,11 +59,27 @@ public:
     void managerWithObjectConnectionTest();
     void managerWithServiceConnectionTest();
     void managerWithOutputCreationTest();
-    void managerWithGroup();
+    void managerWithGroupTest();
+    void managerWithInputsTest();
 
 private:
 
     std::unique_ptr< ::fwServices::AppManager > m_appMgr;
+};
+
+class AppManagerForTest : public ::fwServices::AppManager
+{
+public:
+
+    friend class AppManagerTest;
+    AppManagerForTest()
+    {
+
+    }
+    ~AppManagerForTest()
+    {
+        this->destroy();
+    }
 };
 
 } //namespace ut

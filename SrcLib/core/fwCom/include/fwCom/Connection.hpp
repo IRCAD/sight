@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,18 +19,17 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWCOM_CONNECTION_HPP__
-#define __FWCOM_CONNECTION_HPP__
+
+#pragma once
 
 #include "fwCom/config.hpp"
-
 #include "fwCom/SlotConnectionBase.hpp"
 
 namespace fwCom
 {
 
 /// Class managing Signal-Slot connections.
-struct Connection
+struct FWCOM_CLASS_API Connection
 {
     /// Class allowing to block a Connection.
     struct Blocker
@@ -39,8 +38,8 @@ struct Connection
         {
         }
 
-        Blocker( Connection connection )
-            : m_blocker(connection.getBlocker())
+        Blocker( Connection connection ) :
+            m_blocker(connection.getBlocker())
         {
         }
 
@@ -58,7 +57,8 @@ struct Connection
     {
     }
 
-    Connection(const SlotConnectionBase::sptr &connection) : m_connectionBase(connection)
+    Connection(const SlotConnectionBase::sptr& connection) :
+        m_connectionBase(connection)
     {
     }
 
@@ -96,8 +96,4 @@ struct Connection
 
 };
 
-
 } // namespace fwCom
-
-#endif /* __FWCOM_CONNECTION_HPP__ */
-

@@ -1,0 +1,78 @@
+<plugin id="ExActivitiesQml" class="::ExActivitiesQml::Plugin" version="@PROJECT_VERSION@">
+
+    <library name="ExActivitiesQml" />
+
+    <requirement id="visuVTKQml" />
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="activities" />
+    <requirement id="uiImageQml" />
+    <requirement id="uiActivitiesQml" />
+    <requirement id="uiReconstructionQml" />
+    <requirement id="uiMedDataQml" />
+    <requirement id="styleQml" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ExImageReadingActivity</id>
+        <title>Image reading</title>
+        <desc>Activity to read an image</desc>
+        <icon>media-0.1/icons/LoadActivity.svg</icon>
+        <requirements>
+            <!-- Requirement with minOccurs="0" maxOccurs="0" means that the object will be automatically created by the
+                 activity launcher and will be stored in the ActivitySeries. -->
+            <requirement name="image" type="::fwData::Image" minOccurs="0" maxOccurs="0">
+                <desc>Image that will be read by this activity.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="ExImageReading">
+            <parameters>
+                 <parameter replace="image" by="@values.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ExMesherActivity</id>
+        <title>Image meshing</title>
+        <desc>Activity to generate a model from an image</desc>
+        <icon>media-0.1/icons/icon-2D.png</icon>
+        <requirements>
+            <!-- The image must be present to launch the activity -->
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
+                <desc>Image that will be display by this activity.</desc>
+            </requirement>
+            <requirement name="model" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="0">
+                <desc>Model generated.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="ExMesher">
+            <parameters>
+                 <parameter replace="image" by="@values.image" />
+                 <parameter replace="model" by="@values.model" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ExImageDisplayingActivity</id>
+        <title>Image displaying</title>
+        <desc>Activity to display an image</desc>
+        <icon>media-0.1/icons/icon-2D.png</icon>
+        <requirements>
+            <!-- The image must be present to launch the activity -->
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
+                <desc>Image that will be display by this activity.</desc>
+            </requirement>
+            <requirement name="model" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="0">
+                <desc>Model generated.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="ExImageDisplaying">
+            <parameters>
+                 <parameter replace="image" by="@values.image" />
+                 <parameter replace="model" by="@values.model" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>

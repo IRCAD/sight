@@ -1,9 +1,13 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.13)
 
 # Use new policy for 'install_name' and RPATH on macOS (use `cmake --help-policy CMP0068` for details)
 cmake_policy(SET CMP0068 NEW)
 # Use new policy for `FindOpenGL` to prefer GLVND by default when available on linux (use `cmake --help-policy CMP0072` for details).
 cmake_policy(SET CMP0072 NEW)
+# Use new policy for 'Honor visibility properties for all target types.' (use `cmake --help-policy CMP0063` for details)
+cmake_policy(SET CMP0063 NEW)
+# Adds support for the new IN_LIST operator.
+cmake_policy(SET CMP0057 NEW)
 
 # On Windows, if the user doesn't specify a value,
 # 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
@@ -52,6 +56,7 @@ mark_as_advanced(VERBOSE_PCH)
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our bundles
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
+set( ENABLE_QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
 
@@ -87,78 +92,6 @@ set(SPYLOG_LEVEL_MAP_info 4)
 set(SPYLOG_LEVEL_MAP_debug 5)
 set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
-
-########################################################################################################################
-# Compile flags
-########################################################################################################################
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Workarround to avoid compile error about OpenGL on macos >= 10.14
-if(APPLE)
-    add_definitions(-DGL_SILENCE_DEPRECATION)
-endif()
-
-if(MSVC AND ENABLE_PCH)
-    # Store debug information in the .obj file instead of a PDB.
-    string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-    # Force set debug compile flags.
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "Debug flags" FORCE)
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" CACHE STRING "RelWithDebInfo flags" FORCE)
-endif()
-
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
-
-# Set warning level and function export visibility on Unix
-if(UNIX)
-    if(APPLE)
-        # actually the flag -fvisibility=hidden makes application crash on OSX
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility-ms-compat")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility-ms-compat")
-        set(CMAKE_MACOSX_RPATH ON)
-    else()
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
-    endif()
-    # Color for ninja and Clang on Linux and OSX
-    if (CMAKE_GENERATOR STREQUAL "Ninja")
-        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
-        #Color output for gcc > 4.9
-        elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8.99")
-            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color")
-        endif()
-    endif()
-elseif(MSVC)
-    # Force to always compile with W4
-    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-    endif()
-endif()
-
-# Use external/system includes available from Visual Studio 15.6
-# source https://gitlab.kitware.com/cmake/cmake/issues/17904
-if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /experimental:external /external:W0 ")
-    set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
-endif()
-
-# Building with all your cores on Visual Studio IDE
-if(MSVC_IDE)
-    set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} /MP")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-endif()
-
-if(${WIN32} AND ${MSVC})
-    if(${MSVC_VERSION} GREATER 1914)
-        add_definitions(" -D_ENABLE_EXTENDED_ALIGNED_STORAGE")
-    endif()
-endif()
 
 ########################################################################################################################
 # External libraries management
@@ -397,63 +330,29 @@ if(BUILD_TESTS)
     list(REMOVE_DUPLICATES PROJECT_LIST)
 endif()
 
-# Find and install Conan packages
+########################################################################################################################
+# Conan packages and definition
+########################################################################################################################
+
 if(NOT USE_SYSTEM_LIB)
     findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
     installConanDeps("${CONAN_DEPS_LIST}")
     add_definitions(${CONAN_DEFINES})
-
-    # Import the shared C flags, we use python for that
-    find_package(PythonInterp 3 QUIET)
-    if(PYTHONINTERP_FOUND)
-        # Set PYTHONPATH environment to be able to import common
-        set(OLD_PYTHONPATH $ENV{PYTHONPATH})
-        set(ENV{PYTHONPATH} ${CONAN_COMMON_ROOT})
-
-        # Execute common.get_c_flags() and store it to ${SIGHT_C_FLAGS}
-        execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_c_flags()), sep='', end='', flush=True)"
-            OUTPUT_VARIABLE SIGHT_C_FLAGS
-        )
-        string(STRIP ${SIGHT_C_FLAGS} SIGHT_C_FLAGS)
-
-        # Execute common.get_cxx_flags() and store it to ${SIGHT_CXX_FLAGS}
-        execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags()), sep='', end='', flush=True)"
-            OUTPUT_VARIABLE SIGHT_CXX_FLAGS
-        )
-        string(STRIP ${SIGHT_CXX_FLAGS} SIGHT_CXX_FLAGS)
-
-        # Restore old PYTHONPATH environment
-        set(ENV{PYTHONPATH} ${OLD_PYTHONPATH})
-        unset(OLD_PYTHONPATH)
-    else()
-        # Use default values. This is a failsafe path, the options and flags maybe outdated.
-        if(WIN32)
-            set(SIGHT_C_FLAGS "/favor:blend /fp:strict /Qfast_transcendentals /arch:AVX /MP /bigobj /EHsc")
-            set(SIGHT_CXX_FLAGS "${SIGHT_C_FLAGS}")
-        else()
-            set(SIGHT_C_FLAGS "-march=x86-64 -mtune=generic -mfpmath=sse -mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -maes -mpclmul -mf16c")
-            set(SIGHT_CXX_FLAGS "${SIGHT_C_FLAGS}")
-        endif()
-    endif()
-
-    # Assign the shared C flags to everything
-    set(CMAKE_C_FLAGS "${SIGHT_C_FLAGS} ${CMAKE_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${SIGHT_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
-
-    unset(SIGHT_C_FLAGS)
-    unset(SIGHT_CXX_FLAGS)
 endif()
 
-# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
-setExternalLibrariesDir()
+########################################################################################################################
+# Compiler flags (We assume that we use the same flags fo C and C++ and we do only C++ here)
+########################################################################################################################
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/flags.cmake)
 
 ########################################################################################################################
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################
 
-unset(APP_TO_BUILD)
+# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
+setExternalLibrariesDir()
+
 foreach(PROJECT ${PROJECT_LIST})
     addProject(${PROJECT})
 endforeach()

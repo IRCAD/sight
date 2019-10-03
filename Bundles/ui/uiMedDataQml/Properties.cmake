@@ -12,7 +12,7 @@ set( DEPENDENCIES
     fwDataTools
     fwQml
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS styleQml )
 set( PLUGINS
     QtQml
     QtQuick

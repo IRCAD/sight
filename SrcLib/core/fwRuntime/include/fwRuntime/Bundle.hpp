@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,7 +58,7 @@ namespace fwRuntime
  * @brief   Defines the bundle class.
  *
  */
-struct Bundle : public std::enable_shared_from_this< Bundle >
+struct FWRUNTIME_CLASS_API Bundle : public std::enable_shared_from_this< Bundle >
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 

@@ -10,16 +10,18 @@ macro(win_install PRJ_NAME)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         set(LAUNCHER "fwlauncher.exe")
-        set(LAUNCHER_PATH "bin/${LAUNCHER}")
-        set(PROFILE_PATH "${${PRJ_NAME}_BUNDLE_DIR}/profile.xml")
+        set(LAUNCHER_PATH "bin/${LAUNCHER}") # For windows_fixup.cmake.in
+        set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
+        set(CPACK_PROFILE_PATH "${FWBUNDLE_RC_PREFIX}\\\\${${FWPROJECT_NAME}_FULLNAME}\\\\profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
             install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
         endif()
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
-        set(LAUNCHER_PATH "bin/${PRJ_NAME}.exe")
-        set(PROFILE_PATH "")
+        set(LAUNCHER_PATH "bin/${PRJ_NAME}.exe") # For windows_fixup.cmake.in
+        set(CPACK_LAUNCHER_PATH "bin\\\\${PRJ_NAME}.exe")
+        set(CPACK_PROFILE_PATH "")
     elseif()
         message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
     endif()

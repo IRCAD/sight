@@ -59,6 +59,7 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
+static const ::fwCom::Slots::SlotKeyType s_BUFFER_IMAGE_SLOT         = "bufferImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
 static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
@@ -78,6 +79,7 @@ SVolumeRender::SVolumeRender() noexcept :
 {
     /// Handle connections between the layer and the volume renderer.
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
+    newSlot(s_BUFFER_IMAGE_SLOT, &SVolumeRender::bufferImage, this);
     newSlot(s_UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
@@ -103,6 +105,7 @@ void SVolumeRender::configuring()
 
     m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
+    m_dynamic                = config.get<bool>("dynamic", m_dynamic);
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
     m_nbSamples              = config.get<std::uint16_t>("samples", m_nbSamples);
 
@@ -127,10 +130,11 @@ void SVolumeRender::configuring()
 void SVolumeRender::updateVolumeTF()
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectWriteLock tfLock(tf);
+        ::fwData::mt::ObjectReadLock tfLock(tf);
 
         m_gpuVolumeTF->updateTexture(tf);
 
@@ -157,7 +161,7 @@ void SVolumeRender::updateVolumeTF()
     ::fwServices::IService::KeyConnectionsMap connections;
 
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );
     connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG,
                       s_UPDATE_CLIPPING_BOX_SLOT );
 
@@ -170,7 +174,8 @@ void SVolumeRender::starting()
 {
     this->initialize();
 
-    this->getRenderService()->makeCurrent();
+    auto renderService = this->getRenderService();
+    renderService->makeCurrent();
 
     m_gpuVolumeTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
@@ -195,11 +200,19 @@ void SVolumeRender::starting()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
+    if(m_dynamic)
+    {
+        m_bufferingTexture = ::Ogre::TextureManager::getSingleton().create(
+            this->getID() + "_Texture2",
+            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            true);
+    }
+
     m_gpuVolumeTF->createTexture(this->getID() + "_VolumeGpuTF");
 
     m_preIntegrationTable.createTexture(this->getID());
 
-    ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+    ::fwRenderOgre::Layer::sptr layer = renderService->getLayer(m_layerID);
 
     m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
                                                                         layer,
@@ -234,6 +247,9 @@ void SVolumeRender::stopping()
 {
     this->getRenderService()->makeCurrent();
 
+    // First wait on all pending buffering tasks and destroy the worker.
+    m_bufferingWorker.reset();
+
     m_helperVolumeTF.removeTFConnections();
 
     m_volumeConnection.disconnect();
@@ -250,6 +266,12 @@ void SVolumeRender::stopping()
 
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
+
+    if(m_bufferingTexture)
+    {
+        ::Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
+        m_bufferingTexture.reset();
+    }
 
     m_gpuVolumeTF.reset();
 
@@ -294,9 +316,27 @@ void SVolumeRender::newImage()
     ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
     SLM_ASSERT("inout '" + s_VOLUME_TF_INOUT + "' is missing", volumeTF);
 
-    m_helperVolumeTF.setOrCreateTF(volumeTF, image);
+    auto renderService = this->getRenderService();
+    {
+        if(m_dynamic)
+        {
+            // Destroy the worker to wait for all pending buffering tasks to be cleared.
+            m_bufferingWorker.reset();
 
-    m_gpuVolumeTF->updateTexture(volumeTF);
+            auto* newWorker = renderService->getInteractorManager()->createGraphicsWorker();
+            m_bufferingWorker = std::unique_ptr< ::fwRenderOgre::IGraphicsWorker >(newWorker);
+        }
+
+        ::fwData::mt::ObjectReadLock lock(image);
+
+        renderService->makeCurrent();
+
+        m_helperVolumeTF.setOrCreateTF(volumeTF, image);
+
+        m_gpuVolumeTF->updateTexture(volumeTF);
+
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+    }
 
     this->updateImage();
 }
@@ -317,17 +357,61 @@ void SVolumeRender::resetCameraPosition(const ::fwData::Image::csptr& image)
 
 //-----------------------------------------------------------------------------
 
+void SVolumeRender::bufferImage()
+{
+    if(m_dynamic)
+    {
+        auto bufferingFn = [this]()
+                           {
+                               ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+                               SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+                               ::fwData::mt::ObjectReadLock imageLock(image);
+                               ::fwRenderOgre::Utils::convertImageForNegato(m_bufferingTexture.get(), image);
+
+                               // Swap texture pointers.
+                               {
+                                   std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+                                   std::swap(m_3DOgreTexture, m_bufferingTexture);
+                               }
+
+                               // Switch back to the main thread to compute the proxy geometry.
+                               // Ogre can't handle parallel rendering.
+                               this->slot(s_UPDATE_IMAGE_SLOT)->asyncRun();
+                           };
+
+        m_bufferingWorker->pushTask(bufferingFn);
+    }
+    else
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        this->getRenderService()->makeCurrent();
+
+        ::fwData::mt::ObjectReadLock imageLock(image);
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+
+        this->updateImage();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::updateImage()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    ::fwData::mt::ObjectReadLock imageLock(image);
 
     this->getRenderService()->makeCurrent();
 
-    ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
+    m_volumeRenderer->set3DTexture(m_3DOgreTexture);
 
     ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
+        ::fwData::mt::ObjectReadLock tfLock(volumeTF);
         m_gpuVolumeTF->getTexture();
 
         if(m_preIntegratedRendering)
@@ -349,6 +433,7 @@ void SVolumeRender::updateImage()
             }
             this->updateVolumeIllumination();
         }
+
         m_volumeRenderer->imageUpdate(image, volumeTF);
     }
 
@@ -363,6 +448,7 @@ void SVolumeRender::updateImage()
 void SVolumeRender::updateSampling(int nbSamples)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
     m_nbSamples = static_cast<std::uint16_t>(nbSamples);
@@ -378,7 +464,7 @@ void SVolumeRender::updateSampling(int nbSamples)
     if(m_preIntegratedRendering)
     {
         ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+        ::fwData::mt::ObjectReadLock tfLock(volumeTF);
         m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
 
@@ -439,9 +525,10 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
         {
             ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+            ::fwData::mt::ObjectReadLock lock(image);
 
             ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+            ::fwData::mt::ObjectReadLock tfLock(volumeTF);
             m_volumeRenderer->imageUpdate(image, volumeTF);
         }
 
@@ -535,9 +622,10 @@ void SVolumeRender::togglePreintegration(bool preintegration)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        ::fwData::mt::ObjectReadLock lock(image);
 
         ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+        ::fwData::mt::ObjectReadLock tfLock(volumeTF);
         m_volumeRenderer->imageUpdate(image, volumeTF);
         m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
@@ -599,6 +687,7 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 void SVolumeRender::setBoolParameter(bool val, std::string key)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     if(key == "preIntegration")
     {
@@ -629,6 +718,7 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
 void SVolumeRender::setIntParameter(int val, std::string key)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     if(key == "sampling")
     {
@@ -667,6 +757,7 @@ void SVolumeRender::setIntParameter(int val, std::string key)
 void SVolumeRender::setDoubleParameter(double val, std::string key)
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     if(key == "aoFactor")
     {
@@ -743,6 +834,7 @@ void SVolumeRender::destroyWidget()
 void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     m_illum->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
 
@@ -808,7 +900,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
         if(m_preIntegratedRendering)
         {
             ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            ::fwData::mt::ObjectWriteLock tfLock(volumeTF);
+            ::fwData::mt::ObjectReadLock tfLock(volumeTF);
             m_volumeRenderer->imageUpdate(image, volumeTF);
         }
 
@@ -850,6 +942,7 @@ void SVolumeRender::updateClippingTM3D()
         sig->asyncEmit();
     }
 
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
     this->requestRender();

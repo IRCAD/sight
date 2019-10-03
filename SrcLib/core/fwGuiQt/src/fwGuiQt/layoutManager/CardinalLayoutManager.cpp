@@ -92,11 +92,24 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
                        !hasCentral);
 
+            if(viewInfo.m_backgroundColor != "default")
+            {
+                const QString style = QString::fromStdString(
+                    "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                widget->setStyleSheet(style);
+            }
+
             if (viewInfo.m_useScrollBar)
             {
                 scrollArea = new QScrollArea(m_qtWindow);
                 scrollArea->setWidget(widget);
                 scrollArea->setWidgetResizable( true );
+                if(viewInfo.m_backgroundColor != "default")
+                {
+                    const QString style = QString::fromStdString(
+                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                    scrollArea->setStyleSheet(style);
+                }
                 m_qtWindow->setCentralWidget(scrollArea);
             }
             else
@@ -170,6 +183,12 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 scrollArea = new QScrollArea(dockWidget);
                 scrollArea->setWidget(insideWidget);
                 scrollArea->setWidgetResizable(true);
+                if(viewInfo.m_backgroundColor != "default")
+                {
+                    const QString style = QString::fromStdString(
+                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                    scrollArea->setStyleSheet(style);
+                }
                 dockWidget->setWidget(scrollArea);
             }
             else

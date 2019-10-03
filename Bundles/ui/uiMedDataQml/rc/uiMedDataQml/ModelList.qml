@@ -1,8 +1,8 @@
-import QtQuick 2.7
-import QtQuick.Layouts 1.1
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Material 2.0
+import QtQuick 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.12
 import uiMedDataQml 1.0
+import styleQml 1.0
 
 Item {
     id: modelList
@@ -18,71 +18,77 @@ Item {
     SModelSeriesList {
         id: modelSeriesList
 
-        // @disable-check M16
         listModel: organListModel
 
-        // @disable-check M16
         onStarted: {
             modelList.enabled = true
+        }
+    }
+
+    Component {
+        id: highlight
+        Rectangle {
+            width: listView.width; height: 40
+            color: "lightsteelblue"; radius: 5
+            y: listView.currentItem ? listView.currentItem.y: 0
+            Behavior on y {
+                SpringAnimation {
+                    spring: 3
+                    damping: 0.2
+                }
+            }
         }
     }
 
     ColumnLayout {
         anchors.fill: parent
 
-        RowLayout {
-
+        Rectangle {
             Layout.fillWidth: true
-            Layout.maximumHeight: 30
+            Layout.minimumHeight: 30
+            color: Theme.background
+            z: 2
 
-            Rectangle {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                color: "transparent"
+            RowLayout {
+                anchors.fill: parent
 
                 CheckBox {
                     id: hideAll
                     text: "Hide all"
-                    anchors.fill: parent
-                    anchors.rightMargin: 4
-                    anchors.left: parent.left
-                    anchors.centerIn: parent
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    contentItem: Text {
+                        text: hideAll.text
+                        font: hideAll.font
+                        opacity: enabled ? 1.0 : 0.3
+                        color: Theme.primary
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: hideAll.indicator.width + hideAll.spacing
+                    }
+
                     onCheckedChanged: {
                         modelSeriesList.onShowReconstructions(checked)
                         checkAll.enabled = !checked
                         uncheckAll.enabled = !checked
                     }
                 }
-            }
-
-            Rectangle {
-                Layout.fillHeight: true
-                Layout.preferredWidth: 100
-                color: "transparent"
 
                 Button {
                     id: checkAll
                     text: "Check all"
-                    anchors.fill: parent
-                    anchors.rightMargin: 4
-                    anchors.left: parent.left
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 120
                     onClicked: {
                         modelSeriesList.onCheckAllBoxes(true)
                     }
                 }
-            }
-
-            Rectangle {
-                Layout.fillHeight: true
-                Layout.preferredWidth: 100
-                color: "transparent"
 
                 Button {
                     id: uncheckAll
                     text: "Uncheck all"
-                    anchors.fill: parent
-                    anchors.rightMargin: 4
-                    anchors.left: parent.left
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 120
                     onClicked: {
                         modelSeriesList.onCheckAllBoxes(false)
                     }
@@ -90,68 +96,92 @@ Item {
             }
         }
 
-        Rectangle {
-            Layout.fillHeight: true
+        // this list represent the log of all errors
+        ListView {
+            id: listView
             Layout.fillWidth: true
-            color: "transparent"
-            TableView {
-                id: listView
-                anchors.fill: parent
-                focus: true
+            Layout.fillHeight: true
+            model: OrganListModel {
+                id: organListModel
 
-
-                TableViewColumn {
-                    role: "organVisibility"
-                    title: ""
-                    width: 20
-                    delegate: Item{
-                        width: listView.width
-                        height: 30
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        CheckBox {
-                            checked: styleData.value
-                            width: 15
-                            onCheckedChanged: {
-                                modelSeriesList.onOrganVisibilityChanged(styleData.row, checked)
-                            }
-                        }
-                    }
+                onModelReset :{
+                    listView.currentIndex = -1
+                    modelSeriesList.onOrganSelected(-1)
                 }
-
-                TableViewColumn {
-                    role: "organName"
-                    title: "Organ name"
-                    width: 120
-                    delegate: Item {
-                        width: listView.width
-                        height: 30
-                        Text { text: styleData.value }
-                    }
-                }
-                TableViewColumn {
-                    role: "structureType"
-                    title: "Structure type"
-                    width: 100
-                    delegate: Item{
-                        width: listView.width
-                        height: 30
-                        Text { text: styleData.value }
-                    }
-                }
-
-                model: OrganListModel {
-                    id: organListModel
-
-                    onModelReset :{
-                        listView.currentRow = -1
-                        listView.selection.clear()
-                        modelSeriesList.onOrganSelected(-1)
-                    }
-                }
-
-                onCurrentRowChanged: modelSeriesList.onOrganSelected(listView.currentRow)
             }
+            snapMode: ListView.SnapToItem
+            headerPositioning: ListView.PullBackHeader
+            highlight: highlight
+
+            // the header represent the title of each row
+            header: Row {
+                z: 2
+
+                ItemDelegate {
+                    id: visibilityTitle
+
+                    text: qsTr("Visibility")
+
+                    font.bold: true
+                    implicitWidth: 60
+                    implicitHeight: 40
+                }
+
+                ItemDelegate {
+                    id: nameTitle
+
+                    text: qsTr("Name")
+
+                    font.bold: true
+                    implicitWidth: listView.width - 180
+                    implicitHeight: 40
+                }
+
+                ItemDelegate {
+                    id: messageTitle
+
+                    text: qsTr("Type")
+
+                    font.bold: true
+                    implicitWidth: 120
+                    implicitHeight: 40
+                }
+            }
+
+            // the delegate is the style of all item from the model
+            delegate: Row {
+                CheckDelegate {
+                    id: organVisibilityRow
+                    checked: organVisibility
+                    implicitWidth: 60
+                    implicitHeight: 40
+                    onCheckStateChanged: modelSeriesList.onOrganVisibilityChanged(index, checked)
+                }
+
+                ItemDelegate {
+                    id: organNameRow
+                    text: organName
+                    implicitWidth: listView.width - 180
+                    implicitHeight: 40
+                    onClicked: {
+                        modelSeriesList.onOrganSelected(index)
+                        listView.currentIndex = index
+                    }
+                }
+
+                ItemDelegate {
+                    id: structureTypeRow
+                    text: structureType
+                    implicitWidth: 120
+                    implicitHeight: 40
+                    onClicked: {
+                        modelSeriesList.onOrganSelected(index)
+                        listView.currentIndex = index
+                    }
+                }
+            }
+            onCurrentIndexChanged: modelSeriesList.onOrganSelected(currentIndex)
+            onCurrentItemChanged: modelSeriesList.onOrganSelected(currentIndex)
         }
     }
 }

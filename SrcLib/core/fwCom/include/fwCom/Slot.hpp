@@ -37,7 +37,7 @@ class Slot;
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A >
-class Slot< R( A ... ) > : public SlotCall< R(A ...) >
+class FWCOM_CLASS_API Slot< R( A ... ) > : public SlotCall< R(A ...) >
 {
 public:
     typedef R SignatureType (A ...);
@@ -57,7 +57,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A >
-class Slot< std::function< R( A ... ) > > : public Slot< R( A ... ) >
+class FWCOM_CLASS_API Slot< std::function< R( A ... ) > > : public Slot< R( A ... ) >
 {
 public:
     typedef R SignatureType (A ...);
@@ -95,7 +95,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A >
-class Slot< Slot< R( A ... ) > > : public Slot< std::function < R( A ... ) > >
+class FWCOM_CLASS_API Slot< Slot< R( A ... ) > > : public Slot< std::function < R( A ... ) > >
 {
 public:
 

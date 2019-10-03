@@ -33,21 +33,21 @@ layout(location = 2) out vec2 vTexCoord;
 #else
 
 #if defined(PIXEL_LIT) || defined(CEL_SHADING)
-layout(location = 0) out vec3 outNormal_WS;
+layout(location = 0) out vec3 v_f3Normal_Ws;
 #   endif
 
 #   ifdef PIXEL_LIT
-layout(location = 1) out vec3 outPosition_WS;
+layout(location = 1) out vec3 v_f3Position_Ws;
 #   endif
 
 #   ifdef FLAT
-layout(location = 2) flat out vec4 outColor;
+layout(location = 2) flat out vec4 v_f4Color;
 #   else
-layout(location = 2) out vec4 outColor;
+layout(location = 2) out vec4 v_f4Color;
 #   endif // FLAT
 
 #   ifdef DIFFUSE_TEX
-layout(location = 3) out vec2 outTexCoord;
+layout(location = 3) out vec2 v_f2TexCoord;
 #   endif // DIFFUSE_TEX
 #endif // R2VB
 
@@ -82,35 +82,35 @@ void main(void)
 #endif
 
 #   if defined(PIXEL_LIT) || defined(CEL_SHADING)
-    outNormal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
+    v_f3Normal_Ws = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
 #   endif
 
 #   ifdef PIXEL_LIT
-    outPosition_WS = (u_world * position).xyz;
+    v_f3Position_Ws = (u_world * position).xyz;
 
 #       ifdef VERTEX_COLOR
-    outColor = colour;
+    v_f4Color = colour;
 #       else
-    outColor = vec4(1.,1.,1.,1.);
+    v_f4Color = vec4(1.,1.,1.,1.);
 #       endif // VERTEX_COLOR
 
 #   else
 #       ifdef AMBIENT
-    outColor = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
+    v_f4Color = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
 #       else
     vec3 position_WS = (u_world * position).xyz;
     vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
-    outColor = lighting(normal_WS, position_WS);
+    v_f4Color = lighting(normal_WS, position_WS);
 #       endif // AMBIENT
 
 #       ifdef VERTEX_COLOR
-    outColor *= colour;
+    v_f4Color *= colour;
 #       endif // VERTEX_COLOR
 
 #   endif // PIXEL_LIT
 
 #   ifdef DIFFUSE_TEX
-    outTexCoord = uv0;
+    v_f2TexCoord = uv0;
 #   endif // DIFFUSE_TEX
 
 #endif // R2VB
