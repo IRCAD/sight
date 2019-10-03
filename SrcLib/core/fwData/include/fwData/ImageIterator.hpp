@@ -22,20 +22,116 @@
 
 #pragma once
 
-#include <vector>
+#include "fwMemory/BufferObject.hpp"
+#include <iterator>
 
 namespace fwData
 {
 
 class Image;
 
+template <class TYPE>
+class IteratorBase
+{
+
+public:
+    struct GrayScale {
+        typedef TYPE type;
+        typedef TYPE value_type;
+
+        //------------------------------------------------------------------------------
+
+        GrayScale& operator=(const value_type& val)
+        {
+            v = val;
+            return *this;
+        }
+        type v;
+        static const size_t elementSize{1};
+    };
+    struct RGB {
+        typedef TYPE type;
+        typedef std::array<type, 3> value_type;
+
+        //------------------------------------------------------------------------------
+
+        RGB& operator=(const value_type& val)
+        {
+            r = val[0];
+            g = val[1];
+            b = val[2];
+            return *this;
+        }
+
+        type r;
+        type g;
+        type b;
+        static const size_t elementSize{3};
+    };
+    struct RGBA {
+        typedef TYPE type;
+        typedef std::array<type, 4> value_type;
+        //------------------------------------------------------------------------------
+
+        RGBA& operator=(const value_type& val)
+        {
+            r = val[0];
+            g = val[1];
+            b = val[2];
+            a = val[3];
+            return *this;
+        }
+        type r;
+        type g;
+        type b;
+        type a;
+        static const size_t elementSize{4};
+    };
+    struct BGR {
+        typedef TYPE type;
+        typedef std::array<type, 3> value_type;
+        //------------------------------------------------------------------------------
+
+        BGR& operator=(const value_type& val)
+        {
+            b = val[0];
+            g = val[1];
+            r = val[2];
+            return *this;
+        }
+        type b;
+        type g;
+        type r;
+        static const size_t elementSize{3};
+    };
+    struct BGRA {
+        typedef TYPE type;
+        typedef std::array<type, 4> value_type;
+        //------------------------------------------------------------------------------
+
+        RGBA& operator=(const value_type& val)
+        {
+            b = val[0];
+            g = val[1];
+            r = val[2];
+            a = val[3];
+            return *this;
+        }
+        type b;
+        type g;
+        type r;
+        type a;
+        static const size_t elementSize{4};
+    };
+};
+
 /**
  * @brief Iterator on Image buffer
  *
  * Iterate through the buffer and check if the index is not out of the bounds
  */
-template <class TYPE, bool isConstIterator = true>
-class ImageIteratorBase
+template <class FORMAT, bool isConstIterator = true>
+class ImageIteratorBase : public IteratorBase<typename FORMAT::type>
 {
 public:
 
@@ -53,19 +149,21 @@ public:
      * For ConstIterator:   define buffer type to be a const TYPE*
      * For Iterator: define buffer type to be a TYPE*
      */
-    typedef typename std::conditional<isConstIterator, const TYPE*, TYPE*>::type pointer;
+    typedef typename std::conditional<isConstIterator,
+                                      const typename FORMAT::type*,
+                                      typename FORMAT::type*>::type pointer;
 
     /**
      * For const_iterator:   define value_type to be a   const TYPE
      * For regular iterator: define value_type to be a   TYPE
      */
-    typedef typename std::conditional<isConstIterator, const TYPE, TYPE>::type value_type;
+    typedef typename std::conditional<isConstIterator, const FORMAT, FORMAT>::type value_type;
 
     /**
      * For const_iterator:   define reference to be a   const TYPE&
      * For regular iterator: define reference to be a   TYPE&
      */
-    typedef typename std::conditional<isConstIterator, const TYPE&, TYPE&>::type reference;
+    typedef typename std::conditional<isConstIterator, const FORMAT&, FORMAT&>::type reference;
 
     /// Define difference type
     typedef std::ptrdiff_t difference_type;
@@ -75,11 +173,13 @@ public:
     /// @}
 
     /// Constructor
-    ImageIteratorBase(ImageType array);
+    ImageIteratorBase(ImageType image);
     /// Copy constructor
-    ImageIteratorBase(const ImageIteratorBase<TYPE, false>& other);
+    ImageIteratorBase(const ImageIteratorBase<FORMAT, false>& other);
     /// Destructor
     ~ImageIteratorBase();
+
+    ImageIteratorBase& operator=(const ImageIteratorBase& other);
 
     /// Comparison operators
     bool operator==(const ImageIteratorBase& other) const;
@@ -101,14 +201,21 @@ public:
     /// Value access operators
     reference operator*();
 
-private:
+    /// Value access operators
+    value_type* operator->();
+
+protected:
 
     /// allow to create a ConstIterator from an Iterator
-    friend class ImageIteratorBase<TYPE, true>;
+    friend class ImageIteratorBase<FORMAT, true>;
 
     pointer m_pointer{nullptr};
+    ::fwMemory::BufferObject::Lock m_lock;
     difference_type m_idx{0};
-    const difference_type m_numberOfElements;
+    difference_type m_elementSize{1};
+    difference_type m_numberOfElements{0};
 };
 
 } // namespace fwData
+
+#include "fwData/ImageIterator.hxx"

@@ -24,6 +24,7 @@
 
 #include "fwData/Array.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/ImageIterator.hpp"
 #include "fwData/Object.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -147,6 +148,9 @@ public:
     void setWindowWidth (double val);
     /// @}
 
+    /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
+    size_t getNumElements() const;
+
     /** @{
      *  @brief Get/set preferred window center
      */
@@ -176,10 +180,8 @@ public:
      */
     FWDATA_API size_t allocate();
 
-    FWDATA_API size_t allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format,
-                               size_t numberOfComponents = 1);
-    FWDATA_API size_t allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format,
-                               size_t numberOfComponents = 1);
+    FWDATA_API size_t allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format);
+    FWDATA_API size_t allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes
@@ -239,10 +241,21 @@ public:
      * @}
      */
 
+    /**
+     * @name Iteration typedefs
+     * @{
+     */
+    template <typename FORMAT>
+    using Iterator = ImageIteratorBase<FORMAT, false>;
+    template <typename FORMAT>
+    using ConstIterator = ImageIteratorBase<FORMAT, true>;
     template <typename TYPE>
-    using Iterator = Array::IteratorBase<TYPE, false>;
-    template <typename TYPE>
-    using ConstIterator = Array::IteratorBase<TYPE, true>;
+    using Iteration = typename IteratorBase<TYPE>::GrayScale;
+    typedef IteratorBase<std::uint8_t>::RGB RGBIteration;
+    typedef IteratorBase<std::uint8_t>::RGBA RGBAIteration;
+    typedef IteratorBase<std::uint8_t>::BGR BGRIteration;
+    typedef IteratorBase<std::uint8_t>::BGRA BGRAIteration;
+    /// @}
 
     /**
      * @brief Returns the begin/end iterators to the image buffer, cast to T
@@ -253,10 +266,10 @@ public:
      * @note These functions lock the buffer
      * @{
      */
-    template< typename T > Iterator<T> begin();
-    template< typename T > Iterator<T> end();
-    template< typename T > ConstIterator<T> begin() const;
-    template< typename T > ConstIterator<T> end() const;
+    template< typename FORMAT > Iterator<FORMAT> begin();
+    template< typename FORMAT > Iterator<FORMAT> end();
+    template< typename FORMAT > ConstIterator<FORMAT> begin() const;
+    template< typename FORMAT > ConstIterator<FORMAT> end() const;
     /// @}
     /**
      * @brief Returns the begin/end iterators to the array buffer, cast to char
@@ -266,10 +279,10 @@ public:
      * @note These functions lock the buffer
      * @{
      */
-    Iterator<char> begin();
-    Iterator<char> end();
-    ConstIterator<char> begin() const;
-    ConstIterator<char> end() const;
+    Iterator<IteratorBase<char>::GrayScale> begin();
+    Iterator<IteratorBase<char>::GrayScale> end();
+    ConstIterator<IteratorBase<char>::GrayScale> begin() const;
+    ConstIterator<IteratorBase<char>::GrayScale> end() const;
     /// @}
 
     ///
@@ -537,34 +550,38 @@ inline void Image::setSize2(const Size& size)
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-inline Image::Iterator<T> Image::begin()
+template< typename F >
+inline Image::Iterator<F> Image::begin()
 {
-    return m_dataArray->begin<T>();
+    return Iterator<F>(this);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-inline Image::Iterator<T> Image::end()
+template< typename F >
+inline Image::Iterator<F> Image::end()
 {
-    return m_dataArray->end<T>();
+    auto itr = Iterator<F>(this);
+    itr += static_cast< typename Iterator<F>::difference_type>(this->getNumElements()/F::elementSize);
+    return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-inline Image::ConstIterator<T> Image::begin() const
+template< typename F >
+inline Image::ConstIterator<F> Image::begin() const
 {
-    return m_dataArray->begin<T>();
+    return Iterator<F>(this);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-inline Image::ConstIterator<T> Image::end() const
+template< typename F >
+inline Image::ConstIterator<F> Image::end() const
 {
-    return m_dataArray->end<T>();
+    auto itr = Iterator<F>(this);
+    itr += static_cast< typename Iterator<F>::difference_type>(this->getNumElements()/F::elementSize);
+    return itr;
 }
 
 //------------------------------------------------------------------------------

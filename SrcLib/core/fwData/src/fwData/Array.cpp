@@ -160,7 +160,6 @@ size_t Array::resize(const SizeType& size, bool reallocate)
 
     m_strides = computeStrides(size, m_nbOfComponents, m_type.sizeOf());
     m_size    = size;
-
     return bufSize;
 }
 
@@ -525,10 +524,6 @@ size_t Array::getNumberOfComponents() const
 
 size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType) const
 {
-    FW_DEPRECATED("getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType )",
-                  "getBufferOffset( const ::fwData::Array::IndexType& id, size_t sizeOfType )",
-                  "22.0");
-
     OSLM_ASSERT(
         "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
             id.size() == m_size.size()

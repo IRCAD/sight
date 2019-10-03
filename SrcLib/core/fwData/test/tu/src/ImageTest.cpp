@@ -250,14 +250,14 @@ void ImageTest::testSetGetPixel()
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
 
     auto lock    = img->lock();
-    auto iter    = img->begin<std::int16_t>();
-    auto iterEnd = img->end<std::int16_t>();
+    auto iter    = img->begin<IteratorBase<std::int16_t>::GrayScale>();
+    auto iterEnd = img->end<IteratorBase<std::int16_t>::GrayScale>();
 
     // test 1 : use getPixelBuffer
     std::int16_t count = 0;
     for (; iter != iterEnd; ++iter)
     {
-        *iter = count++;
+        iter->v = count++;
     }
 
     for (size_t x = 0; x < SIZE[0]; ++x)
@@ -294,10 +294,214 @@ void ImageTest::testSetGetPixel()
     }
 
     count = 0;
-    auto iter2 = img->begin<std::int16_t>();
+    auto iter2 = img->begin<IteratorBase<std::int16_t>::GrayScale>();
     for (; iter2 != iterEnd; ++iter2)
     {
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), *iter2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), iter2->v);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::testRGBAIterator()
+{
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+
+    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint16");
+    ::fwData::Image::Size SIZE = {10, 20, 15};
+
+    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::RGBA);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*4*2, allocatedSize);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*4, img->getNumElements());
+
+    auto lock = img->lock();
+
+    typedef IteratorBase<std::uint16_t>::RGBA RGBAIterator;
+    auto iter    = img->begin<RGBAIterator>();
+    auto iterEnd = img->end<RGBAIterator>();
+
+    std::uint16_t count = 0;
+    for (; iter != iterEnd; ++iter)
+    {
+        iter->r = count++;
+        iter->g = count++;
+        iter->b = count++;
+        iter->a = count++;
+    }
+
+    count = 0;
+
+    auto iter2    = img->begin< ::fwData::Image::Iteration<std::uint16_t> >();
+    auto iterEnd2 = img->end< ::fwData::Image::Iteration<std::uint16_t> >();
+    for (; iter2 != iterEnd2; ++iter2)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].v",
+                                     static_cast<std::uint16_t>(count), iter2->v);
+        ++count;
+    }
+
+    count = 0;
+
+    auto iter3 = img->begin<RGBAIterator>();
+    for (; iter3 != iterEnd; ++iter3)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r",
+                                     static_cast<std::uint16_t>(4*count), iter3->r);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].g",
+                                     static_cast<std::uint16_t>(4*count+1), iter3->g);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].b",
+                                     static_cast<std::uint16_t>(4*count+2), iter3->b);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].a",
+                                     static_cast<std::uint16_t>(4*count+3), iter3->a);
+        ++count;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::testRGBIterator()
+{
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+
+    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
+    ::fwData::Image::Size SIZE = {10, 20, 15};
+
+    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::RGB);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*3, allocatedSize);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*3, img->getNumElements());
+
+    auto lock = img->lock();
+
+    typedef IteratorBase<std::uint8_t>::RGB RGBIterator;
+    std::array< std::uint8_t, 3> value = {18, 12, 68};
+    std::fill(img->begin<RGBIterator>(), img->end<RGBIterator>(), value);
+
+    std::uint8_t count = 0;
+
+    auto iterRGB    = img->begin<RGBIterator>();
+    auto iterEndRGB = img->end<RGBIterator>();
+
+    for (; iterRGB != iterEndRGB; ++iterRGB)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r", value[0], iterRGB->r);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].g", value[1], iterRGB->g);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].b", value[2], iterRGB->b);
+        ++count;
+    }
+
+    count = 0;
+    auto iterRGB2 = img->begin<RGBIterator>();
+    for (; iterRGB2 != iterEndRGB; ++iterRGB2)
+    {
+        iterRGB2->r = count++;
+        iterRGB2->g = count++;
+        iterRGB2->b = count++;
+    }
+
+    count = 0;
+
+    auto iterRGB3 = img->begin<RGBIterator>();
+    for (; iterRGB3 != iterEndRGB; ++iterRGB3)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r",
+                                     static_cast<std::uint8_t>(3*count), iterRGB3->r);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].g",
+                                     static_cast<std::uint8_t>(3*count+1), iterRGB3->g);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].b",
+                                     static_cast<std::uint8_t>(3*count+2), iterRGB3->b);
+        ++count;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::testBGRIterator()
+{
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+
+    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
+    ::fwData::Image::Size SIZE = {10, 20};
+
+    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::BGR);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*3, allocatedSize);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*3, img->getNumElements());
+
+    auto lock = img->lock();
+
+    auto iter    = img->begin< ::fwData::Image::Iteration<std::uint8_t> >();
+    auto iterEnd = img->end< ::fwData::Image::Iteration<std::uint8_t> >();
+
+    std::uint8_t count = 0;
+    for (; iter != iterEnd; ++iter)
+    {
+        iter->v = count++;
+    }
+
+    typedef ::fwData::Image::BGRIteration BGRIteration;
+    count = 0;
+
+    auto iter2    = img->begin< BGRIteration >();
+    auto iterEnd2 = img->end< BGRIteration >();
+    for (; iter2 != iterEnd2; ++iter2)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].b",
+                                     static_cast<BGRIteration::type>(3*count), iter2->b);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].g",
+                                     static_cast<BGRIteration::type>(3*count+1), iter2->g);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r",
+                                     static_cast<BGRIteration::type>(3*count+2), iter2->r);
+        ++count;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::testBGRAIterator()
+{
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+
+    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
+    ::fwData::Image::Size SIZE = {10, 20};
+
+    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::BGRA);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*4, allocatedSize);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*4, img->getNumElements());
+
+    auto lock = img->lock();
+
+    auto iter    = img->begin< ::fwData::Image::Iteration<std::uint8_t> >();
+    auto iterEnd = img->end< ::fwData::Image::Iteration<std::uint8_t> >();
+
+    std::uint8_t count = 0;
+    for (; iter != iterEnd; ++iter)
+    {
+        iter->v = count++;
+    }
+
+    typedef ::fwData::Image::BGRAIteration BGRAIteration;
+    count = 0;
+
+    auto iter2    = img->begin< BGRAIteration >();
+    auto iterEnd2 = img->end< BGRAIteration >();
+    for (; iter2 != iterEnd2; ++iter2)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].b",
+                                     static_cast<BGRAIteration::type>(4*count), iter2->b);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].g",
+                                     static_cast<BGRAIteration::type>(4*count+1), iter2->g);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r",
+                                     static_cast<BGRAIteration::type>(4*count+2), iter2->r);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].a",
+                                     static_cast<BGRAIteration::type>(4*count+3), iter2->a);
+        ++count;
     }
 }
 

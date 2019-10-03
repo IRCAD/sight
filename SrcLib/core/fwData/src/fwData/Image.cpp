@@ -146,23 +146,35 @@ size_t Image::allocate()
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format,
-                       size_t numberOfComponents)
+size_t Image::allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format)
 {
-    m_size               = { x, y, z};
-    m_type               = type;
-    m_pixelFormat        = format;
-    m_numberOfComponents = numberOfComponents;
-    return allocate();
+    return allocate({ x, y, z}, type, format);
 }
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format, size_t numberOfComponents)
+size_t Image::allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format)
 {
-    m_size               = size;
-    m_type               = type;
-    m_pixelFormat        = format;
-    m_numberOfComponents = numberOfComponents;
+    m_size        = size;
+    m_type        = type;
+    m_pixelFormat = format;
+
+    switch (format)
+    {
+        case PixelFormat::GRAY_SCALE:
+            m_numberOfComponents = 1;
+            break;
+        case PixelFormat::RGB:
+        case PixelFormat::BGR:
+            m_numberOfComponents = 3;
+            break;
+        case PixelFormat::RGBA:
+        case PixelFormat::BGRA:
+            m_numberOfComponents = 4;
+            break;
+        default:
+            m_numberOfComponents = 1;
+    }
+
     return allocate();
 }
 
@@ -297,30 +309,53 @@ const std::string Image::getPixelAsString(IndexType x,
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<char> Image::begin()
+Image::Iterator<IteratorBase<char>::GrayScale> Image::begin()
 {
-    return m_dataArray->begin();
+    return Iterator<IteratorBase<char>::GrayScale>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<char> Image::end()
+Image::Iterator<IteratorBase<char>::GrayScale> Image::end()
 {
-    return m_dataArray->end();
+    auto itr = Iterator<IteratorBase<char>::GrayScale>(this);
+    itr += static_cast< typename Iterator<IteratorBase<char>::GrayScale>::difference_type>(this->getNumElements());
+    return itr;
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<char> Image::begin() const
+Image::ConstIterator<IteratorBase<char>::GrayScale> Image::begin() const
 {
-    return m_dataArray->begin();
+    return ConstIterator<IteratorBase<char>::GrayScale>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<char> Image::end() const
+Image::ConstIterator<IteratorBase<char>::GrayScale> Image::end() const
 {
-    return m_dataArray->end();
+    auto itr = ConstIterator<IteratorBase<char>::GrayScale>(this);
+    itr += static_cast< typename Iterator<IteratorBase<char>::GrayScale>::difference_type>(this->getNumElements());
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Image::getNumElements() const
+{
+    size_t nbElts = m_numberOfComponents;
+    for (const auto& val: m_size)
+    {
+        if (val > 0)
+        {
+            nbElts *= val;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return nbElts;
 }
 
 //------------------------------------------------------------------------------
