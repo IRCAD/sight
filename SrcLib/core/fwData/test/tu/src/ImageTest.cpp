@@ -130,7 +130,7 @@ void ImageTest::testAllocation()
     img1->setType(TYPE);
     img1->setSize2(IMG_SIZE);
 
-    img1->allocate();
+    img1->resize();
 
     ::fwData::Array::sptr array = img1->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
@@ -139,7 +139,7 @@ void ImageTest::testAllocation()
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
 
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
-    img2->allocate(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    img2->resize(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     array = img2->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
@@ -148,7 +148,7 @@ void ImageTest::testAllocation()
     CPPUNIT_ASSERT_EQUAL(SIZE, img2->getSizeInBytes());
 
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
-    img3->allocate(IMG_SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    img3->resize(IMG_SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     array = img3->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
@@ -163,9 +163,12 @@ void ImageTest::testAllocation()
 void ImageTest::testReallocation()
 {
     const std::uint8_t DIMENSION = 3;
-    ::fwTools::Type TYPE1 = ::fwTools::Type::create("int16");
-    ::fwTools::Type TYPE2 = ::fwTools::Type::create("int64");
-    ::fwTools::Type TYPE3 = ::fwTools::Type::create("uint8");
+    ::fwTools::Type TYPE1           = ::fwTools::Type::create("int16");
+    ::fwTools::Type TYPE2           = ::fwTools::Type::create("int64");
+    ::fwTools::Type TYPE3           = ::fwTools::Type::create("uint8");
+    ::fwData::Image::Size IMG_SIZE1 = {10, 10, 10};
+    ::fwData::Image::Size IMG_SIZE2 = {20, 20, 20};
+    ::fwData::Image::Size IMG_SIZE3 = {5, 5, 5};
     ::fwData::Image::SizeType VECTORSIZE1(DIMENSION, 10);
     ::fwData::Image::SizeType VECTORSIZE2(DIMENSION, 20);
     ::fwData::Image::SizeType VECTORSIZE3(DIMENSION, 5);
@@ -174,26 +177,32 @@ void ImageTest::testReallocation()
     size_t SIZE3 = 5*5*5*TYPE3.sizeOf();
 
     // process
-    ::fwData::Image::sptr img1 = ::fwData::Image::New();
-
-    img1->allocate(VECTORSIZE1, TYPE1);
+    ::fwData::Image::sptr img1  = ::fwData::Image::New();
     ::fwData::Array::sptr array = img1->getDataArray();
+
+    const size_t resized1 = img1->resize(IMG_SIZE1, TYPE1, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    CPPUNIT_ASSERT_EQUAL(resized1, img1->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE1, img1->getSizeInBytes());
+
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE1);
-    CPPUNIT_ASSERT(array->getType() == TYPE1);
-    CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE1);
-    CPPUNIT_ASSERT(img1->getSizeInBytes() == SIZE1);
+    CPPUNIT_ASSERT_EQUAL(TYPE1, array->getType());
+    CPPUNIT_ASSERT_EQUAL(SIZE1, array->getSizeInBytes());
 
-    img1->allocate(VECTORSIZE2, TYPE2);
+    const size_t resized2 = img1->resize(IMG_SIZE2, TYPE2, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    CPPUNIT_ASSERT_EQUAL(resized2, img1->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE2, img1->getSizeInBytes());
+
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE2);
-    CPPUNIT_ASSERT(array->getType() == TYPE2);
-    CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE2);
-    CPPUNIT_ASSERT(img1->getSizeInBytes() == SIZE2);
+    CPPUNIT_ASSERT_EQUAL(TYPE2, array->getType());
+    CPPUNIT_ASSERT_EQUAL(SIZE2, array->getSizeInBytes());
 
-    img1->allocate(VECTORSIZE3, TYPE3);
+    const size_t resized3 = img1->resize(IMG_SIZE3, TYPE3, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    CPPUNIT_ASSERT_EQUAL(resized3, img1->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE3, img1->getSizeInBytes());
+
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE3);
-    CPPUNIT_ASSERT(array->getType() == TYPE3);
-    CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE3);
-    CPPUNIT_ASSERT(img1->getSizeInBytes() == SIZE3);
+    CPPUNIT_ASSERT_EQUAL(TYPE3, array->getType());
+    CPPUNIT_ASSERT_EQUAL(SIZE3, array->getSizeInBytes());
 }
 
 //------------------------------------------------------------------------------
@@ -245,7 +254,7 @@ void ImageTest::testSetGetPixel()
     ::fwTools::Type TYPE       = ::fwTools::Type::create("int16");
     ::fwData::Image::Size SIZE = {10, 20, 30};
 
-    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
 
@@ -310,7 +319,7 @@ void ImageTest::testRGBAIterator()
     ::fwTools::Type TYPE       = ::fwTools::Type::create("uint16");
     ::fwData::Image::Size SIZE = {10, 20, 15};
 
-    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::RGBA);
+    const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGBA);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*4*2, allocatedSize);
 
@@ -368,7 +377,7 @@ void ImageTest::testRGBIterator()
     ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
     ::fwData::Image::Size SIZE = {10, 20, 15};
 
-    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::RGB);
+    const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGB);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*3, allocatedSize);
 
@@ -426,7 +435,7 @@ void ImageTest::testBGRIterator()
     ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
     ::fwData::Image::Size SIZE = {10, 20};
 
-    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::BGR);
+    const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGR);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*3, allocatedSize);
 
@@ -469,7 +478,7 @@ void ImageTest::testBGRAIterator()
     ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
     ::fwData::Image::Size SIZE = {10, 20};
 
-    const auto allocatedSize = img->allocate(SIZE, TYPE, ::fwData::Image::PixelFormat::BGRA);
+    const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGRA);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*4, allocatedSize);
 

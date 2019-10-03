@@ -116,7 +116,7 @@ void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate()
+size_t Image::resize()
 {
     if (!m_dataArray)
     {
@@ -146,13 +146,13 @@ size_t Image::allocate()
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format)
+size_t Image::resize(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format)
 {
-    return allocate({ x, y, z}, type, format);
+    return resize({ x, y, z}, type, format);
 }
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format)
+size_t Image::resize(const Size& size, const ::fwTools::Type& type, PixelFormat format)
 {
     m_size        = size;
     m_type        = type;
@@ -175,7 +175,7 @@ size_t Image::allocate(const Size& size, const ::fwTools::Type& type, PixelForma
             m_numberOfComponents = 1;
     }
 
-    return allocate();
+    return resize();
 }
 
 //------------------------------------------------------------------------------
@@ -396,12 +396,40 @@ void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 
 //------------------------------------------------------------------------------
 
+size_t Image::allocate()
+{
+    FW_DEPRECATED("allocate()", "resize()", "22.0")
+    if (!m_dataArray)
+    {
+        m_dataArray = ::fwData::Array::New();
+    }
+
+    SLM_ASSERT( "NumberOfComponents must be > 0", m_numberOfComponents > 0 );
+
+    const size_t imageDims = this->getNumberOfDimensions();
+
+    ::fwData::Array::SizeType arraySize(imageDims);
+    size_t count = 0;
+    if (m_numberOfComponents > 1)
+    {
+        arraySize.resize(imageDims+1);
+        arraySize[0] = m_numberOfComponents;
+        count        = 1;
+    }
+
+    for (size_t i = 0; i < imageDims; ++i)
+    {
+        arraySize[count] = m_size[i];
+        ++count;
+    }
+    return m_dataArray->resize(arraySize, m_type, true);
+}
+//------------------------------------------------------------------------------
+
 size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
                        const ::fwTools::Type& type, size_t numberOfComponents)
 {
-    FW_DEPRECATED("allocate(x, y, z, type, numberOfComponents)",
-                  "allocate(x, y,  z, type, format, numberOfComponents);",
-                  "22.0")
+    FW_DEPRECATED("allocate(x, y, z, type, numberOfComponents)", "resize(x, y,  z, type, format)", "22.0")
 
     m_size               = { x, y, z};
     m_type               = type;
@@ -413,9 +441,7 @@ size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType
 
 size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents)
 {
-    FW_DEPRECATED("allocate(size, type, numberOfComponents)",
-                  "allocate(size, type, format, numberOfComponents);",
-                  "22.0")
+    FW_DEPRECATED("allocate(size, type, numberOfComponents)", "resize(size, type, format);", "22.0")
     for (size_t i = 0; i < size.size(); ++i)
     {
         m_size[i] = size[i];

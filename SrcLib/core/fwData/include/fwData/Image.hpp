@@ -169,7 +169,7 @@ public:
 
     /**
        @{
-     * @brief Allocate image
+     * @brief Resize the image and allocate the memory if needed.
      *
      * If the data array owns its buffer, these methods will always work (until it remain free memory)
      * Otherwise an exception is thrown :
@@ -178,10 +178,10 @@ public:
      *
      * @return Allocated size in bytes
      */
-    FWDATA_API size_t allocate();
+    FWDATA_API size_t resize();
 
-    FWDATA_API size_t allocate(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format);
-    FWDATA_API size_t allocate(const Size& size, const ::fwTools::Type& type, PixelFormat format);
+    FWDATA_API size_t resize(IndexType x, IndexType y,  IndexType z, const ::fwTools::Type& type, PixelFormat format);
+    FWDATA_API size_t resize(const Size& size, const ::fwTools::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes
@@ -394,6 +394,7 @@ public:
      *
      * @return Allocated size in bytes
      */
+    FWDATA_API size_t allocate();
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
                                const ::fwTools::Type& type, size_t numberOfComponents = 1);
     FWDATA_API size_t allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents = 1);
