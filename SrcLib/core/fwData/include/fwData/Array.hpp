@@ -48,7 +48,7 @@ class FWDATA_CLASS_API Array : public ::fwData::Object
 {
 public:
 
-    fwCoreClassMacro(Array, ::fwData::Object, ::fwData::factory::New< Array >);
+    fwCoreClassMacro(Array, ::fwData::Object, ::fwData::factory::New< Array >)
 
     fwCampMakeFriendDataMacro((fwData)(Array))
 
@@ -457,6 +457,12 @@ public:
                                      bool reallocate = false);
     FWDATA_API virtual size_t resize(const SizeType& size, size_t nbOfComponents, bool reallocate = false);
     /// @}
+
+    /**
+     * @brief  Temporary method to resize an image's array.
+     * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Image
+     */
+    FWDATA_API virtual size_t resizeTMP(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents);
 
     /**
      * @brief Setter for array's number of components

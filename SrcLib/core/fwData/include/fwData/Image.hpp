@@ -366,21 +366,21 @@ public:
      * @brief get/set image spacing
      */
 
-    FWDATA_API const SpacingType getSpacing() const;
+    FWDATA_API const SpacingType& getSpacing() const;
     FWDATA_API void setSpacing(const SpacingType& spacing);
     /// @}
 
     /** @{
      *  @brief get/set image origin
      */
-    FWDATA_API const OriginType getOrigin() const;
+    FWDATA_API const OriginType& getOrigin() const;
     FWDATA_API void setOrigin(const OriginType& origin);
     /// @}
 
     /** @{
      * @brief get/set image size
      */
-    FWDATA_API const SizeType getSize() const;
+    FWDATA_API const SizeType& getSize() const;
     FWDATA_API void setSize(const SizeType& size);
     /// @}
 
@@ -432,6 +432,11 @@ private:
 
     //! Origin of the image in 3D repair
     Origin m_origin{0., 0., 0.};
+
+    /// Deprecated
+    SizeType m_oldSize;
+    SpacingType m_oldSpacing;
+    OriginType m_oldOrigin;
 
     //! Preferred window center/with
     ///@{
@@ -519,6 +524,14 @@ inline const Image::Spacing& Image::getSpacing2() const
 inline void Image::setSpacing2(const Spacing& spacing)
 {
     m_spacing = spacing;
+
+    // deprecated: to support old API
+    const size_t dims = this->getNumberOfDimensions();
+    m_oldSpacing.resize(dims);
+    for (size_t i = 0; i < dims; ++i)
+    {
+        m_oldSpacing[i] = m_spacing[i];
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -533,6 +546,14 @@ inline const Image::Origin& Image::getOrigin2() const
 inline void Image::setOrigin2(const Origin& origin)
 {
     m_origin = origin;
+
+    // deprecated: to support old API
+    const size_t dims = this->getNumberOfDimensions();
+    m_oldOrigin.resize(dims);
+    for (size_t i = 0; i < dims; ++i)
+    {
+        m_oldOrigin[i] = m_origin[i];
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -547,6 +568,14 @@ inline const Image::Size& Image::getSize2() const
 inline void Image::setSize2(const Size& size)
 {
     m_size = size;
+
+    // deprecated: to support old API
+    const size_t dims = this->getNumberOfDimensions();
+    m_oldSize.resize(dims);
+    for (size_t i = 0; i < dims; ++i)
+    {
+        m_oldSize[i] = m_size[i];
+    }
 }
 
 //------------------------------------------------------------------------------
