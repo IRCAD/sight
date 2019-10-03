@@ -63,11 +63,11 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
     toolBar->setFloatable(false);
 
-    if(m_backgroundColor != "default")
+    if(!m_backgroundColor.empty())
     {
-        const QString style = qApp->styleSheet() + QString::fromStdString(
-            "QWidget, QToolButton:disabled { background-color: " + m_backgroundColor + "; } ");
-        toolBar->setStyleSheet(style);
+        const QString style = QString::fromStdString(
+            "QToolBar { background-color: " + m_backgroundColor + "; } ");
+        toolBar->setStyleSheet(qApp->styleSheet() + style);
     }
 
     ::fwGuiQt::container::QtToolBarContainer::sptr toolBarContainer = ::fwGuiQt::container::QtToolBarContainer::New();

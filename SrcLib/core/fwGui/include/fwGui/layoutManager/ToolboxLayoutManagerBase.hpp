@@ -42,7 +42,7 @@ class FWGUI_CLASS_API ToolboxLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreClassMacro(ToolboxLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager);
+    fwCoreClassMacro(ToolboxLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager)
 
     typedef std::string RegistryKeyType;
 
@@ -67,7 +67,7 @@ public:
         bool m_expanded;
         bool m_useScrollBar;
         /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
-        std::string m_backgroundColor {"default"};
+        std::string m_backgroundColor;
     };
 
     /// Constructor. Do nothing.

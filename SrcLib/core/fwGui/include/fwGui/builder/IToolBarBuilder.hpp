@@ -41,7 +41,7 @@ namespace builder
 class FWGUI_CLASS_API IToolBarBuilder : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(IToolBarBuilder, ::fwGui::GuiBaseObject);
+    fwCoreClassMacro(IToolBarBuilder, ::fwGui::GuiBaseObject)
 
     typedef std::string RegistryKeyType;
 
@@ -104,8 +104,8 @@ protected:
 
     Aligment m_aligment;
 
-    /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
-    std::string m_backgroundColor {"default"};
+    /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
+    std::string m_backgroundColor;
 
 };
 

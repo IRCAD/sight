@@ -22,6 +22,8 @@
 
 #include "fwGuiQt/layoutManager/TabLayoutManager.hpp"
 
+#include "fwGuiQt/App.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwGui/registry/macros.hpp>
@@ -72,11 +74,11 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
         widget->setMinimumSize(minWidthSize, minHeightSize);
         widget->setContentsMargins(border, border, border, border);
 
-        if(viewInfo.m_backgroundColor != "default")
+        if(!viewInfo.m_backgroundColor.empty())
         {
             const QString style = QString::fromStdString(
                 "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-            widget->setStyleSheet(style);
+            widget->setStyleSheet(style + qApp->styleSheet());
         }
 
         ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
@@ -89,11 +91,11 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
             QScrollArea* const scrollArea = new QScrollArea(m_tabWidget);
             scrollArea->setWidget(widget);
             scrollArea->setWidgetResizable( true );
-            if(viewInfo.m_backgroundColor != "default")
+            if(!viewInfo.m_backgroundColor.empty())
             {
                 const QString style = QString::fromStdString(
                     "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                scrollArea->setStyleSheet(style);
+                scrollArea->setStyleSheet(style + qApp->styleSheet());
             }
             idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));
         }

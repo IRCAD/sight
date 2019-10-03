@@ -22,6 +22,7 @@
 
 #include "fwGuiQt/builder/MenuBarBuilder.hpp"
 
+#include "fwGuiQt/App.hpp"
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtMenuBarContainer.hpp"
 
@@ -70,10 +71,11 @@ void MenuBarBuilder::createMenuBar( ::fwGui::container::fwContainer::sptr parent
         window->setMenuBar( menuBar );
         m_menuBar = menuBarContainer;
 
-        if(m_backgroundColor != "default")
+        if(!m_backgroundColor.empty())
         {
-            const QString style = QString::fromStdString("QMenuBar { background-color: " + m_backgroundColor + ";}");
-            menuBar->setStyleSheet(style);
+            const QString style = QString::fromStdString(
+                "QMenuBar, QMenu { background-color: " + m_backgroundColor + ";}");
+            menuBar->setStyleSheet(qApp->styleSheet() + style);
         }
 
     }

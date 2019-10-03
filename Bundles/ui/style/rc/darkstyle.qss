@@ -41,7 +41,6 @@ QWidget#QfwToolBoxButton
 QWidget
 {
     color: #eff0f1;
-    background-color: #31363b;
     selection-background-color:#3daee9;
     selection-color: #eff0f1;
     background-clip: border;
@@ -58,6 +57,29 @@ QWidget:item:hover
 QWidget:item:selected
 {
     background-color: #18465d;
+}
+
+QFrame
+{
+    background-color: #31363b;
+    border-radius: 2px;
+    border: 1px solid #76797C;
+}
+
+QFrame[frameShape="0"]
+{
+    border-radius: 2px;
+    border: 1px transparent #76797C;
+}
+
+QDialog
+{
+    background-color: #31363b;
+}
+
+QMainWindow
+{
+    background-color: #31363b;
 }
 
 QCheckBox
@@ -230,6 +252,7 @@ QMenuBar::item:pressed
 
 QMenu
 {
+    background-color: #31363b;
     border: 1px solid #76797C;
     color: #eff0f1;
     margin: 2px;
@@ -581,19 +604,6 @@ QMenu::separator
     margin-right: 5px;
 }
 
-
-QFrame
-{
-    border-radius: 2px;
-    border: 1px solid #76797C;
-}
-
-QFrame[frameShape="0"]
-{
-    border-radius: 2px;
-    border: 1px transparent #76797C;
-}
-
 QStackedWidget
 {
     border: 1px transparent black;
@@ -622,6 +632,12 @@ QToolBar::separator:vertical
 {
     image: url(:/darkstyle/Vsepartoolbar.png);
 }
+
+QToolBar > QWidget
+{
+    background: transparent;
+}
+
 QToolButton#qt_toolbar_ext_button
 {
     background: #58595a
@@ -668,6 +684,7 @@ QPushButton:pressed
 
 QComboBox
 {
+    background: #31363b;
     selection-background-color: #3daee9;
     border-style: solid;
     border: 1px solid #76797C;
@@ -785,9 +802,9 @@ QAbstractSpinBox::down-arrow:hover
     image: url(:/darkstyle/down_arrow.png);
 }
 
-
 QLabel
 {
+    background-color: transparent;
     border: 0px solid black;
 }
 
@@ -1138,6 +1155,7 @@ QSlider::handle:vertical
 
 QToolButton
 {
+    background: transparent;
     border: 1px transparent #76797C;
     border-radius: 2px;
     margin: 3px;
@@ -1199,6 +1217,11 @@ QToolButton::menu-arrow
 QToolButton::menu-arrow:open
 {
     border: 1px solid #76797C;
+}
+
+QToolButton:disabled
+{
+    background: transparent;
 }
 
 QPushButton::menu-indicator

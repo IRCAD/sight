@@ -44,7 +44,7 @@ class FWGUI_CLASS_API CardinalLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreClassMacro(CardinalLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager);
+    fwCoreClassMacro(CardinalLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager)
 
     /// Defines all possible position for a CardinalLayout
     typedef enum
@@ -85,8 +85,8 @@ public:
         std::pair< bool, std::string >   m_caption;
         bool m_useScrollBar;
         std::string m_toolTip;
-        /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
-        std::string m_backgroundColor {"default"};
+        /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
+        std::string m_backgroundColor;
     };
 
     /// Constructor. Do nothing.

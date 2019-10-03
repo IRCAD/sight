@@ -96,7 +96,7 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("backgroundColor") )
         {
             const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
-            if(hexaColor != "default")
+            if(!hexaColor.empty())
             {
                 OSLM_ASSERT(
                     "Color string should start with '#' and followed by 6 ou 8 "
