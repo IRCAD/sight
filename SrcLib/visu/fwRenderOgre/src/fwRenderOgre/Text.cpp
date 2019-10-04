@@ -196,7 +196,7 @@ void Text::setDotsPerInch(float _dpi)
     if(m_font->getTrueTypeResolution() != fontRes)
     {
         auto newFont = helper::Font::getFont(m_font->getSource(),
-                                             m_font->getSize(),
+                                             static_cast<size_t>(std::round(fontSize)),
                                              fontRes);
         this->setFont(newFont);
     }
@@ -211,8 +211,10 @@ void Text::setCharHeight(float _height)
 
 //------------------------------------------------------------------------------
 
-void Text::setTextColor(Ogre::ColourValue _color)
+void Text::setTextColor(const Ogre::ColourValue& _color)
 {
+    m_textColor = _color;
+
     auto material = m_overlayText->getMaterial();
     SLM_ASSERT("No material set for this Text.", material);
     ::Ogre::Technique* fontRenderTechnique = material->getTechnique(0);
@@ -223,7 +225,7 @@ void Text::setTextColor(Ogre::ColourValue _color)
     ::Ogre::GpuProgramParametersSharedPtr passParams = fontRenderPass->getFragmentProgramParameters();
     SLM_ASSERT("The Text's material pass has no fragment shader attached.", passParams);
 
-    passParams->setNamedConstant("u_textColor", _color);
+    passParams->setNamedConstant("u_textColor", m_textColor);
 }
 
 //------------------------------------------------------------------------------
@@ -311,10 +313,17 @@ void Text::setFont(::Ogre::FontPtr _font)
     m_font = _font;
     m_overlayText->setFontName(_font->getName());
 
+    auto oldMtl = m_overlayText->getMaterial();
+    if(oldMtl)
+    {
+        ::Ogre::MaterialManager::getSingleton().remove(oldMtl);
+    }
+
     // Clone the font material, thereby allowing each text object to have its own color.
     const ::Ogre::MaterialPtr& fontMtl = ::fwRenderOgre::helper::Font::getFontMtl(_font->getName());
 
-    const auto& textMtlName = this->getName() + "_TextMaterial";
+    const auto ttfRes       = m_font->getTrueTypeResolution();
+    const auto& textMtlName = this->getName() + "_TextMaterial_dpi" + std::to_string(ttfRes);
     ::Ogre::MaterialPtr textMtl = ::Ogre::MaterialManager::getSingleton().getByName(textMtlName);
     if(!textMtl)
     {
@@ -322,6 +331,7 @@ void Text::setFont(::Ogre::FontPtr _font)
     }
 
     m_overlayText->setMaterial(textMtl);
+    this->setTextColor(m_textColor);
 }
 
 //------------------------------------------------------------------------------

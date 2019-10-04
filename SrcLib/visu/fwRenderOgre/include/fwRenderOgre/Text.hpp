@@ -100,7 +100,7 @@ public:
     FWRENDEROGRE_API void setDotsPerInch(float _dpi);
 
     /// Text color, white by default.
-    FWRENDEROGRE_API void setTextColor(::Ogre::ColourValue _color);
+    FWRENDEROGRE_API void setTextColor(const ::Ogre::ColourValue& _color);
 
     /// Set the visibility of the text. Beware this hides ::Ogre::MovableObject::setVisible() which is not virtual !
     FWRENDEROGRE_API void setVisible(bool _visible);
@@ -163,6 +163,9 @@ private:
 
     /// Listens to when the viewport dimension are changed. Resizes the text.
     ResizeListener* m_listener { nullptr };
+
+    /// Color of the displayed text.
+    ::Ogre::ColourValue m_textColor { 1.f, 1.f, 1.f, 1.f };
 
 };
 
