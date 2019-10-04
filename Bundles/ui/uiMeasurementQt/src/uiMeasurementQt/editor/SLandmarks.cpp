@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,13 +51,13 @@ namespace uiMeasurementQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks )
 
 //------------------------------------------------------------------------------
 
 static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
-static const char* s_GROUP_PROPERTY_NAME                       = "group";
-static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
+static const char* s_GROUP_PROPERTY_NAME = "group";
+static const int s_GROUP_NAME_ROLE       = ::Qt::UserRole + 1;
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
@@ -69,6 +69,11 @@ static const ::fwCom::Slots::SlotKeyType s_ADD_GROUP_SLOT        = "addGroup";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
 static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
+
+static const std::string s_SIZE_CONFIG     = "size";
+static const std::string s_OPCAITY_CONFIG  = "opacity";
+static const std::string s_ADVANCED_CONFIG = "advanced";
+static const std::string s_TEXT_CONFIG     = "text";
 
 //------------------------------------------------------------------------------
 
@@ -103,21 +108,23 @@ void SLandmarks::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    m_defaultLandmarkSize = config.get_optional<float>("size").get_value_or(10.0);
+    m_defaultLandmarkSize = config.get_optional<float>(s_SIZE_CONFIG).get_value_or(10.0);
     OSLM_FATAL_IF(
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
             m_defaultLandmarkSize <= 0.f);
 
-    m_defaultLandmarkOpacity = config.get_optional<float>("opacity").get_value_or(1.0);
+    m_defaultLandmarkOpacity = config.get_optional<float>(s_OPCAITY_CONFIG).get_value_or(1.0);
     OSLM_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
             m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
-    const std::string advancedMode = config.get_optional<std::string>("advanced").get_value_or("no");
+    const std::string advancedMode = config.get_optional<std::string>(s_ADVANCED_CONFIG).get_value_or("no");
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
 
     m_advancedMode = (advancedMode == "yes");
+
+    m_text = config.get_optional<std::string>(s_TEXT_CONFIG).get_value_or("Use 'Ctrl+Left Click' to add new landmarks");
 }
 
 //------------------------------------------------------------------------------
@@ -164,8 +171,11 @@ void SLandmarks::starting()
     m_groupEditorWidget->setLayout(gridLayout);
 
     m_treeWidget = new QTreeWidget();
-    QLabel* helperTextLabel = new QLabel("Use 'Ctrl+Left Click' to add new landmarks");
-    layout->addWidget(helperTextLabel);
+    if(!m_text.empty())
+    {
+        QLabel* helperTextLabel = new QLabel(QString::fromStdString(m_text));
+        layout->addWidget(helperTextLabel);
+    }
 
     if(m_advancedMode)
     {
@@ -174,7 +184,7 @@ void SLandmarks::starting()
 
     layout->addWidget(m_treeWidget);
     layout->addWidget(m_groupEditorWidget);
-    m_groupEditorWidget->hide();
+    m_groupEditorWidget->setDisabled(true);
 
     QStringList headers;
     headers << "Group" << "Color";
@@ -411,7 +421,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem* p
 
     }
 
-    m_groupEditorWidget->setHidden(current == nullptr);
+    m_groupEditorWidget->setDisabled(current == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -586,7 +596,7 @@ void SLandmarks::onRemoveSelection()
         }
 
         m_treeWidget->setCurrentItem(nullptr);
-        m_groupEditorWidget->setHidden(true);
+        m_groupEditorWidget->setDisabled(true);
     }
 
     m_treeWidget->blockSignals(false);
@@ -853,7 +863,7 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
     const float opacity = group.m_color[3];
     m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
-    m_groupEditorWidget->show();
+    m_groupEditorWidget->setEnabled(true);
     m_treeWidget->blockSignals(false);
 }
 
@@ -863,7 +873,7 @@ void SLandmarks::deselectPoint(std::string, size_t)
 {
     m_treeWidget->blockSignals(true);
     m_treeWidget->setCurrentItem(nullptr);
-    m_groupEditorWidget->hide();
+    m_groupEditorWidget->setDisabled(true);
     m_treeWidget->blockSignals(false);
 }
 

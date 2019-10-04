@@ -63,6 +63,7 @@ namespace editor
  * @code{.xml}
         <service uid="..." type="::uiMeasurementQt::editor::SLandmarks" >
            <inout key="landmarks" uid="..." />
+           <text>Use 'Ctrl+Left Click' to add new landmarks</text>
            <size>10.0</size>
            <opacity>0.5</opacity>
            <advanced>yes</advanced>
@@ -72,8 +73,9 @@ namespace editor
  * - \b landmarks [::fwData::Landmarks]: the landmarks structure on which this editor is working.
  *
  * @subsection Configuration Configuration
- * - \b size (optional, default="10.0") : default size of created landmarks
- * - \b opacity (optional, default="1.0") : default opacity of created landmarks
+ * - \b text (optional): text displayed at the top of this editor.
+ * - \b size (optional, default="10.0") : default size of created landmarks.
+ * - \b opacity (optional, default="1.0") : default opacity of created landmarks.
  * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
  * and groups with multiple points.
  */
@@ -85,7 +87,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLandmarks, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SLandmarks, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API SLandmarks() noexcept;
@@ -219,6 +221,9 @@ private:
 
     /// Used to set the default landmark opacity
     float m_defaultLandmarkOpacity;
+
+    /// Text displayed at the top of this editor.
+    std::string m_text;
 
 };
 } // namespace editor
