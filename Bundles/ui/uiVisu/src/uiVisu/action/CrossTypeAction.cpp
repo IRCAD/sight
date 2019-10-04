@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,9 +41,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
-#include <boost/assign/list_of.hpp>
-
-
 namespace uiVisu
 {
 namespace action
@@ -53,11 +50,9 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction,
 
 static const ::fwCom::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
-std::map< std::string, float >
-CrossTypeAction::m_scaleConversion
-    = ::boost::assign::map_list_of(std::string("full"),1.0)
-          (std::string("half"),0.5)
-          (std::string("hide"),0.0);
+std::map< std::string, float > CrossTypeAction::m_scaleConversion = { { std::string("full"), 1.0 },
+                                                                      { std::string("half"), 0.5 },
+                                                                      { std::string("hide"), 0.0 } };
 
 CrossTypeAction::CrossTypeAction() noexcept
 {
@@ -120,13 +115,11 @@ void CrossTypeAction::swapping()
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::info( std::ostream &_sstream )
+void CrossTypeAction::info( std::ostream& _sstream )
 {
 }
-
 
 //------------------------------------------------------------------------------
 
 } // action
 } // uiVisu
-

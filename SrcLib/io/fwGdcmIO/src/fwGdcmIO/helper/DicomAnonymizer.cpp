@@ -37,12 +37,10 @@
 #include <fwTools/System.hpp>
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 
-#include <filesystem>
 #include <gdcmGlobal.h>
 #include <gdcmReader.h>
 #include <gdcmUIDGenerator.h>
@@ -50,6 +48,7 @@
 #include <time.h>
 
 #include <cstdint>
+#include <filesystem>
 #include <iomanip>
 
 namespace fwGdcmIO

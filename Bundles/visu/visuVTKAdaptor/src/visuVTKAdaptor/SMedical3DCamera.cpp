@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,8 +30,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkInteractorStyleImage.h>
@@ -48,10 +46,9 @@ static const ::fwCom::Slots::SlotKeyType SET_SAGITTAL_SLOT = "setSagittal";
 static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT  = "setFrontal";
 
 std::map< std::string, ::fwDataTools::helper::MedicalImage::Orientation >
-SMedical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
-                                                (std::string("axial"), Orientation::Z_AXIS)
-                                                (std::string("frontal"), Orientation::Y_AXIS)
-                                                (std::string("sagittal"), Orientation::X_AXIS);
+SMedical3DCamera::m_orientationConversion = { { std::string("axial"), Orientation::Z_AXIS },
+                                              { std::string("frontal"), Orientation::Y_AXIS },
+                                              { std::string("sagittal"), Orientation::X_AXIS }};
 
 //------------------------------------------------------------------------------
 
@@ -76,14 +73,20 @@ void SMedical3DCamera::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child(
+        "config.<xmlattr>");
 
-    const std::string orientation = config.get<std::string>("sliceIndex", "axial");
-    SLM_ASSERT("Unknown orientation", m_orientationConversion.find(orientation) != m_orientationConversion.end());
+    const std::string orientation = config.get<std::string>("sliceIndex",
+                                                            "axial");
+    SLM_ASSERT("Unknown orientation",
+               m_orientationConversion.find(
+                   orientation) != m_orientationConversion.end());
     m_helper.setOrientation(m_orientationConversion[orientation]);
 
-    const std::string reset = config.get<std::string>("resetAtStart", "no");
-    SLM_ASSERT("'resetAtStart' value must be 'yes' or 'no'", reset == "yes" || reset == "no");
+    const std::string reset =
+        config.get<std::string>("resetAtStart", "no");
+    SLM_ASSERT("'resetAtStart' value must be 'yes' or 'no'",
+               reset == "yes" || reset == "no");
     m_resetAtStart = (reset == "yes");
 }
 
@@ -190,7 +193,5 @@ void SMedical3DCamera::resetAxialView()
     this->getRenderer()->ResetCamera();
     this->setVtkPipelineModified();
 }
-
 //------------------------------------------------------------------------------
-
 } //namespace visuVTKAdaptor

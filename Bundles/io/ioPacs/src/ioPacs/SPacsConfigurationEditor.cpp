@@ -34,8 +34,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>

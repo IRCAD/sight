@@ -26,8 +26,6 @@
 
 #include <fwJobs/Observer.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <fstream>
 
 namespace fwGdcmIO
@@ -100,10 +98,10 @@ void DicomSearch::checkFilenameExtension(const std::filesystem::path& dirPath,
 {
     dicomFiles.clear();
 
-    std::set<std::string> extensions = ::boost::assign::list_of(".jpg")(".jpeg")(".htm")(".html")(".txt")(".xml")
-                                           (".stm")(".str")(".lst")(".ifo")(".pdf")(".gif")
-                                           (".png")(".exe")(".zip")(".gz")(".dir")(".dll")(".inf")
-                                           (".DS_Store");
+    std::set<std::string> extensions = { ".jpg", ".jpeg", ".htm", ".html", ".txt", ".xml",
+                                         ".stm", ".str", ".lst", ".ifo", ".pdf", ".gif",
+                                         ".png", ".exe", ".zip", ".gz", ".dir", ".dll", ".inf",
+                                         ".DS_Store" };
 
     for(std::filesystem::recursive_directory_iterator it(dirPath);
         it != std::filesystem::recursive_directory_iterator(); ++it)

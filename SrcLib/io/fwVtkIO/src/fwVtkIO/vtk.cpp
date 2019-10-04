@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
-#include <boost/assign/list_of.hpp>
 #include <boost/cast.hpp>
 
 #include <vtkCell.h>
@@ -79,60 +78,57 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     return it->second;
 }
 
-const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
-    = boost::assign::map_list_of
-      // char and signed char are treated as the same type.
-      // and plain char is used when writing an int8 image
-          ( fwTools::Type::create("int8" ), VTK_CHAR )
-          ( fwTools::Type::create("uint8" ), VTK_UNSIGNED_CHAR )
+const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
+    // char and signed char are treated as the same type.
+    // and plain char is used when writing an int8 image
+    { fwTools::Type::create("int8" ), VTK_CHAR },
+    { fwTools::Type::create("uint8" ), VTK_UNSIGNED_CHAR },
 
-          ( fwTools::Type::create("int16"), VTK_SHORT )
-          ( fwTools::Type::create("uint16"), VTK_UNSIGNED_SHORT )
+    { fwTools::Type::create("int16"), VTK_SHORT },
+    { fwTools::Type::create("uint16"), VTK_UNSIGNED_SHORT },
 
-          ( fwTools::Type::create("int32"), VTK_INT )
-          ( fwTools::Type::create("uint32"), VTK_UNSIGNED_INT )
+    { fwTools::Type::create("int32"), VTK_INT },
+    { fwTools::Type::create("uint32"), VTK_UNSIGNED_INT },
 
-          ( fwTools::Type::create("float" ), VTK_FLOAT )
-          ( fwTools::Type::create("double"), VTK_DOUBLE )
+    { fwTools::Type::create("float" ), VTK_FLOAT },
+    { fwTools::Type::create("double"), VTK_DOUBLE },
 
 #if ( INT_MAX < LONG_MAX )
-      ( fwTools::Type::create("int64"), VTK_LONG )
-          ( fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG )
+    { fwTools::Type::create("int64"), VTK_LONG },
+    { fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG }
 #endif
-    ;
+};
 
-const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
-    = boost::assign::map_list_of
+const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
+    // char and signed char are treated as the same type.
+    // and plain char is used when writing an int8 image
+    { VTK_SIGNED_CHAR, fwTools::Type::create("int8" )  },
+    { VTK_CHAR, fwTools::Type::create("int8" )  },
+    { VTK_UNSIGNED_CHAR, fwTools::Type::create("uint8" ) },
 
-      // char and signed char are treated as the same type.
-      // and plain char is used when writing an int8 image
-          ( VTK_SIGNED_CHAR, fwTools::Type::create("int8" )  )
-          ( VTK_CHAR, fwTools::Type::create("int8" )  )
-          ( VTK_UNSIGNED_CHAR, fwTools::Type::create("uint8" ) )
+    { VTK_SHORT, fwTools::Type::create("int16")  },
+    { VTK_UNSIGNED_SHORT, fwTools::Type::create("uint16") },
 
-          ( VTK_SHORT, fwTools::Type::create("int16")  )
-          ( VTK_UNSIGNED_SHORT, fwTools::Type::create("uint16") )
+    { VTK_INT, fwTools::Type::create("int32") },
+    { VTK_UNSIGNED_INT, fwTools::Type::create("uint32") },
 
-          ( VTK_INT, fwTools::Type::create("int32")  )
-          ( VTK_UNSIGNED_INT, fwTools::Type::create("uint32") )
-
-          ( VTK_FLOAT, fwTools::Type::create("float" ) )
-          ( VTK_DOUBLE, fwTools::Type::create("double") )
+    { VTK_FLOAT, fwTools::Type::create("float" ) },
+    { VTK_DOUBLE, fwTools::Type::create("double") },
 
 #if ( INT_MAX < LONG_MAX )
-      ( VTK_LONG, fwTools::Type::create("int64")  )
-          ( VTK_UNSIGNED_LONG, fwTools::Type::create("uint64") )
+    { VTK_LONG, fwTools::Type::create("int64") },
+    { VTK_UNSIGNED_LONG, fwTools::Type::create("uint64") },
 
-          ( VTK___INT64, fwTools::Type::create("int64")  )
-          ( VTK_LONG_LONG, fwTools::Type::create("int64")  )
+    { VTK___INT64, fwTools::Type::create("int64") },
+    { VTK_LONG_LONG, fwTools::Type::create("int64") },
 
-          ( VTK_UNSIGNED___INT64, fwTools::Type::create("uint64") )
-          ( VTK_UNSIGNED_LONG_LONG, fwTools::Type::create("uint64") )
+    { VTK_UNSIGNED___INT64, fwTools::Type::create("uint64") },
+    { VTK_UNSIGNED_LONG_LONG, fwTools::Type::create("uint64") },
 #else
-      ( VTK_LONG, fwTools::Type::create("int32")  )
-          ( VTK_UNSIGNED_LONG, fwTools::Type::create("uint32") )
+    { VTK_LONG, fwTools::Type::create("int32") },
+    { VTK_UNSIGNED_LONG, fwTools::Type::create("uint32") },
 #endif
-    ;
+};
 
 // -----------------------------------------------------------------------------
 

@@ -28,11 +28,10 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/assign/list_of.hpp>
-
-#include <filesystem>
 #include <QGuiApplication>
 #include <QVector>
+
+#include <filesystem>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,8 +31,6 @@
 #include <fwDataCamp/Version.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
-#include <boost/assign/std/vector.hpp>
 
 using namespace ::boost::assign;
 
@@ -71,18 +69,18 @@ void ActivitySeriesTest::propertiesTest()
 {
     const ::fwMedData::ActivitySeries::ConfigIdType activity_config_id = "Visu2D";
 
-    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                    ("patient")
-                                                                    ("study")
-                                                                    ("equipment")
-                                                                    ("instance_uid")
-                                                                    ("modality")
-                                                                    ("date")
-                                                                    ("time")
-                                                                    ("performing_physicians_name")
-                                                                    ("description")
-                                                                    ("activity_config_id")
-                                                                    ("data");
+    const ::DataCampHelper::PropertiesNameType dataProperties = { "fields",
+                                                                  "patient",
+                                                                  "study",
+                                                                  "equipment",
+                                                                  "instance_uid",
+                                                                  "modality",
+                                                                  "date",
+                                                                  "time",
+                                                                  "performing_physicians_name",
+                                                                  "description",
+                                                                  "activity_config_id",
+                                                                  "data"};
 
     ::fwData::Composite::sptr data = ::fwData::Composite::New();
 

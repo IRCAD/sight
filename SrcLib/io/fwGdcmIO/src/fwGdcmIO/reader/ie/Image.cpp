@@ -38,7 +38,6 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/assign.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 
@@ -326,7 +325,7 @@ void Image::readImagePixelModule()
     const unsigned long frameBufferSize = gdcmImage.GetBufferLength();
     const unsigned long depth           = frameBufferSize / (dimensions[0] * dimensions[1] * (bitsAllocated/8));
     dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
-    m_object->setSize(::boost::assign::list_of(dimensions[0])(dimensions[1])(dimensions[2]));
+    m_object->setSize( { dimensions[0], dimensions[1], dimensions[2] });
 
     OSLM_TRACE("Image dimensions : [" << dimensions[0] << "," <<dimensions[1] << "," << dimensions[2] << "]");
 
@@ -676,7 +675,7 @@ char* Image::correctImageOrientation(char* buffer,
         delete[] buffer;
 
         // Update image size
-        m_object->setSize(::boost::assign::list_of(newSizeX)(newSizeY)(newSizeZ));
+        m_object->setSize( {newSizeX, newSizeY, newSizeZ });
 
         // Update image spacing
         ::fwData::Image::SpacingType spacing = m_object->getSpacing();

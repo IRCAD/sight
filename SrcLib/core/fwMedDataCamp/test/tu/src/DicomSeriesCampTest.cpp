@@ -34,10 +34,7 @@
 #include <fwTools/System.hpp>
 #include <fwTools/Type.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <filesystem>
-
 #include <fstream>
 
 // Registers the fixture into the 'registry'
@@ -74,21 +71,21 @@ void DicomSeriesCampTest::propertiesTest()
     const std::string description                = "description";
     const std::string filename                   = "dicom.dcm";
     //DicomSeries
-    ::DataCampHelper::PropertiesNameType dataProperties = ::boost::assign::list_of("fields")
-                                                              ("number_of_instances")
-                                                              ("dicom_container")
-                                                              ("patient")
-                                                              ("study")
-                                                              ("equipment")
-                                                              ("instance_uid")
-                                                              ("modality")
-                                                              ("date")
-                                                              ("time")
-                                                              ("performing_physicians_name")
-                                                              ("description")
-                                                              ("sop_class_uids")
-                                                              ("computed_tag_values")
-                                                              ("first_instance_number");
+    ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
+                                                            { "number_of_instances" },
+                                                            { "dicom_container" },
+                                                            { "patient" },
+                                                            { "study" },
+                                                            { "equipment" },
+                                                            { "instance_uid" },
+                                                            { "modality" },
+                                                            { "date" },
+                                                            { "time" },
+                                                            { "performing_physicians_name" },
+                                                            { "description" },
+                                                            { "sop_class_uids" },
+                                                            { "computed_tag_values" },
+                                                            { "first_instance_number" }};
 
     ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
 

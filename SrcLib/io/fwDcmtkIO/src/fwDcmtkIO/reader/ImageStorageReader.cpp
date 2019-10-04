@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,9 +33,6 @@
 #include <fwDicomTools/Series.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/assign/std/vector.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -141,7 +138,7 @@ ImageStorageReader::~ImageStorageReader()
     dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[0], 0);
     dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[1], 1);
     dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[2], 2);
-    image->setOrigin(::boost::assign::list_of(imagePosition[0])(imagePosition[1])(imagePosition[2]));
+    image->setOrigin( { imagePosition[0], imagePosition[1], imagePosition[2] } );
 
     //Size
     unsigned short rows, columns;
@@ -168,7 +165,7 @@ ImageStorageReader::~ImageStorageReader()
     }
 
     //FIXME: Remove depth for 2D images ?
-    image->setSize(::boost::assign::list_of(columns)(rows)(depth));
+    image->setSize( {columns, rows, depth } );
 
     //Window Center
     double windowCenter = 0;

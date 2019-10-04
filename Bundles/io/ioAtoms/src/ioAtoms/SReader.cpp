@@ -56,7 +56,6 @@
 #include <fwZip/ReadZipArchive.hpp>
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/assign/list_of.hpp>
 
 #include <filesystem>
 
@@ -67,11 +66,10 @@ fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::fwData::Object )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
-const SReader::FileExtension2NameType SReader::s_EXTENSIONS
-    = ::boost::assign::map_list_of(".xml", "XML")
-          (".xmlz", "Zipped XML")
-          (".json", "JSON")
-          (".jsonz", "Zipped JSON");
+const SReader::FileExtension2NameType SReader::s_EXTENSIONS = { {".xml", "XML"},
+                                                                { ".xmlz", "Zipped XML"},
+                                                                { ".json", "JSON"},
+                                                                { ".jsonz", "Zipped JSON"} };
 
 //-----------------------------------------------------------------------------
 

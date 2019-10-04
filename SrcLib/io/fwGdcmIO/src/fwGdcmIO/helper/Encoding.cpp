@@ -28,7 +28,6 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/assign/list_of.hpp>
 #include <boost/locale/encoding.hpp>
 
 namespace fwGdcmIO
@@ -36,149 +35,93 @@ namespace fwGdcmIO
 namespace helper
 {
 
-const Encoding::DefinedTermToCharsetMapType Encoding::s_DEFINED_TERM_TO_CHARSET = ::boost::assign::map_list_of
-                                                                                  // ASCII
-                                                                                      ("ISO_IR 6", "")
-                                                                                      ("ISO 2022 IR 6", "")
+const Encoding::DefinedTermToCharsetMapType Encoding::s_DEFINED_TERM_TO_CHARSET = {
+    // ASCII
+    { "ISO_IR 6", "" },
+    { "ISO 2022 IR 6", "" },
 
-                                                                                  // Latin alphabet No. 1
-                                                                                      ("ISO_IR 100", "ISO-8859-1")
-                                                                                      ("ISO 2022 IR 100", "ISO-8859-1")
+    // Latin alphabet No. 1
+    { "ISO_IR 100", "ISO-8859-1" },
+    { "ISO 2022 IR 100", "ISO-8859-1" },
 
-                                                                                  // Latin alphabet No. 2
-                                                                                      ("ISO_IR 101", "ISO-8859-2")
-                                                                                      ("ISO 2022 IR 101", "ISO-8859-2")
+    // Latin alphabet No. 2
+    { "ISO_IR 101", "ISO-8859-2" },
+    { "ISO 2022 IR 101", "ISO-8859-2" },
 
-                                                                                  // Latin alphabet No. 3
-                                                                                      ("ISO_IR 109", "ISO-8859-3")
-                                                                                      ("ISO 2022 IR 109", "ISO-8859-3")
+    // Latin alphabet No. 3
+    { "ISO_IR 109", "ISO-8859-3" },
+    { "ISO 2022 IR 109", "ISO-8859-3" },
 
-                                                                                  // Latin alphabet No. 4
-                                                                                      ("ISO_IR 110", "ISO-8859-4")
-                                                                                      ("ISO 2022 IR 110", "ISO-8859-4")
+    // Latin alphabet No. 4
+    { "ISO_IR 110", "ISO-8859-4" },
+    { "ISO 2022 IR 110", "ISO-8859-4" },
 
-                                                                                  // Cyrillic
-                                                                                      ("ISO_IR 144", "ISO-8859-5")
-                                                                                      ("ISO 2022 IR 144", "ISO-8859-5")
+    // Cyrillic
+    { "ISO_IR 144", "ISO-8859-5" },
+    { "ISO 2022 IR 144", "ISO-8859-5" },
 
-                                                                                  // Arabic
-                                                                                      ("ISO_IR 127", "ISO-8859-6")
-                                                                                      ("ISO 2022 IR 127", "ISO-8859-6")
+    // Arabic
+    { "ISO_IR 127", "ISO-8859-6" },
+    { "ISO 2022 IR 127", "ISO-8859-6" },
 
-                                                                                  // Greek
-                                                                                      ("ISO_IR 126", "ISO-8859-7")
-                                                                                      ("ISO 2022 IR 126", "ISO-8859-7")
+    // Greek
+    { "ISO_IR 126", "ISO-8859-7" },
+    { "ISO 2022 IR 126", "ISO-8859-7" },
 
-                                                                                  // Hebrew
-                                                                                      ("ISO_IR 138", "ISO-8859-8")
-                                                                                      ("ISO 2022 IR 138", "ISO-8859-8")
+    // Hebrew
+    { "ISO_IR 138", "ISO-8859-8" },
+    { "ISO 2022 IR 138", "ISO-8859-8" },
 
-                                                                                  // Latin alphabet No. 5
-                                                                                      ("ISO_IR 148", "ISO-8859-9")
-                                                                                      ("ISO 2022 IR 148", "ISO-8859-9")
+    // Latin alphabet No. 5
+    { "ISO_IR 148", "ISO-8859-9" },
+    { "ISO 2022 IR 148", "ISO-8859-9" },
 
-                                                                                  // Japanese (may require "ISO-IR-13")
-                                                                                      ("ISO_IR 13", "JIS_X0201")
-                                                                                      ("ISO 2022 IR 13", "JIS_X0201")
+    // Japanese { may require "ISO-IR-13" },
+    { "ISO_IR 13", "JIS_X0201" },
+    { "ISO 2022 IR 13", "JIS_X0201" },
 
-                                                                                  // Thai
-                                                                                      ("ISO_IR 166", "ISO-IR-166")
-                                                                                      ("ISO 2022 IR 166", "ISO-IR-166")
+    // Thai
+    { "ISO_IR 166", "ISO-IR-166" },
+    { "ISO 2022 IR 166", "ISO-IR-166" },
 
-                                                                                  // Japanese
-                                                                                      ("ISO 2022 IR 87", "ISO-IR-87")
-                                                                                      ("ISO 2022 IR 159", "ISO-IR-159")
+    // Japanese
+    { "ISO 2022 IR 87", "ISO-IR-87" },
+    { "ISO 2022 IR 159", "ISO-IR-159" },
 
-                                                                                  // Korean
-                                                                                  // - is this mapping really correct?
-                                                                                      ("ISO 2022 IR 149", "EUC-KR")
+    // Korean
+    // - is this mapping really correct?
+    { "ISO 2022 IR 149", "EUC-KR" },
 
-                                                                                  // Simplified Chinese
-                                                                                  // - is this mapping really correct?
-                                                                                      ("ISO 2022 IR 58", "GB2312")
+    // Simplified Chinese
+    // - is this mapping really correct?
+    { "ISO 2022 IR 58", "GB2312" },
 
-                                                                                  // Unicode in UTF-8 (multi-byte)
-                                                                                      ("ISO_IR 192", "UTF-8")
+    // Unicode in UTF-8 { multi-byte },
+    { "ISO_IR 192", "UTF-8" },
 
-                                                                                  // Chinese (multi-byte)
-                                                                                      ("GB18030", "GB18030")
+    // Chinese { multi-byte },
+    { "GB18030", "GB18030" },
 
-                                                                                  // Simplified Chinese (multi-byte)
-                                                                                      ("GBK", "GBK")
-;
+    // Simplified Chinese { multi-byte },
+    { "GBK", "GBK" },
+};
 
-const Encoding::EscapeSequenceToCharsetMapType Encoding::s_ESCAPE_SEQUENCE_TO_CHARSET = ::boost::assign::map_list_of
-                                                                                            (std::make_pair(0x28,
-                                                                                                            0x42),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 6", "")) // ASCII
-                                                                                            (std::make_pair(0x2d, 0x41),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 100",
-                                                                                                "ISO-8859-1")) // Latin
-                                                                                                               // alphabet
-                                                                                                               // No. 1
-                                                                                            (std::make_pair(0x2d, 0x42),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 101",
-                                                                                                "ISO-8859-2")) // Latin
-                                                                                                               // alphabet
-                                                                                                               // No. 2
-                                                                                            (std::make_pair(0x2d, 0x43),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 109",
-                                                                                                "ISO-8859-3")) // Latin
-                                                                                                               // alphabet
-                                                                                                               // No. 3
-                                                                                            (std::make_pair(0x2d, 0x44),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 110",
-                                                                                                "ISO-8859-4")) // Latin
-                                                                                                               // alphabet
-                                                                                                               // No. 4
-                                                                                            (std::make_pair(0x2d, 0x4c),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 144",
-                                                                                                "ISO-8859-5")) // Cyrillic
-                                                                                            (std::make_pair(0x2d, 0x47),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 127",
-                                                                                                "ISO-8859-6")) // Arabic
-                                                                                            (std::make_pair(0x2d, 0x46),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 126",
-                                                                                                "ISO-8859-7")) // Greek
-                                                                                            (std::make_pair(0x2d, 0x48),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 138",
-                                                                                                "ISO-8859-8")) // Hebrew
-                                                                                            (std::make_pair(0x2d, 0x4d),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 148",
-                                                                                                "ISO-8859-9")) // Latin
-                                                                                                               // alphabet
-                                                                                                               // No. 5
-                                                                                            (std::make_pair(0x29, 0x49),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 13",
-                                                                                                "JIS_X0201")) // Japanese
-                                                                                                              // (may
-                                                                                                              // require
-                                                                                                              // "ISO-IR-13")
-                                                                                            (std::make_pair(0x28, 0x4a),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 13",
-                                                                                                "ISO-IR-14")) // Japanese
-                                                                                            (std::make_pair(0x2d, 0x54),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 166",
-                                                                                                "ISO-IR-166")) // Thai
-                                                                                            (std::make_pair(0x24, 0x42),
-                                                                                            std::make_pair(
-                                                                                                "ISO 2022 IR 87",
-                                                                                                "ISO-IR-87")) // Japanese
-                                                                                                              // (multi-byte)
-;
+const Encoding::EscapeSequenceToCharsetMapType Encoding::s_ESCAPE_SEQUENCE_TO_CHARSET = {
+    { { 0x28, 0x42}, { "ISO 2022 IR 6", ""}},               // ASCII
+    { { 0x2d, 0x41}, { "ISO 2022 IR 100", "ISO-8859-1" }},  // Latin alphabet No. 1
+    { { 0x2d, 0x42}, { "ISO 2022 IR 101", "ISO-8859-2" }},  // Latin alphabet No. 2
+    { { 0x2d, 0x43}, {  "ISO 2022 IR 109", "ISO-8859-3" }}, // Latin alphabet No. 3
+    { { 0x2d, 0x44}, { "ISO 2022 IR 110", "ISO-8859-4" }},  // Latin alphabet No. 4
+    { { 0x2d, 0x4c}, { "ISO 2022 IR 144", "ISO-8859-5" }},  // Cyrillic
+    { { 0x2d, 0x47}, { "ISO 2022 IR 127", "ISO-8859-6" }},  // Arabic
+    { { 0x2d, 0x46}, { "ISO 2022 IR 126", "ISO-8859-7" }},  // Greek
+    { { 0x2d, 0x48}, { "ISO 2022 IR 138", "ISO-8859-8" }},  // Hebrew
+    { { 0x2d, 0x4d}, { "ISO 2022 IR 148", "ISO-8859-9" }},  // Latin alphabet No. 5
+    { { 0x29, 0x49}, { "ISO 2022 IR 13", "JIS_X0201" }},    // Japanese { may require "ISO-IR-13"}
+    { { 0x28, 0x4a}, { "ISO 2022 IR 13", "ISO-IR-14" }},    // Japanese
+    { { 0x2d, 0x54}, { "ISO 2022 IR 166", "ISO-IR-166" }},  // Thai
+    { { 0x24, 0x42}, {"ISO 2022 IR 87", "ISO-IR-87"}}       // Japanese { multi-byte}
+};
 
 //------------------------------------------------------------------------------
 

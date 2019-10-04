@@ -44,11 +44,7 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <filesystem>
-
-using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioITK::ut::IoItkTest );
@@ -300,8 +296,8 @@ void IoItkTest::SeriesDBInrTest()
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
 
-    ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
-    ::fwData::Image::SizeType size       = list_of(512)(512)(134);
+    ::fwData::Image::SpacingType spacing = { 0.781, 0.781, 1.6 };
+    ::fwData::Image::SizeType size       = { 512, 512, 134 };
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
     ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[0]);

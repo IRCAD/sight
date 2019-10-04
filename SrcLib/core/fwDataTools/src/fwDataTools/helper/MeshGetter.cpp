@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,10 +24,6 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
-#include <boost/assign/list_of.hpp>
-
-using namespace boost::assign;
-
 namespace fwDataTools
 {
 
@@ -38,9 +34,10 @@ namespace helper
 #define CELL_REALLOC_STEP 1000
 #define CELLDATA_REALLOC_STEP 1000
 
-MeshGetter::MeshGetter( ::fwData::Mesh::csptr mesh ) : m_mesh (mesh)
+MeshGetter::MeshGetter( ::fwData::Mesh::csptr mesh ) :
+    m_mesh(mesh)
 {
-    typedef::fwDataTools::helper::ArrayGetter ArrayGetter;
+    typedef ::fwDataTools::helper::ArrayGetter ArrayGetter;
     SLM_ASSERT("Mesh ptr is null.", mesh);
 
     SLM_ASSERT("Mesh ptr is null.", m_mesh);

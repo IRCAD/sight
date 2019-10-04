@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,10 @@
  *
  ***********************************************************************/
 
-
 #include "fwGuiQt/dialog/InputDialog.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include <boost/assign/list_of.hpp>
 #include <QApplication>
 #include <QInputDialog>
 #include <QObject>
@@ -39,7 +37,8 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-InputDialog::InputDialog(::fwGui::GuiBaseObject::Key key) : m_input("")
+InputDialog::InputDialog(::fwGui::GuiBaseObject::Key key) :
+    m_input("")
 {
 }
 
@@ -51,14 +50,14 @@ InputDialog::~InputDialog()
 
 //------------------------------------------------------------------------------
 
-void InputDialog::setTitle( const std::string &title )
+void InputDialog::setTitle( const std::string& title )
 {
     m_title = title;
 }
 
 //------------------------------------------------------------------------------
 
-void InputDialog::setMessage( const std::string &msg )
+void InputDialog::setMessage( const std::string& msg )
 {
     m_message = msg;
 }
@@ -66,7 +65,7 @@ void InputDialog::setMessage( const std::string &msg )
 //------------------------------------------------------------------------------
 
 /// Set the input text in the input field
-void InputDialog::setInput(const std::string &text)
+void InputDialog::setInput(const std::string& text)
 {
     m_input = text;
 }
@@ -81,7 +80,7 @@ std::string InputDialog::getInput()
 
     bool IsOkClicked;
     QString outputText = QInputDialog::getText(
-        qApp->activeWindow(), title, text, QLineEdit::Normal,QString::fromStdString(m_input),&IsOkClicked);
+        qApp->activeWindow(), title, text, QLineEdit::Normal, QString::fromStdString(m_input), &IsOkClicked);
 
     if ( IsOkClicked)
     {
@@ -98,6 +97,3 @@ std::string InputDialog::getInput()
 
 } // namespace dialog
 } // namespace fwGuiQt
-
-
-

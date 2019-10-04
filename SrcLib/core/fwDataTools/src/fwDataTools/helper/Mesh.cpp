@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,10 +23,6 @@
 #include "fwDataTools/helper/Mesh.hpp"
 
 #include <fwMath/MeshFunctions.hpp>
-
-#include <boost/assign/list_of.hpp>
-
-using namespace boost::assign;
 
 namespace fwDataTools
 {
@@ -103,9 +99,9 @@ void Mesh::updateLock()
     size_t allocatedPts = points->empty() ? 0 : points->getSize().at(0);
     if( allocatedPts <= nbPoints )
     {
-        points->resize(list_of(allocatedPts + POINT_REALLOC_STEP), true);
+        points->resize({allocatedPts + POINT_REALLOC_STEP}, true);
     }
-    m_helperPoints->setItem(list_of(nbPoints), p);
+    m_helperPoints->setItem({nbPoints}, p);
     m_mesh->setNumberOfPoints(nbPoints+1);
     return nbPoints;
 }
@@ -124,7 +120,7 @@ void Mesh::updateLock()
 
 void Mesh::setPoint(::fwData::Mesh::Id id, const ::fwData::Mesh::PointValueType p[3])
 {
-    m_helperPoints->setItem(list_of(id), p);
+    m_helperPoints->setItem( {id}, p);
 }
 
 //------------------------------------------------------------------------------
@@ -142,42 +138,42 @@ void Mesh::setPoint(::fwData::Mesh::Id id,
 
 void Mesh::setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
 {
-    m_helperPointColors->setItem(list_of(id), c);
+    m_helperPointColors->setItem({ id }, c);
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
 {
-    m_helperCellColors->setItem(list_of(id), c);
+    m_helperCellColors->setItem({ id }, c);
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
 {
-    m_helperPointNormals->setItem(list_of(id), n);
+    m_helperPointNormals->setItem({ id }, n);
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
 {
-    m_helperCellNormals->setItem(list_of(id), n);
+    m_helperCellNormals->setItem({ id }, n);
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
 {
-    m_helperPointTexCoords->setItem(list_of(id), t);
+    m_helperPointTexCoords->setItem({ id }, t);
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
 {
-    m_helperCellTexCoords->setItem(list_of(id), t);
+    m_helperCellTexCoords->setItem({ id }, t);
 }
 
 //------------------------------------------------------------------------------
@@ -212,30 +208,30 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 
     if( allocatedCellTypes <= nbCells )
     {
-        cellTypes->resize(list_of(allocatedCellTypes + CELL_REALLOC_STEP), true);
+        cellTypes->resize({allocatedCellTypes + CELL_REALLOC_STEP}, true);
     }
     if( allocatedCellDataOffsets <= nbCells )
     {
-        cellDataOffsets->resize(list_of(allocatedCellDataOffsets + CELL_REALLOC_STEP), true);
+        cellDataOffsets->resize({allocatedCellDataOffsets + CELL_REALLOC_STEP}, true);
     }
 
     size_t allocatedCellData = cellData->empty() ? 0 : cellData->getSize().at(0);
 
     if( allocatedCellData <= cellsDataSize + nb )
     {
-        cellData->resize(list_of(allocatedCellData + CELLDATA_REALLOC_STEP), true);
+        cellData->resize({allocatedCellData + CELLDATA_REALLOC_STEP}, true);
     }
 
     const ::fwData::Mesh::CellTypes t[1] = {static_cast< ::fwData::Mesh::CellTypes >(type)};
-    m_helperCellTypes->setItem(list_of(nbCells), t);
+    m_helperCellTypes->setItem({nbCells}, t);
 
     ::fwData::Mesh::CellValueType* buf = reinterpret_cast< ::fwData::Mesh::CellValueType* >(
-        m_helperCellData->getBufferPtr(list_of(cellsDataSize), 0, sizeof(::fwData::Mesh::CellValueType))
+        m_helperCellData->getBufferPtr({cellsDataSize}, 0, sizeof(::fwData::Mesh::CellValueType))
         );
     std::copy(cell, cell+nb, buf);
 
     const ::fwData::Mesh::CellDataOffsetType id[1] = {cellsDataSize};
-    m_helperCellDataOffsets->setItem(list_of(nbCells), id);
+    m_helperCellDataOffsets->setItem({nbCells}, id);
 
     cellsDataSize += nb;
     m_mesh->setCellDataSize(cellsDataSize);

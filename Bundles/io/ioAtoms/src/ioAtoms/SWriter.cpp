@@ -57,10 +57,8 @@
 #include <fwZip/WriteZipArchive.hpp>
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/assign.hpp>
 
 #include <filesystem>
-
 #include <regex>
 
 namespace ioAtoms
@@ -189,8 +187,6 @@ void SWriter::configuring()
 
 bool SWriter::versionSelection()
 {
-    using namespace boost::assign;
-
     ::fwAtomsPatch::VersionsGraph::sptr vg = ::fwAtomsPatch::VersionsManager::getDefault()->getGraph(m_context);
 
     // have some information about this format
