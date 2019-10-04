@@ -151,14 +151,22 @@ void SActivityWizard::starting()
     QVBoxLayout* layout = new QVBoxLayout();
 
     m_title = new QLabel("");
-    m_title->setStyleSheet("QLabel { font: bold; color: blue; }");
+    m_title->setObjectName("SActivityWizard_title");
     m_title->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_title);
 
     m_description = new QLabel("");
-    m_description->setStyleSheet("QLabel { font: italic; border: solid 1px;}");
+    m_description->setObjectName("SActivityWizard_description");
     m_description->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_description);
+
+    // If the style sheet is empty, we are using the default theme.
+    // If a stye sheet is set, the style must be set in the style sheet.
+    if(qApp->styleSheet().isEmpty())
+    {
+        m_title->setStyleSheet("QLabel { font: bold; color: blue; }");
+        m_description->setStyleSheet("QLabel { font: italic; border: solid 1px;}");
+    }
 
     m_activityDataView = new widget::ActivityDataView();
     m_activityDataView->setIOSelectorConfig(m_ioSelectorConfig);
@@ -174,7 +182,7 @@ void SActivityWizard::starting()
     if (m_isCancelable)
     {
         m_cancelButton = new QPushButton("Cancel");
-        m_cancelButton->setToolTip("Cacnel the activity creation");
+        m_cancelButton->setToolTip("Cancel the activity creation");
         buttonLayout->addWidget(m_cancelButton);
     }
 

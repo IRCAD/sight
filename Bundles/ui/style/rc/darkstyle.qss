@@ -1453,3 +1453,15 @@ QScrollArea
 {
     border: none;
 }
+
+QLabel#SActivityWizard_title
+{
+    font: bold;
+    color: blue;
+}
+
+QLabel#SActivityWizard_description
+{
+    font: italic;
+    border: solid 1px;
+}
