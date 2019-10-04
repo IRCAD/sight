@@ -121,10 +121,6 @@ private:
     /// The text's color.
     ::Ogre::ColourValue m_textColor;
 
-    /// The text's height, expressed as a fraction of the viewport height.
-    /// FIXME: should be computed from the font size and the screen's physical size.
-    const float m_textHeight { 0.03f };
-
     /// Font size in points.
     size_t m_fontSize { 16 };
 

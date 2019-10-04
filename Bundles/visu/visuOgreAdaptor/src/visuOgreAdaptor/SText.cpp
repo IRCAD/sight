@@ -159,8 +159,6 @@ void SText::setText(std::string str)
 
 void SText::updatePositionFromAlignment()
 {
-    const float textHeight = m_text->getTextHeight();
-
     const std::map< std::string, ::Ogre::TextAreaOverlayElement::Alignment > stringToHorizAlignmentMap {
         { "left",  ::Ogre::TextAreaOverlayElement::Left },
         { "center", ::Ogre::TextAreaOverlayElement::Center },

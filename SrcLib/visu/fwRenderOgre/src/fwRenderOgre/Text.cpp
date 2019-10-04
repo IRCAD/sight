@@ -167,10 +167,14 @@ float Text::getTextHeight() const
 {
     auto& caption = m_overlayText->getCaption();
 
+#ifdef WIN32
 #pragma warning(push)
 #pragma warning( disable : 4996 ) // Ogre still uses the old iterator API deprecated in c++17.
-    const size_t nbLineEnds = std::count(caption.begin(), caption.end(), '\n') + 1;
+#endif
+    const auto nbLineEnds = std::count(caption.begin(), caption.end(), '\n') + 1;
+#ifdef WIN32
 #pragma warning(pop)
+#endif
 
     return static_cast<float>(nbLineEnds) * m_overlayText->getCharHeight();
 }
@@ -324,7 +328,8 @@ void Text::setFont(::Ogre::FontPtr _font)
 
 void Text::resize()
 {
-    float newSize = m_heightInPixels / m_camera->getViewport()->getActualHeight();
+    const int vpHeight  = m_camera->getViewport()->getActualHeight();
+    const float newSize = m_heightInPixels / static_cast<float>(vpHeight);
 
     m_overlayText->setCharHeight(newSize);
     this->setPosition(m_position.x, m_position.y);

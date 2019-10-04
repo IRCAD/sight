@@ -34,6 +34,8 @@
 namespace fwRenderOgre
 {
 
+class ResizeListener;
+
 /**
  * @brief Class used to display overlay text.
  *
@@ -70,7 +72,7 @@ public:
      * @param _cam camera used when this text follows a 3D object.
      * @return A new 'Text' instance.
      */
-    static FWRENDEROGRE_API [[deprecated("Text objects manage their own font now.")]]
+    [[deprecated("Text objects manage their own font now.")]] static FWRENDEROGRE_API
     Text* New(const std::string& _id, ::Ogre::SceneManager* _sm, ::Ogre::OverlayContainer* _parent,
               ::Ogre::FontPtr _font, ::Ogre::Camera* _cam = nullptr);
 
@@ -88,8 +90,8 @@ public:
 
     /// Sets the character height relatively to the screen height.
     /// It would be better to set this from the font size but we let the user set it for now.
-    FWRENDEROGRE_API [[deprecated("Text objects are now rendered using the font size")]] void setCharHeight(float
-                                                                                                            _height);
+    [[deprecated("Text objects are now rendered using the font size")]]
+    FWRENDEROGRE_API void setCharHeight(float _height);
 
     /// Gets the text height relatively to that of the screen.
     FWRENDEROGRE_API float getTextHeight() const;
