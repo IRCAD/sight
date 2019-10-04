@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,18 +22,20 @@
 
 #pragma once
 
-#include "fwMedDataTools/config.hpp"
+#include "fwGdcmIO/config.hpp"
 
 #include <string>
 
-namespace fwMedDataTools
+namespace fwGdcmIO
+{
+namespace helper
 {
 
 /**
  * @brief Generates a random Dicom Patient ID using GDCM.
  * It must be at most 64 char long and non null.
  */
-FWMEDDATATOOLS_API std::string generatePatientId();
+FWGDCMIO_API std::string generatePatientId();
 
 /**
  * @brief Generates a random Dicom Study Instance UID using current time.
@@ -41,6 +43,7 @@ FWMEDDATATOOLS_API std::string generatePatientId();
  *
  * FIXME : According to Dicom, the Study Instance UID must identify a study from time and location.
  */
-FWMEDDATATOOLS_API std::string generateStudyInstanceUid();
+FWGDCMIO_API std::string generateStudyInstanceUid();
 
-} // namespace fwMedDataTools
+} // namespace helper
+} // namespace fwGdcmIO

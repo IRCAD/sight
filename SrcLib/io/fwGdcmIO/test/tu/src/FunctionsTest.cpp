@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,41 +20,49 @@
  *
  ***********************************************************************/
 
-#include "fwMedDataTools/functions.hpp"
+#include "FunctionsTest.hpp"
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "fwGdcmIO/functions.hpp"
 
-#include <gdcmUIDGenerator.h>
-
-#include <sstream>
 #include <string>
 
-namespace fwMedDataTools
+// Registers the fixture into the 'registry'
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataTools::ut::FunctionsTest );
+
+namespace fwGdcmIO
+{
+namespace ut
 {
 
 //------------------------------------------------------------------------------
 
-std::string generatePatientId()
+void FunctionsTest::setUp()
 {
-    ::gdcm::UIDGenerator uid;
-    const char* id = uid.Generate();
-    return std::string(id);
 }
 
 //------------------------------------------------------------------------------
 
-std::string generateStudyInstanceUid()
+void FunctionsTest::tearDown()
 {
-    using namespace ::boost::posix_time;
-
-    ptime now         = microsec_clock::local_time();
-    time_facet* facet = new time_facet("%f%S%M%H%d%m");
-
-    std::stringstream ss;
-    ss.imbue(std::locale(ss.getloc(), facet));
-    ss << now;
-
-    return ss.str();
 }
 
-} // namespace fwMedDataTools
+//------------------------------------------------------------------------------
+
+void FunctionsTest::generatePatientIdTest()
+{
+    const std::string id = ::fwMedDataTools::generatePatientId();
+    CPPUNIT_ASSERT(64 >= id.length());
+    CPPUNIT_ASSERT(0 < id.length());
+}
+
+//------------------------------------------------------------------------------
+
+void FunctionsTest::generateStudyInstanceUidTest()
+{
+    const std::string id = ::fwMedDataTools::generateStudyInstanceUid();
+    CPPUNIT_ASSERT(16 == id.length());
+}
+
+} // namespace ut
+
+} // namespace fwGdcmIO

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2004-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATATOOLS_UT_FUNCTIONSTEST_HPP__
-#define __FWMEDDATATOOLS_UT_FUNCTIONSTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwMedDataTools
+namespace fwGdcmIO
 {
 namespace ut
 {
@@ -55,7 +54,4 @@ public:
 
 } // namespace ut
 
-} // namespace fwMedDataTools
-
-#endif // __FWMEDDATATOOLS_UT_FUNCTIONSTEST_HPP__
-
+} // namespace fwGdcmIO
