@@ -54,6 +54,9 @@ namespace adaptor
  *    - \b size (mandatory): specify size of the square
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b color (optional, default black): color of the square
+ *
+ * @section Slots Slots
+ * -\b setDoubleParameter(double, std::string): set the double parameters 'x' and 'y'
  */
 class SCENE2D_CLASS_API SSquare : public ::fwRenderQt::IAdaptor
 {
