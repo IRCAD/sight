@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,9 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
+
+#include <fstream>
 
 namespace ioTimeline
 {
@@ -94,7 +96,7 @@ void SMatrixWriter::starting()
 
 void SMatrixWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );

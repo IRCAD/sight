@@ -31,8 +31,8 @@
 #include "fwRuntime/IPlugin.hpp"
 
 #include <boost/dll/runtime_symbol_info.hpp>
-#include <boost/filesystem/operations.hpp>
 
+#include <filesystem>
 #include <limits.h>
 
 #include <algorithm>
@@ -53,7 +53,7 @@ Runtime::Runtime()
     auto execPath = ::boost::dll::program_location();
 
     // The program location is 'path/bin/executable', real working path is 'path'
-    m_workingPath = execPath.normalize().parent_path().parent_path();
+    m_workingPath = std::filesystem::path(execPath.normalize().parent_path().parent_path().string());
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void Runtime::unregisterBundle( std::shared_ptr< Bundle > bundle )
 
 //------------------------------------------------------------------------------
 
-void Runtime::addBundles( const ::boost::filesystem::path& repository )
+void Runtime::addBundles( const std::filesystem::path& repository )
 {
     try
     {
@@ -105,7 +105,7 @@ void Runtime::addDefaultBundles()
     // Bundles location
     const auto location = this->getWorkingPath() / BUNDLE_RC_PREFIX;
 
-    SLM_ASSERT("Default Bundles location not found: " + location.string(), ::boost::filesystem::exists(location));
+    SLM_ASSERT("Default Bundles location not found: " + location.string(), std::filesystem::exists(location));
 
     // Read bundles
     this->addBundles(location);
@@ -376,14 +376,14 @@ IExecutable* Runtime::createExecutableInstance( const std::string& type,
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const ::boost::filesystem::path& workingPath)
+void Runtime::setWorkingPath(const std::filesystem::path& workingPath)
 {
     m_workingPath = workingPath;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path Runtime::getWorkingPath() const
+std::filesystem::path Runtime::getWorkingPath() const
 {
     return m_workingPath;
 }

@@ -28,7 +28,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 #include <vector>
@@ -176,7 +176,7 @@ private:
      * @brief Create a seriesDB and fill it using the data of the DICOM files
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
+    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
 
     /// Selector config used to select a filter to apply
     std::string m_filterConfig;

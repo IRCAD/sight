@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,19 @@
  *
  ***********************************************************************/
 
-#include <iostream>
-#include <fstream>
-
-#include <fwTools/System.hpp>
-#include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/StructureTraits.hpp>
-#include <fwData/StructureTraitsHelper.hpp>
+#include "DictionaryReaderTest.hpp"
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
 
-#include "DictionaryReaderTest.hpp"
+#include <fwData/StructureTraits.hpp>
+#include <fwData/StructureTraitsDictionary.hpp>
+#include <fwData/StructureTraitsHelper.hpp>
+
+#include <fwTools/System.hpp>
+
+#include <fstream>
+#include <iostream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataIO::ut::DictionaryReaderTest );
@@ -50,7 +51,7 @@ void DictionaryReaderTest::setUp()
 
     this->generateDictionaryFile(m_tmpDictionaryFilePath);
 
-    CPPUNIT_ASSERT(::boost::filesystem::exists(m_tmpDictionaryFilePath));
+    CPPUNIT_ASSERT(std::filesystem::exists(m_tmpDictionaryFilePath));
 }
 
 //------------------------------------------------------------------------------
@@ -58,10 +59,10 @@ void DictionaryReaderTest::setUp()
 void DictionaryReaderTest::tearDown()
 {
     // Clean up after the test run.
-    if( ::boost::filesystem::exists(m_tmpDictionaryFilePath))
+    if( std::filesystem::exists(m_tmpDictionaryFilePath))
     {
         bool suppr;
-        suppr = ::boost::filesystem::remove(m_tmpDictionaryFilePath);
+        suppr = std::filesystem::remove(m_tmpDictionaryFilePath);
         CPPUNIT_ASSERT(suppr);
     }
 }
@@ -95,8 +96,8 @@ void DictionaryReaderTest::test_1()
     CPPUNIT_ASSERT_EQUAL(struct1->getClass(), expectedSkin->getClass());
 
     ::fwData::Color::sptr color1 = struct1->getColor();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->red(), expectedSkin->getColor()->red(),0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), expectedSkin->getColor()->green(),0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->red(), expectedSkin->getColor()->red(), 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), expectedSkin->getColor()->green(), 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->blue(), expectedSkin->getColor()->blue(), 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->alpha(), expectedSkin->getColor()->alpha(), 0.001);
 
@@ -177,7 +178,7 @@ void DictionaryReaderTest::test_5()
     CPPUNIT_ASSERT_THROW(dictionaryReader->read(), ::fwCore::Exception);
 }
 //------------------------------------------------------------------------------
-void DictionaryReaderTest::generateDictionaryFile(::boost::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFile(std::filesystem::path dictionaryFile)
 {
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
@@ -190,7 +191,7 @@ void DictionaryReaderTest::generateDictionaryFile(::boost::filesystem::path dict
 
 //------------------------------------------------------------------------------
 
-void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(::boost::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(std::filesystem::path dictionaryFile)
 {
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
@@ -202,7 +203,7 @@ void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(::boost::f
 
 //------------------------------------------------------------------------------
 
-void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(::boost::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(std::filesystem::path dictionaryFile)
 {
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
@@ -213,7 +214,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(::boost::file
 
 //------------------------------------------------------------------------------
 
-void DictionaryReaderTest::generateDictionaryFileWithWrongClass(::boost::filesystem::path dictionaryFile)
+void DictionaryReaderTest::generateDictionaryFileWithWrongClass(std::filesystem::path dictionaryFile)
 {
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);

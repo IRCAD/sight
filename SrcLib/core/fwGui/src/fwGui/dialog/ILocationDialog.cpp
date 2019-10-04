@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -78,9 +78,9 @@ void ILocationDialog::setDefaultLocation( ::fwData::location::ILocation::sptr lo
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path ILocationDialog::getDefaultLocation()
+const std::filesystem::path ILocationDialog::getDefaultLocation()
 {
-    ::boost::filesystem::path defaultPath;
+    std::filesystem::path defaultPath;
     ::fwData::Composite::sptr prefUI = this->getPreferenceUI();
     ::fwData::location::ILocation::sptr location;
     if(prefUI)

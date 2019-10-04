@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 
 #include <fwLog/Logger.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 namespace fwGdcmIO
 {
@@ -107,12 +107,12 @@ bool checkAndFormatEntry(const std::string& structureType,
 
 //------------------------------------------------------------------------------
 
-bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(const ::boost::filesystem::path& filepath,
+bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(const std::filesystem::path& filepath,
                                                                   bool omitFirstLine,
                                                                   const ::fwLog::Logger::sptr& logger)
 {
     const std::string filepathStr = filepath.string();
-    if(::boost::filesystem::exists(filepath))
+    if(std::filesystem::exists(filepath))
     {
         std::ifstream csvStream(filepathStr);
         return readSegmentedPropertyRegistryFile(csvStream, omitFirstLine, logger);
@@ -314,4 +314,3 @@ std::string SegmentedPropertyRegistry::getStructureType(const std::string& prope
 
 } //namespace helper
 } //namespace fwGdcmIO
-

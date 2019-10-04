@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,6 @@
 
 #include <fwTools/Os.hpp>
 
-#include <boost/filesystem.hpp>
 #include <boost/log/attributes.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/expressions/formatters/date_time.hpp>
@@ -39,6 +38,8 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/parameter/keyword.hpp>
+
+#include <filesystem>
 
 namespace fwAtomsPatch
 {
@@ -61,7 +62,7 @@ Logger::Logger()
     namespace expr     = ::boost::log::expressions;
     namespace keywords = ::boost::log::keywords;
 
-    namespace bfile = ::boost::filesystem;
+    namespace bfile = std::filesystem;
 
     //Create PATCH.log in a user data dir nammed sight/appName/
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();

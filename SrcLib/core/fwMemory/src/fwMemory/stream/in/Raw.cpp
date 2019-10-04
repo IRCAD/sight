@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
-
-
-#include <fwCore/macros.hpp>
-#include <fwCore/exceptionmacros.hpp>
-
 #include "fwMemory/stream/in/Raw.hpp"
+
+#include <fwCore/exceptionmacros.hpp>
+#include <fwCore/macros.hpp>
+
+#include <filesystem>
+
+#include <fstream>
 
 namespace fwMemory
 {
@@ -40,14 +39,13 @@ namespace in
 SPTR(std::istream) Raw::get()
 {
     FW_RAISE_IF("file "<< m_path.string() << " does not exist anymore or has been moved.",
-                !boost::filesystem::exists(m_path));
+                !std::filesystem::exists(m_path));
 
-    SPTR(::boost::filesystem::ifstream) fs
-        = std::make_shared< ::boost::filesystem::ifstream>(m_path, std::ios::in|std::ios::binary);
+    SPTR(std::ifstream) fs
+        = std::make_shared< std::ifstream>(m_path, std::ios::in|std::ios::binary);
     return fs;
 }
 
 } // namespace in
 } // namespace stream
 } // namespace fwMemory
-

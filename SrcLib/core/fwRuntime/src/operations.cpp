@@ -69,7 +69,7 @@ struct ConfigurationElementIdentifierPredicate
 
 //------------------------------------------------------------------------------
 
-void init(const boost::filesystem::path& directory)
+void init(const std::filesystem::path& directory)
 {
     Runtime* rntm = Runtime::getDefault();
     SLM_ASSERT("Default runtime not found", rntm);
@@ -115,7 +115,7 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept
+std::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept
 {
     Runtime* rntm                     = Runtime::getDefault();
     std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
@@ -123,15 +123,15 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
     if(bundle == nullptr)
     {
         SLM_ERROR("Could not find bundle " + bundleIdentifier + "'");
-        return ::boost::filesystem::path();
+        return std::filesystem::path();
     }
     return bundle->getResourcesLocation();
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
-                                                    const ::boost::filesystem::path& path) noexcept
+std::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
+                                                const std::filesystem::path& path) noexcept
 {
     Runtime* rntm                     = Runtime::getDefault();
     std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
@@ -139,14 +139,14 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
     if(bundle == nullptr)
     {
         SLM_ERROR("Could not find bundle '" + bundleIdentifier + "'");
-        return ::boost::filesystem::path();
+        return std::filesystem::path();
     }
     return getBundleResourcePath(bundle, path);
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesystem::path& path) noexcept
+std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& path) noexcept
 {
     SLM_ASSERT("Path should be relative", path.is_relative());
     const std::string bundleIdentifierAndVersion = path.begin()->string();
@@ -157,7 +157,7 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
     auto bundleVersion      = bundleIdentifierAndVersion.substr(itVersionDelimiter + 1);
 
     // Strip the bundle name
-    ::boost::filesystem::path pathWithoutBundle;
+    std::filesystem::path pathWithoutBundle;
     for(auto itPath = ++path.begin(); itPath != path.end(); itPath++)
     {
         pathWithoutBundle /= *itPath;
@@ -172,30 +172,30 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
         if(bundle == nullptr)
         {
             SLM_ERROR("Could not find bundle '" + bundleIdentifier + "' with version '" + version.string() + "'");
-            return ::boost::filesystem::path();
+            return std::filesystem::path();
         }
         return getBundleResourcePath(bundle, pathWithoutBundle );
     }
     catch(...)
     {
         SLM_ERROR("Error looking for bundle '" + bundleIdentifier + "' with version '" + bundleVersion + "'");
-        return ::boost::filesystem::path();
+        return std::filesystem::path();
     }
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesystem::path& path) noexcept
+std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& path) noexcept
 {
     // Currently the library resources are at the same location than bundles
     // This might change in the future
     Runtime* rntm = Runtime::getDefault();
-    return (rntm->getWorkingPath() / BUNDLE_RC_PREFIX / path).normalize();
+    return std::filesystem::canonical(rntm->getWorkingPath() / BUNDLE_RC_PREFIX / path);
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getResourceFilePath(const ::boost::filesystem::path& path) noexcept
+std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noexcept
 {
     auto file = ::fwRuntime::getBundleResourceFilePath(path);
     if(file.empty())
@@ -209,31 +209,31 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
-                                                 const ::boost::filesystem::path& path) noexcept
+std::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
+                                             const std::filesystem::path& path) noexcept
 {
     return bundle->getResourcesLocation() / path;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
-                                                 const ::boost::filesystem::path& path) noexcept
+std::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
+                                             const std::filesystem::path& path) noexcept
 {
     return getBundleResourcePath(element->getBundle(), path);
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getBundleResourcePath(const IExecutable* executable,
-                                                const ::boost::filesystem::path& path) noexcept
+std::filesystem::path getBundleResourcePath(const IExecutable* executable,
+                                            const std::filesystem::path& path) noexcept
 {
     return getBundleResourcePath(executable->getBundle(), path);
 }
 
 //------------------------------------------------------------------------------
 
-void addBundles( const ::boost::filesystem::path& directory)
+void addBundles( const std::filesystem::path& directory)
 {
     Runtime* rntm = Runtime::getDefault();
     SLM_ASSERT("Default runtime not found", rntm);
@@ -262,7 +262,7 @@ std::shared_ptr<Bundle> loadBundle(const std::string& identifier, const Version&
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::profile::Profile::sptr startProfile( const ::boost::filesystem::path& path )
+::fwRuntime::profile::Profile::sptr startProfile( const std::filesystem::path& path )
 {
     try
     {

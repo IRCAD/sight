@@ -27,8 +27,7 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <ostream>
 
 namespace fwZip
@@ -46,7 +45,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const ::boost::filesystem::path& archive, const std::string& comment = "")
+    static sptr New(const std::filesystem::path& archive, const std::string& comment = "")
     {
         return std::make_shared<WriteZipArchive>(archive, comment);
     }
@@ -55,13 +54,13 @@ public:
      * @brief Constructors. Initializes archive path.
      *
      */
-    FWZIP_API WriteZipArchive( const ::boost::filesystem::path& archive );
+    FWZIP_API WriteZipArchive( const std::filesystem::path& archive );
 
     /**
      * @brief Constructors. Initializes archive path and comment.
      *
      */
-    FWZIP_API WriteZipArchive( const ::boost::filesystem::path& archive, const std::string& comment );
+    FWZIP_API WriteZipArchive( const std::filesystem::path& archive, const std::string& comment );
 
     FWZIP_API ~WriteZipArchive();
 
@@ -73,7 +72,7 @@ public:
      * @throw ::fwZip::exception::Write if archive cannot be opened.
      * @note Last output stream is automatically flushed before creation of new file entry in zip archive.
      */
-    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) override;
+    FWZIP_API SPTR(std::ostream) createFile(const std::filesystem::path& path) override;
 
     /**
      * @brief Writes source file in archive.
@@ -82,8 +81,8 @@ public:
      *
      * @throw ::fwZip::exception::Read if source file cannot be opened.
      */
-    FWZIP_API void putFile(const ::boost::filesystem::path& sourceFile,
-                           const ::boost::filesystem::path& path) override;
+    FWZIP_API void putFile(const std::filesystem::path& sourceFile,
+                           const std::filesystem::path& path) override;
 
     /**
      * @brief Creates a folder in archive.
@@ -91,16 +90,16 @@ public:
      *
      * @todo: file attribute isn't correctly set in zip archive.
      */
-    FWZIP_API bool createDir(const ::boost::filesystem::path& path) override;
+    FWZIP_API bool createDir(const std::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
      */
-    FWZIP_API const ::boost::filesystem::path getArchivePath() const override;
+    FWZIP_API const std::filesystem::path getArchivePath() const override;
 
 protected:
 
-    ::boost::filesystem::path m_archive;
+    std::filesystem::path m_archive;
 
     std::string m_comment;
 };

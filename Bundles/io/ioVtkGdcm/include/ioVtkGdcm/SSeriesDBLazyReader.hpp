@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -52,7 +52,7 @@ namespace ioVtkGdcm
  * connected to a SJobBar).
  *
  * @section Slots Slots
- * - \b readFolder(::boost::filesystem::path) : read the given file
+ * - \b readFolder(std::filesystem::path) : read the given file
  *
  * @section XML XML Configuration
  *
@@ -76,7 +76,7 @@ public:
     typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceMacro(SSeriesDBLazyReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SSeriesDBLazyReader,  ::fwIO::IReader)
 
     /// constructor
     IOVTKGDCM_API SSeriesDBLazyReader() noexcept;
@@ -119,7 +119,7 @@ private:
     void notificationOfDBUpdate();
 
     /// Creates ::fwMedData::SeriesDB from a path
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
+    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

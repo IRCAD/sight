@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -72,7 +72,7 @@ void BitmapImageWriter::write()
 
     vtkSmartPointer< vtkImageWriter > writer;
 
-    std::string ext = ::boost::filesystem::extension(this->getFile());
+    std::string ext = this->getFile().extension().string();
     ::boost::algorithm::to_lower(ext);
 
     if(ext == ".bmp")

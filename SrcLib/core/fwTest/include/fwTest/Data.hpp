@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_DATA_HPP__
-#define __FWTEST_DATA_HPP__
+#pragma once
 
-#include "fwTest/Exception.hpp"
 #include "fwTest/config.hpp"
+#include "fwTest/Exception.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwTest
 {
@@ -34,12 +33,9 @@ namespace fwTest
 class FWTEST_CLASS_API Data
 {
 public:
-    FWTEST_API static boost::filesystem::path dir();
-
+    FWTEST_API static std::filesystem::path dir();
 
     static const std::string s_TEST_DATA_DIR_ENV_VAR;
 };
 
 } // namespace fwTest
-
-#endif // __FWTEST_DATA_HPP__

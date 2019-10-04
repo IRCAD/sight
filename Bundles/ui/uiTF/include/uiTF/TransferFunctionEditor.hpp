@@ -29,8 +29,7 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QObject>
 
 class QComboBox;
@@ -150,7 +149,7 @@ private Q_SLOTS:
 
 private:
 
-    typedef std::vector< ::boost::filesystem::path > PathContainerType;
+    typedef std::vector< std::filesystem::path > PathContainerType;
 
     QComboBox* m_pTransferFunctionPreset;
     QPushButton* m_deleteButton;

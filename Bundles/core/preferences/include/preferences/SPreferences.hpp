@@ -26,7 +26,7 @@
 
 #include <fwPreferences/IPreferences.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace preferences
 {
@@ -51,7 +51,7 @@ class PREFERENCES_CLASS_API SPreferences : public ::fwPreferences::IPreferences
 {
 
 public:
-    fwCoreServiceMacro(SPreferences, ::fwPreferences::IPreferences);
+    fwCoreServiceMacro(SPreferences, ::fwPreferences::IPreferences)
 
     ///Destructor
 
@@ -76,7 +76,7 @@ protected:
     PREFERENCES_API virtual void configuring() override;
 
     /// preference file
-    ::boost::filesystem::path m_prefFile;
+    std::filesystem::path m_prefFile;
 
 private:
 

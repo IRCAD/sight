@@ -45,7 +45,7 @@
 
 #include <fwVtkIO/SeriesDBReader.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 namespace ioVTK
 {
@@ -72,7 +72,7 @@ SSeriesDBReader::SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );

@@ -46,9 +46,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
 #include <gdcmReader.h>
@@ -95,8 +93,8 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
-    ::boost::filesystem::create_directories( path );
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
+    std::filesystem::create_directories( path );
 
     // Write ImageSeries
     ::fwGdcmIO::writer::Series::sptr writer = ::fwGdcmIO::writer::Series::New();
@@ -157,16 +155,16 @@ void DicomAnonymizerTest::anonymizeDICOMTest()
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPath)
+void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
 {
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
-                           ::boost::filesystem::exists(srcPath));
+                           std::filesystem::exists(srcPath));
 
     // Save old UID
     m_uidContainer.clear();
-    std::vector< ::boost::filesystem::path > oldFilenames;
+    std::vector< std::filesystem::path > oldFilenames;
     ::fwGdcmIO::helper::DicomSearch::searchRecursively(srcPath, oldFilenames, true);
-    for(::boost::filesystem::path filename: oldFilenames)
+    for(std::filesystem::path filename: oldFilenames)
     {
         // Try to open the file
         ::gdcm::Reader reader;
@@ -270,8 +268,8 @@ void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPa
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 
     // Write DicomSeries
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "anonymizedDicomFolderTest2";
-    ::boost::filesystem::create_directories(path);
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "anonymizedDicomFolderTest2";
+    std::filesystem::create_directories(path);
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
     writer->setObject((*seriesDB)[0]);
     writer->setFolder(path);
@@ -282,9 +280,9 @@ void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPa
     CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(path));
 
     // Read DICOM files
-    std::vector< ::boost::filesystem::path > filenames;
+    std::vector< std::filesystem::path > filenames;
     ::fwGdcmIO::helper::DicomSearch::searchRecursively(path, filenames, true);
-    for(::boost::filesystem::path filename : filenames)
+    for(std::filesystem::path filename : filenames)
     {
         this->testAnonymizedFile(filename);
     }
@@ -484,7 +482,7 @@ void processTag(const ::gdcm::DataSet& dataset, const std::string& actionCode,
 }
 //------------------------------------------------------------------------------
 
-void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& filename)
+void DicomAnonymizerTest::testAnonymizedFile(const std::filesystem::path& filename)
 {
     // Try to open the file
     ::gdcm::Reader reader;

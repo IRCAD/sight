@@ -26,7 +26,7 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/location/ILocation.hpp"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 fwCampAutoDeclareDataMacro((fwData)(location)(SingleFile), FWDATA_API);
 

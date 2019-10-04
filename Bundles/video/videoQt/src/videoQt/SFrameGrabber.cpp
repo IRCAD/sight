@@ -32,8 +32,7 @@
 
 #include <fwDataTools/helper/Image.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
+#include <filesystem>
 #include <QImage>
 #include <QSize>
 #include <QVideoFrame>

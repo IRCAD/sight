@@ -70,14 +70,14 @@ SPTR(QmlEngine) QmlEngine::getDefault()
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::loadMainComponent(const ::boost::filesystem::path& file)
+void QmlEngine::loadMainComponent(const std::filesystem::path& file)
 {
     m_engine->load(QUrl::fromLocalFile(QString::fromStdString(file.string())));
 }
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QSharedPointer<QQmlContext>& context)
+QObject* QmlEngine::createComponent(const std::filesystem::path& file, QSharedPointer<QQmlContext>& context)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
     return component.create(context.get());
@@ -85,7 +85,7 @@ QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QShar
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
+QObject* QmlEngine::createComponent(const std::filesystem::path& file)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
     return component.create(m_engine->rootContext());
@@ -93,7 +93,7 @@ QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::importModulePath(const ::boost::filesystem::path& path)
+void QmlEngine::importModulePath(const std::filesystem::path& path)
 {
     m_engine->addImportPath(QString::fromStdString(path.string()));
 }

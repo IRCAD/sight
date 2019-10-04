@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,10 +35,10 @@
 #include <fwMedData/DicomSeries.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.h>
 
+#include <filesystem>
 #include <gdcmMediaStorage.h>
 #include <gdcmReader.h>
 
@@ -48,20 +48,20 @@ namespace helper
 {
 // ----------------------------------------------------------------------------
 
-::boost::filesystem::path DicomDir::findDicomDir(const ::boost::filesystem::path& root)
+std::filesystem::path DicomDir::findDicomDir(const std::filesystem::path& root)
 {
-    ::boost::filesystem::path current = root;
+    std::filesystem::path current = root;
 
-    while(::boost::filesystem::exists(current))
+    while(std::filesystem::exists(current))
     {
-        ::boost::filesystem::path dicomDirPath = current / "dicomdir";
-        if(::boost::filesystem::exists(dicomDirPath) && !::boost::filesystem::is_directory(dicomDirPath))
+        std::filesystem::path dicomDirPath = current / "dicomdir";
+        if(std::filesystem::exists(dicomDirPath) && !std::filesystem::is_directory(dicomDirPath))
         {
             return dicomDirPath;
         }
 
         dicomDirPath = current / "DICOMDIR";
-        if(::boost::filesystem::exists(dicomDirPath) && !::boost::filesystem::is_directory(dicomDirPath))
+        if(std::filesystem::exists(dicomDirPath) && !std::filesystem::is_directory(dicomDirPath))
         {
             return dicomDirPath;
         }
@@ -69,14 +69,14 @@ namespace helper
         current = current.parent_path();
     }
 
-    return ::boost::filesystem::path();
+    return std::filesystem::path();
 
 }
 
 // ----------------------------------------------------------------------------
 
-void processDirInformation(const ::boost::filesystem::path& dicomdir,
-                           const ::boost::filesystem::path& rootDicomDirPath,
+void processDirInformation(const std::filesystem::path& dicomdir,
+                           const std::filesystem::path& rootDicomDirPath,
                            ::fwMedData::DicomSeries::sptr currentSeries,
                            std::map < std::string, ::fwMedData::DicomSeries::sptr >& dicomSeriesMap,
                            const ::fwLog::Logger::sptr& logger,
@@ -85,8 +85,8 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
                            double& p,
                            double& ptotal)
 {
-    SLM_ASSERT("You must specify a valid dicomdir.", ::boost::filesystem::exists(dicomdir)
-               && !::boost::filesystem::is_directory(dicomdir));
+    SLM_ASSERT("You must specify a valid dicomdir.", std::filesystem::exists(dicomdir)
+               && !std::filesystem::is_directory(dicomdir));
 
     // Try to read the file
     ::gdcm::Reader reader;
@@ -152,15 +152,15 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
                     std::replace( file.begin(), file.end(), '\\', '/');
                     SLM_WARN_IF("Dicom instance doesn't have a referenced file id.", file.empty());
 
-                    const ::boost::filesystem::path path = rootDicomDirPath / file;
-                    OSLM_WARN_IF("Unable to find path :" << path, !::boost::filesystem::exists(path));
+                    const std::filesystem::path path = rootDicomDirPath / file;
+                    OSLM_WARN_IF("Unable to find path :" << path, !std::filesystem::exists(path));
                     OSLM_WARN_IF("Dicomdir is badly formatted. Skipping path :" << path, !currentSeries);
 
                     if(!currentSeries || file.empty())
                     {
                         logger->warning("DICOMDIR file is badly formatted. Instances may be missing");
                     }
-                    else if(::boost::filesystem::exists(path))
+                    else if(std::filesystem::exists(path))
                     {
                         auto instanceNumber = ::boost::lexical_cast<unsigned int>(
                             ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020,
@@ -191,7 +191,7 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
 
                     std::replace(refFileID.begin(), refFileID.end(), '\\', '/');
                     auto refFilePath = dicomdir.parent_path() / refFileID;
-                    if(refFileID != "" && ::boost::filesystem::exists(refFilePath))
+                    if(refFileID != "" && std::filesystem::exists(refFilePath))
                     {
                         processDirInformation(refFilePath, rootDicomDirPath, currentSeries,
                                               dicomSeriesMap, logger, progress, cancel, p, ptotal);
@@ -215,14 +215,14 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
 
 // ----------------------------------------------------------------------------
 
-void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
+void DicomDir::retrieveDicomSeries(const std::filesystem::path& dicomdir,
                                    std::vector< SPTR(::fwMedData::DicomSeries) >& seriesDB,
                                    const ::fwLog::Logger::sptr& logger,
                                    std::function< void(std::uint64_t) > progress,
                                    std::function< bool() > cancel)
 {
-    SLM_ASSERT("You must specify a valid dicomdir.", ::boost::filesystem::exists(dicomdir)
-               && !::boost::filesystem::is_directory(dicomdir));
+    SLM_ASSERT("You must specify a valid dicomdir.", std::filesystem::exists(dicomdir)
+               && !std::filesystem::is_directory(dicomdir));
 
     // Try to read the file
     ::gdcm::Reader reader;

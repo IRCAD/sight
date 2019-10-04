@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __PCHCORE_PCH_HPP__
-#define __PCHCORE_PCH_HPP__
+#pragma once
 
 #include <fwCore/base.hpp>
 #include <fwCore/Demangler.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 
-#include <boost/filesystem.hpp>
 #include <boost/graph/named_graph.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/mpl/accumulate.hpp>
@@ -43,6 +41,8 @@
 #include <boost/mpl/vector.hpp>
 #include <boost/type_traits.hpp>
 
+#include <filesystem>
+
 #include <cstdint>
 #include <exception>
 #include <functional>
@@ -52,5 +52,3 @@
 #include <typeinfo>
 #include <unordered_map>
 #include <vector>
-
-#endif // __PCHCORE_PCH_HPP__

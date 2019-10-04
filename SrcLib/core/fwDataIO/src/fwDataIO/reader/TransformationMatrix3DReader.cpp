@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 
 #include <fwData/location/SingleFile.hpp>
 
-#include <boost/filesystem/convenience.hpp>
+#include <filesystem>
 
 #include <fstream>
 #include <iostream>
@@ -54,10 +54,10 @@ TransformationMatrix3DReader::~TransformationMatrix3DReader()
 void TransformationMatrix3DReader::read()
 {
     assert( ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path file =
+    std::filesystem::path file =
         ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-    assert( ::boost::filesystem::exists(file) );
+    assert( std::filesystem::exists(file) );
 
     std::ifstream inFile(file.string().c_str(), std::ifstream::in );
     assert( inFile.good() );

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 
 #include <fwDataTools/helper/ArrayGetter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <fstream>
 #include <iostream>
@@ -55,7 +55,7 @@ ArrayWriter::~ArrayWriter()
 
 void ArrayWriter::write()
 {
-    ::boost::filesystem::path file = getFile();
+    std::filesystem::path file = getFile();
 
     ::fwData::Array::csptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->getSizeInBytes();

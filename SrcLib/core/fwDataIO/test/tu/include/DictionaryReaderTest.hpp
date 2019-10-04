@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <boost/filesystem/operations.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
+
+#include <filesystem>
 
 namespace fwDataIO
 {
@@ -57,11 +57,11 @@ public:
 
 protected:
 
-    void generateDictionaryFileWithMissingSemiColon(::boost::filesystem::path dictionaryFile);
-    void generateDictionaryFileWithWrongCategory(::boost::filesystem::path dictionaryFile);
-    void generateDictionaryFileWithWrongClass(::boost::filesystem::path dictionaryFile);
-    void generateDictionaryFile(::boost::filesystem::path dictionaryFile);
-    ::boost::filesystem::path m_tmpDictionaryFilePath;
+    void generateDictionaryFileWithMissingSemiColon(std::filesystem::path dictionaryFile);
+    void generateDictionaryFileWithWrongCategory(std::filesystem::path dictionaryFile);
+    void generateDictionaryFileWithWrongClass(std::filesystem::path dictionaryFile);
+    void generateDictionaryFile(std::filesystem::path dictionaryFile);
+    std::filesystem::path m_tmpDictionaryFilePath;
 };
 
 } //namespace ut

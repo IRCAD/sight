@@ -70,7 +70,7 @@ SImageSeriesWriter::~SImageSeriesWriter() noexcept
 
 void SImageSeriesWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
@@ -121,8 +121,8 @@ void SImageSeriesWriter::updating()
         ::fwMedData::ImageSeries::csptr series = this->getInput< ::fwMedData::ImageSeries >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", series);
 
-        const ::boost::filesystem::path& folder = this->getFolder();
-        if(!::boost::filesystem::is_empty(folder))
+        const std::filesystem::path& folder = this->getFolder();
+        if(!std::filesystem::is_empty(folder))
         {
             ::fwGui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
@@ -164,7 +164,7 @@ void SImageSeriesWriter::updating()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder,
+void SImageSeriesWriter::saveImageSeries( const std::filesystem::path folder,
                                           ::fwMedData::ImageSeries::csptr series )
 {
     ::vtkGdcmIO::ImageSeriesWriter::sptr writer = ::vtkGdcmIO::ImageSeriesWriter::New();

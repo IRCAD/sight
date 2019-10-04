@@ -53,8 +53,8 @@
 #include <fwVtkIO/VtiImageReader.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+
+#include <filesystem>
 
 #include <chrono>
 #include <cstdint>
@@ -81,7 +81,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 void SImageReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     /* Initialize the available extensions for BitmapImageReader */
     std::vector<std::string> ext;
@@ -197,7 +197,7 @@ void SImageReader::updating()
 
 //------------------------------------------------------------------------------
 
-template< typename READER > typename READER::sptr configureReader(const ::boost::filesystem::path& imgFile )
+template< typename READER > typename READER::sptr configureReader(const std::filesystem::path& imgFile )
 {
     typename READER::sptr reader = READER::New();
     reader->setFile(imgFile);
@@ -206,13 +206,13 @@ template< typename READER > typename READER::sptr configureReader(const ::boost:
 
 //------------------------------------------------------------------------------
 
-bool SImageReader::loadImage( const ::boost::filesystem::path& imgFile,
+bool SImageReader::loadImage( const std::filesystem::path& imgFile,
                               const ::fwData::Image::sptr& img,
                               const SPTR(JobCreatedSignalType)& sigJobCreated)
 {
     bool ok = true;
 
-    std::string ext = ::boost::filesystem::extension(imgFile);
+    std::string ext = imgFile.extension().string();
     ::boost::algorithm::to_lower(ext);
 
     ::fwDataIO::reader::IObjectReader::sptr imageReader;

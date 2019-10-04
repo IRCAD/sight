@@ -53,7 +53,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/iostreams/categories.hpp>
 
 #include <exception>
@@ -121,7 +121,7 @@ SeriesDBLazyReader::~SeriesDBLazyReader()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SeriesDBLazyReader::createSeriesDB( const ::boost::filesystem::path& dicomDir )
+::fwMedData::SeriesDB::sptr SeriesDBLazyReader::createSeriesDB( const std::filesystem::path& dicomDir )
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
@@ -592,7 +592,7 @@ void SeriesDBLazyReader::read()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        for(::boost::filesystem::path file :  this->getFiles())
+        for(std::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }

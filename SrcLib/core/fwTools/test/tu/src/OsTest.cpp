@@ -27,7 +27,8 @@
 #include <fwCore/base.hpp>
 
 #include <boost/dll.hpp>
-#include <boost/filesystem.hpp>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::Os );
@@ -55,7 +56,7 @@ void Os::tearDown()
 
 void Os::getSharedLibraryPath()
 {
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
     const auto cwd = fs::current_path();
 
     {
@@ -63,11 +64,12 @@ void Os::getSharedLibraryPath()
         const auto execPath   = ::boost::dll::program_location().remove_filename();
 
 #if defined(WIN32)
-        const fs::path expectedPath = execPath / "fwCore.dll";
+        const fs::path expectedPath = fs::path(execPath.string()) / "fwCore.dll";
 #elif defined(__APPLE__)
-        const fs::path expectedPath = execPath.parent_path() / BUNDLE_LIB_PREFIX / "libfwCore.0.dylib";
+        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / BUNDLE_LIB_PREFIX /
+                                      "libfwCore.0.dylib";
 #else
-        const fs::path expectedPath = execPath.parent_path() / BUNDLE_LIB_PREFIX / "libfwCore.so.0";
+        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / BUNDLE_LIB_PREFIX / "libfwCore.so.0";
 #endif
         CPPUNIT_ASSERT_EQUAL(expectedPath, fwCorePath);
     }
@@ -90,7 +92,7 @@ void Os::getSharedLibraryPath()
 #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so";
 #endif
-    auto handle = ::boost::dll::shared_library(campPath);
+    auto handle = ::boost::dll::shared_library(campPath.string());
     CPPUNIT_ASSERT_MESSAGE( "Could not load camp for testing", handle );
 
     CPPUNIT_ASSERT_EQUAL(campPath, ::fwTools::os::getSharedLibraryPath("camp"));

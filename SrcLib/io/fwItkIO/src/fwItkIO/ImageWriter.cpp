@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
-#include <boost/filesystem.hpp>
-
+#include <filesystem>
 #include <itkImageFileWriter.h>
 
 fwDataIOWriterRegisterMacro( ::fwItkIO::ImageWriter );
@@ -127,13 +126,13 @@ void ImageWriter::write()
 
 std::string ImageWriter::extension()
 {
-    if ( getFile().empty() ||  ( getFile().string().find(".inr.gz") != std::string::npos ) )
+    if ( getFile().empty() || ( getFile().string().find(".inr.gz") != std::string::npos ) )
     {
         return ".inr.gz";
     }
     else
     {
-        return ::boost::filesystem::extension( getFile().leaf() );
+        return getFile().filename().extension().string();
     }
 }
 

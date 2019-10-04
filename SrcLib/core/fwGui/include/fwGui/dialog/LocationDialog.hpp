@@ -79,7 +79,7 @@ public:
     FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::sptr loc) override;
 
     /// Gets the default location for the dialog (from preferences or specified by user)
-    FWGUI_API const ::boost::filesystem::path getDefaultLocation() override;
+    FWGUI_API const std::filesystem::path getDefaultLocation() override;
 
     /// Save the specified default location for the dialog in preferences (if available)
     FWGUI_API void saveDefaultLocation(::fwData::location::ILocation::sptr loc) override;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,7 +86,7 @@ SeriesDBReader::FilenameContainerType SeriesDBReader::getFilenames()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        for(::boost::filesystem::path file: this->getFiles())
+        for(std::filesystem::path file: this->getFiles())
         {
             filenames.push_back(file.string());
         }

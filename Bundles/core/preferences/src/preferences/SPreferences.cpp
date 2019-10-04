@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace preferences
 {
@@ -82,10 +82,10 @@ void SPreferences::configuring()
 
 void SPreferences::load()
 {
-    if (::boost::filesystem::is_regular_file(m_prefFile))
+    if (std::filesystem::is_regular_file(m_prefFile))
     {
-        const ::boost::filesystem::path folderPath = m_prefFile.parent_path();
-        const ::boost::filesystem::path filename   = m_prefFile.filename();
+        const std::filesystem::path folderPath = m_prefFile.parent_path();
+        const std::filesystem::path filename   = m_prefFile.filename();
 
         ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
         SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", data);
@@ -112,8 +112,8 @@ void SPreferences::load()
 
 void SPreferences::save()
 {
-    const ::boost::filesystem::path folderPath = m_prefFile.parent_path();
-    const ::boost::filesystem::path filename   = m_prefFile.filename();
+    const std::filesystem::path folderPath = m_prefFile.parent_path();
+    const std::filesystem::path filename   = m_prefFile.filename();
 
     ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
     SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
@@ -127,8 +127,9 @@ void SPreferences::save()
     ::fwZip::IWriteArchive::sptr writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
     ::fwAtomsBoostIO::FormatType format       = ::fwAtomsBoostIO::JSON;
 
-    if(::boost::filesystem::exists(m_prefFile) && ::boost::filesystem::is_regular_file(m_prefFile)
-       && !(::boost::filesystem::status(m_prefFile).permissions() & ::boost::filesystem::owner_write) )
+    namespace fs = std::filesystem;
+    if( fs::exists(m_prefFile) && fs::is_regular_file(m_prefFile) &&
+        (fs::status(m_prefFile).permissions() & fs::perms::owner_write) != fs::perms::none)
     {
         SLM_ERROR("SPreference need write access to the file '"+m_prefFile.string()+"'."
                   "Please, change file permission.");

@@ -28,7 +28,7 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwDataIO
 {

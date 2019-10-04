@@ -28,7 +28,7 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace fwData
 {
@@ -71,7 +71,7 @@ public:
     FWDATAIO_API std::string extension() override;
 
     /// Returns the default dictionary path ( file in rc directory path of fwDataIO library )
-    FWDATAIO_API static ::boost::filesystem::path  getDefaultDictionaryPath();
+    FWDATAIO_API static std::filesystem::path  getDefaultDictionaryPath();
 };
 
 } // namespace reader

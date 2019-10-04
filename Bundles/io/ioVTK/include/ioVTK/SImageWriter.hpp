@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -80,7 +80,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SImageWriter,  ::fwIO::IWriter)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -94,7 +94,7 @@ public:
 
     /**
      * @brief Save a VTK image.
-     * @param[in] imgFile ::boost::filesystem::path.
+     * @param[in] imgFile std::filesystem::path.
      * @param[in] image std::shared_ptr< ::fwData::Image >.
      * @param[in] sigJobCreated signal emitted when the image is saved.
      * @return bool.
@@ -102,7 +102,7 @@ public:
      * This method is used to save an image using the file path.
      * Returns \b true if the image saving is a success and \b false if it fails
      */
-    IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile,
+    IOVTK_API static bool saveImage( const std::filesystem::path& imgFile,
                                      const CSPTR(::fwData::Image)& image,
                                      const SPTR(JobCreatedSignalType)& sigJobCreated);
 
@@ -157,7 +157,7 @@ private:
     /**
      * @brief Image path.
      */
-    ::boost::filesystem::path m_fsImgPath;
+    std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 };

@@ -36,9 +36,7 @@
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
@@ -211,14 +209,14 @@ void MeshTest::testExportImportSyntheticMesh()
 
     mesh1->adjustAllocatedMemory();
 
-    const ::boost::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
-                                               "testExportImportSyntheticMesh.vtk";
+    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+                                           "testExportImportSyntheticMesh.vtk";
 
     const ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     writer->write();
-    CPPUNIT_ASSERT(::boost::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
 
     const ::fwData::Mesh::sptr mesh2         = ::fwData::Mesh::New();
     const ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
@@ -228,7 +226,7 @@ void MeshTest::testExportImportSyntheticMesh()
 
     compare(mesh1, mesh2);
 
-    const bool suppr = ::boost::filesystem::remove(testFile);
+    const bool suppr = std::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);
 }
 

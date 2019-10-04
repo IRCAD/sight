@@ -37,7 +37,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <fstream>
 #include <iostream>
@@ -84,7 +84,7 @@ void TransformationMatrix3DWriterService::configuring()
 void TransformationMatrix3DWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save a transformation matrix" : m_windowTitle);

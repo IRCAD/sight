@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,9 +38,9 @@
 #include <fwMedData/Study.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/regex.h>
 
+#include <filesystem>
 #include <gdcmMediaStorage.h>
 #include <gdcmReader.h>
 
@@ -248,7 +248,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     DicomSeriesContainerType seriesDB;
 
     //Loop through every files available in the scanner
-    for(const ::boost::filesystem::path& dicomFile : filenames)
+    for(const std::filesystem::path& dicomFile : filenames)
     {
         auto filename = dicomFile.string();
 
@@ -358,7 +358,7 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
 void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
                                const ::gdcm::Scanner& scanner,
-                               const ::boost::filesystem::path& filename)
+                               const std::filesystem::path& filename)
 {
     ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::sptr();
 

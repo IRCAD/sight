@@ -108,7 +108,7 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
                                               m_progressCallback, m_cancelRequestedCallback);
 
     // Load Segmented Property Registry
-    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
+    const std::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
         "fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {

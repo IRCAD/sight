@@ -226,7 +226,7 @@ void SeriesDB::readDicom()
 
     // DICOMDIR
     auto dicomdir = ::fwGdcmIO::helper::DicomDir::findDicomDir(this->getFolder());
-    if(m_isDicomdirActivated && ::boost::filesystem::exists(dicomdir))
+    if(m_isDicomdirActivated && std::filesystem::exists(dicomdir))
     {
         // Create Dicom Series
         ::fwGdcmIO::helper::DicomDir::retrieveDicomSeries(dicomdir,
@@ -246,12 +246,12 @@ void SeriesDB::readDicom()
     m_dicomdirFileLookupJob->finish();
 
     // Regular read
-    if(!m_isDicomdirActivated || !::boost::filesystem::exists(dicomdir) || m_dicomSeriesContainer.empty())
+    if(!m_isDicomdirActivated || !std::filesystem::exists(dicomdir) || m_dicomSeriesContainer.empty())
     {
         m_readerJob->doneWork(0);
 
         // Recursively search for dicom files
-        std::vector< ::boost::filesystem::path > filenames;
+        std::vector< std::filesystem::path > filenames;
         ::fwGdcmIO::helper::DicomSearch::searchRecursively(
             this->getFolder(), filenames, true, m_regularFileLookupJob);
 
@@ -332,7 +332,7 @@ void SeriesDB::readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSe
 bool SeriesDB::isDicomDirAvailable()
 {
     auto dicomdir = ::fwGdcmIO::helper::DicomDir::findDicomDir(this->getFolder());
-    return ::boost::filesystem::exists(dicomdir);
+    return std::filesystem::exists(dicomdir);
 }
 
 //------------------------------------------------------------------------------

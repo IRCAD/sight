@@ -23,13 +23,14 @@
 #pragma once
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/logic/tribool.hpp>
 
 #include <camp/camptype.hpp>
 #include <camp/type.hpp>
 #include <camp/valuemapper.hpp>
+
+#include <filesystem>
 
 namespace camp_ext
 {
@@ -187,9 +188,9 @@ struct ValueMapper< ::boost::posix_time::ptime >
 //-----------------------------------------------------------------------------
 
 template <>
-struct ValueMapper< ::boost::filesystem::path >
+struct ValueMapper< std::filesystem::path >
 {
-    typedef ::boost::filesystem::path ReturnType;
+    typedef std::filesystem::path ReturnType;
     static const int type = camp::stringType;
     //------------------------------------------------------------------------------
 
@@ -232,7 +233,7 @@ struct ValueMapper< ::boost::filesystem::path >
 
     static ReturnType from(const std::string& source)
     {
-        return ::boost::filesystem::path(source);
+        return std::filesystem::path(source);
     }
 };
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
 #include <vtkPointData.h>
@@ -145,8 +143,8 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 template<typename W, typename R>
 void writerTest(const std::string& imagetype, const std::string& filename)
 {
-    const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() /
-                                             ::boost::filesystem::path(filename));
+    const std::filesystem::path testFile(::fwTools::System::getTemporaryFolder() /
+                                         std::filesystem::path(filename));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type(imagetype));
@@ -157,7 +155,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     writer->write();
 
     CPPUNIT_ASSERT_MESSAGE( "test on <" + filename + ">  of type <" + imagetype + "> Failed ",
-                            ::boost::filesystem::exists(testFile) );
+                            std::filesystem::exists(testFile) );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     typename R::sptr reader = R::New();
@@ -165,7 +163,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     reader->setFile(testFile);
     reader->read();
 
-    ::boost::filesystem::remove(testFile);
+    std::filesystem::remove(testFile);
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + filename + "> of type <" + imagetype + "> Failed ",
                                   image->getType(), image2->getType() );
@@ -187,11 +185,11 @@ void writerTest(const std::string& imagetype, const std::string& filename)
 
 void imageFromVTKTest(const std::string& imagename, const std::string& type)
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() /
-                                               ::boost::filesystem::path(imagename) );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() /
+                                           std::filesystem::path(imagename) );
 
-    CPPUNIT_ASSERT(::boost::filesystem::exists(imagePath));
-    CPPUNIT_ASSERT(::boost::filesystem::is_regular_file(imagePath));
+    CPPUNIT_ASSERT(std::filesystem::exists(imagePath));
+    CPPUNIT_ASSERT(std::filesystem::is_regular_file(imagePath));
 
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     reader->SetFileName(imagePath.string().c_str());
@@ -231,10 +229,10 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
 
 void testVtkReader(std::string imagetype)
 {
-    const ::boost::filesystem::path testFile(::fwTest::Data::dir() / ("sight/image/vtk/img-" + imagetype + ".vtk"));
+    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/image/vtk/img-" + imagetype + ".vtk"));
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
-                           ::boost::filesystem::exists(testFile));
+                           std::filesystem::exists(testFile));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
@@ -360,10 +358,10 @@ void ImageTest::testFromVtk()
 
 void ImageTest::mhdReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
@@ -389,17 +387,17 @@ void ImageTest::mhdReaderTest()
 
 void ImageTest::mhdWriterTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
-    const ::boost::filesystem::path zRawPath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
+    const std::filesystem::path zRawPath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + zRawPath.string() + "' does not exist",
-                           ::boost::filesystem::exists(zRawPath));
+                           std::filesystem::exists(zRawPath));
 
-    const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
-    const ::boost::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
+    const std::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
+    const std::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
     ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
@@ -412,14 +410,14 @@ void ImageTest::mhdWriterTest()
     writer->setFile(testFile);
     writer->write();
 
-    CPPUNIT_ASSERT( ::boost::filesystem::exists(testFile) );
-    CPPUNIT_ASSERT( ::boost::filesystem::exists(testZRawFile) );
+    CPPUNIT_ASSERT( std::filesystem::exists(testFile) );
+    CPPUNIT_ASSERT( std::filesystem::exists(testZRawFile) );
 
     CPPUNIT_ASSERT( ::fwTest::File::contentEquals(imagePath, testFile) );
     CPPUNIT_ASSERT( ::fwTest::File::contentEquals(zRawPath, testZRawFile) );
 
-    ::boost::filesystem::remove(testFile);
-    ::boost::filesystem::remove(testZRawFile);
+    std::filesystem::remove(testFile);
+    std::filesystem::remove(testZRawFile);
 
     writerTest< ::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader>("int8", "imageTest.mhd");
     writerTest< ::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader>("uint8", "imageTest.mhd");
@@ -430,18 +428,18 @@ void ImageTest::mhdWriterTest()
     // writerTest< ::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader>("int64", "imageTest.mhd");
     // writerTest< ::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader>("uint64", "imageTest.mhd");
 
-    const ::boost::filesystem::path zFile(::fwTools::System::getTemporaryFolder() / "imagetestfile.zraw");
-    ::boost::filesystem::remove(zFile);
+    const std::filesystem::path zFile(::fwTools::System::getTemporaryFolder() / "imagetestfile.zraw");
+    std::filesystem::remove(zFile);
 }
 
 // ------------------------------------------------------------------------------
 
 void ImageTest::vtiReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vti/BostonTeapot.vti" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vti/BostonTeapot.vti" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     ::fwData::Image::sptr image            = ::fwData::Image::New();
     ::fwVtkIO::VtiImageReader::sptr reader = ::fwVtkIO::VtiImageReader::New();
@@ -483,10 +481,10 @@ void ImageTest::vtiWriterTest()
 
 void ImageTest::vtkReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     ::fwData::Image::sptr image         = ::fwData::Image::New();
     ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();

@@ -32,8 +32,9 @@
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/shared_array.hpp>
+
+#include <filesystem>
 
 #include <vector>
 

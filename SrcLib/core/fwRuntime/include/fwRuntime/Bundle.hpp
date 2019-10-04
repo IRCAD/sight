@@ -29,7 +29,7 @@
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <map>
 #include <set>
@@ -298,14 +298,14 @@ struct FWRUNTIME_CLASS_API Bundle : public std::enable_shared_from_this< Bundle 
      *
      * @return  a path representing the bundle location
      */
-    FWRUNTIME_API const ::boost::filesystem::path& getLibraryLocation() const;
+    FWRUNTIME_API const std::filesystem::path& getLibraryLocation() const;
 
     /**
      * @brief   Retrieves the bundle location.
      *
      * @return  a path representing the bundle location
      */
-    FWRUNTIME_API const ::boost::filesystem::path& getResourcesLocation() const;
+    FWRUNTIME_API const std::filesystem::path& getResourcesLocation() const;
 
     /**
      * @brief   Retrieves the class representing the bundle executable part.
@@ -424,7 +424,7 @@ struct FWRUNTIME_CLASS_API Bundle : public std::enable_shared_from_this< Bundle 
          * @todo        test parameters validity
          *
          */
-        Bundle( const ::boost::filesystem::path& location,
+        Bundle( const std::filesystem::path& location,
                 const std::string& id,
                 const std::string& version );
 
@@ -439,7 +439,7 @@ struct FWRUNTIME_CLASS_API Bundle : public std::enable_shared_from_this< Bundle 
          * @todo        test parameters validity
          *
          */
-        Bundle( const ::boost::filesystem::path& location,
+        Bundle( const std::filesystem::path& location,
                 const std::string& id,
                 const std::string& version,
                 const std::string& pluginClass );
@@ -453,8 +453,8 @@ struct FWRUNTIME_CLASS_API Bundle : public std::enable_shared_from_this< Bundle 
         static SPTR( Bundle )           m_loadingBundle;    ///< a pointer to the bundle that is currently loading its
                                                             // dynamic libaries
 
-        ::boost::filesystem::path m_libraryLocation;        ///< the path to the bundle libraries
-        const ::boost::filesystem::path m_resourcesLocation;  ///< the path to the bundle resources
+        std::filesystem::path m_libraryLocation;        ///< the path to the bundle libraries
+        const std::filesystem::path m_resourcesLocation;  ///< the path to the bundle resources
         const std::string m_identifier;                     ///< a string containing the bundle identifier
         const Version m_version;                            ///< defines the version of the bundle
         const std::string m_class;                          ///< a string containing the bundle's plugin class name

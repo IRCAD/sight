@@ -53,8 +53,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwGdcmIO::ut::WriterReaderTest );
@@ -114,9 +113,9 @@ void WriterReaderTest::writeReadImageSeriesTest()
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
-    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
 
-    ::boost::filesystem::create_directories( PATH );
+    std::filesystem::create_directories( PATH );
 
     ::fwGdcmIO::writer::Series::sptr writer = ::fwGdcmIO::writer::Series::New();
     writer->setObject(imgSeries);
@@ -131,7 +130,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    ::boost::filesystem::remove_all( PATH );
+    std::filesystem::remove_all( PATH );
 
     // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
@@ -156,9 +155,9 @@ void WriterReaderTest::writeReadSeriesDBTest()
     ::fwMedData::SeriesDB::sptr seriesDB;
     seriesDB = this->createSeriesDB();
 
-    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
 
-    ::boost::filesystem::create_directories( PATH );
+    std::filesystem::create_directories( PATH );
 
     ::fwGdcmIO::writer::SeriesDB::sptr writer = ::fwGdcmIO::writer::SeriesDB::New();
     writer->setObject(seriesDB);
@@ -173,7 +172,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    ::boost::filesystem::remove_all( PATH );
+    std::filesystem::remove_all( PATH );
 
     // FIXME : GDCM reader trim string values so this test cannot pass.
 //    CPPUNIT_ASSERT(::fwTest::helper::compare(seriesDB, sdb));

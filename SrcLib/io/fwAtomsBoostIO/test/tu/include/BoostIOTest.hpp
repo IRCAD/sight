@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -256,12 +256,12 @@ protected:
 
     void readProcess(SequenceGenerator& gen,
                      ::fwZip::IReadArchive::sptr readArchive,
-                     const ::boost::filesystem::path& rootFilename,
+                     const std::filesystem::path& rootFilename,
                      const ::fwAtomsBoostIO::FormatType& formatType = ::fwAtomsBoostIO::JSON);
 
     void writeProcess(SequenceGenerator& gen,
                       ::fwZip::IWriteArchive::sptr writeArchive,
-                      const ::boost::filesystem::path& rootFilename,
+                      const std::filesystem::path& rootFilename,
                       ::fwAtomsBoostIO::FormatType format );
 };
 

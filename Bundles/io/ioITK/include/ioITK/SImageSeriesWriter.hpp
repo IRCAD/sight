@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 

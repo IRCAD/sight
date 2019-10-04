@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp> // Definition of abstract reader class
 
-#include <boost/filesystem/path.hpp> // Used to save the file system path of loaded image
+#include <filesystem> // Used to save the file system path of loaded image
 
 // Pre-definition of ::fwData::Image to avoid inclusion file
 namespace fwData
@@ -50,7 +50,7 @@ namespace ioVTK
  * connected to a SJobBar).
  *
  * @section Slots Slots
- * - \b readFile(::boost::filesystem::path) : read the given file
+ * - \b readFile(std::filesystem::path) : read the given file
  *
  * @section XML XML Configuration
  *
@@ -96,7 +96,7 @@ public:
      * @param[out] image new empty image that will contain image loaded, if reading process is a success.
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
-    IOVTK_API static bool loadImage( const ::boost::filesystem::path& vtkFile,
+    IOVTK_API static bool loadImage( const std::filesystem::path& vtkFile,
                                      const SPTR(::fwData::Image)& image,
                                      const SPTR(JobCreatedSignalType)& sigJobCreated);
 
@@ -130,7 +130,7 @@ private:
     bool m_bServiceIsConfigured;
 
     /// Image path, location of image on filesystem.
-    ::boost::filesystem::path m_fsImgPath;
+    std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

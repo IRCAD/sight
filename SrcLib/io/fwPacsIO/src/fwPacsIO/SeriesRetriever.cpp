@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,10 +30,10 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
+
+#include <filesystem>
 
 namespace fwPacsIO
 {
@@ -65,9 +65,9 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
 
     //Creating folder
     m_path = ::fwTools::System::getTemporaryFolder() / "dicom/";
-    if (!::boost::filesystem::exists(m_path))
+    if (!std::filesystem::exists(m_path))
     {
-        ::boost::filesystem::create_directories(m_path);
+        std::filesystem::create_directories(m_path);
     }
 
     //Configure network connection
@@ -75,9 +75,9 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
     this->setPort(applicationport);
 
     // Load configuration
-    ::boost::filesystem::path cfgPath =
+    std::filesystem::path cfgPath =
         ::fwRuntime::getLibraryResourceFilePath("fwPacsIO-" FWPACSIO_VER "/storescp.cfg");
-    SLM_ASSERT("storescp.cfg not found !", ::boost::filesystem::exists(cfgPath));
+    SLM_ASSERT("storescp.cfg not found !", std::filesystem::exists(cfgPath));
     this->loadAssociationCfgFile(cfgPath.string().c_str());
     this->setAndCheckAssociationProfile("Default");
 
@@ -152,10 +152,10 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message* incomingMsg,
             }
 
             //Create Folder
-            ::boost::filesystem::path seriesPath = ::boost::filesystem::path(m_path.string() + seriesID.c_str() + "/");
-            if (!::boost::filesystem::exists(seriesPath))
+            std::filesystem::path seriesPath = std::filesystem::path(m_path.string() + seriesID.c_str() + "/");
+            if (!std::filesystem::exists(seriesPath))
             {
-                ::boost::filesystem::create_directories(seriesPath);
+                std::filesystem::create_directories(seriesPath);
             }
 
             //Save the file in the specified folder

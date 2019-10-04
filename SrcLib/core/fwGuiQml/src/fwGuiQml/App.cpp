@@ -28,10 +28,9 @@
 
 #include <fwTools/Os.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <filesystem>
 #include <locale.h>
 #include <QCursor>
 

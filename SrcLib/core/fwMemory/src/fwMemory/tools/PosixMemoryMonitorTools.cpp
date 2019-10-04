@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,18 +26,17 @@
 
 #include <fwCore/base.hpp>
 
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
+
+#include <fcntl.h>
+#include <filesystem>
 
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/types.h>
+
+#include <unistd.h>
 
 #include <cctype>
 #include <cerrno>
@@ -371,7 +370,7 @@ void PosixMemoryMonitorTools::getStatusOfPid( int pid, Status& stat)
 
 void PosixMemoryMonitorTools::getAllStatus( Status& allStat )
 {
-    ::boost::filesystem::path path("/proc");
+    std::filesystem::path path("/proc");
     ::boost::regex e("[0-9]+");
 
     allStat.VmPeak = 0;
@@ -385,15 +384,15 @@ void PosixMemoryMonitorTools::getAllStatus( Status& allStat )
     allStat.VmLib  = 0;
     allStat.VmPTE  = 0;
 
-    for(    ::boost::filesystem::directory_iterator it(path);
-            it != ::boost::filesystem::directory_iterator();
+    for(    std::filesystem::directory_iterator it(path);
+            it != std::filesystem::directory_iterator();
             ++it )
     {
 
-        if( ::boost::filesystem::is_directory(*it) )
+        if( std::filesystem::is_directory(*it) )
         {
-            ::boost::filesystem::path tmpPath = (*it);
-            std::string dirName = tmpPath.filename().string();
+            std::filesystem::path tmpPath = (*it);
+            std::string dirName           = tmpPath.filename().string();
             if ( regex_match(dirName, e) )
             {
                 int pid = strtoul(dirName.c_str(), NULL, 0);
@@ -418,7 +417,7 @@ void PosixMemoryMonitorTools::getAllStatus( Status& allStat )
 
 void PosixMemoryMonitorTools::printAllStatus()
 {
-    ::boost::filesystem::path path("/proc");
+    std::filesystem::path path("/proc");
     ::boost::regex e("[0-9]+");
     int oToMo = 1024 * 1024;
 
@@ -433,15 +432,15 @@ void PosixMemoryMonitorTools::printAllStatus()
     std::uint64_t totalVmLib  = 0;
     std::uint64_t totalVmPTE  = 0;
 
-    for(    ::boost::filesystem::directory_iterator it(path);
-            it != ::boost::filesystem::directory_iterator();
+    for(    std::filesystem::directory_iterator it(path);
+            it != std::filesystem::directory_iterator();
             ++it )
     {
 
-        if( ::boost::filesystem::is_directory(*it) )
+        if( std::filesystem::is_directory(*it) )
         {
-            ::boost::filesystem::path tmpPath = (*it);
-            std::string dirName = tmpPath.filename().string();
+            std::filesystem::path tmpPath = (*it);
+            std::string dirName           = tmpPath.filename().string();
             if ( regex_match(dirName, e) )
             {
                 int pid = strtoul(dirName.c_str(), NULL, 0);

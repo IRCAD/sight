@@ -26,7 +26,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace uiGenericQt
 {
@@ -39,7 +39,7 @@ namespace action
 class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(ShowHelpContents,  ::fwGui::IActionSrv);
+    fwCoreServiceMacro(ShowHelpContents,  ::fwGui::IActionSrv)
     UIGENERICQT_API ShowHelpContents() noexcept;
 
     UIGENERICQT_API virtual ~ShowHelpContents() noexcept;
@@ -80,7 +80,7 @@ private:
     /**
      * @brief help files path.
      */
-    ::boost::filesystem::path m_fsHelpPath;
+    std::filesystem::path m_fsHelpPath;
 };
 
 } // namespace action

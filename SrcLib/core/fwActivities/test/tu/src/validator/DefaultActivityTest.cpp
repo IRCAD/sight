@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,8 +73,8 @@ void DefaultActivityTest::setUp()
     FwCoreNotUsedMacro(m_fwMedDataCampVersion);
 
     // Set up context before running a test.
-    ::boost::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_validator");
-    m_bundle                         = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
+    std::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_validator");
+    m_bundle = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     ::fwRuntime::Bundle::ExtensionContainer extensionsSet( m_bundle->extensionsBegin(), m_bundle->extensionsEnd());
     std::vector< SPTR( ::fwRuntime::Extension ) > extensions(extensionsSet.begin(), extensionsSet.end());

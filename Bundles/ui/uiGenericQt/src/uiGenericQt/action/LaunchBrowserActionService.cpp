@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,9 +26,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QUrl>
@@ -88,7 +86,7 @@ void LaunchBrowserActionService::updating()
 
     if(url.isRelative()) // no scheme
     {
-        ::boost::filesystem::path path(QCoreApplication::applicationDirPath().toStdString());
+        std::filesystem::path path(QCoreApplication::applicationDirPath().toStdString());
         path  = path.parent_path(); // install folder path
         path /= url.path().toStdString();
 

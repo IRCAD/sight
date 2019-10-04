@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_UT_DICOMSERIESWRITERTEST_HPP__
-#define __FWGDCMIO_UT_DICOMSERIESWRITERTEST_HPP__
+#pragma once
 
 #include <fwCore/base.hpp>
 
@@ -68,7 +67,7 @@ private:
      * @param anonymized if true, further attributes related to anonymisation are not compared.
      */
     void checkDicomSeries(
-        const ::boost::filesystem::path& p, bool anonymized = false);
+        const std::filesystem::path& p, bool anonymized = false);
 
     ::fwMedData::DicomSeries::sptr m_srcDicomSeries;
 
@@ -76,5 +75,3 @@ private:
 
 } // namespace ut
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_UT_DICOMSERIESWRITERTEST_HPP__

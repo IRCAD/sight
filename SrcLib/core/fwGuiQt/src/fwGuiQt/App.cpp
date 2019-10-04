@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,11 +28,10 @@
 
 #include <fwTools/Os.hpp>
 
-#include <locale.h>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
+
+#include <filesystem>
+#include <locale.h>
 
 #include <iostream>
 #include <sstream>
@@ -87,4 +86,3 @@ void App::onExit()
 //-----------------------------------------------------------------------------
 
 } // namespace fwGuiQt
-

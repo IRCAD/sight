@@ -28,7 +28,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -84,7 +84,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesObjWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SModelSeriesObjWriter,  ::fwIO::IWriter)
 
     /**
      * @brief Configure the mesh path.
@@ -145,7 +145,7 @@ private:
     /**
      * @brief Mesh path.
      */
-    ::boost::filesystem::path m_fsMeshPath;
+    std::filesystem::path m_fsMeshPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

@@ -28,7 +28,7 @@
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
@@ -59,7 +59,7 @@
 //------------------------------------------------------------------------------
 
 namespace po = ::boost::program_options;
-namespace fs = ::boost::filesystem;
+namespace fs = std::filesystem;
 
 typedef fs::path PathType;
 typedef std::vector< PathType > PathListType;
@@ -90,11 +90,11 @@ std::pair<std::string, std::string> parsePns(const std::string& s)
 }
 #endif
 
-/// Wrapper for boost::filesystem::absolute, needed by clang 3.0 in use with
+/// Wrapper for std::filesystem::absolute, needed by clang 3.0 in use with
 /// std::transform
 PathType absolute( const PathType& path )
 {
-    return fs::absolute(path).normalize();
+    return fs::canonical(path);
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
         logFileStream.close();
         if (!logFileExists)
         {
-            ::boost::system::error_code err;
+            std::error_code err;
             PathType sysTmp = fs::temp_directory_path(err);
             if(err.value() != 0)
             {
@@ -277,10 +277,10 @@ int main(int argc, char* argv[])
 
     // Check if path exist
     OSLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
-                       rwd), !::boost::filesystem::exists(rwd.string()) );
+                       rwd), !std::filesystem::exists(rwd.string()) );
 
     OSLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
-                       profileFile), !::boost::filesystem::exists(profileFile.string()));
+                       profileFile), !std::filesystem::exists(profileFile.string()));
 
     std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
@@ -310,7 +310,7 @@ int main(int argc, char* argv[])
     for(const fs::path& bundlePath :  bundlePaths )
     {
         OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
-                           bundlePath), !::boost::filesystem::exists(bundlePath.string()) );
+                           bundlePath), !std::filesystem::exists(bundlePath.string()) );
     }
 
 #ifdef _WIN32

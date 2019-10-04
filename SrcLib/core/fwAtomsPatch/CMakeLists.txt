@@ -1,7 +1,7 @@
 fwLoadProperties()
 
 find_package(CAMP QUIET REQUIRED)
-find_package(Boost QUIET COMPONENTS log log_setup filesystem REQUIRED)
+find_package(Boost QUIET COMPONENTS log log_setup REQUIRED)
 
 fwForwardInclude(
     ${CAMP_INCLUDE_DIR}

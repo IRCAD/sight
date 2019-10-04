@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,8 +29,7 @@
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/Runtime.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::AppConfigParametersTest );
@@ -49,8 +48,8 @@ void AppConfigParametersTest::setUp()
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultBundles();
 
-    ::boost::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
-    CPPUNIT_ASSERT(::boost::filesystem::exists(location));
+    std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
+    CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     runtime->addBundles(location);
     CPPUNIT_ASSERT(runtime->bundlesBegin() != runtime->bundlesEnd());

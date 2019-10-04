@@ -67,7 +67,7 @@ SSurfaceSegmentationWriter::~SSurfaceSegmentationWriter() noexcept
 
 void SSurfaceSegmentationWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
@@ -114,8 +114,8 @@ void SSurfaceSegmentationWriter::updating()
 {
     if( this->hasLocationDefined() )
     {
-        const ::boost::filesystem::path& folder = this->getFolder();
-        if(!::boost::filesystem::is_empty(folder))
+        const std::filesystem::path& folder = this->getFolder();
+        if(!std::filesystem::is_empty(folder))
         {
             ::fwGui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
@@ -149,7 +149,7 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         /* Build up the filename */
-        ::boost::filesystem::path outputPath = this->getFolder() / "imSeg";
+        std::filesystem::path outputPath = this->getFolder() / "imSeg";
 
         /* Write the data */
         ::fwGui::Cursor cursor;
@@ -165,7 +165,7 @@ void SSurfaceSegmentationWriter::updating()
 
 //------------------------------------------------------------------------------
 
-void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesystem::path filename,
+void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem::path filename,
                                                           const ::fwMedData::ModelSeries::csptr& model)
 {
     ::fwGdcmIO::writer::SurfaceSegmentation::sptr writer = ::fwGdcmIO::writer::SurfaceSegmentation::New();

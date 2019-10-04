@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,9 @@
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
-#include <boost/filesystem/path.hpp>
 #include <boost/regex.hpp>
+
+#include <filesystem>
 
 namespace fwRuntime
 {
@@ -49,7 +50,7 @@ struct Native
      *
      * @param[in]   modulePath      a path to the module to manage
      */
-    Native( const boost::filesystem::path& modulePath) noexcept;
+    Native( const std::filesystem::path& modulePath) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
@@ -91,7 +92,7 @@ struct Native
      *
      * @see         getPath
      */
-    const boost::filesystem::path getFullPath( const bool _bMustBeFile = false ) const;
+    const std::filesystem::path getFullPath( const bool _bMustBeFile = false ) const;
 
     /**
      * @brief   Retrieves the file path of the native library.
@@ -100,7 +101,7 @@ struct Native
      *
      * @return  a string containing the native module file path
      */
-    const boost::filesystem::path getPath() const;
+    const std::filesystem::path getPath() const;
 
     /**
      * @brief       Set the bundle the library is attached to.
@@ -121,12 +122,12 @@ struct Native
          * @brief  Returns the location of bundle library
          * @return The path of bundle library.
          */
-        const ::boost::filesystem::path getBundleLocation() const;
+        const std::filesystem::path getBundleLocation() const;
 
         /**
          * @brief   The path to the module to load.
          */
-        const boost::filesystem::path m_modulePath;
+        const std::filesystem::path m_modulePath;
 
         /**
          * @brief   A pointer to the bundle the library is attached to.

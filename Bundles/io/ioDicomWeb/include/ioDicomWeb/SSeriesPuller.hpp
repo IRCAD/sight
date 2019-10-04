@@ -32,7 +32,7 @@
 
 #include <fwServices/IController.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwMedData
 {
@@ -167,7 +167,7 @@ private:
     int m_serverPort{4242};
 
     /// DICOM Folder path
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 
 };
 

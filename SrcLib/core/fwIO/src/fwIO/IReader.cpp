@@ -75,7 +75,7 @@ std::vector< std::string > IReader::getSupportedExtensions()
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path& IReader::getFile() const
+const std::filesystem::path& IReader::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::fwIO::FILE));
     FW_RAISE_IF("Exactly one file must be defined in location", m_locations.size() != 1);
@@ -84,7 +84,7 @@ const ::boost::filesystem::path& IReader::getFile() const
 
 //-----------------------------------------------------------------------------
 
-void IReader::setFile( const ::boost::filesystem::path& file)
+void IReader::setFile( const std::filesystem::path& file)
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::fwIO::FILE));
     m_locations.clear();
@@ -110,7 +110,7 @@ void IReader::setFiles(const ::fwIO::LocationsType& files)
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path& IReader::getFolder() const
+const std::filesystem::path& IReader::getFolder() const
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::fwIO::FOLDER));
     FW_RAISE_IF("Exactly one folder must be define in location", m_locations.size() != 1 );
@@ -119,7 +119,7 @@ const ::boost::filesystem::path& IReader::getFolder() const
 
 //-----------------------------------------------------------------------------
 
-void IReader::setFolder(const ::boost::filesystem::path& folder)
+void IReader::setFolder(const std::filesystem::path& folder)
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::fwIO::FOLDER));
     m_locations.clear();
@@ -128,7 +128,7 @@ void IReader::setFolder(const ::boost::filesystem::path& folder)
 
 //-----------------------------------------------------------------------------
 
-void IReader::setFileFolder(boost::filesystem::path folder)
+void IReader::setFileFolder(std::filesystem::path folder)
 {
     FW_RAISE_IF("This reader doesn't manage file or files",
                 !(this->getIOPathType() & ::fwIO::FILE) && !(this->getIOPathType() & ::fwIO::FILES));
@@ -180,7 +180,7 @@ void IReader::configuring()
         if (config.count("file") == 1)
         {
             const std::string file = config.get<std::string>("file");
-            this->setFile(::boost::filesystem::path(file));
+            this->setFile(std::filesystem::path(file));
         }
         else if (config.count("resource") == 1)
         {
@@ -200,7 +200,7 @@ void IReader::configuring()
         for (auto fileCfg = filesCfg.first; fileCfg != filesCfg.second; ++fileCfg)
         {
             const std::string location = fileCfg->second.get_value<std::string>();
-            locations.push_back(::boost::filesystem::path(location));
+            locations.push_back(std::filesystem::path(location));
         }
 
         const auto resourcesCfg = config.equal_range("resource");
@@ -219,7 +219,7 @@ void IReader::configuring()
         if (config.count("folder") == 1)
         {
             const std::string folder = config.get<std::string>("folder");
-            this->setFolder(::boost::filesystem::path(folder));
+            this->setFolder(std::filesystem::path(folder));
         }
         else if (config.count("resource") == 1)
         {
@@ -260,7 +260,7 @@ bool IReader::hasFailed() const
 
 //-----------------------------------------------------------------------------
 
-void IReader::readFolder(::boost::filesystem::path folder)
+void IReader::readFolder(std::filesystem::path folder)
 {
     this->setFolder(folder);
     this->updating();
@@ -268,7 +268,7 @@ void IReader::readFolder(::boost::filesystem::path folder)
 
 //-----------------------------------------------------------------------------
 
-void IReader::readFile(::boost::filesystem::path file)
+void IReader::readFile(std::filesystem::path file)
 {
     this->setFile(file);
     this->updating();

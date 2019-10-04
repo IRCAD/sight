@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ GzArrayReader::~GzArrayReader()
 void GzArrayReader::read()
 {
     assert( ::fwData::location::SingleFile::dynamicCast(m_location) );
-    ::boost::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
+    std::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
 
     assert( file.empty() == false );
 

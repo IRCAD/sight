@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,9 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Win32::Win32( const boost::filesystem::path & modulePath ) noexcept :
+Win32::Win32( const std::filesystem::path& modulePath ) noexcept :
     Native(modulePath),
-    m_handle  ( 0 )
+    m_handle( 0 )
 {
 }
 
@@ -49,7 +49,7 @@ bool Win32::isLoaded() const noexcept
 
 //------------------------------------------------------------------------------
 
-void * Win32::getSymbol( const std::string& name ) const
+void* Win32::getSymbol( const std::string& name ) const
 {
     FARPROC symbol;
 
@@ -106,6 +106,5 @@ void Win32::unload()
 } // namespace dl
 
 } // namespace fwRuntime
-
 
 #endif // #ifdef _WIN32

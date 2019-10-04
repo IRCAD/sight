@@ -29,7 +29,7 @@
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwJobs
 {

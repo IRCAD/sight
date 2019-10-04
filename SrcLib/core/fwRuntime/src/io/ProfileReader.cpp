@@ -30,7 +30,7 @@
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <libxml/parser.h>
 
@@ -56,14 +56,13 @@ std::string ProfileReader::DIS_EXT("disable-extension");
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const boost::filesystem::path& path )
+std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const std::filesystem::path& path )
 {
     // Normalizes the path.
-    boost::filesystem::path normalizedPath(path);
-    normalizedPath.normalize();
+    std::filesystem::path normalizedPath(std::filesystem::canonical(path));
 
     // Asserts that the repository is a valid directory path.
-    if(boost::filesystem::exists(normalizedPath) == false || boost::filesystem::is_directory(normalizedPath) == true)
+    if(std::filesystem::exists(normalizedPath) == false || std::filesystem::is_directory(normalizedPath) == true)
     {
         throw RuntimeException("'" + normalizedPath.string() + "': not a a file.");
     }

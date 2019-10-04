@@ -27,8 +27,7 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <fstream>
 
 namespace fwZip
@@ -46,13 +45,13 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const ::boost::filesystem::path& archive)
+    static sptr New(const std::filesystem::path& archive)
     {
         return std::make_shared<WriteDirArchive>(archive);
     }
 
     /// Constructors. Initializes archive path and creates archive directories if doesn't exist.
-    FWZIP_API WriteDirArchive( const ::boost::filesystem::path& archive );
+    FWZIP_API WriteDirArchive( const std::filesystem::path& archive );
 
     /// Destructor. Flush and close last output file stream.
     FWZIP_API ~WriteDirArchive();
@@ -64,7 +63,7 @@ public:
      *
      * @note Creates all parent directories of the path in archive.
      */
-    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) override;
+    FWZIP_API SPTR(std::ostream) createFile(const std::filesystem::path& path) override;
 
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
@@ -73,23 +72,23 @@ public:
      *
      * @note Do nothing if destinationFile already exists in archive.
      */
-    FWZIP_API void putFile(const ::boost::filesystem::path& sourceFile,
-                           const ::boost::filesystem::path& destinationFile) override;
+    FWZIP_API void putFile(const std::filesystem::path& sourceFile,
+                           const std::filesystem::path& destinationFile) override;
 
     /**
      * @brief Creates a folder in archive.
      * @param path folder to create in archive.
      */
-    FWZIP_API bool createDir(const ::boost::filesystem::path& path) override;
+    FWZIP_API bool createDir(const std::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
      */
-    FWZIP_API const ::boost::filesystem::path getArchivePath() const override;
+    FWZIP_API const std::filesystem::path getArchivePath() const override;
 
 protected:
 
-    ::boost::filesystem::path m_archive;
+    std::filesystem::path m_archive;
 };
 
 }

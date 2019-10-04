@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,37 +20,37 @@
  *
  ***********************************************************************/
 
-#include <boost/filesystem.hpp>
+#include "fwItkIO/ImageReader.hpp"
 
-#include <fwCore/base.hpp>
-
-#include <itkImageFileReader.h>
-#include <itkImageIOFactory.h>
-
-#include <fwData/Image.hpp>
-
-#include <fwTools/IntrinsicTypes.hpp>
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/TypeInfoKeyTypeMapping.hpp>
-
-#include <fwDataIO/reader/registry/macros.hpp>
+#include "fwItkIO/helper/ProgressItkToFw.hpp"
+#include "fwItkIO/itk.hpp"
 
 #include "inr2itk/itkInrImageIOFactory.hpp"
 
-#include "fwItkIO/itk.hpp"
-#include "fwItkIO/ImageReader.hpp"
-#include "fwItkIO/helper/ProgressItkToFw.hpp"
+#include <fwCore/base.hpp>
+
+#include <fwData/Image.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
+
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeInfoKeyTypeMapping.hpp>
+
+#include <filesystem>
+#include <itkImageFileReader.h>
+#include <itkImageIOFactory.h>
 
 fwDataIOReaderRegisterMacro( ::fwItkIO::ImageReader );
-
 
 namespace fwItkIO
 {
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key)  : ::fwData::location::enableSingleFile<
-                                                                            IObjectReader >(this)
+ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key)  :
+    ::fwData::location::enableSingleFile<
+        IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -73,15 +73,19 @@ struct ITKLoaderFunctor
         ::fwItkIO::ImageReader::sptr m_fwReader;
     };
 
+    //------------------------------------------------------------------------------
+
     template<class PIXELTYPE>
-    void operator()(Parameter &param)
+    void operator()(Parameter& param)
     {
         OSLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
                    ::fwTools::DynamicType::string<PIXELTYPE>() );
 
-        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader ne permet pas de l'atteindre
+        // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
+        // ne permet pas de l'atteindre
         // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
-        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le reader (voir *3*)
+        // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le
+        // reader (voir *3*)
 
         // Reader IO (*1*)
         typename itk::ImageIOBase::Pointer imageIORead = itk::ImageIOFactory::CreateImageIO(
@@ -104,7 +108,7 @@ struct ITKLoaderFunctor
     }
 
     //// get pixel type from Header
-    static const std::type_info& getImageType( const std::string &imageFileName )
+    static const std::type_info& getImageType( const std::string& imageFileName )
     {
         itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
             imageFileName.c_str(), itk::ImageIOFactory::ReadMode);
@@ -128,8 +132,8 @@ struct ITKLoaderFunctor
 
 void ImageReader::read()
 {
-    ::boost::filesystem::path file = getFile();
-    OSLM_ASSERT("File: "<<file<<" doesn't exist", ::boost::filesystem::exists( file ) );
+    std::filesystem::path file = getFile();
+    OSLM_ASSERT("File: "<<file<<" doesn't exist", std::filesystem::exists( file ) );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 

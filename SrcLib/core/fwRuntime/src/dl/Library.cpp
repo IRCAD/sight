@@ -41,7 +41,7 @@ typedef Win32 LibraryImplType;
 
 //------------------------------------------------------------------------------
 
-Library::Library(const ::boost::filesystem::path& modulePath) noexcept :
+Library::Library(const std::filesystem::path& modulePath) noexcept :
     m_implementor(new LibraryImplType(modulePath))
 {
 }

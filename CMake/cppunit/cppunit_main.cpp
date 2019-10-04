@@ -33,8 +33,8 @@
 
 #ifdef BUNDLE_TEST_PROFILE
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
+#include <filesystem>
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
@@ -43,19 +43,19 @@
 class MiniLauncher
 {
 public:
-    MiniLauncher(::boost::filesystem::path profilePath )
+    MiniLauncher( std::filesystem::path profilePath )
     {
         ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
         runtime->addDefaultBundles();
 
-        const ::boost::filesystem::path cwd = runtime->getWorkingPath();
+        const std::filesystem::path cwd = runtime->getWorkingPath();
 
-        if (!::boost::filesystem::exists( profilePath ))
+        if (!std::filesystem::exists( profilePath ))
         {
             profilePath = cwd / profilePath;
         }
 
-        if (!::boost::filesystem::exists( profilePath ))
+        if (!std::filesystem::exists( profilePath ))
         {
             throw (std::invalid_argument("<" + profilePath.string() + "> not found." ));
         }

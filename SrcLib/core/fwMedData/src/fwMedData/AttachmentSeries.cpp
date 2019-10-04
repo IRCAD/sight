@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 
 #include <fwMemory/stream/in/Raw.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 fwDataRegisterMacro( ::fwMedData::AttachmentSeries );
 
@@ -77,17 +77,17 @@ void AttachmentSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, De
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path& AttachmentSeries::getAttachmentPath() const
+const std::filesystem::path& AttachmentSeries::getAttachmentPath() const
 {
     return m_attachmentPath;
 }
 
 //------------------------------------------------------------------------------
 
-void AttachmentSeries::setAttachmentPath(const ::boost::filesystem::path& path)
+void AttachmentSeries::setAttachmentPath(const std::filesystem::path& path)
 {
     m_attachmentPath = path;
-    size_t buffSize = ::boost::filesystem::file_size(path);
+    size_t buffSize = std::filesystem::file_size(path);
     m_buffer->setIStreamFactory( std::make_shared< ::fwMemory::stream::in::Raw >(path),
                                  buffSize, path, ::fwMemory::RAW);
     m_attachmentAvailability = LOCAL;

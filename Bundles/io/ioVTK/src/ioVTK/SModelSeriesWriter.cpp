@@ -49,7 +49,7 @@
 
 #include <fwVtkIO/MeshWriter.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 namespace ioVTK
 {
@@ -77,7 +77,7 @@ SModelSeriesWriter::SModelSeriesWriter() noexcept
 void SModelSeriesWriter::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
@@ -89,7 +89,7 @@ void SModelSeriesWriter::configureWithIHM()
 
     while (result = ::fwData::location::Folder::dynamicCast( dialog.show() ))
     {
-        if( ::boost::filesystem::is_empty(result->getFolder()) )
+        if( std::filesystem::is_empty(result->getFolder()) )
         {
             break;
         }

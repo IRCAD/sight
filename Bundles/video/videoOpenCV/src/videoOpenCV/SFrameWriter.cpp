@@ -37,7 +37,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -104,7 +104,7 @@ void SFrameWriter::starting()
 
 void SFrameWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
@@ -180,7 +180,7 @@ void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 
             const size_t time = static_cast<size_t>(timestamp);
             const std::string filename( "img_" + std::to_string(time) + m_format);
-            const ::boost::filesystem::path path = this->getFolder() / filename;
+            const std::filesystem::path path = this->getFolder() / filename;
 
             if (image.type() == CV_8UC3)
             {
@@ -240,11 +240,11 @@ void SFrameWriter::startRecord()
             return;
         }
 
-        ::boost::filesystem::path path = this->getFolder();
+        std::filesystem::path path = this->getFolder();
 
-        if (!::boost::filesystem::exists(path))
+        if (!std::filesystem::exists(path))
         {
-            ::boost::filesystem::create_directories(path);
+            std::filesystem::create_directories(path);
         }
 
         m_isRecording = true;

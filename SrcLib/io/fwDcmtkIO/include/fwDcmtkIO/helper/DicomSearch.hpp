@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDCMTKIO_HELPER_DICOMSEARCH_HPP__
-#define __FWDCMTKIO_HELPER_DICOMSEARCH_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace fwDcmtkIO
 {
@@ -44,7 +42,7 @@ public:
      * @param[in] dirPath Root directory
      * @param[out] dicomFiles Dicom files
      */
-    FWDCMTKIO_API static void searchRecursively(const ::boost::filesystem::path& dirPath,
+    FWDCMTKIO_API static void searchRecursively(const std::filesystem::path& dirPath,
                                                 std::vector<std::string>& dicomFiles);
 
     /**
@@ -58,5 +56,3 @@ public:
 
 } // namespace helper
 } // namespace fwDcmtkIO
-
-#endif /*__FWDCMTKIO_HELPER_DICOMSEARCH_HPP__*/

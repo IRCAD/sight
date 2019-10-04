@@ -89,7 +89,7 @@ void SInrSeriesDBReader::configuring()
 void SInrSeriesDBReader::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
@@ -119,7 +119,7 @@ void SInrSeriesDBReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-bool SInrSeriesDBReader::createImage( const ::boost::filesystem::path inrFile, ::fwData::Image::sptr image )
+bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, ::fwData::Image::sptr image )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
@@ -172,7 +172,7 @@ void SInrSeriesDBReader::updating()
 
         const std::string instanceUID = ::fwTools::UUID::generateUUID();
 
-        for(const ::boost::filesystem::path& path :  this->getFiles())
+        for(const std::filesystem::path& path :  this->getFiles())
         {
             ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
             this->initSeries(imgSeries, instanceUID);

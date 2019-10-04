@@ -31,7 +31,7 @@
 
 #include <fwTools/ProgressAdviser.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwItkIO
 {

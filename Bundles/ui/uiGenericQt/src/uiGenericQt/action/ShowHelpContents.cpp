@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,8 +29,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
+#include <filesystem>
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -112,8 +111,8 @@ void ShowHelpContents::configuring()
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
-        m_fsHelpPath           = ::boost::filesystem::path( filename );
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsHelpPath);
+        m_fsHelpPath           = std::filesystem::path( filename );
+        m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);
         OSLM_WARN_IF("Help file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
         OSLM_TRACE("Filename found " << filename );
     }
@@ -152,8 +151,8 @@ void ShowHelpContents::updating()
         QHBoxLayout* hLayout = new QHBoxLayout();
         hLayout->addWidget(helpPanel);
         dialog->setLayout( hLayout );
-        QObject::connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl &)), helpBrowser,
-                         SLOT(setSource(const QUrl &)));
+        QObject::connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl&)), helpBrowser,
+                         SLOT(setSource(const QUrl&)));
 
         dialog->exec();
     }

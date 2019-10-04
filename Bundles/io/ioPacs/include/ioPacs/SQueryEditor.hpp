@@ -31,8 +31,7 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>

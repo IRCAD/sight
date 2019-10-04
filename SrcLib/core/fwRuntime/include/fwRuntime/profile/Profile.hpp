@@ -26,9 +26,10 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/utility.hpp>
+
+#include <filesystem>
 
 #include <functional>
 #include <vector>
@@ -140,13 +141,13 @@ public:
     }
 
     /// Get profile m_filePath
-    ::boost::filesystem::path getFilePath() const
+    std::filesystem::path getFilePath() const
     {
         return m_filePath;
     }
 
     /// Set profile m_filePath
-    void setFilePath(const ::boost::filesystem::path& _filePath)
+    void setFilePath(const std::filesystem::path& _filePath)
     {
         m_filePath = _filePath;
     }
@@ -233,7 +234,7 @@ private:
 
     std::string m_sName;                    ///< name profile
     std::string m_sVersion;                 ///< profile app version
-    ::boost::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
+    std::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
 
     bool m_checkSingleInstance;
     RunCallbackType m_run;

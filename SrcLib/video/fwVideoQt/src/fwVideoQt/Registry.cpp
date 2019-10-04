@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -100,8 +100,8 @@ Player* Registry::requestPlayer(const ::arData::Camera::csptr& camera)
             case ::arData::Camera::FILE:
             {
                 /// Path of the video file stored in the camera description
-                ::boost::filesystem::path videoPath(camera->getVideoFile());
-                ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
+                std::filesystem::path videoPath(camera->getVideoFile());
+                std::filesystem::path videoDir(::arPreferences::getVideoDir());
 
                 // For compatibility with old calibration with absolute path
                 if (!videoPath.is_absolute())

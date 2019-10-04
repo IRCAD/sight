@@ -24,7 +24,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/regex.hpp>
 
 #if defined(__APPLE__)
@@ -111,9 +111,9 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
 
     if ( !dataDir.empty() )
     {
-        if (boost::filesystem::exists(dataDir))
+        if (std::filesystem::exists(dataDir))
         {
-            if ( !boost::filesystem::is_directory(dataDir) )
+            if ( !std::filesystem::is_directory(dataDir) )
             {
                 OSLM_ERROR( dataDir << " already exists and is not a directory." );
                 dataDir = "";
@@ -122,7 +122,7 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
         else if (createDirectory)
         {
             OSLM_INFO("Creating application data directory: "<< dataDir);
-            boost::filesystem::create_directories(dataDir);
+            std::filesystem::create_directories(dataDir);
         }
     }
 
@@ -227,7 +227,7 @@ std::string FindModuleFunctor::s_libName;
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path getSharedLibraryPath(const std::string& _libName)
+std::filesystem::path getSharedLibraryPath(const std::string& _libName)
 {
 #if defined(WIN32)
     return _getWin32SharedLibraryPath(_libName);

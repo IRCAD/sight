@@ -42,8 +42,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
-
 #include <opencv2/opencv.hpp>
 
 namespace ioCalibration
@@ -76,7 +74,7 @@ SCalibrationInfoReader::~SCalibrationInfoReader() noexcept
 
 void SCalibrationInfoReader::configureWithIHM()
 {
-    static ::boost::filesystem::path s_defaultPath;
+    static std::filesystem::path s_defaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
@@ -138,10 +136,10 @@ void SCalibrationInfoReader::updating()
 
         using DetectionPairType = std::pair< ::fwData::Image::sptr, ::fwData::PointList::sptr >;
 
-        const ::boost::filesystem::path folder = this->getFolder();
+        const std::filesystem::path folder = this->getFolder();
         std::vector<DetectionPairType> detectionVector;
 
-        for(const ::boost::filesystem::path& dirEntry : ::boost::filesystem::directory_iterator(folder))
+        for(const std::filesystem::path& dirEntry : std::filesystem::directory_iterator(folder))
         {
             ::cv::Mat img = ::cv::imread(dirEntry.string());
             std::string errorMessage;

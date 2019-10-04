@@ -38,8 +38,8 @@
 
 #include <fwTools/Type.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
+#include <filesystem>
 #include <boost/foreach.hpp>
 
 #include <stdarg.h>
@@ -237,13 +237,13 @@ SFrameGrabber::~SFrameGrabber() noexcept
 
 void SFrameGrabber::starting()
 {
-    if(::boost::filesystem::exists(VLC_PLUGINS_DIR))
+    if(std::filesystem::exists(VLC_PLUGINS_DIR))
     {
         SFrameGrabber::exportVLCPluginsEnv(VLC_PLUGINS_DIR);
     }
     else
     {
-        SLM_ASSERT("VLC plugins directory is not found.", ::boost::filesystem::exists("./vlc/plugins"));
+        SLM_ASSERT("VLC plugins directory is not found.", std::filesystem::exists("./vlc/plugins"));
 #ifdef WIN32
         SFrameGrabber::exportVLCPluginsEnv(".\\vlc\\plugins");
 #else
@@ -321,8 +321,8 @@ void SFrameGrabber::startCamera()
         case ::arData::Camera::FILE:
         {
             // Path of the video file stored in the camera description
-            ::boost::filesystem::path videoPath(camera->getVideoFile());
-            ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
+            std::filesystem::path videoPath(camera->getVideoFile());
+            std::filesystem::path videoDir(::arPreferences::getVideoDir());
 
             // For compatibility with old calibration with absolute path
             if (!videoPath.is_absolute())
@@ -349,7 +349,7 @@ void SFrameGrabber::startCamera()
         case ::arData::Camera::STREAM:
         {
             // Path of the video file stored in the camera description
-            ::boost::filesystem::path videoPath(camera->getStreamUrl());
+            std::filesystem::path videoPath(camera->getStreamUrl());
 
             // Create a new Media
             m_vlcMedia = libvlc_media_new_location(m_vlcInstance, videoPath.string().c_str());

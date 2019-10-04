@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,10 @@ LocationDialog::LocationDialog()
 {
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
-                                                                                    [&] {
+                                                                                    [&]
+            {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
-                m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
+                m_implementation                    = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
             })
                                                                                 ).wait();
 }
@@ -104,7 +105,7 @@ void LocationDialog::setDefaultLocation(::fwData::location::ILocation::sptr loc)
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path LocationDialog::getDefaultLocation()
+const std::filesystem::path LocationDialog::getDefaultLocation()
 {
     return m_implementation->getDefaultLocation();
 }

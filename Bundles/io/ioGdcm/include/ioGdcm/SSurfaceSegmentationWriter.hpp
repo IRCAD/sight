@@ -34,7 +34,7 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwMedData
 {
@@ -101,7 +101,7 @@ private:
      * @param[in] filename DICOM file name
      * @param[in] model ModelSeries that must be written
      */
-    void saveSurfaceSegmentation( const ::boost::filesystem::path filename,
+    void saveSurfaceSegmentation( const std::filesystem::path filename,
                                   const ::fwMedData::ModelSeries::csptr& model);
 };
 

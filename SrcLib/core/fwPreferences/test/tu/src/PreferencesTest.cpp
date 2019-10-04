@@ -35,7 +35,7 @@
 #include <fwTools/Os.hpp>
 #include <fwTools/UUID.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwPreferences::ut::PreferencesTest );
@@ -92,11 +92,11 @@ void PreferencesTest::helperTest()
     const std::string profileName = ::fwTools::UUID::generateUUID();
     m_profile->setName(profileName);
 
-    const ::boost::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
-    const ::boost::filesystem::path prefFile   = appPrefDir / "preferences.json";
+    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
+    const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
 
     //Check preference file dir
-    const ::boost::filesystem::path file = ::fwPreferences::getPreferencesFile();
+    const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
     CPPUNIT_ASSERT_EQUAL(prefFile.string(), file.string());
 
     //Check set preference
@@ -135,7 +135,7 @@ void PreferencesTest::helperTest()
     resValueInt = ::fwPreferences::getValue< std::uint32_t >(prefKeySubstitute);
     CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
 
-    ::boost::filesystem::remove(prefFile);
+    std::filesystem::remove(prefFile);
 }
 
 //------------------------------------------------------------------------------

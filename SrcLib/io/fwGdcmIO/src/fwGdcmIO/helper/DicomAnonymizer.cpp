@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,10 +40,9 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/exception/all.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 
+#include <filesystem>
 #include <gdcmGlobal.h>
 #include <gdcmReader.h>
 #include <gdcmUIDGenerator.h>
@@ -69,11 +68,11 @@ DicomAnonymizer::DicomAnonymizer() :
     m_fileIndex(0),
     m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
-    const ::boost::filesystem::path tagsPathStr = ::fwRuntime::getLibraryResourceFilePath(
+    const std::filesystem::path tagsPathStr = ::fwRuntime::getLibraryResourceFilePath(
         "fwGdcmIO-" FWGDCMIO_VER "/tags.csv");
-    ::boost::filesystem::path tagsPath = tagsPathStr;
+    std::filesystem::path tagsPath = tagsPathStr;
     SLM_ASSERT("File '" + tagsPath.string() + "' must exists",
-               ::boost::filesystem::is_regular_file(tagsPath));
+               std::filesystem::is_regular_file(tagsPath));
 
     auto csvStream = std::ifstream(tagsPath.string());
     ::fwGdcmIO::helper::CsvIO csvReader(csvStream);
@@ -143,7 +142,7 @@ void DicomAnonymizer::setReferenceDate(const ::boost::gregorian::date& reference
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::anonymize(const ::boost::filesystem::path& dirPath)
+void DicomAnonymizer::anonymize(const std::filesystem::path& dirPath)
 {
     m_archiving = false;
     m_observer->setTotalWorkUnits(100);
@@ -153,34 +152,35 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path& dirPath)
 
 //------------------------------------------------------------------------------
 
-void moveDirectory(const ::boost::filesystem::path& input,
-                   const ::boost::filesystem::path& output)
+void moveDirectory(const std::filesystem::path& input,
+                   const std::filesystem::path& output)
 {
-    ::boost::system::error_code ec;
-    ::boost::filesystem::copy_directory(input, output, ec);
+    namespace fs = std::filesystem;
+    std::error_code ec;
+    fs::copy(input, output, fs::copy_options::overwrite_existing | fs::copy_options::recursive, ec);
     FW_RAISE_IF("copy_directory " << input.string() << " " << output.string()
                                   << " error : " << ec.message(), ec.value());
 
-    ::boost::filesystem::directory_iterator it(input);
-    ::boost::filesystem::directory_iterator end;
-    ::boost::filesystem::permissions(output, ::boost::filesystem::owner_all, ec);
+    fs::directory_iterator it(input);
+    fs::directory_iterator end;
+    fs::permissions(output, fs::perms::owner_all, ec);
     OSLM_ERROR_IF("set " << output.string() << " permission error : " << ec.message(), ec.value());
 
     for(; it != end; ++it)
     {
-        ::boost::filesystem::path dest = output / it->path().filename();
-        if(::boost::filesystem::is_directory(*it))
+        fs::path dest = output / it->path().filename();
+        if(fs::is_directory(*it))
         {
             moveDirectory(*it, dest);
         }
         else
         {
-            ::boost::filesystem::rename(*it, dest, ec);
+            fs::rename(*it, dest, ec);
             FW_RAISE_IF("rename " << it->path().string() << " " << dest.string()
                                   << " error : " << ec.message(), ec.value());
         }
 
-        ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, ec);
+        fs::permissions(dest, fs::perms::owner_all, ec);
         OSLM_ERROR_IF("set " << dest.string() << " permission error : " << ec.message(), ec.value());
     }
 }
@@ -241,30 +241,30 @@ const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeUTags()
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::anonymizationProcess(const ::boost::filesystem::path& dirPath)
+void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
 {
     // Create temporary directory
-    ::boost::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("DicomAnonymizer");
-    tmpPath                          /= "tmp";
+    std::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("DicomAnonymizer");
+    tmpPath /= "tmp";
 
-    // Doesn't use ::boost::filesystem::rename because of potential issues when moving folders across volumes
+    // Doesn't use std::filesystem::rename because of potential issues when moving folders across volumes
     moveDirectory(dirPath, tmpPath);
 
-    ::boost::system::error_code ec;
+    std::error_code ec;
 
-    ::boost::filesystem::directory_iterator it(dirPath);
-    ::boost::filesystem::directory_iterator end;
+    std::filesystem::directory_iterator it(dirPath);
+    std::filesystem::directory_iterator end;
 
     for(; it != end; ++it)
     {
-        if(::boost::filesystem::is_directory(*it))
+        if(std::filesystem::is_directory(*it))
         {
-            ::boost::filesystem::remove_all((*it), ec);
+            std::filesystem::remove_all((*it), ec);
             FW_RAISE_IF("remove_all " + dirPath.string() + " error : " + ec.message(), ec.value());
         }
     }
 
-    std::vector< ::boost::filesystem::path > dicomFiles;
+    std::vector< std::filesystem::path > dicomFiles;
     ::fwGdcmIO::helper::DicomSearch::searchRecursively(tmpPath, dicomFiles, false);
 
     unsigned int fileIndex = 0;
@@ -275,12 +275,12 @@ void DicomAnonymizer::anonymizationProcess(const ::boost::filesystem::path& dirP
             break;
         }
 
-        ::boost::filesystem::ifstream inStream(file, std::ios::binary);
+        std::ifstream inStream(file, std::ios::binary);
 
         std::stringstream ss;
         ss << std::setfill('0') << std::setw(7) << fileIndex++;
 
-        ::boost::filesystem::ofstream outStream(dirPath / ss.str(), std::ios::binary | std::ios::trunc);
+        std::ofstream outStream(dirPath / ss.str(), std::ios::binary | std::ios::trunc);
 
         this->anonymize(inStream, outStream);
 
@@ -712,34 +712,35 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::copyDirectory(const ::boost::filesystem::path& input,
-                                    const ::boost::filesystem::path& output)
+void DicomAnonymizer::copyDirectory(const std::filesystem::path& input,
+                                    const std::filesystem::path& output)
 {
-    ::boost::system::error_code ec;
-    ::boost::filesystem::copy_directory(input, output, ec);
+    namespace fs = std::filesystem;
+    std::error_code ec;
+    fs::copy(input, output, fs::copy_options::overwrite_existing | fs::copy_options::recursive, ec);
     FW_RAISE_IF("copy_directory " << input.string() << " " << output.string()
                                   << " error : " << ec.message(), ec.value());
 
-    ::boost::filesystem::directory_iterator it(input);
-    ::boost::filesystem::directory_iterator end;
+    fs::directory_iterator it(input);
+    fs::directory_iterator end;
 
     ec.clear();
-    ::boost::filesystem::permissions(output, ::boost::filesystem::owner_all, ec);
+    fs::permissions(output, fs::perms::owner_all, ec);
     SLM_ERROR_IF("set " + output.string() + " permission error : " + ec.message(), ec.value());
 
     for(; it != end; ++it)
     {
-        ::boost::filesystem::path dest = output / it->path().filename();
-        if(::boost::filesystem::is_directory(*it))
+        fs::path dest = output / it->path().filename();
+        if(fs::is_directory(*it))
         {
             DicomAnonymizer::copyDirectory(*it, dest);
         }
         else
         {
             // Use stream instead of boost::copy_file (Unix c++11 issue)
-            ::boost::filesystem::ifstream inStream(it->path(), std::ios::binary);
+            std::ifstream inStream(it->path(), std::ios::binary);
             FW_RAISE_IF("Unable to read file :" << it->path().string(), !inStream.good());
-            ::boost::filesystem::ofstream outStream(dest, std::ios::binary);
+            std::ofstream outStream(dest, std::ios::binary);
             FW_RAISE_IF("Unable to write file :" << dest.string(), !outStream.good());
 
             outStream << inStream.rdbuf();
@@ -749,7 +750,7 @@ void DicomAnonymizer::copyDirectory(const ::boost::filesystem::path& input,
         }
 
         ec.clear();
-        ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, ec);
+        fs::permissions(dest, fs::perms::owner_all, ec);
         SLM_ERROR_IF("set " + dest.string() + " permission error : " + ec.message(), ec.value());
     }
 }

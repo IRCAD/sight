@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace ioData
 {
@@ -56,7 +56,7 @@ class IODATA_CLASS_API STrianMeshReader : public ::fwIO::IReader
 
 public:
 
-    fwCoreServiceMacro(STrianMeshReader, ::fwIO::IReader);
+    fwCoreServiceMacro(STrianMeshReader, ::fwIO::IReader)
 
     /// Super class of reader services
     typedef ::fwIO::IReader SuperClass;

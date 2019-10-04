@@ -38,7 +38,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <fstream>
 #include <iostream>
@@ -94,7 +94,7 @@ void TransformationMatrix3DReaderService::configuring()
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);

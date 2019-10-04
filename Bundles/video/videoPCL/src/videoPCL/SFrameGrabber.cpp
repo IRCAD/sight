@@ -33,8 +33,9 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/regex.hpp>
+
+#include <filesystem>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
@@ -110,8 +111,8 @@ void SFrameGrabber::startCamera()
 
     if (camera->getCameraSource() == ::arData::Camera::FILE)
     {
-        ::boost::filesystem::path file = camera->getVideoFile();
-        const ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
+        std::filesystem::path file = camera->getVideoFile();
+        const std::filesystem::path videoDir(::arPreferences::getVideoDir());
 
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
@@ -119,7 +120,7 @@ void SFrameGrabber::startCamera()
             file = videoDir / file;
         }
 
-        const ::boost::filesystem::path ext = file.extension();
+        const std::filesystem::path ext = file.extension();
 
         if (ext.string() == ".pcd" )
         {
@@ -190,17 +191,17 @@ void SFrameGrabber::stopCamera()
 
 //------------------------------------------------------------------------------
 
-void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const std::string& extension)
+void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
     ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
-    ::boost::filesystem::directory_iterator currentEntry(folder);
-    ::boost::filesystem::directory_iterator endEntry;
+    std::filesystem::directory_iterator currentEntry(folder);
+    std::filesystem::directory_iterator endEntry;
     for(; currentEntry != endEntry; ++currentEntry)
     {
-        ::boost::filesystem::path entryPath = *currentEntry;
+        std::filesystem::path entryPath = *currentEntry;
 
         if (entryPath.extension() == extension)
         {
@@ -263,7 +264,7 @@ void SFrameGrabber::grabImage()
     {
         auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-        const ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
+        const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
         const std::string imageName = imagePath.filename().string();
         static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");

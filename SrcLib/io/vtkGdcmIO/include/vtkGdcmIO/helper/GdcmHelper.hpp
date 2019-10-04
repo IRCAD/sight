@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKGDCMIO_HELPER_GDCMHELPER_HPP__
-#define __VTKGDCMIO_HELPER_GDCMHELPER_HPP__
-
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem.hpp>
+#pragma once
 
 #include "vtkGdcmIO/config.hpp"
+
+#include <filesystem>
 
 namespace vtkGdcmIO
 {
@@ -35,19 +33,14 @@ namespace helper
 
 /**
  * @brief   This class contains helpers to search dicom files on filesystem...
- * @class   DicomSearch
- *
- * @date    2011.
  */
 class VTKGDCMIO_CLASS_API DicomSearch
 {
 public:
-    VTKGDCMIO_API static void searchRecursivelyFiles(const ::boost::filesystem::path &dirPath,
+    VTKGDCMIO_API static void searchRecursivelyFiles(const std::filesystem::path& dirPath,
                                                      std::vector<std::string>& dicomFiles);
-    static bool compare(std::string & _strOrgin, std::vector<std::string> * vecStr);
+    static bool compare(std::string& _strOrgin, std::vector<std::string>* vecStr);
 };
 
 } // namespace helper
 } // namespace vtkGdcmIO
-
-#endif /*__VTKGDCMIO_HELPER_GDCMHELPER_HPP__*/

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,14 +47,14 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::AttachmentSeries, ::f
                                                    DataVisitor::AtomCacheType& cache )
 {
     const camp::Class& metaclass = ::camp::classByName( object->getClassname() );
-    ::fwAtomConversion::DataVisitor visitor ( object, cache );
+    ::fwAtomConversion::DataVisitor visitor( object, cache );
     metaclass.visit(visitor);
     ::fwAtoms::Object::sptr atom = visitor.getAtomObject();
 
     ::fwMedData::AttachmentSeries::sptr attachment = ::fwMedData::AttachmentSeries::dynamicCast(object);
 
     atom->setAttribute("attachment_availability", ::fwAtoms::String::New(std::string("EMBEDDED")));
-    ::boost::filesystem::path attachFile = attachment->getAttachmentPath();
+    std::filesystem::path attachFile = attachment->getAttachmentPath();
     atom->setAttribute("attachment_path", ::fwAtoms::String::New(attachFile.filename().string()) );
 
     return atom;
@@ -67,7 +67,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::AttachmentSeries, ::f
                                                    const AtomVisitor::IReadPolicy& uuidPolicy
                                                    )
 {
-    ::fwAtomConversion::AtomVisitor visitor ( atom, cache, uuidPolicy );
+    ::fwAtomConversion::AtomVisitor visitor( atom, cache, uuidPolicy );
     visitor.visit();
     ::fwData::Object::sptr data                    = visitor.getDataObject();
     ::fwMedData::AttachmentSeries::sptr attachment = ::fwMedData::AttachmentSeries::dynamicCast(data);

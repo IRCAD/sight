@@ -37,7 +37,7 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwData
 {
@@ -77,7 +77,7 @@ class VIDEOQT_CLASS_API SFrameRecorder : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceMacro(SFrameRecorder, ::fwServices::IController);
+    fwCoreServiceMacro(SFrameRecorder, ::fwServices::IController)
 
     /// Contructor. Do nothing.
     VIDEOQT_API SFrameRecorder() noexcept;
@@ -144,7 +144,7 @@ private:
     PauseRecordSlotType::sptr m_slotPauseRecord;
 
     /// directory where the frames are saved
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 
     /// Counter of the number of frame
     unsigned int m_count;

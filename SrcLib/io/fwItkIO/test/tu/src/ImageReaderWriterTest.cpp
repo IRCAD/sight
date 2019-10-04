@@ -34,8 +34,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageReaderWriterTest );
@@ -126,8 +125,8 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
     image->setOrigin(origin);
 
     // save image in inr
-    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
-    ::boost::filesystem::create_directories( PATH.parent_path() );
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
+    std::filesystem::create_directories( PATH.parent_path() );
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFile(PATH);

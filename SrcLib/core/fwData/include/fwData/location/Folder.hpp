@@ -26,7 +26,7 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/location/ILocation.hpp"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 fwCampAutoDeclareDataMacro((fwData)(location)(Folder), FWDATA_API);
 
@@ -41,7 +41,7 @@ class FWDATA_CLASS_API Folder : public ILocation
 {
 public:
 
-    fwCoreClassMacro(Folder, ILocation, ::fwData::factory::New< Folder >);
+    fwCoreClassMacro(Folder, ILocation, ::fwData::factory::New< Folder >)
 
     fwCampMakeFriendDataMacro((fwData)(location)(Folder));
 

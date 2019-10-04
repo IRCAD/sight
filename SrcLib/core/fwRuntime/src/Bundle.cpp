@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ SPTR( Bundle ) Bundle::getLoadingBundle()
 
 //------------------------------------------------------------------------------
 
-Bundle::Bundle( const ::boost::filesystem::path& location,
+Bundle::Bundle( const std::filesystem::path& location,
                 const std::string& id,
                 const std::string& version ) :
     Bundle(location, id, version, "")
@@ -66,7 +66,7 @@ Bundle::Bundle( const ::boost::filesystem::path& location,
 
 //------------------------------------------------------------------------------
 
-Bundle::Bundle( const ::boost::filesystem::path& location,
+Bundle::Bundle( const std::filesystem::path& location,
                 const std::string& id,
                 const std::string& version,
                 const std::string& c ) :
@@ -76,18 +76,21 @@ Bundle::Bundle( const ::boost::filesystem::path& location,
     m_class( c )
 {
     // Post-condition.
-    SLM_ASSERT( "Invalid bundle location.",  m_resourcesLocation.is_complete() == true );
+    SLM_ASSERT( "Invalid bundle location.",  m_resourcesLocation.is_absolute() == true );
 
     // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
-    std::string strLocation = location.string();
-    ::boost::filesystem::path strRCPrefix = BUNDLE_RC_PREFIX;
-    strRCPrefix                           = strRCPrefix.normalize();
+    std::string strLocation           = location.string();
+    std::filesystem::path strRCPrefix = BUNDLE_RC_PREFIX;
+    strRCPrefix = std::filesystem::canonical(strRCPrefix);
     const auto itBundle = strLocation.find(strRCPrefix.string());
     if(itBundle != std::string::npos)
     {
         strLocation.replace(itBundle, strRCPrefix.string().length(), std::string(BUNDLE_LIB_PREFIX));
     }
-    m_libraryLocation = ::boost::filesystem::path(strLocation).normalize();
+
+    std::error_code ec;
+    // This may fail is the bundle does not contain any library, so we ignore the returned error
+    m_libraryLocation = std::filesystem::canonical(std::filesystem::path(strLocation), ec);
 }
 
 //------------------------------------------------------------------------------
@@ -289,14 +292,14 @@ const std::string& Bundle::getIdentifier() const
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path& Bundle::getLibraryLocation() const
+const std::filesystem::path& Bundle::getLibraryLocation() const
 {
     return m_libraryLocation;
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path& Bundle::getResourcesLocation() const
+const std::filesystem::path& Bundle::getResourcesLocation() const
 {
     return m_resourcesLocation;
 }

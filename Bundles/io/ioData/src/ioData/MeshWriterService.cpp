@@ -33,7 +33,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, ::fwData::Mesh );
 
@@ -77,7 +77,7 @@ void MeshWriterService::configuring()
 void MeshWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a TrianMesh file" : m_windowTitle);

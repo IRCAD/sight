@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_DICOMSEARCH_HPP__
-#define __FWGDCMIO_HELPER_DICOMSEARCH_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <string>
 #include <vector>
@@ -56,8 +55,8 @@ public:
      * it is a DICOM file
      * @param[in] fileLookupObserver lookup observer
      */
-    FWGDCMIO_API static void searchRecursively(const ::boost::filesystem::path& dirPath,
-                                               std::vector< ::boost::filesystem::path >& dicomFiles,
+    FWGDCMIO_API static void searchRecursively(const std::filesystem::path& dirPath,
+                                               std::vector< std::filesystem::path >& dicomFiles,
                                                bool checkIsDicom,
                                                const SPTR(::fwJobs::Observer)& fileLookupObserver = nullptr);
 
@@ -68,12 +67,10 @@ protected:
      * @param[out] dicomFiles Dicom files
      * @param[in] fileLookupObserver lookup observer
      */
-    static void checkFilenameExtension(const ::boost::filesystem::path& dirPath,
-                                       std::vector< ::boost::filesystem::path >& dicomFiles,
+    static void checkFilenameExtension(const std::filesystem::path& dirPath,
+                                       std::vector< std::filesystem::path >& dicomFiles,
                                        const SPTR(::fwJobs::Observer)& fileLookupObserver = nullptr);
 };
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif /*__FWGDCMIO_HELPER_DICOMSEARCH_HPP__*/

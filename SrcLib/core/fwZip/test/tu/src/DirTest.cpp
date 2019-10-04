@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,8 +29,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwZip::ut::DirTest );
@@ -58,18 +57,18 @@ void DirTest::tearDown()
 
 void DirTest::writeReadFileTest()
 {
-    const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
-    ::boost::filesystem::create_directories( dirPath );
+    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
+    std::filesystem::create_directories( dirPath );
 
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
     SPTR(ReadDirArchive) reader  = std::make_shared<ReadDirArchive>(dirPath);
 
-    const ::boost::filesystem::path testFile = "test.txt";
+    const std::filesystem::path testFile = "test.txt";
 
     CPPUNIT_ASSERT_NO_THROW(writer->createFile(testFile));
 
     CPPUNIT_ASSERT_NO_THROW(reader->getFile(testFile));
-    ::boost::filesystem::remove_all( dirPath );
+    std::filesystem::remove_all( dirPath );
 
 }
 
@@ -77,40 +76,40 @@ void DirTest::writeReadFileTest()
 
 void DirTest::writeDirTest()
 {
-    const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
-    ::boost::filesystem::create_directories( dirPath );
+    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
+    std::filesystem::create_directories( dirPath );
 
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
 
-    const ::boost::filesystem::path testDir = "test";
+    const std::filesystem::path testDir = "test";
 
     CPPUNIT_ASSERT_NO_THROW(writer->createDir(testDir));
 
-    CPPUNIT_ASSERT(::boost::filesystem::exists(dirPath/testDir));
+    CPPUNIT_ASSERT(std::filesystem::exists(dirPath/testDir));
 
-    ::boost::filesystem::remove_all( dirPath );
+    std::filesystem::remove_all( dirPath );
 }
 
 //------------------------------------------------------------------------------
 
 void DirTest::putFileTest()
 {
-    const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
-    ::boost::filesystem::create_directories( dirPath );
+    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwDirTest";
+    std::filesystem::create_directories( dirPath );
 
     SPTR(WriteDirArchive) writer = std::make_shared<WriteDirArchive>(dirPath);
 
-    const ::boost::filesystem::path testDir  = "test";
-    const ::boost::filesystem::path testFile = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path testDir  = "test";
+    const std::filesystem::path testFile = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
-                           ::boost::filesystem::exists(testFile));
+                           std::filesystem::exists(testFile));
 
     CPPUNIT_ASSERT_NO_THROW(writer->putFile(testFile, "image.jpg"));
 
-    CPPUNIT_ASSERT(::boost::filesystem::exists(dirPath/"image.jpg"));
+    CPPUNIT_ASSERT(std::filesystem::exists(dirPath/"image.jpg"));
 
-    ::boost::filesystem::remove_all( dirPath );
+    std::filesystem::remove_all( dirPath );
 }
 
 } // namespace ut

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,9 +37,7 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/convenience.hpp>
-
+#include <filesystem>
 #include <QHBoxLayout>
 #include <QString>
 

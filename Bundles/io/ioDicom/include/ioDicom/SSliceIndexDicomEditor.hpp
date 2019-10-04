@@ -30,8 +30,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>

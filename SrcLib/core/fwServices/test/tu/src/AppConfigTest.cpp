@@ -41,9 +41,7 @@
 
 #include <fwTest/helper/wait.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <TestService.hpp>
 
 // Registers the fixture into the 'registry'
@@ -73,8 +71,8 @@ void AppConfigTest::setUp()
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultBundles();
 
-    ::boost::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
-    CPPUNIT_ASSERT(::boost::filesystem::exists(location));
+    std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
+    CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     runtime->addBundles(location);
     CPPUNIT_ASSERT(runtime->bundlesBegin() != runtime->bundlesEnd());

@@ -58,7 +58,8 @@
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/assign.hpp>
-#include <boost/filesystem/path.hpp>
+
+#include <filesystem>
 
 #include <regex>
 
@@ -333,8 +334,8 @@ void SWriter::updating()
     cursor.setCursor(::fwGui::ICursor::BUSY);
 
     // Get the selected extension
-    const ::boost::filesystem::path& requestedFilePath = this->getFile();
-    std::string requestedExtension                     = requestedFilePath.extension().string();
+    const std::filesystem::path& requestedFilePath = this->getFile();
+    std::string requestedExtension                 = requestedFilePath.extension().string();
 
     if(!requestedExtension.empty())
     {
@@ -355,17 +356,17 @@ void SWriter::updating()
         }
     }
 
-    ::boost::filesystem::path filePath = requestedFilePath;
-    if( ::boost::filesystem::exists( requestedFilePath ) )
+    std::filesystem::path filePath = requestedFilePath;
+    if( std::filesystem::exists( requestedFilePath ) )
     {
         FW_RAISE_IF( "can't write to : " << requestedFilePath << ", it is a directory.",
-                     ::boost::filesystem::is_directory(requestedFilePath)
+                     std::filesystem::is_directory(requestedFilePath)
                      );
-        filePath = ::boost::filesystem::unique_path(filePath);
+        filePath = filePath / std::tmpnam(nullptr);
     }
 
-    const ::boost::filesystem::path folderPath = filePath.parent_path();
-    std::string extension                      = filePath.extension().string();
+    const std::filesystem::path folderPath = filePath.parent_path();
+    std::string extension                  = filePath.extension().string();
 
     // Check if the extension of the filename is set. If not, assign it to the selected extension.
     if (extension.empty())
@@ -377,7 +378,7 @@ void SWriter::updating()
 
     FW_RAISE_IF( "Extension is empty", extension.empty() );
 
-    const ::boost::filesystem::path filename = filePath.filename();
+    const std::filesystem::path filename = filePath.filename();
 
     FW_RAISE_IF("The file extension '" << extension << "' is not managed",
                 m_allowedExts.find(extension) == m_allowedExts.end());
@@ -439,7 +440,7 @@ void SWriter::updating()
             // Write atom
             ::fwZip::IWriteArchive::sptr writeArchive;
             ::fwAtomsBoostIO::FormatType format;
-            ::boost::filesystem::path archiveRootName;
+            std::filesystem::path archiveRootName;
             if ( extension == ".json" )
             {
                 writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
@@ -448,9 +449,9 @@ void SWriter::updating()
             }
             else if ( extension == ".jsonz")
             {
-                if ( ::boost::filesystem::exists( filePath ) )
+                if ( std::filesystem::exists( filePath ) )
                 {
-                    ::boost::filesystem::remove( filePath );
+                    std::filesystem::remove( filePath );
                 }
                 writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
                 archiveRootName = "root.json";
@@ -464,9 +465,9 @@ void SWriter::updating()
             }
             else if ( extension == ".xmlz" )
             {
-                if ( ::boost::filesystem::exists( filePath ) )
+                if ( std::filesystem::exists( filePath ) )
                 {
-                    ::boost::filesystem::remove( filePath );
+                    std::filesystem::remove( filePath );
                 }
                 writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
                 archiveRootName = "root.xml";
@@ -525,7 +526,7 @@ void SWriter::updating()
 
 void SWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     if( !m_useAtomsPatcher || versionSelection() )
     {

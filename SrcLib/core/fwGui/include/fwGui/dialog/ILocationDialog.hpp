@@ -28,7 +28,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/location/ILocation.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -83,7 +83,7 @@ public:
     FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::sptr loc);
 
     /// get the default location for the dialog (from preferences or specified by user)
-    FWGUI_API virtual const ::boost::filesystem::path getDefaultLocation();
+    FWGUI_API virtual const std::filesystem::path getDefaultLocation();
 
     /// save the specified default location for the dialog in preferences (if available)
     FWGUI_API virtual void saveDefaultLocation(::fwData::location::ILocation::sptr loc);

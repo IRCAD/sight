@@ -34,8 +34,9 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
+
+#include <filesystem>
 
 namespace fwGui
 {
@@ -94,7 +95,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     {
         m_frameInfo.m_iconPath = ::fwRuntime::getBundleResourceFilePath(icon.at(0)->getValue());
         OSLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
-                    ::boost::filesystem::exists(m_frameInfo.m_iconPath));
+                    std::filesystem::exists(m_frameInfo.m_iconPath));
     }
 
     if(!minSize.empty())

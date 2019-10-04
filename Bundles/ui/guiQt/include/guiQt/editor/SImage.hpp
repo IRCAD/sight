@@ -26,9 +26,9 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
-#include <boost/filesystem/path.hpp>
-
 #include <QObject>
+
+#include <filesystem>
 
 namespace guiQt
 {
@@ -92,7 +92,7 @@ protected:
     /** @} */
 private:
 
-    ::boost::filesystem::path m_path; /// Path of the image
+    std::filesystem::path m_path; /// Path of the image
     int m_width{-1}; /// Width of the image (pixels)
     int m_height{-1}; /// Height of the image (pixels)
 };

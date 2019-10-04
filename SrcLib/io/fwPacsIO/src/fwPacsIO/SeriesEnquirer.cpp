@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,12 +30,13 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmnet/diutil.h>
+
+#include <filesystem>
 
 namespace fwPacsIO
 {
@@ -89,9 +90,9 @@ void SeriesEnquirer::initialize(const std::string& applicationTitle, const std::
 
     //Creating folder
     m_path = ::fwTools::System::getTemporaryFolder() / "dicom/";
-    if (!m_path.empty() && !::boost::filesystem::exists(m_path))
+    if (!m_path.empty() && !std::filesystem::exists(m_path))
     {
-        ::boost::filesystem::create_directories(m_path);
+        std::filesystem::create_directories(m_path);
     }
 
     //Configure network connection
@@ -263,7 +264,7 @@ OFCondition SeriesEnquirer::sendGetRequest(DcmDataset dataset)
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::sendStoreRequest(const ::boost::filesystem::path& path)
+OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& path)
 {
     // Try to find a presentation context
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
@@ -581,7 +582,7 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& pathContainer)
     OFCondition result;
 
     // Send images to pacs
-    for(const ::boost::filesystem::path& path: pathContainer)
+    for(const std::filesystem::path& path: pathContainer)
     {
         result = this->sendStoreRequest(path);
 
@@ -679,10 +680,10 @@ OFCondition SeriesEnquirer::handleSTORERequest (
         }
 
         //Create Folder
-        ::boost::filesystem::path seriesPath = ::boost::filesystem::path(m_path.string() + seriesID.c_str() + "/");
-        if (!::boost::filesystem::exists(seriesPath))
+        std::filesystem::path seriesPath = std::filesystem::path(m_path.string() + seriesID.c_str() + "/");
+        if (!std::filesystem::exists(seriesPath))
         {
-            ::boost::filesystem::create_directories(seriesPath);
+            std::filesystem::create_directories(seriesPath);
         }
 
         //Save the file in the specified folder (Create new meta header for gdcm reader)

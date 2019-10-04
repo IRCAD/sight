@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_DICOMDIR_HPP__
-#define __FWGDCMIO_HELPER_DICOMDIR_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <cstdint>
 
@@ -61,7 +60,7 @@ public:
      * @brief Find the DICOMDIR file in the parent arborescence
      * @return Path to the DICOMDIR or empty path if the DICOMDIR has not been found
      */
-    FWGDCMIO_API static ::boost::filesystem::path findDicomDir(const ::boost::filesystem::path& root);
+    FWGDCMIO_API static std::filesystem::path findDicomDir(const std::filesystem::path& root);
 
     /**
      * @brief Create DicomSeries from information stored in DICOMDIR.
@@ -69,15 +68,13 @@ public:
      * @param[out] seriesDB Dicom series created
      * @param[in] fileLookupObserver file lookup observer
      */
-    FWGDCMIO_API static void retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
+    FWGDCMIO_API static void retrieveDicomSeries(const std::filesystem::path& dicomdir,
                                                  std::vector< SPTR(::fwMedData::DicomSeries) >& seriesDB,
                                                  const SPTR(::fwLog::Logger)& logger,
                                                  std::function< void(std::uint64_t) > progress = nullptr,
-                                                 std::function< bool() > cancel = nullptr);
+                                                 std::function< bool() > cancel                = nullptr);
 
 };
 
 } //helper
 } //fwGdcmIO
-
-#endif /* __FWGDCMIO_HELPER_DICOMDIR_HPP__ */

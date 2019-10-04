@@ -61,15 +61,15 @@
 #include <fwTools/System.hpp>
 
 #include <boost/asio/placeholders.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
+#include <filesystem>
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QMouseEvent>
 
+#include <fstream>
 #include <iterator>
 
 namespace ioDicomWeb
@@ -296,11 +296,11 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     }
 
     // Creates unique temporary folder, no need to check if exists before (see ::fwTools::System::getTemporaryFolder)
-    ::boost::filesystem::path path    = ::fwTools::System::getTemporaryFolder("dicom");
-    ::boost::filesystem::path tmpPath = path / "tmp";
+    std::filesystem::path path    = ::fwTools::System::getTemporaryFolder("dicom");
+    std::filesystem::path tmpPath = path / "tmp";
 
     SLM_INFO("Create " + tmpPath.string());
-    ::boost::filesystem::create_directories(tmpPath);
+    std::filesystem::create_directories(tmpPath);
 
     const auto& binaries = dicomSeries->getDicomContainer();
     auto iter            = binaries.find(selectedSliceIndex);
@@ -311,8 +311,8 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     const char* buffer = static_cast<char*>(lockerDest.getBuffer());
     const size_t size  = bufferObj->getSize();
 
-    ::boost::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
-    ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
+    std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
+    std::ofstream fs(dest, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
     fs.write(buffer, size);
@@ -356,8 +356,8 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
         this->setOutput("image", newImage);
     }
 
-    ::boost::system::error_code ec;
-    ::boost::filesystem::remove_all(path, ec);
+    std::error_code ec;
+    std::filesystem::remove_all(path, ec);
     SLM_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
 }
 

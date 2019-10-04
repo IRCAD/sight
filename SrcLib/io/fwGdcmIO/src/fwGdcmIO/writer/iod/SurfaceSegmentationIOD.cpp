@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ namespace iod
 
 SurfaceSegmentationIOD::SurfaceSegmentationIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
-                                               const ::boost::filesystem::path& destinationPath,
+                                               const std::filesystem::path& destinationPath,
                                                const ::fwLog::Logger::sptr& logger,
                                                ProgressCallback progress,
                                                CancelRequestedCallback cancel) :
@@ -91,7 +91,7 @@ void SurfaceSegmentationIOD::write(const ::fwMedData::Series::csptr& series)
     ::fwGdcmIO::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
     // Load Segmented Property Registry
-    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
+    const std::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
         "fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
 
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))

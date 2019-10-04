@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,33 +21,37 @@
  ***********************************************************************/
 
 #include "fwAtomsPatch/VersionsManager.hpp"
-#include "fwAtomsPatch/exceptions/MissingInformation.hpp"
+
 #include "fwAtomsPatch/exceptions/BadExtension.hpp"
+#include "fwAtomsPatch/exceptions/MissingInformation.hpp"
 #include "fwAtomsPatch/types.hpp"
 
 #include <fwCore/spyLog.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/exceptions.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 #include <camp/class.hpp>
+
+#include <filesystem>
 
 #include <fstream>
 
 namespace fwAtomsPatch
 {
 
+//------------------------------------------------------------------------------
+
 std::string getValue(const ::boost::property_tree::ptree& node, const std::string& name,
-                     const ::boost::filesystem::path& filePath )
+                     const std::filesystem::path& filePath )
 {
     std::string value;
     try
     {
         value = node.get< std::string >(name);
     }
-    catch( ::boost::property_tree::ptree_bad_path & )
+    catch( ::boost::property_tree::ptree_bad_path& )
     {
         FW_RAISE_EXCEPTION(::fwAtomsPatch::exceptions::MissingInformation(
                                name + " information are missing in '"+ filePath.string() +"'."));
@@ -75,10 +79,10 @@ VersionsManager::~VersionsManager()
 void VersionsManager::buildVersionTable(const std::string& dirPath)
 {
     ::fwCore::mt::WriteLock lock(m_versionMutex);
-    for (::boost::filesystem::recursive_directory_iterator end, dir(dirPath); dir != end; ++dir)
+    for (std::filesystem::recursive_directory_iterator end, dir(dirPath); dir != end; ++dir)
     {
-        if(  !::boost::filesystem::is_directory(*dir)
-             && ::boost::filesystem::extension(*dir) == ".versions")
+        if(  !std::filesystem::is_directory(*dir)
+             && dir->path().extension() == ".versions")
         {
             m_versionTable.push_back((*dir).path());
         }
@@ -90,11 +94,11 @@ void VersionsManager::buildVersionTable(const std::string& dirPath)
 void VersionsManager::buildLinkTable(const std::string& dirPath)
 {
     ::fwCore::mt::WriteLock lock(m_linkMutex);
-    for ( ::boost::filesystem::recursive_directory_iterator end, dir(dirPath);
+    for ( std::filesystem::recursive_directory_iterator end, dir(dirPath);
           dir != end; ++dir )
     {
-        if(  !::boost::filesystem::is_directory(*dir)
-             && ::boost::filesystem::extension(*dir) == ".graphlink")
+        if(  !std::filesystem::is_directory(*dir)
+             && dir->path().extension() == ".graphlink")
         {
             m_linkTable.push_back((*dir).path());
         }
@@ -103,7 +107,7 @@ void VersionsManager::buildLinkTable(const std::string& dirPath)
 
 // ----------------------------------------------------------------------------
 
-void VersionsManager::generateNewFile(const ::boost::filesystem::path& filePath,
+void VersionsManager::generateNewFile(const std::filesystem::path& filePath,
                                       const std::string& context, const std::string& versionName)
 {
     FW_RAISE_EXCEPTION_IF( ::fwAtomsPatch::exceptions::BadExtension(".versions file required"),
@@ -135,7 +139,7 @@ void VersionsManager::generateNewFile(const ::boost::filesystem::path& filePath,
 
 // ----------------------------------------------------------------------------
 
-::fwAtomsPatch::VersionDescriptor VersionsManager::getVersion(const ::boost::filesystem::path& filePath)
+::fwAtomsPatch::VersionDescriptor VersionsManager::getVersion(const std::filesystem::path& filePath)
 {
     FW_RAISE_EXCEPTION_IF( ::fwAtomsPatch::exceptions::BadExtension(".versions file required"),
                            filePath.extension() != ".versions");
@@ -151,7 +155,7 @@ void VersionsManager::generateNewFile(const ::boost::filesystem::path& filePath,
     const std::string& context     = getValue(root, "context", filePath);
     const std::string& versionName = getValue(root, "version_name", filePath);
 
-    for(pt::ptree::value_type &node :  root.get_child("versions"))
+    for(pt::ptree::value_type& node :  root.get_child("versions"))
     {
         versionids[node.first] = std::string(node.second.data().c_str());
     }
@@ -163,7 +167,7 @@ void VersionsManager::generateNewFile(const ::boost::filesystem::path& filePath,
 
 // ----------------------------------------------------------------------------
 
-::fwAtomsPatch::LinkDescriptor VersionsManager::getLink(const ::boost::filesystem::path& filePath)
+::fwAtomsPatch::LinkDescriptor VersionsManager::getLink(const std::filesystem::path& filePath)
 {
     FW_RAISE_EXCEPTION_IF( ::fwAtomsPatch::exceptions::BadExtension(".graphlink file required"),
                            filePath.extension() != ".graphlink");
@@ -185,9 +189,9 @@ void VersionsManager::generateNewFile(const ::boost::filesystem::path& filePath,
 
     const std::string& patcher = root.get("patcher", "DefaultPatcher");
 
-    for(pt::ptree::value_type &child :  root.get_child("links"))
+    for(pt::ptree::value_type& child :  root.get_child("links"))
     {
-        for(pt::ptree::value_type &node :  (child.second).get_child(""))
+        for(pt::ptree::value_type& node :  (child.second).get_child(""))
         {
             link.push_back(std::make_pair(node.first, node.second.data()));
         }
@@ -264,4 +268,3 @@ VersionsGraph::sptr VersionsManager::getGraph(const std::string& context)
 }
 
 } // namespace fwAtomsPatch
-

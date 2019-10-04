@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSBOOSTIO_WRITER_HPP__
-#define __FWATOMSBOOSTIO_WRITER_HPP__
+#pragma once
 
-#include <sstream>
-
-#include <boost/filesystem/path.hpp>
+#include "fwAtomsBoostIO/config.hpp"
+#include "fwAtomsBoostIO/types.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include "fwAtomsBoostIO/types.hpp"
-#include "fwAtomsBoostIO/config.hpp"
+#include <filesystem>
+
+#include <sstream>
 
 namespace fwAtoms
 {
@@ -58,13 +57,14 @@ public:
     /// Defines key to retrieve writer version from file.
     FWATOMSBOOSTIO_API static const std::string s_WRITER_VERSION_KEY;
 
-    Writer(const SPTR(::fwAtoms::Base)& atom) : m_atom(atom)
+    Writer(const SPTR(::fwAtoms::Base)& atom) :
+        m_atom(atom)
     {
     }
 
     FWATOMSBOOSTIO_API void write( const SPTR(::fwZip::IWriteArchive)& archive,
-                                   const ::boost::filesystem::path& rootFilename = "root.json",
-                                   FormatType format = JSON ) const;
+                                   const std::filesystem::path& rootFilename = "root.json",
+                                   FormatType format                         = JSON ) const;
 
 protected:
 
@@ -73,6 +73,3 @@ protected:
 };
 
 }
-
-#endif /* __FWATOMSBOOSTIO_WRITER_HPP__ */
-

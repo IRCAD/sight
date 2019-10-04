@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,10 +45,9 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
+#include <filesystem>
 #include <QBoxLayout>
 #include <QComboBox>
 #include <QIcon>
@@ -124,7 +123,7 @@ void TransferFunctionEditor::starting()
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
 
-    ::boost::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+    std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
 
     const auto deletePath = bundlePath / "delete.png";
     m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");
@@ -473,16 +472,16 @@ void TransferFunctionEditor::initTransferFunctions()
     if( poolTF->size() <= 1 )
     {
         // Parse all TF contained in uiTF Bundle's resources
-        std::vector< ::boost::filesystem::path > paths;
-        for(::boost::filesystem::path dirPath :  m_paths)
+        std::vector< std::filesystem::path > paths;
+        for(std::filesystem::path dirPath :  m_paths)
         {
-            SLM_ASSERT("Invalid directory path '"+dirPath.string()+"'", ::boost::filesystem::exists(dirPath));
-            for(::boost::filesystem::directory_iterator it(dirPath);
-                it != ::boost::filesystem::directory_iterator();
+            SLM_ASSERT("Invalid directory path '"+dirPath.string()+"'", std::filesystem::exists(dirPath));
+            for(std::filesystem::directory_iterator it(dirPath);
+                it != std::filesystem::directory_iterator();
                 ++it )
             {
-                if(!::boost::filesystem::is_directory(*it) &&
-                   ::boost::filesystem::extension(*it) == ".json")
+                if(!std::filesystem::is_directory(*it) &&
+                   it->path().extension().string() == ".json")
                 {
                     paths.push_back(*it);
                 }
@@ -497,7 +496,7 @@ void TransferFunctionEditor::initTransferFunctions()
         ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
         srvCfg->addConfigurationElement(fileCfg);
 
-        for( ::boost::filesystem::path file :  paths )
+        for( std::filesystem::path file :  paths )
         {
             fileCfg->setValue(file.string());
             reader->setConfiguration(srvCfg);

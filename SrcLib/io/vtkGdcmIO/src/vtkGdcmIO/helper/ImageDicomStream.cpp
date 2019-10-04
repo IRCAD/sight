@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,7 @@
 
 #include "vtkGdcmIO/helper/ImageDicomStream.hpp"
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <vtkStringArray.h>
 
 namespace vtkGdcmIO
@@ -35,18 +33,18 @@ namespace helper
 //------------------------------------------------------------------------------
 
 ImageDicomSource::ImageDicomSource( ImageDicomInfo::sptr dcmInfo ) :
-    m_dcmInfo ( dcmInfo ),
-    m_pos ( 0 ),
-    m_success ( false )
+    m_dcmInfo( dcmInfo ),
+    m_pos( 0 ),
+    m_success( false )
 {
     SLM_ASSERT( "ImageDicomSource needs dicom file to read a dciom image", dcmInfo->m_seriesFiles.size() > 0);
 }
 
 //------------------------------------------------------------------------------
 
-bool filesStillExist( const ImageDicomInfo::SeriesFilesType & files )
+bool filesStillExist( const ImageDicomInfo::SeriesFilesType& files )
 {
-    ::boost::filesystem::path filePath;
+    std::filesystem::path filePath;
     bool allFilesExists = true;
 
     for(    ImageDicomInfo::SeriesFilesType::const_iterator itFile = files.begin();
@@ -54,7 +52,7 @@ bool filesStillExist( const ImageDicomInfo::SeriesFilesType & files )
             ++itFile )
     {
         filePath        = *itFile;
-        allFilesExists &= ::boost::filesystem::exists(filePath);
+        allFilesExists &= std::filesystem::exists(filePath);
     }
     return allFilesExists;
 }
@@ -84,23 +82,22 @@ bool ImageDicomSource::readImage()
             m_inputReader = static_cast<char*>( m_reader->GetOutput()->GetScalarPointer() );
             res           = true;
         }
-        catch (std::exception &e)
+        catch (std::exception& e)
         {
             m_reader      = 0;
             m_inputReader = 0;
-            OSLM_ERROR ( "Error during conversion : " << e.what() );
+            OSLM_ERROR( "Error during conversion : " << e.what() );
         }
         catch (...)
         {
             m_reader      = 0;
             m_inputReader = 0;
-            OSLM_ERROR ( "Unexpected error during conversion" );
+            OSLM_ERROR( "Unexpected error during conversion" );
         }
     }
 
     return res;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -135,10 +132,10 @@ std::streamsize ImageDicomSource::read(char* s, std::streamsize n)
     }
 }
 
-
 //------------------------------------------------------------------------------
 
-ImageDicomStream::ImageDicomStream( ImageDicomInfo::sptr dcmInfo ) : m_dcmInfo ( dcmInfo )
+ImageDicomStream::ImageDicomStream( ImageDicomInfo::sptr dcmInfo ) :
+    m_dcmInfo( dcmInfo )
 {
 }
 

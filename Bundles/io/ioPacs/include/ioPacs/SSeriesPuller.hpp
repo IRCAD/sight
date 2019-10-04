@@ -38,7 +38,7 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <vector>
 

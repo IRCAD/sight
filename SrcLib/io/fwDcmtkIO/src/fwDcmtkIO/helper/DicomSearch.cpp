@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath, std::vector<std::string>& dicomFiles)
+void DicomSearch::searchRecursively(const std::filesystem::path& dirPath, std::vector<std::string>& dicomFiles)
 {
     std::vector<std::string> extensions;
     std::string strIgnoreFile = ".zip|.txt|.htm|.html|.xml|.exe|.gz|.dir|.gif|.jpeg|.jpg|dicomdir|.DS_Store";
@@ -48,10 +48,10 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath, st
 
     std::string filePath;
     std::string filename;
-    for( ::boost::filesystem::recursive_directory_iterator it(dirPath);
-         it != ::boost::filesystem::recursive_directory_iterator(); ++it)
+    for( std::filesystem::recursive_directory_iterator it(dirPath);
+         it != std::filesystem::recursive_directory_iterator(); ++it)
     {
-        if(!::boost::filesystem::is_directory(*it))
+        if(!std::filesystem::is_directory(*it))
         {
             filePath = it->path().string();
             filename = it->path().filename().string();

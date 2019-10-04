@@ -28,7 +28,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -97,7 +97,7 @@ private:
      * @param[in] folder DICOM folder
      * @param[in] seriesDB SeriesDB that must be writen
      */
-    void saveSeriesDB( const ::boost::filesystem::path folder, SPTR(::fwMedData::SeriesDB) seriesDB );
+    void saveSeriesDB( const std::filesystem::path folder, SPTR(::fwMedData::SeriesDB) seriesDB );
 
     /// Select Fiducial Export Mode using a dialog
     bool selectFiducialsExportMode();

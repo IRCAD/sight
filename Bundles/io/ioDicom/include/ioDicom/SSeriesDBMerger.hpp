@@ -28,7 +28,7 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace ioDicom
 {
@@ -54,7 +54,7 @@ class IODICOM_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SSeriesDBMerger,  ::fwGui::IActionSrv );
+    fwCoreServiceMacro(SSeriesDBMerger,  ::fwGui::IActionSrv )
 
     /// Constructor
     IODICOM_API SSeriesDBMerger() noexcept;

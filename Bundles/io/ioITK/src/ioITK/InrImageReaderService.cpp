@@ -78,7 +78,7 @@ void InrImageReaderService::configuring()
 void InrImageReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
@@ -110,7 +110,7 @@ void InrImageReaderService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-bool InrImageReaderService::createImage( const ::boost::filesystem::path& inrFileDir,
+bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir,
                                          const ::fwData::Image::sptr& _pImg )
 {
     SLM_TRACE_FUNC();

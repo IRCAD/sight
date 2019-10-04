@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ typedef SSIZE_T ssize_t;
 #include <fwCore/macros.hpp>
 
 #include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/iostreams/categories.hpp>
 
 #include <archive.h>
@@ -64,7 +64,7 @@ public:
      * @param[in] archive archive instance
      * @param[in] path virtual path in archive if file exist it get the stat of file otherwise create fake stat
      */
-    MemoryArchiveSink(struct archive* archive, const ::boost::filesystem::path& path);
+    MemoryArchiveSink(struct archive* archive, const std::filesystem::path& path);
 
     /// Destructor
     ~MemoryArchiveSink();
@@ -87,7 +87,7 @@ protected:
     std::vector<char> m_buffer;
 
     /// path of entry file
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 
     /// buffer write size is large because it is in memory
     static const size_t s_WRITE_BUFFER_SIZE = 20000;
@@ -116,7 +116,7 @@ public:
      * @param[in] path file in archive
      * @return output stream of memory entry archive
      */
-    IGTLPROTOCOL_API SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) override;
+    IGTLPROTOCOL_API SPTR(std::ostream) createFile(const std::filesystem::path& path) override;
 
     /**
      * @brief Write source file in memory archive
@@ -125,20 +125,20 @@ public:
      * @param[in] path file in archive
      * @throw ::fwZip::exception::Write when file cannot be opened
      */
-    IGTLPROTOCOL_API void putFile(const ::boost::filesystem::path& sourceFile,
-                                  const ::boost::filesystem::path& path) override;
+    IGTLPROTOCOL_API void putFile(const std::filesystem::path& sourceFile,
+                                  const std::filesystem::path& path) override;
 
     /**
      * @brief Create folder in archive
      *
      * @param[in] path folder to create in memory archive in reality it create nothing
      */
-    IGTLPROTOCOL_API bool createDir(const ::boost::filesystem::path& path) override;
+    IGTLPROTOCOL_API bool createDir(const std::filesystem::path& path) override;
 
     /**
      * @return archive path
      */
-    IGTLPROTOCOL_API const ::boost::filesystem::path getArchivePath() const override;
+    IGTLPROTOCOL_API const std::filesystem::path getArchivePath() const override;
 
     /**
      * @brief write all data stored in archive
@@ -179,7 +179,7 @@ protected:
     typedef SPTR (::boost::iostreams::stream<MemoryArchiveSink>) StreamSPtr;
 
     /// archive path
-    ::boost::filesystem::path m_archivePath;
+    std::filesystem::path m_archivePath;
 
     /// archive structure
     struct archive* m_archive;

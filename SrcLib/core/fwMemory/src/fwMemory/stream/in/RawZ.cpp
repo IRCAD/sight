@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,10 +24,12 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
+
+#include <filesystem>
+
+#include <fstream>
 
 namespace fwMemory
 {
@@ -55,8 +57,8 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
 
 SPTR(std::istream) RawZ::get()
 {
-    SPTR(::boost::filesystem::ifstream) fs
-        = std::make_shared< ::boost::filesystem::ifstream>(m_path, std::ios::in|std::ios::binary);
+    SPTR(std::ifstream) fs
+        = std::make_shared< std::ifstream>(m_path, std::ios::in|std::ios::binary);
 
     SPTR(FilteringStream) filter = std::make_shared< FilteringStream >();
 
@@ -71,4 +73,3 @@ SPTR(std::istream) RawZ::get()
 } // namespace in
 } // namespace stream
 } // namespace fwMemory
-

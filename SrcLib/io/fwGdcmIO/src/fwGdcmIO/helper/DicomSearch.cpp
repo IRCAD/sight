@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,8 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include <fstream>
+
 namespace fwGdcmIO
 {
 namespace helper
@@ -35,9 +37,9 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-bool isDICOM(const ::boost::filesystem::path& filepath)
+bool isDICOM(const std::filesystem::path& filepath)
 {
-    ::boost::filesystem::ifstream ifs( filepath, std::ios::binary );
+    std::ifstream ifs( filepath, std::ios::binary );
     ifs.seekg(128);
     char DICM[5] = {0};
     ifs.read(DICM, 4);
@@ -47,12 +49,12 @@ bool isDICOM(const ::boost::filesystem::path& filepath)
 
 //------------------------------------------------------------------------------
 
-void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath,
-                                    std::vector< ::boost::filesystem::path >& dicomFiles,
+void DicomSearch::searchRecursively(const std::filesystem::path& dirPath,
+                                    std::vector< std::filesystem::path >& dicomFiles,
                                     bool checkIsDicom,
                                     const ::fwJobs::Observer::sptr& readerObserver)
 {
-    std::vector< ::boost::filesystem::path > fileVect;
+    std::vector< std::filesystem::path > fileVect;
     checkFilenameExtension(dirPath, fileVect, readerObserver);
 
     if(checkIsDicom)
@@ -92,8 +94,8 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath,
 
 //------------------------------------------------------------------------------
 
-void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPath,
-                                         std::vector< ::boost::filesystem::path >& dicomFiles,
+void DicomSearch::checkFilenameExtension(const std::filesystem::path& dirPath,
+                                         std::vector< std::filesystem::path >& dicomFiles,
                                          const ::fwJobs::Observer::sptr& fileLookupObserver)
 {
     dicomFiles.clear();
@@ -103,8 +105,8 @@ void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPat
                                            (".png")(".exe")(".zip")(".gz")(".dir")(".dll")(".inf")
                                            (".DS_Store");
 
-    for(::boost::filesystem::recursive_directory_iterator it(dirPath);
-        it != ::boost::filesystem::recursive_directory_iterator(); ++it)
+    for(std::filesystem::recursive_directory_iterator it(dirPath);
+        it != std::filesystem::recursive_directory_iterator(); ++it)
     {
         if(fileLookupObserver && fileLookupObserver->cancelRequested())
         {
@@ -112,7 +114,7 @@ void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPat
             break;
         }
 
-        if(!::boost::filesystem::is_directory(*it))
+        if(!std::filesystem::is_directory(*it))
         {
             auto path       = it->path();
             std::string ext = path.extension().string();
@@ -136,4 +138,3 @@ void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPat
 
 } //namespace helper
 } //namespace fwGdcmIO
-

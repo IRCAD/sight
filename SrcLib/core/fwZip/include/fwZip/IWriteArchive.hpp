@@ -24,7 +24,7 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <ostream>
 
@@ -50,25 +50,25 @@ public:
      * @param path file in archive.
      * @return output stream of file entry in archive.
      */
-    virtual SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) = 0;
+    virtual SPTR(std::ostream) createFile(const std::filesystem::path& path) = 0;
 
     /**
      * @brief Writes source file in archive.
      * @param sourceFile source file.
      * @param path file in archive.
      */
-    virtual void putFile(const ::boost::filesystem::path& sourceFile, const ::boost::filesystem::path& path) = 0;
+    virtual void putFile(const std::filesystem::path& sourceFile, const std::filesystem::path& path) = 0;
 
     /**
      * @brief Creates a folder in archive.
      * @param path folder to create in archive.
      */
-    virtual bool createDir(const ::boost::filesystem::path& path) = 0;
+    virtual bool createDir(const std::filesystem::path& path) = 0;
 
     /**
      * @brief Returns archive path.
      */
-    virtual const ::boost::filesystem::path getArchivePath() const = 0;
+    virtual const std::filesystem::path getArchivePath() const = 0;
 };
 
 }

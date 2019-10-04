@@ -24,8 +24,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <filesystem>
+#include <fstream>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -51,18 +51,18 @@ struct RemoveTemporaryFolder
 {
     typedef std::shared_ptr< RemoveTemporaryFolder > sptr;
 
-    RemoveTemporaryFolder(const ::boost::filesystem::path& path) :
+    RemoveTemporaryFolder(const std::filesystem::path& path) :
         m_path(path)
     {
     }
 
     ~RemoveTemporaryFolder()
     {
-        ::boost::system::error_code er;
-        ::boost::filesystem::remove_all(m_path, er);
+        std::error_code er;
+        std::filesystem::remove_all(m_path, er);
         OSLM_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
     }
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 };
 static RemoveTemporaryFolder::sptr autoRemoveTempFolder;
 
@@ -90,9 +90,9 @@ int System::getPID() noexcept
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path& System::getTempPath() noexcept
+const std::filesystem::path& System::getTempPath() noexcept
 {
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
     static fs::path sysTmp;
 
     if(!sysTmp.empty())
@@ -100,7 +100,7 @@ const ::boost::filesystem::path& System::getTempPath() noexcept
         return sysTmp;
     }
 
-    ::boost::system::error_code err;
+    std::error_code err;
     sysTmp = fs::temp_directory_path(err);
 
     if(err.value() != 0)
@@ -118,15 +118,15 @@ const ::boost::filesystem::path& System::getTempPath() noexcept
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path createUniqueFolder(const ::boost::filesystem::path& folderUniquePath)
+const std::filesystem::path createUniqueFolder(const std::filesystem::path& folderUniquePath)
 {
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
     bool created = false;
     fs::path tmpDir;
 
     do
     {
-        tmpDir = fs::unique_path(folderUniquePath);
+        tmpDir = folderUniquePath / std::tmpnam(nullptr);
 
         if(!fs::exists(tmpDir))
         {
@@ -143,9 +143,9 @@ const ::boost::filesystem::path createUniqueFolder(const ::boost::filesystem::pa
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path System::getTemporaryFolder(const std::string& subFolderPrefix) noexcept
+const std::filesystem::path System::getTemporaryFolder(const std::string& subFolderPrefix) noexcept
 {
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
     static fs::path tmpDirPath;
 
     if(!tmpDirPath.empty() && fs::exists(tmpDirPath))
@@ -167,7 +167,7 @@ const ::boost::filesystem::path System::getTemporaryFolder(const std::string& su
     tmpDirPath = tmpDir;    // tmpDirPath always set to root tmp dir
 
     fs::path pidFile = tmpDir / (::boost::lexical_cast<std::string>(getPID()) + ".pid");
-    fs::fstream( pidFile, std::ios::out ).close();
+    std::fstream( pidFile, std::ios::out ).close();
 
     autoRemoveTempFolder = std::make_shared<RemoveTemporaryFolder>(tmpDirPath);
 
@@ -203,9 +203,9 @@ bool System::isProcessRunning(int pid) noexcept
 
 //------------------------------------------------------------------------------
 
-int System::tempFolderPID(const ::boost::filesystem::path& dir) noexcept
+int System::tempFolderPID(const std::filesystem::path& dir) noexcept
 {
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
 
     const ::boost::regex pidFilter( "([[:digit:]]+)\\.pid" );
 
@@ -254,9 +254,9 @@ int System::tempFolderPID(const ::boost::filesystem::path& dir) noexcept
 
 //------------------------------------------------------------------------------
 
-void System::cleanAllTempFolders(const ::boost::filesystem::path& dir) noexcept
+void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 {
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
 
     const ::boost::regex tmpFolderFilter( ".*\\." SIGHT_TMP_EXT );
 
@@ -292,7 +292,7 @@ void System::cleanAllTempFolders(const ::boost::filesystem::path& dir) noexcept
         {
             OSLM_INFO("Removing old temp dir : " << foundTmpDir);
 
-            ::boost::system::error_code er;
+            std::error_code er;
             fs::remove_all(foundTmpDir, er);
 
             OSLM_WARN_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);

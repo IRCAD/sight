@@ -75,7 +75,7 @@ void InrImageWriterService::configuring()
 void InrImageWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
@@ -120,7 +120,7 @@ void InrImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::saveImage( const ::boost::filesystem::path& inrFile, const ::fwData::Image::csptr& image )
+void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, const ::fwData::Image::csptr& image )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();

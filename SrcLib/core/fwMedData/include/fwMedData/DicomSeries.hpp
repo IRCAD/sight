@@ -30,7 +30,7 @@
 
 #include <fwMemory/BufferObject.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 fwCampAutoDeclareDataMacro((fwMedData)(DicomSeries), FWMEDDATA_API);
 
@@ -71,7 +71,7 @@ public:
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /// Add dicom path
-    FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, const ::boost::filesystem::path& path);
+    FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, const std::filesystem::path& path);
 
     /// Add binary buffer
     FWMEDDATA_API void addBinary(std::size_t instanceIndex, const ::fwMemory::BufferObject::sptr& buffer);

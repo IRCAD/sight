@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace ioData
 {
@@ -50,7 +50,7 @@ class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::fwIO::IRea
 {
 
 public:
-    fwCoreServiceMacro(TransformationMatrix3DReaderService, ::fwIO::IReader);
+    fwCoreServiceMacro(TransformationMatrix3DReaderService, ::fwIO::IReader)
 
     /// Super class of reader services
     typedef ::fwIO::IReader SuperClass;

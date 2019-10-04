@@ -30,7 +30,7 @@
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <array>
 #include <string>
@@ -320,13 +320,13 @@ public:
     }
 
     /// Gets the video source file (only available in SourceType FILE mode).
-    ::boost::filesystem::path getVideoFile() const
+    std::filesystem::path getVideoFile() const
     {
         return m_videoFile;
     }
 
     /// Sets the video source file (only available in SourceType FILE mode).
-    void setVideoFile(const ::boost::filesystem::path& videoFile)
+    void setVideoFile(const std::filesystem::path& videoFile)
     {
         m_videoFile = videoFile;
     }
@@ -392,7 +392,7 @@ protected:
     PixelFormat m_pixelFormat;
 
     //! Video source file
-    ::boost::filesystem::path m_videoFile;
+    std::filesystem::path m_videoFile;
 
     //! Video source stream
     std::string m_streamUrl;

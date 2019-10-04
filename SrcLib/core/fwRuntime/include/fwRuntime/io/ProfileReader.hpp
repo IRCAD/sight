@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_IO_PROFILEREADER_HPP__
-#define __FWRUNTIME_IO_PROFILEREADER_HPP__
+#pragma once
 
 #if defined(__GNUC__)
 #pragma GCC visibility push(default)
 #endif
 #include <string>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <libxml/tree.h>
 #if defined(__GNUC__)
 #pragma GCC visibility pop
@@ -45,8 +44,6 @@ class Starter;
 }
 }
 
-
-
 namespace fwRuntime
 {
 
@@ -55,9 +52,6 @@ namespace io
 
 /**
  * @brief   Reads plugin set profiles from xml files.
- * @struct  ProfileReader
- * @date    2004-2009
- *
  */
 struct ProfileReader
 {
@@ -68,9 +62,7 @@ struct ProfileReader
      * @param[in]   path    a path to an xml profile file
      */
     FWRUNTIME_API static std::shared_ptr< ::fwRuntime::profile::Profile > createProfile(
-        const boost::filesystem::path & path );
-
-
+        const std::filesystem::path& path );
 
     private:
 
@@ -78,11 +70,13 @@ struct ProfileReader
         static std::string NAME;        ///< defines the name of the xml profile
         static std::string VALUE;       ///< defines the name of the value xml element or attribute name
         static std::string VERSION;     ///< defines the name of the version xml element or attribute name
-        static std::string CHECK_SINGLE_INSTANCE;///< defines the name of the check-single-instance xml element or attribute name
+        static std::string CHECK_SINGLE_INSTANCE;///< defines the name of the check-single-instance xml element or
+                                                 // attribute name
         static std::string ACTIVATE;    ///< defines the name of the activate xml element or attribute name
         static std::string START;       ///< defines the name of the start xml element or attribute name
         static std::string PARAM;       ///< defines the name of the parameter xml element or attribute name
-        static std::string DIS_EXT_PT;  ///< defines the name of the disable extension point xml element or attribute name
+        static std::string DIS_EXT_PT;  ///< defines the name of the disable extension point xml element or attribute
+                                        // name
         static std::string DIS_EXT;     ///< defines the name of the disable extension xml element or attribute name
 
         /**
@@ -144,12 +138,6 @@ struct ProfileReader
 
 };
 
-
-
 } // namespace io
 
 } // namespace fwRuntime
-
-
-
-#endif /*__FWRUNTIME_IO_PROFILEREADER_HPP__*/

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -67,14 +67,14 @@ public:
      * @throw ::fwZip::exception::Read if file doesn't exist in archive.
      * @throw ::fwZip::exception::Read if cannot retrieve file in archive.
      */
-    IGTLPROTOCOL_API SPTR(std::istream) getFile(const ::boost::filesystem::path& path) override;
+    IGTLPROTOCOL_API SPTR(std::istream) getFile(const std::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
      *
      * @return the archive path
      */
-    IGTLPROTOCOL_API const ::boost::filesystem::path getArchivePath() const override;
+    IGTLPROTOCOL_API const std::filesystem::path getArchivePath() const override;
 
     /**
      * @brief clone the instance

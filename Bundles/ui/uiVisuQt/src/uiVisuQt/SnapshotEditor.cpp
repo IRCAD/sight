@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/convenience.hpp>
-
+#include <filesystem>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QPushButton>
@@ -80,7 +78,7 @@ void SnapshotEditor::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    ::boost::filesystem::path path = ::fwRuntime::getBundleResourceFilePath("uiVisuQt", "camera-photo.png");
+    std::filesystem::path path = ::fwRuntime::getBundleResourceFilePath("uiVisuQt", "camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));

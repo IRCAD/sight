@@ -30,8 +30,7 @@
 #include "fwRuntime/io/Validator.hpp"
 #include "fwRuntime/operations.hpp"
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <libxml/parser.h>
 #include <libxml/xinclude.h>
@@ -61,28 +60,27 @@ std::string BundleDescriptorReader::POINT("point");
 //------------------------------------------------------------------------------
 
 const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBundles(
-    const ::boost::filesystem::path& location)
+    const std::filesystem::path& location)
 {
     // Normalizes the path.
-    ::boost::filesystem::path normalizedPath(location);
-    normalizedPath.normalize();
+    std::filesystem::path normalizedPath(std::filesystem::canonical(location));
 
     // Asserts that the repository is a valid directory path.
-    if(::boost::filesystem::exists(normalizedPath) == false ||
-       ::boost::filesystem::is_directory(normalizedPath) == false)
+    if(std::filesystem::exists(normalizedPath) == false ||
+       std::filesystem::is_directory(normalizedPath) == false)
     {
         throw RuntimeException("'" + normalizedPath.string() + "': not a directory.");
     }
 
     // Walk through the repository entries.
     BundleContainer bundles;
-    ::boost::filesystem::directory_iterator currentEntry(normalizedPath);
-    ::boost::filesystem::directory_iterator endEntry;
+    std::filesystem::directory_iterator currentEntry(normalizedPath);
+    std::filesystem::directory_iterator endEntry;
     for(; currentEntry != endEntry; ++currentEntry)
     {
-        ::boost::filesystem::path entryPath = *currentEntry;
+        std::filesystem::path entryPath = *currentEntry;
 
-        if(::boost::filesystem::is_directory(entryPath))
+        if(std::filesystem::is_directory(entryPath))
         {
             try
             {
@@ -113,12 +111,12 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::filesystem::path& location)
+std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const std::filesystem::path& location)
 {
     std::shared_ptr<Bundle> bundle;
 
-    ::boost::filesystem::path descriptorLocation(location / "plugin.xml");
-    if(::boost::filesystem::exists(descriptorLocation) == false)
+    std::filesystem::path descriptorLocation(location / "plugin.xml");
+    if(std::filesystem::exists(descriptorLocation) == false)
     {
         throw ::fwCore::Exception(std::string("'plugin.xml': file not found in ") + location.string());
     }
@@ -156,9 +154,9 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
 
         // Creates and process the plugin element.
         // Get the descriptor location.
-        ::boost::filesystem::path completeLocation(location);
+        std::filesystem::path completeLocation(location);
 
-        if(!completeLocation.is_complete())
+        if(!completeLocation.is_absolute())
         {
             completeLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
         }
@@ -371,7 +369,7 @@ std::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr n
 //------------------------------------------------------------------------------
 
 std::shared_ptr<Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node,
-                                                              const ::boost::filesystem::path& location)
+                                                              const std::filesystem::path& location)
 {
     // Creates the bundle.
     std::shared_ptr<Bundle> bundle;

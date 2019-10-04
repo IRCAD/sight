@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,8 @@
 #include <fwTools/Type.hpp>
 
 #include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
+
+#include <filesystem>
 
 #include <fstream>
 
@@ -91,9 +92,9 @@ void DicomSeriesCampTest::propertiesTest()
 
     ::fwMemory::BufferObject::sptr bufferObj = ::fwMemory::BufferObject::New();
 
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "DicomSeriesCampTest";
-    ::boost::filesystem::create_directories(path);
-    const ::boost::filesystem::path dicomFile = path / filename;
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "DicomSeriesCampTest";
+    std::filesystem::create_directories(path);
+    const std::filesystem::path dicomFile = path / filename;
     {
         std::ofstream file;
         file.open(dicomFile.string().c_str(), std::ofstream::out);

@@ -28,7 +28,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwData
 {
@@ -58,7 +58,7 @@ class IOITK_CLASS_API InrImageReaderService : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceMacro(InrImageReaderService,  ::fwIO::IReader);
+    fwCoreServiceMacro(InrImageReaderService,  ::fwIO::IReader)
 
     IOITK_API InrImageReaderService() noexcept;
 
@@ -95,7 +95,7 @@ private:
 
     void notificationOfDBUpdate();
 
-    bool createImage( const ::boost::filesystem::path& inrFileDir, const SPTR(::fwData::Image)& _pImg );
+    bool createImage( const std::filesystem::path& inrFileDir, const SPTR(::fwData::Image)& _pImg );
 };
 
 } // namespace ioITK

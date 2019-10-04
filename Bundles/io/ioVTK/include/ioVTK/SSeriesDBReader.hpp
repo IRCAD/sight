@@ -29,7 +29,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -86,7 +86,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
 
     /**
      * @brief Configure the vtk file path.
@@ -141,7 +141,7 @@ private:
 
     /**
      * @brief Load VTK mesh or image and push it into SeriesDB.
-     * @param[in] vtkFiles vector of boost::filesystem::path.
+     * @param[in] vtkFiles vector of std::filesystem::path.
      * @param[out] seriesDB std::shared_ptr< ::fwMedData::SeriesDB >.
      * @return bool.
      *

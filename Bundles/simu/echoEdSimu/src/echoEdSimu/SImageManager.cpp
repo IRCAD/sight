@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace echoEdSimu
 {
@@ -106,7 +106,7 @@ void SImageManager::updateSingle(int i, std::string key)
 
 //------------------------------------------------------------------------------
 
-void SImageManager::load(::boost::filesystem::path dir, ImagesVecType& images)
+void SImageManager::load(std::filesystem::path dir, ImagesVecType& images)
 {
     unsigned int dI = s_maxI - s_minI +1;
     unsigned int dJ = s_maxJ - s_minJ +1;
@@ -122,9 +122,9 @@ void SImageManager::load(::boost::filesystem::path dir, ImagesVecType& images)
             const unsigned int idJ = j + s_minJ;
             std::stringstream str;
             str << "image_" << idI << "_" << idJ << ".vtk";
-            ::boost::filesystem::path path(dir / str.str());
+            std::filesystem::path path(dir / str.str());
 
-            if (::boost::filesystem::exists(path))
+            if (std::filesystem::exists(path))
             {
                 ::fwData::Image::sptr image         = ::fwData::Image::New();
                 ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
@@ -164,8 +164,8 @@ void SImageManager::updateBoth(int i, int j)
 
     std::stringstream str;
     str << "image_" << m_cranioCaudalIndex << "_" << m_radialIndex << ".vtk";
-    ::boost::filesystem::path path1(s_ctPath + "/" + str.str());
-    ::boost::filesystem::path path2(s_echoPath + "/" + str.str());
+    std::filesystem::path path1(s_ctPath + "/" + str.str());
+    std::filesystem::path path2(s_echoPath + "/" + str.str());
 
     ::fwVtkIO::ImageReader::sptr reader1 = ::fwVtkIO::ImageReader::New();
     reader1->setFile(path1);

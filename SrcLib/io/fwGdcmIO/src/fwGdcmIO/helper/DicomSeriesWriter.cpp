@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -123,7 +123,7 @@ void DicomSeriesWriter::processWrite()
     ::fwMedData::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
     // Create folder
-    ::boost::filesystem::path folder = this->getFolder();
+    std::filesystem::path folder = this->getFolder();
 
     if(m_writeCount)
     {
@@ -132,9 +132,9 @@ void DicomSeriesWriter::processWrite()
         folder /= ss.str();
     }
 
-    if (!::boost::filesystem::exists(folder))
+    if (!std::filesystem::exists(folder))
     {
-        ::boost::filesystem::create_directories(folder);
+        std::filesystem::create_directories(folder);
     }
 
     std::size_t nbInstances = dicomSeries->getNumberOfInstances();
@@ -157,16 +157,16 @@ void DicomSeriesWriter::processWrite()
         const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
         SPTR(std::istream) stream = streamInfo.stream;
 
-        const ::boost::filesystem::path& dest_dir = m_anonymizer ? folder/m_subPath : folder;
+        const std::filesystem::path& dest_dir = m_anonymizer ? folder/m_subPath : folder;
 
-        if(!::boost::filesystem::exists(dest_dir))
+        if(!std::filesystem::exists(dest_dir))
         {
-            ::boost::filesystem::create_directories(dest_dir);
+            std::filesystem::create_directories(dest_dir);
         }
 
-        const ::boost::filesystem::path& dest_file = dest_dir / filename;
+        const std::filesystem::path& dest_file = dest_dir / filename;
 
-        ::boost::filesystem::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
+        std::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
         FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
 
         this->processStream(*(stream.get()), fs);
@@ -205,10 +205,10 @@ void DicomSeriesWriter::processWriteArchive()
         const ::fwMemory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
         SPTR(std::istream) stream = streamInfo.stream;
 
-        const ::boost::filesystem::path& dest_dir =
+        const std::filesystem::path& dest_dir =
             m_anonymizer ? m_subPath : "";
 
-        const ::boost::filesystem::path& dest_file = dest_dir / filename;
+        const std::filesystem::path& dest_file = dest_dir / filename;
         SPTR(std::ostream) fs = m_archive->createFile(dest_file);
         FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 

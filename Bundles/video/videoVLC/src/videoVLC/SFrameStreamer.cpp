@@ -31,8 +31,9 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
+
+#include <filesystem>
 
 namespace videoVLC
 {

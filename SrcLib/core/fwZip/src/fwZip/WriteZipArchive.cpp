@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,34 @@
  *
  ***********************************************************************/
 
-#include <iosfwd>    // streamsize
-#include <fstream>
-#include <functional>
+#include "fwZip/WriteZipArchive.hpp"
 
+#include "fwZip/exception/Write.hpp"
 
-#include <boost/iostreams/stream.hpp>
-#include <boost/iostreams/stream_buffer.hpp>
-#include <boost/iostreams/categories.hpp>  // sink_tag
-
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/date_time/posix_time/conversion.hpp>
+#include "minizip/zip.h"
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include "minizip/zip.h"
-#include "fwZip/WriteZipArchive.hpp"
-#include "fwZip/exception/Write.hpp"
+#include <boost/date_time/posix_time/conversion.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/iostreams/categories.hpp>  // sink_tag
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/stream_buffer.hpp>
 
+#include <filesystem>
+
+#include <fstream>
+#include <functional>
+#include <iosfwd>    // streamsize
 
 namespace fwZip
 {
 
 //-----------------------------------------------------------------------------
 
-zipFile openWriteZipArchive( const ::boost::filesystem::path &archive )
+zipFile openWriteZipArchive( const std::filesystem::path& archive )
 {
-    int append  = (::boost::filesystem::exists(archive)) ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE;
+    int append  = (std::filesystem::exists(archive)) ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE;
     zipFile zip = zipOpen(archive.string().c_str(), append);
 
     FW_RAISE_EXCEPTION_IF(
@@ -66,7 +64,7 @@ zipFile openWriteZipArchive( const ::boost::filesystem::path &archive )
  * @note Z_BEST_SPEED compression level for '.raw' files,
  *       Z_NO_COMPRESSION for 'raw.gz', Z_DEFAULT_COMPRESSION otherwise.
  */
-std::streamsize openFile(zipFile zipDescriptor, const ::boost::filesystem::path &path)
+std::streamsize openFile(zipFile zipDescriptor, const std::filesystem::path& path)
 {
     const std::string extension = path.extension().string();
     int compressLevel           = Z_DEFAULT_COMPRESSION;
@@ -114,7 +112,7 @@ public:
     typedef char char_type;
     typedef ::boost::iostreams::sink_tag category;
 
-    ZipSink( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path,
+    ZipSink( const std::filesystem::path& archive, const std::filesystem::path& path,
              const std::string comment ) :
         m_zipDescriptor(
             openWriteZipArchive(archive),
@@ -132,6 +130,8 @@ public:
             nRet != Z_OK);
     }
 
+    //------------------------------------------------------------------------------
+
     std::streamsize write(const char* s, std::streamsize n)
     {
         std::streamsize nRet = zipWriteInFileInZip(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
@@ -144,13 +144,13 @@ public:
 
 protected:
     SPTR(void) m_zipDescriptor;
-    ::boost::filesystem::path m_archive;
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_archive;
+    std::filesystem::path m_path;
 };
 
 //-----------------------------------------------------------------------------
 
-WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive ) :
+WriteZipArchive::WriteZipArchive( const std::filesystem::path& archive ) :
     m_archive(archive),
     m_comment("")
 {
@@ -158,7 +158,7 @@ WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive ) :
 
 //-----------------------------------------------------------------------------
 
-WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive, const std::string& comment ) :
+WriteZipArchive::WriteZipArchive( const std::filesystem::path& archive, const std::string& comment ) :
     m_archive(archive),
     m_comment(comment)
 {
@@ -172,7 +172,7 @@ WriteZipArchive::~WriteZipArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::ostream) WriteZipArchive::createFile(const ::boost::filesystem::path &path)
+SPTR(std::ostream) WriteZipArchive::createFile(const std::filesystem::path& path)
 {
     SPTR(::boost::iostreams::stream<ZipSink>) os
         = std::make_shared< ::boost::iostreams::stream<ZipSink> >(m_archive, path, m_comment);
@@ -181,7 +181,7 @@ SPTR(std::ostream) WriteZipArchive::createFile(const ::boost::filesystem::path &
 
 //-----------------------------------------------------------------------------
 
-void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path)
+void WriteZipArchive::putFile(const std::filesystem::path& sourceFile, const std::filesystem::path& path)
 {
     std::ifstream is(sourceFile.string().c_str(), std::ios::binary);
     FW_RAISE_EXCEPTION_IF(::fwZip::exception::Write("Source file '" + sourceFile.string() + "' cannot be opened."),
@@ -196,7 +196,7 @@ void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const
 
 //-----------------------------------------------------------------------------
 
-bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
+bool WriteZipArchive::createDir(const std::filesystem::path& path)
 {
     zipFile zipDescriptor      = openWriteZipArchive(m_archive);
     const std::streamsize nRet = openFile(zipDescriptor, path);
@@ -209,7 +209,7 @@ bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path WriteZipArchive::getArchivePath() const
+const std::filesystem::path WriteZipArchive::getArchivePath() const
 {
     return m_archive;
 }
@@ -217,4 +217,3 @@ const ::boost::filesystem::path WriteZipArchive::getArchivePath() const
 //-----------------------------------------------------------------------------
 
 }
-

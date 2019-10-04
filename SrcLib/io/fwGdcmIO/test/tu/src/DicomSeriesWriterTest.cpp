@@ -43,8 +43,7 @@
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwGdcmIO::ut::DicomSeriesWriterTest );
@@ -75,10 +74,10 @@ void DicomSeriesWriterTest::setUp()
 
     // Set up context before running a test.
     ::fwMedData::SeriesDB::sptr srcSeriesDB = ::fwMedData::SeriesDB::New();
-    const ::boost::filesystem::path srcPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
+    const std::filesystem::path srcPath = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
-                           ::boost::filesystem::exists(srcPath));
+                           std::filesystem::exists(srcPath));
 
     // Read source Dicom
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
@@ -100,7 +99,7 @@ void DicomSeriesWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesWriterTest::checkDicomSeries(const ::boost::filesystem::path& p, bool anonymized)
+void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, bool anonymized)
 {
     if(::fwTest::Slow::ignoreSlowTests())
     {
@@ -142,9 +141,9 @@ void DicomSeriesWriterTest::writeReadTest()
     }
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
-    const ::boost::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("writeReadTest") /
-                                               "dicomSeriesTest";
-    ::boost::filesystem::create_directories(destPath);
+    const std::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("writeReadTest") /
+                                           "dicomSeriesTest";
+    std::filesystem::create_directories(destPath);
 
     // Write Dicom
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
@@ -170,9 +169,9 @@ void DicomSeriesWriterTest::writeReadAnonymiseTest()
         = ::fwGdcmIO::helper::DicomAnonymizer::New();
     anonymizer->addExceptionTag(0x0010, 0x0010, "ANONYMIZED^ANONYMIZED "); // Patient's name
 
-    const ::boost::filesystem::path destPath
+    const std::filesystem::path destPath
         = ::fwTools::System::getTemporaryFolder("writeReadAnonymiseTest") / "dicomSeriesTest";
-    ::boost::filesystem::create_directories(destPath);
+    std::filesystem::create_directories(destPath);
 
     // Write Dicom
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
@@ -194,9 +193,9 @@ void DicomSeriesWriterTest::writeReadDirArchiveTest()
     }
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
-    const ::boost::filesystem::path destPath
+    const std::filesystem::path destPath
         = ::fwTools::System::getTemporaryFolder("writeReadDirArchiveTest") / "dicomSeriesTest";
-    ::boost::filesystem::create_directories(destPath);
+    std::filesystem::create_directories(destPath);
 
     ::fwZip::WriteDirArchive::sptr writeArchive = ::fwZip::WriteDirArchive::New(destPath);
 

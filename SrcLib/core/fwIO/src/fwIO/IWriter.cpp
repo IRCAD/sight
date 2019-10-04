@@ -57,7 +57,7 @@ IWriter::~IWriter() noexcept
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path& IWriter::getFile() const
+const std::filesystem::path& IWriter::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::fwIO::FILE));
     FW_RAISE_IF("Exactly one file must be define in location", m_locations.size() != 1);
@@ -65,11 +65,11 @@ const ::boost::filesystem::path& IWriter::getFile() const
     m_currentLocation = m_locations.front();
     if(m_useTimestampPrefix)
     {
-        ::boost::filesystem::path dirname  = m_currentLocation.parent_path();
-        ::boost::filesystem::path basename = m_currentLocation.filename();
+        std::filesystem::path dirname  = m_currentLocation.parent_path();
+        std::filesystem::path basename = m_currentLocation.filename();
 
-        m_currentLocation = dirname / ::boost::filesystem::path(std::to_string(m_currentTimestamp)
-                                                                + std::string("-") + basename.string());
+        m_currentLocation = dirname / std::filesystem::path(std::to_string(m_currentTimestamp)
+                                                            + std::string("-") + basename.string());
     }
 
     return m_currentLocation;
@@ -77,7 +77,7 @@ const ::boost::filesystem::path& IWriter::getFile() const
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setFile( const ::boost::filesystem::path& file)
+void IWriter::setFile( const std::filesystem::path& file)
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::fwIO::FILE));
     m_locations.clear();
@@ -103,7 +103,7 @@ void IWriter::setFiles(const ::fwIO::LocationsType& files)
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path& IWriter::getFolder() const
+const std::filesystem::path& IWriter::getFolder() const
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::fwIO::FOLDER));
     FW_RAISE_IF("Exactly one folder must be define in location", m_locations.size() != 1 );
@@ -112,7 +112,7 @@ const ::boost::filesystem::path& IWriter::getFolder() const
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setFolder(const ::boost::filesystem::path& folder)
+void IWriter::setFolder(const std::filesystem::path& folder)
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::fwIO::FOLDER));
     m_locations.clear();
@@ -121,7 +121,7 @@ void IWriter::setFolder(const ::boost::filesystem::path& folder)
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setFileFolder(boost::filesystem::path folder)
+void IWriter::setFileFolder(std::filesystem::path folder)
 {
     FW_RAISE_IF("This reader doesn't manage file or files",
                 !(this->getIOPathType() & ::fwIO::FILE) && !(this->getIOPathType() & ::fwIO::FILES));
@@ -184,7 +184,7 @@ void IWriter::configuring()
         if (config.size() == 1)
         {
             std::string file = config.at(0)->getValue();
-            this->setFile(::boost::filesystem::path(file));
+            this->setFile(std::filesystem::path(file));
         }
     }
 
@@ -196,7 +196,7 @@ void IWriter::configuring()
         for(::fwRuntime::ConfigurationElement::sptr elt :  config)
         {
             std::string location = elt->getValue();
-            locations.push_back(::boost::filesystem::path(location));
+            locations.push_back(std::filesystem::path(location));
         }
         this->setFiles(locations);
     }
@@ -208,7 +208,7 @@ void IWriter::configuring()
         if (config.size() == 1)
         {
             std::string folder = config.at(0)->getValue();
-            this->setFolder(::boost::filesystem::path(folder));
+            this->setFolder(std::filesystem::path(folder));
         }
     }
 }

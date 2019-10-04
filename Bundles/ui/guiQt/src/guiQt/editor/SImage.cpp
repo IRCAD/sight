@@ -22,8 +22,6 @@
 
 #include "guiQt/editor/SImage.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/operations.hpp>

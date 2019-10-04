@@ -48,7 +48,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 namespace ioDicomWeb
 {
@@ -312,7 +312,7 @@ void SSeriesPuller::pullSeries()
                         }
 
                         // Create dicom folder
-                        ::boost::filesystem::path instancePath = m_path.parent_path() / seriesInstancesUID;
+                        std::filesystem::path instancePath = m_path.parent_path() / seriesInstancesUID;
                         QDir().mkpath(instancePath.string().c_str());
                         // Move dicom file to the created dicom folder
                         instancePath /= m_path.filename();

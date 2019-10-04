@@ -26,7 +26,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace uiIO
 {
@@ -37,7 +37,7 @@ namespace action
  * @brief   Raise a pop-up dialog to select a directory, then send it via a signal.
  *
  * @section Signals Signals
- * - \b folderSelector(::boost::filesystem::path) : Emitted when the directory is chosen.
+ * - \b folderSelector(std::filesystem::path) : Emitted when the directory is chosen.
  *
  * @section XML XML Configuration
  *
@@ -58,7 +58,7 @@ public:
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal< void ( ::boost::filesystem::path ) > FolderSelectedSignalType;
+    typedef ::fwCom::Signal< void ( std::filesystem::path ) > FolderSelectedSignalType;
     static const ::fwCom::Signals::SignalKeyType s_FOLDER_SELECTED_SIG;
     /// @}
 

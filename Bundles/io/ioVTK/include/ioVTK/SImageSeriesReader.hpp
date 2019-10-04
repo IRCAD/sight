@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -128,7 +128,7 @@ private:
     void notificationOfDBUpdate();
 
     /// Image path.
-    ::boost::filesystem::path m_fsImgPath;
+    std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 };

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,10 +22,9 @@
 
 #include <fwGdcmIO/helper/DicomAnonymizer.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/program_options.hpp>
 
+#include <filesystem>
 #include <stdlib.h>
 
 #include <fstream>
@@ -84,15 +83,15 @@ int main(int argc, char** argv)
     }
 
     // Get paths
-    ::boost::filesystem::path input(vm["input"].as< std::string >());
-    ::boost::filesystem::path output(vm["output"].as< std::string >());
+    std::filesystem::path input(vm["input"].as< std::string >());
+    std::filesystem::path output(vm["output"].as< std::string >());
 
-    if(!::boost::filesystem::exists(input) || !::boost::filesystem::is_directory(input))
+    if(!std::filesystem::exists(input) || !std::filesystem::is_directory(input))
     {
         std::cout << "The specified input folder " << input << " is not a directory." << "\n";
         return EXIT_FAILURE;
     }
-    else if(::boost::filesystem::exists(output))
+    else if(std::filesystem::exists(output))
     {
         std::cout << "The specified output folder " << output << " already exists." << "\n";
         return EXIT_FAILURE;
@@ -105,4 +104,3 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
-

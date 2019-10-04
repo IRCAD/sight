@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwData
 {
@@ -57,13 +57,13 @@ class IOITK_CLASS_API InrImageWriterService : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceMacro(InrImageWriterService,  ::fwIO::IWriter);
+    fwCoreServiceMacro(InrImageWriterService,  ::fwIO::IWriter)
 
     IOITK_API InrImageWriterService() noexcept;
 
     IOITK_API virtual ~InrImageWriterService() noexcept;
 
-    IOITK_API static void saveImage( const ::boost::filesystem::path& inrFile, const CSPTR(::fwData::Image)& image );
+    IOITK_API static void saveImage( const std::filesystem::path& inrFile, const CSPTR(::fwData::Image)& image );
 
 protected:
 

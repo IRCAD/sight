@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,14 +34,14 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-
-#include <iosfwd> // #include <strstream>
+#include <filesystem>
 
 #include <algorithm>
+#include <fstream>
 #include <functional>
 #include <iomanip>
+#include <iosfwd>
+#include <iostream>
 
 namespace fwMemory
 {
@@ -398,8 +398,8 @@ bool BufferManager::dumpBuffer(BufferInfo& info, BufferManager::BufferPtrType bu
         return false;
     }
 
-    ::boost::filesystem::path tmp        = ::fwTools::System::getTemporaryFolder();
-    ::boost::filesystem::path dumpedFile = ::boost::filesystem::unique_path( tmp/"fwMemory-%%%%-%%%%-%%%%-%%%%.raw" );
+    std::filesystem::path tmp        = ::fwTools::System::getTemporaryFolder();
+    std::filesystem::path dumpedFile = std::filesystem::temp_directory_path() / std::tmpnam(nullptr);
 
     OSLM_TRACE("dumping " << bufferPtr << " " << dumpedFile);
     info.lockCounter.reset();
@@ -489,7 +489,7 @@ bool BufferManager::restoreBuffer(BufferInfo& info,
 //-----------------------------------------------------------------------------
 
 std::shared_future<bool> BufferManager::writeBuffer(BufferManager::ConstBufferType buffer,
-                                                    SizeType size, ::boost::filesystem::path& path)
+                                                    SizeType size, std::filesystem::path& path)
 {
     return m_worker->postTask<bool>( std::bind(&BufferManager::writeBufferImpl, this, buffer, size, path) );
 }
@@ -497,9 +497,9 @@ std::shared_future<bool> BufferManager::writeBuffer(BufferManager::ConstBufferTy
 //------------------------------------------------------------------------------
 
 bool BufferManager::writeBufferImpl(BufferManager::ConstBufferType buffer,
-                                    SizeType size, ::boost::filesystem::path& path)
+                                    SizeType size, std::filesystem::path& path)
 {
-    ::boost::filesystem::ofstream fs(path, std::ios::binary|std::ios::trunc);
+    std::ofstream fs(path, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Memory management : Unable to open " << path, !fs.good());
     const char* charBuf = static_cast< const char* >(buffer);
     OSLM_TRACE("writing " << path);
@@ -511,16 +511,16 @@ bool BufferManager::writeBufferImpl(BufferManager::ConstBufferType buffer,
 //-----------------------------------------------------------------------------
 
 std::shared_future<bool> BufferManager::readBuffer(BufferManager::BufferType buffer, SizeType size,
-                                                   ::boost::filesystem::path& path)
+                                                   std::filesystem::path& path)
 {
     return m_worker->postTask<bool>( std::bind(&BufferManager::readBufferImpl, this, buffer, size, path) );
 }
 
 //------------------------------------------------------------------------------
 
-bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType size, ::boost::filesystem::path& path)
+bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType size, std::filesystem::path& path)
 {
-    ::boost::filesystem::ifstream fs(path, std::ios::in|std::ios::binary|std::ios::ate);
+    std::ifstream fs(path, std::ios::in|std::ios::binary|std::ios::ate);
     FW_RAISE_IF("Unable to read " << path, !fs.good());
 
     std::streampos fileSize = fs.tellg();
@@ -567,7 +567,7 @@ std::string BufferManager::toStringImpl() const
              << std::setw(6) << info.lastAccess << " "
              << std::setw(4) << info.lockCount() << " "
              << ((info.loaded) ? "   " : "not") << " loaded "
-             << ::boost::filesystem::path(info.fsFile) << " "
+             << std::filesystem::path(info.fsFile) << " "
              << std::endl;
     }
     return sstr.str();

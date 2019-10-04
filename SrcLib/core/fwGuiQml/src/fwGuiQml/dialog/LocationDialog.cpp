@@ -34,9 +34,9 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <filesystem>
 #include <QDir>
 #include <QGuiApplication>
 
@@ -70,16 +70,16 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
         const std::string& result = ::fwGui::dialog::InputDialog::showInputDialog(
             this->getTitle(), "This is a temporary dialog to save file under macOS. Write below the path of the file you want to save:",
             QDir::homePath().toStdString());
-        ::boost::filesystem::path bpath( result);
+        std::filesystem::path bpath( result);
         m_location = ::fwData::location::SingleFile::New(bpath);
         return m_location;
     }
 #endif
 
-    const QString& caption                      = QString::fromStdString(this->getTitle());
-    const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
-    const QString& path                         = QString::fromStdString(defaultPath.string());
-    const QStringList& filter                   = this->fileFilters();
+    const QString& caption                  = QString::fromStdString(this->getTitle());
+    const std::filesystem::path defaultPath = this->getDefaultLocation();
+    const QString& path                     = QString::fromStdString(defaultPath.string());
+    const QStringList& filter               = this->fileFilters();
 
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
@@ -163,10 +163,10 @@ void LocationDialog::resultDialog(const QVariant& msg)
         if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
         {
             ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
-            std::vector< ::boost::filesystem::path > paths;
+            std::vector< std::filesystem::path > paths;
             for (const QUrl& filename : files)
             {
-                ::boost::filesystem::path bpath( filename.toLocalFile().toStdString() );
+                std::filesystem::path bpath( filename.toLocalFile().toStdString() );
                 paths.push_back(bpath);
             }
             multifiles->setPaths(paths);
@@ -175,7 +175,7 @@ void LocationDialog::resultDialog(const QVariant& msg)
         else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE ||
                  m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
         {
-            ::boost::filesystem::path bpath( files.first().toLocalFile().toStdString());
+            std::filesystem::path bpath( files.first().toLocalFile().toStdString());
             m_location = ::fwData::location::SingleFile::New(bpath);
         }
     }

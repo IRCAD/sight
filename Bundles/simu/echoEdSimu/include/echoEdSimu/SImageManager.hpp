@@ -58,7 +58,7 @@ class ECHOEDSIMU_CLASS_API SImageManager : public ::arServices::ISimulator
 
 public:
 
-    fwCoreServiceMacro(SImageManager, ::arServices::ISimulator);
+    fwCoreServiceMacro(SImageManager, ::arServices::ISimulator)
 
     /// Constructor. Do nothing.
     ECHOEDSIMU_API SImageManager() noexcept;
@@ -102,7 +102,7 @@ private:
     typedef std::vector< std::vector< ::fwData::Image::sptr > > ImagesVecType;
 
     /// Load an image from the disk
-    void load(::boost::filesystem::path dir, ImagesVecType& images);
+    void load(std::filesystem::path dir, ImagesVecType& images);
 
     ImagesVecType m_ctImages;
     ImagesVecType m_echoImages;

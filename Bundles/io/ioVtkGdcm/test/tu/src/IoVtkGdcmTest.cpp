@@ -47,9 +47,8 @@
 #include <fwTools/System.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVtkGdcm::ut::IoVtkGdcmTest );
@@ -86,10 +85,10 @@ void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
     // HACK, we don't want the compiler to optimize 'm_medDataCampVersion' out.
     CPPUNIT_ASSERT_EQUAL(::fwMedDataCamp::Version::s_CURRENT_VERSION, m_medDataCampVersion);
 
-    ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "sight/Patient/Dicom/image_281433");
+    std::filesystem::path dicomDataPath(::fwTest::Data::dir() / "sight/Patient/Dicom/image_281433");
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + dicomDataPath.string() + "' does not exist",
-                           ::boost::filesystem::exists(dicomDataPath));
+                           std::filesystem::exists(dicomDataPath));
 
     ::fwMedData::SeriesDB::sptr seriesDB               = ::fwMedData::SeriesDB::New();
     ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New("service");
@@ -200,9 +199,9 @@ void IoVtkGdcmTest::seriesDBReaderTest()
 
 void IoVtkGdcmTest::imageSeriesWriterTest()
 {
-    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "DicomWriterTest";
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "DicomWriterTest";
 
-    ::boost::filesystem::create_directories( PATH );
+    std::filesystem::create_directories( PATH );
 
     ::fwRuntime::EConfigurationElement::sptr srvConfig = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");

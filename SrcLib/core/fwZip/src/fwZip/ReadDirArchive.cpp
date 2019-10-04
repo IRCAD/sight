@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,21 +20,22 @@
  *
  ***********************************************************************/
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "fwZip/ReadDirArchive.hpp"
+
+#include "fwZip/exception/Read.hpp"
+
+#include "minizip/unzip.h"
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include "minizip/unzip.h"
-#include "fwZip/ReadDirArchive.hpp"
-#include "fwZip/exception/Read.hpp"
+#include <filesystem>
 
 namespace fwZip
 {
 
 //-----------------------------------------------------------------------------
 
-ReadDirArchive::ReadDirArchive( const ::boost::filesystem::path &archive ) :
+ReadDirArchive::ReadDirArchive( const std::filesystem::path& archive ) :
     m_archive(archive)
 {
 }
@@ -47,12 +48,12 @@ ReadDirArchive::~ReadDirArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) ReadDirArchive::getFile(const ::boost::filesystem::path &path)
+SPTR(std::istream) ReadDirArchive::getFile(const std::filesystem::path& path)
 {
     FW_RAISE_EXCEPTION_IF(
         ::fwZip::exception::Read("File '" +  path.string() + "' "
                                  "in archive '" + m_archive.string() + "' doesn't exist."),
-        !::boost::filesystem::exists(m_archive / path));
+        !std::filesystem::exists(m_archive / path));
 
     SPTR(std::ifstream) is = std::make_shared< std::ifstream >();
     is->open((m_archive / path).string().c_str(), std::fstream::binary | std::fstream::in);
@@ -61,10 +62,9 @@ SPTR(std::istream) ReadDirArchive::getFile(const ::boost::filesystem::path &path
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path ReadDirArchive::getArchivePath() const
+const std::filesystem::path ReadDirArchive::getArchivePath() const
 {
     return m_archive;
 }
 
 }
-

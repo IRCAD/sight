@@ -212,8 +212,8 @@ void WorkerQt::init( int& argc, char** argv)
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
     // This work in all cases when we use our binpkgs. If we use the system libraries, the Qt.conf file
     // of the system should do the job and the following might be useless.
-    ::boost::filesystem::path qt5LibDir = ::fwTools::os::getSharedLibraryPath("Qt5Core");
-    const ::boost::filesystem::path qt5PluginsDir = qt5LibDir.remove_filename() / "qt5" / "plugins";
+    std::filesystem::path qt5LibDir           = ::fwTools::os::getSharedLibraryPath("Qt5Core");
+    const std::filesystem::path qt5PluginsDir = qt5LibDir.remove_filename() / "qt5" / "plugins";
 
     QDir pluginDir(QString::fromStdString(qt5PluginsDir.string()));
     if (pluginDir.exists())

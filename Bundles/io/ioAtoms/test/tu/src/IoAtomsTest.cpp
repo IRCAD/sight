@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,8 +45,9 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/property_tree/ptree.hpp>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioAtoms::ut::IoAtomsTest );
@@ -166,7 +167,7 @@ void writeReadFile(const ::fwServices::IService::ConfigType& srvCfg, const SPTR(
 
 //------------------------------------------------------------------------------
 
-void atomTest(const ::boost::filesystem::path& filePath)
+void atomTest(const std::filesystem::path& filePath)
 {
     ::fwServices::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
@@ -176,7 +177,7 @@ void atomTest(const ::boost::filesystem::path& filePath)
     workspace->getContainer()["processingDB"] = ::fwData::Composite::New();
     workspace->getContainer()["planningDB"]   = ::fwData::Composite::New();
 
-    ::boost::filesystem::create_directories( filePath.parent_path() );
+    std::filesystem::create_directories( filePath.parent_path() );
     writeReadFile< ::fwData::Composite>( srvCfg, workspace, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
     writeReadFile< ::fwMedData::SeriesDB >( srvCfg, seriesDB, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
 
@@ -254,7 +255,7 @@ void atomTest(const ::boost::filesystem::path& filePath)
 
 //------------------------------------------------------------------------------
 
-void atomTestSimpleData(const ::boost::filesystem::path& filePath)
+void atomTestSimpleData(const std::filesystem::path& filePath)
 {
     ::fwServices::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
@@ -274,7 +275,7 @@ void atomTestSimpleData(const ::boost::filesystem::path& filePath)
         *iter = count++;
     }
 
-    ::boost::filesystem::create_directories( filePath.parent_path() );
+    std::filesystem::create_directories( filePath.parent_path() );
 
     write< ::fwData::Array >(srvCfg, array, "::ioAtoms::SWriter");
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,8 +42,7 @@
 #include <fwVtkIO/helper/vtkLambdaCommand.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <boost/filesystem.hpp>
-
+#include <filesystem>
 #include <gdcmDicts.h>
 #include <gdcmFilenameGenerator.h>
 #include <gdcmGlobal.h>
@@ -99,9 +98,9 @@ void ImageSeriesWriter::write()
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage( dataImage, vtkImage );
 
-    ::boost::filesystem::path outputDirectory = this->getFolder();
+    std::filesystem::path outputDirectory = this->getFolder();
     FW_RAISE_IF("'" << outputDirectory << "' is not a directory.",
-                !::boost::filesystem::is_directory( outputDirectory ) );
+                !std::filesystem::is_directory( outputDirectory ) );
 
     // Generate filenames
     const std::string gdcmfile = ( outputDirectory / "image_" ).string() + "%01d.dcm";

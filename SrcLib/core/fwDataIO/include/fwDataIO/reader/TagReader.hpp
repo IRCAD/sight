@@ -27,7 +27,7 @@
 
 #include <fwData/location/SingleFile.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwData
 {

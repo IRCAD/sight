@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,38 +20,38 @@
  *
  ***********************************************************************/
 
-#include <fwCore/spyLog.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
 #include "fwMemory/FileHolder.hpp"
+
+#include <fwCore/spyLog.hpp>
+
+#include <filesystem>
 
 namespace fwMemory
 {
 
 struct FileAutoDelete
 {
-    FileAutoDelete(const ::boost::filesystem::path &file) : m_path(file)
+    FileAutoDelete(const std::filesystem::path& file) :
+        m_path(file)
     {
     }
 
     ~FileAutoDelete()
     {
-        if(!m_path.empty() && ::boost::filesystem::is_regular_file(m_path))
+        if(!m_path.empty() && std::filesystem::is_regular_file(m_path))
         {
-            ::boost::system::error_code ec;
-            ::boost::filesystem::remove(m_path, ec);
-            OSLM_ERROR_IF("file remove failed : " << ec.message(), ec.value()!=0);
+            std::error_code ec;
+            std::filesystem::remove(m_path, ec);
+            OSLM_ERROR_IF("file remove failed : " << ec.message(), ec.value() != 0);
         }
     }
 
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 };
-
 
 //-----------------------------------------------------------------------------
 
-FileHolder::FileHolder(const ::boost::filesystem::path &file, bool autodelete) :
+FileHolder::FileHolder(const std::filesystem::path& file, bool autodelete) :
     m_path(file)
 {
     if (autodelete)
@@ -62,6 +62,4 @@ FileHolder::FileHolder(const ::boost::filesystem::path &file, bool autodelete) :
 
 //-----------------------------------------------------------------------------
 
-
 } // namespace fwMemory
-

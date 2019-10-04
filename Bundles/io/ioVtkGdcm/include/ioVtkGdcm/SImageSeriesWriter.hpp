@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -68,7 +68,7 @@ class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SImageSeriesWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SImageSeriesWriter,  ::fwIO::IWriter)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -104,7 +104,7 @@ protected:
 
 private:
 
-    void saveImageSeries( const ::boost::filesystem::path folder, CSPTR(::fwMedData::ImageSeries) series );
+    void saveImageSeries( const std::filesystem::path folder, CSPTR(::fwMedData::ImageSeries) series );
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 };

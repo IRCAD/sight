@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtomsBoostIO::ut::BoostIOTest );
 
@@ -62,7 +62,7 @@ void BoostIOTest::readWriteZipTest()
 {
     SequenceGenerator gen;
 
-    ::boost::filesystem::path folderPath =
+    std::filesystem::path folderPath =
         ::fwTools::System::getTemporaryFolder() / ( ::fwTools::UUID::generateUUID() + ".zip");
 
     ::fwZip::IWriteArchive::sptr writeArchive;
@@ -77,7 +77,7 @@ void BoostIOTest::readWriteZipTest()
         this->readProcess(gen, readArchive, "root.json");
         readArchive.reset();
 
-        bool suppr = ::boost::filesystem::remove_all(folderPath);
+        bool suppr = std::filesystem::remove_all(folderPath);
         CPPUNIT_ASSERT(suppr);
     }
     {
@@ -89,7 +89,7 @@ void BoostIOTest::readWriteZipTest()
         this->readProcess(gen, readArchive, "root.xml", ::fwAtomsBoostIO::XML);
         readArchive.reset();
 
-        bool suppr = ::boost::filesystem::remove_all(folderPath);
+        bool suppr = std::filesystem::remove_all(folderPath);
         CPPUNIT_ASSERT(suppr);
     }
 }
@@ -99,7 +99,7 @@ void BoostIOTest::readWriteZipTest()
 void BoostIOTest::readWriteDirTest()
 {
     SequenceGenerator gen;
-    ::boost::filesystem::path folderPath =
+    std::filesystem::path folderPath =
         ::fwTools::System::getTemporaryFolder() / ::fwTools::UUID::generateUUID();
 
     ::fwZip::IWriteArchive::sptr writeArchive;
@@ -114,7 +114,7 @@ void BoostIOTest::readWriteDirTest()
         this->readProcess(gen, readArchive, "root.json");
         readArchive.reset();
 
-        bool suppr = ::boost::filesystem::remove_all(folderPath);
+        bool suppr = std::filesystem::remove_all(folderPath);
         CPPUNIT_ASSERT(suppr);
     }
     {
@@ -126,7 +126,7 @@ void BoostIOTest::readWriteDirTest()
         this->readProcess(gen, readArchive, "root.xml", ::fwAtomsBoostIO::XML);
         readArchive.reset();
 
-        bool suppr = ::boost::filesystem::remove_all(folderPath);
+        bool suppr = std::filesystem::remove_all(folderPath);
         CPPUNIT_ASSERT(suppr);
     }
 }
@@ -135,7 +135,7 @@ void BoostIOTest::readWriteDirTest()
 
 void BoostIOTest::writeProcess(SequenceGenerator& gen,
                                ::fwZip::IWriteArchive::sptr writeArchive,
-                               const ::boost::filesystem::path& rootFilename,
+                               const std::filesystem::path& rootFilename,
                                ::fwAtomsBoostIO::FormatType format )
 {
     ::fwAtoms::Sequence::sptr seq = gen.getSequence();
@@ -146,7 +146,7 @@ void BoostIOTest::writeProcess(SequenceGenerator& gen,
 
 void BoostIOTest::readProcess(SequenceGenerator& gen,
                               ::fwZip::IReadArchive::sptr readArchive,
-                              const ::boost::filesystem::path& rootFilename,
+                              const std::filesystem::path& rootFilename,
                               const ::fwAtomsBoostIO::FormatType& formatType)
 {
     ::fwAtoms::Sequence::sptr readSeq;

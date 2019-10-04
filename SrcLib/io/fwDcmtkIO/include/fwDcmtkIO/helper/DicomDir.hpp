@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDCMTKIO_HELPER_DICOMDIR_HPP__
-#define __FWDCMTKIO_HELPER_DICOMDIR_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwDcmtkIO
 {
@@ -39,7 +38,7 @@ class FWDCMTKIO_CLASS_API DicomDir
 {
 public:
     /// Find Dicom instances in a DicomDir file.
-    FWDCMTKIO_API static bool readDicomDir(const ::boost::filesystem::path& root,
+    FWDCMTKIO_API static bool readDicomDir(const std::filesystem::path& root,
                                            std::vector<std::string>& dicomFiles);
 
 private:
@@ -47,13 +46,10 @@ private:
     FWDCMTKIO_API static std::string createRegex(std::string filename);
 
     /// Return the filename with the correct case.
-    FWDCMTKIO_API static ::boost::filesystem::path getRealFilename(
-        const ::boost::filesystem::path& root, const std::string& filename);
+    FWDCMTKIO_API static std::filesystem::path getRealFilename(
+        const std::filesystem::path& root, const std::string& filename);
 
 };
 
 } //helper
 } //fwDcmtkIO
-
-
-#endif /* __FWDCMTKIO_HELPER_DICOMDIR_HPP__ */

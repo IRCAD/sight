@@ -70,7 +70,7 @@ public:
      *        In this case, you can call this method in the Plugin.cpp file of this Bundle
      * @param path Relative path to the ressource.cfg file from a specific Bundle
      */
-    FWRENDEROGRE_API static void addResourcesPath(const ::boost::filesystem::path& path);
+    FWRENDEROGRE_API static void addResourcesPath(const std::filesystem::path& path);
 
     /**
      * @brief getOgreRoot

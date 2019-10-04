@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,25 @@
  *
  ***********************************************************************/
 
-#include "fwTest/Exception.hpp"
 #include "fwTest/Data.hpp"
 
-#include <boost/filesystem/operations.hpp>
+#include "fwTest/Exception.hpp"
+
+#include <filesystem>
 
 #include <cstdlib>
 #include <sstream>
-
 
 namespace fwTest
 {
 
 const std::string Data::s_TEST_DATA_DIR_ENV_VAR("FWTEST_DATA_DIR");
 
-::boost::filesystem::path Data::dir()
+//------------------------------------------------------------------------------
+
+std::filesystem::path Data::dir()
 {
-    char * val = std::getenv(s_TEST_DATA_DIR_ENV_VAR.c_str());
+    char* val = std::getenv(s_TEST_DATA_DIR_ENV_VAR.c_str());
     if (val == 0)
     {
         std::stringstream msg;
@@ -45,9 +47,9 @@ const std::string Data::s_TEST_DATA_DIR_ENV_VAR("FWTEST_DATA_DIR");
         throw fwTest::Exception(msg.str());
     }
 
-    ::boost::filesystem::path datadir(val);
+    std::filesystem::path datadir(val);
 
-    if (!::boost::filesystem::exists(datadir))
+    if (!std::filesystem::exists(datadir))
     {
         std::stringstream msg;
         msg << "The path'" << datadir
@@ -58,7 +60,4 @@ const std::string Data::s_TEST_DATA_DIR_ENV_VAR("FWTEST_DATA_DIR");
     return datadir;
 }
 
-
 } // namespace fwTest
-
-

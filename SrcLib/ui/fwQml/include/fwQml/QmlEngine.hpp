@@ -26,8 +26,7 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QList>
 #include <QPointer>
 #include <QQmlApplicationEngine>
@@ -56,18 +55,18 @@ public:
      * @brief Load and launch the qml component as the root component
      * @see Use getRootObjects() to get the main objects.
      */
-    FWQML_API void loadMainComponent(const ::boost::filesystem::path& file);
+    FWQML_API void loadMainComponent(const std::filesystem::path& file);
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      * Add a context in which the component will be created instead of the root context
      */
-    FWQML_API QObject* createComponent(const ::boost::filesystem::path& file, QSharedPointer<QQmlContext>& context);
+    FWQML_API QObject* createComponent(const std::filesystem::path& file, QSharedPointer<QQmlContext>& context);
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      */
-    FWQML_API QObject* createComponent(const ::boost::filesystem::path& file);
+    FWQML_API QObject* createComponent(const std::filesystem::path& file);
 
     /**
      * @brief Define the path as a directory where the engine searches for installed modules in a URL-based directory
@@ -95,7 +94,7 @@ public:
      *
      * @see http://doc.qt.io/qt-5/qtqml-syntax-directoryimports.html
      */
-    FWQML_API void importModulePath(const ::boost::filesystem::path& path);
+    FWQML_API void importModulePath(const std::filesystem::path& path);
 
     /// Returns a list of all the root objects instantiated by the QQmlApplicationEngine
     FWQML_API QList<QObject*> getRootObjects();
