@@ -40,6 +40,8 @@
 #include <signal.h>
 #endif
 
+#include <random>
+
 #define SIGHT_TMP_EXT "sight-tmp"
 
 namespace fwTools
@@ -118,6 +120,29 @@ const std::filesystem::path& System::getTempPath() noexcept
 
 //------------------------------------------------------------------------------
 
+const std::string System::genTempFileName(size_t _length)
+{
+    static const char chrs[] = { "0123456789"
+                                 "abcdefghijklmnopqrstuvwxyz"
+                                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+
+    thread_local static std::mt19937 rg{std::random_device{} ()};
+    thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(chrs) - 2);
+
+    std::string s;
+    s.reserve(_length);
+    size_t length = _length;
+
+    while(length--)
+    {
+        s += chrs[pick(rg)];
+    }
+
+    return s;
+}
+
+//------------------------------------------------------------------------------
+
 const std::filesystem::path createUniqueFolder(const std::filesystem::path& folderUniquePath)
 {
     namespace fs = std::filesystem;
@@ -126,7 +151,7 @@ const std::filesystem::path createUniqueFolder(const std::filesystem::path& fold
 
     do
     {
-        tmpDir = folderUniquePath / std::tmpnam(nullptr);
+        tmpDir = folderUniquePath / System::genTempFileName();
 
         if(!fs::exists(tmpDir))
         {

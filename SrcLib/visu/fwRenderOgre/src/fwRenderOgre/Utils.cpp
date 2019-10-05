@@ -34,7 +34,8 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <filesystem>
+#include <fwTools/System.hpp>
+
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreHardwarePixelBuffer.h>
@@ -43,6 +44,7 @@
 
 #include <algorithm>
 #include <cctype> // Needed for isspace()
+#include <filesystem>
 
 #ifdef __APPLE__
 #define PLUGIN_PATH "plugins_osx.cfg"
@@ -80,7 +82,7 @@ void Utils::loadResources()
                 OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
-            const auto tmpPath = std::filesystem::temp_directory_path() / std::tmpnam(nullptr);
+            const auto tmpPath = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
             std::ofstream newResourceFile(tmpPath.string());
 
             if(!std::filesystem::exists(tmpPath))
@@ -156,7 +158,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
             OSLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
         }
 
-        const auto tmpPluginCfg = std::filesystem::temp_directory_path() / std::tmpnam(nullptr);
+        const auto tmpPluginCfg = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
 
         // Set the actual plugin path in the plugin config file.
         std::ifstream pluginCfg(confPath.string());

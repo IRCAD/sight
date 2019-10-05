@@ -25,7 +25,6 @@
 #include "fwTools/config.hpp"
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwTools
@@ -43,9 +42,15 @@ public:
     /**
      * @brief   Returns the system's temporary folder.
      * Returns the value returned by std::filesystem::temp_directory_path, or
-     * if boost returns no valid dir, c:\\ on windows, /tmp on other systems
+     * if std returns no valid dir, c:\\ on windows, /tmp on other systems
      */
     FWTOOLS_API static const std::filesystem::path& getTempPath() noexcept;
+
+    /**
+     * @brief   Generate a random filename.
+     * @param   length: the length of the generated filename.
+     */
+    FWTOOLS_API static const std::string genTempFileName(size_t _length = 64);
 
     /**
      * @brief   Returns a unique per-process temporary folder.

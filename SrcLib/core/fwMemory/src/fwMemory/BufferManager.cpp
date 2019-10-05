@@ -34,9 +34,8 @@
 
 #include <fwTools/System.hpp>
 
-#include <filesystem>
-
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iomanip>
@@ -399,7 +398,7 @@ bool BufferManager::dumpBuffer(BufferInfo& info, BufferManager::BufferPtrType bu
     }
 
     std::filesystem::path tmp        = ::fwTools::System::getTemporaryFolder();
-    std::filesystem::path dumpedFile = std::filesystem::temp_directory_path() / std::tmpnam(nullptr);
+    std::filesystem::path dumpedFile = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
 
     OSLM_TRACE("dumping " << bufferPtr << " " << dumpedFile);
     info.lockCounter.reset();
