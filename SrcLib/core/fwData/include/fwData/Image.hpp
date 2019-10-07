@@ -617,7 +617,7 @@ inline Image::Iterator<F> Image::end()
 template< typename F >
 inline Image::ConstIterator<F> Image::begin() const
 {
-    return Iterator<F>(this);
+    return ConstIterator<F>(this);
 }
 
 //------------------------------------------------------------------------------
@@ -625,7 +625,7 @@ inline Image::ConstIterator<F> Image::begin() const
 template< typename F >
 inline Image::ConstIterator<F> Image::end() const
 {
-    auto itr = Iterator<F>(this);
+    auto itr = ConstIterator<F>(this);
     itr += static_cast< typename Iterator<F>::difference_type>(this->getNumElements()/F::elementSize);
     return itr;
 }

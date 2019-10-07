@@ -46,6 +46,12 @@ public:
             v = val;
             return *this;
         }
+        //------------------------------------------------------------------------------
+
+        type& operator*()
+        {
+            return v;
+        }
         type v;
         static const size_t elementSize{1};
     };

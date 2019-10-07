@@ -210,12 +210,13 @@ void Image::setType(const std::string& type)
 void Image::copyInformation( Image::csptr _source )
 {
     this->setSize2(_source->m_size);
+    this->setSpacing2(_source->m_spacing);
+    this->setOrigin2(_source->m_origin);
     m_type               = _source->m_type;
-    m_spacing            = _source->m_spacing;
-    m_origin             = _source->m_origin;
     m_windowCenter       = _source->m_windowCenter;
     m_windowWidth        = _source->m_windowWidth;
     m_numberOfComponents = _source->m_numberOfComponents;
+    m_pixelFormat        = _source->m_pixelFormat;
 }
 
 //------------------------------------------------------------------------------
@@ -437,6 +438,9 @@ size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t
 const Image::SpacingType& Image::getSpacing() const
 {
     FW_DEPRECATED_MSG("Spacing parameter in now a std::array<double, 3>, use getSpacing2()", "22.0")
+
+    SLM_ASSERT("Deprecated getSpacing() is not initialized for '" + this->getID() + "', use getSpacing2()",
+               m_oldSpacing.size() == this->getNumberOfDimensions());
     return m_oldSpacing;
 }
 
@@ -469,6 +473,9 @@ void Image::setSpacing(const SpacingType& spacing)
 const Image::OriginType& Image::getOrigin() const
 {
     FW_DEPRECATED_MSG("Origin parameter in now a std::array<double, 3>, use getOrigin2()", "22.0")
+
+    SLM_ASSERT("Deprecated getOrigin() is not initialized for '" + this->getID() + "', use getOrigin2()",
+               m_oldOrigin.size() == this->getNumberOfDimensions());
     return m_oldOrigin;
 }
 
@@ -501,6 +508,9 @@ void Image::setOrigin(const OriginType& origin)
 const Image::SizeType& Image::getSize() const
 {
     FW_DEPRECATED_MSG("Size parameter in now a std::array<size_t, 3>, use getSize2()", "22.0")
+    SLM_ASSERT("Deprecated getSize() is not initialized for '" + this->getID() + "', use getSize2()",
+               m_oldSize.size() == this->getNumberOfDimensions());
+
     return m_oldSize;
 }
 

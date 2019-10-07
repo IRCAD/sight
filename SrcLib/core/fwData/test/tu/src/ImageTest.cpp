@@ -353,8 +353,10 @@ void ImageTest::testRGBAIterator()
 
     count = 0;
 
-    auto iter3 = img->begin<RGBAIterator>();
-    for (; iter3 != iterEnd; ++iter3)
+    ::fwData::Image::ConstIterator<RGBAIterator> iter3    = img->begin<RGBAIterator>();
+    ::fwData::Image::ConstIterator<RGBAIterator> iter3End = img->end<RGBAIterator>();
+
+    for (; iter3 != iter3End; ++iter3)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r",
                                      static_cast<std::uint16_t>(4*count), iter3->r);
@@ -413,8 +415,9 @@ void ImageTest::testRGBIterator()
 
     count = 0;
 
-    auto iterRGB3 = img->begin<RGBIterator>();
-    for (; iterRGB3 != iterEndRGB; ++iterRGB3)
+    ::fwData::Image::ConstIterator<RGBIterator> iterRGB3    = img->begin<RGBIterator>();
+    ::fwData::Image::ConstIterator<RGBIterator> iterRGB3End = img->end<RGBIterator>();
+    for (; iterRGB3 != iterRGB3End; ++iterRGB3)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r",
                                      static_cast<std::uint8_t>(3*count), iterRGB3->r);
