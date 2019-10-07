@@ -97,7 +97,6 @@ void SSquare::starting()
 
 void SSquare::updating()
 {
-    this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,7 +187,7 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
-    this->updating();
+    this->stopping();
     this->starting();
 }
 } // namespace adaptor
