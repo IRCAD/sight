@@ -62,8 +62,6 @@ bool MedicalImageHelpers::checkLandmarks( ::fwData::Image::sptr _pImg )
 
 bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::csptr _pImg )
 {
-    SLM_TRACE_FUNC();
-
     // Test if the image is allocated
     bool dataImageIsAllocated = (_pImg != ::fwData::Image::sptr());
 
@@ -72,9 +70,13 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::csptr _pImg )
         size_t nbDim = _pImg->getNumberOfDimensions();
         dataImageIsAllocated &= nbDim > 1;
 
+        // TMP: check if the image support the deprecated API (if old size, spacing and origin are supported)
+        SLM_ERROR_IF("The image '" + _pImg->getID() + "' does not support deprecated API",
+                     nbDim != _pImg->getSize().size())
+
         for ( size_t k = 0; dataImageIsAllocated && k < nbDim; ++k )
         {
-            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
+            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize2()[k] >= 1 );
         }
     }
 
@@ -89,7 +91,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
     bool fieldIsModified = false;
 
-    const ::fwData::Image::SizeType& imageSize = _pImg->getSize();
+    const ::fwData::Image::Size& imageSize = _pImg->getSize2();
 
     ::fwData::Integer::sptr axialIdx = _pImg->getField< ::fwData::Integer >(
         ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId );
@@ -120,19 +122,19 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
         );
 
     // Get value
-    if( axialIdx->value() < 0 ||  imageSize[2] < axialIdx->value() )
+    if( axialIdx->value() < 0 ||  imageSize[2] < static_cast<size_t>(axialIdx->value()) )
     {
         axialIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[2] / 2);
         fieldIsModified   = true;
     }
 
-    if( frontalIdx->value() < 0 ||  imageSize[1] < frontalIdx->value() )
+    if( frontalIdx->value() < 0 ||  imageSize[1] < static_cast<size_t>(frontalIdx->value()) )
     {
         frontalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[1] / 2);
         fieldIsModified     = true;
     }
 
-    if( sagittalIdx->value() < 0 ||  imageSize[0] < sagittalIdx->value() )
+    if( sagittalIdx->value() < 0 ||  imageSize[0] < static_cast<size_t>(sagittalIdx->value()) )
     {
         sagittalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[0] / 2);
         fieldIsModified      = true;
@@ -185,6 +187,7 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 ::fwData::Image::sptr MedicalImageHelpers::initialize( ::fwData::Image::sptr imgSrc,
                                                        ::fwData::Image::sptr imgToInitialize)
 {
+    FW_DEPRECATED_MSG("This method is no longer supported", "22.0")
     SLM_ASSERT("Image source must be initialized", imgSrc);
     SLM_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
 
@@ -199,7 +202,7 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 
     imgSrc->setDataArray(imgData, false);
 
-    imgToInitialize->allocate();
+    imgToInitialize->resize();
 
     return imgToInitialize;
 }

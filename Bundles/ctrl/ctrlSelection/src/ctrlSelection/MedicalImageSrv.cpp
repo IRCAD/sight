@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, ::fwData::Image );
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, ::fwData::Image )
 
 //-----------------------------------------------------------------------------
 
@@ -59,6 +59,12 @@ MedicalImageSrv::~MedicalImageSrv() noexcept
 void MedicalImageSrv::convertImage()
 {
     ::fwData::Image::sptr pImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+
+    // Temporary to keep old API
+    pImg->setSize2(pImg->getSize2());
+    pImg->setOrigin2(pImg->getOrigin2());
+    pImg->setSpacing2(pImg->getSpacing2());
+
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
         ::fwDataTools::helper::Image helper( pImg );
