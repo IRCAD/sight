@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IParameter, ::visuOgreAdaptor::SCompositorParameter, ::fwData::Object);
+fwServicesRegisterMacro( ::fwRenderOgre::IParameter, ::visuOgreAdaptor::SCompositorParameter, ::fwData::Object)
 
 //------------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyResourcesCreated(bool forResizeOnly)
+    virtual void notifyResourcesCreated(bool)
     {
         auto adaptor = m_adaptor.lock();
         SLM_ASSERT("Adaptor has expired.", adaptor);
