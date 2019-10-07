@@ -87,8 +87,8 @@
 
             <service uid="depthRangeSlider" type="::guiQt::editor::SParameters">
                 <parameters>
-                    <param type="double" name="X" key="minDepth" defaultValue="0." min="-500." max="1000." />
-                    <param type="double" name="Y" key="maxDepth" defaultValue="0." min="-500." max="1000." />
+                    <param type="double" widget="slider" name="X" key="minDepth" defaultValue="0." min="-100." max="100." />
+                    <param type="double" widget="slider" name="Y" key="maxDepth" defaultValue="0." min="-100." max="100." />
                 </parameters>
             </service>
 
