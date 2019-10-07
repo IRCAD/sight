@@ -187,8 +187,7 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
-    this->stopping();
-    this->starting();
+    m_rec->setPos(m_coord.getX(), m_coord.getY());
 }
 } // namespace adaptor
 } // namespace scene2D
