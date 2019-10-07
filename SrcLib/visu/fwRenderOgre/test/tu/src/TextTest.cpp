@@ -106,6 +106,8 @@ void TextTest::factoryTest()
         static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel", "_GUI"));
 
     auto* const camera = sceneManager->createCamera("TestCamera");
+    ogreRenderWindow->addViewport(camera);
+
     ::fwRenderOgre::Text* textObj1 = ::fwRenderOgre::Text::New("testTest", sceneManager, overlayTextPanel,
                                                                "DejaVuSans.ttf", 32, 96, camera);
     CPPUNIT_ASSERT(textObj1 != nullptr); // See if it has the right type.
