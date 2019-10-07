@@ -175,11 +175,11 @@ bool SSquare::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphi
 void SSquare::setDoubleParameter(const double _val, std::string _key)
 {
     this->configureParams();
-    if(_key == "minDepth")
+    if(_key == "X")
     {
         m_coord.setX(_val);
     }
-    else if(_key == "maxDepth")
+    else if(_key == "Y")
     {
         m_coord.setY(_val);
     }
