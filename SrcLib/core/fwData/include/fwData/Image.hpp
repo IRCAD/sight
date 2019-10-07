@@ -364,23 +364,32 @@ public:
     typedef std::vector< double > OriginType;
     /** @{
      * @brief get/set image spacing
+     * @deprecated Use getSizeSpacing2()/setSpacing2(), it will be removed in sight 22.0
      */
 
+    [[deprecated("it will be removed in sight 22.0, use getSpacing2()")]]
     FWDATA_API const SpacingType& getSpacing() const;
+    [[deprecated("it will be removed in sight 22.0, use setSpacing2()")]]
     FWDATA_API void setSpacing(const SpacingType& spacing);
     /// @}
 
     /** @{
-     *  @brief get/set image origin
+     * @brief get/set image origin
+     * @deprecated Use getOrigin2()/setOrigin2(), it will be removed in sight 22.0
      */
+    [[deprecated("it will be removed in sight 22.0, use getOrigin2()")]]
     FWDATA_API const OriginType& getOrigin() const;
+    [[deprecated("it will be removed in sight 22.0, use setOrigin2()")]]
     FWDATA_API void setOrigin(const OriginType& origin);
     /// @}
 
     /** @{
      * @brief get/set image size
+     * @deprecated Use getSize2()/setSize2(), it will be removed in sight 22.0
      */
+    [[deprecated("it will be removed in sight 22.0, use getSize2()")]]
     FWDATA_API const SizeType& getSize() const;
+    [[deprecated("it will be removed in sight 22.0, use setSize2()")]]
     FWDATA_API void setSize(const SizeType& size);
     /// @}
 
@@ -393,10 +402,14 @@ public:
      *  - if there is no memory left
      *
      * @return Allocated size in bytes
+     * @deprecated Allocate methods will be removed in sight 22.0. Use resize() methods instead
      */
+    [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
     FWDATA_API size_t allocate();
+    [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
                                const ::fwTools::Type& type, size_t numberOfComponents = 1);
+    [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
     FWDATA_API size_t allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents = 1);
     /// @}
 
@@ -404,6 +417,7 @@ public:
      * @brief get a DynamicType for retrocompatibility
      * @deprecated Use getType()
      */
+    [[deprecated("it will be removed in sight 22.0, use getType()")]]
     FWDATA_API ::fwTools::DynamicType getPixelType() const;
 
     /**
@@ -413,9 +427,11 @@ public:
      * @param[in] copyArrayInfo if true, the image will copy the size and type information from the array
      *
      */
+    [[deprecated("it will be removed in sight 22.0")]]
     FWDATA_API void setDataArray(::fwData::Array::sptr array, bool copyArrayInfo = true);
 
     ///get data array
+    [[deprecated("it will be removed in sight 22.0")]]
     FWDATA_API ::fwData::Array::sptr getDataArray() const;
 
 private:
