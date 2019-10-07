@@ -170,6 +170,7 @@
                 <slots>
                     <slot>axis/updateVisibility</slot>
                     <slot>axis2/updateVisibility</slot>
+                    <slot>genericScene/requestRender</slot>
                 </slots>
             </service>
 
@@ -177,6 +178,7 @@
                 <slots>
                     <slot>meshAdpt/updateVisibility</slot>
                     <slot>meshAdpt2/updateVisibility</slot>
+                    <slot>genericScene/requestRender</slot>
                 </slots>
             </service>
 
@@ -185,6 +187,7 @@
                 <slots>
                     <slot>meshPlaneAdpt/updateVisibility</slot>
                     <slot>meshPlaneAdpt2/updateVisibility</slot>
+                    <slot>genericScene/requestRender</slot>
                 </slots>
             </service>
 
@@ -453,6 +456,7 @@
             <connect>
                 <signal>reprojectionParams/doubleChanged</signal>
                 <slot>layerTransparencyCompositor/setDoubleParameter</slot>
+                <slot>genericScene/requestRender</slot>
             </connect>
 
             <connect>
