@@ -448,7 +448,6 @@ void SVolumeRender::updateImage()
 void SVolumeRender::updateSampling(int nbSamples)
 {
     this->getRenderService()->makeCurrent();
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
     m_nbSamples = static_cast<std::uint16_t>(nbSamples);
