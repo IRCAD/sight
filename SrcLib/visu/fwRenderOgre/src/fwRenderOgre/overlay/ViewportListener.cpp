@@ -31,7 +31,7 @@ namespace fwRenderOgre::overlay
 
 //-----------------------------------------------------------------------------
 
-ViewportListener::ViewportListener(ViewportLayerMapType& _vpLayerMap) :
+ViewportListener::ViewportListener(ViewportOverlaysMapType& _vpLayerMap) :
     m_viewportLayerMap(_vpLayerMap)
 {
 }
@@ -50,8 +50,7 @@ void ViewportListener::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent
 
     if(overlaysEnabled)
     {
-        Layer::sptr ogreLayer       = m_viewportLayerMap.at(evt.source);
-        const auto& enabledOverlays = ogreLayer->getEnabledOverlays();
+        const auto& enabledOverlays = m_viewportLayerMap.at(evt.source).get();
 
         for(::Ogre::Overlay* const overlay : enabledOverlays)
         {
@@ -70,8 +69,7 @@ void ViewportListener::postViewportUpdate(const Ogre::RenderTargetViewportEvent&
 
     if(overlaysEnabled)
     {
-        Layer::sptr ogreLayer       = m_viewportLayerMap.at(evt.source);
-        const auto& enabledOverlays = ogreLayer->getEnabledOverlays();
+        const auto& enabledOverlays = m_viewportLayerMap.at(evt.source).get();
 
         for(::Ogre::Overlay* const o : enabledOverlays)
         {

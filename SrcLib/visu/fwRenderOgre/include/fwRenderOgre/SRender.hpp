@@ -110,7 +110,7 @@ class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
 {
 public:
-    fwCoreServiceMacro(SRender, ::fwRender::IRender);
+    fwCoreServiceMacro(SRender, ::fwRender::IRender)
 
     FWRENDEROGRE_API SRender() noexcept;
     FWRENDEROGRE_API virtual ~SRender() noexcept;
@@ -221,9 +221,6 @@ private:
     /// Retrieves the viewport parameters from the configuration.
     static Layer::ViewportConfigType configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg);
 
-    /// Contains the scene configuration which is the scene xml node
-    ConfigurationType m_sceneConfiguration;
-
     /// Contains all the layers of the scene
     LayerMapType m_layers;
 
@@ -233,20 +230,20 @@ private:
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;
 
-    /// Listens for render target on all viewports.
-    overlay::ViewportListener* m_viewportListener { nullptr };
+    /// Maps viewports to their overlays. Needed by the viewport listener.
+    overlay::ViewportListener::ViewportOverlaysMapType m_viewportOverlaysMap;
 
-    /// Maps layers to their viewport. Needed by the viewport listener.
-    overlay::ViewportListener::ViewportLayerMapType m_viewportLayerMap;
+    /// Listens for render target updates for all viewports and enables the required overlays.
+    overlay::ViewportListener m_viewportListener { m_viewportOverlaysMap };
 
     /// Ogre root
-    ::Ogre::Root* m_ogreRoot;
+    ::Ogre::Root* m_ogreRoot { nullptr };
 
     /// How the rendering is triggered ?
-    RenderMode m_renderMode;
+    RenderMode m_renderMode { RenderMode::AUTO };
 
     /// True if the render window is in fullscreen.
-    bool m_fullscreen;
+    bool m_fullscreen { false };
 
     /// Width for off-screen rendering
     unsigned int m_width { 0 };
