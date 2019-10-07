@@ -27,6 +27,7 @@
 #include <OGRE/OgreRenderTargetListener.h>
 #include <OGRE/OgreViewport.h>
 
+#include <functional>
 #include <map>
 
 namespace fwRenderOgre::overlay
@@ -38,11 +39,11 @@ class ViewportListener : public ::Ogre::RenderTargetListener
 {
 public:
 
-    /// Maps a viewport to the layer managing it.
-    using ViewportLayerMapType = std::map< ::Ogre::Viewport*, ::fwRenderOgre::Layer::sptr >;
+    /// Maps each viewport to the overlays enabled on it.
+    using ViewportOverlaysMapType = std::map< ::Ogre::Viewport*, std::reference_wrapper<const Layer::OverlaySetType> >;
 
     /// Constructor, sets the reference to the map between layers and viewports.
-    FWRENDEROGRE_API ViewportListener(ViewportLayerMapType& _vpLayerMap);
+    FWRENDEROGRE_API ViewportListener(ViewportOverlaysMapType& _vpLayerMap);
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~ViewportListener() final;
@@ -55,8 +56,8 @@ private:
     /// Called right after rendering in the viewport. Disables the overlays enabled for this viewport.
     virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) final;
 
-    /// Maps a viewport to the layer managing it.
-    ViewportLayerMapType& m_viewportLayerMap;
+    /// Maps each viewport to the overlays enabled on it.
+    ViewportOverlaysMapType& m_viewportLayerMap;
 };
 
 } // namespace fwRenderOgre::overlay

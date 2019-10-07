@@ -49,7 +49,7 @@
 
 #include <stack>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData::Composite )
 
 namespace fwRenderOgre
 {
@@ -78,10 +78,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 //-----------------------------------------------------------------------------
 
-SRender::SRender() noexcept :
-    m_interactorManager(nullptr),
-    m_renderMode(RenderMode::AUTO),
-    m_fullscreen(false)
+SRender::SRender() noexcept
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -182,6 +179,8 @@ void SRender::starting()
 
     const ConfigType sceneCfg = config.get_child("scene");
 
+    SLM_ERROR_IF("Overlays should be enabled at the layer level.", !sceneCfg.get("<xmlattr>.overlays", "").empty());
+
     auto layerConfigs = sceneCfg.equal_range("layer");
     for( auto it = layerConfigs.first; it != layerConfigs.second; ++it )
     {
@@ -237,8 +236,7 @@ void SRender::starting()
     // Initialize resources to load overlay scripts.
     ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-    m_viewportListener = new overlay::ViewportListener(m_viewportLayerMap);
-    m_interactorManager->getRenderTarget()->addListener(m_viewportListener);
+    m_interactorManager->getRenderTarget()->addListener(&m_viewportListener);
 
     for (auto it : m_layers)
     {
@@ -247,7 +245,7 @@ void SRender::starting()
         layer->createScene();
 
         auto* vp = layer->getViewport();
-        m_viewportLayerMap[vp] = layer;
+        m_viewportOverlaysMap.emplace(vp, layer->getEnabledOverlays());
     }
 
     // Everything is started now, we can safely create connections and thus receive interactions from the widget
@@ -263,9 +261,7 @@ void SRender::stopping()
     m_connections.disconnect();
 
     m_interactorManager->getRenderTarget()->removeAllListeners();
-    delete m_viewportListener;
-
-    m_viewportLayerMap.clear();
+    m_viewportOverlaysMap.clear();
 
     for (auto it : m_layers)
     {
