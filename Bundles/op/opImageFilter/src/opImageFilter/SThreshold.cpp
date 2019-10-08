@@ -184,7 +184,7 @@ void SThreshold::updating()
     ::fwTools::Type type = param.imageIn->getType(); // image type
 
     // Invoke filter functor
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ThresholdFilter >::invoke( type, param );
+    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ThresholdFilter >::invoke( type, param );
 
     this->setOutput(s_IMAGE_OUTPUT, output);
 }
