@@ -128,7 +128,7 @@ void ImageTest::testAllocation()
     // process
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
-    CPPUNIT_ASSERT_EQUAL(0ul, img1->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), img1->getNumElements());
 
     img1->setType(TYPE);
     img1->setSize2(IMG_SIZE);
@@ -266,7 +266,7 @@ void ImageTest::testSetGetPixel()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::create("int16");
+    ::fwTools::Type TYPE       = ::fwTools::Type::s_INT16;
     ::fwData::Image::Size SIZE = {10, 20, 30};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
@@ -331,7 +331,7 @@ void ImageTest::testRGBAIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint16");
+    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT16;
     ::fwData::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGBA);
@@ -391,7 +391,7 @@ void ImageTest::testRGBIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
+    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
     ::fwData::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGB);
@@ -450,7 +450,7 @@ void ImageTest::testBGRIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
+    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
     ::fwData::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGR);
@@ -493,7 +493,7 @@ void ImageTest::testBGRAIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::create("uint8");
+    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
     ::fwData::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGRA);

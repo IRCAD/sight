@@ -303,10 +303,10 @@ public:
      * @note These functions lock the buffer
      * @{
      */
-    Iterator<IterationBase<char>::Raw> begin();
-    Iterator<IterationBase<char>::Raw> end();
-    ConstIterator<IterationBase<char>::Raw> begin() const;
-    ConstIterator<IterationBase<char>::Raw> end() const;
+    FWDATA_API Iterator<IterationBase<char>::Raw> begin();
+    FWDATA_API Iterator<IterationBase<char>::Raw> end();
+    FWDATA_API ConstIterator<IterationBase<char>::Raw> begin() const;
+    FWDATA_API ConstIterator<IterationBase<char>::Raw> end() const;
     /// @}
 
     ///
