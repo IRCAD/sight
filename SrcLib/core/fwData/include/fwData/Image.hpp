@@ -245,22 +245,46 @@ public:
      * @name Iteration typedefs
      * @{
      */
+    /// Image iterator
     template <typename FORMAT>
     using Iterator = ImageIteratorBase<FORMAT, false>;
     template <typename FORMAT>
+    /// Image const iterator
     using ConstIterator = ImageIteratorBase<FORMAT, true>;
+    /// Format used to iterate though all the buffer values
     template <typename TYPE>
-    using Iteration = typename IteratorBase<TYPE>::GrayScale;
-    typedef IteratorBase<std::uint8_t>::RGB RGBIteration;
-    typedef IteratorBase<std::uint8_t>::RGBA RGBAIteration;
-    typedef IteratorBase<std::uint8_t>::BGR BGRIteration;
-    typedef IteratorBase<std::uint8_t>::BGRA BGRAIteration;
+    using Iteration = typename IterationBase<TYPE>::Raw;
+    /// Format used to iterate though a RGB image in uint8
+    typedef IterationBase<std::uint8_t>::RGB RGBIteration;
+    /// Format used to iterate though a RGBA image in uint8
+    typedef IterationBase<std::uint8_t>::RGBA RGBAIteration;
+    /// Format used to iterate though a BGR image in uint8
+    typedef IterationBase<std::uint8_t>::BGR BGRIteration;
+    /// Format used to iterate though a BGRA image in uint8
+    typedef IterationBase<std::uint8_t>::BGRA BGRAIteration;
     /// @}
 
     /**
      * @brief Returns the begin/end iterators to the image buffer, cast to T
      *
      * Iterate through all the element of the buffer.
+     * The format should be one of the format defined by IterationBase (.
+     *
+     * Example:
+     * @code{.cpp}
+        ::fwData::Image::sptr img = ::fwData::Image::New();
+        img->resize({1920, 1080}, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+        ::fwData::Image:Iterator<RGBAIteration> iter    = img->begin<RGBAIteration>();
+        const ImageIteratorBase<RGBAIteration> iterEnd = img->end<RGBAIteration>();
+
+        for (; iter != iterEnd; ++iter)
+        {
+            iter->r = val1;
+            iter->g = val2;
+            iter->b = val2;
+            iter->a = val4;
+        }
+       @endcode
      *
      * @warning Print a warning if T is different from the array type
      * @note These functions lock the buffer
@@ -279,10 +303,10 @@ public:
      * @note These functions lock the buffer
      * @{
      */
-    Iterator<IteratorBase<char>::GrayScale> begin();
-    Iterator<IteratorBase<char>::GrayScale> end();
-    ConstIterator<IteratorBase<char>::GrayScale> begin() const;
-    ConstIterator<IteratorBase<char>::GrayScale> end() const;
+    Iterator<IterationBase<char>::Raw> begin();
+    Iterator<IterationBase<char>::Raw> end();
+    ConstIterator<IterationBase<char>::Raw> begin() const;
+    ConstIterator<IterationBase<char>::Raw> end() const;
     /// @}
 
     ///

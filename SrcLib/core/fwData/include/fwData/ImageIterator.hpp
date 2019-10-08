@@ -30,31 +30,40 @@ namespace fwData
 
 class Image;
 
+/**
+ *  @brief Class for Image iteration
+ *
+ * Define the formats used to iterate through an image buffer
+ */
 template <class TYPE>
-class IteratorBase
+class IterationBase
 {
 
 public:
-    struct GrayScale {
+
+    /// Used to iterate through all the value of an image
+    struct Raw {
         typedef TYPE type;
         typedef TYPE value_type;
 
         //------------------------------------------------------------------------------
 
-        GrayScale& operator=(const value_type& val)
+        Raw& operator=(const value_type& val)
         {
-            v = val;
+            value = val;
             return *this;
         }
         //------------------------------------------------------------------------------
 
         type& operator*()
         {
-            return v;
+            return value;
         }
-        type v;
+        type value;
         static const size_t elementSize{1};
     };
+
+    /// Used to iterate through a RGB image
     struct RGB {
         typedef TYPE type;
         typedef std::array<type, 3> value_type;
@@ -74,6 +83,8 @@ public:
         type b;
         static const size_t elementSize{3};
     };
+
+    /// Used to iterate through a RGBA image
     struct RGBA {
         typedef TYPE type;
         typedef std::array<type, 4> value_type;
@@ -93,6 +104,8 @@ public:
         type a;
         static const size_t elementSize{4};
     };
+
+    /// Used to iterate through a BGR image
     struct BGR {
         typedef TYPE type;
         typedef std::array<type, 3> value_type;
@@ -110,6 +123,8 @@ public:
         type r;
         static const size_t elementSize{3};
     };
+
+    /// Used to iterate through a BGRA image
     struct BGRA {
         typedef TYPE type;
         typedef std::array<type, 4> value_type;
@@ -135,9 +150,27 @@ public:
  * @brief Iterator on Image buffer
  *
  * Iterate through the buffer and check if the index is not out of the bounds
+ *
+ * @tparam FORMAT format used to iterate thoough the buffer, should be one of the format defined in IterationBase
+ *
+ * Example:
+ * @code{.cpp}
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+    img->resize({1920, 1080}, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+    ImageIteratorBase<IterationBase<std::int8_t>::RGBA> iter    = img->begin<IterationBase<std::int16_t>::RGBA>();
+    const ImageIteratorBase<IterationBase<std::int8_t>::RGBA> iterEnd = img->end<IterationBase<std::int16_t>::RGBA>();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        iter->r = val1;
+        iter->g = val2;
+        iter->b = val2;
+        iter->a = val4;
+    }
+   @endcode
  */
 template <class FORMAT, bool isConstIterator = true>
-class ImageIteratorBase : public IteratorBase<typename FORMAT::type>
+class ImageIteratorBase : public IterationBase<typename FORMAT::type>
 {
 public:
 

@@ -259,14 +259,14 @@ void ImageTest::testSetGetPixel()
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
 
     auto lock    = img->lock();
-    auto iter    = img->begin<IteratorBase<std::int16_t>::GrayScale>();
-    auto iterEnd = img->end<IteratorBase<std::int16_t>::GrayScale>();
+    auto iter    = img->begin<IterationBase<std::int16_t>::Raw>();
+    auto iterEnd = img->end<IterationBase<std::int16_t>::Raw>();
 
     // test 1 : use getPixelBuffer
     std::int16_t count = 0;
     for (; iter != iterEnd; ++iter)
     {
-        iter->v = count++;
+        *iter = count++;
     }
 
     for (size_t x = 0; x < SIZE[0]; ++x)
@@ -303,10 +303,10 @@ void ImageTest::testSetGetPixel()
     }
 
     count = 0;
-    auto iter2 = img->begin<IteratorBase<std::int16_t>::GrayScale>();
+    auto iter2 = img->begin<IterationBase<std::int16_t>::Raw>();
     for (; iter2 != iterEnd; ++iter2)
     {
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), iter2->v);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), iter2->value);
     }
 }
 
@@ -327,7 +327,7 @@ void ImageTest::testRGBAIterator()
 
     auto lock = img->lock();
 
-    typedef IteratorBase<std::uint16_t>::RGBA RGBAIterator;
+    typedef IterationBase<std::uint16_t>::RGBA RGBAIterator;
     auto iter    = img->begin<RGBAIterator>();
     auto iterEnd = img->end<RGBAIterator>();
 
@@ -347,7 +347,7 @@ void ImageTest::testRGBAIterator()
     for (; iter2 != iterEnd2; ++iter2)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].v",
-                                     static_cast<std::uint16_t>(count), iter2->v);
+                                     static_cast<std::uint16_t>(count), iter2->value);
         ++count;
     }
 
@@ -387,7 +387,7 @@ void ImageTest::testRGBIterator()
 
     auto lock = img->lock();
 
-    typedef IteratorBase<std::uint8_t>::RGB RGBIterator;
+    typedef IterationBase<std::uint8_t>::RGB RGBIterator;
     std::array< std::uint8_t, 3> value = {18, 12, 68};
     std::fill(img->begin<RGBIterator>(), img->end<RGBIterator>(), value);
 
@@ -452,7 +452,7 @@ void ImageTest::testBGRIterator()
     std::uint8_t count = 0;
     for (; iter != iterEnd; ++iter)
     {
-        iter->v = count++;
+        iter->value = count++;
     }
 
     typedef ::fwData::Image::BGRIteration BGRIteration;
@@ -495,7 +495,7 @@ void ImageTest::testBGRAIterator()
     std::uint8_t count = 0;
     for (; iter != iterEnd; ++iter)
     {
-        iter->v = count++;
+        *iter = count++;
     }
 
     typedef ::fwData::Image::BGRAIteration BGRAIteration;

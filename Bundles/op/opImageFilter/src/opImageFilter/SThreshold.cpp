@@ -132,7 +132,7 @@ struct ThresholdFilter
         // Fill the target buffer considering the thresholding
         for(; it1 != it1End && it2 != it2End; ++it1, ++it2 )
         {
-            * it2 = ( it1->v < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
+            * it2 = ( it1->value < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
         }
     }
 };
