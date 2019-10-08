@@ -209,7 +209,7 @@ template <class FORMAT, bool isConst>
 typename ImageIteratorBase<FORMAT, isConst>::difference_type ImageIteratorBase<FORMAT, isConst>::operator+(
     const ImageIteratorBase& other) const
 {
-    return m_pointer + other.m_pointer;
+    return (m_idx + other.m_idx) / m_elementSize;
 }
 
 //-----------------------------------------------------------------------------
@@ -218,7 +218,7 @@ template <class FORMAT, bool isConst>
 typename ImageIteratorBase<FORMAT, isConst>::difference_type ImageIteratorBase<FORMAT, isConst>::operator-(
     const ImageIteratorBase& other) const
 {
-    return m_pointer - other.m_pointer;
+    return (m_idx - other.m_idx) / m_elementSize;
 }
 
 //------------------------------------------------------------------------------

@@ -323,6 +323,13 @@ void ImageTest::testSetGetPixel()
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), iter2->value);
     }
+
+    std::fill(img->begin(), img->end(), 0);
+
+    for (const auto& element: *img)
+    {
+        CPPUNIT_ASSERT_EQUAL(static_cast<char>(0), element.value);
+    }
 }
 
 //------------------------------------------------------------------------------
