@@ -25,3 +25,9 @@ set( REQUIREMENTS
 set( CONAN_DEPS
     ${CONAN_QT}
 )
+
+set( PLUGINS
+    QtQml
+    QtQuick
+    QtQuick.2
+)

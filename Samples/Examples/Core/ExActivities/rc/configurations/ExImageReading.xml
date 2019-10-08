@@ -4,12 +4,10 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
-        <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
-        <param name="enabledNextChannel" default="enabledNextChannel" />
-        <param name="previousActivityChannel" default="previousActivityChannel" />
-        <param name="nextActivityChannel" default="nextActivityChannel" />
+        <param name="validationChannel" default="validationChannel" />
     </parameters>
     <config>
+
         <object uid="${image}" type="::fwData::Image" src="ref" />
 
         <service uid="mainView" type="::gui::view::SDefaultView" >
@@ -33,16 +31,11 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="media-0.1/icons/Back.svg" />
-                    <menuItem name="Next" icon="media-0.1/icons/Next.svg" />
-                    <separator />
                     <menuItem name="Import image" icon="media-0.1/icons/Import.svg" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="ActionPrevious" start="yes" />
-                <menuItem sid="ActionNext" start="yes" />
-                <menuItem sid="ActionImport" start="yes" />
+                <menuItem sid="actionImport" start="yes" />
             </registry>
         </service>
 
@@ -50,22 +43,14 @@
         <!-- Actions -->
         <!-- ******************************************************************************************************* -->
 
-        <service uid="ActionImport" type="::uiIO::editor::SIOSelector">
+        <service uid="actionImport" type="::uiIO::editor::SIOSelector">
             <inout key="data" uid="${image}" />
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="::ioVTK::SImageReader" />
         </service>
 
-        <!-- The action "previous" and "next" are visible only if the application use a "SActivitySequencer".
-             This service send signals to enable or not the actions. -->
-        <service uid="ActionPrevious" type="::gui::action::SSignal">
-            <state visible="false" />
-        </service>
-
-        <service uid="ActionNext" type="::gui::action::SSignal">
-            <state visible="false" />
-        </service>
+        <!-- The action is hidden,  -->
 
         <!-- ******************************************************************************************************* -->
         <!-- Services -->
@@ -79,31 +64,12 @@
         <!-- Connections -->
         <!-- ******************************************************************************************************* -->
 
-        <!-- Connection to enable "previous" action. It should be connected to a SActivitySequencer in the application
-             configuration.-->
-        <connect channel="${enabledPreviousChannel}">
-            <slot>ActionExport/hide</slot>
-            <slot>ActionPrevious/show</slot>
-            <slot>ActionPrevious/setIsExecutable</slot>
+        <!-- The channel is used to call "SActivitySequencer::checkNext" slot, to enable the next activity when the
+             image is loaded. -->
+        <connect channel="${validationChannel}">
+            <signal>${image}/modified</signal>
         </connect>
 
-        <!-- Connection to called 'previous' slot of the application's SActivitySequencer. -->
-        <connect channel="${previousActivityChannel}">
-            <signal>ActionPrevious/triggered</signal>
-        </connect>
-
-        <!-- Connection to enable "next" action. It should be connected to a SActivitySequencer in the application
-             configuration.-->
-        <connect channel="${enabledNextChannel}">
-            <slot>ActionExport/hide</slot>
-            <slot>ActionNext/show</slot>
-            <slot>ActionNext/setIsExecutable</slot>
-        </connect>
-
-        <!-- Connection to called 'next' slot of the application's SActivitySequencer. -->
-        <connect channel="${nextActivityChannel}">
-            <signal>ActionNext/triggered</signal>
-        </connect>
 
         <!-- ******************************************************************************************************* -->
         <!-- Start -->

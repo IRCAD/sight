@@ -169,7 +169,7 @@ void SActivitySequencer::goTo(int index)
 
     if (m_currentActivity >= 0)
     {
-        this->storeActivityData(seriesDB);
+        this->storeActivityData(seriesDB, m_currentActivity);
     }
 
     const size_t newIdx = static_cast<size_t>(index);

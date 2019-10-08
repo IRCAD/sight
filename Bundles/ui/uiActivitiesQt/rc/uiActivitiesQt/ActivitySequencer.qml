@@ -1,59 +1,52 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Controls 2.12
-import uiActivitiesQml 1.0
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Material 2.12
 
-import styleQml 1.0
+Item{
 
-Item {
-    height: 60
-    anchors.margins: 0
+    id: activitySequencer
+    objectName: "sequencer"
+    height: 50
 
-    // ids of the activities to launch. They will by launched in the same order
-    property var activityIdsList: []
-    // name of the activities to launch. Displayed in the sequencer
-    property var activityNameList: []
+    property int currentSelection: 0
 
-    // Signal emitted when the service is created, it must be listen in the upper Qml object
-    signal serviceCreated(var srv)
+    signal activitySelected(int index)
+
+    function enableActivity(index){
+        repeater.itemAt(index).enabled = true
+    }
+
+    function setCurrentActivity(index){
+        currentSelection = index
+    }
 
     Component.onCompleted: {
-        serviceCreated(activitySequencer)
+        Material.theme = (theme === "light") ? Material.Light : Material.Dark
+        Material.accent = (accent != "") ? accent : Material.color(Material.Teal, Material.Shade900)
+        Material.foreground =  (foreground != "") ? foreground : Material.color(Material.BlueGrey, Material.Shade900)
+        Material.background = (background != "") ? background : Material.background
+        Material.primary = (primary != "") ? primary : Material.color(Material.Teal)
+        Material.elevation = (elevation != "") ? elevation : Material.elevation
     }
 
-    // C++ service: allow to select and enable the activities
-    SActivitySequencer {
-        id: activitySequencer
-        activityIds: activityIdsList
-
-        property int currentSelection
-
-        onEnable: {
-            repeater.itemAt(index).enabled = true
-        }
-        onSelect: {
-            currentSelection = index
-        }
-    }
     RowLayout {
-        id: stepperLayout
-        height: 60
-        anchors.fill: parent
+        id: sequencerLayout
         anchors.margins: 0
         spacing: 0
+        anchors.fill: parent
 
-        // display the stepper buttons
         Repeater {
             id: repeater
-            model: activityNameList.length == 0 ? activityIdsList : activityNameList
+            model: activityNameList
 
             RowLayout{
-                width: (stepperLayout.width / activityIdsList.length)
+                width: (widgetWidth / activityNameList.length)
                 enabled: false
 
                 Rectangle{
                     Layout.fillWidth: true
-                    color: Theme.primary
+                    color: Material.primary
                     height: 3
                     visible: index > 0
                 }
@@ -62,15 +55,15 @@ Item {
                     text : modelData
 
                     onClicked: {
-                        activitySequencer.goTo(index)
+                        activitySelected(index)
                         activitySequencer.currentSelection = index
                     }
                     background: Rectangle {
                         color: {
-                            var color = Theme.background
-                            if (activitySequencer.currentSelection == index)
+                            var color = Material.background
+                            if (activitySequencer.currentSelection === index)
                             {
-                                color = Theme.accent
+                                color = Material.accent
                             }
                             toolButton.hovered? Qt.lighter(color) : color
                         }
@@ -82,7 +75,7 @@ Item {
 
                         Rectangle {
                             id: activityIndex
-                            color: Theme.primary
+                            color: Material.primary
                             radius: 15
                             width: 30
                             height: 30
@@ -92,7 +85,7 @@ Item {
                                 text: index + 1
                                 font: toolButton.font
                                 opacity: enabled ? 1.0 : 0.3
-                                color: Theme.background
+                                color: Material.background
                                 elide: Text.ElideRight
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
@@ -103,7 +96,7 @@ Item {
                             text: toolButton.text
                             font: Qt.font({pointSize: 12})
                             opacity: enabled ? 1.0 : 0.3
-                            color: Theme.primary
+                            color: Material.primary
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             elide: Text.ElideRight
@@ -112,9 +105,9 @@ Item {
                 }
                 Rectangle{
                     Layout.fillWidth: true
-                    color: Theme.primary
+                    color: Material.primary
                     height: 3
-                    visible: index < activityIdsList.length -1
+                    visible: index < activityNameList.length -1
                 }
             }
         }
