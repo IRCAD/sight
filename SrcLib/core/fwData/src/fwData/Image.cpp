@@ -350,16 +350,20 @@ Image::ConstIterator<IterationBase<char>::Raw> Image::end() const
 
 size_t Image::getNumElements() const
 {
-    size_t nbElts = m_numberOfComponents;
-    for (const auto& val: m_size)
+    size_t nbElts = 0;
+    if (m_size[0] > 0)
     {
-        if (val > 0)
+        nbElts = m_numberOfComponents;
+        for (const auto& val: m_size)
         {
-            nbElts *= val;
-        }
-        else
-        {
-            break;
+            if (val > 0)
+            {
+                nbElts *= val;
+            }
+            else
+            {
+                break;
+            }
         }
     }
     return nbElts;
