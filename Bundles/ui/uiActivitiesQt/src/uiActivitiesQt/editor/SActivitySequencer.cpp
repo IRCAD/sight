@@ -60,6 +60,7 @@ const ::fwCom::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
 const ::fwCom::Slots::SlotKeyType s_SEND_INFO_SLOT  = "sendInfo";
 
 static const std::string s_THEME_CONFIG      = "theme";
+static const std::string s_CLEAR_CONFIG      = "clear";
 static const std::string s_ACCENT_CONFIG     = "accent";
 static const std::string s_FOREGROUND_CONFIG = "foreground";
 static const std::string s_BACKGROUND_CONFIG = "background";
@@ -104,6 +105,7 @@ void SActivitySequencer::configuring()
     }
 
     m_theme      = config.get<std::string>(s_THEME_CONFIG, m_theme);
+    m_clear      = config.get<std::string>(s_CLEAR_CONFIG, m_clear);
     m_accent     = config.get<std::string>(s_ACCENT_CONFIG, m_accent);
     m_foreground = config.get<std::string>(s_FOREGROUND_CONFIG, m_foreground);
     m_background = config.get<std::string>(s_BACKGROUND_CONFIG, m_background);
@@ -130,23 +132,23 @@ void SActivitySequencer::starting()
     auto engine     = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
-    QColor background;
-    if(m_background.empty())
+    QColor clear;
+    if(m_clear.empty())
     {
-        background = parent->palette().color(QPalette::Background);
+        clear = parent->palette().color(QPalette::Background);
         // styleSheet override QPalette
         // we assume that styleSheet is the dark style
         if(!qApp->styleSheet().isEmpty())
         {
-            background = QColor("#31363b");
+            clear = QColor("#31363b");
         }
     }
     else
     {
-        background = QColor(QString::fromStdString(m_background));
+        clear = QColor(QString::fromStdString(m_clear));
     }
 
-    m_widget->setClearColor(background);
+    m_widget->setClearColor(clear);
 
     QString theme = QString::fromStdString(m_theme);
     if(theme.isEmpty())
