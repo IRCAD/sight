@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,9 +47,9 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, ::arData::FrameTL);
+fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, ::arData::FrameTL)
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME           = "saveFrame";
+static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD         = "startRecord";
 static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD          = "stopRecord";
 static const ::fwCom::Slots::SlotKeyType s_WRITE                = "write";
@@ -221,7 +221,7 @@ void SFrameWriter::startRecord()
         {
             m_imageType = CV_8UC3;
         }
-        if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
+        else if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
