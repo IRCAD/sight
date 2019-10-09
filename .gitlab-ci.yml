@@ -254,6 +254,28 @@ build:release-macos:
     paths:
       - $CI_PROJECT_DIR/build/ctest.log
 
+build:debian:
+  image: registry.ircad.fr/sight/docker-debian:master
+  stage: build
+  dependencies: []
+  before_script:
+    - export CC=/usr/local/lib/ccache/gcc-8
+    - export CXX=/usr/local/lib/ccache/g++-8
+    - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+  script:
+    - cd $CI_PROJECT_DIR/build/
+    - >
+     cmake $CI_PROJECT_DIR
+     -G Ninja
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+     -DCMAKE_BUILD_TYPE=Release
+     -DBUILD_TESTS=OFF
+     -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=ON
+     -DUSE_SYSTEM_LIB=ON
+     -DPROJECTS_TO_BUILD=VRRender
+    - ninja
+
 doxygen:
   <<: *linux_job
   stage: doc
