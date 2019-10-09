@@ -24,7 +24,7 @@
 
 #include "fwData/Array.hpp"
 #include "fwData/factory/new.hpp"
-#include "fwData/ImageIterator.hpp"
+#include "fwData/iterator/ImageIterator.hpp"
 #include "fwData/Object.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -247,21 +247,21 @@ public:
      */
     /// Image iterator
     template <typename FORMAT>
-    using Iterator = ImageIteratorBase<FORMAT, false>;
+    using Iterator = iterator::ImageIteratorBase<FORMAT, false>;
     template <typename FORMAT>
     /// Image const iterator
-    using ConstIterator = ImageIteratorBase<FORMAT, true>;
+    using ConstIterator = iterator::ImageIteratorBase<FORMAT, true>;
     /// Format used to iterate though all the buffer values
     template <typename TYPE>
-    using Iteration = typename IterationBase<TYPE>::Raw;
+    using Iteration = typename iterator::IterationBase<TYPE>::Raw;
     /// Format used to iterate though a RGB image in uint8
-    typedef IterationBase<std::uint8_t>::RGB RGBIteration;
+    typedef iterator::IterationBase<std::uint8_t>::RGB RGBIteration;
     /// Format used to iterate though a RGBA image in uint8
-    typedef IterationBase<std::uint8_t>::RGBA RGBAIteration;
+    typedef iterator::IterationBase<std::uint8_t>::RGBA RGBAIteration;
     /// Format used to iterate though a BGR image in uint8
-    typedef IterationBase<std::uint8_t>::BGR BGRIteration;
+    typedef iterator::IterationBase<std::uint8_t>::BGR BGRIteration;
     /// Format used to iterate though a BGRA image in uint8
-    typedef IterationBase<std::uint8_t>::BGRA BGRAIteration;
+    typedef iterator::IterationBase<std::uint8_t>::BGRA BGRAIteration;
     /// @}
 
     /**
@@ -303,10 +303,10 @@ public:
      * @note These functions lock the buffer
      * @{
      */
-    FWDATA_API Iterator<IterationBase<char>::Raw> begin();
-    FWDATA_API Iterator<IterationBase<char>::Raw> end();
-    FWDATA_API ConstIterator<IterationBase<char>::Raw> begin() const;
-    FWDATA_API ConstIterator<IterationBase<char>::Raw> end() const;
+    FWDATA_API Iterator<iterator::IterationBase<char>::Raw> begin();
+    FWDATA_API Iterator<iterator::IterationBase<char>::Raw> end();
+    FWDATA_API ConstIterator<iterator::IterationBase<char>::Raw> begin() const;
+    FWDATA_API ConstIterator<iterator::IterationBase<char>::Raw> end() const;
     /// @}
 
     ///

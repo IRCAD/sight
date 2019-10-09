@@ -274,8 +274,8 @@ void ImageTest::testSetGetPixel()
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
 
     auto lock    = img->lock();
-    auto iter    = img->begin<IterationBase<std::int16_t>::Raw>();
-    auto iterEnd = img->end<IterationBase<std::int16_t>::Raw>();
+    auto iter    = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+    auto iterEnd = img->end<iterator::IterationBase<std::int16_t>::Raw>();
 
     // test 1 : use getPixelBuffer
     std::int16_t count = 0;
@@ -318,7 +318,7 @@ void ImageTest::testSetGetPixel()
     }
 
     count = 0;
-    auto iter2 = img->begin<IterationBase<std::int16_t>::Raw>();
+    auto iter2 = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
     for (; iter2 != iterEnd; ++iter2)
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), iter2->value);
@@ -349,7 +349,7 @@ void ImageTest::testRGBAIterator()
 
     auto lock = img->lock();
 
-    typedef IterationBase<std::uint16_t>::RGBA RGBAIterator;
+    typedef iterator::IterationBase<std::uint16_t>::RGBA RGBAIterator;
     auto iter    = img->begin<RGBAIterator>();
     auto iterEnd = img->end<RGBAIterator>();
 
@@ -409,7 +409,7 @@ void ImageTest::testRGBIterator()
 
     auto lock = img->lock();
 
-    typedef IterationBase<std::uint8_t>::RGB RGBIterator;
+    typedef iterator::IterationBase<std::uint8_t>::RGB RGBIterator;
     std::array< std::uint8_t, 3> value = {18, 12, 68};
     std::fill(img->begin<RGBIterator>(), img->end<RGBIterator>(), value);
 

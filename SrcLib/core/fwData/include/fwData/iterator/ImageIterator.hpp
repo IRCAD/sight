@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,6 +29,9 @@ namespace fwData
 {
 
 class Image;
+
+namespace iterator
+{
 
 /**
  *  @brief Class for Image iteration
@@ -255,6 +258,7 @@ protected:
     difference_type m_numberOfElements{0};
 };
 
+} // namespace iterator
 } // namespace fwData
 
-#include "fwData/ImageIterator.hxx"
+#include "fwData/iterator/ImageIterator.hxx"

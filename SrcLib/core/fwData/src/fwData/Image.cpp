@@ -316,33 +316,33 @@ const std::string Image::getPixelAsString(IndexType x,
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<IterationBase<char>::Raw> Image::begin()
+Image::Iterator<iterator::IterationBase<char>::Raw> Image::begin()
 {
-    return Iterator<IterationBase<char>::Raw>(this);
+    return Iterator<iterator::IterationBase<char>::Raw>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<IterationBase<char>::Raw> Image::end()
+Image::Iterator<iterator::IterationBase<char>::Raw> Image::end()
 {
-    auto itr = Iterator<IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<IterationBase<char>::Raw>::difference_type>(this->getNumElements());
+    auto itr = Iterator<iterator::IterationBase<char>::Raw>(this);
+    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getNumElements());
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<IterationBase<char>::Raw> Image::begin() const
+Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::begin() const
 {
-    return ConstIterator<IterationBase<char>::Raw>(this);
+    return ConstIterator<iterator::IterationBase<char>::Raw>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<IterationBase<char>::Raw> Image::end() const
+Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::end() const
 {
-    auto itr = ConstIterator<IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<IterationBase<char>::Raw>::difference_type>(this->getNumElements());
+    auto itr = ConstIterator<iterator::IterationBase<char>::Raw>(this);
+    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getNumElements());
     return itr;
 }
 

@@ -444,8 +444,9 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API virtual size_t resize(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents,
-                                     bool reallocate = false);
+    [[deprecated]] FWDATA_API virtual size_t resize(const ::fwTools::Type& type, const SizeType& size,
+                                                    size_t nbOfComponents,
+                                                    bool reallocate = false);
 
     /**
      * @brief  Aliases to the resize method
@@ -453,9 +454,11 @@ public:
      * removed in sight 22.0. Use resize(const ::fwTools::Type& type, const SizeType& size, bool reallocate = false).
      * @{
      */
-    FWDATA_API virtual size_t resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
-                                     bool reallocate = false);
-    FWDATA_API virtual size_t resize(const SizeType& size, size_t nbOfComponents, bool reallocate = false);
+    [[deprecated]] FWDATA_API virtual size_t resize(const std::string& type, const SizeType& size,
+                                                    size_t nbOfComponents,
+                                                    bool reallocate = false);
+    [[deprecated]] FWDATA_API virtual size_t resize(const SizeType& size, size_t nbOfComponents,
+                                                    bool reallocate = false);
     /// @}
 
     /**
@@ -472,7 +475,7 @@ public:
      * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
      * removed in sight 22.0
      */
-    FWDATA_API virtual void setNumberOfComponents(size_t nb);
+    [[deprecated]] FWDATA_API virtual void setNumberOfComponents(size_t nb);
 
     /**
      * @brief Getter for number of components
@@ -481,7 +484,7 @@ public:
      * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
      * removed in sight 22.0
      */
-    FWDATA_API virtual size_t getNumberOfComponents() const;
+    [[deprecated]] FWDATA_API virtual size_t getNumberOfComponents() const;
 
 protected:
 
