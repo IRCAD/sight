@@ -36,7 +36,7 @@ public:
     /**
      * @brief Start method.
      *
-     * This method is used by runtime in order to initialize the bundle.
+     * This method is used by runtime in order to initialize the module.
      *
      * @exception ::fwRuntime::RuntimeException
      */
@@ -45,7 +45,7 @@ public:
     /**
      * @brief Stop method.
      *
-     * This method is used by runtime in order to close the bundle.
+     * This method is used by runtime in order to close the module.
      */
     void stop() noexcept;
 

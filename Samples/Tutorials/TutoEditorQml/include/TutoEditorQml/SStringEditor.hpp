@@ -32,7 +32,7 @@ namespace TutoEditorQml
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 class TUTOEDITORQML_CLASS_API SStringEditor : public ::fwQml::IQmlEditor
 {

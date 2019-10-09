@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __UITF_PLUGIN_HPP__
-#define __UITF_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "uiTF/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace uiTF
 {
 /**
  *
- * @date    2009-2010.
  */
 class UITF_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -52,5 +50,3 @@ public:
 };
 
 } // namespace uiTF
-
-#endif //__UITF_PLUGIN_HPP__

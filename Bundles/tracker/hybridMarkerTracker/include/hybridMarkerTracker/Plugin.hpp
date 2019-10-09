@@ -38,7 +38,7 @@ public:
     /// This method is used by runtime to start the bundle.
     void start();
 
-    /// This method is used by runtime to stop the bundle.
+    /// This method is used by runtime to stop the module.
     void stop() noexcept;
 };
 

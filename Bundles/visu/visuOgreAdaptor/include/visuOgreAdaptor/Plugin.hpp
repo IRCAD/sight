@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUOGREADAPTOR_PLUGIN_HPP__
-#define __VISUOGREADAPTOR_PLUGIN_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -31,7 +30,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 class VISUOGREADAPTOR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -49,5 +48,3 @@ public:
 };
 
 } // namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_PLUGIN_HPP__

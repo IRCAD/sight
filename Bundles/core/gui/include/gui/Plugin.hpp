@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __GUI_PLUGIN_HPP__
-#define __GUI_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "gui/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace gui
 {
 
 /**
  * @brief   This class is called when the gui bundle is loaded.
- * @class   Plugin
  */
 
 class GUI_CLASS_API Plugin : public ::fwRuntime::Plugin
@@ -44,7 +42,7 @@ public:
     GUI_API virtual ~Plugin() noexcept;
 
     /**
-     * @brief This method is used by runtime to initialize the bundle.
+     * @brief This method is used by runtime to initialize the module.
      *
      * @exception ::fwRuntime::RuntimeException
      *
@@ -61,5 +59,3 @@ public:
 };
 
 } // namespace gui
-
-#endif //__GUI_PLUGIN_HPP__

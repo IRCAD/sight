@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __UITOOLS_PLUGIN_HPP__
-#define __UITOOLS_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "uiTools/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace uiTools
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
- * @class   Plugin
+ * @brief   This class is started when the module is loaded.
  */
 struct UITOOLS_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -51,5 +49,3 @@ struct UITOOLS_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace uiTools
-
-#endif //__UITOOLS_PLUGIN_HPP__

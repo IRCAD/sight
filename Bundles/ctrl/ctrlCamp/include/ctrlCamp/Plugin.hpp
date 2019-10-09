@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLCAMP_PLUGIN_HPP__
-#define __CTRLCAMP_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "ctrlCamp/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace ctrlCamp
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 struct CTRLCAMP_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -49,5 +48,3 @@ struct CTRLCAMP_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace ctrlCamp
-
-#endif //__CTRLCAMP_PLUGIN_HPP__

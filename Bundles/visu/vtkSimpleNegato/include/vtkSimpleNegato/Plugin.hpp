@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __VTKSIMPLENEGATO_PLUGIN_HPP__
-#define __VTKSIMPLENEGATO_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
 
-
 /**
  * @brief   Namespace vtkSimpleNegato.
- * @namespace   vtkSimpleNegato
- *
- * @date    2009.
  *
  *  The namespace vtkSimpleNegato contains a simple negato renderer using vtk.
  */
@@ -49,19 +44,17 @@ public:
      * @brief Start method.
      *
      * @exception ::fwRuntime::RuntimeException.
-     * This method is used by runtime to initialize the bundle.
+     * This method is used by runtime to initialize the module.
      */
     void start();
 
     /**
      * @brief Stop method.
      *
-     * This method is used by runtime to stop the bundle.
+     * This method is used by runtime to stop the module.
      */
     void stop() noexcept;
 
 };
 
 } // namespace vtkSimpleNegato
-
-#endif //__VTKSIMPLENEGATO_PLUGIN_HPP__

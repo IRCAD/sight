@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,21 @@
  *
  ***********************************************************************/
 
-#ifndef __GUIQT_PLUGIN_HPP__
-#define __GUIQT_PLUGIN_HPP__
+#pragma once
 
 #include "guiQt/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
-
 
 namespace fwThread
 {
 class Worker;
 } //namespace fwThread
 
-
 namespace guiQt
 {
 /**
  * @brief   This class is called when the guiQt bundle is loaded.
- * @class   Plugin
  */
 class GUIQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -56,7 +52,6 @@ public:
     // Overrides
     GUIQT_API void stop() noexcept;
 
-
     GUIQT_API int run() noexcept;
 
 protected:
@@ -70,5 +65,3 @@ private:
 };
 
 } // namespace guiQt
-
-#endif //__GUIQT_PLUGIN_HPP__

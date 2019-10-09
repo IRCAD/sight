@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,13 +39,13 @@ struct Plugin : public ::fwRuntime::Plugin
     /**
      * @brief Start method.
      * @exception ::fwRuntime::RuntimeException.
-     * This method is used by runtime in order to initialize the bundle.
+     * This method is used by runtime in order to initialize the module.
      */
     void start();
 
     /**
      * @brief Stop method.
-     * This method is used by runtime in order to close the bundle.
+     * This method is used by runtime in order to close the module.
      */
     void stop() noexcept;
 };

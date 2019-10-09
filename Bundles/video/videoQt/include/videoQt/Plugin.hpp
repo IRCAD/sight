@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __VIDEOQT_PLUGIN_HPP__
-#define __VIDEOQT_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "videoQt/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace videoQt
 {
 /**
- * @brief   This class is started when the bundles is loaded.
- * @class   Plugin
+ * @brief   This class is started when the module is loaded.
  */
 struct VIDEOQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -49,5 +47,3 @@ struct VIDEOQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace videoQt
-
-#endif //__VIDEOQT_PLUGIN_HPP__

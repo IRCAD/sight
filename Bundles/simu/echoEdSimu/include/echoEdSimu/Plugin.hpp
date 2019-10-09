@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ECHOEDSIMU_PLUGIN_HPP__
-#define __ECHOEDSIMU_PLUGIN_HPP__
+#pragma once
 
 #include "echoEdSimu/config.hpp"
 
@@ -31,7 +30,7 @@ namespace echoEdSimu
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 struct ECHOEDSIMU_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -50,5 +49,3 @@ struct ECHOEDSIMU_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace echoEdSimu
-
-#endif //__ECHOEDSIMU_PLUGIN_HPP__

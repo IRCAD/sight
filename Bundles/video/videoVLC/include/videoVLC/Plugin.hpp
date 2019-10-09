@@ -29,7 +29,7 @@
 namespace videoVLC
 {
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 struct VIDEOVLC_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

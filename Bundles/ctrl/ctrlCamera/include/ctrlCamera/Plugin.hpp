@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLCAMERA_PLUGIN_HPP__
-#define __CTRLCAMERA_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "ctrlCamera/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace ctrlCamera
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
- * @class   Plugin
+ * @brief   This class is started when the module is loaded.
  */
 struct CTRLCAMERA_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -50,5 +48,3 @@ struct CTRLCAMERA_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace ctrlCamera
-
-#endif //__CTRLCAMERA_PLUGIN_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace ExTimeLine
 {
 
 /**
- * @brief Class call when bundle is started/stopped
+ * @brief Class call when a module is started/stopped
  *
  */
 class EXTIMELINE_CLASS_API Plugin : public ::fwRuntime::Plugin
@@ -41,10 +41,10 @@ public:
     /// PLugin destructor
     EXTIMELINE_API ~Plugin() noexcept;
 
-    /// This method is used by runtime to initialize the bundle.
+    /// This method is used by runtime to initialize the module.
     EXTIMELINE_API void start();
 
-    /// This method is used by runtime to stop the bundle.
+    /// This method is used by runtime to stop the module.
     EXTIMELINE_API void stop() noexcept;
 
 };

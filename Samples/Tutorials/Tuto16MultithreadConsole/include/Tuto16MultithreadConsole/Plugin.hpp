@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __TUTO16MULTITHREADCONSOLE_PLUGIN_HPP__
-#define __TUTO16MULTITHREADCONSOLE_PLUGIN_HPP__
+#pragma once
 
 #include "Tuto16MultithreadConsole/config.hpp"
 
@@ -31,7 +30,7 @@ namespace Tuto16MultithreadConsole
 {
 
 /**
- * @brief Class call when bundle is started/stopped
+ * @brief Class call when a module is started/stopped
  */
 class TUTO16MULTITHREADCONSOLE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -41,13 +40,11 @@ public:
     /// PLugin destructor
     TUTO16MULTITHREADCONSOLE_API ~Plugin() noexcept;
 
-    /// This method is used by runtime to initialize the bundle.
+    /// This method is used by runtime to initialize the module.
     TUTO16MULTITHREADCONSOLE_API void start();
 
-    /// This method is used by runtime to stop the bundle.
+    /// This method is used by runtime to stop the module.
     TUTO16MULTITHREADCONSOLE_API void stop() noexcept;
 };
 
 } // namespace Tuto16MultithreadConsole
-
-#endif //__TUTO16MULTITHREADCONSOLE_PLUGIN_HPP__

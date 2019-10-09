@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __MATERIAL_PLUGIN_HPP__
-#define __MATERIAL_PLUGIN_HPP__
+#pragma once
 
 #include "material/config.hpp"
 
@@ -35,7 +34,7 @@ static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME       = "compositorsPos
 static const std::string s_DEFAULT_MATERIAL_RESOURCEGROUP_NAME = "Materials";
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 
 struct MATERIAL_CLASS_API Plugin : public ::fwRuntime::Plugin
@@ -53,5 +52,3 @@ struct MATERIAL_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace material
-
-#endif //__MATERIAL_PLUGIN_HPP__

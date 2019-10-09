@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
- * Copyright (C) 2016 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __VIDEOOPENCV_PLUGIN_HPP__
-#define __VIDEOOPENCV_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "videoOpenCV/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace videoOpenCV
 {
@@ -40,18 +39,16 @@ struct Plugin : public fwRuntime::Plugin
      * @brief Start method.
      *
      * @exception ::fwRuntime::RuntimeException.
-     * This method is used by runtime in order to initialize the bundle.
+     * This method is used by runtime in order to initialize the module.
      */
     void start();
 
     /**
      * @brief Stop method.
      *
-     * This method is used by runtime in order to close the bundle.
+     * This method is used by runtime in order to close the module.
      */
     void stop() noexcept;
 };
 
 } // namespace videoOpenCV
-
-#endif // __VIDEOOPENCV_PLUGIN_HPP__

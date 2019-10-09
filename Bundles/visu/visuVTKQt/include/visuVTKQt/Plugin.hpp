@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKQT_PLUGIN_HPP__
-#define __VISUVTKQT_PLUGIN_HPP__
+#pragma once
 
 #include "visuVTKQt/config.hpp"
 
@@ -30,7 +29,7 @@
 namespace visuVTKQt
 {
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 struct VISUVTKQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -50,5 +49,3 @@ struct VISUVTKQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace visuVTKQt
-
-#endif //__VISUVTKQT_PLUGIN_HPP__

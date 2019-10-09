@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __UIVISU_PLUGIN_HPP__
-#define __UIVISU_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -29,7 +28,6 @@ namespace uiVisu
 {
 /**
  *
- * @date    2009.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -47,5 +45,3 @@ struct Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace uiVisu
-
-#endif //__UIVISU_PLUGIN_HPP__

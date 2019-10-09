@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,14 @@
  *
  ***********************************************************************/
 
-
-#ifndef __SCENE2D_PLUGIN_HPP__
-#define __SCENE2D_PLUGIN_HPP__
-
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
-
 
 namespace scene2D
 {
 /**
  * @brief   This class is started when the bundles is loaded.
- * @class   Plugin
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -50,8 +45,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 };
 
-
 } // namespace scene2D
-
-
-#endif //__SCENE2D_PLUGIN_HPP__

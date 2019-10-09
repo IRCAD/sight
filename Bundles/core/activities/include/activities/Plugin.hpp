@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __ACTIVITIES_PLUGIN_HPP__
-#define __ACTIVITIES_PLUGIN_HPP__
+#pragma once
+
+#include "activities/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
-#include "activities/config.hpp"
 
 namespace activities
 {
 /**
  *
- * @date    2012.
  */
 struct ACTIVITIES_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -48,5 +47,3 @@ struct ACTIVITIES_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace activities
-
-#endif //__ACTIVITIES_PLUGIN_HPP__

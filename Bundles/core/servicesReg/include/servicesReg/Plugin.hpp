@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __SERVICESREG_PLUGIN_HPP__
-#define __SERVICESREG_PLUGIN_HPP__
+#pragma once
 
 #include "servicesReg/config.hpp"
 
@@ -31,7 +30,7 @@ namespace servicesReg
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 struct SERVICESREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -53,5 +52,3 @@ struct SERVICESREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace servicesReg
-
-#endif // __SERVICESREG_PLUGIN_HPP__
