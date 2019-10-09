@@ -26,10 +26,12 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
+#ifdef VTK_MAJOR_VERSION > 7
 #include <QApplication>
 #include <QSurfaceFormat>
 #include <QVTKOpenGLNativeWidget.h>
 #include <vtkGenericOpenGLRenderWindow.h>
+#endif
 
 namespace visuVTKQt
 {
@@ -42,6 +44,7 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 Plugin::Plugin() noexcept
 {
+#ifdef VTK_MAJOR_VERSION > 7
     // Since we share the opengl context with Qt, we must set the default QSurfaceFormat before QApplication
     // to allow QVTKOpenGLWidget to work properly
     SLM_ASSERT( "QApplication is already created! The default surface format cannot be changed afterward.\n"
@@ -52,6 +55,7 @@ Plugin::Plugin() noexcept
 
     vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
+#endif
 }
 
 //-----------------------------------------------------------------------------

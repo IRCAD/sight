@@ -39,7 +39,11 @@
 #include <QMimeData>
 #include <QSurfaceFormat>
 #include <QVBoxLayout>
+#ifdef VTK_MAJOR_VERSION > 7
 #include <QVTKOpenGLNativeWidget.h>
+#else
+#include <QVTKWidget.h>
+#endif
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -121,23 +125,34 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
+
+#ifdef VTK_MAJOR_VERSION > 7
     m_parentContainer->setLayout(layout);
 
     // Create the render window and the associated QVTKOpenGLWidget
     vtkNew<vtkGenericOpenGLRenderWindow> window;
-    m_QVTKOpenGLWidget = new QVTKOpenGLNativeWidget(m_parentContainer->getQtContainer());
-    m_QVTKOpenGLWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    layout->addWidget(m_QVTKOpenGLWidget);
-    m_QVTKOpenGLWidget->SetRenderWindow(window.Get());
-
+    m_qVTKWidget = new QVTKOpenGLNativeWidget(m_parentContainer->getQtContainer());
+    m_qVTKWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    layout->addWidget(m_qVTKWidget);
+    m_qVTKWidget->SetRenderWindow(window.Get());
+#else
+    m_qVTKWidget = new QVTKWidget();
+#endif
     // Install Drop filter
     if(auto locked = m_renderService.lock())
     {
-        m_QVTKOpenGLWidget->setAcceptDrops(true);
-        m_QVTKOpenGLWidget->installEventFilter(new DropFilter(locked));
+        m_qVTKWidget->setAcceptDrops(true);
+        m_qVTKWidget->installEventFilter(new DropFilter(locked));
     }
 
+#ifdef VTK_MAJOR_VERSION > 7
     m_interactor = window->GetInteractor();
+#else
+    layout->addWidget(m_qVTKWidget);
+    m_parentContainer->setLayout(layout);
+
+    m_interactor = m_qVTKWidget->GetRenderWindow()->GetInteractor();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -146,8 +161,8 @@ void VtkRenderWindowInteractorManager::uninstallInteractor()
 {
     m_interactor = nullptr;
 
-    delete m_QVTKOpenGLWidget;
-    m_QVTKOpenGLWidget.clear();
+    delete m_qVTKWidget;
+    m_qVTKWidget.clear();
 
     m_parentContainer->clean();
 }

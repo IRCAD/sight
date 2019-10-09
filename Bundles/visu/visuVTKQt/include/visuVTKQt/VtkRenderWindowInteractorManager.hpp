@@ -31,7 +31,11 @@
 class vtkRenderWindowInteractor;
 
 QT_BEGIN_NAMESPACE
+#ifdef VTK_MAJOR_VERSION > 7
 class QVTKOpenGLNativeWidget;
+#else
+class QVTKWidget;
+#endif
 QT_END_NAMESPACE
 
 namespace fwGuiQt
@@ -53,7 +57,7 @@ class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVT
 
 public:
 
-    fwCoreClassMacro(VtkRenderWindowInteractorManager, ::fwRenderVTK::IVtkRenderWindowInteractorManager);
+    fwCoreClassMacro(VtkRenderWindowInteractorManager, ::fwRenderVTK::IVtkRenderWindowInteractorManager)
 
     VISUVTKQT_API VtkRenderWindowInteractorManager(::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key);
 
@@ -70,7 +74,11 @@ public:
 
 private:
 
-    QPointer<QVTKOpenGLNativeWidget> m_QVTKOpenGLWidget;
+#ifdef VTK_MAJOR_VERSION > 7
+    QPointer<QVTKOpenGLNativeWidget> m_qVTKWidget;
+#else
+    QPointer<QVTKWidget> m_qVTKWidget;
+#endif
 
     vtkRenderWindowInteractor* m_interactor;
 

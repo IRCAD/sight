@@ -36,7 +36,7 @@
 #include <vtkTexture.h>
 #include <vtkWindowLevelLookupTable.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMaterial );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMaterial )
 
 namespace visuVTKAdaptor
 {
@@ -177,7 +177,11 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
                 vtkTex = vtkSmartPointer< vtkTexture >::New();
                 vtkTex->SetInputData(vtkImage);
                 vtkTex->SetLookupTable(lut);
+#ifdef VTK_MAJOR_VERSION > 7
                 vtkTex->SetColorMode(VTK_COLOR_MODE_MAP_SCALARS);
+#else
+                vtkTex->SetMapColorScalarsThroughLookupTable(1);
+#endif
             }
             else
             {

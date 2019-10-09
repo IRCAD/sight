@@ -46,7 +46,7 @@
 #include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSnapshot);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSnapshot)
 
 namespace visuVTKAdaptor
 {
@@ -101,7 +101,11 @@ void SSnapshot::snapToImage()
         ::fwData::Image::sptr imageToSnap = ::fwData::Image::New();
 
         vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
+#ifdef VTK_MAJOR_VERSION > 7
         snapper->SetScale( 1 );
+#else
+        snapper->SetMagnification( 1 );
+#endif
         snapper->SetInput( this->getRenderer()->GetRenderWindow() );
         snapper->Update();
 
@@ -148,7 +152,11 @@ void SSnapshot::snap(std::string filePath)
     }
 
     vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
+#ifdef VTK_MAJOR_VERSION > 7
     snapper->SetScale( 1 );
+#else
+    snapper->SetMagnification( 1 );
+#endif
     snapper->SetInput( this->getRenderer()->GetRenderWindow() );
 
     writer->SetInputConnection( snapper->GetOutputPort() );

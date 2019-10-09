@@ -92,10 +92,15 @@ protected:
     vtkIdType CellId; // picked cell
     int SubId; // picked cell subId
     double PCoords[3]; // picked cell parametric coordinates
-
+#ifdef VTK_MAJOR_VERSION > 7
     virtual double IntersectWithLine(const double p1[3], const double p2[3], double tol,
                                      vtkAssemblyPath* path, vtkProp3D* p,
                                      vtkAbstractMapper3D* m) override;
+#else
+    virtual double IntersectWithLine(double p1[3], double p2[3], double tol,
+                                     vtkAssemblyPath* path, vtkProp3D* p,
+                                     vtkAbstractMapper3D* m) override;
+#endif
     void Initialize() override;
 
 private:
