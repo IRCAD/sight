@@ -55,7 +55,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager);
+    fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)
 
     /// Constructor
     VISUOGREQT_API RenderWindowInteractorManager(::fwRenderOgre::IRenderWindowInteractorManager::Key key);
@@ -101,6 +101,14 @@ public:
     /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
     VISUOGREQT_API virtual float getLogicalDotsPerInch() const final;
 
+    /**
+     * @brief Sets the fullscreen or windowed rendering mode.
+     *
+     * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
+     * @param _screenNumber index of the screen on which to render in fullscreen mode.
+     */
+    VISUOGREQT_API virtual void setFullscreen(bool _fullscreen, int _screenNumber) final;
+
 private Q_SLOTS:
 
     /// When the render window is created
@@ -111,10 +119,15 @@ private Q_SLOTS:
 
 private:
 
+    /// Disables fullscreen rendering. Linked to the
+    void disableFullscreen();
+
     /// Pointers to the Qt element of the Widget
     QPointer< ::visuOgreQt::Window > m_qOgreWidget;
 
     SPTR(::fwGuiQt::container::QtContainer) m_parentContainer;
+
+    QWidget* m_windowContainer {nullptr};
 };
 
 //-----------------------------------------------------------------------------

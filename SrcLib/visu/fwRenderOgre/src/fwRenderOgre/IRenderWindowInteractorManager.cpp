@@ -72,4 +72,11 @@ IRenderWindowInteractorManager::~IRenderWindowInteractorManager()
 
 //-----------------------------------------------------------------------------
 
+void IRenderWindowInteractorManager::setFullscreen(bool, int)
+{
+    SLM_ERROR("Fullscreen not supported.");
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace fwRenderOgre

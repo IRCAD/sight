@@ -124,7 +124,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IRenderWindowInteractorManager, ::fwCore::BaseObject);
+    fwCoreClassMacro(IRenderWindowInteractorManager, ::fwCore::BaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -186,6 +186,14 @@ public:
     /// Gets the vertical logical DPI of the monitor on which the window is displayed.
     /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
     FWRENDEROGRE_API virtual float getLogicalDotsPerInch() const = 0;
+
+    /**
+     * @brief Sets the fullscreen or windowed rendering mode.
+     *
+     * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
+     * @param _screenNumber index of the screen on which to render in fullscreen mode.
+     */
+    FWRENDEROGRE_API virtual void setFullscreen(bool _fullscreen, int _screenNumber);
 
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)

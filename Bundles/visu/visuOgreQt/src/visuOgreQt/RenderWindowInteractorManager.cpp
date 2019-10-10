@@ -25,6 +25,8 @@
 #include "visuOgreQt/OpenGLContext.hpp"
 #include "visuOgreQt/OpenGLWorker.hpp"
 
+#include <fwCom/Slots.hxx>
+
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -35,6 +37,7 @@
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QRect>
+#include <QShortcut>
 #include <QThread>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -80,7 +83,7 @@ void RenderWindowInteractorManager::requestRender()
 //-----------------------------------------------------------------------------
 
 void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                     bool renderOnDemand, bool fullscreen)
+                                                     bool _renderOnDemand, bool _fullscreen)
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
@@ -90,7 +93,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     layout->setContentsMargins(0, 0, 0, 0);
 
     m_qOgreWidget = new ::visuOgreQt::Window();
-    m_qOgreWidget->setAnimating(!renderOnDemand);
+    m_qOgreWidget->setAnimating(!_renderOnDemand);
 #ifdef __linux
     // When using qt on linux we need to allocate the window resources before being able to use openGL.
     // This is because the underlying X API requires a drawable surface to draw on when calling
@@ -103,31 +106,15 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     m_qOgreWidget->create();
 #endif
 
-    QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
-    layout->addWidget(renderingContainer);
-    renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
+    m_windowContainer = QWidget::createWindowContainer(m_qOgreWidget);
+    layout->addWidget(m_windowContainer);
+    m_windowContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
 
-    if(fullscreen)
-    {
-        // Open fullscreen widget on secondary monitor if there is one.
-        QWidget* const container = m_parentContainer->getQtContainer();
-        QDesktopWidget* desktop  = QApplication::desktop();
-        int screenNumber         = desktop->screenNumber(container) + 1;
+    this->setFullscreen(_fullscreen, -1);
 
-        if(screenNumber >= desktop->screenCount())
-        {
-            screenNumber = desktop->primaryScreen();
-        }
-
-        QRect screenres = desktop->screenGeometry(screenNumber);
-
-        container->setParent(nullptr);
-        container->showFullScreen();
-
-        container->setGeometry(screenres);
-
-        m_qOgreWidget->setFullScreen(fullscreen);
-    }
+    auto disableFullscreen = [this] { this->disableFullscreen(); };
+    auto* disableShortcut  = new QShortcut(QString("Escape"), m_windowContainer);
+    QObject::connect(disableShortcut, &QShortcut::activated, disableFullscreen);
 
     m_qOgreWidget->initialise();
 }
@@ -230,6 +217,56 @@ void RenderWindowInteractorManager::onCameraClippingComputation()
 ::fwRenderOgre::IGraphicsWorker* RenderWindowInteractorManager::createGraphicsWorker()
 {
     return new OpenGLWorker(m_qOgreWidget);
+}
+
+//-----------------------------------------------------------------------------
+
+void RenderWindowInteractorManager::setFullscreen(bool _fullscreen, int _screenNumber)
+{
+    QWidget* const container = m_parentContainer->getQtContainer();
+
+    if(_fullscreen)
+    {
+        container->layout()->removeWidget(m_windowContainer);
+
+        QDesktopWidget* desktop = QApplication::desktop();
+
+        if(_screenNumber < 0)
+        {
+            _screenNumber = desktop->screenNumber(container) + 1;
+        }
+
+        if(_screenNumber >= desktop->screenCount())
+        {
+            _screenNumber = desktop->primaryScreen();
+        }
+
+        QRect screenres = desktop->screenGeometry(_screenNumber);
+
+        m_windowContainer->setParent(nullptr);
+        m_windowContainer->setGeometry(screenres);
+        m_windowContainer->showFullScreen();
+    }
+    else if(container->layout()->isEmpty())
+    {
+        container->layout()->addWidget(m_windowContainer);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RenderWindowInteractorManager::disableFullscreen()
+{
+    QWidget* const container = m_parentContainer->getQtContainer();
+
+    if(container->layout()->isEmpty())
+    {
+        ::fwServices::IService::sptr renderService      = m_renderService.lock();
+        ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
+
+        auto toggleSlot = ogreRenderService->slot(::fwRenderOgre::SRender::s_DISABLE_FULLSCREEN);
+        toggleSlot->asyncRun();
+    }
 }
 
 //-----------------------------------------------------------------------------

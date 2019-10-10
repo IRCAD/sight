@@ -66,6 +66,7 @@ public:
      */
     virtual void render(QPainter* painter);
 
+    /// Enables animations i.e. forces the window to keep rendering.
     void setAnimating(bool animating);
 
     /// Returns Ogre render window.
@@ -82,8 +83,6 @@ public:
 
     /// Destroy ogre window
     void destroyWindow();
-
-    void setFullScreen(bool fullscreen);
 
     int getFrameId() const;
 
@@ -170,24 +169,22 @@ private:
     /*
        Ogre3D pointers added here. Useful to have the pointers here for use by the window later.
      */
-    Ogre::Root* m_ogreRoot;
-    Ogre::RenderWindow* m_ogreRenderWindow;
+    Ogre::Root* m_ogreRoot { nullptr };
+    Ogre::RenderWindow* m_ogreRenderWindow { nullptr };
 
     /// Tells if an update is requested
-    bool m_update_pending;
+    bool m_update_pending { false };
     /// Tells if the window is currently showed
-    bool m_animating;
-    /// Tells if the window fills the screen.
-    bool m_fullscreen;
+    bool m_animating { false };
 
     /// Logs left click positions.
-    QPoint* m_lastPosLeftClick;
+    QPoint* m_lastPosLeftClick { nullptr };
     /// Logs middle click positions.
-    QPoint* m_lastPosMiddleClick;
+    QPoint* m_lastPosMiddleClick { nullptr };
     /// Logs right click positions.
-    QPoint* m_lastPosRightClick;
+    QPoint* m_lastPosRightClick { nullptr };
 
-    int m_frameId;
+    int m_frameId { 0 };
 
     std::shared_ptr<QOpenGLContext> m_glContext;
 
@@ -199,13 +196,6 @@ private Q_SLOTS:
     /// Called when the screen change
     void onScreenChanged(QScreen*);
 };
-
-//-----------------------------------------------------------------------------
-
-inline void Window::setFullScreen(bool fullscreen)
-{
-    m_fullscreen = fullscreen;
-}
 
 //-----------------------------------------------------------------------------
 

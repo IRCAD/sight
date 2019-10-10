@@ -60,6 +60,9 @@
                     <menuItem name="Play" icon="arMedia-0.1/icons/start-cam.svg" />
                     <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                     <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                    <spacer />
+                    <menuItem name="Fullscreen" icon="media-0.1/icons/Fullscreen.svg" />
+                    <menuItem name="Windowed" icon="media-0.1/icons/Minimize.svg" shortcut="Escape" />
                 </layout>
             </gui>
             <registry>
@@ -72,6 +75,8 @@
                 <menuItem sid="actionStartVideo" start="yes" />
                 <menuItem sid="pauseVideoAct" start="yes" />
                 <menuItem sid="stopVideoAct" start="yes" />
+                <menuItem sid="fullscreenAct" start="yes" />
+                <menuItem sid="windowedAct" start="yes" />
             </registry>
         </service>
 
@@ -174,6 +179,18 @@
         <service uid="stopVideoAct" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>frameGrabberSrv/stopCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="fullscreenAct" type="::uiVisuOgre::SScreenSelector" >
+            <config mode="select" />
+        </service>
+
+        <service uid="windowedAct" type="::gui::action::SSlotCaller">
+            <state visible="false" />
+            <slots>
+                <slot>genericSceneSrv/disableFullscreen</slot>
+                <slot>fullscreenAct/show</slot>
             </slots>
         </service>
 
@@ -332,6 +349,23 @@
         <connect>
             <signal>${image}/visibilityModified</signal>
             <slot>negatoVisibilityAct/setIsActive</slot>
+        </connect>
+
+        <connect>
+            <signal>fullscreenAct/screenSelected</signal>
+            <slot>fullscreenAct/hide</slot>
+            <slot>genericSceneSrv/enableFullscreen</slot>
+        </connect>
+
+        <connect>
+            <signal>genericSceneSrv/fullscreenSet</signal>
+            <slot>windowedAct/setVisible</slot>
+            <slot>windowedAct/setIsExecutable</slot>
+        </connect>
+
+        <connect>
+            <signal>windowedAct/disabled</signal>
+            <slot>fullscreenAct/show</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
