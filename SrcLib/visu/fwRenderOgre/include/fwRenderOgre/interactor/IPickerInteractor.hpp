@@ -39,7 +39,6 @@
 
 namespace fwRenderOgre
 {
-
 namespace interactor
 {
 
@@ -53,13 +52,13 @@ class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interact
 
 public:
 
-    fwCoreClassMacro(IPickerInteractor, ::fwCore::BaseObject);
+    fwCoreClassMacro(IPickerInteractor, ::fwCore::BaseObject)
 
     /**
-     * @brief Class used to register a class factory in factory registry.
-     * This class defines also the object factory ( 'create' )
+     * @brief Class used to register a class factory in factory registry. This class defines also the object factory (
+     *'create' ).
      *
-     * @tparam T Factory product type
+     * @tparam T Factory product type.
      */
     template <typename T>
     class Registrar
@@ -72,51 +71,41 @@ public:
         }
     };
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    /// Send picking info
+    /// Used to send picking info.
     typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
 
-    /** @} */
-
-    /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
+    /// Retrieves the Ogre root and the \<sceneID\> scene manager.
     FWRENDEROGRE_API IPickerInteractor();
 
-    /// Destructor
+    /// Delete resources.
     FWRENDEROGRE_API virtual ~IPickerInteractor();
 
-    /// Initialize picker with the corresponding layer's info
+    /// Initialize picker with the corresponding layer's info.
     FWRENDEROGRE_API void initPicker();
 
-    /// Return true if the picker is initialized
+    /// Return true if the picker is initialized.
     FWRENDEROGRE_API bool isPickerInitialized() const;
 
-    /// Set query mask
-    FWRENDEROGRE_API void setQueryFlags(std::uint32_t _queryFlags);
+    /**
+     * @brief Set the query mask.
+     * @param _queryMask The value of the query mask.
+     */
+    FWRENDEROGRE_API void setQueryMask(std::uint32_t _queryMask);
 
 protected:
 
-    /// Ogre picker
-    ::fwRenderOgre::picker::IPicker* m_picker {nullptr};
-
-    /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
-
-    /**
-     * @name Signals attributes
-     * @{
-     */
-    /// Signal triggered when an action has been triggered
+    /// Signal triggered when an action has been triggered.
     PointClickedSigType::sptr m_picked {nullptr};
 
-    /// Signal triggered when a render is requested
+    /// Signal triggered when a render is requested.
     RenderRequestedSigType::sptr m_sigRenderRequested {nullptr};
-    /**
-     * @}
-     */
+
+    /// Ogre picker.
+    ::fwRenderOgre::picker::IPicker* m_picker {nullptr};
+
+    /// Mask for picking requests.
+    std::uint32_t m_queryMask {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 }

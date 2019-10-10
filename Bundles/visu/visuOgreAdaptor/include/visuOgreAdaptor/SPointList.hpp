@@ -62,9 +62,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SPointList" >
         <in key="pointList" uid="..." />
-        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureName="texAdaptorUID" radius="2.4" displayLabel="true" charHeight="0.02" labelColor="#0000ff"
-                visible="true"/>
+        <config layer="..." transform="..." textureName="..." radius="1.0" displayLabel="false" charHeight="0.03"
+ * labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" />
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -73,90 +72,140 @@ namespace visuOgreAdaptor
  * ignored and only raw vertices will be displayed.
  * or add some fields.
  * @subsection Configuration Configuration:
- *  - \b renderer (mandatory) : defines the mesh's layer
- *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
- *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
+ * - \b layer (mandatory) : defines the mesh's layer.
+ * - \b autoresetcamera (optional, default='yes'): reset the camera when this mesh is modified, "yes" or "no".
+ * - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor.
  * Either of the following (whether a material is configured in the XML scene or not) :
- *  - \b materialName (optional) : name of the Ogre material, as defined in the ::visuOgreAdaptor::SMaterial you want
+ * - \b materialName (optional) : name of the Ogre material, as defined in the ::visuOgreAdaptor::SMaterial you want
  * to be bound to.
  * Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
  * template, the texture adaptor and the shading mode) :
- *  - \b materialTemplate (optional) : the name of the base Ogre material for the internally created SMaterial.
- *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
- *  - \b radius (optional) : billboard radius.
- *  - \b displayLabel (optional) : display the label points (default = false)
- *  - \b charHeight (optional): size of the character label (default = 0.03)
- *  - \b labelColor (optional): color of the label in hexadecimal (default = white)
- *  - \b fixedSize (optional, default="false") : if true, the billboard will have a fixed size in screen space.
- *  - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
- *  - \b visible (optional): If pointlist should be visible or not at start (default true).
+ * - \b materialTemplate (optional, default='Billboard_Default') : the name of the base Ogre material for the internally
+ * created SMaterial.
+ * - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
+ * - \b radius (optional, default=1.f) : billboard radius.
+ * - \b displayLabel (optional, default=false) : display the label points (default = false).
+ * - \b charHeight (optional): size of the character label (default = 0.03).
+ * - \b labelColor (optional, default=0xFFFFFF): color of the label in hexadecimal (default = white).
+ * - \b fixedSize (optional, default="false") : if true, the billboard will have a fixed size in screen space.
+ * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
+ * flag.
+ * - \b visible (optional, default=true): If pointlist should be visible or not at start.
  */
 class VISUOGREADAPTOR_CLASS_API SPointList : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceMacro(SPointList, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SPointList, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor: Sets default parameters and initializes necessary members.
+    /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SPointList() noexcept;
-    /// Destructor: if an entity exists in the Ogre Scene, asks Ogre to destroy it.
+
+    /// If an entity exists in the Ogre Scene, asks Ogre to destroy it.
     VISUOGREADAPTOR_API virtual ~SPointList() noexcept;
 
-    /// Returns the material associated to this.
-    VISUOGREADAPTOR_API SPTR(::fwData::Material) getMaterial() const;
-    /// Sets the current material.
-    VISUOGREADAPTOR_API void setMaterial(SPTR(::fwData::Material) material);
-    /// Sets the material template Name.
-    VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& materialName);
+    /**
+     * @brief getMaterial Get the associated material.
+     * @return The material.
+     */
+    VISUOGREADAPTOR_API ::fwData::Material::sptr getMaterial() const;
 
-    /// Active/Inactive automatic reset on camera. By default =true.
-    VISUOGREADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
+    /**
+     * @brief Sets the current material.
+     * @param _material The new material.
+     */
+    VISUOGREADAPTOR_API void setMaterial(::fwData::Material::sptr _material);
 
-    /// Returns associated entity
+    /**
+     * @brief Sets the material template Name.
+     * @param _materialName The material name.
+     */
+    VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& _materialName);
+
+    /**
+     * @brief Active/Inactive automatic reset on camera.
+     * @param _autoResetCamera Use true to activate it.
+     */
+    VISUOGREADAPTOR_API void setAutoResetCamera(bool _autoResetCamera);
+
+    /**
+     * @brief Get the associated entity.
+     * @return The entity.
+     */
     VISUOGREADAPTOR_API ::Ogre::Entity* getEntity() const;
 
-    /// Returns if the SPointList is visible in the scene or not.
+    /**
+     * @brief Get the point list visibility.
+     * @return True if the point list is visible.
+     */
     VISUOGREADAPTOR_API bool getVisibility() const;
-    /// Sets whether the mesh is to be seen or not.
-    VISUOGREADAPTOR_API void updateVisibility(bool isVisible);
 
-    /// Returns proposals to connect service slots to associated object signals
+    /**
+     * @brief Sets whether the point list is to be seen or not.
+     * @param _isVisible Set to true to show the point list.
+     */
+    VISUOGREADAPTOR_API void updateVisibility(bool _isVisible);
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals.
+     * @return The connection map proposals.
+     */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty
+    /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty.
     VISUOGREADAPTOR_API virtual void requestRender() override;
 
 private:
 
-    /// Configures the adaptor
+    /// Configures the adaptor.
     void configuring() override;
-    /// Manually creates a Mesh in the Default Ogre Ressource group
+
+    /// Manually creates a Mesh in the Default Ogre Ressource group.
     void starting() override;
+
     /// Deletes the mesh after unregistering the service, and shutting connections.
     void stopping() override;
+
     /// Called when the mesh is modified
     void updating() override;
 
-    /// Updates the mesh from a points list, checks if color, number of vertices have changed, and updates them.
+    /**
+     * @brief Updates the point list from a point list, checks if color, number of vertices have changed, and updates
+     * them.
+     * @param _pointList The point list used for the update.
+     */
     void updateMesh(const fwData::PointList::csptr& _pointList);
 
-    /// Updates the mesh from a data mesh, checks if color, number of vertices have changed, and updates them.
+    /**
+     * @brief Updates the point list from a mesh, checks if color, number of vertices have changed, and updates them.
+     * @param _mesh The mesh used for the update.
+     */
     void updateMesh(const fwData::Mesh::csptr& _mesh);
 
-    /// Instantiates a new material adaptor
+    /**
+     * @brief Instantiates a new material adaptor
+     * @param _materialSuffix Suffix use for the material name.
+     */
     ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
+
     /// Associates a new SMaterial to the managed SPointList.
-    /// With this method, SPointList is responsible for creating a SMaterial
+    /// With this method, SPointList is responsible for creating a SMaterial.
     void updateMaterialAdaptor();
 
-    /// Attach a node in the scene graph
+    /**
+     * @brief Attach a node in the scene graph.
+     * @param _node The node to attach.
+     */
     void attachNode(::Ogre::MovableObject* _node);
 
-    /// Detach and destroy m_entity in the scene graph
+    /// Detach and destroy m_entity in the scene graph.
     void detachAndDestroyEntity();
 
-    /// Create all the labels and attach them to the sceneNode vector
+    /**
+     * @brief Create all the labels and attach them to the sceneNode vector
+     * @param _pointList The point list used to retreive each point informations.
+     */
     void createLabel(const ::fwData::PointList::csptr& _pointList);
 
     /// Destroy all the labels and delete them from the sceneNode vector
@@ -166,29 +215,31 @@ private:
     bool m_autoResetCamera;
 
     /// Whether the material was set by the user or not.
-    bool m_customMaterial { false };
+    bool m_customMaterial {false};
 
     /// Node in the scene graph
-    ::Ogre::Entity* m_entity;
+    ::Ogre::Entity* m_entity {nullptr};
 
     /// SMaterial attached to the mesh
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
+
     /// Ogre Material related to the mesh
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_material {nullptr};
+
     /// Attached Material's name
-    std::string m_materialTemplateName;
+    std::string m_materialTemplateName {"Billboard_Default"};
 
     /// Attached texture adaptor UID
-    std::string m_textureName;
+    std::string m_textureName {""};
 
     /// Is the entity visible or not ? We need to store it in the adaptor because the information may be received
     /// before the entity is created.
-    bool m_isVisible;
+    bool m_isVisible {true};
 
-    ::fwRenderOgre::Mesh::sptr m_meshGeometry;
+    ::fwRenderOgre::Mesh::sptr m_meshGeometry {nullptr};
 
     /// Allows to scale the billboards
-    float m_radius { 1.f };
+    float m_radius {1.f};
 
     /// Display the labelNumber
     bool m_displayLabel {false};
@@ -197,10 +248,10 @@ private:
     float m_charHeight {0.03f};
 
     /// RGB Color for the labelPoint color
-    ::fwData::Color::sptr m_labelColor;
+    ::fwData::Color::sptr m_labelColor {nullptr};
 
     /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Used to store label of each point.
     std::vector< ::fwRenderOgre::Text* > m_labels;
@@ -209,36 +260,36 @@ private:
     std::vector< ::Ogre::SceneNode* > m_nodes;
 
     /// Scene node where all of our manual objects are attached
-    ::Ogre::SceneNode* m_sceneNode { nullptr };
+    ::Ogre::SceneNode* m_sceneNode {nullptr};
 };
 
 //------------------------------------------------------------------------------
 // Inline functions
 
-inline SPTR(::fwData::Material) SPointList::getMaterial() const
+inline ::fwData::Material::sptr SPointList::getMaterial() const
 {
     return m_material;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SPointList::setMaterial(::fwData::Material::sptr material)
+inline void SPointList::setMaterial(::fwData::Material::sptr _material)
 {
-    m_material = material;
+    m_material = _material;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SPointList::setMaterialTemplateName(const std::string& materialName)
+inline void SPointList::setMaterialTemplateName(const std::string& _materialName)
 {
-    m_materialTemplateName = materialName;
+    m_materialTemplateName = _materialName;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SPointList::setAutoResetCamera(bool autoResetCamera)
+inline void SPointList::setAutoResetCamera(bool _autoResetCamera)
 {
-    m_autoResetCamera = autoResetCamera;
+    m_autoResetCamera = _autoResetCamera;
 }
 
 //------------------------------------------------------------------------------

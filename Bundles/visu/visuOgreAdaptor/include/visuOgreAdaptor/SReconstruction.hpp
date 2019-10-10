@@ -32,6 +32,7 @@
 
 namespace fwData
 {
+
 class Mesh;
 }
 
@@ -42,85 +43,115 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * - \b changeMesh(::fwData::Mesh::sptr) : called when the associated mesh changes.
- * - \b modifyVisibility(int) : called to show or hide the reconstruction.
+ * - \b modifyVisibility() : called to show or hide the reconstruction.
 
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="::visuOgreAdaptor::SReconstruction">
             <in key="reconstruction" uid="..." />
-            <config transform="transform" autoresetcamera="autoresetcamera" />
+            <config layer="..." transform="..." autoresetcamera="yes" queryFlags="0x40000000" />
        </service>
    @endcode
  * @subsection Input Input:
  * - \b reconstruction [::fwData::Reconstruction]: reconstruction to display.
  * @subsection Configuration Configuration:
+ * - \b layer (mandatory) : defines the mesh's layer.
  * - \b transform (optional) : the transformation matrix to associate to the adaptor.
  * - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
- * - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
+ * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
+ * flag.
  */
-
 class VISUOGREADAPTOR_CLASS_API SReconstruction : public ::fwRenderOgre::IAdaptor,
                                                   public ::fwRenderOgre::ITransformable
 {
 public:
 
-    fwCoreServiceMacro(SReconstruction, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SReconstruction, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor.
+    /// Slot used when the mesh has changed.
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT;
+
+    /// Slot used to change the reconstruciton visibility.
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT;
+
+    /// Initialise slots.
     VISUOGREADAPTOR_API SReconstruction() noexcept;
 
-    /// Destructor. Does nothing
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SReconstruction() noexcept;
 
     /**
-     * @name Slots API
-     * @{
+     * @brief Forces the reconstruction to be hidden or not.
+     * @param _hide Set tot true to force the reconstruction to be hidden.
      */
-    typedef ::fwCom::Slot< void (SPTR( ::fwData::Mesh ) )> ChangeMeshSlotType;
-    typedef ::fwCom::Slot< void () > VisibilitySlotType;
-
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT;
-    /** @} */
-
-    /// Forces the Reconstruction to be hidden or not.
     VISUOGREADAPTOR_API void setForceHide(bool _hide);
 
-    /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
+    /**
+     * @brief Active/Inactive automatic reset on camera.
+     * @param _autoResetCamera Use true to activate it.
+     */
     VISUOGREADAPTOR_API void setAutoResetCamera(bool _autoResetCamera);
-    /// Changes the material's name
+
+    /**
+     * @brief Sets the material template Name.
+     * @param _materialName The material name.
+     */
     VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& _materialName);
 
+    /**
+     * @brief Get the mesh adaptor.
+     * @return The mesh adaptor.
+     */
     VISUOGREADAPTOR_API ::visuOgreAdaptor::SMesh::sptr getMeshAdaptor();
 
-    /// Returns proposals to connect service slots to associated object signals
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals.
+     * @return The connection map proposals.
+     */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
+    /**
+     * @brief Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update).
+     * @param _isDynamic Set to true to use dynamic vertex buffer.
+     */
     VISUOGREADAPTOR_API void setDynamicVertices(bool _isDynamic);
 
-    /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
+    /**
+     * @brief Set meshes and indices buffers to dynamic state (only has effect if called before service
+     * starting/update).
+     * @param _isDynamic Set to true to use dynamic vertex and indices buffer.
+     */
     VISUOGREADAPTOR_API void setDynamic(bool _isDynamic);
 
-    /// Set query mask
+    /**
+     * @brief Set the query flag.
+     * @param _queryFlags The value of the query flag.
+     */
     VISUOGREADAPTOR_API void setQueryFlags(std::uint32_t _queryFlags);
 
 protected:
+
     /// Configure the Reconstruction adaptor.
     VISUOGREADAPTOR_API void configuring() override;
+
     /// starts the service; creates the mesh service.
     VISUOGREADAPTOR_API void starting() override;
+
     /// stops and unregisters the service.
     VISUOGREADAPTOR_API void stopping() override;
+
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
     VISUOGREADAPTOR_API void updating() override;
 
 private:
-    /// Changes the attached mesh
-    void changeMesh( SPTR( ::fwData::Mesh) );
-    /// modify if the
+
+    /// Changes the attached mesh.
+    void changeMesh(::fwData::Mesh::sptr);
+
+    /// Modify the visibility.
     void modifyVisibility();
+
     /// Creates the mesh service.
     void createMeshService();
 
@@ -128,16 +159,19 @@ private:
     ::fwRenderOgre::IAdaptor::wptr m_meshAdaptor;
 
     /// sets if the camera has to be reset automatically.
-    bool m_autoResetCamera;
+    bool m_autoResetCamera {true};
 
     /// Material's name
-    std::string m_materialTemplateName;
+    std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+
     /// defines if the mesh changes dynamically
-    bool m_isDynamic;
+    bool m_isDynamic {false};
+
     /// defines if the vertices change dynamically
-    bool m_isDynamicVertices;
+    bool m_isDynamicVertices {false};
+
     /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 //------------------------------------------------------------------------------

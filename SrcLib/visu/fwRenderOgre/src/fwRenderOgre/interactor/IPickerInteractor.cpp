@@ -71,9 +71,9 @@ void IPickerInteractor::initPicker()
 
 // ----------------------------------------------------------------------------
 
-void IPickerInteractor::setQueryFlags(uint32_t _queryFlags)
+void IPickerInteractor::setQueryMask(uint32_t _queryMask)
 {
-    m_queryFlags = _queryFlags;
+    m_queryMask = _queryMask;
 }
 
 //-----------------------------------------------------------------------------

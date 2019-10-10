@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,10 +45,7 @@ namespace picker
 
 // ----------------------------------------------------------------------------
 
-IPicker::IPicker() :
-    m_sceneManager(nullptr),
-    m_selectedObject(nullptr),
-    m_hasSceneManager(false)
+IPicker::IPicker()
 {
 }
 
@@ -60,11 +57,11 @@ IPicker::~IPicker()
 
 //------------------------------------------------------------------------------
 
-bool IPicker::executeRaySceneQuery(int x, int y, int width, int height, std::uint32_t _queryFlags)
+bool IPicker::executeRaySceneQuery(int _x, int _y, int _width, int _height, std::uint32_t _queryMask)
 {
     ::Ogre::Ray r = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getCameraToViewportRay(
-        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
-        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+        static_cast< ::Ogre::Real>(_x) / static_cast< ::Ogre::Real>(_width),
+        static_cast< ::Ogre::Real>(_y) / static_cast< ::Ogre::Real>(_height));
 
     float distance;
     bool entityFound;
@@ -76,10 +73,10 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height, std::uin
     }
 #endif
 
-    ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager);
+    ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager, _queryMask);
 
     std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) =
-        tool.raycast(r, _queryFlags ? _queryFlags : ::Ogre::SceneManager::ENTITY_TYPE_MASK);
+        tool.raycast(r, _queryMask);
 
     if (entityFound)
     {
@@ -153,9 +150,9 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height, std::uin
 
 //-----------------------------------------------------------------------------
 
-void IPicker::setSceneManager(::Ogre::SceneManager* sceneMgr)
+void IPicker::setSceneManager(::Ogre::SceneManager* _sceneMgr)
 {
-    m_sceneManager    = sceneMgr;
+    m_sceneManager    = _sceneMgr;
     m_hasSceneManager = true;
 }
 

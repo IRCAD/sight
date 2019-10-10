@@ -26,6 +26,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Material.hpp>
 
 namespace fwData
 {
@@ -46,7 +47,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SModelSeries">
             <in key="model" uid="..." />
-            <config layer="..." transform="transform" material="mat" autoresetcamera="yes|no" dynamic="yes|no" />
+            <config layer="..." transform="..." material="..." autoresetcamera="yes" dynamic="no" dynamicVertices="no"
+            queryFlags="0x40000000" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
@@ -54,13 +56,14 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the modelSeries's layer
  * - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
- * - \b material : the name of the base Ogre material to pass to the mesh adaptors.
+ * - \b material (optional): the name of the base Ogre material to pass to the mesh adaptors.
  * - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
  * - \b dynamic (optional, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is a
  * performance hint that will choose a specific GPU memory pool accordingly.
  * - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
  * is a performance hint that will choose a specific GPU memory pool accordingly.
- * - \b queryFlags (optional) : Used for picking. Picked only by pickers with the same flag.
+ * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
+ * flag.
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
@@ -68,56 +71,65 @@ class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
 
 public:
 
-    fwCoreServiceMacro(SModelSeries, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SModelSeries, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor.
+    /// Slot used to show the reconstruction.
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
+
+    /// Initialisa slots.
     VISUOGREADAPTOR_API SModelSeries() noexcept;
 
-    /// Destructor. Does nothing
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
 
-    /// Returns proposals to connect service slots to associated object signals
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals.
+     * @return The connection map proposals.
+     */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
-    /**
-     * @}
-     */
-
 protected:
+
     /// Creates a Transform Service, then updates.
     VISUOGREADAPTOR_API void starting() override;
-    /// Configure the parameter
+
+    /// Configure the parameter.
     VISUOGREADAPTOR_API void configuring() override;
-    /// Redraws all (stops then restarts sub services)
+
+    /// Redraws all (stops then restarts sub services).
     VISUOGREADAPTOR_API void updating() override;
+
     /// Closes connections and unregisters service.
     VISUOGREADAPTOR_API void stopping() override;
 
 private:
-    /// Slot: update all reconstructions visibility.
+
+    /**
+     * @brief Update all reconstructions visibility.
+     * @param _show Set to true to show reconstructions.
+     */
     void showReconstructions(bool _show);
-    /// Slot: update all reconstructions visibility using "ShowReconstructions" field.
+
+    /// Update all reconstructions visibility using "ShowReconstructions" field.
     void showReconstructionsOnFieldChanged();
 
     /// Defines if the camera must be reset automatically
-    bool m_autoResetCamera;
+    bool m_autoResetCamera {true};
+
     /// Texture adaptor's UID
-    std::string m_textureAdaptorUID;
+    std::string m_textureAdaptorUID {""};
+
     /// Material name
-    std::string m_materialTemplateName;
+    std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+
     /// Defines if the model series is dynamic
-    bool m_isDynamic;
+    bool m_isDynamic {false};
+
     /// Defines if the model series' vertices are dynamic
-    bool m_isDynamicVertices;
-    /// Signal/Slot connections with this service
-    ::fwCom::helper::SigSlotConnection m_connections;
+    bool m_isDynamicVertices {false};
+
     /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 //------------------------------------------------------------------------------

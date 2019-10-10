@@ -59,7 +59,7 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y)
 {
     if(m_picker->hasSceneManager())
     {
-        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryFlags))
+        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryMask))
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
@@ -117,7 +117,7 @@ void MeshPickerInteractor::buttonReleaseEvent(MouseButton _button, int _x, int _
 {
     if(m_picker->hasSceneManager())
     {
-        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryFlags))
+        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryMask))
         {
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
