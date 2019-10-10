@@ -269,7 +269,7 @@ build:debian:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
      -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=ON
+     -DENABLE_PCH=OFF
      -DUSE_SYSTEM_LIB=ON
      -DPROJECTS_TO_BUILD=VRRender
     - ninja
