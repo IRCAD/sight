@@ -49,7 +49,7 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image)
 
 //-----------------------------------------------------------------------------
 
@@ -833,7 +833,6 @@ void SVolumeRender::destroyWidget()
 void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
     m_illum->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
 
