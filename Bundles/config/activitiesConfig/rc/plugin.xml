@@ -1,0 +1,11 @@
+<plugin id="activitiesConfig" version="@PROJECT_VERSION@">
+
+    <requirement id="filterUnknownSeries" />
+    <requirement id="activities" />
+    <requirement id="ioActivity" />
+
+    <xi:include href="configurations/ActivityLauncher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+
+
+</plugin>

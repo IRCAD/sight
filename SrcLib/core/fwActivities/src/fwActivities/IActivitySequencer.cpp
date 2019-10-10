@@ -78,7 +78,7 @@ int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& serie
         else
         {
             ++lastActivityIndex;
-            this->storeActivityData(seriesDB);
+            this->storeActivityData(seriesDB, lastActivityIndex);
         }
     }
     return lastActivityIndex;
@@ -86,11 +86,11 @@ int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& serie
 
 //------------------------------------------------------------------------------
 
-void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB,
+void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB, int index,
                                            const ::fwData::Composite::csptr& overrides)
 {
     // Retrives the current activity data
-    const size_t currentIdx = static_cast<size_t>(m_currentActivity);
+    const size_t currentIdx = static_cast<size_t>(index);
     SLM_ASSERT("SeriesDB does not contain enough series.", seriesDB->size() > currentIdx);
     ::fwMedData::Series::sptr series           = seriesDB->getContainer()[currentIdx];
     ::fwMedData::ActivitySeries::sptr activity = ::fwMedData::ActivitySeries::dynamicCast(series);

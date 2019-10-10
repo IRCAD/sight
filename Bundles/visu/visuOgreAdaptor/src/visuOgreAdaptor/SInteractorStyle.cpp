@@ -34,7 +34,7 @@
 #include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SInteractorStyle,
-                        ::fwData::Object);
+                        ::fwData::Object)
 
 namespace visuOgreAdaptor
 {
@@ -43,8 +43,9 @@ const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_PICKE
 
 const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT = "pick";
 
-static const std::string s_CONFIG_PICKER   = "picker";
-static const std::string s_CONFIG_MOVEMENT = "movement";
+static const std::string s_PICKER_CONFIG   = "picker";
+static const std::string s_MOVEMENT_CONFIG = "movement";
+static const std::string s_QUERY_CONFIG    = "queryMask";
 
 static const std::map<std::string, std::string> s_STYLES_PICKER = {
     { "Mesh", "::fwRenderOgre::interactor::MeshPickerInteractor"},
@@ -81,17 +82,24 @@ void SInteractorStyle::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count(s_CONFIG_PICKER))
-    {
-        m_pickerStyle = config.get<std::string>(s_CONFIG_PICKER);
-    }
+    m_pickerStyle   = config.get<std::string>(s_PICKER_CONFIG, m_pickerStyle);
+    m_movementStyle = config.get<std::string>(s_MOVEMENT_CONFIG, m_movementStyle);
 
-    if(config.count(s_CONFIG_MOVEMENT))
+    if(config.count(s_QUERY_CONFIG))
     {
-        m_movementStyle = config.get<std::string>(s_CONFIG_MOVEMENT);
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
-
-    m_queryFlags = config.get<std::uint32_t>("queryFlags", m_queryFlags);
+    if(config.count("queryFlags"))
+    {
+        m_queryMask = config.get< std::uint32_t >("queryFlags");
+        FW_DEPRECATED_MSG("The config `queryFlags` is deprecated, please use `" + s_QUERY_CONFIG +"`", "21.0");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -144,17 +152,17 @@ void SInteractorStyle::setInteractorStyle()
             auto layer            = this->getRenderService()->getLayer(m_layerID);
             auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor);
             pickerInteractor->initPicker();
-            pickerInteractor->setQueryFlags(m_queryFlags);
+            pickerInteractor->setQueryMask(m_queryMask);
             layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor));
         }
         else
         {
-            SLM_WARN(this->getID() + " : '" + s_CONFIG_PICKER +"' has an unknown value : '" + m_pickerStyle +"'");
+            SLM_WARN(this->getID() + " : '" + s_PICKER_CONFIG +"' has an unknown value : '" + m_pickerStyle +"'");
         }
     }
     else
     {
-        SLM_WARN(this->getID() + " : '" + s_CONFIG_PICKER +"' is not set.");
+        SLM_WARN(this->getID() + " : '" + s_PICKER_CONFIG +"' is not set.");
     }
 
     if(!m_movementStyle.empty())
@@ -171,14 +179,13 @@ void SInteractorStyle::setInteractorStyle()
         }
         else
         {
-            SLM_WARN(this->getID() + " : '" + s_CONFIG_MOVEMENT +"' has an unknown value : '" + m_movementStyle +"'");
+            SLM_WARN(this->getID() + " : '" + s_MOVEMENT_CONFIG +"' has an unknown value : '" + m_movementStyle +"'");
         }
     }
     else
     {
-        SLM_WARN(this->getID() + " : '" + s_CONFIG_MOVEMENT +"' is not set.");
+        SLM_WARN(this->getID() + " : '" + s_MOVEMENT_CONFIG +"' is not set.");
     }
-
 }
 
 //------------------------------------------------------------------------------

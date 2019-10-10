@@ -60,8 +60,8 @@ protected:
      */
     FWACTIVITIES_API int parseActivities(const ::fwMedData::SeriesDB::sptr& seriesDB);
 
-    /// Store the current activity data
-    FWACTIVITIES_API void storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB,
+    /// Store the data of the activity at the given index
+    FWACTIVITIES_API void storeActivityData(const ::fwMedData::SeriesDB::sptr& seriesDB, int index,
                                             const ::fwData::Composite::csptr& overrides = nullptr);
 
     /**

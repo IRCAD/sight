@@ -48,11 +48,11 @@ namespace activities
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::activities::SActivitySequencer );
+fwServicesRegisterMacro( ::fwServices::IController, ::activities::SActivitySequencer )
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType s_NEXT_SLOT      = "next";
+const ::fwCom::Slots::SlotKeyType s_NEXT_SLOT = "next";
 const ::fwCom::Slots::SlotKeyType s_PREVIOUS_SLOT  = "previous";
 const ::fwCom::Slots::SlotKeyType s_GO_TO_SLOT     = "goTo";
 const ::fwCom::Slots::SlotKeyType s_SEND_INFO_SLOT = "sendInfo";
@@ -169,7 +169,7 @@ void SActivitySequencer::goTo(int index)
 
     if (m_currentActivity >= 0)
     {
-        this->storeActivityData(seriesDB);
+        this->storeActivityData(seriesDB, m_currentActivity);
     }
 
     const size_t newIdx = static_cast<size_t>(index);

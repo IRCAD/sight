@@ -34,7 +34,7 @@
 namespace uiActivitiesQml
 {
 
-fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivitySequencer );
+fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivitySequencer )
 
 const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
@@ -127,7 +127,7 @@ void SActivitySequencer::goTo(int index)
 
     if (m_currentActivity >= 0)
     {
-        this->storeActivityData(seriesDB);
+        this->storeActivityData(seriesDB, m_currentActivity);
     }
 
     const size_t newIdx = static_cast<size_t>(index);

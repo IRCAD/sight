@@ -49,7 +49,7 @@
 
 #include <cstdint>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SPointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SPointList, ::fwData::PointList )
 //-----------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
@@ -58,16 +58,26 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwServices::IService::KeyType s_POINTLIST_INPUT    = "pointList";
-static const ::fwServices::IService::KeyType s_MESH_INPUT         = "mesh";
+
+static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
+static const ::fwServices::IService::KeyType s_MESH_INPUT      = "mesh";
+
+static const std::string s_COLOR_CONFIG             = "color";
+static const std::string s_VISIBLE_CONFIG           = "visible";
+static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
+static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
+static const std::string s_FIXED_SIZE_CONFIG        = "fixedSize";
+static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
+static const std::string s_QUERY_CONFIG             = "queryFlags";
+static const std::string s_RADIUS_CONFIG            = "radius";
+static const std::string s_DISPLAY_LABEL_CONFIG     = "displayLabel";
+static const std::string s_LABEL_COLOR_CONFIG       = "labelColor";
+static const std::string s_FONT_SOURCE_CONFIG       = "fontSource";
+static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
 
 //-----------------------------------------------------------------------------
 
-SPointList::SPointList() noexcept :
-    m_autoResetCamera(true),
-    m_entity(nullptr),
-    m_materialTemplateName("Billboard_Default"),
-    m_isVisible(true)
+SPointList::SPointList() noexcept
 {
     m_material = ::fwData::Material::New();
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList::updateVisibility, this);
@@ -86,17 +96,17 @@ SPointList::~SPointList() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SPointList::updateVisibility(bool isVisible)
+void SPointList::updateVisibility(bool _isVisible)
 {
-    m_isVisible = isVisible;
+    m_isVisible = _isVisible;
 
     if(m_entity)
     {
         this->getRenderService()->makeCurrent();
 
-        m_entity->setVisible(isVisible);
+        m_entity->setVisible(_isVisible);
 
-        m_meshGeometry->setVisible(isVisible);
+        m_meshGeometry->setVisible(_isVisible);
 
         this->requestRender();
     }
@@ -110,46 +120,56 @@ void SPointList::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    const std::string color = config.get<std::string>("color", "");
+    const std::string color = config.get<std::string>(s_COLOR_CONFIG, "");
 
-    const bool visible = config.get<bool>("visible", m_isVisible);
+    const bool visible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
     this->updateVisibility(visible);
 
     SLM_ASSERT("Material not found", m_material);
-    m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
+    m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
-    if(config.count("autoresetcamera"))
+    if(config.count(s_AUTORESET_CAMERA_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG) == "yes";
     }
 
-    if( config.count("materialTemplate"))
+    if( config.count(s_MATERIAL_TEMPLATE_CONFIG))
     {
         // An existing Ogre material will be used for this mesh
         m_customMaterial       = true;
-        m_materialTemplateName = config.get<std::string>("materialTemplate");
+        m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG);
     }
-    else if(config.get("fixedSize", false))
+    else if(config.get(s_FIXED_SIZE_CONFIG, false))
     {
         m_materialTemplateName = "Billboard_FixedSize";
     }
 
     // The mesh adaptor will pass the texture name to the created material adaptor
-    if ( config.count("textureName"))
+    if ( config.count(s_TEXTURE_NAME_CONFIG))
     {
-        m_textureName = config.get<std::string>("textureName");
+        m_textureName = config.get<std::string>(s_TEXTURE_NAME_CONFIG);
     }
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_queryFlags   = config.get<std::uint32_t>("queryFlags", m_queryFlags);
-    m_radius       = config.get("radius", 1.f);
-    m_displayLabel = config.get("displayLabel", m_displayLabel);
-    m_fontSource   = config.get("fontSource", m_fontSource);
-    m_fontSize     = config.get<size_t>("fontSize", m_fontSize);
+    if(config.count(s_QUERY_CONFIG))
+    {
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
+    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
-    const std::string labelColor = config.get("labelColor", "#ffffff");
+    m_radius       = config.get(s_RADIUS_CONFIG, 1.f);
+    m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
+
+    const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
     m_labelColor = ::fwData::Color::New();
     m_labelColor->setRGBA(labelColor);
 }
@@ -336,7 +356,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->addQueryFlags(m_queryFlags);
+        m_entity->setQueryFlags(m_queryFlags);
     }
 
     //------------------------------------------
@@ -389,7 +409,7 @@ void SPointList::updateMesh(const ::fwData::Mesh::csptr& _mesh)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->addQueryFlags(m_queryFlags);
+        m_entity->setQueryFlags(m_queryFlags);
     }
 
     //------------------------------------------
