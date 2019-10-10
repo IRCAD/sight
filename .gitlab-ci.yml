@@ -255,12 +255,10 @@ build:release-macos:
       - $CI_PROJECT_DIR/build/ctest.log
 
 build:debian:
-  image: registry.ircad.fr/sight/docker-debian:master
+  image: registry.ircad.fr/sight/docker-debian:dev
   stage: build
   dependencies: []
   before_script:
-    - export CC=/usr/local/lib/ccache/gcc-8
-    - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
   script:
     - cd $CI_PROJECT_DIR/build/
