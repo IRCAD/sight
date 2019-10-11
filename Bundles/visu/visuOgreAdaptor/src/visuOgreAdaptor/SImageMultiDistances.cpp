@@ -64,9 +64,9 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT     = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
 
 SImageMultiDistances::SImageMultiDistances() noexcept
@@ -876,7 +876,7 @@ Ogre::MovableObject* SImageMultiDistances::pickObject(int _x, int _y)
 
     const int height       = cam->getViewport()->getActualHeight();
     const int width        = cam->getViewport()->getActualWidth();
-    const bool pickSuccess = m_picker.executeRaySceneQuery( _x, _y, width, height, 0 );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( _x, _y, width, height, 0xffffffff );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
