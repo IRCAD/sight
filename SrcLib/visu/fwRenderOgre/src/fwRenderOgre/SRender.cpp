@@ -431,36 +431,33 @@ SRender::configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg)
 
 void SRender::requestRender()
 {
-    if( this->isShownOnScreen() )
+    if ( m_renderMode == RenderMode::SYNC )
     {
-        if ( m_renderMode == RenderMode::SYNC )
+        m_interactorManager->renderNow();
+    }
+    else
+    {
+        m_interactorManager->requestRender();
+    }
+
+    if(m_offScreen)
+    {
+        FW_PROFILE("Offscreen rendering");
+
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
+        SLM_ASSERT("Offscreen image not found.", image);
+
         {
-            m_interactorManager->renderNow();
+            ::fwData::mt::ObjectWriteLock lock(image);
+
+            this->makeCurrent();
+            ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
+            SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image, m_flip);
         }
-        else
-        {
-            m_interactorManager->requestRender();
-        }
 
-        if(m_offScreen)
-        {
-            FW_PROFILE("Offscreen rendering");
-
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
-            SLM_ASSERT("Offscreen image not found.", image);
-
-            {
-                ::fwData::mt::ObjectWriteLock lock(image);
-
-                this->makeCurrent();
-                ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
-                SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
-                ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image, m_flip);
-            }
-
-            auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
-        }
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 
