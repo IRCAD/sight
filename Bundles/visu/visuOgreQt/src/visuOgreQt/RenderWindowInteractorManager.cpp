@@ -83,7 +83,7 @@ void RenderWindowInteractorManager::requestRender()
 //-----------------------------------------------------------------------------
 
 void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                     bool _renderOnDemand, bool _fullscreen)
+                                                     bool _renderOnDemand, bool _fullscreen, bool _vsync)
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
@@ -116,7 +116,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     auto* disableShortcut  = new QShortcut(QString("Escape"), m_windowContainer);
     QObject::connect(disableShortcut, &QShortcut::activated, disableFullscreen);
 
-    m_qOgreWidget->initialise();
+    m_qOgreWidget->initialize(_vsync);
 }
 
 //-----------------------------------------------------------------------------

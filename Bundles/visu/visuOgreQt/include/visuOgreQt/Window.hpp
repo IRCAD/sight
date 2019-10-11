@@ -87,10 +87,10 @@ public:
     int getFrameId() const;
 
     /**
-     * @brief initialise
-     * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
+     * @brief Creates the Ogre renderWindow associated to this window.
+     * @param _vsync enables vertical synchronization, recommended to avoid tearing.
      */
-    void initialise();
+    void initialize(bool _vsync);
 
     /**
      * @brief renderNow

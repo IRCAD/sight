@@ -79,7 +79,7 @@ void OffScreenRenderWindowInteractorManager::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void OffScreenRenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr, bool, bool)
+void OffScreenRenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr, bool, bool, bool)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 

@@ -92,6 +92,8 @@ class Layer;
  *  - \b scene
  *    - \b renderMode (optional): 'auto' (only when something has changed), 'always' (render continuously) or 'sync'
  *        (only when the slot "requestRender" is called). Default is 'auto'.
+ *    - \b vsync (optional, values=true|false, default=false): Enables vertical synchronization.
+ *        Recommended in fullscreen to avoid tearing.
  *    - \b width (optional, "1280" by default): width for off-screen rendering
  *    - \b height (optional, "720" by default): height for off-screen rendering
  *  - \b layer : mandatory, defines the scene's layer
@@ -288,6 +290,9 @@ private:
 
     /// If true and doing offscreen rendering, the scene will be rendered upside down.
     bool m_flip { false };
+
+    /// Enables vertical synchronization. Recommended in fullscreen to avoid tearing.
+    bool m_vsync { true };
 };
 
 //-----------------------------------------------------------------------------

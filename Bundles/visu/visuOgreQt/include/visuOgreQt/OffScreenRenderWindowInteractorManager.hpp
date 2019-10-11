@@ -41,7 +41,7 @@ class VISUOGREQT_CLASS_API OffScreenRenderWindowInteractorManager :
     public ::fwRenderOgre::IRenderWindowInteractorManager
 {
 public:
-    fwCoreClassMacro(OffScreenRenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager);
+    fwCoreClassMacro(OffScreenRenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)
 
     /// Constructor
     VISUOGREQT_API OffScreenRenderWindowInteractorManager(
@@ -58,7 +58,7 @@ public:
 
     /// Create the container that holds the QtWidget.
     VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent,
-                                                bool renderOnDemand, bool fullscreen) final;
+                                                bool _renderOnDemand, bool _fullscreen, bool) final;
 
     /// Connects widget and SRender signals and slots.
     VISUOGREQT_API virtual void connectToContainer() final;

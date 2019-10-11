@@ -66,7 +66,7 @@ void Window::render(QPainter* painter)
 
 // ----------------------------------------------------------------------------
 
-void Window::initialise()
+void Window::initialize(bool _vsync)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -78,7 +78,7 @@ void Window::initialise()
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
     parameters["currentGLContext"] = "true";
-    parameters["vsync"]            = "true";
+    parameters["vsync"]            = _vsync ? "true" : "false";
 
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
