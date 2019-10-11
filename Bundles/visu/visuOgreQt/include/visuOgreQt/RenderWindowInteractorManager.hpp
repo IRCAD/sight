@@ -94,10 +94,6 @@ public:
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
     VISUOGREQT_API virtual ::Ogre::TexturePtr getRenderTexture() final;
 
-    /// Sets the list of overlays to be rendered in this window.
-    VISUOGREQT_API virtual void setEnabledOverlays(
-        const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays) final;
-
     /// Creates a worker able to handle resources from the window's OpenGL context.
     VISUOGREQT_API ::fwRenderOgre::IGraphicsWorker* createGraphicsWorker() final;
 

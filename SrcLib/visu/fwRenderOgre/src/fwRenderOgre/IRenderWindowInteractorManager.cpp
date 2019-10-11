@@ -72,11 +72,4 @@ IRenderWindowInteractorManager::~IRenderWindowInteractorManager()
 
 //-----------------------------------------------------------------------------
 
-void IRenderWindowInteractorManager::setEnabledOverlays(const IRenderWindowInteractorManager::OverlaySetType&)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace fwRenderOgre

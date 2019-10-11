@@ -269,7 +269,7 @@ void SPointList::updating()
 void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
 {
     ::Ogre::SceneManager* sceneMgr          = this->getSceneManager();
-    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
     ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);

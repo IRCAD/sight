@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -120,7 +120,7 @@ void SRenderStats::starting()
     ::fwRenderOgre::SRender::sptr renderSrv = this->getRenderService();
     renderSrv->makeCurrent();
 
-    ::Ogre::OverlayContainer* textContainer = renderSrv->getOverlayTextPanel();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
     ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
 
     m_statsText = ::fwRenderOgre::Text::New(this->getID() + "_fpsText",

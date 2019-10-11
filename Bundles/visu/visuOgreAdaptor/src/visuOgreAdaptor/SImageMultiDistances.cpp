@@ -367,7 +367,7 @@ void SImageMultiDistances::removeCurrentOrigin() const
 void SImageMultiDistances::createMillimeterLabel(const float _point[3], const Ogre::Real _distance, size_t _id,
                                                  const ::Ogre::ColourValue _color)
 {
-    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
     const ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
     ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
     const std::string labelNumber = std::to_string(_distance) + "mm";
@@ -409,7 +409,7 @@ void SImageMultiDistances::deleteMillimeterLabel(size_t _id)
 
 void SImageMultiDistances::createIdLabel(const float ps1[3], size_t _id, const ::Ogre::ColourValue& _color)
 {
-    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
     const ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
     ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
     const std::string labelNumber = std::to_string(_id);

@@ -115,7 +115,7 @@ void SLandmarks::starting()
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
     m_materialAdaptor->update();
 
-    m_text = this->getRenderService()->getOverlayTextPanel();
+    m_text = this->getLayer()->getOverlayTextPanel();
     m_font = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
 
     this->updating();
