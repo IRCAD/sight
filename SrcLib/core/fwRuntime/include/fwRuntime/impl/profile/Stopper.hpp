@@ -22,36 +22,52 @@
 
 #pragma once
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
-#include "fwRuntime/utils/GenericExecutableFactory.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/Version.hpp"
+
+#include <boost/utility.hpp>
 
 #include <string>
 
 namespace fwRuntime
 {
 
-namespace utils
+namespace impl
+{
+
+namespace profile
 {
 
 /**
- * @brief   Defines a generic template executable factory registrar class.
+ * @brief   Stops a given bundle.
  */
-template< typename E >
-struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
+class Stopper :  public boost::noncopyable
 {
 
-    typedef GenericExecutableFactory< E >   FactoryType;
+public:
 
     /**
-     * @brief   Constructor
+     * @brief       Constructor
+     *
+     * @param[in]   _identifier  a string containing a bundle identifier
      */
-    GenericExecutableFactoryRegistrar(const std::string& type) :
-        ExecutableFactoryRegistrar( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
-    {
-    }
+    FWRUNTIME_API Stopper( const std::string& _identifier, const Version& version = Version() );
 
+    /**
+     * @brief   Applies the Stopper on the system.
+     *
+     * @remark  This method should be called directly.
+     */
+    void apply();
+
+private:
+
+    const std::string m_identifier;     ///< the bundle identifier
+    const Version m_version;            ///< the bundle version
 };
 
-} // namespace utils
+} // namespace profile
+
+} // namespace impl
 
 } // namespace fwRuntime

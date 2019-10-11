@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,9 +33,9 @@
 #include <fwCore/base.hpp>
 
 #include "fwRuntime/Bundle.hpp"
-#include "fwRuntime/ExtensionPoint.hpp"
-#include "fwRuntime/Runtime.hpp"
-#include "fwRuntime/io/Validator.hpp"
+#include "fwRuntime/impl/ExtensionPoint.hpp"
+#include "fwRuntime/impl/Runtime.hpp"
+#include "fwRuntime/impl/io/Validator.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/helper.hpp"
 
@@ -44,14 +44,14 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-Extension::Extension( std::shared_ptr< Bundle > bundle, const std::string & id, const std::string & point,
-                      xmlNodePtr xmlNode )
-    : BundleElement ( bundle                    ),
-      m_id          ( id                        ),
-      m_point       ( point                     ),
-      m_xmlDoc      ( xmlNewDoc(BAD_CAST "1.0") ),
-      m_xmlNode     ( xmlCopyNode(xmlNode, 1)   ),
-      m_validity    ( UnknownValidity           )
+Extension::Extension( std::shared_ptr< Bundle > bundle, const std::string& id, const std::string& point,
+                      xmlNodePtr xmlNode ) :
+    ModuleElement( bundle                    ),
+    m_id( id                        ),
+    m_point( point                     ),
+    m_xmlDoc( xmlNewDoc(BAD_CAST "1.0") ),
+    m_xmlNode( xmlCopyNode(xmlNode, 1)   ),
+    m_validity( UnknownValidity           )
 {
     xmlDocSetRootElement(m_xmlDoc, m_xmlNode);
 }
@@ -102,8 +102,8 @@ Extension::Validity Extension::validate()
     }
 
     // Retrieves the extension point.
-    Runtime * rntm( Runtime::getDefault() );
-    std::shared_ptr< ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
+    impl::Runtime* rntm( impl::Runtime::getDefault() );
+    std::shared_ptr< impl::ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
 
     // Checks that the point exists.
     if( !point )
@@ -112,7 +112,7 @@ Extension::Validity Extension::validate()
     }
 
     // Validates the extension.
-    std::shared_ptr< io::Validator >   validator( point->getExtensionValidator() );
+    std::shared_ptr< impl::io::Validator >   validator( point->getExtensionValidator() );
     OSLM_ASSERT("The validator creation failed for the point "<<point->getIdentifier(), validator );
 
     // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>

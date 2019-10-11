@@ -22,11 +22,11 @@
 
 #include "RuntimeTest.hpp"
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/ExtensionPoint.hpp>
+#include <fwRuntime/impl/Bundle.hpp>
+#include <fwRuntime/impl/ExtensionPoint.hpp>
+#include <fwRuntime/impl/Runtime.hpp>
 #include <fwRuntime/operations.hpp>
-#include <fwRuntime/Runtime.hpp>
 
 #include <filesystem>
 
@@ -64,24 +64,24 @@ void RuntimeTest::tearDown()
 
 void RuntimeTest::testRuntime()
 {
-    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
+    ::fwRuntime::impl::Runtime& runtime = ::fwRuntime::impl::Runtime::get();
 
     // Test bundle dataReg
-    CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
+    CPPUNIT_ASSERT(runtime.findBundle("dataReg"));
+    auto bundle = std::dynamic_pointer_cast< ::fwRuntime::impl::Bundle >(runtime.findBundle("dataReg"));
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnable());
 
     // Test bundle servicesReg
-    CPPUNIT_ASSERT(runtime->findBundle("servicesReg"));
-    std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
+    CPPUNIT_ASSERT(runtime.findBundle("servicesReg"));
+    auto bundle2 = std::dynamic_pointer_cast< ::fwRuntime::impl::Bundle >(runtime.findBundle("servicesReg"));
     bundle2->setEnable(true);
     CPPUNIT_ASSERT(bundle2->isEnable());
 
     // Test runtime extensions
-    CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceFactory"));
-    CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceConfig"));
-    CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::AppConfig"));
+    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::ServiceFactory"));
+    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::ServiceConfig"));
+    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::AppConfig"));
 }
 
 //------------------------------------------------------------------------------

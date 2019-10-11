@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__
-#define __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 
@@ -34,7 +33,7 @@ namespace fwRuntime
 
 namespace io
 {
-struct BundleDescriptorReader;
+class BundleDescriptorReader;
 } // namespace io
 
 struct ConfigurationElement;
@@ -44,7 +43,7 @@ struct ConfigurationElement;
  */
 struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 {
-    friend struct BundleDescriptorReader;
+    friend class BundleDescriptorReader;
 
     /**
      * @name    Type Definitions
@@ -115,14 +114,15 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      */
     FWRUNTIME_API size_t size() const;
 
-    protected:
+    //TODO: Fix visibility
+//    protected:
 
-        /**
-         * @brief       Adds a new configuration element to the extension.
-         *
-         * @param[in]   element a shared pointer to the configuration element to add
-         */
-        FWRUNTIME_API void addConfigurationElement( std::shared_ptr< ConfigurationElement > element );
+    /**
+     * @brief       Adds a new configuration element to the extension.
+     *
+     * @param[in]   element a shared pointer to the configuration element to add
+     */
+    FWRUNTIME_API void addConfigurationElement( std::shared_ptr< ConfigurationElement > element );
 
     private:
 
@@ -131,5 +131,3 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 };
 
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__

@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "fwRuntime/BundleElement.hpp"
 #include "fwRuntime/config.hpp"
+#include "fwRuntime/ModuleElement.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <string>
 
 namespace fwRuntime
 {
-struct IExecutable;
+class IExecutable;
 }
 
 namespace fwRuntime
@@ -40,7 +40,7 @@ namespace fwRuntime
  * @brief   Defines the abstract executable factory class.
  *
  */
-struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
+struct FWRUNTIME_CLASS_API ExecutableFactory : public ModuleElement
 {
 
     /**

@@ -36,17 +36,7 @@
 
 namespace fwRuntime
 {
-struct Bundle;
-struct Executable;
-
-namespace io
-{
-struct BundleDescriptorReader;
-}
-}
-
-namespace fwRuntime
-{
+class Bundle;
 
 /**
  * @brief   Defines the configuration element class.
@@ -55,9 +45,7 @@ namespace fwRuntime
 struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,
                                                     public std::enable_shared_from_this< ConfigurationElement >
 {
-    friend struct ::fwRuntime::io::BundleDescriptorReader;
-
-    fwCoreClassMacro(ConfigurationElement);
+    fwCoreClassMacro(ConfigurationElement)
 
     /**
      * @brief       ConfigurationElement factory.
@@ -200,34 +188,35 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      */
     FWRUNTIME_API virtual ~ConfigurationElement();
 
-    protected:
+    //TODO: Fix visibility
+    //protected:
 
-        /**
-         * @brief       Constructor.
-         *
-         * @param[in]   bundle  a shared pointer to the bundle to the configuration element is attached to
-         * @param[in]   name    a string containing the configuration element name
-         *
-         * @todo        test parameters validity
-         */
-        FWRUNTIME_API ConfigurationElement(const std::shared_ptr<Bundle> bundle, const std::string& name);
+    /**
+     * @brief       Constructor.
+     *
+     * @param[in]   bundle  a shared pointer to the bundle to the configuration element is attached to
+     * @param[in]   name    a string containing the configuration element name
+     *
+     * @todo        test parameters validity
+     */
+    FWRUNTIME_API ConfigurationElement(const std::shared_ptr<Bundle> bundle, const std::string& name);
 
-        /**
-         * @brief       Sets an attribute with the specified name and value.
-         *
-         * Setting a value for an existing attribute will override the old value.
-         *
-         * @param[in]   name    a string containing the attribute name
-         * @param[in]   value   a string containing the attribute value
-         */
-        FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) noexcept;
+    /**
+     * @brief       Sets an attribute with the specified name and value.
+     *
+     * Setting a value for an existing attribute will override the old value.
+     *
+     * @param[in]   name    a string containing the attribute name
+     * @param[in]   value   a string containing the attribute value
+     */
+    FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) noexcept;
 
-        /**
-         * @brief       Sets the value of the configuration element it-self.
-         *
-         * @param[in]   value   a string containing the new configuration element value
-         */
-        FWRUNTIME_API void setValue(const std::string& value) noexcept;
+    /**
+     * @brief       Sets the value of the configuration element it-self.
+     *
+     * @param[in]   value   a string containing the new configuration element value
+     */
+    FWRUNTIME_API void setValue(const std::string& value) noexcept;
 
     private:
 

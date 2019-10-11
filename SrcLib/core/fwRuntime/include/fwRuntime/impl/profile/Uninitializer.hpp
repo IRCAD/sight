@@ -22,36 +22,53 @@
 
 #pragma once
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
-#include "fwRuntime/utils/GenericExecutableFactory.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/Version.hpp"
+
+#include <boost/utility.hpp>
 
 #include <string>
 
 namespace fwRuntime
 {
 
-namespace utils
+namespace impl
+{
+
+namespace profile
 {
 
 /**
- * @brief   Defines a generic template executable factory registrar class.
+ * @brief   Starts a given bundle.
  */
-template< typename E >
-struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
+class Uninitializer : public boost::noncopyable
 {
+public:
 
-    typedef GenericExecutableFactory< E >   FactoryType;
+    friend class Stopper;
+    /**
+     * @brief       Constructor
+     *
+     * @param[in]   identifier a string containing a bundle identifier
+     */
+    FWRUNTIME_API Uninitializer( const std::string& identifier, const Version& version = Version() );
 
     /**
-     * @brief   Constructor
+     * @brief   Applies the uninitializer on the bundle.
+     *
+     * @remark  This method should be called directly.
      */
-    GenericExecutableFactoryRegistrar(const std::string& type) :
-        ExecutableFactoryRegistrar( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
-    {
-    }
+    void apply();
+
+protected:
+
+    const std::string m_identifier;     ///< the bundle identifier
+    const Version m_version;            ///< the bundle version
 
 };
 
-} // namespace utils
+} // namespace profile
+
+} // namespace impl
 
 } // namespace fwRuntime

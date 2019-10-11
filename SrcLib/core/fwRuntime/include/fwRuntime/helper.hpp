@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,23 +24,12 @@
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
-#include "fwRuntime/io/Validator.hpp"
+#include "fwRuntime/impl/io/Validator.hpp"
 #include "fwRuntime/operations.hpp"
 #include "fwRuntime/Runtime.hpp"
 
 namespace fwRuntime
 {
-/**
- * @brief   Check configuration element (its XML representation) with respect to the validator (referencing the xsd
- * schema)
- * @note    Used to check any service/object based configurations as well as runtime extensions.
- * @return  (true,"") if configuration element is correct vs validator, else (false,std::string(error message))
- * otherwise
- *
-
- */
-FWRUNTIME_API std::pair< bool, std::string > validateConfigurationElement(
-    std::shared_ptr< ::fwRuntime::io::Validator >   _validator, ::fwRuntime::ConfigurationElement::sptr _element );
 
 /**
  * @brief   Update pNode content according to _cfgElement

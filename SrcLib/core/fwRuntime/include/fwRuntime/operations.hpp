@@ -24,9 +24,8 @@
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
-#include "fwRuntime/Executable.hpp"
 #include "fwRuntime/Extension.hpp"
-#include "fwRuntime/ExtensionPoint.hpp"
+#include "fwRuntime/IExecutable.hpp"
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
@@ -34,23 +33,14 @@
 #include <fwCore/base.hpp>
 
 #include <filesystem>
-
 #include <iterator>
 #include <memory>
 #include <string>
 
 namespace fwRuntime
 {
-struct Bundle;
-
-namespace profile
-{
+class Bundle;
 class Profile;
-}
-}
-
-namespace fwRuntime
-{
 
 /**
  * @brief   Initializes Sight runtime and discovers default bundles. To be used when building an external application
@@ -59,15 +49,6 @@ namespace fwRuntime
  * @param   directory   a path to the directory where Sight is installed
  */
 FWRUNTIME_API void init( const std::filesystem::path& directory );
-
-/**
- * @brief       Retrieves the extension point having the specified identifier.
- *
- * @param[in]   identifier  a string containing an extension point identifier
- *
- * @return      a pointer to the found extension point or null if none
- */
-FWRUNTIME_API std::shared_ptr<ExtensionPoint> findExtensionPoint( const std::string& identifier );
 
 /**
  * @brief       Creates an executable instance for the specified configuration element.
@@ -136,88 +117,11 @@ T* createExecutableInstance(
 }
 
 /**
- * @brief   Retrieves all extensions for the point having the specified
- *          identifier.
- *
- * @param   identifier  a string containing an extension point identifier
- * @param   output      an insert iterator used to store each found extension
- */
-template<typename OutputIterator>
-void getAllExtensionsForPoint(
-    const std::string& identifier,
-    OutputIterator output
-    )
-{
-    std::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
-
-    if( !point )
-    {
-        throw RuntimeException( identifier + ": invalid extension point identifier." );
-    }
-    point->getAllExtensions( output );
-}
-
-/**
  * @brief   Retrieves all configuration elements for the point having the
  *          specified identifier.
- *
- * @param   identifier  a string containing an extension point identifier
- * @param   output      an insert iterator used to store found configuration
- *                      elements
+ * @return  a vector containing shared pointers to all found configuration elements
  */
-template<typename OutputIterator>
-void getAllConfigurationElementsForPoint(
-    const std::string& identifier,
-    OutputIterator output
-    )
-{
-    std::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
-
-    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << "Bundle" <<
-               point->getBundle()->getIdentifier() );
-
-    if( !point )
-    {
-        throw RuntimeException( identifier + ": invalid extension point identifier." );
-    }
-
-    // VAG test if ExtensionPoint is enable
-    if ( point->isEnable() )
-    {
-        point->getAllConfigurationElements( output );
-    }
-    else
-    {
-        OSLM_DEBUG( "IGNORING getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
-    }
-
-}
-
-/**
- * @brief   Retrieves all configuration elements for the point having the
- *          specified identifier.
- *
- * This method use the container type specified by the template parameter. The
- * type of the elements of the container must be std::shared_ptr< ConfigurationElement >
- * or the compilation will fail.
- *
- * @return  a container containing shared pointers to all found configuration
- *          elements
- */
-template<typename Container>
-const Container getAllConfigurationElementsForPoint(const std::string& identifier)
-{
-    // Defines an insert iterator type for the container.
-    typedef std::back_insert_iterator< Container > Inserter;
-
-    // Collects all contributed configuratoin elements.
-    Container elements;
-    Inserter inserter(elements);
-    getAllConfigurationElementsForPoint(identifier, inserter);
-
-    // The job is done!
-    return elements;
-}
+std::vector< ConfigurationElement::sptr > getAllConfigurationElementsForPoint(const std::string& identifier);
 
 /**
  * @brief   Retrieves all executable objects for the point having the specified identifier
@@ -236,23 +140,19 @@ template< typename Container, typename T >
 const Container getAllExecutableForPoint( const std::string& identifier,
                                           const std::string& attribute = "class" )
 {
-    // Defines the element container
-    typedef std::vector< std::shared_ptr< ConfigurationElement > > ConfigurationElementContainer;
-
     // Retrieves all configuration elements.
-    ConfigurationElementContainer elements( getAllConfigurationElementsForPoint< ConfigurationElementContainer >(
-                                                identifier) );
+    auto elements = getAllConfigurationElementsForPoint(identifier);
+
+    // Walks through collected configuration elements and create desired executable instances
+    Container result;
 
     // Defines an insert iterator type for the executable container.
     typedef std::back_insert_iterator< Container > Inserter;
 
-    // Walks through collected configuration elements and create desired executable instances
-    Container result;
-    ConfigurationElementContainer::iterator iElement;
     Inserter iInserter( result );
-    for( iElement = elements.begin(); iElement != elements.end(); ++iElement, ++iInserter )
+    for( auto iElement : elements)
     {
-        std::shared_ptr< ConfigurationElement >    element( *iElement );
+        std::shared_ptr< ConfigurationElement >    element( iElement );
         std::shared_ptr< T >                       executable( createExecutableInstance< T >(element, attribute) );
 
         iInserter = executable;
@@ -400,7 +300,7 @@ FWRUNTIME_API std::shared_ptr<Bundle> loadBundle( const std::string& identifier,
  *
  * @return  a shared pointer to the started profile
  */
-FWRUNTIME_API std::shared_ptr< ::fwRuntime::profile::Profile > startProfile( const std::filesystem::path& path );
+FWRUNTIME_API std::shared_ptr< ::fwRuntime::Profile > startProfile( const std::filesystem::path& path );
 
 /**
  * @brief   Retrieves the bundle with the given identifier and version

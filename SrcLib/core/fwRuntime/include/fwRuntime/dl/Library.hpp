@@ -27,13 +27,12 @@
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <filesystem>
-
 #include <memory>
 
 namespace fwRuntime
 {
 
-struct Bundle;
+class Bundle;
 
 namespace dl
 {

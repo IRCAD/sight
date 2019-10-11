@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "fwRuntime/BundleElement.hpp"
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElementContainer.hpp"
+#include "fwRuntime/ModuleElement.hpp"
 
 #include <libxml/tree.h>
 
@@ -33,21 +33,19 @@
 namespace fwRuntime
 {
 
-struct Bundle;
+class Bundle;
 
 namespace io
 {
-struct BundleDescriptorReader;
+class BundleDescriptorReader;
 } // namespace io
 
 /**
  * @brief   Defines the extension class.
  */
-struct FWRUNTIME_CLASS_API Extension : public BundleElement,
+struct FWRUNTIME_CLASS_API Extension : public ModuleElement,
                                        public ConfigurationElementContainer
 {
-    friend struct ::fwRuntime::io::BundleDescriptorReader;
-
     /**
      * @brief   Defines the validity states of an extension
      */
@@ -105,20 +103,21 @@ struct FWRUNTIME_CLASS_API Extension : public BundleElement,
      */
     FWRUNTIME_API Validity validate();
 
-    protected:
+    //TODO: Fix visibility
+    //protected:
 
-        /**
-         * @brief       Constructor.
-         *
-         * @param[in]   bundle  a pointer to the bundle the extension is attached to
-         * @param[in]   id      a string containing the extension identifier
-         * @param[in]   point   a string containing the extension point identifier
-         * @param[in]   xmlNode a pointer to the xml node that represents the extension
-         *
-         * @todo        test parameters validity
-         */
-        Extension( std::shared_ptr<Bundle> bundle, const std::string& id, const std::string& point,
-                   const xmlNodePtr xmlNode );
+    /**
+     * @brief       Constructor.
+     *
+     * @param[in]   bundle  a pointer to the bundle the extension is attached to
+     * @param[in]   id      a string containing the extension identifier
+     * @param[in]   point   a string containing the extension point identifier
+     * @param[in]   xmlNode a pointer to the xml node that represents the extension
+     *
+     * @todo        test parameters validity
+     */
+    Extension( std::shared_ptr<Bundle> bundle, const std::string& id, const std::string& point,
+               const xmlNodePtr xmlNode );
 
     private:
 

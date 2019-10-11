@@ -22,11 +22,12 @@
 
 #include "fwRuntime/operations.hpp"
 
-#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
-#include "fwRuntime/io/ProfileReader.hpp"
-#include "fwRuntime/profile/Profile.hpp"
-#include "fwRuntime/Runtime.hpp"
+#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/ExtensionPoint.hpp"
+#include "fwRuntime/impl/io/ProfileReader.hpp"
+#include "fwRuntime/impl/profile/Profile.hpp"
+#include "fwRuntime/impl/Runtime.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -71,25 +72,20 @@ struct ConfigurationElementIdentifierPredicate
 
 void init(const std::filesystem::path& directory)
 {
-    Runtime* rntm = Runtime::getDefault();
-    SLM_ASSERT("Default runtime not found", rntm);
-
-    rntm->setWorkingPath(directory);
-    rntm->addDefaultBundles();
-
+    Runtime& rntm = Runtime::get();
+    rntm.setWorkingPath(directory);
+    rntm.addDefaultBundles();
 }
+
 //------------------------------------------------------------------------------
 
 ConfigurationElement::sptr findConfigurationElement( const std::string& identifier,
                                                      const std::string& pointIdentifier )
 {
-    typedef std::vector< ConfigurationElement::sptr >  ElementContainer;
     ConfigurationElement::sptr resultConfig;
-    ElementContainer elements =
-        getAllConfigurationElementsForPoint< ElementContainer >( pointIdentifier );
-    ElementContainer::iterator foundElement = ::std::find_if( elements.begin(),
-                                                              elements.end(),
-                                                              ConfigurationElementIdentifierPredicate(identifier) );
+    auto elements     = getAllConfigurationElementsForPoint( pointIdentifier );
+    auto foundElement = ::std::find_if( elements.begin(), elements.end(),
+                                        ConfigurationElementIdentifierPredicate(identifier) );
     if(foundElement != elements.end())
     {
         resultConfig = *foundElement;
@@ -103,14 +99,6 @@ std::shared_ptr< Extension > findExtension( const std::string& identifier )
 {
     ::fwRuntime::Runtime* rntm = ::fwRuntime::Runtime::getDefault();
     return rntm->findExtension( identifier );
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifier)
-{
-    ::fwRuntime::Runtime* rntm = ::fwRuntime::Runtime::getDefault();
-    return rntm->findExtensionPoint( identifier );
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +140,7 @@ std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& pat
     const std::string bundleIdentifierAndVersion = path.begin()->string();
 
     // TEMP_FB: Change _ into - when version refactor is made
-    auto itVersionDelimiter = bundleIdentifierAndVersion.find(Bundle::s_VERSION_DELIMITER);
+    auto itVersionDelimiter = bundleIdentifierAndVersion.find(impl::Bundle::s_VERSION_DELIMITER);
     auto bundleIdentifier   = bundleIdentifierAndVersion.substr(0, itVersionDelimiter);
     auto bundleVersion      = bundleIdentifierAndVersion.substr(itVersionDelimiter + 1);
 
@@ -245,28 +233,27 @@ void addBundles( const std::filesystem::path& directory)
 
 std::shared_ptr<Bundle> loadBundle(const std::string& identifier, const Version& version)
 {
-# ifdef _DEBUG
-    Runtime* rntm = Runtime::getDefault();
-#endif
-    SLM_ASSERT("Default runtime not found", rntm);
+    auto bundle = std::dynamic_pointer_cast< impl::Bundle >(Runtime::get().findBundle(identifier, version));
 
-    auto bundle = ::fwRuntime::Runtime::getDefault()->findBundle(identifier, version);
     if(bundle)
     {
         bundle->setEnable(true);
-        bundle->start();
+        if(!bundle->isStarted())
+        {
+            bundle->start();
+        }
     }
 
-    return bundle;
+    return std::move(bundle);
 }
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::profile::Profile::sptr startProfile( const std::filesystem::path& path )
+::fwRuntime::Profile::sptr startProfile( const std::filesystem::path& path )
 {
     try
     {
-        ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::io::ProfileReader::createProfile(path);
+        ::fwRuntime::Profile::sptr profile = ::fwRuntime::impl::io::ProfileReader::createProfile(path);
         profile->start();
         return profile;
     }
@@ -285,18 +272,51 @@ std::shared_ptr< Bundle > findBundle( const std::string& identifier, const Versi
 
 //------------------------------------------------------------------------------
 
+std::shared_ptr< impl::ExtensionPoint > findExtensionPoint(const std::string& identifier)
+{
+    return impl::Runtime::get().findExtensionPoint( identifier );
+}
+
+//------------------------------------------------------------------------------
+
 void startBundle(const std::string& identifier)
 {
-    Runtime* rntm = Runtime::getDefault();
-
     // Retrieves the specified bundle.
-    std::shared_ptr<Bundle> bundle = rntm->findBundle( identifier );
-    if( bundle == 0 )
+    std::shared_ptr<Bundle> bundle = impl::Runtime::get().findBundle( identifier );
+    if( bundle == nullptr )
     {
         throw RuntimeException(identifier + ": bundle not found.");
     }
     // Starts the found bundle.
     bundle->start();
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(const std::string& identifier)
+{
+    std::vector< ConfigurationElement::sptr > elements;
+    std::shared_ptr< impl::ExtensionPoint >  point = findExtensionPoint(identifier);
+
+    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << "Bundle" <<
+               point->getBundle()->getIdentifier() );
+
+    if( !point )
+    {
+        throw RuntimeException( identifier + ": invalid extension point identifier." );
+    }
+
+    if ( point->isEnable() )
+    {
+        elements = point->getAllConfigurationElements();
+    }
+    else
+    {
+        OSLM_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
+    }
+
+    // The job is done!
+    return elements;
 }
 
 //------------------------------------------------------------------------------

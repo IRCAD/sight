@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,20 @@
  *
  ***********************************************************************/
 
-// This file is only kept for compatibility issue with Sight < 20.0
-
 #pragma once
-
-#include <fwRuntime/Profile.hpp>
 
 namespace fwRuntime
 {
-// To keep access notably to getCurrentProfile()
-namespace profile = ::fwRuntime;
-
-namespace io
+namespace impl
 {
-namespace ProfileReader {
-
-FWRUNTIME_API std::shared_ptr< ::fwRuntime::Profile > createProfile(const std::filesystem::path& path );
+/**
+ * @brief       The namespace fwRuntime::profile contains classes to manage bundle declares in profile.xml file
+ *(activate/start/stop).
+ */
+namespace profile
+{
 }
+
 }
 
 }

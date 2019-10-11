@@ -20,38 +20,41 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "fwRuntime/impl/Executable.hpp"
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
-#include "fwRuntime/utils/GenericExecutableFactory.hpp"
-
-#include <string>
+#include "fwRuntime/ConfigurationElement.hpp"
 
 namespace fwRuntime
 {
 
-namespace utils
+//------------------------------------------------------------------------------
+
+std::shared_ptr<Bundle> Executable::getBundle() const noexcept
 {
+    return m_bundle;
+}
 
-/**
- * @brief   Defines a generic template executable factory registrar class.
- */
-template< typename E >
-struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
+//------------------------------------------------------------------------------
+
+const ConfigurationElement::sptr Executable::getInitializationData() const noexcept
 {
+    return m_initializationData;
+}
 
-    typedef GenericExecutableFactory< E >   FactoryType;
+//------------------------------------------------------------------------------
 
-    /**
-     * @brief   Constructor
-     */
-    GenericExecutableFactoryRegistrar(const std::string& type) :
-        ExecutableFactoryRegistrar( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
-    {
-    }
+void Executable::setBundle( std::shared_ptr< Bundle > bundle )
+{
+    m_bundle = bundle;
+}
 
-};
+//------------------------------------------------------------------------------
 
-} // namespace utils
+void Executable::setInitializationData( const ConfigurationElement::sptr element ) noexcept
+{
+    m_initializationData = element;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace fwRuntime

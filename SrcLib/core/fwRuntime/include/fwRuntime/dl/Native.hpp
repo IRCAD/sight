@@ -26,13 +26,12 @@
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <filesystem>
-
 #include <regex>
 
 namespace fwRuntime
 {
 
-struct Bundle;
+class Bundle;
 
 namespace dl
 {
@@ -43,7 +42,7 @@ namespace dl
  */
 struct Native
 {
-    friend struct ::fwRuntime::Bundle;
+    friend class ::fwRuntime::Bundle;
 
     /**
      * @brief       Constructor

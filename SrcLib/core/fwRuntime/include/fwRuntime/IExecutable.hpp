@@ -23,31 +23,32 @@
 #pragma once
 
 #include "fwRuntime/config.hpp"
-#include "fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp"
 
+#include <memory>
 #include <string>
 
 namespace fwRuntime
 {
 
-#define REGISTER_EXECUTABLE( type, id ) static ::fwRuntime::utils::GenericExecutableFactoryRegistrar< type > registrar( \
-        id );
+namespace utils
+{
+template<typename E> class GenericExecutableFactory;
+}
 
-struct Bundle;
+class Bundle;
 struct ConfigurationElement;
-struct Runtime;
+class Runtime;
 
 /**
  * @brief   Defines the base executable interface.
  *
  * An executable object is an instance created by an extension
  * point of a plugin.
- *
- *
  */
-struct FWRUNTIME_CLASS_API IExecutable
+class FWRUNTIME_CLASS_API IExecutable
 {
-    friend struct Runtime;
+public:
+    template<typename E> friend class ::fwRuntime::utils::GenericExecutableFactory;
 
     /**
      * @brief   Destructor : does nothing.
@@ -70,14 +71,14 @@ struct FWRUNTIME_CLASS_API IExecutable
      */
     virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) noexcept = 0;
 
-    protected:
+protected:
 
-        /**
-         * @brief       Updates the bundle the executable originates from.
-         *
-         * @param[in]   bundle  a pointer to the bundle the executable originates from
-         */
-        virtual void setBundle( std::shared_ptr< Bundle > bundle ) = 0;
+    /**
+     * @brief       Updates the bundle the executable originates from.
+     *
+     * @param[in]   bundle  a pointer to the bundle the executable originates from
+     */
+    virtual void setBundle( std::shared_ptr< Bundle > bundle ) = 0;
 
 };
 
