@@ -125,8 +125,18 @@ int SScreenSelector::selectScreen() const
 
     for(QScreen* screen : QGuiApplication::screens())
     {
+        const QString numberStr = QString::number(screenNumber++) + ".";
+
+        // Compute the screen's diagonal length in inches.
+        constexpr qreal inchesPerMillimeter = 0.03937008;
+        const auto screenSize               = screen->physicalSize();
+        const qreal diagonalLengthMm        = std::sqrt(screenSize.width() * screenSize.width() +
+                                                        screenSize.height() * screenSize.height());
+        const qreal diagonalLengthInches = std::round(diagonalLengthMm * inchesPerMillimeter);
+
+        const QString diagonal = QString::number(static_cast<std::uint32_t>(diagonalLengthInches)) + "\"";
+
         const auto geom          = screen->geometry();
-        const QString numberStr  = QString::number(screenNumber++) + ".";
         const QString resolution = "[" + QString::number(geom.width()) + "x" + QString::number(geom.height()) + "]";
 
         QString displayName = screen->manufacturer() + " " + screen->model();
@@ -135,7 +145,7 @@ int SScreenSelector::selectScreen() const
             displayName = screen->name();
         }
 
-        screenNames << numberStr + " " + resolution + " " + displayName;
+        screenNames << numberStr + " " + diagonal + " " + resolution + " " + displayName;
     }
 
     bool okClicked       = false;
@@ -153,7 +163,7 @@ int SScreenSelector::selectScreen() const
         }
     }
 
-    return retScreen;
+    return static_cast<int>(retScreen);
 }
 
 //------------------------------------------------------------------------------
