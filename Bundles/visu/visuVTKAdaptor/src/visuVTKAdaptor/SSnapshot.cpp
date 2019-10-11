@@ -101,7 +101,7 @@ void SSnapshot::snapToImage()
         ::fwData::Image::sptr imageToSnap = ::fwData::Image::New();
 
         vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
         snapper->SetScale( 1 );
 #else
         snapper->SetMagnification( 1 );
@@ -152,7 +152,7 @@ void SSnapshot::snap(std::string filePath)
     }
 
     vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
     snapper->SetScale( 1 );
 #else
     snapper->SetMagnification( 1 );

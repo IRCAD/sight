@@ -76,10 +76,19 @@ fwVtkCellPicker::~fwVtkCellPicker()
 
 //------------------------------------------------------------------------------
 
+#if VTK_MAJOR_VERSION > 7
 double fwVtkCellPicker::IntersectWithLine(const double p1[], const double p2[], double tol,
                                           vtkAssemblyPath* path,
                                           vtkProp3D* prop3D,
                                           vtkAbstractMapper3D* m)
+#else
+//------------------------------------------------------------------------------
+
+double fwVtkCellPicker::IntersectWithLine(double p1[], double p2[], double tol,
+                                          vtkAssemblyPath* path,
+                                          vtkProp3D* prop3D,
+                                          vtkAbstractMapper3D* m)
+#endif
 {
     vtkIdType numCells, cellId, minCellId;
     int i, minSubId, subId;

@@ -31,7 +31,7 @@
 class vtkRenderWindowInteractor;
 
 QT_BEGIN_NAMESPACE
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
 class QVTKOpenGLNativeWidget;
 #else
 class QVTKWidget;
@@ -74,7 +74,7 @@ public:
 
 private:
 
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
     QPointer<QVTKOpenGLNativeWidget> m_qVTKWidget;
 #else
     QPointer<QVTKWidget> m_qVTKWidget;

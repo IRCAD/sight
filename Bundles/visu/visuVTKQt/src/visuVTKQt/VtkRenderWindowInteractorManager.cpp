@@ -39,7 +39,7 @@
 #include <QMimeData>
 #include <QSurfaceFormat>
 #include <QVBoxLayout>
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
 #include <QVTKOpenGLNativeWidget.h>
 #else
 #include <QVTKWidget.h>
@@ -126,7 +126,7 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
 
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
     m_parentContainer->setLayout(layout);
 
     // Create the render window and the associated QVTKOpenGLWidget
@@ -145,7 +145,7 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
         m_qVTKWidget->installEventFilter(new DropFilter(locked));
     }
 
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
     m_interactor = window->GetInteractor();
 #else
     layout->addWidget(m_qVTKWidget);

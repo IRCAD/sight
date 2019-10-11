@@ -177,7 +177,7 @@ void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
                 vtkTex = vtkSmartPointer< vtkTexture >::New();
                 vtkTex->SetInputData(vtkImage);
                 vtkTex->SetLookupTable(lut);
-#ifdef VTK_MAJOR_VERSION > 7
+#if VTK_MAJOR_VERSION > 7
                 vtkTex->SetColorMode(VTK_COLOR_MODE_MAP_SCALARS);
 #else
                 vtkTex->SetMapColorScalarsThroughLookupTable(1);
