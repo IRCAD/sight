@@ -34,7 +34,6 @@
 #ifdef BUNDLE_TEST_PROFILE
 
 #include <filesystem>
-#include <filesystem>
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>

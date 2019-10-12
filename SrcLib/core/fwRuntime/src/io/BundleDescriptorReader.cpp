@@ -63,7 +63,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     const std::filesystem::path& location)
 {
     // Normalizes the path.
-    std::filesystem::path normalizedPath(std::filesystem::canonical(location));
+    std::filesystem::path normalizedPath(std::filesystem::weakly_canonical(location));
 
     // Asserts that the repository is a valid directory path.
     if(std::filesystem::exists(normalizedPath) == false ||

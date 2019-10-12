@@ -81,16 +81,15 @@ Bundle::Bundle( const std::filesystem::path& location,
     // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
     std::string strLocation           = location.string();
     std::filesystem::path strRCPrefix = BUNDLE_RC_PREFIX;
-    strRCPrefix = std::filesystem::canonical(strRCPrefix);
+    strRCPrefix = std::filesystem::weakly_canonical(strRCPrefix);
     const auto itBundle = strLocation.find(strRCPrefix.string());
     if(itBundle != std::string::npos)
     {
         strLocation.replace(itBundle, strRCPrefix.string().length(), std::string(BUNDLE_LIB_PREFIX));
     }
 
-    std::error_code ec;
     // This may fail is the bundle does not contain any library, so we ignore the returned error
-    m_libraryLocation = std::filesystem::canonical(std::filesystem::path(strLocation), ec);
+    m_libraryLocation = std::filesystem::weakly_canonical(std::filesystem::path(strLocation));
 }
 
 //------------------------------------------------------------------------------

@@ -94,7 +94,7 @@ std::pair<std::string, std::string> parsePns(const std::string& s)
 /// std::transform
 PathType absolute( const PathType& path )
 {
-    return fs::canonical(path);
+    return fs::weakly_canonical(path);
 }
 
 //-----------------------------------------------------------------------------

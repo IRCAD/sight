@@ -59,7 +59,7 @@ std::string ProfileReader::DIS_EXT("disable-extension");
 std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const std::filesystem::path& path )
 {
     // Normalizes the path.
-    std::filesystem::path normalizedPath(std::filesystem::canonical(path));
+    std::filesystem::path normalizedPath(std::filesystem::weakly_canonical(path));
 
     // Asserts that the repository is a valid directory path.
     if(std::filesystem::exists(normalizedPath) == false || std::filesystem::is_directory(normalizedPath) == true)
