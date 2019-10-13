@@ -52,18 +52,9 @@ void AppConfigParametersTest::setUp()
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     runtime->addBundles(location);
-    CPPUNIT_ASSERT(runtime->bundlesBegin() != runtime->bundlesEnd());
 
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
-    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", bundle);
-    bundle->setEnable(true);
-    CPPUNIT_ASSERT(bundle->isEnable());
-
-    // Test bundle servicesReg
-    std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("AppConfigParametersTest");
-    CPPUNIT_ASSERT_MESSAGE("'AppConfigParametersTest' bundle not found", bundle2);
-    bundle2->setEnable(true);
-    CPPUNIT_ASSERT(bundle2->isEnable());
+    ::fwRuntime::loadBundle("servicesReg");
+    ::fwRuntime::loadBundle("AppConfigParametersTest");
 
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
     appConfigParam = ::fwServices::registry::AppConfigParameters::getDefault();

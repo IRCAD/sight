@@ -25,6 +25,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
+#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>

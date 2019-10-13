@@ -30,6 +30,7 @@
 
 #include <fwDataCamp/getObject.hpp>
 
+#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwTools/dateAndTime.hpp>

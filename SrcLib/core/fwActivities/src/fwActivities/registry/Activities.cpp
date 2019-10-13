@@ -28,6 +28,7 @@
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
+#include <fwRuntime/Bundle.hpp>
 
 #include <boost/foreach.hpp>
 

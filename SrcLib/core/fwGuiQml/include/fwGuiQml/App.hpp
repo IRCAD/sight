@@ -24,8 +24,6 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <fwRuntime/profile/Profile.hpp>
-
 #include <QGuiApplication>
 
 namespace fwGuiQml

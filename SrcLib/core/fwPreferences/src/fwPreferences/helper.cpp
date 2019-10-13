@@ -87,6 +87,7 @@ std::filesystem::path getPreferencesFile()
 {
     namespace bfile = std::filesystem;
 
+
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     FW_RAISE_IF("No current profile set.", !profile);
 

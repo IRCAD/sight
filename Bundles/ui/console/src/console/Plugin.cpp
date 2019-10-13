@@ -22,7 +22,6 @@
 
 #include "console/Plugin.hpp"
 
-#include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>

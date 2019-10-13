@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,6 @@
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/ExtensionPoint.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/macros.hpp>
@@ -39,7 +38,7 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ComponentsTree, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ComponentsTree, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -139,4 +138,3 @@ void ComponentsTree::stopping()
 } // namespace action
 
 } // namespace monitorQt
-

@@ -24,7 +24,6 @@
 #include <windows.h>
 #endif
 
-#include <fwRuntime/io/ProfileReader.hpp>
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 

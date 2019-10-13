@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
+#include "uiTF/Plugin.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-
-#include "uiTF/Plugin.hpp"
 
 namespace uiTF
 {

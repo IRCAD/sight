@@ -24,7 +24,6 @@
 
 #include "fwQt/util/FuncSlot.hpp"
 
-#include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -77,7 +76,7 @@ class WorkerQt : public ::fwThread::Worker
 public:
     WorkerQt();
 
-    void init( int& argc, char** argv);
+    void init(int& argc, char** argv);
 
     virtual ~WorkerQt();
 

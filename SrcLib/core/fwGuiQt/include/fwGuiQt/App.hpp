@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_APP_HPP__
-#define __FWGUIQT_APP_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
-
-#include <fwRuntime/profile/Profile.hpp>
 
 #include <QApplication>
 
@@ -34,7 +31,6 @@ namespace fwGuiQt
 
 /**
  * @brief   Defines the Qt application.
- * @class   App
  */
 class FWGUIQT_CLASS_API App : public QApplication
 {
@@ -50,6 +46,3 @@ public Q_SLOTS:
 };
 
 } // namespace fwGuiQt
-
-
-#endif /*__FWGUIQT_APP_HPP__*/
