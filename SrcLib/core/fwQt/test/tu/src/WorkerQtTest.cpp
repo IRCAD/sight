@@ -98,16 +98,16 @@ void WorkerQtTest::setUp()
 #if defined(__linux)
     char arg2[]         = "-platform";
     char arg3[]         = "offscreen";
-    static char* argv[] = {arg1, arg2, arg3, 0};
-    int argc            = 3;
+    static char* argv[] = {arg1, arg2, arg3, nullptr};
+    static int argc     = 3;
 #else
     static char* argv[] = {arg1, 0};
-    int argc            = 1;
+    static int argc     = 1;
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [this](int& argc, char** argv)
+        = [](int& argc, char** argv)
           {
 #if QT_VERSION < 0x050000
               bool guiEnabled = false;
@@ -148,9 +148,9 @@ void WorkerQtTest::twiceInitTest()
 void runBasicTest(TestHandler& handler, ::fwThread::Worker::sptr worker)
 {
     handler.setWorkerId(worker->getThreadId());
-    worker->post( std::bind( &TestHandler::nextStep, &handler) );
-    worker->post( std::bind( &TestHandler::nextStep, &handler) );
-    worker->post( std::bind( &TestHandler::nextStep, &handler) );
+    worker->post( std::bind( &TestHandler::nextStep, std::ref(handler)) );
+    worker->post( std::bind( &TestHandler::nextStep, std::ref(handler)) );
+    worker->post( std::bind( &TestHandler::nextStep, std::ref(handler)) );
 
     worker->post( std::bind( &QApplication::quit ) );
 }
@@ -180,7 +180,7 @@ void WorkerQtTest::postFromInsideTest()
 {
     TestHandler handler;
 
-    m_worker->post( std::bind(&runBasicTest, std::ref(handler), m_worker) );
+    m_worker->post( std::bind(runBasicTest, std::ref(handler), m_worker) );
 
     m_worker->getFuture().wait();
 
@@ -188,6 +188,7 @@ void WorkerQtTest::postFromInsideTest()
 }
 
 //-----------------------------------------------------------------------------
+
 void doNothing()
 {
 }
@@ -197,7 +198,7 @@ void doNothing()
 void runFromOutsideTest(TestHandler& handler, ::fwThread::Worker::sptr worker)
 {
     //waiting for WorkerQt to start
-    worker->postTask<void>( std::bind( &doNothing ) ).wait();
+    worker->postTask<void>( std::bind( doNothing ) ).wait();
 
     runBasicTest(handler, worker);
 }
@@ -208,7 +209,7 @@ void WorkerQtTest::postFromOutsideTest()
 {
     TestHandler handler;
 
-    std::thread testThread(std::bind(&runFromOutsideTest, std::ref(handler), m_worker));
+    std::thread testThread(std::bind(runFromOutsideTest, std::ref(handler), m_worker));
 
     m_worker->getFuture().wait();
 

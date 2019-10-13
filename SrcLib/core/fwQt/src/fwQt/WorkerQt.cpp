@@ -122,7 +122,7 @@ protected:
     SPTR(WorkerQt) workerQt = std::make_shared< WorkerQt >();
     workerQt->init(argc, argv);
     workerQt->setApp(callback(argc, argv), name, version);
-    return workerQt;
+    return std::move(workerQt);
 }
 
 //-----------------------------------------------------------------------------

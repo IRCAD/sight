@@ -65,7 +65,7 @@ void Plugin::start()
     char** argv = profile->getRawParams();
 
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [this](int& argc, char** argv)
+        = [](int& argc, char** argv)
           {
               return QSharedPointer< QApplication > ( new ::fwGuiQt::App(argc, argv, true) );
           };

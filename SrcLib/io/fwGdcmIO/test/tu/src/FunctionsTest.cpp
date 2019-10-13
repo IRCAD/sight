@@ -22,12 +22,12 @@
 
 #include "FunctionsTest.hpp"
 
-#include "fwGdcmIO/functions.hpp"
+#include "fwGdcmIO/helper/functions.hpp"
 
 #include <string>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataTools::ut::FunctionsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwGdcmIO::ut::FunctionsTest );
 
 namespace fwGdcmIO
 {
@@ -50,7 +50,7 @@ void FunctionsTest::tearDown()
 
 void FunctionsTest::generatePatientIdTest()
 {
-    const std::string id = ::fwMedDataTools::generatePatientId();
+    const std::string id = ::fwGdcmIO::helper::generatePatientId();
     CPPUNIT_ASSERT(64 >= id.length());
     CPPUNIT_ASSERT(0 < id.length());
 }
@@ -59,7 +59,7 @@ void FunctionsTest::generatePatientIdTest()
 
 void FunctionsTest::generateStudyInstanceUidTest()
 {
-    const std::string id = ::fwMedDataTools::generateStudyInstanceUid();
+    const std::string id = ::fwGdcmIO::helper::generateStudyInstanceUid();
     CPPUNIT_ASSERT(16 == id.length());
 }
 
