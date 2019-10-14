@@ -33,6 +33,7 @@
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::calibration3d::ut::helperTest );
@@ -43,6 +44,16 @@ namespace ut
 {
 
 using ExpectedChessboardType = std::vector< ::fwData::Point::PointCoordArrayType >;
+
+//------------------------------------------------------------------------------
+
+static inline const ::cv::Mat readRGBImage(const std::string _fname)
+{
+    ::cv::Mat img = ::cv::imread(_fname, ::cv::IMREAD_COLOR);
+    ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
+
+    return img;
+}
 
 //------------------------------------------------------------------------------
 
@@ -436,7 +447,7 @@ void helperTest::chessboardDetectionTest()
 {
     const auto calibDataDir = ::fwTest::Data::dir() / "sight" / "calibration";
     {
-        const ::cv::Mat chessRgb0 = ::cv::imread((calibDataDir / "chessboardRGB0.tiff").string());
+        const ::cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 
         CPPUNIT_ASSERT_EQUAL(false, chessRgb0.empty());
         CPPUNIT_ASSERT_EQUAL(3, chessRgb0.channels());
@@ -492,7 +503,7 @@ void helperTest::chessboardDetectionTest()
     }
 
     {
-        const ::cv::Mat chessRgb1 = ::cv::imread((calibDataDir / "chessboardRGB1.tiff").string());
+        const ::cv::Mat chessRgb1 = readRGBImage((calibDataDir / "chessboardRGB1.tiff").string());
 
         CPPUNIT_ASSERT_EQUAL(false, chessRgb1.empty());
         CPPUNIT_ASSERT_EQUAL(3, chessRgb1.channels());
@@ -549,7 +560,7 @@ void helperTest::chessboardDetectionTest()
 
     {
         const ::cv::Mat chessGray = ::cv::imread((calibDataDir / "chessboardGray.tiff").string(),
-                                                 CV_LOAD_IMAGE_GRAYSCALE);
+                                                 ::cv::IMREAD_GRAYSCALE);
 
         CPPUNIT_ASSERT_EQUAL(false, chessGray.empty());
         CPPUNIT_ASSERT_EQUAL(1, chessGray.channels());
@@ -615,7 +626,7 @@ void helperTest::chessboardDetectionScaleTest()
 {
     const auto calibDataDir = ::fwTest::Data::dir() / "sight" / "calibration";
 
-    const ::cv::Mat chessRgb0 = ::cv::imread((calibDataDir / "chessboardRGB0.tiff").string());
+    const ::cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 
     const ::fwData::PointList::csptr detectedChessFullScale =
         ::calibration3d::helper::detectChessboard(chessRgb0, 9, 6, 1.f);

@@ -143,7 +143,9 @@ void SCalibrationInfoReader::updating()
 
         for(const ::boost::filesystem::path& dirEntry : ::boost::filesystem::directory_iterator(folder))
         {
-            ::cv::Mat img = ::cv::imread(dirEntry.string());
+            ::cv::Mat img = ::cv::imread(dirEntry.string(), ::cv::IMREAD_COLOR);
+            ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
+
             std::string errorMessage;
 
             if(!img.empty())
