@@ -139,7 +139,9 @@ void SCalibrationInfoReader::updating()
         using DetectionPairType = std::pair< ::fwData::Image::sptr, ::fwData::PointList::sptr >;
 
         const ::boost::filesystem::path folder = this->getFolder();
-        std::vector<DetectionPairType> detectionVector;
+
+        // Use a map to sort input images by their filename.
+        std::map<std::string, DetectionPairType> filenameDetectionMap;
 
         for(const ::boost::filesystem::path& dirEntry : ::boost::filesystem::directory_iterator(folder))
         {
@@ -162,8 +164,9 @@ void SCalibrationInfoReader::updating()
                     calibImg->setSpacing({{1., 1.}});
                     calibImg->setOrigin({{0., 0.}});
 
-                    auto detectionPair = std::make_pair(calibImg, chessboardPts);
-                    detectionVector.push_back(detectionPair);
+                    const auto detectionPair = std::make_pair(calibImg, chessboardPts);
+                    const auto filename      = dirEntry.filename().string();
+                    filenameDetectionMap[filename] = detectionPair;
                 }
                 else
                 {
@@ -187,7 +190,7 @@ void SCalibrationInfoReader::updating()
 
                 if(messageBox.show() & ::fwGui::dialog::IMessageDialog::YES)
                 {
-                    detectionVector.clear();
+                    filenameDetectionMap.clear();
                     m_readFailed = true;
                     break;
                 }
@@ -197,10 +200,11 @@ void SCalibrationInfoReader::updating()
 
         cursor.setDefaultCursor();
 
-        if(!detectionVector.empty())
+        if(!filenameDetectionMap.empty())
         {
-            for(auto& [img, chessboard] : detectionVector)
+            for(auto& [fname, detection] : filenameDetectionMap)
             {
+                auto& [img, chessboard] = detection;
                 calibInfo->addRecord(img, chessboard);
             }
 
