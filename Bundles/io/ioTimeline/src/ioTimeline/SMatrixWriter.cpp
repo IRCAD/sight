@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,12 +37,14 @@
 
 #include <boost/filesystem/operations.hpp>
 
+#include <iomanip>
+
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL);
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL)
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_MATRIX  = "saveMatrix";
+static const ::fwCom::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
@@ -173,9 +175,10 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
                 for(unsigned int i = 0; i < numberOfMat; ++i)
                 {
                     const float* values = buffer->getElement(i);
+
                     for(unsigned int v = 0; v < 16; ++v)
                     {
-                        *m_filestream << values[v] << ";";
+                        *m_filestream << std::fixed << std::setprecision(7) << values[v] << ";";
                     }
                 }
                 *m_filestream << std::endl;
