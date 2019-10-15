@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,14 +31,14 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
+#include <fwGui/editor/IDialogEditor.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
-
-#include <uiIO/editor/SIOSelector.hpp>
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -49,7 +49,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::fwData::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -143,28 +143,24 @@ void STextureSelector::onLoadButton()
 
     auto srv = ::fwServices::add< ::fwGui::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
     srv->registerInOut(image, ::fwIO::s_DATA_KEY);
-    auto ioSelectorSrv = ::uiIO::editor::SIOSelector::dynamicCast(srv);
-    if (ioSelectorSrv != nullptr)
-    {
-        ioSelectorSrv->setIOMode(::uiIO::editor::SIOSelector::READER_MODE);
-        ioSelectorSrv->configure();
-        ioSelectorSrv->start();
-        ioSelectorSrv->update();
-        ioSelectorSrv->stop();
-        ::fwServices::OSR::unregisterService( ioSelectorSrv );
 
-        // If we didn't have to create a new texture, we can notify the associated image
-        if(existingTexture)
-        {
-            auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-            sig->emit();
-        }
-        else
-        {
-            auto sig = material->signal< ::fwData::Material::AddedTextureSignalType >(
-                ::fwData::Material::s_ADDED_TEXTURE_SIG);
-            sig->emit(image);
-        }
+    srv->configure();
+    srv->start();
+    srv->update();
+    srv->stop();
+    ::fwServices::OSR::unregisterService( srv );
+
+    // If we didn't have to create a new texture, we can notify the associated image
+    if(existingTexture)
+    {
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->emit();
+    }
+    else
+    {
+        auto sig = material->signal< ::fwData::Material::AddedTextureSignalType >(
+            ::fwData::Material::s_ADDED_TEXTURE_SIG);
+        sig->emit(image);
     }
 }
 

@@ -120,7 +120,7 @@ int SScreenSelector::selectScreen() const
 
     if(QGuiApplication::screens().size() <= 1)
     {
-        // return 0;
+        return 0;
     }
 
     for(QScreen* screen : QGuiApplication::screens())
