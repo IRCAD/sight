@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,10 +35,9 @@ ObjectLock::~ObjectLock()
     m_objects.clear();
 }
 
-
 //-----------------------------------------------------------------------------
 
-ObjectLock::ObjectLock(const ObjectLock & objectLock)
+ObjectLock::ObjectLock(const ObjectLock& objectLock)
 {
     m_objects = objectLock.m_objects;
     m_locks   = objectLock.m_locks;
@@ -46,7 +45,7 @@ ObjectLock::ObjectLock(const ObjectLock & objectLock)
 
 //-----------------------------------------------------------------------------
 
-ObjectLock & ObjectLock::operator=(const ObjectLock & objectLock)
+ObjectLock& ObjectLock::operator=(const ObjectLock& objectLock)
 {
     m_locks.clear();
     m_objects.clear();
@@ -59,7 +58,7 @@ ObjectLock & ObjectLock::operator=(const ObjectLock & objectLock)
 
 //-----------------------------------------------------------------------------
 
-void ObjectLock::lock( ::fwData::Array::sptr array, LocksType & locks )
+void ObjectLock::lock( ::fwData::Array::sptr array, LocksType& locks )
 {
     if ( array )
     {
@@ -70,35 +69,28 @@ void ObjectLock::lock( ::fwData::Array::sptr array, LocksType & locks )
 
 //-----------------------------------------------------------------------------
 
-void ObjectLock::lock( ::fwData::Image::sptr image, LocksType & locks )
+void ObjectLock::lock( ::fwData::Image::sptr image, LocksType& locks )
 {
     if ( image )
     {
-        this->lock( image->getDataArray(), locks );
+        locks.push_back(image->lock());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ObjectLock::lock( ::fwData::Mesh::sptr mesh, LocksType & locks )
+void ObjectLock::lock( ::fwData::Mesh::sptr mesh, LocksType& locks )
 {
     if ( mesh )
     {
-        this->lock( mesh->getPointsArray(), locks );
-        this->lock( mesh->getCellDataArray(), locks );
-        this->lock( mesh->getCellDataOffsetsArray(), locks );
-        this->lock( mesh->getCellTypesArray(), locks );
-
-        this->lock( mesh->getCellColorsArray(), locks );
-        this->lock( mesh->getPointColorsArray(), locks );
-        this->lock( mesh->getCellNormalsArray(), locks );
-        this->lock( mesh->getPointNormalsArray(), locks );
+        LocksType meshLocks = mesh->lock();
+        std::copy(meshLocks.begin(), meshLocks.end(), std::back_inserter(locks));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void ObjectLock::lock( ::fwData::Reconstruction::sptr rec, LocksType & locks )
+void ObjectLock::lock( ::fwData::Reconstruction::sptr rec, LocksType& locks )
 {
     if ( rec )
     {

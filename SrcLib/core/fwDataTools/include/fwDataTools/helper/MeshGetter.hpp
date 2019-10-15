@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_HELPER_MESHGETTER_HPP__
-#define __FWDATATOOLS_HELPER_MESHGETTER_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/helper/ArrayGetter.hpp"
@@ -40,6 +39,7 @@ namespace helper
 
 /**
  * @brief   Helper to manage Mesh. Lock the mesh buffer before to modify it.
+ * @deprecated The helper is no longer required to access the buffers. It will be removed in sight 22.0
  */
 class FWDATATOOLS_CLASS_API MeshGetter
 {
@@ -76,7 +76,7 @@ public:
      * @brief Return true if the mesh is closed.
      * The result is computed for each call.
      */
-    FWDATATOOLS_API bool isClosed();
+    [[deprecated("moved to ::fwDataTools::Mesh::isClosed()")]] FWDATATOOLS_API bool isClosed();
 
 protected:
 
@@ -95,9 +95,6 @@ protected:
 
 };
 
-
 } // namespace helper
 
 } // namespace fwData
-
-#endif // __FWDATATOOLS_HELPER_MESHGETTER_HPP__

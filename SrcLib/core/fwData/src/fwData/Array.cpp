@@ -117,7 +117,7 @@ void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
     if( !other->m_bufferObject->isEmpty() )
     {
         ::fwMemory::BufferObject::Lock lockerDest(m_bufferObject);
-        this->resize(other->m_type, other->m_size, other->m_nbOfComponents, true);
+        this->resizeTMP(other->m_type, other->m_size, other->m_nbOfComponents);
         char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
         ::fwMemory::BufferObject::Lock lockerSource(other->m_bufferObject);
         char* buffSrc = static_cast< char* >( lockerSource.getBuffer() );
@@ -157,7 +157,6 @@ size_t Array::resize(const SizeType& size, bool reallocate)
         FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
                                 "Tried to reallocate a not-owned Buffer.");
     }
-
     m_strides = computeStrides(size, m_nbOfComponents, m_type.sizeOf());
     m_size    = size;
     return bufSize;
@@ -440,9 +439,7 @@ Array::ConstIterator<char> Array::end() const
 
 ::fwData::Array::OffsetType Array::computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType )
 {
-    FW_DEPRECATED_MSG("computeStrides(SizeType size, size_t nbOfComponents, size_t sizeOfType) is deprecated, use "
-                      "computeStrides(SizeType size, size_t sizeOfType) instead",
-                      "22.0");
+    // TODO deprecated sight 22.0
     ::fwData::Array::OffsetType strides;
     strides.reserve(size.size());
 
@@ -492,6 +489,16 @@ size_t Array::resizeTMP(const ::fwTools::Type& type, const SizeType& size, size_
     // we need to use it temporary
     m_nbOfComponents = nbOfComponents;
     m_type           = type;
+    return this->resize(size, true);
+}
+
+//------------------------------------------------------------------------------
+
+size_t Array::resizeTMP(const SizeType& size, size_t nbOfComponents)
+{
+    // Array m_numberOfComponents attribute is deprecated, but to support the old Image API,
+    // we need to use it temporary
+    m_nbOfComponents = nbOfComponents;
     return this->resize(size, true);
 }
 

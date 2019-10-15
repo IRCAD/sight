@@ -26,6 +26,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/iterator/MeshIterators.hpp"
 
 #include <fwCore/macros.hpp>
 
@@ -89,9 +90,9 @@ class FWDATA_CLASS_API Mesh : public ::fwData::Object
 
 public:
 
-    fwCoreClassMacro(Mesh, ::fwData::Object, ::fwData::factory::New< Mesh >);
+    fwCoreClassMacro(Mesh, ::fwData::Object, ::fwData::factory::New< Mesh >)
 
-    fwCampMakeFriendDataMacro((fwData)(Mesh));
+    fwCampMakeFriendDataMacro((fwData)(Mesh))
 
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;
     typedef std::uint64_t Id;
@@ -113,6 +114,17 @@ public:
         RGBA = 4
     } ColorArrayTypes;
 
+    enum class ExtraArrayType : int
+    {
+        NO_ARRAY         = 0,
+        POINT_COLORS     = 1 << 1,
+        POINT_NORMALS    = 1 << 2,
+        CELL_COLORS      = 1 << 3,
+        CELL_NORMALS     = 1 << 4,
+        POINT_TEX_COORDS = 1 << 5,
+        CELL_TEX_COORDS  = 1 << 6
+    };
+
     typedef float PointValueType;
     typedef std::uint8_t ColorValueType;
     typedef float NormalValueType;
@@ -121,28 +133,7 @@ public:
     typedef Id CellDataOffsetType;
     typedef std::uint8_t CellTypes;
 
-    typedef boost::multi_array_ref<PointValueType, 2> PointsMultiArrayType;
-    typedef boost::multi_array_ref<CellTypes, 1> CellTypesMultiArrayType;
-    typedef boost::multi_array_ref<CellValueType, 1> CellDataMultiArrayType;
-    typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType, 2> PointColorsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType, 2> CellColorsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType, 2> PointNormalsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType, 2> CellNormalsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType, 2> PointTexCoordsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType, 2> CellTexCoordsMultiArrayType;
-
-    typedef boost::const_multi_array_ref<PointValueType, 2> ConstPointsMultiArrayType;
-    typedef boost::const_multi_array_ref<CellTypes, 1> ConstCellTypesMultiArrayType;
-    typedef boost::const_multi_array_ref<CellValueType, 1> ConstCellDataMultiArrayType;
-    typedef boost::const_multi_array_ref<CellDataOffsetType, 1> ConstCellDataOffsetsMultiArrayType;
-    typedef boost::const_multi_array_ref<ColorValueType, 2> ConstPointColorsMultiArrayType;
-    typedef boost::const_multi_array_ref<ColorValueType, 2> ConstCellColorsMultiArrayType;
-    typedef boost::const_multi_array_ref<NormalValueType, 2> ConstPointNormalsMultiArrayType;
-    typedef boost::const_multi_array_ref<NormalValueType, 2> ConstCellNormalsMultiArrayType;
-    typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstPointTexCoordsMultiArrayType;
-    typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstCellTexCoordsMultiArrayType;
-
+    typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -150,7 +141,7 @@ public:
     FWDATA_API Mesh(::fwData::Object::Key key);
 
     /// Destructor
-    FWDATA_API virtual ~Mesh();
+    FWDATA_API virtual ~Mesh() override;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
@@ -163,34 +154,78 @@ public:
      *
      * Initializes points, cell-types, cell-data, and cell-data-offsets arrays
      * with informations given by the parameters. if nbCellData is zero, it
-     * will be initialized to 3*nbCells
-     * @param nbPts
-     * @param nbCells
-     * @param nbCellsData
+     * will be initialized to 3*nbCells.
+     * It does not modify the number of points and cells
+     * @param nbPts number of points to allocate
+     * @param nbCells number of cells to allocate
+     * @param cellType type of cell to allocate, it define the number of points by cell to allocate. If you want to
+     *        use different types of cells in the same mesh, use
+     *        resize(size_t nbPts, size_t nbCells, ExtraArrayType arrayMask, size_t nbCellsData)
+     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
      *
-     * @return
+     * @return Return the allocated memory
      *
-     * @throw ::fwData::Exception
+     * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0);
+    FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, CellTypesEnum cellType = TRIANGLE,
+                              ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
 
-    /// Allocates normals array according to the number of points of the mesh.
-    FWDATA_API size_t allocatePointNormals();
+    /**
+     * @brief Allocate Mesh memory
+     *
+     * Initializes points, cell-types, cell-data, and cell-data-offsets arrays
+     * with informations given by the parameters. if nbCellData is zero, it
+     * will be initialized to 3*nbCells.
+     * It does not modify the number of points and cells
+     * @param nbPts number of points to allocate
+     * @param nbCells number of cells to allocate
+     * @param nbCellsData sum of the number of points of each cell, il allows to allocate the cells array.
+     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
+     *
+     * @return Return the allocated memory
+     *
+     * @throw Raise ::fwData::Exception if the memory can not be allocated.
+     */
+    FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, size_t nbCellsData,
+                              ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
 
-    /// Allocates colors array according to the number of points of the mesh.
-    FWDATA_API size_t allocatePointColors(ColorArrayTypes t);
+    /**
+     * @brief Allocate Mesh memory and initialize the number of points and cells
+     *
+     * Initializes points, cell-types, cell-data, and cell-data-offsets arrays
+     * with informations given by the parameters. if nbCellData is zero, it
+     * will be initialized to 3*nbCells
+     * @param nbPts number of points to allocate
+     * @param nbCells number of cells to allocate
+     * @param cellType type of cell to allocate, it define the number of points by cell to allocate. If you want to
+     *        use different types of cells in the same mesh, use
+     *        resize(size_t nbPts, size_t nbCells, ExtraArrayType arrayMask, size_t nbCellsData)
+     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
+     *
+     * @return Return the allocated memory
+     *
+     * @throw Raise ::fwData::Exception if the memory can not be allocated.
+     */
+    FWDATA_API size_t resize(size_t nbPts, size_t nbCells, CellTypesEnum cellType = TRIANGLE,
+                             ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
 
-    /// Allocates texCoords array according to the number of points of the mesh.
-    FWDATA_API size_t allocatePointTexCoords();
-
-    /// Allocates normals array according to the number of cells of the mesh.
-    FWDATA_API size_t allocateCellNormals();
-
-    /// Allocates colors array according to the number of cells of the mesh.
-    FWDATA_API size_t allocateCellColors(ColorArrayTypes t);
-
-    /// Allocates texCoords array according to the number of cells of the mesh.
-    FWDATA_API size_t allocateCellTexCoords();
+    /**
+     * @brief Allocate Mesh memory and initialize the number of points and cells
+     *
+     * Initializes points, cell-types, cell-data, and cell-data-offsets arrays
+     * with informations given by the parameters. if nbCellData is zero, it
+     * will be initialized to 3*nbCells
+     * @param nbPts number of points to allocate
+     * @param nbCells number of cells to allocate
+     * @param nbCellsData sum of the number of points of each cell, il allows to allocate the cells array.
+     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
+     *
+     * @return Return the allocated memory
+     *
+     * @throw Raise ::fwData::Exception if the memory can not be allocated.
+     */
+    FWDATA_API size_t resize(size_t nbPts, size_t nbCells, size_t nbCellsData,
+                             ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
 
     /**
      * @brief Adjust mesh memory usage
@@ -203,51 +238,9 @@ public:
      *
      * @return true if memory usage changed
      *
-     * @throw ::fwData::Exception
+     * @throw Raise ::fwData::Exception if the memory can not be re-allocated.
      */
     FWDATA_API bool adjustAllocatedMemory();
-
-    /// Sets the internal corresponding array
-    FWDATA_API void setPointsArray           (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setCellTypesArray        (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setCellDataArray         (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setCellDataOffsetsArray  (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setPointColorsArray      (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setCellColorsArray       (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setPointNormalsArray     (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setCellNormalsArray      (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setPointTexCoordsArray   (const ::fwData::Array::sptr& array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setCellTexCoordsArray    (const ::fwData::Array::sptr& array);
-
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getPointsArray           () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getCellTypesArray        () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getCellDataArray         () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getCellDataOffsetsArray  () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getPointColorsArray      () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getCellColorsArray       () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getPointNormalsArray     () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getPointTexCoordsArray   () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getCellTexCoordsArray    () const;
 
     /**
      * @brief Clear mesh points.
@@ -312,18 +305,6 @@ public:
      */
     FWDATA_API size_t getAllocatedSizeInBytes() const;
 
-    /// Add an array in the mesh array-map
-    FWDATA_API void addDataArray(const std::string& name, ::fwData::Array::sptr array);
-
-    /// Get an array in the mesh array-map
-    FWDATA_API ::fwData::Array::sptr getDataArray(const std::string& name) const;
-
-    /// Remove an array in the mesh array-map
-    FWDATA_API void removeDataArray(const std::string& name);
-
-    /// Return all array names stock in the mesh array-map
-    FWDATA_API std::vector<std::string> getDataArrayNames() const;
-
     /***
      * @name Signals
      * @{
@@ -372,10 +353,264 @@ public:
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_TEX_COORDS_MODIFIED_SIG;
 
     /**
+       @{
+     * @brief Insert a point into the mesh.
+     * Reallocates the point array if needed.
+     *
+     * @param p point coordinates
+     *
+     * @return The id of the new point
+     *
+     * @throw ::fwData::Exception if the allocation failed
+     */
+    Id pushPoint(const PointValueType p[3]);
+    Id pushPoint(PointValueType x,
+                 PointValueType y,
+                 PointValueType z);
+    /// @}
+    /**
+     * @{
+     * @brief Insert a cell into the mesh.
+     *
+     * Reallocates the mesh concerned arrays if needed.
+     *
+     * @return The id of the new cell
+     *
+     * @throw ::fwData::Exception if the allocation failed
+     */
+    Id pushCell(CellValueType idPt);
+    Id pushCell(CellValueType idP1, CellValueType idP2);
+    Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3);
+    Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
+                CellTypesEnum type = QUAD);
+    Id pushCell(CellTypesEnum type,
+                const std::vector<CellValueType> pointIds);
+    Id pushCell(CellTypesEnum type,
+                const CellValueType* pointIds,
+                size_t nbPoints );
+    /// @}
+
+    /**
+     * @brief Set a point coordinates.
+     * The mesh must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param p point coordinates
+     */
+    FWDATA_API void setPoint(::fwData::Mesh::Id id, const ::fwData::Mesh::PointValueType p[3]);
+
+    /**
+     * @brief Set a point coordinates.
+     * @see setPoint
+     */
+    FWDATA_API void setPoint(::fwData::Mesh::Id id,
+                             ::fwData::Mesh::PointValueType x,
+                             ::fwData::Mesh::PointValueType y,
+                             ::fwData::Mesh::PointValueType z);
+    /**
+     * @brief Set a point color.
+     *
+     * Depending on the type of allocated point-colors array (RGB or RGBA), 3
+     * or 4 points will be read from p.
+     * The color array must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param c color
+     */
+    FWDATA_API void setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
+
+    /**
+     * @brief Set a cell color.
+     *
+     * Depending on the type of allocated cell-colors array (RGB or RGBA), 3 or
+     * 4 points will be read from p.
+     * The color array must be allocated before calling this method.
+     *
+     * @param id cell index
+     * @param c color
+     */
+    FWDATA_API void setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
+
+    /**
+     * @brief Set a point normal.
+     *
+     * The normal array must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param n normal
+     */
+    FWDATA_API void setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
+
+    /**
+     * @brief Set a cell normal.
+     *
+     * The normal array must be allocated before calling this method.
+     *
+     * @param id cell index
+     * @param n normal
+     */
+    FWDATA_API void setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
+
+    /**
+     * @brief Set a point texCoord.
+     *
+     * The texCoord array must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param t texCoord
+     */
+    FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+
+    /**
+     * @brief Set a cell texCoord.
+     *
+     * The texCoord array must be allocated before calling this method.
+     *
+     * @param id cell index
+     * @param t texCoord
+     */
+    FWDATA_API void setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+
+    /**
+     * @brief Returns the begin/end iterators to the mesh buffers
+     *
+     * @note These functions lock the buffer
+     * @{
+     */
+    template< typename ITERATOR > ITERATOR begin();
+    template< typename ITERATOR > ITERATOR end();
+    template< typename ITERATOR > ITERATOR begin() const;
+    template< typename ITERATOR > ITERATOR end() const;
+    /// @}
+
+    /**
+     * @brief Return a lock on the mesh to prevent from dumping the buffers on the disk
+     *
+     * The buffer cannot be accessed if the mesh is not locked
+     */
+    FWDATA_API LocksType lock() const;
+
+    /**
      * @}
      */
 
+    // ---------------------------------------
+    // Deprecated API for sight 22.0
+    // ---------------------------------------
+
+    [[deprecated]] typedef boost::multi_array_ref<PointValueType, 2> PointsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<CellTypes, 1> CellTypesMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<CellValueType, 1> CellDataMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<ColorValueType, 2> PointColorsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<ColorValueType, 2> CellColorsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<NormalValueType, 2> PointNormalsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<NormalValueType, 2> CellNormalsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<TexCoordValueType, 2> PointTexCoordsMultiArrayType;
+    [[deprecated]] typedef boost::multi_array_ref<TexCoordValueType, 2> CellTexCoordsMultiArrayType;
+
+    [[deprecated]] typedef boost::const_multi_array_ref<PointValueType, 2> ConstPointsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<CellTypes, 1> ConstCellTypesMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<CellValueType, 1> ConstCellDataMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<CellDataOffsetType, 1> ConstCellDataOffsetsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<ColorValueType, 2> ConstPointColorsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<ColorValueType, 2> ConstCellColorsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<NormalValueType, 2> ConstPointNormalsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<NormalValueType, 2> ConstCellNormalsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstPointTexCoordsMultiArrayType;
+    [[deprecated]] typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstCellTexCoordsMultiArrayType;
+
+    /**
+     * @brief Allocate Mesh memory
+     *
+     * Initializes points, cell-types, cell-data, and cell-data-offsets arrays
+     * with informations given by the parameters. if nbCellData is zero, it
+     * will be initialized to 3*nbCells
+     * @param nbPts
+     * @param nbCells
+     * @param nbCellsData
+     *
+     * @return
+     *
+     * @throw ::fwData::Exception
+     */
+    [[deprecated]] FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0);
+
+    /// Allocates normals array according to the number of points of the mesh.
+    [[deprecated]] FWDATA_API size_t allocatePointNormals();
+
+    /// Allocates colors array according to the number of points of the mesh.
+    [[deprecated]] FWDATA_API size_t allocatePointColors(ColorArrayTypes t);
+
+    /// Allocates texCoords array according to the number of points of the mesh.
+    [[deprecated]] FWDATA_API size_t allocatePointTexCoords();
+
+    /// Allocates normals array according to the number of cells of the mesh.
+    [[deprecated]] FWDATA_API size_t allocateCellNormals();
+
+    /// Allocates colors array according to the number of cells of the mesh.
+    [[deprecated]] FWDATA_API size_t allocateCellColors(ColorArrayTypes t);
+
+    /// Allocates texCoords array according to the number of cells of the mesh.
+    [[deprecated]] FWDATA_API size_t allocateCellTexCoords();
+
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setPointsArray           (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setCellTypesArray        (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setCellDataArray         (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setCellDataOffsetsArray  (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setPointColorsArray      (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setCellColorsArray       (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setPointNormalsArray     (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setCellNormalsArray      (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setPointTexCoordsArray   (const ::fwData::Array::sptr& array);
+    /// Sets the internal corresponding array
+    [[deprecated]] FWDATA_API void setCellTexCoordsArray    (const ::fwData::Array::sptr& array);
+
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getPointsArray           () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getCellTypesArray        () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getCellDataArray         () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getCellDataOffsetsArray  () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getPointColorsArray      () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getCellColorsArray       () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getPointNormalsArray     () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getPointTexCoordsArray   () const;
+    /// Returns the internal corresponding array
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getCellTexCoordsArray    () const;
+
+    /// Add an array in the mesh array-map
+    [[deprecated]] FWDATA_API void addDataArray(const std::string& name, ::fwData::Array::sptr array);
+
+    /// Get an array in the mesh array-map
+    [[deprecated]] FWDATA_API ::fwData::Array::sptr getDataArray(const std::string& name) const;
+
+    /// Remove an array in the mesh array-map
+    [[deprecated]] FWDATA_API void removeDataArray(const std::string& name);
+
+    /// Return all array names stock in the mesh array-map
+    [[deprecated]] FWDATA_API std::vector<std::string> getDataArrayNames() const;
+
 protected:
+    friend class ::fwData::iterator::PointIterator;
+    friend class ::fwData::iterator::ConstPointIterator;
 
     /**
      * @brief Initializes points, cell-types, cell-data, and cell-data-offsets arrays.
@@ -469,8 +704,65 @@ protected:
     ::fwData::Array::sptr m_cellTexCoords;
 
     /// Array map where you can add few additional arrays registered thanks to a key to perform/conserve some specific
-    // analysis.
+    /// analysis.
+    /// @deprecated Will be removed in sight 22.0
     ArrayMapType m_arrayMap;
 };
+
+//------------------------------------------------------------------------------
+
+inline Mesh::ExtraArrayType operator|(const Mesh::ExtraArrayType& lhs, const Mesh::ExtraArrayType& rhs)
+{
+    return static_cast<Mesh::ExtraArrayType> (
+        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(lhs) |
+        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(rhs)
+        );
+}
+
+//------------------------------------------------------------------------------
+
+inline Mesh::ExtraArrayType operator&(const Mesh::ExtraArrayType& lhs, const Mesh::ExtraArrayType& rhs)
+{
+    return static_cast<Mesh::ExtraArrayType> (
+        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(lhs) &
+        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(rhs)
+        );
+}
+
+//------------------------------------------------------------------------------
+
+template< typename ITERATOR >
+inline ITERATOR Mesh::begin()
+{
+    return ITERATOR(this);
+}
+
+//------------------------------------------------------------------------------
+
+template< typename ITERATOR >
+inline ITERATOR Mesh::end()
+{
+    auto itr = ITERATOR(this);
+    itr += static_cast< typename ITERATOR::difference_type>(this->getNumberOfPoints());
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template< typename ITERATOR >
+inline ITERATOR Mesh::begin() const
+{
+    return ITERATOR(this);
+}
+
+//------------------------------------------------------------------------------
+
+template< typename ITERATOR >
+inline ITERATOR Mesh::end() const
+{
+    auto itr = ITERATOR(this);
+    itr += static_cast< typename ITERATOR::difference_type>(this->getNumberOfPoints());
+    return itr;
+}
 
 } // namespace fwData

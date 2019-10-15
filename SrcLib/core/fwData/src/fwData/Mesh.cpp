@@ -95,17 +95,11 @@ void Mesh::initArrays()
         m_cellDataOffsets = ::fwData::Array::New();
     }
 
+    // TODO sight 22.0: Add a second dimension on the array to replace the deprecated component
     m_points->setType(::fwTools::Type::create<PointValueType>());
-    m_points->setNumberOfComponents(3);
-
     m_cellTypes->setType(::fwTools::Type::create<CellTypes>());
-    m_cellTypes->setNumberOfComponents(1);
-
     m_cellData->setType(::fwTools::Type::create<CellValueType>());
-    m_cellData->setNumberOfComponents(1);
-
     m_cellDataOffsets->setType(::fwTools::Type::create<CellDataOffsetType>());
-    m_cellDataOffsets->setNumberOfComponents(1);
 }
 
 //------------------------------------------------------------------------------
@@ -176,104 +170,145 @@ void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData)
+size_t Mesh::reserve(size_t nbPts, size_t nbCells, CellTypesEnum cellType, ExtraArrayType arrayMask)
 {
-    if (nbCellsData == 0)
+    size_t nbCellsData = 0;
+    switch (cellType)
     {
-        nbCellsData = 3 * nbCells;
+        case POINT:
+            nbCellsData = nbCells;
+            break;
+        case EDGE:
+            nbCellsData = 2 * nbCells;
+            break;
+        case TRIANGLE:
+            nbCellsData = 3 * nbCells;
+            break;
+        case QUAD:
+            nbCellsData = 4 * nbCells;
+            break;
+        case TETRA:
+            nbCellsData = 4 * nbCells;
+            break;
+        default:
+            SLM_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
+                      "resize(size_t nbPts, size_t nbCells, ExtraArrayType arrayMask, size_t nbCellsData)")
+            nbCellsData = 3 * nbCells;
+            break;
     }
 
-    size_t allocatedSize = 0;
-
-    allocatedSize += m_points->resize( {nbPts}, true );
-    allocatedSize += m_cellTypes->resize( {nbCells}, true );
-    allocatedSize += m_cellData->resize( {nbCellsData}, true );
-    allocatedSize += m_cellDataOffsets->resize( {nbCells}, true );
-
-    return allocatedSize;
+    return this->reserve(nbPts, nbCells, nbCellsData, arrayMask);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocatePointNormals()
+size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArrayType arrayMask)
 {
-    size_t allocatedSize = 0;
-    if (!m_pointNormals )
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Cannot not allocate empty size"), nbPts == 0 ||
+                          nbCells == 0 || nbCellsData == 0);
+
+    m_points->resizeTMP( {nbPts}, 3 );
+
+    // TODO sight 22.0: Add a second dimension on the array to replace the deprecated component
+    if (static_cast<int>(arrayMask & ExtraArrayType::POINT_COLORS))
     {
-        m_pointNormals = ::fwData::Array::New();
+        if (!m_pointColors )
+        {
+            m_pointColors = ::fwData::Array::New();
+        }
+        m_pointColors->resizeTMP(::fwTools::Type::s_UINT8, {nbPts}, 4);
     }
-    allocatedSize += m_pointNormals->resize( ::fwTools::Type::create<NormalValueType>(), {size_t(m_nbPoints)}, 3, true);
-    return allocatedSize;
+    if (static_cast<int>(arrayMask & ExtraArrayType::POINT_NORMALS))
+    {
+        if (!m_pointNormals )
+        {
+            m_pointNormals = ::fwData::Array::New();
+        }
+        m_pointNormals->resizeTMP(::fwTools::Type::s_FLOAT, {nbPts}, 3 );
+    }
+    if (static_cast<int>(arrayMask & ExtraArrayType::POINT_TEX_COORDS))
+    {
+        if (!m_pointTexCoords )
+        {
+            m_pointTexCoords = ::fwData::Array::New();
+        }
+        m_pointTexCoords->resizeTMP( ::fwTools::Type::s_FLOAT, {nbPts}, 2 );
+    }
+
+    m_cellTypes->resize({nbCells});
+    m_cellDataOffsets->resize({nbCells});
+    m_cellData->resize({nbCellsData});
+
+    if (static_cast<int>(arrayMask & ExtraArrayType::CELL_COLORS))
+    {
+        if (!m_cellColors )
+        {
+            m_cellColors = ::fwData::Array::New();
+        }
+        m_cellColors->resizeTMP( ::fwTools::Type::s_UINT8,  {nbCells}, 4 );
+    }
+
+    if (static_cast<int>(arrayMask & ExtraArrayType::CELL_NORMALS))
+    {
+        if (!m_cellNormals )
+        {
+            m_cellNormals = ::fwData::Array::New();
+        }
+        m_cellNormals->resizeTMP( ::fwTools::Type::s_FLOAT, {nbCells}, 3 );
+    }
+    if (static_cast<int>(arrayMask & ExtraArrayType::CELL_TEX_COORDS))
+    {
+        if (!m_cellTexCoords )
+        {
+            m_cellTexCoords = ::fwData::Array::New();
+        }
+        m_cellTexCoords->resizeTMP( ::fwTools::Type::s_FLOAT, {nbCells}, 2 );
+    }
+
+    return this->getAllocatedSizeInBytes();
 }
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocatePointColors(ColorArrayTypes t)
+size_t Mesh::resize(size_t nbPts, size_t nbCells, CellTypesEnum cellType, ExtraArrayType arrayMask)
 {
-    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
-    size_t allocatedSize = 0;
-    if (!m_pointColors )
+    size_t nbCellsData = 0;
+    switch (cellType)
     {
-        m_pointColors = ::fwData::Array::New();
+        case POINT:
+            nbCellsData = nbCells;
+            break;
+        case EDGE:
+            nbCellsData = 2 * nbCells;
+            break;
+        case TRIANGLE:
+            nbCellsData = 3 * nbCells;
+            break;
+        case QUAD:
+            nbCellsData = 4 * nbCells;
+            break;
+        case TETRA:
+            nbCellsData = 4 * nbCells;
+            break;
+        default:
+            SLM_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
+                      "resize(size_t nbPts, size_t nbCells, ExtraArrayType arrayMask, size_t nbCellsData)")
+            nbCellsData = 3 * nbCells;
+            break;
     }
-    allocatedSize += m_pointColors->resize( ::fwTools::Type::create<ColorValueType>(), {size_t(m_nbPoints)}, t, true);
-    return allocatedSize;
+
+    return this->resize(nbPts, nbCells, nbCellsData, arrayMask);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocatePointTexCoords()
+size_t Mesh::resize(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArrayType arrayMask)
 {
-    size_t allocatedSize = 0;
-    if (!m_pointTexCoords )
-    {
-        m_pointTexCoords = ::fwData::Array::New();
-    }
-    allocatedSize += m_pointTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), {size_t(
-                                                                                                  m_nbPoints)}, 2,
-                                               true);
-    return allocatedSize;
-}
-
-//------------------------------------------------------------------------------
-
-size_t Mesh::allocateCellNormals()
-{
-    size_t allocatedSize = 0;
-    if (!m_cellNormals )
-    {
-        m_cellNormals = ::fwData::Array::New();
-    }
-    allocatedSize += m_cellNormals->resize( ::fwTools::Type::create<NormalValueType>(), {size_t(m_nbCells)}, 3, true);
-    return allocatedSize;
-}
-
-//------------------------------------------------------------------------------
-
-size_t Mesh::allocateCellColors(ColorArrayTypes t)
-{
-    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
-    size_t allocatedSize = 0;
-    if (!m_cellColors )
-    {
-        m_cellColors = ::fwData::Array::New();
-    }
-    allocatedSize += m_cellColors->resize( ::fwTools::Type::create<ColorValueType>(), {size_t(m_nbCells)}, t, true);
-    return allocatedSize;
-}
-
-//------------------------------------------------------------------------------
-
-size_t Mesh::allocateCellTexCoords()
-{
-    size_t allocatedSize = 0;
-    if (!m_cellTexCoords )
-    {
-        m_cellTexCoords = ::fwData::Array::New();
-    }
-    allocatedSize +=
-        m_cellTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), {size_t(m_nbCells)}, 2, true);
-    return allocatedSize;
+    const size_t size = this->reserve(nbPts, nbCells, nbCellsData, arrayMask);
+    m_nbPoints      = nbPts;
+    m_nbCells       = nbCells;
+    m_cellsDataSize = nbCellsData;
+    return size;
 }
 
 //------------------------------------------------------------------------------
@@ -287,163 +322,23 @@ bool Mesh::adjustAllocatedMemory()
         this->initArrays();
     }
 
-    m_points->resize({size_t(m_nbPoints)}, true);
-    m_cellTypes->resize({size_t(m_nbCells)}, true);
-    m_cellData->resize({size_t(m_cellsDataSize)}, true);
-    m_cellDataOffsets->resize({size_t(m_nbCells)}, true);
+    m_points->resize({size_t(m_nbPoints)});
+    m_cellTypes->resize({size_t(m_nbCells)});
+    m_cellData->resize({size_t(m_cellsDataSize)});
+    m_cellDataOffsets->resize({size_t(m_nbCells)});
 
-    m_pointColors&& (m_pointColors->resize({size_t(m_nbPoints)}, true));
-    m_cellColors&& (m_cellColors->resize({size_t(m_nbCells)}, true));
-    m_pointNormals&& (m_pointNormals->resize({size_t(m_nbPoints)}, true));
-    m_cellNormals&& (m_cellNormals->resize({size_t(m_nbCells)}, true));
-    m_pointTexCoords&& (m_pointTexCoords->resize({size_t(m_nbPoints)}, true));
-    m_cellTexCoords&& (m_cellTexCoords->resize({size_t(m_nbCells)}, true));
+    m_pointColors&& (m_pointColors->resize({size_t(m_nbPoints)}));
+    m_cellColors&& (m_cellColors->resize({size_t(m_nbCells)}));
+    m_pointNormals&& (m_pointNormals->resize({size_t(m_nbPoints)}));
+    m_cellNormals&& (m_cellNormals->resize({size_t(m_nbCells)}));
+    m_pointTexCoords&& (m_pointTexCoords->resize({size_t(m_nbPoints)}));
+    m_cellTexCoords&& (m_cellTexCoords->resize({size_t(m_nbCells)}));
 
     size_t newAllocatedSize = this->getAllocatedSizeInBytes();
     SLM_ASSERT("Error adjusting memory : allocated size: " << newAllocatedSize
                                                            << " != data size : " << this->getDataSizeInBytes(),
                newAllocatedSize == this->getDataSizeInBytes());
     return oldAllocatedSize != newAllocatedSize;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPointsArray(const ::fwData::Array::sptr& array)
-{
-    m_points = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellTypesArray(const ::fwData::Array::sptr& array)
-{
-    m_cellTypes = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellDataArray (const ::fwData::Array::sptr& array)
-{
-    m_cellData = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellDataOffsetsArray(const ::fwData::Array::sptr& array)
-{
-    m_cellDataOffsets = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPointColorsArray(const ::fwData::Array::sptr& array)
-{
-    m_pointColors = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellColorsArray(const ::fwData::Array::sptr& array)
-{
-    m_cellColors = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPointNormalsArray(const ::fwData::Array::sptr& array)
-{
-    m_pointNormals = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellNormalsArray(const ::fwData::Array::sptr& array)
-{
-    m_cellNormals = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPointTexCoordsArray(const ::fwData::Array::sptr& array)
-{
-    m_pointTexCoords = array;
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
-{
-    m_cellTexCoords = array;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getPointsArray() const
-{
-    return m_points;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getCellTypesArray() const
-{
-    return m_cellTypes;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getCellDataArray() const
-{
-    return m_cellData;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getCellDataOffsetsArray() const
-{
-    return m_cellDataOffsets;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getPointColorsArray() const
-{
-    return m_pointColors;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getCellColorsArray() const
-{
-    return m_cellColors;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getPointNormalsArray() const
-{
-    return m_pointNormals;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getCellNormalsArray() const
-{
-    return m_cellNormals;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getPointTexCoordsArray() const
-{
-    return m_pointTexCoords;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Array::sptr Mesh::getCellTexCoordsArray() const
-{
-    return m_cellTexCoords;
 }
 
 //------------------------------------------------------------------------------
@@ -604,6 +499,483 @@ size_t Mesh::getAllocatedSizeInBytes() const
     m_cellTexCoords&& (size += m_cellTexCoords->getSizeInBytes());
 
     return size;
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushPoint(const PointValueType p[3])
+{
+    ::fwData::Mesh::Id nbPoints = m_nbPoints;
+    size_t allocatedPts = m_points->empty() ? 0 : m_points->getSize().at(0);
+
+    if( allocatedPts <= nbPoints )
+    {
+        m_points->resizeTMP({allocatedPts + POINT_REALLOC_STEP}, 3);
+    }
+    this->setPoint(nbPoints, p);
+
+    ++m_nbPoints;
+    return nbPoints;
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushPoint(PointValueType x, PointValueType y, PointValueType z)
+{
+    const ::fwData::Mesh::PointValueType p[3] = {x, y, z};
+    return this->pushPoint(p);
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushCell(CellValueType idPt)
+{
+    ::fwData::Mesh::CellValueType point[1] = {idPt};
+    return this->pushCell(::fwData::Mesh::POINT, point, 1);
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2)
+{
+    ::fwData::Mesh::CellValueType p[2] = {idP1, idP2};
+    return this->pushCell(::fwData::Mesh::EDGE, p, 2);
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3)
+{
+    ::fwData::Mesh::CellValueType p[3] = {idP1, idP2, idP3};
+    return this->pushCell(::fwData::Mesh::TRIANGLE, p, 3);
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
+                        CellTypesEnum type)
+{
+    ::fwData::Mesh::CellValueType p[4] = {idP1, idP2, idP3, idP4};
+    return this->pushCell(type, p, 4);
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushCell(CellTypesEnum type,
+                        const std::vector<CellValueType> pointIds)
+{
+    return this->pushCell(type, pointIds.data(), pointIds.size());
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Id Mesh::pushCell(CellTypesEnum type,
+                        const CellValueType* pointIds,
+                        size_t nbPoints )
+{
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
+               type != ::fwData::Mesh::NO_CELL || nbPoints == 0);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
+               type != ::fwData::Mesh::POINT || nbPoints == 1);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
+               type != ::fwData::Mesh::EDGE || nbPoints == 2);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
+               type != ::fwData::Mesh::TRIANGLE || nbPoints == 3);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
+               type != ::fwData::Mesh::QUAD || nbPoints == 4);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
+               type != ::fwData::Mesh::TETRA || nbPoints == 4);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
+               type != ::fwData::Mesh::POLY || nbPoints > 4);
+
+    ::fwData::Mesh::Id nbCells = m_nbCells;
+
+    const size_t allocatedCellTypes       = m_cellTypes->empty() ? 0 : m_cellTypes->getSize().at(0);
+    const size_t allocatedCellDataOffsets = m_cellDataOffsets->empty() ? 0 : m_cellDataOffsets->getSize().at(0);
+    const size_t allocatedCellData        = m_cellData->empty() ? 0 : m_cellData->getSize().at(0);
+
+    if( allocatedCellTypes <= nbCells )
+    {
+        m_cellTypes->resize({allocatedCellTypes + CELL_REALLOC_STEP});
+    }
+    if( allocatedCellDataOffsets <= nbCells )
+    {
+        m_cellDataOffsets->resize({allocatedCellDataOffsets + CELL_REALLOC_STEP});
+    }
+
+    if( allocatedCellData <= m_cellsDataSize + nbPoints )
+    {
+        m_cellData->resize({allocatedCellData + CELLDATA_REALLOC_STEP});
+    }
+
+    m_cellTypes->at< CellTypes >(nbCells) = static_cast< CellTypes >(type);
+    for (size_t i = 0; i < nbPoints; ++i )
+    {
+        const CellValueType cellValue = pointIds[i];
+        m_cellData->at< CellValueType >(m_cellsDataSize + i) = cellValue;
+    }
+
+    m_cellDataOffsets->at<CellDataOffsetType>(nbCells) = m_cellsDataSize;
+
+    m_cellsDataSize += nbPoints;
+    ++m_nbCells;
+    return nbCells;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPoint(::fwData::Mesh::Id id, const ::fwData::Mesh::PointValueType p[3])
+{
+    m_points->at<PointValueType>(3*id)   = p[0];
+    m_points->at<PointValueType>(3*id+1) = p[1];
+    m_points->at<PointValueType>(3*id+2) = p[2];
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPoint(::fwData::Mesh::Id id,
+                    ::fwData::Mesh::PointValueType x,
+                    ::fwData::Mesh::PointValueType y,
+                    ::fwData::Mesh::PointValueType z )
+{
+    const ::fwData::Mesh::PointValueType p[3] = {x, y, z};
+    this->setPoint(id, p);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
+{
+    m_pointColors->at<PointValueType>(4*id)   = c[0];
+    m_pointColors->at<PointValueType>(4*id+1) = c[1];
+    m_pointColors->at<PointValueType>(4*id+2) = c[2];
+    m_pointColors->at<PointValueType>(4*id+3) = c[3];
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
+{
+    m_cellColors->at<PointValueType>(4*id)   = c[0];
+    m_cellColors->at<PointValueType>(4*id+1) = c[1];
+    m_cellColors->at<PointValueType>(4*id+2) = c[2];
+    m_cellColors->at<PointValueType>(4*id+3) = c[3];
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
+{
+    m_pointNormals->at<PointValueType>(3*id)   = n[0];
+    m_pointNormals->at<PointValueType>(3*id+1) = n[1];
+    m_pointNormals->at<PointValueType>(3*id+2) = n[2];
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
+{
+    m_cellNormals->at<PointValueType>(3*id)   = n[0];
+    m_cellNormals->at<PointValueType>(3*id+1) = n[1];
+    m_cellNormals->at<PointValueType>(3*id+2) = n[2];
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+{
+    m_pointTexCoords->at<PointValueType>(2*id)   = t[0];
+    m_pointTexCoords->at<PointValueType>(2*id+1) = t[1];
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+{
+    m_cellTexCoords->at<PointValueType>(2*id)   = t[0];
+    m_cellTexCoords->at<PointValueType>(2*id+1) = t[1];
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::LocksType Mesh::lock() const
+{
+    LocksType locks;
+    locks.push_back(m_points->lock());
+    locks.push_back(m_cellTypes->lock());
+    locks.push_back(m_cellData->lock());
+    locks.push_back(m_cellDataOffsets->lock());
+
+    if (m_pointColors)
+    {
+        locks.push_back(m_pointColors->lock());
+    }
+    if (m_cellColors)
+    {
+        locks.push_back(m_cellColors->lock());
+    }
+    if (m_pointNormals)
+    {
+        locks.push_back(m_pointNormals->lock());
+    }
+    if (m_cellNormals)
+    {
+        locks.push_back(m_cellNormals->lock());
+    }
+    if (m_cellTexCoords)
+    {
+        locks.push_back(m_cellTexCoords->lock());
+    }
+    if (m_pointTexCoords)
+    {
+        locks.push_back(m_pointTexCoords->lock());
+    }
+
+    return locks;
+}
+
+//------------------------------------------------------------------------------
+// Deprecated API
+//------------------------------------------------------------------------------
+
+size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData)
+{
+    if (nbCellsData == 0)
+    {
+        nbCellsData = 3 * nbCells;
+    }
+
+    size_t allocatedSize = 0;
+
+    allocatedSize += m_points->resize( {nbPts}, 3, true);
+    allocatedSize += m_cellTypes->resize( {nbCells}, 1, true);
+    allocatedSize += m_cellData->resize( {nbCellsData}, 1, true);
+    allocatedSize += m_cellDataOffsets->resize( {nbCells}, 1, true );
+
+    return allocatedSize;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Mesh::allocatePointNormals()
+{
+    size_t allocatedSize = 0;
+    if (!m_pointNormals )
+    {
+        m_pointNormals = ::fwData::Array::New();
+    }
+    allocatedSize += m_pointNormals->resize( ::fwTools::Type::create<NormalValueType>(), {size_t(m_nbPoints)}, 3, true);
+    return allocatedSize;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Mesh::allocatePointColors(ColorArrayTypes t)
+{
+    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    size_t allocatedSize = 0;
+    if (!m_pointColors )
+    {
+        m_pointColors = ::fwData::Array::New();
+    }
+    allocatedSize += m_pointColors->resize( ::fwTools::Type::create<ColorValueType>(), {size_t(m_nbPoints)}, t, true);
+    return allocatedSize;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Mesh::allocatePointTexCoords()
+{
+    size_t allocatedSize = 0;
+    if (!m_pointTexCoords )
+    {
+        m_pointTexCoords = ::fwData::Array::New();
+    }
+    allocatedSize += m_pointTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), {size_t(
+                                                                                                  m_nbPoints)}, 2,
+                                               true);
+    return allocatedSize;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Mesh::allocateCellNormals()
+{
+    size_t allocatedSize = 0;
+    if (!m_cellNormals )
+    {
+        m_cellNormals = ::fwData::Array::New();
+    }
+    allocatedSize += m_cellNormals->resize( ::fwTools::Type::create<NormalValueType>(), {size_t(m_nbCells)}, 3, true);
+    return allocatedSize;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Mesh::allocateCellColors(ColorArrayTypes t)
+{
+    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    size_t allocatedSize = 0;
+    if (!m_cellColors )
+    {
+        m_cellColors = ::fwData::Array::New();
+    }
+    allocatedSize += m_cellColors->resize( ::fwTools::Type::create<ColorValueType>(), {size_t(m_nbCells)}, t, true);
+    return allocatedSize;
+}
+
+//------------------------------------------------------------------------------
+
+size_t Mesh::allocateCellTexCoords()
+{
+    size_t allocatedSize = 0;
+    if (!m_cellTexCoords )
+    {
+        m_cellTexCoords = ::fwData::Array::New();
+    }
+    allocatedSize +=
+        m_cellTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), {size_t(m_nbCells)}, 2, true);
+    return allocatedSize;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointsArray(const ::fwData::Array::sptr& array)
+{
+    m_points = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellTypesArray(const ::fwData::Array::sptr& array)
+{
+    m_cellTypes = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellDataArray (const ::fwData::Array::sptr& array)
+{
+    m_cellData = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellDataOffsetsArray(const ::fwData::Array::sptr& array)
+{
+    m_cellDataOffsets = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointColorsArray(const ::fwData::Array::sptr& array)
+{
+    m_pointColors = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellColorsArray(const ::fwData::Array::sptr& array)
+{
+    m_cellColors = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointNormalsArray(const ::fwData::Array::sptr& array)
+{
+    m_pointNormals = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellNormalsArray(const ::fwData::Array::sptr& array)
+{
+    m_cellNormals = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointTexCoordsArray(const ::fwData::Array::sptr& array)
+{
+    m_pointTexCoords = array;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellTexCoordsArray(const ::fwData::Array::sptr& array)
+{
+    m_cellTexCoords = array;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getPointsArray() const
+{
+    return m_points;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getCellTypesArray() const
+{
+    return m_cellTypes;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getCellDataArray() const
+{
+    return m_cellData;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getCellDataOffsetsArray() const
+{
+    return m_cellDataOffsets;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getPointColorsArray() const
+{
+    return m_pointColors;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getCellColorsArray() const
+{
+    return m_cellColors;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getPointNormalsArray() const
+{
+    return m_pointNormals;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getCellNormalsArray() const
+{
+    return m_cellNormals;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getPointTexCoordsArray() const
+{
+    return m_pointTexCoords;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Array::sptr Mesh::getCellTexCoordsArray() const
+{
+    return m_cellTexCoords;
 }
 
 //------------------------------------------------------------------------------
