@@ -124,10 +124,10 @@ struct ThresholdFilter
         ::fwDataTools::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
 
         // Get image buffers
-        auto it1    = imageIn->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
-        auto it1End = imageIn->end< ::fwData::Image::Iteration<PIXELTYPE> >();
-        auto it2    = imageOut->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
-        auto it2End = imageOut->end< ::fwData::Image::Iteration<PIXELTYPE> >();
+        auto it1          = imageIn->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
+        const auto it1End = imageIn->end< ::fwData::Image::Iteration<PIXELTYPE> >();
+        auto it2          = imageOut->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
+        const auto it2End = imageOut->end< ::fwData::Image::Iteration<PIXELTYPE> >();
 
         // Fill the target buffer considering the thresholding
         for(; it1 != it1End && it2 != it2End; ++it1, ++it2 )

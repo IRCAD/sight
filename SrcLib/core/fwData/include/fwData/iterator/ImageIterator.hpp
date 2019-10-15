@@ -44,7 +44,7 @@ class IterationBase
 
 public:
 
-    /// Used to iterate through all the value of an image
+    /// Used to iterate through all the values of an image
     struct Raw {
         typedef TYPE type;
         typedef TYPE value_type;
@@ -63,7 +63,7 @@ public:
             return value;
         }
         type value;
-        static const size_t elementSize{1};
+        static constexpr size_t elementSize{1};
     };
 
     /// Used to iterate through a RGB image
@@ -84,7 +84,7 @@ public:
         type r;
         type g;
         type b;
-        static const size_t elementSize{3};
+        static constexpr size_t elementSize{3};
     };
 
     /// Used to iterate through a RGBA image
@@ -105,7 +105,7 @@ public:
         type g;
         type b;
         type a;
-        static const size_t elementSize{4};
+        static constexpr size_t elementSize{4};
     };
 
     /// Used to iterate through a BGR image
@@ -124,7 +124,7 @@ public:
         type b;
         type g;
         type r;
-        static const size_t elementSize{3};
+        static constexpr size_t elementSize{3};
     };
 
     /// Used to iterate through a BGRA image
@@ -145,7 +145,7 @@ public:
         type g;
         type r;
         type a;
-        static const size_t elementSize{4};
+        static constexpr size_t elementSize{4};
     };
 };
 
@@ -154,7 +154,7 @@ public:
  *
  * Iterate through the buffer and check if the index is not out of the bounds
  *
- * @tparam FORMAT format used to iterate thoough the buffer, should be one of the format defined in IterationBase
+ * @tparam FORMAT format used to iterate through the buffer, should be one of the formats defined in IterationBase
  *
  * Example:
  * @code{.cpp}

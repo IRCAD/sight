@@ -267,8 +267,8 @@ public:
     /**
      * @brief Returns the begin/end iterators to the image buffer, cast to T
      *
-     * Iterate through all the element of the buffer.
-     * The format should be one of the format defined by IterationBase (.
+     * Iterate through all the elements of the buffer.
+     * The format should be one of the formats defined by IterationBase (.
      *
      * Example:
      * @code{.cpp}
