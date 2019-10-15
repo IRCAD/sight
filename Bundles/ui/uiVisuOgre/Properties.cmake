@@ -12,7 +12,11 @@ set( DEPENDENCIES
         fwGui
         fwGuiQt
         fwRenderOgre
+        fwIO
         uiIO
+)
+
+set( REQUIREMENTS
         material
 )
 

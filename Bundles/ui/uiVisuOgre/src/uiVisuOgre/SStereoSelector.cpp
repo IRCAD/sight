@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <material/Plugin.hpp>
-
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
 #include <OGRE/OgreResourceManager.h>
@@ -45,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SStereoSelector, ::fwData::Composite);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SStereoSelector, ::fwData::Composite)
 
 //------------------------------------------------------------------------------
 

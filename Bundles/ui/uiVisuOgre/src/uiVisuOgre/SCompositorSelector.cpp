@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <material/Plugin.hpp>
-
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
 #include <OGRE/OgreResourceManager.h>
@@ -45,9 +43,11 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, ::fwData::Composite);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, ::fwData::Composite)
 
 const ::fwCom::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
+
+static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME = "compositorsPostFX";
 
 //------------------------------------------------------------------------------
 
@@ -214,7 +214,7 @@ void SCompositorSelector::updateCompositorList()
         while(iter.hasMoreElements())
         {
             ::Ogre::ResourcePtr compositor = iter.getNext();
-            if (compositor->getGroup() == ::material::s_COMPOSITOR_RESOURCEGROUP_NAME)
+            if (compositor->getGroup() == s_COMPOSITOR_RESOURCEGROUP_NAME)
             {
                 QString compositorName = compositor.get()->getName().c_str();
                 layer->addAvailableCompositor(compositorName.toStdString());

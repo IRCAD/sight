@@ -62,7 +62,7 @@ void SScreenSelector::configuring()
     m_mode = configTree.get("config.<xmlattr>.mode", m_mode);
 
     SLM_ERROR_IF("Unknown selection mode '" + m_mode + "'.",
-                 m_mode != "current" || m_mode != "neighbor" || m_mode != "select");
+                 m_mode != "current" && m_mode != "neighbor" && m_mode != "select");
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ int SScreenSelector::selectScreen() const
 
     if(QGuiApplication::screens().size() <= 1)
     {
-        return 0;
+        // return 0;
     }
 
     for(QScreen* screen : QGuiApplication::screens())
@@ -132,9 +132,9 @@ int SScreenSelector::selectScreen() const
         const auto screenSize               = screen->physicalSize();
         const qreal diagonalLengthMm        = std::sqrt(screenSize.width() * screenSize.width() +
                                                         screenSize.height() * screenSize.height());
-        const qreal diagonalLengthInches = std::round(diagonalLengthMm * inchesPerMillimeter);
+        const qreal diagonalLengthInches = diagonalLengthMm * inchesPerMillimeter;
 
-        const QString diagonal = QString::number(static_cast<std::uint32_t>(diagonalLengthInches)) + "\"";
+        const QString diagonal = QString::number(diagonalLengthInches, 'f', 1) + "\"";
 
         const auto geom          = screen->geometry();
         const QString resolution = "[" + QString::number(geom.width()) + "x" + QString::number(geom.height()) + "]";

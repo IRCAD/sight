@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <material/Plugin.hpp>
-
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreResourceManager.h>
@@ -52,11 +50,13 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction)
 
 const ::fwCom::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
 static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+
+static const std::string s_MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 
 //------------------------------------------------------------------------------
 SMaterialSelector::SMaterialSelector() noexcept
@@ -90,7 +90,7 @@ void SMaterialSelector::starting()
     while(iter.hasMoreElements())
     {
         ::Ogre::ResourcePtr mat = iter.getNext();
-        if (mat->getGroup() == ::material::s_MATERIAL_RESOURCEGROUP_NAME)
+        if (mat->getGroup() == s_MATERIAL_RESOURCEGROUP_NAME)
         {
             m_materialBox->addItem(QString::fromStdString(mat->getName()));
         }
