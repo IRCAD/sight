@@ -157,7 +157,7 @@ public:
 
     /// Creates an interactor and installs it in window.
     FWRENDEROGRE_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                   bool _renderOnDemand, bool _fullscreen, bool _vsync = true ) = 0;
+                                                   bool renderOnDemand, bool fullscreen ) = 0;
 
     /// Connects widget and SRender signals and slots.
     FWRENDEROGRE_API virtual void connectToContainer() = 0;

@@ -132,7 +132,6 @@ void SRender::configuring()
     }
 
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
-    m_vsync      = sceneCfg.get<bool>("<xmlattr>.vsync", m_vsync);
 
 #ifdef __APPLE__
     // TODO: fix fullscreen rendering on macOS.
@@ -230,15 +229,14 @@ void SRender::starting()
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createOffscreenManager(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( nullptr, false, false );
+        m_interactorManager->createContainer( nullptr, m_renderMode != RenderMode::ALWAYS, m_fullscreen );
     }
     else
     {
-        const bool renderOnDemand = m_renderMode != RenderMode::ALWAYS;
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( this->getContainer(), renderOnDemand, m_fullscreen, m_vsync );
+        m_interactorManager->createContainer( this->getContainer(), m_renderMode != RenderMode::ALWAYS, m_fullscreen );
     }
 
     // Initialize resources to load overlay scripts.

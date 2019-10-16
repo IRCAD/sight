@@ -58,7 +58,7 @@ public:
 
     /// Create the container that holds the QtWidget.
     VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent,
-                                                bool _renderOnDemand, bool _fullscreen, bool) final;
+                                                bool renderOnDemand, bool fullscreen) final;
 
     /// Connects widget and SRender signals and slots.
     VISUOGREQT_API virtual void connectToContainer() final;

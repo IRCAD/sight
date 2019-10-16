@@ -49,7 +49,7 @@ Q_OBJECT
 
 public:
     /**
-     * @brief Window Initialise attributes
+     * @brief Window Initialize attributes
      * @param parent This window parent's
      */
     Window(QWindow* parent = nullptr);
@@ -87,10 +87,10 @@ public:
     int getFrameId() const;
 
     /**
-     * @brief Creates the Ogre renderWindow associated to this window.
-     * @param _vsync enables vertical synchronization, recommended to avoid tearing.
+     * @brief initialize
+     * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
      */
-    void initialize(bool _vsync);
+    void initialize();
 
     /**
      * @brief renderNow
