@@ -170,7 +170,6 @@
                 <slots>
                     <slot>axis/updateVisibility</slot>
                     <slot>axis2/updateVisibility</slot>
-                    <slot>genericScene/requestRender</slot>
                 </slots>
             </service>
 
@@ -178,7 +177,6 @@
                 <slots>
                     <slot>meshAdpt/updateVisibility</slot>
                     <slot>meshAdpt2/updateVisibility</slot>
-                    <slot>genericScene/requestRender</slot>
                 </slots>
             </service>
 
@@ -187,7 +185,6 @@
                 <slots>
                     <slot>meshPlaneAdpt/updateVisibility</slot>
                     <slot>meshPlaneAdpt2/updateVisibility</slot>
-                    <slot>genericScene/requestRender</slot>
                 </slots>
             </service>
 
@@ -498,10 +495,24 @@
                 <signal>cameraAdpt/updated</signal>
                 <slot>videoAdpt/update</slot>
             </connect>
+
             <connect>
                 <signal>videoAdpt/updated</signal>
+                <signal>actionUpdateCubeVisibility/updated</signal>
+                <signal>actionUpdateAxesVisibility/updated</signal>
+                <signal>actionUpdatePlaneVisibility/updated</signal>
                 <slot>genericScene/requestRender</slot>
                 <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <connect>
+                <signal>meshAdpt2/started</signal>
+                <slot>actionUpdateCubeVisibility/update</slot>
+            </connect>
+
+            <connect>
+                <signal>axis2/started</signal>
+                <slot>actionUpdateAxesVisibility/update</slot>
             </connect>
 
             <!-- start services -->
@@ -539,12 +550,10 @@
             <start uid="frustumAdpt" />
             <start uid="frustumListAdpt" />
 
-            <update uid="actionShowParameters" />
-            <update uid="actionUpdateAxesVisibility" />
-            <update uid="actionUpdateCubeVisibility" />
-
             <update uid="meshReader" />
             <update uid="meshPlaneReader" />
+
+            <update uid="actionShowParameters" />
 
         </config>
     </extension>
