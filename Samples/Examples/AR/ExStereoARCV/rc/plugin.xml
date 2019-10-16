@@ -3,6 +3,7 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="guiQt" />
     <requirement id="preferences" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExStereoARCVConfig</id>

@@ -172,13 +172,15 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
                 timestamp = object->getTimestamp();
                 size_t time = static_cast<size_t>(timestamp);
                 *m_filestream << time <<";";
+                // Set the needed default precision to read our float values
+                *m_filestream << std::fixed << std::setprecision(7);
                 for(unsigned int i = 0; i < numberOfMat; ++i)
                 {
                     const float* values = buffer->getElement(i);
 
                     for(unsigned int v = 0; v < 16; ++v)
                     {
-                        *m_filestream << std::fixed << std::setprecision(7) << values[v] << ";";
+                        *m_filestream << values[v] << ";";
                     }
                 }
                 *m_filestream << std::endl;
