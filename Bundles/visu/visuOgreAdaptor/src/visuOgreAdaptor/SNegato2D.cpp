@@ -130,6 +130,7 @@ void SNegato2D::configuring()
 void SNegato2D::starting()
 {
     this->initialize();
+    this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
@@ -165,6 +166,8 @@ void SNegato2D::starting()
 
 void SNegato2D::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     m_helperTF.removeTFConnections();
 
     if (!m_connection.expired())
@@ -291,6 +294,8 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
     this->updateTF();
 
     this->updateShaderSliceIndexParameter();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -326,6 +331,8 @@ void SNegato2D::updateShaderSliceIndexParameter()
 
 void SNegato2D::updateTF()
 {
+    this->getRenderService()->makeCurrent();
+
     const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
         const ::fwData::mt::ObjectReadLock tfLock(tf);

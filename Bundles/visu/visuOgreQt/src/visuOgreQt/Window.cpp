@@ -77,7 +77,8 @@ void Window::initialize()
 
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
-    parameters["currentGLContext"] = "true";
+    parameters["currentGLContext"]  = "true";
+    parameters["externalGLControl"] = "true"; // Let us handle buffer swapping and vsync.
 
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
@@ -188,6 +189,8 @@ void Window::render()
     m_ogreRenderWindow->update();
     m_ogreRoot->_fireFrameRenderingQueued();
     m_ogreRoot->_fireFrameEnded();
+
+    m_glContext->swapBuffers(this);
 }
 
 // ----------------------------------------------------------------------------
