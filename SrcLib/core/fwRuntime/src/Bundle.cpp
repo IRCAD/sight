@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2019 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,35 +20,10 @@
  *
  ***********************************************************************/
 
-#include "videoFilter/Plugin.hpp"
+#include <fwRuntime/Bundle.hpp>
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+//------------------------------------------------------------------------------
 
-namespace videoFilter
-{
-
-//-----------------------------------------------------------------------------
-
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::videoFilter::Plugin");
-
-//-----------------------------------------------------------------------------
-
-Plugin::~Plugin() noexcept
+fwRuntime::Bundle::~Bundle()
 {
 }
-
-//-----------------------------------------------------------------------------
-
-void Plugin::start()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::stop() noexcept
-{
-}
-
-//-----------------------------------------------------------------------------
-
-} // namespace videoFilter

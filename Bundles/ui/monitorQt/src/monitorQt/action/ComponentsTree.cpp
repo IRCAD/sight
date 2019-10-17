@@ -59,12 +59,12 @@ void ComponentsTree::updating( )
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
 
-    ::fwRuntime::Runtime* defaultRuntime              = ::fwRuntime::Runtime::getDefault();
-    ::fwRuntime::Runtime::BundleIterator iter_bundles = defaultRuntime->bundlesBegin();
-    while (iter_bundles != defaultRuntime->bundlesEnd())
+    ::fwRuntime::Runtime* defaultRuntime = ::fwRuntime::Runtime::getDefault();
+
+    for (const auto& bundle : defaultRuntime->getBundles())
     {
-        const std::string bundleName = (*iter_bundles)->getIdentifier();
-        bool isBundleEnable          = (*iter_bundles)->isEnable();
+        const std::string bundleName = bundle->getIdentifier();
+        const bool isBundleEnable    = bundle->isEnable();
         QTreeWidgetItem* bundleItem  = new QTreeWidgetItem();
         if(!isBundleEnable)
         {
@@ -77,22 +77,19 @@ void ComponentsTree::updating( )
         QTreeWidgetItem* extensionsItem = new QTreeWidgetItem();
         extensionsItem->setText(0, QObject::tr("Extensions"));
         bundleItem->addChild( extensionsItem );
-        ::fwRuntime::Bundle::ExtensionConstIterator iter_extension = (*iter_bundles)->extensionsBegin();
-        while (iter_extension != (*iter_bundles)->extensionsEnd())
+
+        for (const auto& extension : bundle->getExtensions())
         {
-            std::string point      = (*iter_extension)->getPoint();
-            bool isExtensionEnable = (*iter_extension)->isEnable();
-            QTreeWidgetItem* item  = new QTreeWidgetItem();
+            const std::string point      = extension->getPoint();
+            const bool isExtensionEnable = extension->isEnable();
+            QTreeWidgetItem* item        = new QTreeWidgetItem();
             if(!isExtensionEnable)
             {
                 item->setBackground(0, QBrush(QColor(155, 155, 155)));
             }
             item->setText(0, QString::fromStdString(point));
             extensionsItem->addChild( item );
-
-            ++iter_extension;
         }
-        ++iter_bundles;
     }
 
     m_dialog->show();

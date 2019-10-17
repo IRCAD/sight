@@ -52,6 +52,8 @@
 #include <QTabWidget>
 #include <QtGui>
 
+#include <regex>
+
 namespace guiQt
 {
 namespace editor

@@ -98,9 +98,7 @@ void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::Confi
 
 xmlNodePtr Convert::runningBundlesToXml( )
 {
-    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( BUNDLE_RC_PREFIX ) );
-    std::set< std::shared_ptr< ::fwRuntime::impl::Bundle > > ::iterator iter_bundles;
-
+    xmlNodePtr node_root      = xmlNewNode( NULL,  xmlCharStrdup( BUNDLE_RC_PREFIX ) );
     xmlNodePtr activated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Activated" ) );
     xmlAddChild(node_root, activated_Node );
 
@@ -112,11 +110,10 @@ xmlNodePtr Convert::runningBundlesToXml( )
     do
     {
         enable_Value = !enable_Value;
-        for (iter_bundles = runtime.bundlesBegin(); iter_bundles != runtime.bundlesEnd(); ++iter_bundles)
+        for (const auto& bundle : runtime.getBundles())
         {
             //BUNDLE
-
-            xmlNodePtr bundleNode = xmlNewNode( NULL, xmlCharStrdup( (*iter_bundles)->getIdentifier().c_str() ) );
+            xmlNodePtr bundleNode = xmlNewNode( NULL, xmlCharStrdup( bundle->getIdentifier().c_str() ) );
             if (enable_Value)
             {
                 xmlAddChild(activated_Node, bundleNode );
@@ -130,10 +127,11 @@ xmlNodePtr Convert::runningBundlesToXml( )
             xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions_Points" ) );
             xmlAddChild(bundleNode, extensionPoint_activated_list_Node );
 
+            auto bundleImpl = std::dynamic_pointer_cast< ::fwRuntime::impl::Bundle>( bundle );
             for ( std::set< std::shared_ptr< ::fwRuntime::impl::ExtensionPoint > >::const_iterator iter_extensionPoints
                       =
-                          (*iter_bundles)->extensionPointsBegin();
-                  iter_extensionPoints != (*iter_bundles)->extensionPointsEnd();
+                          bundleImpl->extensionPointsBegin();
+                  iter_extensionPoints != bundleImpl->extensionPointsEnd();
                   ++iter_extensionPoints)
             {
                 //EXTENSIONS POINTS
@@ -165,8 +163,8 @@ xmlNodePtr Convert::runningBundlesToXml( )
             xmlAddChild(bundleNode, extension_activated_list_Node );
 
             for ( std::set< std::shared_ptr< ::fwRuntime::Extension > >::const_iterator iter_extension =
-                      (*iter_bundles)->extensionsBegin();
-                  iter_extension != (*iter_bundles)->extensionsEnd();
+                      bundleImpl->extensionsBegin();
+                  iter_extension != bundleImpl->extensionsEnd();
                   ++iter_extension)
             {
                 if (((*iter_extension)->isEnable()) == enable_Value)

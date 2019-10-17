@@ -50,10 +50,6 @@ public:
      */
     static sptr New();
 
-    /**
-     * @brief   Constructor : does nothing.
-     */
-    FWRUNTIME_API Profile();
     FWRUNTIME_API ~Profile() override;
 
     ///  Starts the profile.
@@ -168,6 +164,13 @@ public:
         return m_argv;
     }
 
+protected:
+
+    /**
+     * @brief   Constructor : does nothing.
+     */
+    FWRUNTIME_API Profile();
+
 private:
 
     std::string m_sName;                    ///< name profile
@@ -181,7 +184,6 @@ private:
     char**          m_argv;
 };
 
-
 /**
  * @brief       Set current profile.
  *
@@ -193,6 +195,5 @@ FWRUNTIME_API void setCurrentProfile(::fwRuntime::Profile::sptr prof);
  * @brief       Get current profile.
  */
 FWRUNTIME_API ::fwRuntime::Profile::sptr getCurrentProfile();
-
 
 } // namespace fwRuntime

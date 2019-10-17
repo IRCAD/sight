@@ -25,12 +25,9 @@
 #include "fwCore/base.hpp"
 
 #include "fwRuntime/config.hpp"
-#include "fwRuntime/dl/Library.hpp"
-#include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
 
 #include <filesystem>
-#include <map>
 #include <set>
 #include <string>
 
@@ -50,11 +47,11 @@ class Runtime;
 class FWRUNTIME_CLASS_API Bundle
 {
 public:
+    /// Defines the extension container type.
+    typedef std::set< SPTR( Extension ) >      ExtensionContainer;
+
     virtual ~Bundle();
-    /**
-     * @name    Misc
-     */
-    //@{
+
     /**
      * @brief   Retrieves the bundle identifier.
      *
@@ -110,7 +107,10 @@ public:
      * @return  true or false
      */
     FWRUNTIME_API virtual bool hasParameter( const std::string& name ) const = 0;
-    //@}
+    /**
+     * @brief   Returns the list of extensions contained in this bundle.
+     */
+    FWRUNTIME_API virtual ExtensionContainer getExtensions( ) const = 0;
 
     /**
      * @name        State Management
@@ -121,17 +121,15 @@ public:
      *
      * @remark  The bundle must be enabled to be able to start.
      */
-    FWRUNTIME_API virtual void start() = 0;
+    FWRUNTIME_API virtual void start()     = 0;
     FWRUNTIME_API virtual void stop()      = 0;
     FWRUNTIME_API virtual bool isStarted() = 0;
+    /**
+     * @brief   Tells if the bundle is enabled.
+     */
+    FWRUNTIME_API virtual bool isEnable() const = 0;
     //@}
 
 };
-
-//------------------------------------------------------------------------------
-
-inline Bundle::~Bundle()
-{
-}
 
 } // namespace fwRuntime

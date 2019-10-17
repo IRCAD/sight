@@ -249,20 +249,6 @@ void Bundle::addLibrary( SPTR(dl::Library)library )
 
 //------------------------------------------------------------------------------
 
-Bundle::LibraryConstIterator Bundle::librariesBegin() const
-{
-    return m_libraries.begin();
-}
-
-//------------------------------------------------------------------------------
-
-Bundle::LibraryConstIterator Bundle::librariesEnd() const
-{
-    return m_libraries.end();
-}
-
-//------------------------------------------------------------------------------
-
 void Bundle::addRequirement(const std::string& requirement)
 {
     m_requirements.insert(requirement);
@@ -587,6 +573,13 @@ const std::string Bundle::getParameterValue( const std::string& identifier ) con
 bool Bundle::hasParameter( const std::string& identifier ) const
 {
     return (m_parameters.find(identifier) != m_parameters.end());
+}
+
+//------------------------------------------------------------------------------
+
+fwRuntime::Bundle::ExtensionContainer fwRuntime::impl::Bundle::getExtensions() const
+{
+    return m_extensions;
 }
 
 //------------------------------------------------------------------------------

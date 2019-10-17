@@ -41,19 +41,8 @@ class Bundle;
 class FWRUNTIME_CLASS_API Runtime : public ::fwRuntime::Runtime
 {
 public:
-    /**
-     * @name    Type Definitions
-     */
-    //@{
     /// Defines the bundle container type.
     typedef std::set< std::shared_ptr<Bundle> >     BundleContainer;
-    /// Defines the bundle container iterator type.
-    typedef BundleContainer::iterator BundleIterator;
-    /// Defines the extension container type.
-    typedef std::set< std::shared_ptr<Extension> >  ExtensionContainer;
-    /// Defines the extension container type.
-    typedef ExtensionContainer::iterator ExtensionIterator;
-    //@}
 
     /**
      * @brief   Retrieves the default runtime instance.
@@ -133,18 +122,6 @@ public:
                                                                  SPTR(ConfigurationElement) configurationElement );
 
     /**
-     * @brief   Retrieves the extension collection.
-     * @return  the extension collection.
-     */
-    FWRUNTIME_API virtual ExtensionContainer getExtensions();
-
-    /**
-     * @brief   Retrieves the iterator on the beginning of the extension collection.
-     * @return  an iterator
-     */
-    FWRUNTIME_API virtual ExtensionIterator extensionsBegin();
-
-    /**
      * @brief   Retrieves the iterator on the end of the extension collection.
      * @return  an iterator
      */
@@ -158,6 +135,9 @@ public:
      * @return      a shared pointer to the found extension instance or null if none
      */
     FWRUNTIME_API virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const;
+
+    /// @copydoc ::fwRuntime::Runtime::getBundles
+    FWRUNTIME_API virtual ::fwRuntime::Runtime::BundleContainer getBundles() final;
     //@}
 
     /**
@@ -180,20 +160,6 @@ public:
      * @param[in]   bundle  a shared pointer to the bundle instance to unregister
      */
     void unregisterBundle( std::shared_ptr< impl::Bundle > bundle );
-
-    /**
-     * @brief   Retrieves the iterator on the begining of the bundle collection.
-     *
-     * @return  an iterator
-     */
-    BundleIterator bundlesBegin();
-
-    /**
-     * @brief   Retrieves the iterator on the end of the bundle collection.
-     *
-     * @return  an iterator
-     */
-    BundleIterator bundlesEnd();
 
     /**
      * @brief       Retrieves the enabled bundle for the specified idenfier.
@@ -295,6 +261,18 @@ public:
      * @return      a shared pointer to the found extension point instance or null if none
      */
     std::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string& identifier ) const;
+
+    /**
+     * @brief   Retrieves the extension collection.
+     * @return  the extension collection.
+     */
+    ExtensionContainer getExtensions();
+
+    /**
+     * @brief   Retrieves the iterator on the beginning of the extension collection.
+     * @return  an iterator
+     */
+    ExtensionIterator extensionsBegin();
     //@}
 
 private:

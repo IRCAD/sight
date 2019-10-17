@@ -25,6 +25,7 @@
 #include "fwCore/base.hpp"
 
 #include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/dl/Library.hpp"
 
 #include <filesystem>
 #include <map>
@@ -58,11 +59,6 @@ public:
                                                                                        // factory container constant
                                                                                        // iterator type.
 
-    typedef std::set< SPTR( Extension ) >      ExtensionContainer;             ///< Defines the extension container
-                                                                               // type.
-    typedef ExtensionContainer::const_iterator ExtensionConstIterator;         ///< Defines the extension container
-                                                                               // constant iterator type.
-
     typedef std::set< SPTR( ExtensionPoint ) >      ExtensionPointContainer;        ///< Defines the extension point
                                                                                     // container type.
     typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator;    ///< Defines the extension point
@@ -73,6 +69,9 @@ public:
     typedef LibraryContainer::const_iterator LibraryConstIterator;             ///< Defines the dynamic library
                                                                                // container
                                                                                // constant iterator type.
+
+    ///< Defines the extension container constant iterator type.
+    typedef ExtensionContainer::const_iterator ExtensionConstIterator;
     //@}
 
     /**
@@ -153,6 +152,12 @@ public:
      * @return  true or false
      */
     FWRUNTIME_API virtual bool hasParameter( const std::string& name ) const final;
+
+    /// @copydoc ::fwRuntime::Bundle::getExtensions
+    FWRUNTIME_API virtual ExtensionContainer getExtensions( ) const final;
+
+    /// @copydoc ::fwRuntime::Bundle::isEnable
+    FWRUNTIME_API virtual bool isEnable() const final;
     //@}
 
     /**
@@ -170,22 +175,6 @@ public:
      * @param[in]   library a shared pointer to the library to add
      */
     FWRUNTIME_API void addLibrary( SPTR( dl::Library ) library );
-
-    /**
-     * @brief   Retrieves the iterator on the first item
-     *          in the managed dynamic library collection.
-     *
-     * @return  an iterator
-     */
-    FWRUNTIME_API LibraryConstIterator librariesBegin() const;
-
-    /**
-     * @brief   Retrieves the iterator on the ending item
-     *          in the managed dynamic library collection.
-     *
-     * @return  an iterator
-     */
-    FWRUNTIME_API LibraryConstIterator librariesEnd() const;
     //@}
 
     /**
@@ -357,11 +346,6 @@ public:
      * @name        State Management
      */
     //@{
-    /**
-     * @brief   Tells if the bundle is enable.
-     */
-    FWRUNTIME_API bool isEnable() const;
-
     /**
      * @brief   Changes the enable state of the bundle.
      *

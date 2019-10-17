@@ -37,7 +37,6 @@
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/io/ProfileReader.hpp>
 
 class MiniLauncher
 {

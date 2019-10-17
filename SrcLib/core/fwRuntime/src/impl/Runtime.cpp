@@ -118,21 +118,7 @@ void Runtime::addDefaultBundles()
 
     // Read bundles
     this->addBundles(location);
-    SLM_ASSERT("Couldn't load any bundle from path: " + location.string(), this->bundlesBegin() != this->bundlesEnd());
-}
-
-//------------------------------------------------------------------------------
-
-Runtime::BundleIterator Runtime::bundlesBegin()
-{
-    return m_bundles.begin();
-}
-
-//------------------------------------------------------------------------------
-
-Runtime::BundleIterator Runtime::bundlesEnd()
-{
-    return m_bundles.end();
+    SLM_ASSERT("Couldn't load any bundle from path: " + location.string(), !this->getBundles().empty());
 }
 
 //------------------------------------------------------------------------------
@@ -317,6 +303,15 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
         }
     }
     return resExtension;
+}
+
+//------------------------------------------------------------------------------
+
+::fwRuntime::Runtime::BundleContainer Runtime::getBundles()
+{
+    ::fwRuntime::Runtime::BundleContainer bundles;
+    std::copy(m_bundles.begin(), m_bundles.end(), std::inserter(bundles, bundles.begin()));
+    return bundles;
 }
 
 //------------------------------------------------------------------------------

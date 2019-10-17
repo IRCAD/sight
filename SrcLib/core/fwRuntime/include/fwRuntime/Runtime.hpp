@@ -57,9 +57,6 @@ public:
     //@{
     /// Defines the bundle container type.
     typedef std::set< std::shared_ptr<Bundle> >     BundleContainer;
-
-    /// Defines the bundle container iterator type.
-    typedef BundleContainer::iterator BundleIterator;
     /// Defines the extension container type.
     typedef std::set< std::shared_ptr<Extension> >  ExtensionContainer;
     /// Defines the extension container type.
@@ -175,20 +172,6 @@ public:
     FWRUNTIME_API virtual ExtensionContainer getExtensions() = 0;
 
     /**
-     * @brief   Retrieves the iterator on the beginning of the extension collection.
-     *
-     * @return  an iterator
-     */
-    FWRUNTIME_API virtual ExtensionIterator extensionsBegin() = 0;
-
-    /**
-     * @brief   Retrieves the iterator on the end of the extension collection.
-     *
-     * @return  an iterator
-     */
-    FWRUNTIME_API virtual ExtensionIterator extensionsEnd() = 0;
-
-    /**
      * @brief       Retrieves the extension instance matching the specified identifier.
      *
      * @param[in]   identifier  a string containing an extension identifier
@@ -198,6 +181,10 @@ public:
     FWRUNTIME_API virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const = 0;
 
     //@}
+
+    /// Return all bundles known by the runtime
+    FWRUNTIME_API virtual BundleContainer getBundles() = 0;
+
 protected:
 
     /**
@@ -207,17 +194,20 @@ protected:
 
 private:
 
-    ///< Defines the executable factory container type.
+    /// Defines the executable factory container type.
     typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer;
 
-    ///< Defines the plugin container type.
+    /// Defines the plugin container type.
     typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;
 
-    static std::shared_ptr<Runtime> m_instance;     ///< The runtime instance.
+    /// The runtime instance.
+    static std::shared_ptr<Runtime> m_instance;
 
-    ExtensionContainer m_extensions;                      ///< Contains all registered extensions.
-    std::filesystem::path m_workingPath;     ///< Path where Bundles and share folder are located.
+    /// Contains all registered extensions.
+    ExtensionContainer m_extensions;
 
+    /// Path where Bundles and share folder are located.
+    std::filesystem::path m_workingPath;
 };
 
 } // namespace fwRuntime
