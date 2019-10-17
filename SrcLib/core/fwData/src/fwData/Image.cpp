@@ -128,24 +128,30 @@ size_t Image::resize()
     const size_t imageDims = this->getNumberOfDimensions();
 
     ::fwData::Array::SizeType arraySize(imageDims);
-    size_t count = 0;
 
     /*
      * @todo replace the resizeTMP method by these line.
      * Array m_numberOfComponents attribute is deprecated, but to support the old API, we need to use it temporary
      *
+     * The component dimension must be the first dimentsion to be registered in the array like RGBARGBARGBA.
+     *
+     * size_t count = 0;
      * if (m_numberOfComponents > 1)
      * {
      *     arraySize.resize(imageDims+1);
      *     arraySize[0] = m_numberOfComponents;
      *     count        = 1;
      * }
+     * for (size_t i = 0; i < imageDims; ++i)
+     * {
+     *     arraySize[count] = m_size[i];
+     *     ++count;
+     * }
      */
 
     for (size_t i = 0; i < imageDims; ++i)
     {
-        arraySize[count] = m_size[i];
-        ++count;
+        arraySize[i] = m_size[i];
     }
     return m_dataArray->resizeTMP(m_type, arraySize, m_numberOfComponents);
 }
@@ -160,7 +166,7 @@ size_t Image::resize(IndexType x, IndexType y,  IndexType z, const ::fwTools::Ty
 
 size_t Image::resize(const Size& size, const ::fwTools::Type& type, PixelFormat format)
 {
-    this->setSize2(size);
+    m_size        = size;
     m_type        = type;
     m_pixelFormat = format;
 
@@ -209,9 +215,9 @@ void Image::setType(const std::string& type)
 
 void Image::copyInformation( Image::csptr _source )
 {
-    this->setSize2(_source->m_size);
-    this->setSpacing2(_source->m_spacing);
-    this->setOrigin2(_source->m_origin);
+    m_size               = _source->m_size;
+    m_spacing            = _source->m_spacing;
+    m_origin             = _source->m_origin;
     m_type               = _source->m_type;
     m_windowCenter       = _source->m_windowCenter;
     m_windowWidth        = _source->m_windowWidth;
@@ -420,7 +426,7 @@ size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType
 {
     FW_DEPRECATED("allocate(x, y, z, type, numberOfComponents)", "resize(x, y,  z, type, format)", "22.0")
 
-    this->setSize2({ x, y, z});
+    m_size               = { x, y, z};
     m_type               = type;
     m_numberOfComponents = numberOfComponents;
     return this->resize();
@@ -443,8 +449,15 @@ const Image::SpacingType& Image::getSpacing() const
 {
     FW_DEPRECATED_MSG("Spacing parameter in now a std::array<double, 3>, use getSpacing2()", "22.0")
 
-    SLM_ASSERT("Deprecated getSpacing() is not initialized for '" + this->getID() + "', use getSpacing2()",
-               m_oldSpacing.size() == this->getNumberOfDimensions());
+    const size_t dims = this->getNumberOfDimensions();
+    if (m_oldSpacing.size() != dims)
+    {
+        m_oldSpacing.resize(dims);
+    }
+    for (size_t i = 0; i < dims; ++i)
+    {
+        m_oldSpacing[i] = m_spacing[i];
+    }
     return m_oldSpacing;
 }
 
@@ -468,8 +481,6 @@ void Image::setSpacing(const SpacingType& spacing)
             m_spacing[i] = 0.;
         }
     }
-    // deprecated: to support old API
-    m_oldSpacing = spacing;
 }
 
 //------------------------------------------------------------------------------
@@ -478,8 +489,15 @@ const Image::OriginType& Image::getOrigin() const
 {
     FW_DEPRECATED_MSG("Origin parameter in now a std::array<double, 3>, use getOrigin2()", "22.0")
 
-    SLM_ASSERT("Deprecated getOrigin() is not initialized for '" + this->getID() + "', use getOrigin2()",
-               m_oldOrigin.size() == this->getNumberOfDimensions());
+    const size_t dims = this->getNumberOfDimensions();
+    if (m_oldOrigin.size() != dims)
+    {
+        m_oldOrigin.resize(dims);
+    }
+    for (size_t i = 0; i < dims; ++i)
+    {
+        m_oldOrigin[i] = m_origin[i];
+    }
     return m_oldOrigin;
 }
 
@@ -503,8 +521,6 @@ void Image::setOrigin(const OriginType& origin)
             m_origin[i] = 0.;
         }
     }
-    // deprecated: to support old API
-    m_oldOrigin = origin;
 }
 
 //------------------------------------------------------------------------------
@@ -512,8 +528,16 @@ void Image::setOrigin(const OriginType& origin)
 const Image::SizeType& Image::getSize() const
 {
     FW_DEPRECATED_MSG("Size parameter in now a std::array<size_t, 3>, use getSize2()", "22.0")
-    SLM_ASSERT("Deprecated getSize() is not initialized for '" + this->getID() + "', use getSize2()",
-               m_oldSize.size() == this->getNumberOfDimensions());
+
+    const size_t dims = this->getNumberOfDimensions();
+    if (m_oldSize.size() != dims)
+    {
+        m_oldSize.resize(dims);
+    }
+    for (size_t i = 0; i < dims; ++i)
+    {
+        m_oldSize[i] = m_size[i];
+    }
 
     return m_oldSize;
 }
@@ -537,8 +561,6 @@ void Image::setSize(const SizeType& size)
             m_size[i] = 0;
         }
     }
-    // deprecated: to support old API
-    m_oldSize = size;
 }
 
 //------------------------------------------------------------------------------

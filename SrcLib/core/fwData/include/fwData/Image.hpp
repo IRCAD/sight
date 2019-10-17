@@ -473,10 +473,11 @@ private:
     //! Origin of the image in 3D repair
     Origin m_origin{0., 0., 0.};
 
-    /// Deprecated
-    SizeType m_oldSize;
-    SpacingType m_oldSpacing;
-    OriginType m_oldOrigin;
+    /// Deprecated: set as mutable to be able to change it according to m_size, m_spacing and m_origin when we call
+    /// the getters.
+    [[deprecated]] mutable SizeType m_oldSize;
+    [[deprecated]] mutable SpacingType m_oldSpacing;
+    [[deprecated]] mutable OriginType m_oldOrigin;
 
     //! Preferred window center/with
     ///@{
@@ -564,14 +565,6 @@ inline const Image::Spacing& Image::getSpacing2() const
 inline void Image::setSpacing2(const Spacing& spacing)
 {
     m_spacing = spacing;
-
-    // deprecated: to support old API
-    const size_t dims = this->getNumberOfDimensions();
-    m_oldSpacing.resize(dims);
-    for (size_t i = 0; i < dims; ++i)
-    {
-        m_oldSpacing[i] = m_spacing[i];
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -586,14 +579,6 @@ inline const Image::Origin& Image::getOrigin2() const
 inline void Image::setOrigin2(const Origin& origin)
 {
     m_origin = origin;
-
-    // deprecated: to support old API
-    const size_t dims = this->getNumberOfDimensions();
-    m_oldOrigin.resize(dims);
-    for (size_t i = 0; i < dims; ++i)
-    {
-        m_oldOrigin[i] = m_origin[i];
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -608,14 +593,6 @@ inline const Image::Size& Image::getSize2() const
 inline void Image::setSize2(const Size& size)
 {
     m_size = size;
-
-    // deprecated: to support old API
-    const size_t dims = this->getNumberOfDimensions();
-    m_oldSize.resize(dims);
-    for (size_t i = 0; i < dims; ++i)
-    {
-        m_oldSize[i] = m_size[i];
-    }
 }
 
 //------------------------------------------------------------------------------

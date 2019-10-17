@@ -256,11 +256,6 @@ bool MedicalImage::setSliceIndex(const int index[3])
 
 void MedicalImage::updateImageInfos( ::fwData::Image::sptr image )
 {
-    // Temporary to keep deprecated API (old getSize, getSpacing, getOrigin)
-    image->setSize2(image->getSize2());
-    image->setOrigin2(image->getOrigin2());
-    image->setSpacing2(image->getSpacing2());
-
     m_weakImage  = image;
     m_axialIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId,
                                           ::fwData::Integer::New(0));

@@ -60,11 +60,6 @@ void MedicalImageSrv::convertImage()
 {
     ::fwData::Image::sptr pImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    // Temporary to keep old API
-    pImg->setSize2(pImg->getSize2());
-    pImg->setOrigin2(pImg->getOrigin2());
-    pImg->setSpacing2(pImg->getSpacing2());
-
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
         ::fwDataTools::helper::Image helper( pImg );
