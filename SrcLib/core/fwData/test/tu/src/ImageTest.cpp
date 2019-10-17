@@ -97,8 +97,7 @@ void ImageTest::testGetterSetter()
     CPPUNIT_ASSERT_EQUAL(WINDOWWIDTH, img1->getWindowWidth());
     CPPUNIT_ASSERT_EQUAL(FORMAT, img1->getPixelFormat());
 
-    // Old API
-
+    // old API begin --------------------------
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
     img2->setType( TYPE);
     img2->setSpacing(VECTORSPACING);
@@ -113,17 +112,18 @@ void ImageTest::testGetterSetter()
     CPPUNIT_ASSERT(img2->getSpacing() == VECTORSPACING);
     CPPUNIT_ASSERT(img2->getOrigin() == VECTORORIGIN);
     CPPUNIT_ASSERT(img2->getSize() == VECTORSIZE);
+    // old API end --------------------------
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::testAllocation()
 {
-    ::fwTools::Type TYPE                 = ::fwTools::Type::create("int16");
-    ::fwData::Image::Size IMG_SIZE       = {14, 15, 26};
-    ::fwData::Image::SizeType VECTORSIZE = {14, 15, 26};
-    size_t NB_ELTS = 14*15*26;
-    size_t SIZE    = NB_ELTS*TYPE.sizeOf();
+    const ::fwTools::Type TYPE                 = ::fwTools::Type::create("int16");
+    const ::fwData::Image::Size IMG_SIZE       = {14, 15, 26};
+    const ::fwData::Image::SizeType VECTORSIZE = {14, 15, 26};
+    const size_t NB_ELTS                       = 14*15*26;
+    const size_t SIZE                          = NB_ELTS*TYPE.sizeOf();
 
     // process
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
@@ -134,54 +134,64 @@ void ImageTest::testAllocation()
     img1->setSize2(IMG_SIZE);
 
     img1->resize();
+    CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(NB_ELTS, img1->getNumElements());
+    CPPUNIT_ASSERT(img1->getType() == TYPE);
 
+    // old API begin --------------------------
     ::fwData::Array::sptr array = img1->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
     CPPUNIT_ASSERT(array->getType() == TYPE);
     CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(NB_ELTS, img1->getNumElements());
+    // old API end --------------------------
 
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
     img2->resize(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
+    CPPUNIT_ASSERT_EQUAL(SIZE, img2->getSizeInBytes());
+    CPPUNIT_ASSERT(img1->getType() == TYPE);
+
+    // old API begin --------------------------
     array = img2->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
     CPPUNIT_ASSERT(array->getType() == TYPE);
     CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(SIZE, img2->getSizeInBytes());
+    // old API end --------------------------
 
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
     img3->resize(IMG_SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    CPPUNIT_ASSERT_EQUAL(SIZE, img3->getSizeInBytes());
+    CPPUNIT_ASSERT(img1->getType() == TYPE);
+    CPPUNIT_ASSERT_EQUAL(::fwData::Image::PixelFormat::GRAY_SCALE, img3->getPixelFormat());
 
+    // old API begin --------------------------
     array = img3->getDataArray();
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
     CPPUNIT_ASSERT(array->getType() == TYPE);
     CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(SIZE, img3->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(::fwData::Image::PixelFormat::GRAY_SCALE, img3->getPixelFormat());
+    // old API end --------------------------
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::testReallocation()
 {
-    const std::uint8_t DIMENSION = 3;
-    ::fwTools::Type TYPE1           = ::fwTools::Type::create("int16");
-    ::fwTools::Type TYPE2           = ::fwTools::Type::create("int64");
-    ::fwTools::Type TYPE3           = ::fwTools::Type::create("uint8");
-    ::fwData::Image::Size IMG_SIZE1 = {10, 10, 10};
-    ::fwData::Image::Size IMG_SIZE2 = {20, 20, 20};
-    ::fwData::Image::Size IMG_SIZE3 = {5, 5, 5};
-    ::fwData::Image::Size IMG_SIZE5 = {0, 0, 0};
-    ::fwData::Image::SizeType VECTORSIZE1(DIMENSION, 10);
-    ::fwData::Image::SizeType VECTORSIZE2(DIMENSION, 20);
-    ::fwData::Image::SizeType VECTORSIZE3(DIMENSION, 5);
-    size_t SIZE1 = 10*10*10*TYPE1.sizeOf();
-    size_t SIZE2 = 20*20*20*TYPE2.sizeOf();
-    size_t SIZE3 = 5*5*5*TYPE3.sizeOf();
-    size_t SIZE4 = 5*5*5*4*TYPE3.sizeOf();
-    size_t SIZE5 = 0;
+    const std::uint8_t DIMENSION          = 3;
+    const ::fwTools::Type TYPE1           = ::fwTools::Type::create("int16");
+    const ::fwTools::Type TYPE2           = ::fwTools::Type::create("int64");
+    const ::fwTools::Type TYPE3           = ::fwTools::Type::create("uint8");
+    const ::fwData::Image::Size IMG_SIZE1 = {10, 10, 10};
+    const ::fwData::Image::Size IMG_SIZE2 = {20, 20, 20};
+    const ::fwData::Image::Size IMG_SIZE3 = {5, 5, 5};
+    const ::fwData::Image::Size IMG_SIZE5 = {0, 0, 0};
+    const ::fwData::Image::SizeType VECTORSIZE1(DIMENSION, 10);
+    const ::fwData::Image::SizeType VECTORSIZE2(DIMENSION, 20);
+    const ::fwData::Image::SizeType VECTORSIZE3(DIMENSION, 5);
+    const size_t SIZE1 = 10*10*10*TYPE1.sizeOf();
+    const size_t SIZE2 = 20*20*20*TYPE2.sizeOf();
+    const size_t SIZE3 = 5*5*5*TYPE3.sizeOf();
+    const size_t SIZE4 = 5*5*5*4*TYPE3.sizeOf();
+    const size_t SIZE5 = 0;
 
     // process
     ::fwData::Image::sptr img1  = ::fwData::Image::New();
@@ -191,25 +201,31 @@ void ImageTest::testReallocation()
     CPPUNIT_ASSERT_EQUAL(resized1, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE1, img1->getSizeInBytes());
 
+    // old API begin --------------------------
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE1);
     CPPUNIT_ASSERT_EQUAL(TYPE1, array->getType());
     CPPUNIT_ASSERT_EQUAL(SIZE1, array->getSizeInBytes());
+    // old API end --------------------------
 
     const size_t resized2 = img1->resize(IMG_SIZE2, TYPE2, ::fwData::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized2, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE2, img1->getSizeInBytes());
 
+    // old API begin --------------------------
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE2);
     CPPUNIT_ASSERT_EQUAL(TYPE2, array->getType());
     CPPUNIT_ASSERT_EQUAL(SIZE2, array->getSizeInBytes());
+    // old API end --------------------------
 
     const size_t resized3 = img1->resize(IMG_SIZE3, TYPE3, ::fwData::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized3, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE3, img1->getSizeInBytes());
 
+    // old API begin --------------------------
     CPPUNIT_ASSERT(array->getSize() == VECTORSIZE3);
     CPPUNIT_ASSERT_EQUAL(TYPE3, array->getType());
     CPPUNIT_ASSERT_EQUAL(SIZE3, array->getSizeInBytes());
+    // old API end --------------------------
 
     const size_t resized4 = img1->resize(IMG_SIZE3, TYPE3, ::fwData::Image::PixelFormat::RGBA);
     CPPUNIT_ASSERT_EQUAL(resized4, img1->getSizeInBytes());
@@ -224,6 +240,7 @@ void ImageTest::testReallocation()
 
 void ImageTest::testPixelType()
 {
+    // old API begin --------------------------
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
     ::fwTools::DynamicType DT1;
 
@@ -258,6 +275,7 @@ void ImageTest::testPixelType()
     img1->setType(::fwTools::Type::create("double"));
     DT1.setType< double >();
     CPPUNIT_ASSERT(DT1 == img1->getPixelType());
+    // old API end --------------------------
 }
 
 //------------------------------------------------------------------------------
@@ -266,16 +284,16 @@ void ImageTest::testSetGetPixel()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::s_INT16;
-    ::fwData::Image::Size SIZE = {10, 20, 30};
+    const ::fwTools::Type TYPE       = ::fwTools::Type::s_INT16;
+    const ::fwData::Image::Size SIZE = {10, 20, 30};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
 
-    auto lock    = img->lock();
-    auto iter    = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
-    auto iterEnd = img->end<iterator::IterationBase<std::int16_t>::Raw>();
+    const auto lock    = img->lock();
+    auto iter          = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+    const auto iterEnd = img->end<iterator::IterationBase<std::int16_t>::Raw>();
 
     // test 1 : use getPixelBuffer
     std::int16_t count = 0;
@@ -310,8 +328,8 @@ void ImageTest::testSetGetPixel()
         {
             for (size_t z = 0; z < SIZE[2]; ++z)
             {
-                const auto index = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
-                std::int16_t val = static_cast<std::int16_t>(index * 2);
+                const auto index       = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
+                const std::int16_t val = static_cast<std::int16_t>(index * 2);
                 img->at<std::int16_t>(index) = val;
             }
         }
@@ -338,8 +356,8 @@ void ImageTest::testRGBAIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT16;
-    ::fwData::Image::Size SIZE = {10, 20, 15};
+    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT16;
+    const ::fwData::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGBA);
 
@@ -347,11 +365,11 @@ void ImageTest::testRGBAIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*4, img->getNumElements());
 
-    auto lock = img->lock();
+    const auto lock = img->lock();
 
     typedef iterator::IterationBase<std::uint16_t>::RGBA RGBAIterator;
-    auto iter    = img->begin<RGBAIterator>();
-    auto iterEnd = img->end<RGBAIterator>();
+    auto iter          = img->begin<RGBAIterator>();
+    const auto iterEnd = img->end<RGBAIterator>();
 
     std::uint16_t count = 0;
     for (; iter != iterEnd; ++iter)
@@ -364,8 +382,8 @@ void ImageTest::testRGBAIterator()
 
     count = 0;
 
-    auto iter2    = img->begin< ::fwData::Image::Iteration<std::uint16_t> >();
-    auto iterEnd2 = img->end< ::fwData::Image::Iteration<std::uint16_t> >();
+    auto iter2          = img->begin< ::fwData::Image::Iteration<std::uint16_t> >();
+    const auto iterEnd2 = img->end< ::fwData::Image::Iteration<std::uint16_t> >();
     for (; iter2 != iterEnd2; ++iter2)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].v",
@@ -375,8 +393,8 @@ void ImageTest::testRGBAIterator()
 
     count = 0;
 
-    ::fwData::Image::ConstIterator<RGBAIterator> iter3    = img->begin<RGBAIterator>();
-    ::fwData::Image::ConstIterator<RGBAIterator> iter3End = img->end<RGBAIterator>();
+    ::fwData::Image::ConstIterator<RGBAIterator> iter3          = img->begin<RGBAIterator>();
+    const ::fwData::Image::ConstIterator<RGBAIterator> iter3End = img->end<RGBAIterator>();
 
     for (; iter3 != iter3End; ++iter3)
     {
@@ -398,8 +416,8 @@ void ImageTest::testRGBIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
-    ::fwData::Image::Size SIZE = {10, 20, 15};
+    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size SIZE = {10, 20, 15};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGB);
 
@@ -407,16 +425,16 @@ void ImageTest::testRGBIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*3, img->getNumElements());
 
-    auto lock = img->lock();
+    const auto lock = img->lock();
 
     typedef iterator::IterationBase<std::uint8_t>::RGB RGBIterator;
-    std::array< std::uint8_t, 3> value = {18, 12, 68};
+    const std::array< std::uint8_t, 3> value = {18, 12, 68};
     std::fill(img->begin<RGBIterator>(), img->end<RGBIterator>(), value);
 
     std::uint8_t count = 0;
 
-    auto iterRGB    = img->begin<RGBIterator>();
-    auto iterEndRGB = img->end<RGBIterator>();
+    auto iterRGB          = img->begin<RGBIterator>();
+    const auto iterEndRGB = img->end<RGBIterator>();
 
     for (; iterRGB != iterEndRGB; ++iterRGB)
     {
@@ -437,8 +455,8 @@ void ImageTest::testRGBIterator()
 
     count = 0;
 
-    ::fwData::Image::ConstIterator<RGBIterator> iterRGB3    = img->begin<RGBIterator>();
-    ::fwData::Image::ConstIterator<RGBIterator> iterRGB3End = img->end<RGBIterator>();
+    ::fwData::Image::ConstIterator<RGBIterator> iterRGB3          = img->begin<RGBIterator>();
+    const ::fwData::Image::ConstIterator<RGBIterator> iterRGB3End = img->end<RGBIterator>();
     for (; iterRGB3 != iterRGB3End; ++iterRGB3)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].r",
@@ -457,8 +475,8 @@ void ImageTest::testBGRIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
-    ::fwData::Image::Size SIZE = {10, 20};
+    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGR);
 
@@ -466,10 +484,10 @@ void ImageTest::testBGRIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*3, img->getNumElements());
 
-    auto lock = img->lock();
+    const auto lock = img->lock();
 
-    auto iter    = img->begin< ::fwData::Image::Iteration<std::uint8_t> >();
-    auto iterEnd = img->end< ::fwData::Image::Iteration<std::uint8_t> >();
+    auto iter          = img->begin< ::fwData::Image::Iteration<std::uint8_t> >();
+    const auto iterEnd = img->end< ::fwData::Image::Iteration<std::uint8_t> >();
 
     std::uint8_t count = 0;
     for (; iter != iterEnd; ++iter)
@@ -480,8 +498,8 @@ void ImageTest::testBGRIterator()
     typedef ::fwData::Image::BGRIteration BGRIteration;
     count = 0;
 
-    auto iter2    = img->begin< BGRIteration >();
-    auto iterEnd2 = img->end< BGRIteration >();
+    auto iter2          = img->begin< BGRIteration >();
+    const auto iterEnd2 = img->end< BGRIteration >();
     for (; iter2 != iterEnd2; ++iter2)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].b",
@@ -500,8 +518,8 @@ void ImageTest::testBGRAIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
 
-    ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
-    ::fwData::Image::Size SIZE = {10, 20};
+    const ::fwTools::Type TYPE       = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size SIZE = {10, 20};
 
     const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::BGRA);
 
@@ -509,10 +527,10 @@ void ImageTest::testBGRAIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*4, img->getNumElements());
 
-    auto lock = img->lock();
+    const auto lock = img->lock();
 
-    auto iter    = img->begin< ::fwData::Image::Iteration<std::uint8_t> >();
-    auto iterEnd = img->end< ::fwData::Image::Iteration<std::uint8_t> >();
+    auto iter          = img->begin< ::fwData::Image::Iteration<std::uint8_t> >();
+    const auto iterEnd = img->end< ::fwData::Image::Iteration<std::uint8_t> >();
 
     std::uint8_t count = 0;
     for (; iter != iterEnd; ++iter)
@@ -523,8 +541,8 @@ void ImageTest::testBGRAIterator()
     typedef ::fwData::Image::BGRAIteration BGRAIteration;
     count = 0;
 
-    auto iter2    = img->begin< BGRAIteration >();
-    auto iterEnd2 = img->end< BGRAIteration >();
+    auto iter2          = img->begin< BGRAIteration >();
+    const auto iterEnd2 = img->end< BGRAIteration >();
     for (; iter2 != iterEnd2; ++iter2)
     {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].b",
