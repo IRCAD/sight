@@ -31,12 +31,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwRuntime/Extension.hpp>
-#include <fwRuntime/helper.hpp>
-
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <regex>
 
@@ -49,7 +44,7 @@ static const ::fwServices::IService::KeyType s_SLOT_KEY        = "slot";
 static const ::fwServices::IService::KeyType s_SLOTS_KEY       = "slots";
 static const ::fwServices::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller )
 
 //-----------------------------------------------------------------------------
 

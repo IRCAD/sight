@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,20 +28,15 @@
 #include <fwGui/GuiRegistry.hpp>
 #include <fwGui/IGuiContainerSrv.hpp>
 
-#include <fwRuntime/Extension.hpp>
-#include <fwRuntime/helper.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/fwID.hpp>
 
 namespace gui
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SModifyLayout );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SModifyLayout )
 
 //-----------------------------------------------------------------------------
 
