@@ -184,6 +184,7 @@ void ImageTest::testReallocation()
     const ::fwData::Image::Size IMG_SIZE2 = {20, 20, 20};
     const ::fwData::Image::Size IMG_SIZE3 = {5, 5, 5};
     const ::fwData::Image::Size IMG_SIZE5 = {0, 0, 0};
+    const ::fwData::Image::Size IMG_SIZE6 = {42, 20};
     const ::fwData::Image::SizeType VECTORSIZE1(DIMENSION, 10);
     const ::fwData::Image::SizeType VECTORSIZE2(DIMENSION, 20);
     const ::fwData::Image::SizeType VECTORSIZE3(DIMENSION, 5);
@@ -192,6 +193,8 @@ void ImageTest::testReallocation()
     const size_t SIZE3 = 5*5*5*TYPE3.sizeOf();
     const size_t SIZE4 = 5*5*5*4*TYPE3.sizeOf();
     const size_t SIZE5 = 0;
+    const size_t SIZE6 = 42*20;
+    const size_t SIZE7 = 42*20*3;
 
     // process
     ::fwData::Image::sptr img1  = ::fwData::Image::New();
@@ -234,6 +237,14 @@ void ImageTest::testReallocation()
     const size_t resized5 = img1->resize(IMG_SIZE5, TYPE3, ::fwData::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized5, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE5, img1->getSizeInBytes());
+
+    const size_t resized6 = img1->resize(IMG_SIZE6, TYPE3, ::fwData::Image::PixelFormat::GRAY_SCALE);
+    CPPUNIT_ASSERT_EQUAL(resized6, img1->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE6, img1->getSizeInBytes());
+
+    const size_t resized7 = img1->resize(IMG_SIZE6, TYPE3, ::fwData::Image::PixelFormat::RGB);
+    CPPUNIT_ASSERT_EQUAL(resized7, img1->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(SIZE7, img1->getSizeInBytes());
 }
 
 //------------------------------------------------------------------------------

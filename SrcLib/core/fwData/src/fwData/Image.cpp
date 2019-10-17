@@ -250,10 +250,15 @@ size_t Image::getNumberOfDimensions() const
 
 size_t Image::getSizeInBytes() const
 {
-    size_t size = std::accumulate(
-        m_size.begin(), m_size.end(),
-        static_cast<size_t>(m_type.sizeOf()) * m_numberOfComponents,
-        std::multiplies< size_t > () );
+    size_t size       = 0;
+    const size_t dims = this->getNumberOfDimensions();
+    if (dims > 0)
+    {
+        size = std::accumulate(
+            m_size.begin(), m_size.begin() + dims,
+            static_cast<size_t>(m_type.sizeOf()) * m_numberOfComponents,
+            std::multiplies< size_t > () );
+    }
     return size;
 }
 
