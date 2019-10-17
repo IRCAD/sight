@@ -51,7 +51,7 @@ public:
      *
      * @param[in]   identifier  a string containing a bundle identifier
      */
-    FWRUNTIME_API Initializer( const std::string& identifier, const Version& version = Version() );
+    Initializer( const std::string& identifier, const Version& version = Version() );
 
     /**
      * @brief   Applies the initializer on the bundle.

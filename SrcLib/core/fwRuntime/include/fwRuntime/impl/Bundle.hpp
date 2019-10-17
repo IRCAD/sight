@@ -25,7 +25,7 @@
 #include "fwCore/base.hpp"
 
 #include "fwRuntime/Bundle.hpp"
-#include "fwRuntime/dl/Library.hpp"
+#include "fwRuntime/impl/dl/Library.hpp"
 
 #include <filesystem>
 #include <map>
@@ -44,8 +44,8 @@ class ExtensionPoint;
  * @brief   Defines the bundle class.
  *
  */
-class FWRUNTIME_CLASS_API Bundle :  public ::fwRuntime::Bundle,
-                                    public std::enable_shared_from_this< Bundle >
+class Bundle :  public ::fwRuntime::Bundle,
+                public std::enable_shared_from_this< Bundle >
 {
 public:
     static const char s_VERSION_DELIMITER = '-';
@@ -99,65 +99,65 @@ public:
      * @brief   Starts the bundle.
      * @remark  The bundle must be enabled to be able to start.
      */
-    FWRUNTIME_API virtual void start() final;
-    FWRUNTIME_API virtual void stop() final;
+    virtual void start() final;
+    virtual void stop() final;
 
     /**
      * @brief   Retrieves the bundle identifier.
      *
      * @return  a string containing the bundle identifier
      */
-    FWRUNTIME_API virtual const std::string& getIdentifier() const final;
+    virtual const std::string& getIdentifier() const final;
 
     /**
      * @brief   Retrieves the bundle location.
      *
      * @return  a path representing the bundle location
      */
-    FWRUNTIME_API virtual const std::filesystem::path& getLibraryLocation() const final;
+    virtual const std::filesystem::path& getLibraryLocation() const final;
 
     /**
      * @brief   Retrieves the bundle location.
      *
      * @return  a path representing the bundle location
      */
-    FWRUNTIME_API virtual const std::filesystem::path& getResourcesLocation() const final;
+    virtual const std::filesystem::path& getResourcesLocation() const final;
 
     /**
      * @brief   Retrieves the class representing the bundle executable part.
      *
      * @return  a string containing the bundle's plugin class
      */
-    FWRUNTIME_API virtual const std::string getClass() const final;
+    virtual const std::string getClass() const final;
 
     /**
      * @brief   Retrieves the version of the bundle.
      *
      * @return  the bundle version
      */
-    FWRUNTIME_API virtual const Version& getVersion() const final;
+    virtual const Version& getVersion() const final;
 
     /**
      * @brief   Retrieves the plugin instance for the specified bundle identifier.
      *
      * @return  a shared pointer to a plugin instance or null if the bundle has not been started.
      */
-    FWRUNTIME_API virtual SPTR( IPlugin ) getPlugin() const final;
+    virtual SPTR( IPlugin ) getPlugin() const final;
 
     /** @copydoc ::fwRuntime::Bundle */
-    FWRUNTIME_API virtual const std::string getParameterValue( const std::string& identifier ) const final;
+    virtual const std::string getParameterValue( const std::string& identifier ) const final;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    FWRUNTIME_API virtual bool hasParameter( const std::string& name ) const final;
+    virtual bool hasParameter( const std::string& name ) const final;
 
     /// @copydoc ::fwRuntime::Bundle::getExtensions
-    FWRUNTIME_API virtual ExtensionContainer getExtensions( ) const final;
+    virtual ExtensionContainer getExtensions( ) const final;
 
     /// @copydoc ::fwRuntime::Bundle::isEnable
-    FWRUNTIME_API virtual bool isEnable() const final;
+    virtual bool isEnable() const final;
     //@}
 
     /**
@@ -174,7 +174,7 @@ public:
      *
      * @param[in]   library a shared pointer to the library to add
      */
-    FWRUNTIME_API void addLibrary( SPTR( dl::Library ) library );
+    void addLibrary( SPTR( dl::Library ) library );
     //@}
 
     /**
@@ -186,7 +186,7 @@ public:
      *
      * @param[in]   factory a shared pointer to the executable factory instance to add
      */
-    FWRUNTIME_API void addExecutableFactory( SPTR( ExecutableFactory ) factory );
+    void addExecutableFactory( SPTR( ExecutableFactory ) factory );
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -197,7 +197,7 @@ public:
      *
      * @todo    not implemented and not used !!!!!!!
      */
-    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type );
+    IExecutable* createExecutableInstance( const std::string& type );
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -205,7 +205,7 @@ public:
      *
      * @return  an iterator
      */
-    FWRUNTIME_API ExecutableFactoryConstIterator executableFactoriesBegin() const;
+    ExecutableFactoryConstIterator executableFactoriesBegin() const;
 
     /**
      * @brief   Retrieves the iterator on the ending item
@@ -213,7 +213,7 @@ public:
      *
      * @return  an iterator
      */
-    FWRUNTIME_API ExecutableFactoryConstIterator executableFactoriesEnd() const;
+    ExecutableFactoryConstIterator executableFactoriesEnd() const;
 
     /**
      * @brief       Retrieves the executable factory instance for the specified type name.
@@ -222,7 +222,7 @@ public:
      *
      * @return      a shared pointer to the found executable factory instance or null if none
      */
-    FWRUNTIME_API SPTR( ExecutableFactory ) findExecutableFactory( const std::string& type ) const;
+    SPTR( ExecutableFactory ) findExecutableFactory( const std::string& type ) const;
     //@}
 
     /**
@@ -243,7 +243,7 @@ public:
      *
      * @return      true or false
      */
-    FWRUNTIME_API bool hasExtension(const std::string& identifier) const;
+    bool hasExtension(const std::string& identifier) const;
 
     /**
      * @brief       Search a specific extension in the bundle to enable or
@@ -254,7 +254,7 @@ public:
      * @param[in]   identifier  the extension identifier
      * @param[in]   enable      enable or disable this extension
      */
-    FWRUNTIME_API void setEnableExtension(const std::string& identifier, const bool enable);
+    void setEnableExtension(const std::string& identifier, const bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -262,7 +262,7 @@ public:
      *
      * @return  an iterator
      */
-    FWRUNTIME_API ExtensionConstIterator extensionsBegin() const;
+    ExtensionConstIterator extensionsBegin() const;
 
     /**
      * @brief   Retrieves the iterator on the ending item
@@ -270,7 +270,7 @@ public:
      *
      * @return  an iterator
      */
-    FWRUNTIME_API ExtensionConstIterator extensionsEnd() const;
+    ExtensionConstIterator extensionsEnd() const;
     //@}
 
     /**
@@ -291,7 +291,7 @@ public:
      *
      * @return      a shared pointer to the found extensoin point, may be empty if none
      */
-    FWRUNTIME_API SPTR( ExtensionPoint ) findExtensionPoint( const std::string& identifier ) const;
+    SPTR( ExtensionPoint ) findExtensionPoint( const std::string& identifier ) const;
 
     /**
      * @brief       Tells if a specific extension point exists.
@@ -300,7 +300,7 @@ public:
      *
      * @return      true or false
      */
-    FWRUNTIME_API bool hasExtensionPoint(const std::string& identifier) const;
+    bool hasExtensionPoint(const std::string& identifier) const;
 
     /**
      * @brief       Search a specific extension point in the bundle to enable or
@@ -311,7 +311,7 @@ public:
      * @param[in]   identifier  the extension point identifier
      * @param[in]   enable      enable or disable this extension point
      */
-    FWRUNTIME_API void setEnableExtensionPoint(const std::string& identifier, const bool enable);
+    void setEnableExtensionPoint(const std::string& identifier, const bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -319,7 +319,7 @@ public:
      *
      * @return  an iterator
      */
-    FWRUNTIME_API ExtensionPointConstIterator extensionPointsBegin() const;
+    ExtensionPointConstIterator extensionPointsBegin() const;
 
     /**
      * @brief   Retrieves the iterator on the ending item
@@ -327,7 +327,7 @@ public:
      *
      * @return  an iterator
      */
-    FWRUNTIME_API ExtensionPointConstIterator extensionPointsEnd() const;
+    ExtensionPointConstIterator extensionPointsEnd() const;
     //@}
 
     /**
@@ -339,7 +339,7 @@ public:
      *
      * @param[in]   requirement a string containing a bundle identifier that is required
      */
-    FWRUNTIME_API void addRequirement( const std::string& requirement );
+    void addRequirement( const std::string& requirement );
     //@}
 
     /**
@@ -352,7 +352,7 @@ public:
      * @remark  It is possible to disable a started bundle but this
      *          will have no effect.
      */
-    FWRUNTIME_API void setEnable( const bool state );
+    void setEnable( const bool state );
     //@}
 
     /**
@@ -360,9 +360,9 @@ public:
      *
      * @remark  The bundle and it's own dependencies must be started to be able to be initialized.
      */
-    FWRUNTIME_API void initialize();
+    void initialize();
 
-    FWRUNTIME_API void uninitialize();
+    void uninitialize();
     //@}
 
     /**
@@ -375,7 +375,7 @@ public:
      * @param[in]   identifier  a string containing the parameter identifier
      * @param[in]   value       a string containing the parameter value
      */
-    FWRUNTIME_API void addParameter( const std::string& identifier, const std::string& value );
+    void addParameter( const std::string& identifier, const std::string& value );
     //@}
 
     bool isStarted()
@@ -390,7 +390,7 @@ public:
         return m_initialized;
     }
 
-    FWRUNTIME_API static std::string getBundleStr(const std::string& identifier, const Version& version);
+    static std::string getBundleStr(const std::string& identifier, const Version& version);
 
 private:
 

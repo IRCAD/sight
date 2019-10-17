@@ -35,7 +35,7 @@
 
 #include "fwRuntime/impl/ExtensionPoint.hpp"
 #include "fwRuntime/RuntimeException.hpp"
-#include "fwRuntime/dl/Library.hpp"
+#include "fwRuntime/impl/dl/Library.hpp"
 
 namespace fwRuntime
 {
@@ -70,7 +70,7 @@ public:
      *
      * @return      a container with all created bundles
      */
-    FWRUNTIME_API static const BundleContainer createBundles(const std::filesystem::path& location);
+    static const BundleContainer createBundles(const std::filesystem::path& location);
 
     /**
      * @brief       Look for a descriptor at the specified location,
@@ -80,7 +80,7 @@ public:
      *
      * @return      a shared pointer to the created bundle
      */
-    FWRUNTIME_API static std::shared_ptr<Bundle> createBundle(const std::filesystem::path& location);
+    static std::shared_ptr<Bundle> createBundle(const std::filesystem::path& location);
 
     /**
      * @brief   Processes a configuration element XML node.
@@ -90,8 +90,8 @@ public:
      *
      * @return  a pointer to the created configuration element
      */
-    FWRUNTIME_API static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
-                                                                                           const std::shared_ptr<Bundle> bundle)
+    static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
+                                                                             const std::shared_ptr<Bundle> bundle)
     ;
 
     /**

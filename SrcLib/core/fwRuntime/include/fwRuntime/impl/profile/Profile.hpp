@@ -59,9 +59,9 @@ public:
     /**
      * @brief   Constructor : does nothing.
      */
-    FWRUNTIME_API Profile();
+    Profile();
 
-    FWRUNTIME_API ~Profile();
+    virtual ~Profile();
 
     /**
      * @brief       Adds a new activator.
@@ -101,20 +101,20 @@ public:
     /**
      * @brief   Starts the profile.
      */
-    FWRUNTIME_API virtual void start() final;
-    FWRUNTIME_API virtual void stop() final;
+    virtual void start() final;
+    virtual void stop() final;
 
     /**
      * @brief   Once started, setup the profile.
      */
-    FWRUNTIME_API virtual void setup() final;
-    FWRUNTIME_API virtual void cleanup() final;
+    virtual void setup() final;
+    virtual void cleanup() final;
 
     /**
      * @brief   Run the profile.
      */
-    FWRUNTIME_API virtual int run() final;
-    FWRUNTIME_API virtual void setRunCallback(RunCallbackType callback) final;
+    virtual int run() final;
+    virtual void setRunCallback(RunCallbackType callback) final;
 
     int defaultRun();
 
@@ -140,12 +140,12 @@ private:
  *
  * @param       prof profile
  */
-FWRUNTIME_API void setCurrentProfile(Profile::sptr prof);
+void setCurrentProfile(Profile::sptr prof);
 
 /**
  * @brief       Get current profile.
  */
-FWRUNTIME_API Profile::sptr getCurrentProfile();
+Profile::sptr getCurrentProfile();
 
 } // namespace profile
 

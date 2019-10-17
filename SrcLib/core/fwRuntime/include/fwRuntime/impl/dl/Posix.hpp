@@ -24,13 +24,15 @@
 
 #if defined(linux) || defined(__linux) || defined (__APPLE__)
 
-#include "fwRuntime/dl/Native.hpp"
+#include "fwRuntime/impl/dl/Native.hpp"
 
 #include <dlfcn.h>
 
 namespace fwRuntime
 {
 
+namespace impl
+{
 namespace dl
 {
 
@@ -87,6 +89,8 @@ struct Posix : public Native
 };
 
 } // namespace dl
+
+} // namespace impl
 
 } // namespace fwRuntime
 

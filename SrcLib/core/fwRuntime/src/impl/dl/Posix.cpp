@@ -20,13 +20,16 @@
  *
  ***********************************************************************/
 
-#ifdef _WIN32
+#if defined(linux) || defined(__linux) || defined (__APPLE__)
 
-#include "fwRuntime/dl/Win32.hpp"
+#include "fwRuntime/impl/dl/Posix.hpp"
 
-#include <fwCore/base.hpp>
+#include "fwRuntime/Bundle.hpp"
 
 namespace fwRuntime
+{
+
+namespace impl
 {
 
 namespace dl
@@ -34,7 +37,7 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Win32::Win32( const std::filesystem::path& modulePath ) noexcept :
+Posix::Posix( const std::filesystem::path& modulePath ) noexcept :
     Native(modulePath),
     m_handle( 0 )
 {
@@ -42,60 +45,66 @@ Win32::Win32( const std::filesystem::path& modulePath ) noexcept :
 
 //------------------------------------------------------------------------------
 
-bool Win32::isLoaded() const noexcept
+Posix::~Posix() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+bool Posix::isLoaded() const noexcept
 {
     return m_handle != 0;
 }
 
 //------------------------------------------------------------------------------
 
-void* Win32::getSymbol( const std::string& name ) const
+void* Posix::getSymbol( const std::string& name ) const
 {
-    FARPROC symbol;
-
-    symbol = GetProcAddress( m_handle, name.c_str() );
-    if(symbol == 0)
+    void* result = 0;
+    if(isLoaded() == true)
     {
-        throw RuntimeException("'" + name + "': symbol retrieval failed.");
+        dlerror(); /* Clear existing error */
+        result = dlsym(m_handle, name.c_str());
+        if(result == 0) /* Check for possible errors */
+        {
+            std::string message(dlerror());
+            if(message.empty() == false)
+            {
+                throw RuntimeException("Symbol retrieval failed. " + message);
+            }
+        }
     }
-    return symbol;
+    return result;
 }
 
 //------------------------------------------------------------------------------
 
-void Win32::load()
+void Posix::load()
 {
     if(m_handle == 0)
     {
         // Opens the dynamic library.
-        std::string lib(getFullPath(true).string());
-        OSLM_TRACE("Opens the dynamic library " << lib);
-        m_handle = LoadLibrary( lib.c_str() );
+        m_handle = dlopen(getFullPath(true).string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
         if(m_handle == 0)
         {
-            // Retrieves the last error message.
-            DWORD lastError = GetLastError();
-            char buffer[1024];
-            FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, 0, lastError, 0, buffer, 1024, 0 );
-
-            // Builds the error message and throws the exception.
-            std::string message( buffer );
-            throw RuntimeException( message );
+            std::string message(dlerror());
+            throw RuntimeException("Module load failed. " + message);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Win32::unload()
+void Posix::unload()
 {
     if(m_handle != 0)
     {
-        BOOL result;
-        result = FreeLibrary(m_handle);
-        if(!result)
+        int result;
+        result = dlclose(m_handle);
+        if(result != 0)
         {
-            throw RuntimeException("Module unload failed.");
+            std::string message(dlerror());
+            throw RuntimeException("Module unload failed. " + message);
         }
         m_handle = 0;
     }
@@ -105,6 +114,8 @@ void Win32::unload()
 
 } // namespace dl
 
+} // namespace impl
+
 } // namespace fwRuntime
 
-#endif // #ifdef _WIN32
+#endif // #if defined(linux) || defined(__linux) || defined (__APPLE__)

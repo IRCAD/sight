@@ -36,7 +36,7 @@ namespace fwRuntime
  * classes being exported by bundles.
  *
  */
-struct FWRUNTIME_CLASS_API Executable : public IExecutable
+struct Executable : public IExecutable
 {
 
     /**
@@ -45,16 +45,16 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
      * @return  a shared pointer to the configuration element being the initialization data of the executable
      *          or null when none
      */
-    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > getInitializationData() const noexcept;
+    const std::shared_ptr< ConfigurationElement > getInitializationData() const noexcept;
 
     /**
      * @name    Overrides.
      */
     /// @{
 
-    FWRUNTIME_API virtual std::shared_ptr<Bundle> getBundle() const noexcept;
+    virtual std::shared_ptr<Bundle> getBundle() const noexcept;
 
-    FWRUNTIME_API virtual void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration )
+    virtual void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration )
     noexcept;
 
     /// @}
@@ -62,7 +62,7 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
     protected:
 
         // Overrides
-        FWRUNTIME_API virtual void setBundle( std::shared_ptr< Bundle > bundle );
+        virtual void setBundle( std::shared_ptr< Bundle > bundle );
 
     private:
 

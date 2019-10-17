@@ -59,7 +59,7 @@ public:
      *
      * @param   validator to be copied
      */
-    FWRUNTIME_API Validator( const Validator& validator );
+    Validator( const Validator& validator );
 
     /**
      * @brief   Constructor
@@ -68,7 +68,7 @@ public:
      *
      * @param   schema  a string containing the XML schema
      */
-    FWRUNTIME_API Validator( const std::string& schema );
+    Validator( const std::string& schema );
 
     /**
      * @brief   Constructor
@@ -77,12 +77,12 @@ public:
      *
      * @param   path    a path to the xml schema file to load
      */
-    FWRUNTIME_API Validator( const std::filesystem::path& path );
+    Validator( const std::filesystem::path& path );
 
     /**
      * @brief   Destructor
      */
-    FWRUNTIME_API ~Validator();
+    ~Validator();
 
     /**
      * @brief   Clears the error log.
@@ -94,7 +94,7 @@ public:
      *
      * @return  a string containing the error log
      */
-    FWRUNTIME_API const std::string getErrorLog() const;
+    const std::string getErrorLog() const;
 
     /**
      * @brief   Validates the given file.
@@ -103,7 +103,7 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    FWRUNTIME_API bool validate( const std::filesystem::path& xmlFile );
+    bool validate( const std::filesystem::path& xmlFile );
 
     /**
      * @brief   Validates the given xml node.
@@ -112,14 +112,14 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    FWRUNTIME_API bool validate( xmlNodePtr node );
+    bool validate( xmlNodePtr node );
 
     /**
      * @brief   Returns the xsd content in string format
      *
      * @return  xsd of the validator
      */
-    FWRUNTIME_API std::string getXsdContent();
+    std::string getXsdContent();
 
 private:
 

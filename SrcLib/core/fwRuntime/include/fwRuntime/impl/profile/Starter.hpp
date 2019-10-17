@@ -51,7 +51,7 @@ public:
      *
      * @param[in]   identifier  a string containing a bundle identifier
      */
-    FWRUNTIME_API Starter( const std::string& identifier, const Version& version = Version()  );
+    Starter( const std::string& identifier, const Version& version = Version()  );
 
     /**
      * @brief   Applies the starter on the system.

@@ -23,7 +23,7 @@
 #pragma once
 
 #include "fwRuntime/config.hpp"
-#include "fwRuntime/dl/Native.hpp"
+#include "fwRuntime/impl/dl/Native.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <filesystem>
@@ -34,6 +34,9 @@ namespace fwRuntime
 
 class Bundle;
 
+namespace impl
+{
+
 namespace dl
 {
 
@@ -41,7 +44,7 @@ namespace dl
  * @brief   Defines the module class.
  * This class is only a bridge to a native module implementor.
  */
-class FWRUNTIME_CLASS_API Library
+class Library
 {
 public:
     /**
@@ -50,7 +53,7 @@ public:
      * @param[in]   modulePath      a path pointing the module to load without any extension
      *                          information
      */
-    FWRUNTIME_API Library( const std::filesystem::path& modulePath ) noexcept;
+    Library( const std::filesystem::path& modulePath ) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
@@ -151,5 +154,7 @@ private:
 };
 
 } // namespace dl
+
+} // namespace impl
 
 } // namespace fwRuntime

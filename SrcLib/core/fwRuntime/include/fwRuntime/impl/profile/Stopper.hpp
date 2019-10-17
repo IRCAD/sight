@@ -51,7 +51,7 @@ public:
      *
      * @param[in]   _identifier  a string containing a bundle identifier
      */
-    FWRUNTIME_API Stopper( const std::string& _identifier, const Version& version = Version() );
+    Stopper( const std::string& _identifier, const Version& version = Version() );
 
     /**
      * @brief   Applies the Stopper on the system.

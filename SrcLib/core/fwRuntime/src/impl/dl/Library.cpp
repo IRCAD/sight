@@ -20,12 +20,15 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/dl/Library.hpp"
+#include "fwRuntime/impl/dl/Library.hpp"
 
-#include "fwRuntime/dl/Posix.hpp"
-#include "fwRuntime/dl/Win32.hpp"
+#include "fwRuntime/impl/dl/Posix.hpp"
+#include "fwRuntime/impl/dl/Win32.hpp"
 
 namespace fwRuntime
+{
+
+namespace impl
 {
 
 namespace dl
@@ -49,5 +52,7 @@ Library::Library(const std::filesystem::path& modulePath) noexcept :
 //------------------------------------------------------------------------------
 
 } // namespace dl
+
+} // namespace impl
 
 } // namespace fwRuntime

@@ -23,9 +23,9 @@
 #include "fwRuntime/impl/io/ModuleDescriptorReader.hpp"
 
 #include "fwRuntime/ConfigurationElement.hpp"
-#include "fwRuntime/dl/Library.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/dl/Library.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
 #include "fwRuntime/impl/io/Validator.hpp"
 #include "fwRuntime/operations.hpp"

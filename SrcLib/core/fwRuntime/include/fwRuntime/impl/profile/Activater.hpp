@@ -53,7 +53,7 @@ public:
      * @param[in]   identifier  a string containing a bundle identifier
      * @param[in]   version     a string a bundle version
      */
-    FWRUNTIME_API Activater( const std::string& identifier, const std::string& version );
+    Activater( const std::string& identifier, const std::string& version );
 
     /**
      * @brief       Adds a new parameter to the activater.
@@ -61,21 +61,21 @@ public:
      * @param[in]   identifier  a string containing the parameter name
      * @param[in]   value       a string containing the parameter value
      */
-    FWRUNTIME_API void addParameter( const std::string& identifier, const std::string& value );
+    void addParameter( const std::string& identifier, const std::string& value );
 
     /**
      * @brief       Adds a new disable extension point  to the activater.
      *
      * @param[in]   identifier    a string containing the parameter name
      */
-    FWRUNTIME_API void addDisableExtensionPoint( const std::string& identifier );
+    void addDisableExtensionPoint( const std::string& identifier );
 
     /**
      * @brief       Adds a new disable extension  to the activater.
      *
      * @param[in]   identifier    a string containing the parameter name
      */
-    FWRUNTIME_API void addDisableExtension( const std::string& identifier );
+    void addDisableExtension( const std::string& identifier );
 
     /**
      * @brief   Applies the activater on the system.

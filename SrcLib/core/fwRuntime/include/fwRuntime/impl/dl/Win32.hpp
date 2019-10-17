@@ -25,7 +25,7 @@
 #ifdef _WIN32
 
 #include "fwRuntime/config.hpp"
-#include "fwRuntime/dl/Native.hpp"
+#include "fwRuntime/impl/dl/Native.hpp"
 
 #ifdef NOMINMAX
 #include <windows.h>
@@ -36,6 +36,9 @@
 #endif
 
 namespace fwRuntime
+{
+
+namespace impl
 {
 
 namespace dl
@@ -90,6 +93,8 @@ struct Win32 : public Native
 };
 
 } // namespace dl
+
+} // namespace impl
 
 } // namespace fwRuntime
 

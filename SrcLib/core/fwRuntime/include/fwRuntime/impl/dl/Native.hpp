@@ -33,6 +33,8 @@ namespace fwRuntime
 
 class Bundle;
 
+namespace impl
+{
 namespace dl
 {
 
@@ -143,5 +145,7 @@ struct Native
 };
 
 } // namesapce dl
+
+} // namespace impl
 
 } // namespace fwRuntime

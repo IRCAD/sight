@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,22 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_DL_NAMESPACE_HPP__
-#define __FWRUNTIME_DL_NAMESPACE_HPP__
-
+#pragma once
 
 namespace fwRuntime
 {
+namespace impl
+{
 /**
  * @brief       The namespace fwRuntime::dl contains classes to manage library module.
- * @namespace   fwRuntime::dl
- *
- * @date        2009-2010.
- *
  */
 namespace dl
 {
 
 }
+
+} // namespace impl
+
 }
-#endif /* __FWRUNTIME_DL_NAMESPACE_HPP__ */

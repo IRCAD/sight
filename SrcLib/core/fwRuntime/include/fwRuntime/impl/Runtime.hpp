@@ -38,7 +38,7 @@ class Bundle;
  * @brief   Defines the runtime class.
  *
  */
-class FWRUNTIME_CLASS_API Runtime : public ::fwRuntime::Runtime
+class Runtime : public ::fwRuntime::Runtime
 {
 public:
     /// Defines the bundle container type.
@@ -47,8 +47,8 @@ public:
     /**
      * @brief   Retrieves the default runtime instance.
      */
-    FWRUNTIME_API static Runtime* getDefault();
-    FWRUNTIME_API static Runtime& get();
+    static Runtime* getDefault();
+    static Runtime& get();
 
     /**
      * @brief   Constructor.
@@ -69,14 +69,14 @@ public:
      *
      * @param[in]   repository  a path that may containing bundles
      */
-    FWRUNTIME_API virtual void addBundles( const std::filesystem::path& repository );
+    virtual void addBundles( const std::filesystem::path& repository );
 
     /**
      * @brief       Adds all bundle found at the default location.
      *
      * @remark      The given bundle state will be altered according to the current configuration rules.
      */
-    FWRUNTIME_API virtual void addDefaultBundles();
+    virtual void addDefaultBundles();
 
     /**
      * @brief       Retrieves the bundle for the specified idenfier.
@@ -86,8 +86,8 @@ public:
      *
      * @return      a shared pointer to the found bundle or null if none
      */
-    FWRUNTIME_API virtual SPTR( ::fwRuntime::Bundle ) findBundle( const std::string& identifier,
-                                                                  const Version& version = Version() ) const final;
+    virtual SPTR( ::fwRuntime::Bundle ) findBundle( const std::string& identifier,
+                                                    const Version& version = Version() ) const final;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -101,7 +101,7 @@ public:
      *
      * @return      a pointer to the created executable instance
      */
-    FWRUNTIME_API virtual IExecutable* createExecutableInstance( const std::string& type );
+    virtual IExecutable* createExecutableInstance( const std::string& type );
 
     /**
      * @brief   Create an instance of the given executable object type and configuration element.
@@ -118,14 +118,14 @@ public:
      *
      * @return  a pointer to the created executable instance
      */
-    FWRUNTIME_API virtual IExecutable* createExecutableInstance( const std::string& type,
-                                                                 SPTR(ConfigurationElement) configurationElement );
+    virtual IExecutable* createExecutableInstance( const std::string& type,
+                                                   SPTR(ConfigurationElement) configurationElement );
 
     /**
      * @brief   Retrieves the iterator on the end of the extension collection.
      * @return  an iterator
      */
-    FWRUNTIME_API virtual ExtensionIterator extensionsEnd();
+    virtual ExtensionIterator extensionsEnd();
 
     /**
      * @brief       Retrieves the extension instance matching the specified identifier.
@@ -134,10 +134,10 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    FWRUNTIME_API virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const;
+    virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const;
 
     /// @copydoc ::fwRuntime::Runtime::getBundles
-    FWRUNTIME_API virtual ::fwRuntime::Runtime::BundleContainer getBundles() final;
+    virtual ::fwRuntime::Runtime::BundleContainer getBundles() final;
     //@}
 
     /**

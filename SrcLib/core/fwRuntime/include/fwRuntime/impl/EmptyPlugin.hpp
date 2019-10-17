@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_EMPTYPLUGIN_HPP__
-#define __FWRUNTIME_EMPTYPLUGIN_HPP__
-
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/Plugin.hpp"
 
-
 namespace fwRuntime
 {
 
+namespace impl
+{
 
 /**
- * @struct  EmptyPlugin
  * @brief   Implements a default plugin for bundles that don't provide a
  *          ::fwRuntime::IPlugin interface implementation. This plugin does nothing
  *          by default. It has not been design to be subclassed, but subclassing
@@ -41,20 +39,16 @@ namespace fwRuntime
  *
  * @remark  The factory for this executable structure is registered by the runtime
  *          it-self.
- *
- * @date    2004-2005
- *
  */
-struct EmptyPlugin : public Plugin
+class EmptyPlugin : public Plugin
 {
-
+public:
     /**
      * @brief   Destructor : does nothing.
      */
     virtual ~EmptyPlugin() noexcept
     {
     }
-
 
     // Overrides
     virtual void start();
@@ -64,8 +58,6 @@ struct EmptyPlugin : public Plugin
 
 };
 
+} // namespace impl
 
 } // namespace fwRuntime
-
-
-#endif //__FWRUNTIME_EMPTYPLUGIN_HPP__

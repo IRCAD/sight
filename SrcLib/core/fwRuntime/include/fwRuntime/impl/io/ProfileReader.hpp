@@ -60,7 +60,7 @@ public:
      *
      * @param[in]   path    a path to an xml profile file
      */
-    FWRUNTIME_API static std::shared_ptr< ::fwRuntime::impl::profile::Profile > createProfile(
+    static std::shared_ptr< ::fwRuntime::impl::profile::Profile > createProfile(
         const std::filesystem::path& path );
 
     /**

@@ -50,7 +50,7 @@ class Validator;
 /**
  * @brief   Defines the extension point class.
  */
-class FWRUNTIME_CLASS_API ExtensionPoint : public ModuleElement
+class ExtensionPoint : public ModuleElement
 {
 public:
     typedef Extension::Container ConfigurationElementContainer;
@@ -142,14 +142,14 @@ public:
      *
      * @return  a string containing the extension point identifier
      */
-    FWRUNTIME_API const std::string& getIdentifier() const;
+    const std::string& getIdentifier() const;
 
     /**
      * @brief   Retrieves the extension validator.
      *
      * @return  a shared pointer to the extension validator, or null when none
      */
-    FWRUNTIME_API std::shared_ptr< io::Validator > getExtensionValidator() const;
+    std::shared_ptr< io::Validator > getExtensionValidator() const;
 
 private:
 

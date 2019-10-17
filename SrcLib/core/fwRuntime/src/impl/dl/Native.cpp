@@ -20,17 +20,20 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/dl/Native.hpp"
+#include "fwRuntime/impl/dl/Native.hpp"
 
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/Runtime.hpp"
 
-#include <filesystem>
 #include <limits.h>
 
+#include <filesystem>
 #include <string>
 
 namespace fwRuntime
+{
+
+namespace impl
 {
 
 namespace dl
@@ -154,5 +157,7 @@ void Native::operator=(const Native&) noexcept
 //------------------------------------------------------------------------------
 
 } // namespace dl
+
+} // namespace impl
 
 } // namespace fwRuntime

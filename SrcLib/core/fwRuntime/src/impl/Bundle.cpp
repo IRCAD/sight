@@ -22,10 +22,10 @@
 
 #include "fwRuntime/impl/Bundle.hpp"
 
-#include "fwRuntime/EmptyPlugin.hpp"
 #include "fwRuntime/ExecutableFactory.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/IExecutable.hpp"
+#include "fwRuntime/impl/EmptyPlugin.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
 #include "fwRuntime/impl/profile/Initializer.hpp"
 #include "fwRuntime/impl/profile/Profile.hpp"
@@ -424,7 +424,7 @@ void Bundle::startPlugin()
 
     if( pluginType.empty() )
     {
-        plugin = SPTR( IPlugin )( new EmptyPlugin() );
+        plugin = std::make_shared< EmptyPlugin > ();
     }
     else
     {
