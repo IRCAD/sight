@@ -45,7 +45,6 @@
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/io/BundleDescriptorReader.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwTest/generator/Image.hpp>
@@ -73,14 +72,10 @@ void DefaultActivityTest::setUp()
     FwCoreNotUsedMacro(m_fwMedDataCampVersion);
 
     // Set up context before running a test.
-    std::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_validator");
-    m_bundle = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
+    ::fwRuntime::addBundles(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
+    ::fwRuntime::loadBundle("tu_validator");
 
-    ::fwRuntime::Bundle::ExtensionContainer extensionsSet( m_bundle->extensionsBegin(), m_bundle->extensionsEnd());
-    std::vector< SPTR( ::fwRuntime::Extension ) > extensions(extensionsSet.begin(), extensionsSet.end());
-    ::fwActivities::registry::Activities::getDefault()->parseBundleInformation(extensions);
-
-    CPPUNIT_ASSERT_EQUAL( size_t(2), extensions.size());
+    ::fwActivities::registry::Activities::getDefault()->parseBundleInformation();
 }
 
 //------------------------------------------------------------------------------
@@ -104,7 +99,7 @@ void DefaultActivityTest::requirementsTest()
     CPPUNIT_ASSERT(activityValidator);
 
     ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
-    activitySeries->setActivityConfigId("Test0");
+    activitySeries->setActivityConfigId("TestValidator0");
 
     ::fwActivities::IValidator::ValidationType validation;
 
@@ -202,7 +197,7 @@ void DefaultActivityTest::parametersTest()
     CPPUNIT_ASSERT(activityValidator);
 
     ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
-    activitySeries->setActivityConfigId("Test0");
+    activitySeries->setActivityConfigId("TestValidator0");
 
     ::fwActivities::IValidator::ValidationType validation;
 
@@ -331,7 +326,7 @@ void DefaultActivityTest::validatorTest()
     CPPUNIT_ASSERT(activityValidator);
 
     ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
-    activitySeries->setActivityConfigId("Test0");
+    activitySeries->setActivityConfigId("TestValidator0");
 
     ::fwActivities::IValidator::ValidationType validation;
 
@@ -433,7 +428,7 @@ void DefaultActivityTest::bigActivityTest()
     CPPUNIT_ASSERT(activityValidator);
 
     ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::New();
-    activitySeries->setActivityConfigId("Test1");
+    activitySeries->setActivityConfigId("TestValidator1");
 
     ::fwActivities::IValidator::ValidationType validation;
 

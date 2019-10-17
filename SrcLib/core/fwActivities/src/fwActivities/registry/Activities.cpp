@@ -24,11 +24,11 @@
 
 #include <fwData/Vector.hpp>
 
+#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/Bundle.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -257,15 +257,6 @@ void Activities::parseBundleInformation()
 {
     std::vector< SPTR( ::fwRuntime::Extension ) >  extensions
         = ::fwRuntime::getAllExtensionsForPoint("::fwActivities::registry::Activities");
-
-    this->parseBundleInformation(extensions);
-
-}
-
-//------------------------------------------------------------------------------
-
-void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) >& extensions)
-{
 
     for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
     {

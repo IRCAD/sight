@@ -43,7 +43,7 @@ namespace impl
 
 namespace io
 {
-class BundleDescriptorReader;
+class ModuleDescriptorReader;
 class Validator;
 }
 

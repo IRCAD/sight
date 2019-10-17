@@ -37,7 +37,7 @@ class Bundle;
 
 namespace io
 {
-class BundleDescriptorReader;
+class ModuleDescriptorReader;
 } // namespace io
 
 /**

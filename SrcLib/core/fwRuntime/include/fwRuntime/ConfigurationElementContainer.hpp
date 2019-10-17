@@ -33,7 +33,7 @@ namespace fwRuntime
 
 namespace io
 {
-class BundleDescriptorReader;
+class ModuleDescriptorReader;
 } // namespace io
 
 struct ConfigurationElement;
@@ -43,7 +43,7 @@ struct ConfigurationElement;
  */
 struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 {
-    friend class BundleDescriptorReader;
+    friend class ModuleDescriptorReader;
 
     /**
      * @name    Type Definitions

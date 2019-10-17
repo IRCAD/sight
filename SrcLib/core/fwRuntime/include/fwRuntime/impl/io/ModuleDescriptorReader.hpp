@@ -56,7 +56,7 @@ namespace io
 /**
  * @brief   Defines the bundle descriptor reader class.
  */
-class BundleDescriptorReader
+class ModuleDescriptorReader
 {
 public:
     typedef std::vector< std::shared_ptr<Bundle> >  BundleContainer;

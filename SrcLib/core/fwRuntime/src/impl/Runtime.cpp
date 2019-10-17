@@ -28,7 +28,7 @@
 #include "fwRuntime/IExecutable.hpp"
 #include "fwRuntime/impl/Bundle.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
-#include "fwRuntime/impl/io/BundleDescriptorReader.hpp"
+#include "fwRuntime/impl/io/ModuleDescriptorReader.hpp"
 #include "fwRuntime/IPlugin.hpp"
 
 #include <boost/dll/runtime_symbol_info.hpp>
@@ -82,7 +82,13 @@ void Runtime::addBundle( std::shared_ptr< Bundle > bundle )
 
 void Runtime::unregisterBundle( std::shared_ptr< Bundle > bundle )
 {
-    FwCoreNotUsedMacro(bundle);
+    std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(),
+                   std::bind(&Runtime::unregisterExecutableFactory, this, std::placeholders::_1));
+    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(),
+                   std::bind(&Runtime::unregisterExtensionPoint, this, std::placeholders::_1));
+    std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(),
+                   std::bind(&Runtime::unregisterExtension, this, std::placeholders::_1));
+    m_bundles.erase( bundle );
 }
 
 //------------------------------------------------------------------------------
@@ -91,8 +97,8 @@ void Runtime::addBundles( const std::filesystem::path& repository )
 {
     try
     {
-        using ::fwRuntime::impl::io::BundleDescriptorReader;
-        const BundleDescriptorReader::BundleContainer bundles = BundleDescriptorReader::createBundles( repository );
+        using ::fwRuntime::impl::io::ModuleDescriptorReader;
+        const ModuleDescriptorReader::BundleContainer bundles = ModuleDescriptorReader::createBundles( repository );
         std::for_each( bundles.begin(), bundles.end(), std::bind(&Runtime::addBundle, this, std::placeholders::_1) );
     }
     catch(const std::exception& exception)

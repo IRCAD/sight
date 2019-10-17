@@ -52,7 +52,7 @@ void ConfigurationElement2XML(::fwRuntime::ConfigurationElement::sptr _cfgElemen
 
         xmlAddChild(pNode, child);
         // If configuration element is a XML_TEXT_NODE : WARNING : even whitespace (non XML_TEXT_NODE) have been
-        // considered as valid XML_TEXT_NODE by BundleDescriptorReader!!!!
+        // considered as valid XML_TEXT_NODE by ModuleDescriptorReader!!!!
         if( !elt->getValue().empty() )
         {
             xmlNodeSetContent(child, xmlCharStrdup( elt->getValue().c_str() ));

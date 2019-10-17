@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/impl/io/BundleDescriptorReader.hpp"
+#include "fwRuntime/impl/io/ModuleDescriptorReader.hpp"
 
 #include "fwRuntime/ConfigurationElement.hpp"
 #include "fwRuntime/dl/Library.hpp"
@@ -47,22 +47,22 @@ namespace impl
 namespace io
 {
 
-std::string BundleDescriptorReader::CLASS("class");
-std::string BundleDescriptorReader::EXTENSION("extension");
-std::string BundleDescriptorReader::EXTENSION_POINT("extension-point");
-std::string BundleDescriptorReader::ID("id");
-std::string BundleDescriptorReader::IMPLEMENTS("implements");
-std::string BundleDescriptorReader::LIBRARY("library");
-std::string BundleDescriptorReader::NAME("name");
-std::string BundleDescriptorReader::PLUGIN("plugin");
-std::string BundleDescriptorReader::REQUIREMENT("requirement");
-std::string BundleDescriptorReader::SCHEMA("schema");
-std::string BundleDescriptorReader::VERSION("version");
-std::string BundleDescriptorReader::POINT("point");
+std::string ModuleDescriptorReader::CLASS("class");
+std::string ModuleDescriptorReader::EXTENSION("extension");
+std::string ModuleDescriptorReader::EXTENSION_POINT("extension-point");
+std::string ModuleDescriptorReader::ID("id");
+std::string ModuleDescriptorReader::IMPLEMENTS("implements");
+std::string ModuleDescriptorReader::LIBRARY("library");
+std::string ModuleDescriptorReader::NAME("name");
+std::string ModuleDescriptorReader::PLUGIN("plugin");
+std::string ModuleDescriptorReader::REQUIREMENT("requirement");
+std::string ModuleDescriptorReader::SCHEMA("schema");
+std::string ModuleDescriptorReader::VERSION("version");
+std::string ModuleDescriptorReader::POINT("point");
 
 //------------------------------------------------------------------------------
 
-const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBundles(
+const ModuleDescriptorReader::BundleContainer ModuleDescriptorReader::createBundles(
     const std::filesystem::path& location)
 {
     // Normalizes the path.
@@ -87,7 +87,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
         {
             try
             {
-                SPTR( Bundle ) bundle = BundleDescriptorReader::createBundle(entryPath);
+                SPTR( Bundle ) bundle = ModuleDescriptorReader::createBundle(entryPath);
                 if(bundle)
                 {
                     bundles.push_back( bundle );
@@ -114,7 +114,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Bundle> BundleDescriptorReader::createBundle(const std::filesystem::path& location)
+std::shared_ptr< Bundle> ModuleDescriptorReader::createBundle(const std::filesystem::path& location)
 {
     std::shared_ptr<impl::Bundle> bundle;
 
@@ -179,7 +179,7 @@ std::shared_ptr< Bundle> BundleDescriptorReader::createBundle(const std::filesys
 
 //-----------------------------------------------------------------------------
 
-ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(xmlNodePtr node,
+ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(xmlNodePtr node,
                                                                                const std::shared_ptr<Bundle> bundle)
 
 {
@@ -233,7 +233,7 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Extension> BundleDescriptorReader::processExtension(xmlNodePtr node,
+std::shared_ptr<Extension> ModuleDescriptorReader::processExtension(xmlNodePtr node,
                                                                     const std::shared_ptr<Bundle> bundle)
 {
     // Processes all extension attributes.
@@ -275,7 +275,7 @@ std::shared_ptr<Extension> BundleDescriptorReader::processExtension(xmlNodePtr n
 
 //------------------------------------------------------------------------------
 
-BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processPoint(xmlNodePtr node,
+ModuleDescriptorReader::PointExtensionsPairType ModuleDescriptorReader::processPoint(xmlNodePtr node,
                                                                                      const std::shared_ptr<Bundle> bundle)
 {
     // Creates the extension instance.
@@ -319,7 +319,7 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<ExtensionPoint> BundleDescriptorReader::processExtensionPoint(xmlNodePtr node,
+std::shared_ptr<ExtensionPoint> ModuleDescriptorReader::processExtensionPoint(xmlNodePtr node,
                                                                               const std::shared_ptr<Bundle> bundle)
 
 {
@@ -350,7 +350,7 @@ std::shared_ptr<ExtensionPoint> BundleDescriptorReader::processExtensionPoint(xm
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr node)
+std::shared_ptr<dl::Library> ModuleDescriptorReader::processLibrary(xmlNodePtr node)
 {
     // Processes all plugin attributes.
     xmlAttrPtr curAttr;
@@ -371,7 +371,7 @@ std::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr n
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<impl::Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node,
+std::shared_ptr<impl::Bundle> ModuleDescriptorReader::processPlugin(xmlNodePtr node,
                                                                     const std::filesystem::path& location)
 {
     // Creates the bundle.
@@ -470,7 +470,7 @@ std::shared_ptr<impl::Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr n
 
 //------------------------------------------------------------------------------
 
-const std::string BundleDescriptorReader::processRequirement(xmlNodePtr node)
+const std::string ModuleDescriptorReader::processRequirement(xmlNodePtr node)
 {
     // Processes all requirement attributes.
     xmlAttrPtr curAttr;

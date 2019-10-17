@@ -24,7 +24,7 @@
 
 #include "fwRuntime/impl/Bundle.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
-#include "fwRuntime/impl/io/BundleDescriptorReader.hpp"
+#include "fwRuntime/impl/io/ModuleDescriptorReader.hpp"
 #include "fwRuntime/impl/Runtime.hpp"
 
 #include <boost/property_tree/ptree.hpp>
@@ -325,7 +325,7 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
     ::fwRuntime::ConfigurationElement::sptr ce;
-    ce = ::fwRuntime::impl::io::BundleDescriptorReader::processConfigurationElement(root, SPTR(impl::Bundle)());
+    ce = ::fwRuntime::impl::io::ModuleDescriptorReader::processConfigurationElement(root, SPTR(impl::Bundle)());
 
     xmlFreeDoc(doc);
 

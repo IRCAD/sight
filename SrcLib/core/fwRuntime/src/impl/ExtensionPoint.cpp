@@ -24,6 +24,7 @@
 
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/impl/io/Validator.hpp"
+#include "fwRuntime/operations.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
 namespace fwRuntime
@@ -57,9 +58,14 @@ std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
     {
         try
         {
-            const std::filesystem::path schemaPath = getBundle()->getResourcesLocation() / m_schema;
+            std::filesystem::path schemaPath = getBundle()->getResourcesLocation() / m_schema;
             OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
-            m_validator = std::shared_ptr< io::Validator >( new io::Validator(schemaPath) );
+            if(!std::filesystem::exists(schemaPath))
+            {
+                // Allow to specify a schema defined elsewhere than this bundle
+                schemaPath = ::fwRuntime::getResourceFilePath(m_schema);
+            }
+            m_validator = std::make_shared< io::Validator >(schemaPath);
         }
         catch( const std::exception& e )
         {

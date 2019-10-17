@@ -235,7 +235,7 @@ class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject
 public:
     typedef std::vector< ActivityInfo > ActivitiesType;
 
-    fwCoreClassMacro(Activities, ::fwCore::BaseObject, new Activities);
+    fwCoreClassMacro(Activities, ::fwCore::BaseObject, new Activities)
 
     /// Return the default global instance of Activities
     FWACTIVITIES_API static Activities::sptr getDefault();
@@ -250,7 +250,6 @@ public:
      * @{
      **/
     FWACTIVITIES_API void parseBundleInformation();
-    FWACTIVITIES_API void parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) >& extensions);
     ///@}
 
     /**

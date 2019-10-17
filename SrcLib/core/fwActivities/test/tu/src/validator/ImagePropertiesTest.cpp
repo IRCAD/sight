@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
- * Copyright (C) 2016 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,12 +30,11 @@
 #include <fwData/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
+
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/io/BundleDescriptorReader.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -96,7 +95,6 @@ void ImagePropertiesTest::propertiesTest()
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
     }
-
 
     {
         ::fwData::Image::SizeType size(3, 100);

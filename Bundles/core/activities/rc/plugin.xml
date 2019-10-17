@@ -29,7 +29,7 @@
     </extension>
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
+    <extension-point id="::fwActivities::registry::Activities" schema="fwActivities-0.1/activities.xsd"/>
 
 
 
