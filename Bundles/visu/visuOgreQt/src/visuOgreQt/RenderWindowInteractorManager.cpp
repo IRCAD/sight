@@ -63,7 +63,12 @@ RenderWindowInteractorManager::RenderWindowInteractorManager(
 
 RenderWindowInteractorManager::~RenderWindowInteractorManager()
 {
-
+    // Delete the window container if it is not attached to the parent container.
+    // i.e. it is shown in fullscreen.
+    if(m_windowContainer && m_windowContainer->parent() == nullptr)
+    {
+        delete m_windowContainer;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -265,7 +270,7 @@ void RenderWindowInteractorManager::disableFullscreen()
         ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
 
         auto toggleSlot = ogreRenderService->slot(::fwRenderOgre::SRender::s_DISABLE_FULLSCREEN);
-        toggleSlot->asyncRun();
+        toggleSlot->run();
     }
 }
 
