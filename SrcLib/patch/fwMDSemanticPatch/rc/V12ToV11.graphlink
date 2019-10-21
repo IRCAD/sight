@@ -1,0 +1,12 @@
+{
+    "context" : "MedicalData",
+    "origin_version" : "V12",
+    "target_version" : "V11",
+    "patcher" : "DefaultPatcher",
+    "links" : [
+        {
+            "::fwData::Image" : "3",
+            "::fwData::Image" : "2"
+        }
+    ]
+}

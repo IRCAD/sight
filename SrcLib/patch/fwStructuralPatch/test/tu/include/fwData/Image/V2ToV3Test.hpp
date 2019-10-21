@@ -24,41 +24,33 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwData
+namespace fwStructuralPatch
 {
 namespace ut
 {
-
-class ImageTest : public CPPUNIT_NS::TestFixture
+namespace fwData
 {
-private:
-    CPPUNIT_TEST_SUITE( ImageTest );
-    CPPUNIT_TEST( testGetterSetter );
-    CPPUNIT_TEST( testAllocation );
-    CPPUNIT_TEST( testReallocation );
-    CPPUNIT_TEST( testPixelType );
-    CPPUNIT_TEST( testSetGetPixel );
-    CPPUNIT_TEST( testRGBAIterator );
-    CPPUNIT_TEST( testRGBIterator );
-    CPPUNIT_TEST( testBGRAIterator );
-    CPPUNIT_TEST( testBGRIterator );
-    CPPUNIT_TEST_SUITE_END();
+namespace Image
+{
+
+/**
+ * @brief Test patch to convert fwData::Image from version 2 to version 3.
+ */
+class V2ToV3Test : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE( V2ToV3Test );
+CPPUNIT_TEST( applyPatchTest );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
     void setUp();
     void tearDown();
 
-    void testGetterSetter();
-    void testAllocation();
-    void testReallocation();
-    void testPixelType();
-    void testSetGetPixel();
-    void testRGBAIterator();
-    void testRGBIterator();
-    void testBGRIterator();
-    void testBGRAIterator();
+    void applyPatchTest();
 };
 
-} //namespace ut
+} //namespace Image
 } //namespace fwData
+} //namespace ut
+} //namespace fwStructuralPatch

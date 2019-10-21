@@ -23,7 +23,7 @@
 #pragma once
 
 #include "visuOgreQt/config.hpp"
-#include <visuOgreQt/Window.hpp>
+#include "visuOgreQt/Window.hpp"
 
 #include <fwCore/base.hpp>
 
