@@ -374,7 +374,7 @@ void SImageMultiDistances::createMillimeterLabel(const float _point[3], const Og
                                                  const ::Ogre::ColourValue _color)
 {
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
+    ::Ogre::Camera* const cam               = this->getLayer()->getDefaultCamera();
 
     const std::string labelNumber = std::to_string(_distance) + "mm";
     const float dpi               = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
@@ -416,7 +416,7 @@ void SImageMultiDistances::deleteMillimeterLabel(size_t _id)
 void SImageMultiDistances::createIdLabel(const float ps1[3], size_t _id, const ::Ogre::ColourValue& _color)
 {
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
+    ::Ogre::Camera* const cam               = this->getLayer()->getDefaultCamera();
 
     const std::string labelNumber = std::to_string(_id);
     const float dpi               = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();

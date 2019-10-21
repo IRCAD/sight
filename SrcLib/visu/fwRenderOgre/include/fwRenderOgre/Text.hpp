@@ -97,7 +97,8 @@ public:
     FWRENDEROGRE_API float getTextHeight() const;
 
     /// Sets the screen's dpi. Recomputes the text geometry and sets a font map with the new resolution.
-    FWRENDEROGRE_API void setDotsPerInch(float _dpi);
+    /// Internal method, called by the layer on resize events.
+    void setDotsPerInch(float _dpi);
 
     /// Text color, white by default.
     FWRENDEROGRE_API void setTextColor(const ::Ogre::ColourValue& _color);
@@ -105,7 +106,7 @@ public:
     /// Set the visibility of the text. Beware this hides ::Ogre::MovableObject::setVisible() which is not virtual !
     FWRENDEROGRE_API void setVisible(bool _visible);
 
-    /// Aligns the text by setting the x coordinate origin.
+    /// Aligns the text by setting the x and y coordinates' origin.
     FWRENDEROGRE_API void setTextAlignment(const ::Ogre::TextAreaOverlayElement::Alignment _hAlignement,
                                            const ::Ogre::GuiVerticalAlignment _vAlignment = ::Ogre::GVA_TOP);
 
@@ -137,7 +138,7 @@ private:
     void setFont(::Ogre::FontPtr _font);
 
     /// Recomputes the text height and position when the viewport is resized.
-    FWRENDEROGRE_API void resize();
+    void resize();
 
     /// Viewport in which the parent node is displayed, used to compute its projection onto the screen.
     ::Ogre::Camera* m_camera {nullptr};
