@@ -966,6 +966,11 @@ QTabBar::tab:right:!selected:hover
     background-color: #3daee9;
 }
 
+QTabBar QToolButton
+{
+    background-color: #31363b;
+}
+
 QTabBar QToolButton::right-arrow:enabled
 {
     image: url(:/resources/right_arrow.png);
