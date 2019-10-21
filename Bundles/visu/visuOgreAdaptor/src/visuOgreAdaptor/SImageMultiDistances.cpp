@@ -56,6 +56,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
+#include <boost/numeric/conversion/cast.hpp>
+
 #include <glm/glm.hpp>
 
 #include <OgreMeshManager.h>
@@ -64,9 +66,9 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT     = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
 
 SImageMultiDistances::SImageMultiDistances() noexcept
@@ -153,11 +155,12 @@ void SImageMultiDistances::updating()
             const ::fwData::Point::cwptr pointBack  = distance->getPoints().back();
             const ::fwData::Point::csptr p1         = pointFront.lock();
             const ::fwData::Point::csptr p2         = pointBack.lock();
+
             float ps1[3];
             float ps2[3];
-            std::copy(p1->getCoord().begin(), (p1)->getCoord().end(), ps1 );
-            std::copy(p2->getCoord().begin(), (p2)->getCoord().end(), ps2 );
-            this->createDistance(ps1, ps2, m_distanceNb, generateColor(m_distanceNb));
+            std::transform(p1->getCoord().begin(), p1->getCoord().end(), ps1, ::boost::numeric_cast<float, double>);
+            std::transform(p2->getCoord().begin(), p2->getCoord().end(), ps2, ::boost::numeric_cast<float, double>);
+            this->createDistance(ps1, ps2, m_distanceNb, this->generateColor(m_distanceNb));
             ++m_distanceNb;
         }
         /// remove the origin to my distances copy
@@ -938,8 +941,8 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
         const ::fwData::Point::csptr p1         = pointFront.lock();
         const ::fwData::Point::csptr p2         = pointBack.lock();
 
-        std::copy(p1->getCoord().begin(), (p1)->getCoord().end(), m_ps1 );
-        std::copy(p2->getCoord().begin(), (p2)->getCoord().end(), m_ps2 );
+        std::transform(p1->getCoord().begin(), p1->getCoord().end(), m_ps1, ::boost::numeric_cast<float, double>);
+        std::transform(p2->getCoord().begin(), p2->getCoord().end(), m_ps2, ::boost::numeric_cast<float, double>);
         m_activeInteraction = true;
         this->mouseMoveEvent(_button, _x, _y, 0, 0);
         this->addCurrentOrigin();

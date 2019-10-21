@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATACAMP_IMAGE_HPP__
-#define __FWDATACAMP_IMAGE_HPP__
-
-#include <fwCamp/macros.hpp>
-#include <fwData/Image.hpp>
+#pragma once
 
 #include "fwDataCamp/config.hpp"
 
-fwCampDeclareAccessor((fwData)(Image), (fwData)(Array));
+#include <fwCamp/macros.hpp>
 
-#endif /* __FWDATACAMP_IMAGE_HPP__ */
+#include <fwData/Image.hpp>
+
+fwCampAutoDeclareEnumMacro((fwData)(Image)(PixelFormat));
+fwCampDeclareAccessor((fwData)(Image), (fwData)(Array));
