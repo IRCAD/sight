@@ -495,11 +495,7 @@ void SRender::render()
 
 bool SRender::isShownOnScreen()
 {
-    if( m_offScreen )
-    {
-        return true;
-    }
-    return this->getContainer()->isShownOnScreen();
+    return m_offScreen || m_fullscreen || this->getContainer()->isShownOnScreen();
 }
 
 // ----------------------------------------------------------------------------
