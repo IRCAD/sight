@@ -106,6 +106,7 @@ public:
      * @param[in]   imgToInitialize    image to initialized (if not null).
      *
      * @return      Returns initialized image.
+     * @deprecated  This method is not longer supported
      */
     FWDATATOOLS_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc,
                                                              ::fwData::Image::sptr imgToInitialize =
@@ -158,6 +159,15 @@ public:
     template < typename MINMAXTYPE >
     static void getMinMax(const ::fwData::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
+    /**
+     * @brief Check if the image has a transfer function pool
+     *
+     * Create transfer function pool if the pool is not present.
+     *
+     * If the image has not transfer functions, the pool is
+     * created and a grey level transfer function is added.
+     */
+    FWDATATOOLS_API bool checkTransferFunctionPool(const ::fwData::Image::sptr& _img);
 };
 
 // ------------------------------------------------------------------------------

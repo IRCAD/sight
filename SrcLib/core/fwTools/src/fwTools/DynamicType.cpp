@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,10 +73,14 @@ DynamicType::DynamicType() :
     m_value( m_unSpecifiedType),
     m_sizeof(0)
 {
+    FW_DEPRECATED_MSG("'::fwTools::DynamicType' is no longer supported and will be removed in sight 22.0,"
+                      " use '::fwTools::Type' instead",  "22.0")
 }
 
 DynamicType::DynamicType(const DynamicType& d2)
 {
+    FW_DEPRECATED_MSG("'::fwTools::DynamicType' is no longer supported and will be removed in sight 22.0,"
+                      " use '::fwTools::Type' instead",  "22.0")
     this->m_value  = d2.m_value;
     this->m_sizeof = d2.m_sizeof;
 }
@@ -146,4 +150,3 @@ std::string getString(const std::vector<DynamicType>& dtv)
 }
 
 } // end namespace fwTools {
-

@@ -23,7 +23,7 @@
 #pragma once
 
 #include "visuOgreQt/config.hpp"
-#include <visuOgreQt/Window.hpp>
+#include "visuOgreQt/Window.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -55,7 +55,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager);
+    fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)
 
     /// Constructor
     VISUOGREQT_API RenderWindowInteractorManager(::fwRenderOgre::IRenderWindowInteractorManager::Key key);

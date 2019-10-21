@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@
 
 #include <string>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material );
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material )
 
 namespace visuOgreAdaptor
 {
@@ -124,9 +124,9 @@ void SMaterial::createShaderParameterAdaptors()
             srv->start();
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
-            ::fwData::Material::sptr material   = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
-            ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters",
-                                                                            ::fwData::Composite::New());
+            ::fwData::Material::sptr materialInOut = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+            ::fwData::Composite::sptr composite    = materialInOut->setDefaultField("shaderParameters",
+                                                                                    ::fwData::Composite::New());
             (*composite)[constantName] = obj;
         }
     }
