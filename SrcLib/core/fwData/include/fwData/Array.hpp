@@ -672,7 +672,9 @@ inline T Array::at(const ::fwData::Array::IndexType& id) const
 template< typename T >
 inline T& Array::at(const size_t& offset)
 {
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"), offset >= this->getSizeInBytes()/sizeof(T));
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
+                                              + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
+                          offset >= this->getSizeInBytes()/sizeof(T));
     return *(reinterpret_cast<T*>(this->getBuffer()) + offset);
 }
 
@@ -681,7 +683,9 @@ inline T& Array::at(const size_t& offset)
 template< typename T >
 inline T& Array::at(const size_t& offset) const
 {
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds"), offset >= this->getSizeInBytes()/sizeof(T));
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
+                                              + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
+                          offset >= this->getSizeInBytes()/sizeof(T));
     return *(reinterpret_cast<T*>(this->getBuffer()) + offset);
 }
 

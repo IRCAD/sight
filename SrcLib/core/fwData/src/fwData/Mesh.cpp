@@ -538,7 +538,7 @@ Mesh::Id Mesh::pushCell(CellValueType idPt)
 
 Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2)
 {
-    ::fwData::Mesh::CellValueType p[2] = {idP1, idP2};
+    const ::fwData::Mesh::CellValueType p[2] = {idP1, idP2};
     return this->pushCell(::fwData::Mesh::EDGE, p, 2);
 }
 
@@ -546,7 +546,7 @@ Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2)
 
 Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3)
 {
-    ::fwData::Mesh::CellValueType p[3] = {idP1, idP2, idP3};
+    const ::fwData::Mesh::CellValueType p[3] = {idP1, idP2, idP3};
     return this->pushCell(::fwData::Mesh::TRIANGLE, p, 3);
 }
 
@@ -555,7 +555,7 @@ Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType id
 Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
                         CellTypesEnum type)
 {
-    ::fwData::Mesh::CellValueType p[4] = {idP1, idP2, idP3, idP4};
+    const ::fwData::Mesh::CellValueType p[4] = {idP1, idP2, idP3, idP4};
     return this->pushCell(type, p, 4);
 }
 
@@ -644,56 +644,132 @@ void Mesh::setPoint(::fwData::Mesh::Id id,
 
 //------------------------------------------------------------------------------
 
+void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idPt)
+{
+    const ::fwData::Mesh::CellValueType p[1] = {idPt};
+    this->setCell(id, ::fwData::Mesh::POINT, p, 12);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2)
+{
+    const ::fwData::Mesh::CellValueType p[2] = {idP1, idP2};
+    this->setCell(id, ::fwData::Mesh::EDGE, p, 2);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3)
+{
+    const ::fwData::Mesh::CellValueType p[3] = {idP1, idP2, idP3};
+    this->setCell(id, ::fwData::Mesh::TRIANGLE, p, 3);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3,
+                   CellValueType idP4,
+                   CellTypesEnum type)
+{
+    const ::fwData::Mesh::CellValueType p[4] = {idP1, idP2, idP3, idP4};
+    this->setCell(id, type, p, 4);
+}
+//------------------------------------------------------------------------------
+
+void Mesh::setCell(::fwData::Mesh::Id id, CellTypesEnum type, const std::vector<CellValueType> pointIds)
+{
+    this->setCell(id, type, pointIds.data(), pointIds.size());
+}
+//------------------------------------------------------------------------------
+
+void Mesh::setCell(::fwData::Mesh::Id id, CellTypesEnum type, const CellValueType* pointIds, size_t nbPoints )
+{
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
+               type != ::fwData::Mesh::NO_CELL || nbPoints == 0);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
+               type != ::fwData::Mesh::POINT || nbPoints == 1);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
+               type != ::fwData::Mesh::EDGE || nbPoints == 2);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
+               type != ::fwData::Mesh::TRIANGLE || nbPoints == 3);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
+               type != ::fwData::Mesh::QUAD || nbPoints == 4);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
+               type != ::fwData::Mesh::TETRA || nbPoints == 4);
+    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
+               type != ::fwData::Mesh::POLY || nbPoints > 4);
+
+    m_cellTypes->at< CellTypes >(id) = static_cast< CellTypes >(type);
+
+    CellDataOffsetType currentOffset = 0;
+
+    if (id > 0)
+    {
+        currentOffset = m_cellDataOffsets->at<CellDataOffsetType>(id-1);
+    }
+
+    m_cellDataOffsets->at<CellDataOffsetType>(id) = currentOffset + nbPoints;
+
+    for (size_t i = 0; i < nbPoints; ++i )
+    {
+        const CellValueType cellValue = pointIds[i];
+        m_cellData->at< CellValueType >(currentOffset + i) = cellValue;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Mesh::setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
 {
-    m_pointColors->at<PointValueType>(4*id)   = c[0];
-    m_pointColors->at<PointValueType>(4*id+1) = c[1];
-    m_pointColors->at<PointValueType>(4*id+2) = c[2];
-    m_pointColors->at<PointValueType>(4*id+3) = c[3];
+    m_pointColors->at<ColorValueType>(4*id)   = c[0];
+    m_pointColors->at<ColorValueType>(4*id+1) = c[1];
+    m_pointColors->at<ColorValueType>(4*id+2) = c[2];
+    m_pointColors->at<ColorValueType>(4*id+3) = c[3];
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
 {
-    m_cellColors->at<PointValueType>(4*id)   = c[0];
-    m_cellColors->at<PointValueType>(4*id+1) = c[1];
-    m_cellColors->at<PointValueType>(4*id+2) = c[2];
-    m_cellColors->at<PointValueType>(4*id+3) = c[3];
+    m_cellColors->at<ColorValueType>(4*id)   = c[0];
+    m_cellColors->at<ColorValueType>(4*id+1) = c[1];
+    m_cellColors->at<ColorValueType>(4*id+2) = c[2];
+    m_cellColors->at<ColorValueType>(4*id+3) = c[3];
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
 {
-    m_pointNormals->at<PointValueType>(3*id)   = n[0];
-    m_pointNormals->at<PointValueType>(3*id+1) = n[1];
-    m_pointNormals->at<PointValueType>(3*id+2) = n[2];
+    m_pointNormals->at<NormalValueType>(3*id)   = n[0];
+    m_pointNormals->at<NormalValueType>(3*id+1) = n[1];
+    m_pointNormals->at<NormalValueType>(3*id+2) = n[2];
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
 {
-    m_cellNormals->at<PointValueType>(3*id)   = n[0];
-    m_cellNormals->at<PointValueType>(3*id+1) = n[1];
-    m_cellNormals->at<PointValueType>(3*id+2) = n[2];
+    m_cellNormals->at<NormalValueType>(3*id)   = n[0];
+    m_cellNormals->at<NormalValueType>(3*id+1) = n[1];
+    m_cellNormals->at<NormalValueType>(3*id+2) = n[2];
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
 {
-    m_pointTexCoords->at<PointValueType>(2*id)   = t[0];
-    m_pointTexCoords->at<PointValueType>(2*id+1) = t[1];
+    m_pointTexCoords->at<TexCoordValueType>(2*id)   = t[0];
+    m_pointTexCoords->at<TexCoordValueType>(2*id+1) = t[1];
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
 {
-    m_cellTexCoords->at<PointValueType>(2*id)   = t[0];
-    m_cellTexCoords->at<PointValueType>(2*id+1) = t[1];
+    m_cellTexCoords->at<TexCoordValueType>(2*id)   = t[0];
+    m_cellTexCoords->at<TexCoordValueType>(2*id+1) = t[1];
 }
 
 //------------------------------------------------------------------------------

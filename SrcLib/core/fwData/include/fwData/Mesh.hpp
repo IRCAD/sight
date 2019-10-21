@@ -407,6 +407,25 @@ public:
                              ::fwData::Mesh::PointValueType x,
                              ::fwData::Mesh::PointValueType y,
                              ::fwData::Mesh::PointValueType z);
+
+    /**
+     * @{
+     * @brief Set a cell into the mesh.
+     *
+     * @warning Use this method carefully, the cell should be properly allocated. If the current cell does not contain
+     * as much point as the previous one the the following cells will be corrupted.
+     *
+     * @throw ::fwData::Exception if the mesh is not correctly allocated
+     */
+    void setCell(::fwData::Mesh::Id id, CellValueType idPt);
+    void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2);
+    void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3);
+    void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
+                 CellTypesEnum type = QUAD);
+    void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const std::vector<CellValueType> pointIds);
+    void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const CellValueType* pointIds, size_t nbPoints );
+    /// @}
+
     /**
      * @brief Set a point color.
      *
@@ -611,6 +630,7 @@ public:
 protected:
     friend class ::fwData::iterator::PointIterator;
     friend class ::fwData::iterator::ConstPointIterator;
+    friend class ::fwData::iterator::CellIterator;
 
     /**
      * @brief Initializes points, cell-types, cell-data, and cell-data-offsets arrays.

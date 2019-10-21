@@ -30,207 +30,395 @@ namespace fwData
 namespace iterator
 {
 
-PointIteratorBase::PointIteratorBase()
+MeshIteratorBase::MeshIteratorBase()
 {
 
-}
-
-PointIteratorBase::PointIteratorBase(const PointIteratorBase& other) :
-    m_pointer(other.m_pointer),
-    m_lock(other.m_lock),
-    m_idx(other.m_idx),
-    m_elementSize(other.m_elementSize),
-    m_numberOfElements(other.m_numberOfElements)
-{
-
-}
-
-PointIteratorBase::~PointIteratorBase()
-{
-    m_lock.reset();
 }
 
 //------------------------------------------------------------------------------
 
-PointIteratorBase& PointIteratorBase::operator=(const PointIteratorBase& other)
+MeshIteratorBase::MeshIteratorBase(const MeshIteratorBase& other) :
+    m_pointers(other.m_pointers),
+    m_locks(other.m_locks),
+    m_idx(other.m_idx),
+    m_numberOfElements(other.m_numberOfElements),
+    m_elementSizes(other.m_elementSizes),
+    m_nbArrays(other.m_nbArrays)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+MeshIteratorBase::~MeshIteratorBase()
+{
+    m_locks.clear();
+}
+
+//------------------------------------------------------------------------------
+
+MeshIteratorBase& MeshIteratorBase::operator=(const MeshIteratorBase& other)
 {
     if (this != &other)
     {
-        m_pointer          = other.m_pointer;
-        m_lock             = other.m_lock;
+        m_pointers         = other.m_pointers;
+        m_locks            = other.m_locks;
         m_idx              = other.m_idx;
-        m_elementSize      = other.m_elementSize;
         m_numberOfElements = other.m_numberOfElements;
+        m_elementSizes     = other.m_elementSizes;
+        m_nbArrays         = other.m_nbArrays;
     }
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-bool PointIteratorBase::operator==(const PointIteratorBase& other) const
+bool MeshIteratorBase::operator==(const MeshIteratorBase& other) const
 {
     return m_idx == other.m_idx;
 }
 //------------------------------------------------------------------------------
 
-bool PointIteratorBase::operator!=(const PointIteratorBase& other) const
+bool MeshIteratorBase::operator!=(const MeshIteratorBase& other) const
 {
     return m_idx != other.m_idx;
 }
 
 //------------------------------------------------------------------------------
 
-PointIteratorBase& PointIteratorBase::operator++()
+MeshIteratorBase& MeshIteratorBase::operator++()
 {
     ++m_idx;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    m_pointer += m_elementSize;
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] += m_elementSizes[i];
+    }
     return *this;
 }
 //------------------------------------------------------------------------------
 
-PointIteratorBase PointIteratorBase::operator++(int)
+MeshIteratorBase MeshIteratorBase::operator++(int)
 {
-    PointIteratorBase tmp(*this);
+    MeshIteratorBase tmp(*this);
     ++m_idx;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    m_pointer += m_elementSize;
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] += m_elementSizes[i];
+    }
     return tmp;
 }
 //------------------------------------------------------------------------------
 
-PointIteratorBase& PointIteratorBase::operator+(difference_type index)
+MeshIteratorBase& MeshIteratorBase::operator+(difference_type index)
 {
     m_idx += index;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    m_pointer += index*m_elementSize;
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] += index*m_elementSizes[i];
+    }
     return *this;
 }
 //------------------------------------------------------------------------------
 
-PointIteratorBase& PointIteratorBase::operator+=(difference_type index)
+MeshIteratorBase& MeshIteratorBase::operator+=(difference_type index)
 {
     m_idx += index;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    m_pointer += index*m_elementSize;
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] += index*m_elementSizes[i];
+    }
     return *this;
 }
 //------------------------------------------------------------------------------
 
-PointIteratorBase& PointIteratorBase::operator--()
+MeshIteratorBase& MeshIteratorBase::operator--()
 {
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
-    m_pointer -= m_elementSize;
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] -= m_elementSizes[i];
+    }
     return *this;
 }
 //------------------------------------------------------------------------------
 
-PointIteratorBase PointIteratorBase::operator--(int)
+MeshIteratorBase MeshIteratorBase::operator--(int)
 {
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
-    PointIteratorBase tmp(*this);
-    m_pointer -= m_elementSize;
+    MeshIteratorBase tmp(*this);
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] -= m_elementSizes[i];
+    }
     return tmp;
 }
 
 //------------------------------------------------------------------------------
 
-PointIteratorBase& PointIteratorBase::operator-(difference_type index)
+MeshIteratorBase& MeshIteratorBase::operator-(difference_type index)
 {
     SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
                                              << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx     = m_idx - index;
-    m_pointer = m_pointer - index*m_elementSize;
+    m_idx = m_idx - index;
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] -= index*m_elementSizes[i];
+    }
     return *this;
 }
 //------------------------------------------------------------------------------
 
-PointIteratorBase& PointIteratorBase::operator-=(difference_type index)
+MeshIteratorBase& MeshIteratorBase::operator-=(difference_type index)
 {
     SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
                                              << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx     -= index;
-    m_pointer -= index*m_elementSize;
+    m_idx -= index;
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] -= index*m_elementSizes[i];
+    }
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-PointIteratorBase::difference_type PointIteratorBase::operator+(const PointIteratorBase& other) const
+MeshIteratorBase::difference_type MeshIteratorBase::operator+(const MeshIteratorBase& other) const
 {
     return m_idx + other.m_idx;
 }
 //------------------------------------------------------------------------------
 
-PointIteratorBase::difference_type PointIteratorBase::operator-(const PointIteratorBase& other) const
+MeshIteratorBase::difference_type MeshIteratorBase::operator-(const MeshIteratorBase& other) const
 {
     return m_idx - other.m_idx;
-
 }
 
 //------------------------------------------------------------------------------
-
-PointIteratorBase::reference PointIteratorBase::operator*()
-{
-    return *m_pointer;
-}
-
-//------------------------------------------------------------------------------
-
-PointIteratorBase::value_type* PointIteratorBase::operator->()
-{
-    return m_pointer;
-}
 
 PointIterator::PointIterator(::fwData::Mesh* mesh)
 {
-    m_lock             = mesh->m_points->lock();
+    m_locks.push_back(mesh->m_points->lock());
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
-    m_pointer          = static_cast<char*>(mesh->m_points->getBuffer());
-    m_elementSize      = sizeof (value_type);
+    m_pointers[0]      = static_cast<char*>(mesh->m_points->getBuffer());
+    m_elementSizes[0]  = sizeof (point_value_type);
+    m_nbArrays         = 1;
+
+    if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 4)
+    {
+        m_locks.push_back(mesh->m_pointColors->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_pointColors->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (color_value_type);
+        m_colorIdx                 = m_nbArrays;
+        ++m_nbArrays;
+    }
+    if (mesh->m_pointNormals)
+    {
+        m_locks.push_back(mesh->m_pointNormals->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_pointNormals->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (normal_value_type);
+        m_normalIdx                = m_nbArrays;
+        ++m_nbArrays;
+    }
+    if (mesh->m_pointTexCoords)
+    {
+        m_locks.push_back(mesh->m_pointTexCoords->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_pointTexCoords->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (tex_value_type);
+        m_texIdx                   = m_nbArrays;
+        ++m_nbArrays;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-PointIterator::reference PointIterator::operator*()
+PointIterator::~PointIterator()
 {
-    return *(reinterpret_cast<Point*>(m_pointer));
+
 }
 
 //------------------------------------------------------------------------------
 
-PointIterator::value_type* PointIterator::operator->()
+PointIterator::point_reference PointIterator::point()
 {
-    return reinterpret_cast<Point*>(m_pointer);
+    return *(reinterpret_cast<point_value_type*>(m_pointers[0]));
 }
+
+//------------------------------------------------------------------------------
+
+PointIterator::color_reference PointIterator::color()
+{
+    return *(reinterpret_cast<color_value_type*>(m_pointers[m_colorIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+PointIterator::normal_reference PointIterator::normal()
+{
+    return *(reinterpret_cast<normal_value_type*>(m_pointers[m_normalIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+PointIterator::tex_reference PointIterator::tex()
+{
+    return *(reinterpret_cast<tex_value_type*>(m_pointers[m_texIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+PointIterator::point_reference PointIterator::operator*()
+{
+    return *(reinterpret_cast<point_value_type*>(m_pointers[0]));
+}
+
+//------------------------------------------------------------------------------
+
+PointIterator* PointIterator::operator->()
+{
+    return this;
+}
+
+//------------------------------------------------------------------------------
 
 ConstPointIterator::ConstPointIterator(const ::fwData::Mesh* mesh)
 {
-    m_lock             = mesh->m_points->lock();
+    m_locks.push_back(mesh->m_points->lock());
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
-    m_pointer          = static_cast<char*>(mesh->m_points->getBuffer());
-    m_elementSize      = sizeof (value_type);
+    m_pointers[0]      = static_cast<char*>(mesh->m_points->getBuffer());
+    m_elementSizes[0]  = sizeof (point_value_type);
+    m_nbArrays         = 1;
+
+    if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 4)
+    {
+        m_locks.push_back(mesh->m_pointColors->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_pointColors->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (color_value_type);
+        ++m_nbArrays;
+    }
+    if (mesh->m_pointNormals)
+    {
+        m_locks.push_back(mesh->m_pointNormals->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_pointNormals->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (normal_value_type);
+        ++m_nbArrays;
+    }
+    if (mesh->m_pointTexCoords)
+    {
+        m_locks.push_back(mesh->m_pointTexCoords->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_pointTexCoords->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (tex_value_type);
+        ++m_nbArrays;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-ConstPointIterator::reference ConstPointIterator::operator*()
+ConstPointIterator::~ConstPointIterator()
 {
-    return *(reinterpret_cast<Point*>(m_pointer));
+
 }
 
 //------------------------------------------------------------------------------
 
-ConstPointIterator::value_type* ConstPointIterator::operator->()
+ConstPointIterator::point_reference ConstPointIterator::point()
 {
-    return reinterpret_cast<Point*>(m_pointer);
+    return *(reinterpret_cast<point_value_type*>(m_pointers[0]));
 }
+
+//------------------------------------------------------------------------------
+
+ConstPointIterator::color_reference ConstPointIterator::color()
+{
+    return *(reinterpret_cast<color_value_type*>(m_pointers[m_colorIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstPointIterator::normal_reference ConstPointIterator::normal()
+{
+    return *(reinterpret_cast<normal_value_type*>(m_pointers[m_normalIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstPointIterator::tex_reference ConstPointIterator::tex()
+{
+    return *(reinterpret_cast<tex_value_type*>(m_pointers[m_texIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstPointIterator::point_reference ConstPointIterator::operator*()
+{
+    return *(reinterpret_cast<point_value_type*>(m_pointers[0]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstPointIterator* ConstPointIterator::operator->()
+{
+    return this;
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::CellIterator()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::CellIterator(const CellIterator& other) :
+    MeshIteratorBase(other),
+    m_cellDataPointer(other.m_cellDataPointer)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::~CellIterator()
+{
+    m_locks.clear();
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator& CellIterator::operator=(const CellIterator& other)
+{
+    if (this != &other)
+    {
+        m_cellDataPointer  = other.m_cellDataPointer;
+        m_pointers         = other.m_pointers;
+        m_locks            = other.m_locks;
+        m_idx              = other.m_idx;
+        m_numberOfElements = other.m_numberOfElements;
+        m_elementSizes     = other.m_elementSizes;
+        m_nbArrays         = other.m_nbArrays;
+    }
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::point_idx_reference CellIterator::pointIdx(std::uint8_t id)
+{
+    const point_idx_value_type offset = *reinterpret_cast<point_idx_value_type*>(m_pointers[0]);
+    return *(reinterpret_cast<point_idx_value_type*>(m_cellDataPointer[offset] + id));
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace iterator
 } // namespace fwData

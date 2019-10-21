@@ -670,7 +670,7 @@ void MeshTest::insertion()
     const auto lock = mesh->lock();
     mesh->pushPoint(10, 20, 30);
     mesh->pushPoint(10, 10, 10);
-    mesh->pushPoint(20, 20, 10);
+    mesh->pushPoint(20, 21, 10);
     mesh->pushPoint(30, 30, 10);
     mesh->pushPoint(15, 20, 35);
     mesh->pushPoint(20, 20, 10);
@@ -694,11 +694,17 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(6), mesh->getNumberOfCells());
 
     auto it = mesh->begin< ::fwData::iterator::PointIterator >();
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), it->x);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), it->point().x);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point().y);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(30), it->point().z);
     it += 2;
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->y);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point().x);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(21), it->point().y);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), it->point().z);
     it += 5;
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(52), it->z);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(27), it->point().x);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(83), it->point().y);
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(52), it->point().z);
 
 //    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsetArray = helper.getCellDataOffsets();
 //    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)0, cellDataOffsetArray[0]);
@@ -747,48 +753,87 @@ void MeshTest::insertion()
 
 void MeshTest::pointIteratorTest()
 {
-//    const ::fwData::Mesh::Id NB_POINTS               = 60;
-//    const ::fwData::Mesh::CellTypesEnum CELL_TYPE    = ::fwData::Mesh::POINT;
-//    const ::fwData::Mesh::ExtraArrayType EXTRA_ARRAY = ::fwData::Mesh::ExtraArrayType::POINT_COLORS |
-//                                                       ::fwData::Mesh::ExtraArrayType::POINT_NORMALS;
+    const ::fwData::Mesh::Id NB_POINTS               = 60;
+    const ::fwData::Mesh::Id NB_CELLS                = 59;
+    const ::fwData::Mesh::CellTypesEnum CELL_TYPE    = ::fwData::Mesh::TRIANGLE;
+    const ::fwData::Mesh::ExtraArrayType EXTRA_ARRAY =
+        ::fwData::Mesh::ExtraArrayType::POINT_NORMALS |
+        ::fwData::Mesh::ExtraArrayType::POINT_COLORS |
+        ::fwData::Mesh::ExtraArrayType::POINT_TEX_COORDS |
+        ::fwData::Mesh::ExtraArrayType::CELL_NORMALS |
+        ::fwData::Mesh::ExtraArrayType::CELL_COLORS |
+        ::fwData::Mesh::ExtraArrayType::CELL_TEX_COORDS;
 
-//    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
-//    mesh->resize(NB_POINTS, NB_POINTS, CELL_TYPE, EXTRA_ARRAY);
-//    const auto lock = mesh->lock();
+    mesh->resize(NB_POINTS, NB_POINTS, CELL_TYPE, EXTRA_ARRAY);
+    const auto lock = mesh->lock();
 
-//    for (size_t i = 0; i < NB_POINTS; ++i)
-//    {
-//        mesh->pushPoint(static_cast<float>(3*i), static_cast<float>(3*i+1), static_cast<float>(3*i+2));
-//        mesh->pushCell(i);
-//    }
+    for (size_t i = 0; i < NB_POINTS; ++i)
+    {
+        const std::uint8_t val                               = static_cast<uint8_t>(i);
+        const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
+        const float floatVal                                 = static_cast<float>(i);
+        const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
+        const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+        const size_t value                                   = 3*i;
+        mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
+        mesh->setPointColor(i, color);
+        mesh->setPointNormal(i, normal);
+        mesh->setPointTexCoord(i, texCoords);
+    }
 
-//    {
-//        auto it    = mesh->begin< ::fwData::iterator::PointIterator >();
-//        auto itEnd = mesh->end< ::fwData::iterator::PointIterator >();
+    for (size_t i = 0; i < NB_CELLS; ++i)
+    {
+        mesh->setCell(i, i, i+1, i+2);
 
-//        float count = 0;
-//        for (; it != itEnd; ++it)
-//        {
-//            CPPUNIT_ASSERT_EQUAL(count++, it->x);
-//            CPPUNIT_ASSERT_EQUAL(count++, it->y);
-//            CPPUNIT_ASSERT_EQUAL(count++, it->z);
-//        }
-//    }
+        const ::fwData::Mesh::ColorValueType val             = static_cast< ::fwData::Mesh::ColorValueType >(i);
+        const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
+        const float floatVal                                 = static_cast<float>(i);
+        const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
+        const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+        mesh->setCellColor(i, color);
+        mesh->setCellNormal(i, normal);
+        mesh->setCellTexCoord(i, texCoords);
+    }
 
-//    ::fwData::Mesh::csptr mesh2 = ::fwData::Mesh::copy(mesh);
-//    {
-//        auto it    = mesh->begin< ::fwData::iterator::ConstPointIterator >();
-//        auto itEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+    {
+        auto it          = mesh->begin< ::fwData::iterator::PointIterator >();
+        const auto itEnd = mesh->end< ::fwData::iterator::PointIterator >();
 
-//        float count = 0;
-//        for (; it != itEnd; ++it)
-//        {
-//            CPPUNIT_ASSERT_EQUAL(count++, it->x);
-//            CPPUNIT_ASSERT_EQUAL(count++, it->y);
-//            CPPUNIT_ASSERT_EQUAL(count++, it->z);
-//        }
-//    }
+        size_t count = 0;
+        for (; it != itEnd; ++it)
+        {
+            ::fwData::iterator::Point p = it.point();
+            const float fValue = static_cast<float>(3*count);
+            CPPUNIT_ASSERT_EQUAL(fValue, p.x);
+            CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
+            CPPUNIT_ASSERT_EQUAL(fValue+2, p.z);
+
+            ::fwData::iterator::RGBA c = it.color();
+            const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count/3),
+                                         static_cast< unsigned int>(cVal), static_cast< unsigned int>(c.r));
+            CPPUNIT_ASSERT_EQUAL(cVal, c.g);
+            CPPUNIT_ASSERT_EQUAL(cVal, c.b);
+            CPPUNIT_ASSERT_EQUAL(cVal, c.a);
+            ++count;
+        }
+    }
+
+    ::fwData::Mesh::csptr mesh2 = ::fwData::Mesh::copy(mesh);
+    {
+        auto it          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto itEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+
+        float count = 0;
+        for (; it != itEnd; ++it)
+        {
+            CPPUNIT_ASSERT_EQUAL(count++, it->point().x);
+            CPPUNIT_ASSERT_EQUAL(count++, it->point().y);
+            CPPUNIT_ASSERT_EQUAL(count++, it->point().z);
+        }
+    }
 }
 } //namespace ut
 } //namespace fwData
