@@ -22,6 +22,8 @@
 
 #include "PatchTest.hpp"
 
+#include <arMDSemanticPatch/PatchLoader.hpp>
+
 #include <fwData/Object.hpp>
 
 #include <fwDataTools/Image.hpp>
@@ -143,7 +145,7 @@ void PatchTest::arPatchMedicalDataTest()
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context", "MedicalData");
-    patcherCfg->setAttributeValue("version", "V13AR");
+    patcherCfg->setAttributeValue("version", ::arMDSemanticPatch::PatchLoader::getCurrentVersion());
     srvCfg->addConfigurationElement(patcherCfg);
 
     ::fwMedData::SeriesDB::sptr sdb = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader" );

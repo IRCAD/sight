@@ -62,7 +62,7 @@ class SImageMultiDistances : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor)
 
     /// Constructor
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
@@ -242,10 +242,10 @@ private:
     bool m_activeInteraction { false };
 
     /// Position of the first point
-    float m_ps1[3] { 0, 0, 0 };
+    float m_ps1[3] { 0.f, 0.f, 0.f };
 
     /// Position of the second point
-    float m_ps2[3] { 0, 0, 0 };
+    float m_ps2[3] { 0.f, 0.f, 0.f };
 
     /// The picker used by this interactor.
     ::fwRenderOgre::picker::IPicker m_picker;

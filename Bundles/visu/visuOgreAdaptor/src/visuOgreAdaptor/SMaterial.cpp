@@ -48,7 +48,7 @@
 
 #include <string>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material );
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material )
 
 namespace visuOgreAdaptor
 {
@@ -122,9 +122,9 @@ void SMaterial::createShaderParameterAdaptors()
             srv->start();
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
-            ::fwData::Material::sptr material   = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
-            ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters",
-                                                                            ::fwData::Composite::New());
+            ::fwData::Material::sptr materialInOut = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+            ::fwData::Composite::sptr composite    = materialInOut->setDefaultField("shaderParameters",
+                                                                                    ::fwData::Composite::New());
             (*composite)[constantName] = obj;
         }
     }
