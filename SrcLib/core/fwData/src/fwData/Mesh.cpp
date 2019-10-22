@@ -702,14 +702,16 @@ void Mesh::setCell(::fwData::Mesh::Id id, CellTypesEnum type, const CellValueTyp
 
     m_cellTypes->at< CellTypes >(id) = static_cast< CellTypes >(type);
 
-    CellDataOffsetType currentOffset = 0;
-
-    if (id > 0)
+    if (id == 0)
     {
-        currentOffset = m_cellDataOffsets->at<CellDataOffsetType>(id-1);
+        m_cellDataOffsets->at<CellDataOffsetType>(id) = 0;
     }
+    CellDataOffsetType currentOffset = m_cellDataOffsets->at<CellDataOffsetType>(id);
 
-    m_cellDataOffsets->at<CellDataOffsetType>(id) = currentOffset + nbPoints;
+    if (id < m_nbCells -1)
+    {
+        m_cellDataOffsets->at<CellDataOffsetType>(id+1) = currentOffset + nbPoints;
+    }
 
     for (size_t i = 0; i < nbPoints; ++i )
     {

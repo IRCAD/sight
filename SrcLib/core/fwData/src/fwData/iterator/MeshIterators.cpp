@@ -372,9 +372,41 @@ ConstPointIterator* ConstPointIterator::operator->()
 
 //------------------------------------------------------------------------------
 
-CellIterator::CellIterator()
+CellIterator::CellIterator(::fwData::Mesh* mesh)
 {
+    m_locks.push_back(mesh->m_cellData->lock());
+    m_locks.push_back(mesh->m_cellTypes->lock());
+    m_locks.push_back(mesh->m_cellDataOffsets->lock());
+    m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfCells());
+    m_cellDataPointer  = static_cast<std::uint64_t*>(mesh->m_cellData->getBuffer());
+    m_cellDataSize     = mesh->getCellDataSize();
+    m_pointers[0]      = static_cast<char*>(mesh->m_cellDataOffsets->getBuffer());
+    m_pointers[1]      = static_cast<char*>(mesh->m_cellTypes->getBuffer());
+    m_elementSizes[0]  = sizeof (celloffset_value_type);
+    m_elementSizes[1]  = sizeof (celltype_value_type);
+    m_nbArrays         = 2;
 
+    if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 4)
+    {
+        m_locks.push_back(mesh->m_cellColors->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellColors->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (color_value_type);
+        ++m_nbArrays;
+    }
+    if (mesh->m_cellNormals)
+    {
+        m_locks.push_back(mesh->m_cellNormals->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellNormals->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (normal_value_type);
+        ++m_nbArrays;
+    }
+    if (mesh->m_cellTexCoords)
+    {
+        m_locks.push_back(mesh->m_cellTexCoords->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellTexCoords->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (tex_value_type);
+        ++m_nbArrays;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -415,7 +447,59 @@ CellIterator& CellIterator::operator=(const CellIterator& other)
 CellIterator::point_idx_reference CellIterator::pointIdx(std::uint8_t id)
 {
     const point_idx_value_type offset = *reinterpret_cast<point_idx_value_type*>(m_pointers[0]);
-    return *(reinterpret_cast<point_idx_value_type*>(m_cellDataPointer[offset] + id));
+    return *(m_cellDataPointer + offset + id);
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::color_reference CellIterator::color()
+{
+    return *(reinterpret_cast<color_value_type*>(m_pointers[m_colorIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::normal_reference CellIterator::normal()
+{
+    return *(reinterpret_cast<normal_value_type*>(m_pointers[m_normalIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::tex_reference CellIterator::tex()
+{
+    return *(reinterpret_cast<tex_value_type*>(m_pointers[m_texIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::celltype_reference CellIterator::cellType()
+{
+    return *(reinterpret_cast<celltype_value_type*>(m_pointers[1]));
+}
+
+//------------------------------------------------------------------------------
+
+CellIterator::celloffset_reference CellIterator::cellOffset()
+{
+    return *(reinterpret_cast<celloffset_value_type*>(m_pointers[0]));
+}
+
+//------------------------------------------------------------------------------
+
+size_t CellIterator::nbPoints() const
+{
+    const auto currentOffset = *(reinterpret_cast<celloffset_value_type*>(m_pointers[0]));
+    celloffset_value_type nextOffset;
+    if (m_idx < m_numberOfElements -1)
+    {
+        nextOffset = *(reinterpret_cast<celloffset_value_type*>(m_pointers[0])+1);
+    }
+    else
+    {
+        nextOffset = m_cellDataSize;
+    }
+    return nextOffset - currentOffset;
 }
 
 //------------------------------------------------------------------------------

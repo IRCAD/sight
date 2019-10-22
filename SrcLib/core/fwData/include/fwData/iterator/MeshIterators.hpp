@@ -293,22 +293,28 @@ class FWDATA_CLASS_API CellIterator : public MeshIteratorBase
 public:
 
     typedef std::uint64_t point_idx_value_type;
-    typedef std::uint64_t& point_idx_reference;
+    typedef point_idx_value_type& point_idx_reference;
 
     typedef Point point_value_type;
-    typedef Point& point_reference;
+    typedef point_value_type& point_reference;
 
     typedef RGBA color_value_type;
-    typedef RGBA& color_reference;
+    typedef color_value_type& color_reference;
 
     typedef Normal normal_value_type;
-    typedef Normal& normal_reference;
+    typedef normal_value_type& normal_reference;
 
     typedef TextCoords tex_value_type;
-    typedef TextCoords& tex_reference;
+    typedef tex_value_type& tex_reference;
+
+    typedef std::uint8_t celltype_value_type;
+    typedef celltype_value_type& celltype_reference;
+
+    typedef std::uint64_t celloffset_value_type;
+    typedef celloffset_value_type& celloffset_reference;
 
     /// Constructor
-    FWDATA_API CellIterator();
+    FWDATA_API CellIterator(::fwData::Mesh* mesh);
     FWDATA_API CellIterator(const CellIterator& other);
     FWDATA_API virtual ~CellIterator() override;
 
@@ -318,12 +324,14 @@ public:
     FWDATA_API color_reference color();
     FWDATA_API normal_reference normal();
     FWDATA_API tex_reference tex();
-    FWDATA_API point_reference operator*();
-    FWDATA_API PointIterator* operator->();
+    FWDATA_API celltype_reference cellType();
+    FWDATA_API celloffset_reference cellOffset();
+    FWDATA_API size_t nbPoints() const;
 
 protected:
 
     std::uint64_t* m_cellDataPointer;
+    std::uint64_t m_cellDataSize;
 };
 
 } // namespace iterator
