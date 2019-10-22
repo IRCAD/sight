@@ -423,6 +423,80 @@ void ImageTest::testRGBAIterator()
 
 //------------------------------------------------------------------------------
 
+void ImageTest::testIterator()
+{
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+
+    const ::fwTools::Type TYPE       = ::fwTools::Type::s_INT16;
+    const ::fwData::Image::Size SIZE = {10, 20, 15};
+
+    const auto allocatedSize = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::GRAY_SCALE);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2], img->getNumElements());
+
+    const auto lock = img->lock();
+
+    {
+        // check default raw int8 iterator
+        auto itr    = img->begin();
+        auto itrEnd = img->end();
+
+        CPPUNIT_ASSERT_EQUAL(static_cast< std::ptrdiff_t>(allocatedSize), itrEnd - itr);
+    }
+
+    typedef iterator::IterationBase<std::int16_t>::Raw RawIterator;
+    {
+        // check raw int16 iterator
+        const auto itr    = img->begin<RawIterator>();
+        const auto itrEnd = img->end<RawIterator>();
+
+        CPPUNIT_ASSERT_EQUAL(static_cast< std::ptrdiff_t>(img->getNumElements()), itrEnd - itr);
+    }
+
+    const auto allocatedSize2 = img->resize(SIZE, TYPE, ::fwData::Image::PixelFormat::RGB);
+
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*3*2, allocatedSize2);
+    CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*3, img->getNumElements());
+
+    {
+        // check raw int16 iterator
+        const auto itr    = img->begin<RawIterator>();
+        const auto itrEnd = img->end<RawIterator>();
+
+        CPPUNIT_ASSERT_EQUAL(static_cast< std::ptrdiff_t>(img->getNumElements()), itrEnd - itr);
+    }
+
+    {
+        // check RGB int16 iterator
+        typedef iterator::IterationBase<std::int16_t>::RGB RGBIterator;
+        const auto itr    = img->begin<RGBIterator>();
+        const auto itrEnd = img->end<RGBIterator>();
+
+        CPPUNIT_ASSERT_EQUAL(static_cast< std::ptrdiff_t>(img->getNumElements()/3), itrEnd - itr);
+    }
+
+    {
+        // check Raw int64 iterator
+        typedef iterator::IterationBase<std::int64_t>::Raw RawInt64Iterator;
+        const auto itr    = img->begin<RawInt64Iterator>();
+        const auto itrEnd = img->end<RawInt64Iterator>();
+
+        CPPUNIT_ASSERT_EQUAL(static_cast< std::ptrdiff_t>(img->getSizeInBytes()/8), itrEnd - itr);
+    }
+
+    {
+        // check RGB int64 iterator
+        typedef iterator::IterationBase<std::int64_t>::RGB RGBInt64Iterator;
+        const auto itr    = img->begin<RGBInt64Iterator>();
+        const auto itrEnd = img->end<RGBInt64Iterator>();
+
+        CPPUNIT_ASSERT_EQUAL(static_cast< std::ptrdiff_t>(img->getSizeInBytes()/(3*8)), itrEnd - itr);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ImageTest::testRGBIterator()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();

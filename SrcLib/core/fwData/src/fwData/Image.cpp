@@ -337,7 +337,7 @@ Image::Iterator<iterator::IterationBase<char>::Raw> Image::begin()
 Image::Iterator<iterator::IterationBase<char>::Raw> Image::end()
 {
     auto itr = Iterator<iterator::IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getNumElements());
+    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 
