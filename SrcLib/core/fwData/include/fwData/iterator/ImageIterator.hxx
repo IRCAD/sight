@@ -37,7 +37,7 @@ inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(ImageType image) :
     m_lock(image->lock()),
     m_idx(0),
     m_elementSize(FORMAT::elementSize),
-    m_numberOfElements(static_cast<difference_type>(image->getNumElements()))
+    m_numberOfElements(static_cast<difference_type>(image->getSizeInBytes()/sizeof(typename FORMAT::type)))
 {
 }
 
