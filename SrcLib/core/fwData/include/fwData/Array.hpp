@@ -279,11 +279,11 @@ public:
         /// Increment/Decrement operators
         IteratorBase& operator++();
         IteratorBase operator++(int);
-        IteratorBase& operator+(difference_type index);
+        IteratorBase operator+(difference_type index);
         IteratorBase& operator+=(difference_type index);
         IteratorBase& operator--();
         IteratorBase operator--(int);
-        IteratorBase& operator-(difference_type index);
+        IteratorBase operator-(difference_type index);
         IteratorBase& operator-=(difference_type index);
 
         difference_type operator+(const IteratorBase& other) const;
@@ -771,13 +771,11 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+(difference_type index)
 {
-    m_idx = m_idx + index;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
-    m_pointer = m_pointer + index;
-    return *this;
+    IteratorBase tmp(*this);
+    tmp += index;
+    return tmp;
 }
 
 //------------------------------------------------------------------------------
@@ -818,13 +816,11 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-(difference_type index)
 {
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx     = m_idx - index;
-    m_pointer = m_pointer - index;
-    return *this;
+    IteratorBase tmp(*this);
+    tmp -= index;
+    return tmp;
 }
 
 //------------------------------------------------------------------------------

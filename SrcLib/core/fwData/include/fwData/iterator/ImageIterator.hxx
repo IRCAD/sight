@@ -137,13 +137,11 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator+(difference_type index)
+inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator+(difference_type index)
 {
-    m_idx = m_idx + index*m_elementSize;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
-    m_pointer = m_pointer + index*m_elementSize;
-    return *this;
+    ImageIteratorBase tmp(*this);
+    tmp += index;
+    return tmp;
 }
 
 //------------------------------------------------------------------------------
@@ -184,13 +182,11 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator-(difference_type index)
+inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator-(difference_type index)
 {
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx     = m_idx - index*m_elementSize;
-    m_pointer = m_pointer - index*m_elementSize;
-    return *this;
+    ImageIteratorBase tmp(*this);
+    tmp -= index;
+    return tmp;
 }
 
 //------------------------------------------------------------------------------

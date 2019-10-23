@@ -230,11 +230,11 @@ public:
     /// Increment/Decrement operators
     ImageIteratorBase& operator++();
     ImageIteratorBase operator++(int);
-    ImageIteratorBase& operator+(difference_type index);
+    ImageIteratorBase operator+(difference_type index);
     ImageIteratorBase& operator+=(difference_type index);
     ImageIteratorBase& operator--();
     ImageIteratorBase operator--(int);
-    ImageIteratorBase& operator-(difference_type index);
+    ImageIteratorBase operator-(difference_type index);
     ImageIteratorBase& operator-=(difference_type index);
 
     difference_type operator+(const ImageIteratorBase& other) const;
