@@ -448,21 +448,24 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 {
     this->getRenderService()->makeCurrent();
 
+    auto interactorsBegin = m_interactors.begin();
+    auto interactorsEnd   = m_interactors.end();
+
     switch(info.interactionType)
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
+                it->second.lock()->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
             }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->wheelEvent(info.delta, info.x, info.y);
+                it->second.lock()->wheelEvent(info.delta, info.x, info.y);
             }
             break;
         }
@@ -471,9 +474,9 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             auto sig = this->signal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
             sig->asyncEmit(info.x, info.y);
 
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->resizeEvent(info.x, info.y);
+                it->second.lock()->resizeEvent(info.x, info.y);
             }
 
             auto renderService = m_renderService.lock();
@@ -495,54 +498,55 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:
         {
-
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->keyPressEvent(info.key);
+                it->second.lock()->keyPressEvent(info.key);
             }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE:
         {
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->keyReleaseEvent(info.key);
+                it->second.lock()->keyReleaseEvent(info.key);
             }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
         {
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->buttonReleaseEvent(info.button, info.x, info.y);
+                it->second.lock()->buttonReleaseEvent(info.button, info.x, info.y);
             }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS:
         {
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->buttonPressEvent(info.button, info.x, info.y);
+                it->second.lock()->buttonPressEvent(info.button, info.x, info.y);
             }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN:
         {
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->focusInEvent();
+                it->second.lock()->focusInEvent();
             }
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT:
         {
-            for(auto& interactor : m_interactors)
+            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
             {
-                interactor.lock()->focusOutEvent();
+                it->second.lock()->focusOutEvent();
             }
             break;
         }
     }
+
+    m_cancelFurtherInteraction = false;
     this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
 }
 
@@ -590,10 +594,8 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
     m_connections.disconnect();
 
     bool alreadyExist = false;
-    for(auto& interactor : m_interactors)
+    for(auto& [priority, interactor] : m_interactors)
     {
-        // This function is only kept to maintain compatibility with SInteractorStyle which will be removed soon
-        // We return the first select interactor found
         auto moveInteractor = ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor.lock());
         if(moveInteractor)
         {
@@ -605,7 +607,7 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
 
     if(!alreadyExist)
     {
-        m_interactors.push_back(_interactor);
+        m_interactors.insert(std::make_pair(0, _interactor));
     }
 
     m_moveInteractor = _interactor;
@@ -626,9 +628,17 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
 
 // ----------------------------------------------------------------------------
 
-void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr interactor)
+void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor)
 {
-    m_interactors.push_back(interactor);
+    FW_DEPRECATED("Layer::setSelectInteractor", "Layer::addInteractor", "21.0");
+    m_interactors.insert(std::make_pair(0, _interactor));
+}
+
+// ----------------------------------------------------------------------------
+
+void Layer::addInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor, int _priority)
+{
+    m_interactors.insert(std::make_pair(_priority, _interactor));
 }
 
 // ----------------------------------------------------------------------------
@@ -642,7 +652,8 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr in
 
 ::fwRenderOgre::interactor::IPickerInteractor::sptr Layer::getSelectInteractor()
 {
-    for(auto& interactor : m_interactors)
+    FW_DEPRECATED_MSG("Layer::getSelectInteractor", "21.0");
+    for(auto& [priority, interactor] : m_interactors)
     {
         // This function is only kept to maintain compatibility with SInteractorStyle which will be removed soon
         // We return the first select interactor found
@@ -1341,6 +1352,13 @@ void Layer::setEnabledOverlays(const std::vector<std::string>& _overlayScripts)
 const Layer::OverlaySetType& Layer::getEnabledOverlays() const
 {
     return m_enabledOverlays;
+}
+
+//-----------------------------------------------------------------------------
+
+void Layer::cancelFurtherInteraction()
+{
+    m_cancelFurtherInteraction = true;
 }
 
 //-----------------------------------------------------------------------------
