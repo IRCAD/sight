@@ -137,6 +137,8 @@ protected:
 
     void onSelectDir(QPointer<QLineEdit> lineEdit);
 
+    void onSelectFile(QPointer<QLineEdit> lineEdit);
+
 private:
 
     enum class PreferenceType : std::int8_t
@@ -145,6 +147,7 @@ private:
         CHECKBOX,
         U_INT,
         PATH,
+        FILE,
         COMBOBOX,
         DOUBLE
     };

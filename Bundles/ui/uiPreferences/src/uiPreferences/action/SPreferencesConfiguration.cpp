@@ -46,6 +46,7 @@
 #include <QIntValidator>
 #include <QLabel>
 #include <QPushButton>
+#include <fwData/location/SingleFile.hpp>
 
 namespace uiPreferences
 {
@@ -128,6 +129,10 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_type = PreferenceType::PATH;
         }
+        else if(typeCfg->getValue() == "file")
+        {
+            pref.m_type = PreferenceType::FILE;
+        }
         else if(typeCfg->getValue() == "combobox")
         {
             pref.m_type = PreferenceType::COMBOBOX;
@@ -157,7 +162,7 @@ void SPreferencesConfiguration::configuring()
         SLM_ASSERT("element 'default_value' is missing.", defaultValueCfg);
         pref.m_defaultValue = defaultValueCfg->getValue();
 
-        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH)
+        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH || pref.m_type == PreferenceType::FILE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
         }
@@ -234,6 +239,17 @@ void SPreferencesConfiguration::updating()
                         this->onSelectDir(pref.m_lineEdit);
                     });
         }
+        else if(pref.m_type == PreferenceType::FILE)
+        {
+            pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
+            layout->addWidget(pref.m_lineEdit, index, 1);
+            QPointer<QPushButton> directorySelector = new QPushButton("...");
+            layout->addWidget(directorySelector, index, 2);
+            QObject::connect(directorySelector.data(), &QPushButton::clicked, [this, pref]()
+            {
+                this->onSelectFile(pref.m_lineEdit);
+            });
+        }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
             const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_dataPreference->value()));
@@ -272,8 +288,8 @@ void SPreferencesConfiguration::updating()
     {
         for(PreferenceElt& pref : m_preferences)
         {
-            if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH) &&
-               !pref.m_lineEdit->text().isEmpty())
+            if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH ||
+            pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
             {
                 pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
             }
@@ -313,6 +329,26 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
         _sDefaultPath = result->getFolder();
         lineEdit->setText( QString::fromStdString(result->getFolder().string()) );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+}
+
+void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
+{
+    static ::boost::filesystem::path _sDefaultPath;
+
+    ::fwGui::dialog::LocationDialog dialogFile;
+    dialogFile.setTitle("Select File");
+    dialogFile.setDefaultLocation( ::fwData::location::SingleFile::New(_sDefaultPath) );
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
+
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
+    {
+        _sDefaultPath = result->getPath();
+        lineEdit->setText( QString::fromStdString(result->getPath().string()) );
+        dialogFile.saveDefaultLocation( ::fwData::location::SingleFile::New(_sDefaultPath) );
     }
 }
 
