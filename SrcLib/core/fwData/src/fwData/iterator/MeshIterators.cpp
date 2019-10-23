@@ -113,16 +113,11 @@ MeshIteratorBase MeshIteratorBase::operator++(int)
 }
 //------------------------------------------------------------------------------
 
-MeshIteratorBase& MeshIteratorBase::operator+(difference_type index)
+MeshIteratorBase MeshIteratorBase::operator+(difference_type index)
 {
-    m_idx += index;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] += index*m_elementSizes[i];
-    }
-    return *this;
+    MeshIteratorBase tmp(*this);
+    tmp += index;
+    return tmp;
 }
 //------------------------------------------------------------------------------
 
@@ -165,16 +160,11 @@ MeshIteratorBase MeshIteratorBase::operator--(int)
 
 //------------------------------------------------------------------------------
 
-MeshIteratorBase& MeshIteratorBase::operator-(difference_type index)
+MeshIteratorBase MeshIteratorBase::operator-(difference_type index)
 {
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx = m_idx - index;
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] -= index*m_elementSizes[i];
-    }
-    return *this;
+    MeshIteratorBase tmp(*this);
+    tmp -= index;
+    return tmp;
 }
 //------------------------------------------------------------------------------
 
@@ -241,9 +231,33 @@ PointIterator::PointIterator(::fwData::Mesh* mesh)
 
 //------------------------------------------------------------------------------
 
+PointIterator::PointIterator(const MeshIteratorBase& other) :
+    MeshIteratorBase(other)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
 PointIterator::~PointIterator()
 {
 
+}
+
+//------------------------------------------------------------------------------
+
+PointIterator& PointIterator::operator=(const MeshIteratorBase& other)
+{
+    if (this != &other)
+    {
+        m_pointers         = other.m_pointers;
+        m_locks            = other.m_locks;
+        m_idx              = other.m_idx;
+        m_numberOfElements = other.m_numberOfElements;
+        m_elementSizes     = other.m_elementSizes;
+        m_nbArrays         = other.m_nbArrays;
+    }
+    return *this;
 }
 
 //------------------------------------------------------------------------------
@@ -323,9 +337,33 @@ ConstPointIterator::ConstPointIterator(const ::fwData::Mesh* mesh)
 
 //------------------------------------------------------------------------------
 
+ConstPointIterator::ConstPointIterator(const MeshIteratorBase& other) :
+    MeshIteratorBase(other)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
 ConstPointIterator::~ConstPointIterator()
 {
 
+}
+
+//------------------------------------------------------------------------------
+
+ConstPointIterator& ConstPointIterator::operator=(const MeshIteratorBase& other)
+{
+    if (this != &other)
+    {
+        m_pointers         = other.m_pointers;
+        m_locks            = other.m_locks;
+        m_idx              = other.m_idx;
+        m_numberOfElements = other.m_numberOfElements;
+        m_elementSizes     = other.m_elementSizes;
+        m_nbArrays         = other.m_nbArrays;
+    }
+    return *this;
 }
 
 //------------------------------------------------------------------------------
@@ -391,6 +429,7 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
         m_locks.push_back(mesh->m_cellColors->lock());
         m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellColors->getBuffer());
         m_elementSizes[m_nbArrays] = sizeof (color_value_type);
+        m_colorIdx                 = m_nbArrays;
         ++m_nbArrays;
     }
     if (mesh->m_cellNormals)
@@ -398,6 +437,7 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
         m_locks.push_back(mesh->m_cellNormals->lock());
         m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellNormals->getBuffer());
         m_elementSizes[m_nbArrays] = sizeof (normal_value_type);
+        m_normalIdx                = m_nbArrays;
         ++m_nbArrays;
     }
     if (mesh->m_cellTexCoords)
@@ -405,6 +445,7 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
         m_locks.push_back(mesh->m_cellTexCoords->lock());
         m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellTexCoords->getBuffer());
         m_elementSizes[m_nbArrays] = sizeof (tex_value_type);
+        m_texIdx                   = m_nbArrays;
         ++m_nbArrays;
     }
 }
@@ -444,10 +485,10 @@ CellIterator& CellIterator::operator=(const CellIterator& other)
 
 //------------------------------------------------------------------------------
 
-CellIterator::point_idx_reference CellIterator::pointIdx(std::uint8_t id)
+CellIterator::point_idx_reference CellIterator::pointIdx(size_t id)
 {
-    const point_idx_value_type offset = *reinterpret_cast<point_idx_value_type*>(m_pointers[0]);
-    return *(m_cellDataPointer + offset + id);
+    const point_idx_value_type offset = *reinterpret_cast<point_idx_value_type*>(m_pointers[0]) + id;
+    return *(m_cellDataPointer + offset);
 }
 
 //------------------------------------------------------------------------------
@@ -498,6 +539,141 @@ size_t CellIterator::nbPoints() const
     else
     {
         nextOffset = m_cellDataSize;
+    }
+    return nextOffset - currentOffset;
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
+{
+    m_locks.push_back(mesh->m_cellData->lock());
+    m_locks.push_back(mesh->m_cellTypes->lock());
+    m_locks.push_back(mesh->m_cellDataOffsets->lock());
+    m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfCells());
+    m_cellDataPointer  = static_cast<const std::uint64_t*>(mesh->m_cellData->getBuffer());
+    m_cellDataSize     = mesh->getCellDataSize();
+    m_pointers[0]      = static_cast<char*>(mesh->m_cellDataOffsets->getBuffer());
+    m_pointers[1]      = static_cast<char*>(mesh->m_cellTypes->getBuffer());
+    m_elementSizes[0]  = sizeof (celloffset_value_type);
+    m_elementSizes[1]  = sizeof (celltype_value_type);
+    m_nbArrays         = 2;
+
+    if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 4)
+    {
+        m_locks.push_back(mesh->m_cellColors->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellColors->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (color_value_type);
+        m_colorIdx                 = m_nbArrays;
+        ++m_nbArrays;
+    }
+    if (mesh->m_cellNormals)
+    {
+        m_locks.push_back(mesh->m_cellNormals->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellNormals->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (normal_value_type);
+        m_normalIdx                = m_nbArrays;
+        ++m_nbArrays;
+    }
+    if (mesh->m_cellTexCoords)
+    {
+        m_locks.push_back(mesh->m_cellTexCoords->lock());
+        m_pointers[m_nbArrays]     = static_cast<char*>(mesh->m_cellTexCoords->getBuffer());
+        m_elementSizes[m_nbArrays] = sizeof (tex_value_type);
+        m_texIdx                   = m_nbArrays;
+        ++m_nbArrays;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::ConstCellIterator(const CellIterator& other) :
+    MeshIteratorBase(other),
+    m_cellDataPointer(other.m_cellDataPointer)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::~ConstCellIterator()
+{
+    m_locks.clear();
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator& ConstCellIterator::operator=(const ConstCellIterator& other)
+{
+    if (this != &other)
+    {
+        m_cellDataPointer  = other.m_cellDataPointer;
+        m_pointers         = other.m_pointers;
+        m_locks            = other.m_locks;
+        m_idx              = other.m_idx;
+        m_numberOfElements = other.m_numberOfElements;
+        m_elementSizes     = other.m_elementSizes;
+        m_nbArrays         = other.m_nbArrays;
+    }
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::point_idx_reference ConstCellIterator::pointIdx(size_t id)
+{
+    const point_idx_value_type offset = *reinterpret_cast<point_idx_value_type*>(m_pointers[0]) + id;
+    return *(m_cellDataPointer + offset);
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::color_reference ConstCellIterator::color()
+{
+    return *(reinterpret_cast<color_value_type*>(m_pointers[m_colorIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::normal_reference ConstCellIterator::normal()
+{
+    return *(reinterpret_cast<normal_value_type*>(m_pointers[m_normalIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::tex_reference ConstCellIterator::tex()
+{
+    return *(reinterpret_cast<tex_value_type*>(m_pointers[m_texIdx]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::celltype_reference ConstCellIterator::cellType()
+{
+    return *(reinterpret_cast<celltype_value_type*>(m_pointers[1]));
+}
+
+//------------------------------------------------------------------------------
+
+ConstCellIterator::celloffset_reference ConstCellIterator::cellOffset()
+{
+    return *(reinterpret_cast<celloffset_value_type*>(m_pointers[0]));
+}
+
+//------------------------------------------------------------------------------
+
+size_t ConstCellIterator::nbPoints() const
+{
+    const auto currentOffset = *(reinterpret_cast<celloffset_value_type*>(m_pointers[0]));
+    std::uint64_t nextOffset;
+    if (m_idx < m_numberOfElements -1)
+    {
+        nextOffset = *(reinterpret_cast<std::uint64_t*>(m_pointers[0])+1);
+    }
+    else
+    {
+        nextOffset = m_cellDataSize-1;
     }
     return nextOffset - currentOffset;
 }

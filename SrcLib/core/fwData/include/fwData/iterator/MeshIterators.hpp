@@ -147,11 +147,11 @@ public:
     /// Increment/Decrement operators
     FWDATA_API MeshIteratorBase& operator++();
     FWDATA_API MeshIteratorBase operator++(int);
-    FWDATA_API MeshIteratorBase& operator+(difference_type index);
+    FWDATA_API MeshIteratorBase operator+(difference_type index);
     FWDATA_API MeshIteratorBase& operator+=(difference_type index);
     FWDATA_API MeshIteratorBase& operator--();
     FWDATA_API MeshIteratorBase operator--(int);
-    FWDATA_API MeshIteratorBase& operator-(difference_type index);
+    FWDATA_API MeshIteratorBase operator-(difference_type index);
     FWDATA_API MeshIteratorBase& operator-=(difference_type index);
 
     FWDATA_API difference_type operator+(const MeshIteratorBase& other) const;
@@ -159,11 +159,15 @@ public:
 
 protected:
 
-    std::array< pointer, 4> m_pointers;
+    friend class ::fwData::Mesh;
+    friend class PointIterator;
+    friend class ConstPointIterator;
+
+    std::array< pointer, 5> m_pointers;
     std::vector< ::fwMemory::BufferObject::Lock > m_locks;
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};
-    std::array< difference_type, 4> m_elementSizes;
+    std::array< difference_type, 5> m_elementSizes;
     std::uint8_t m_nbArrays{1};
 
     std::uint8_t m_colorIdx{1};
@@ -209,7 +213,10 @@ public:
 
     /// Constructor
     FWDATA_API PointIterator(Mesh* mesh);
+    FWDATA_API PointIterator(const MeshIteratorBase& other);
     FWDATA_API virtual ~PointIterator() override;
+
+    FWDATA_API PointIterator& operator=(const MeshIteratorBase& other);
 
     friend class ConstPointIterator;
 
@@ -258,7 +265,10 @@ public:
 
     /// Constructor
     FWDATA_API ConstPointIterator(const Mesh* mesh);
+    FWDATA_API ConstPointIterator(const MeshIteratorBase& other);
     FWDATA_API virtual ~ConstPointIterator() override;
+
+    FWDATA_API ConstPointIterator& operator=(const MeshIteratorBase& other);
 
     FWDATA_API point_reference point();
     FWDATA_API color_reference color();
@@ -282,9 +292,12 @@ public:
 
     for (; iter != iterEnd; ++iter)
     {
-        iter->point().x = val1;
-        iter->point().y = val2;
-        iter->point().z = val2;
+        const size_t nbPoints = iter.nbPoints();
+        for (int i = 0; i< nbPoints ; ++i)
+        {
+            const auto pointIdx = iter.pointIdx(i);
+            //...
+        }
     }
    @endcode
  */
@@ -320,7 +333,7 @@ public:
 
     FWDATA_API CellIterator& operator=(const CellIterator& other);
 
-    FWDATA_API point_idx_reference pointIdx(std::uint8_t id);
+    FWDATA_API point_idx_reference pointIdx(size_t id);
     FWDATA_API color_reference color();
     FWDATA_API normal_reference normal();
     FWDATA_API tex_reference tex();
@@ -330,7 +343,77 @@ public:
 
 protected:
 
+    friend class ConstCellIterator;
     std::uint64_t* m_cellDataPointer;
+    std::uint64_t m_cellDataSize;
+};
+
+/**
+ * @brief Iterator on Mesh cells, cell colors and/or cell normals
+ *
+ * Iterate through the buffer and check if the index is not out of the bounds
+ *
+ * Example:
+ * @code{.cpp}
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    mesh->resize(25, 33, TRIANGLE);
+    PointIteratorBase<PointIteration> iter    = img->begin<PointIteration>();
+    const PointIteratorBase<PointIteration> iterEnd = img->end<PointIteration>();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        const size_t nbPoints = iter.nbPoints();
+        for (int i = 0; i< nbPoints ; ++i)
+        {
+            const auto pointIdx = iter.pointIdx(i);
+            //...
+        }
+    }
+   @endcode
+ */
+class FWDATA_CLASS_API ConstCellIterator : public MeshIteratorBase
+{
+public:
+
+    typedef const std::uint64_t point_idx_value_type;
+    typedef point_idx_value_type& point_idx_reference;
+
+    typedef const Point point_value_type;
+    typedef point_value_type& point_reference;
+
+    typedef const RGBA color_value_type;
+    typedef color_value_type& color_reference;
+
+    typedef const Normal normal_value_type;
+    typedef normal_value_type& normal_reference;
+
+    typedef const TextCoords tex_value_type;
+    typedef tex_value_type& tex_reference;
+
+    typedef const std::uint8_t celltype_value_type;
+    typedef celltype_value_type& celltype_reference;
+
+    typedef const std::uint64_t celloffset_value_type;
+    typedef celloffset_value_type& celloffset_reference;
+
+    /// Constructor
+    FWDATA_API ConstCellIterator(const ::fwData::Mesh* mesh);
+    FWDATA_API ConstCellIterator(const CellIterator& other);
+    FWDATA_API virtual ~ConstCellIterator() override;
+
+    FWDATA_API ConstCellIterator& operator=(const ConstCellIterator& other);
+
+    FWDATA_API point_idx_reference pointIdx(size_t id);
+    FWDATA_API color_reference color();
+    FWDATA_API normal_reference normal();
+    FWDATA_API tex_reference tex();
+    FWDATA_API celltype_reference cellType();
+    FWDATA_API celloffset_reference cellOffset();
+    FWDATA_API size_t nbPoints() const;
+
+protected:
+
+    const std::uint64_t* m_cellDataPointer;
     std::uint64_t m_cellDataSize;
 };
 

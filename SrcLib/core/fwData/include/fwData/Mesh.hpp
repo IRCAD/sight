@@ -631,6 +631,7 @@ protected:
     friend class ::fwData::iterator::PointIterator;
     friend class ::fwData::iterator::ConstPointIterator;
     friend class ::fwData::iterator::CellIterator;
+    friend class ::fwData::iterator::ConstCellIterator;
 
     /**
      * @brief Initializes points, cell-types, cell-data, and cell-data-offsets arrays.
@@ -763,7 +764,7 @@ template< typename ITERATOR >
 inline ITERATOR Mesh::end()
 {
     auto itr = ITERATOR(this);
-    itr += static_cast< typename ITERATOR::difference_type>(this->getNumberOfPoints());
+    itr += static_cast< typename ITERATOR::difference_type>(itr.m_numberOfElements);
     return itr;
 }
 
@@ -781,7 +782,7 @@ template< typename ITERATOR >
 inline ITERATOR Mesh::end() const
 {
     auto itr = ITERATOR(this);
-    itr += static_cast< typename ITERATOR::difference_type>(this->getNumberOfPoints());
+    itr += static_cast< typename ITERATOR::difference_type>(itr.m_numberOfElements);
     return itr;
 }
 
