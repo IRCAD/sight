@@ -64,6 +64,12 @@ namespace action
                 <default_value>...</default_value>
             </preference>
             <preference>
+                <type>file</type>
+                <name>Video file</name>
+                <key>VIDEO_REF_FILE</key>
+                <default_value>...</default_value>
+            </preference>
+            <preference>
                 <type>text</type>
                 <name>DICOM/MPPS port</name>
                 <key>DICOM_PORT_KEY</key>
@@ -103,7 +109,7 @@ class UIPREFERENCES_CLASS_API SPreferencesConfiguration : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SPreferencesConfiguration, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SPreferencesConfiguration, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIPREFERENCES_API SPreferencesConfiguration() noexcept;

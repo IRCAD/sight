@@ -27,6 +27,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 #include <fwData/String.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -46,7 +47,6 @@
 #include <QIntValidator>
 #include <QLabel>
 #include <QPushButton>
-#include <fwData/location/SingleFile.hpp>
 
 namespace uiPreferences
 {
@@ -56,7 +56,7 @@ namespace action
 
 const ::fwCom::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPreferences::action::SPreferencesConfiguration, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPreferences::action::SPreferencesConfiguration, ::fwData::Object )
 
 //-----------------------------------------------------------------------------
 
@@ -162,7 +162,8 @@ void SPreferencesConfiguration::configuring()
         SLM_ASSERT("element 'default_value' is missing.", defaultValueCfg);
         pref.m_defaultValue = defaultValueCfg->getValue();
 
-        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH || pref.m_type == PreferenceType::FILE)
+        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH ||
+           pref.m_type == PreferenceType::FILE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
         }
@@ -246,9 +247,9 @@ void SPreferencesConfiguration::updating()
             QPointer<QPushButton> directorySelector = new QPushButton("...");
             layout->addWidget(directorySelector, index, 2);
             QObject::connect(directorySelector.data(), &QPushButton::clicked, [this, pref]()
-            {
-                this->onSelectFile(pref.m_lineEdit);
-            });
+                    {
+                        this->onSelectFile(pref.m_lineEdit);
+                    });
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
@@ -289,7 +290,7 @@ void SPreferencesConfiguration::updating()
         for(PreferenceElt& pref : m_preferences)
         {
             if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH ||
-            pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
+                pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
             {
                 pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
             }
@@ -331,6 +332,8 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
 }
+
+//------------------------------------------------------------------------------
 
 void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 {
