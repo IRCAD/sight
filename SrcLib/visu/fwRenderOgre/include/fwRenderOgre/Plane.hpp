@@ -107,6 +107,12 @@ public:
 
     FWRENDEROGRE_API ::Ogre::MaterialPtr getMaterial() const;
 
+    /// Retrieves the movable object created by this class.
+    FWRENDEROGRE_API const ::Ogre::MovableObject* getMovableObject() const;
+
+    /// Sets the picking flags.
+    FWRENDEROGRE_API void setQueryFlags(std::uint32_t _flags);
+
 private:
 
     /// Sets the plane's original position.

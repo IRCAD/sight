@@ -490,4 +490,18 @@ void Plane::changeSlice(float sliceIndex)
 }
 
 //-----------------------------------------------------------------------------
+
+const ::Ogre::MovableObject* Plane::getMovableObject() const
+{
+    return m_sceneManager->getEntity(m_entityName);
+}
+
+//-----------------------------------------------------------------------------
+
+void Plane::setQueryFlags(std::uint32_t _flags)
+{
+    m_sceneManager->getEntity(m_entityName)->setQueryFlags(_flags);
+}
+
+//-----------------------------------------------------------------------------
 } // namespace fwRenderOgre

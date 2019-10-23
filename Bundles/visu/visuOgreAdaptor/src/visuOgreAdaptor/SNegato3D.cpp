@@ -35,10 +35,12 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <fwRenderOgre/picker/IPicker.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
 
+#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 
@@ -47,9 +49,9 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SNegato3D, ::fwData::Image);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SNegato3D, ::fwData::Image)
 
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_NEWIMAGE_SLOT          = "newImage";
+const ::fwCom::Slots::SlotKeyType SNegato3D::s_NEWIMAGE_SLOT = "newImage";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICETYPE_SLOT         = "sliceType";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICEINDEX_SLOT        = "sliceIndex";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_OPACITY_SLOT    = "updateOpacity";
@@ -68,7 +70,6 @@ static const std::string VISIBILITY_FIELD   = "VISIBILITY";
 
 SNegato3D::SNegato3D() noexcept :
     m_autoResetCamera(true),
-    m_activePlane(nullptr),
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE ),
     m_helperTF(std::bind(&SNegato3D::updateTF, this))
@@ -182,9 +183,6 @@ void SNegato3D::starting()
 
     this->setPlanesOpacity();
 
-    // Default active plane = sagittal plane.
-    m_activePlane = m_planes[0];
-
     if (m_autoResetCamera)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
@@ -195,6 +193,9 @@ void SNegato3D::starting()
     {
         this->newImage();
     }
+
+    auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
+    this->getLayer()->addInteractor(interactor, 1);
 }
 
 //------------------------------------------------------------------------------
@@ -252,6 +253,7 @@ void SNegato3D::createPlanes(const ::fwData::Image::SpacingType& _spacing, const
         m_planes[i]->setOriginPosition(origin);
         m_planes[i]->initializePlane();
         m_planes[i]->enableAlpha(m_enableAlpha);
+        m_planes[i]->setQueryFlags(0x1);
     }
 }
 
@@ -297,11 +299,8 @@ void SNegato3D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::changeSliceType(int /*_from*/, int _to)
+void SNegato3D::changeSliceType(int /*_from*/, int /* _to */)
 {
-    // We have to update the active plane
-    m_activePlane = m_planes[_to];
-
     this->getRenderService()->makeCurrent();
 
     // Update TF
@@ -317,7 +316,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-    float sliceIndex[3] = {
+    ::Ogre::Vector3 sliceIndices = {
         static_cast<float>(_sagittalIndex ) / (static_cast<float>(image->getSize()[0] - 1)),
         static_cast<float>(_frontalIndex  ) / (static_cast<float>(image->getSize()[1] - 1)),
         static_cast<float>(_axialIndex    ) / (static_cast<float>(image->getSize()[2] - 1))
@@ -325,7 +324,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
     for (int i = 0; i < 3; ++i)
     {
-        m_planes[i]->changeSlice( sliceIndex[i] );
+        m_planes[i]->changeSlice( sliceIndices[i] );
     }
 
     this->requestRender();
@@ -411,6 +410,107 @@ void SNegato3D::setVisibility(bool visibility)
         ::fwCom::Connection::Blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
         visUpdateSig->asyncEmit(visibility);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::setPlanesQueryFlags(std::uint32_t _flags)
+{
+    for(auto* p : m_planes)
+    {
+        p->setQueryFlags(_flags);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::mouseMoveEvent(MouseButton button, int x, int y, int, int)
+{
+    if(button == MouseButton::MIDDLE)
+    {
+        this->middleButtonInteraction(x, y);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::buttonPressEvent(MouseButton button, int x, int y)
+{
+    if(button == MouseButton::MIDDLE)
+    {
+        this->setPlanesQueryFlags(0x1);
+        this->middleButtonInteraction(x, y);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::middleButtonInteraction(int _x, int _y)
+{
+    const auto pickRes = this->getPickedSlices(_x, _y);
+
+    if(pickRes.has_value())
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        const auto pickedPt = pickRes.value();
+
+        auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >
+                       (::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
+        sig->asyncEmit(pickedPt[2], pickedPt[1], pickedPt[0]);
+        this->getLayer()->cancelFurtherInteraction();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::optional< ::Ogre::Vector3i> SNegato3D::getPickedSlices(int x, int y)
+{
+    auto* const sceneManager = this->getSceneManager();
+    SLM_ASSERT("Scene manager not yet created.", sceneManager);
+    ::Ogre::Camera* camera = sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+
+    const int height = camera->getViewport()->getActualHeight();
+    const int width  = camera->getViewport()->getActualWidth();
+
+    ::fwRenderOgre::picker::IPicker picker;
+    picker.setSceneManager(this->getSceneManager());
+    picker.executeRaySceneQuery(x, y, width, height, 0x1);
+
+    auto isPicked = [&picker](::fwRenderOgre::Plane* _p)
+                    {
+                        return _p->getMovableObject() == picker.getSelectedObject();
+                    };
+
+    auto it = std::find_if(m_planes.cbegin(), m_planes.cend(), isPicked);
+
+    if(it != m_planes.cend())
+    {
+        this->setPlanesQueryFlags(0x0);
+        (*it)->setQueryFlags(0x1);
+
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        ::Ogre::Vector3 pickedPt = picker.getIntersectionInWorldSpace();
+
+        const auto imgOrigin = image->getOrigin2();
+        const ::Ogre::Vector3 origin(static_cast< float >(imgOrigin[0]),
+                                     static_cast< float >(imgOrigin[1]),
+                                     static_cast< float >(imgOrigin[2]));
+
+        const auto imgSpacing = image->getSpacing2();
+        const ::Ogre::Vector3 spacing(static_cast< float >(imgSpacing[0]),
+                                      static_cast< float >(imgSpacing[1]),
+                                      static_cast< float >(imgSpacing[2]));
+
+        pickedPt = pickedPt / spacing - origin;
+
+        return ::Ogre::Vector3i(pickedPt);
+    }
+
+    return std::nullopt;
 }
 
 //------------------------------------------------------------------------------

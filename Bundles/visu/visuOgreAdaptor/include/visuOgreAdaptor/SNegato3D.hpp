@@ -32,9 +32,12 @@
 #include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/Plane.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
+
+#include <optional>
 
 namespace visuOgreAdaptor
 {
@@ -69,13 +72,14 @@ namespace visuOgreAdaptor
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwRenderOgre::ITransformable
+                                            public ::fwRenderOgre::ITransformable,
+                                            public ::fwRenderOgre::interactor::IInteractor
 {
 public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
-    fwCoreServiceMacro(SNegato3D, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SNegato3D, ::fwRenderOgre::IAdaptor)
 
     /// Constructor
     VISUOGREADAPTOR_API SNegato3D() noexcept;
@@ -118,6 +122,52 @@ protected:
 
 private:
 
+    /// Sets the displayed slices if the middle button is pressed.
+    virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy) final;
+
+    /// Sets the displayed slices if the middle button is pressed.
+    virtual void buttonPressEvent(MouseButton button, int x, int y) final;
+
+    /** @brief Unused ::fwRenderOgre::interactor::IInteractor API.
+     * @{
+     */
+    virtual void buttonReleaseEvent(MouseButton, int, int ) final
+    {
+    }
+    //------------------------------------------------------------------------------
+
+    virtual void wheelEvent(int, int, int) final
+    {
+    }
+    //------------------------------------------------------------------------------
+
+    virtual void resizeEvent(int, int) final
+    {
+    }
+    //------------------------------------------------------------------------------
+
+    virtual void keyPressEvent(int) final
+    {
+    }
+    //------------------------------------------------------------------------------
+
+    virtual void keyReleaseEvent(int) final
+    {
+    }
+    //------------------------------------------------------------------------------
+
+    virtual void focusInEvent() final
+    {
+    }
+    //------------------------------------------------------------------------------
+
+    virtual void focusOutEvent() final
+    {
+    }
+    /**@} */
+
+    void middleButtonInteraction(int _x, int _y);
+
     /// Slot: update image buffer
     void newImage();
 
@@ -137,6 +187,12 @@ private:
     /// Slot: sets the negato's visibility
     void setVisibility(bool visibility);
 
+    /// Sets the picking flags on all three negato planes.
+    void setPlanesQueryFlags(std::uint32_t _flags);
+
+    /// Attemps to pick the negato planes, returns the image-space of the intersection if successful.
+    std::optional< ::Ogre::Vector3i> getPickedSlices(int x, int y);
+
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
 
@@ -150,10 +206,7 @@ private:
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// Stores the planes on which we will apply our texture
-    ::fwRenderOgre::Plane* m_planes[3];
-
-    /// The current selected plane. This one will move in the scene
-    ::fwRenderOgre::Plane* m_activePlane;
+    std::array< ::fwRenderOgre::Plane*, 3> m_planes;
 
     /// The scene node allowing to move the entire negato
     ::Ogre::SceneNode* m_negatoSceneNode;
