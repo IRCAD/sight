@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,9 +47,11 @@ public:
      * @brief Creates or retrieves the ogre font generated from truetype font with a fixed size
      * @param _trueTypeFileName truetype font file name, must be in a resource folder.
      * @param _size the font's character size in points.
+     * @param _trueTypeResolution font map resolution in dots per inch.
      * @return the font generated from the file with the given size.
      */
-    static FWRENDEROGRE_API ::Ogre::FontPtr getFont(const std::string& _trueTypeFileName, const size_t _size);
+    static FWRENDEROGRE_API ::Ogre::FontPtr getFont(const std::string& _trueTypeFileName, const size_t _size,
+                                                    const std::uint32_t _trueTypeResolution = 220);
 
     /// Creates or retrieves the material used to render the specified font.
     static FWRENDEROGRE_API ::Ogre::MaterialPtr getFontMtl(const std::string& _fontName);

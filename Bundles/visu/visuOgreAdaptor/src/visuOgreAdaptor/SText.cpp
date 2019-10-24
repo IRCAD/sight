@@ -64,7 +64,8 @@ void SText::configuring()
 
     m_textString = srvconfig.get<std::string>("text", "");
 
-    m_fontSize = config.get<unsigned int>("fontSize", 32);
+    m_fontSource = config.get("fontSource", m_fontSource);
+    m_fontSize   = config.get<size_t>("fontSize", m_fontSize);
 
     m_horizontalAlignment = config.get<std::string>("hAlign", "left");
     SLM_ASSERT("'hAlign' must be 'left', 'center' or 'right'",
@@ -77,6 +78,9 @@ void SText::configuring()
                m_verticalAlignment == "top"
                || m_verticalAlignment == "center"
                || m_verticalAlignment == "bottom");
+
+    m_position.x = config.get<float>("x", m_position.x);
+    m_position.y = config.get<float>("y", m_position.y);
 
     const auto hexaTextColor = config.get<std::string>("color", "#ffffff");
     std::array< std::uint8_t, 4 > textColor;
@@ -95,16 +99,16 @@ void SText::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", m_fontSize);
+
+    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     m_text = ::fwRenderOgre::Text::New(this->getID() + "_text",
                                        this->getSceneManager(),
                                        textContainer,
-                                       dejaVuSansFont,
-                                       nullptr);
+                                       m_fontSource, m_fontSize, dpi,
+                                       this->getLayer()->getDefaultCamera());
 
     m_text->setTextColor(m_textColor);
-    m_text->setCharHeight(m_textHeight);
 
     this->updateText();
 }
@@ -142,7 +146,7 @@ void SText::stopping()
 
 //----------------------------------------------------------------------------
 
-void SText::setText(const std::string& str)
+void SText::setText(std::string str)
 {
     this->getRenderService()->makeCurrent();
 
@@ -155,30 +159,36 @@ void SText::setText(const std::string& str)
 
 void SText::updatePositionFromAlignment()
 {
-    const float padding = 0.01f;
-    const std::map< std::string, ::Ogre::TextAreaOverlayElement::Alignment > stringToAlignmentMap {
+    const std::map< std::string, ::Ogre::TextAreaOverlayElement::Alignment > stringToHorizAlignmentMap {
         { "left",  ::Ogre::TextAreaOverlayElement::Left },
         { "center", ::Ogre::TextAreaOverlayElement::Center },
         { "right", ::Ogre::TextAreaOverlayElement::Right }
     };
 
     const std::map< std::string, float > horizAlignToX {
-        { "left", 0.f + padding},
-        { "center", 0.5f },
-        { "right", 1.f - padding}
+        { "left", m_position.x },
+        { "center", 0.5f + m_position.x },
+        { "right", 1.f - m_position.x }
+    };
+
+    const std::map< std::string, ::Ogre::GuiVerticalAlignment > stringToVertAlignmentMap {
+        { "bottom", ::Ogre::GVA_BOTTOM },
+        { "center", ::Ogre::GVA_CENTER },
+        { "top", ::Ogre::GVA_TOP }
     };
 
     const std::map< std::string, float > vertAlignToY {
-        { "bottom", 1.f - m_textHeight - padding},
-        { "center", 0.5f - m_textHeight * 0.5f },
-        { "top", 0.f + padding}
+        { "bottom", 1.f - m_position.y },
+        { "center", 0.5f + m_position.y },
+        { "top", m_position.y }
     };
 
-    const auto alignment = stringToAlignmentMap.at(m_horizontalAlignment);
-    const float x        = horizAlignToX.at(m_horizontalAlignment);
-    const float y        = vertAlignToY.at(m_verticalAlignment);
+    const auto hAlign = stringToHorizAlignmentMap.at(m_horizontalAlignment);
+    const auto vAlign = stringToVertAlignmentMap.at(m_verticalAlignment);
+    const float x     = horizAlignToX.at(m_horizontalAlignment);
+    const float y     = vertAlignToY.at(m_verticalAlignment);
 
-    m_text->setTextAlignment(alignment);
+    m_text->setTextAlignment(hAlign, vAlign);
     m_text->setPosition(x, y);
 }
 

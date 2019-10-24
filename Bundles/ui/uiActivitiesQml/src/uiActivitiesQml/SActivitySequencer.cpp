@@ -34,7 +34,7 @@
 namespace uiActivitiesQml
 {
 
-fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivitySequencer );
+fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivitySequencer )
 
 const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 

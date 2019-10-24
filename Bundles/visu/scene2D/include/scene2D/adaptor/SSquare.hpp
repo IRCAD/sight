@@ -63,7 +63,7 @@ class SCENE2D_CLASS_API SSquare : public ::fwRenderQt::IAdaptor
 
 public:
 
-    fwCoreServiceMacro(SSquare, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SSquare, ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SSquare() noexcept;
     SCENE2D_API virtual ~SSquare() noexcept;

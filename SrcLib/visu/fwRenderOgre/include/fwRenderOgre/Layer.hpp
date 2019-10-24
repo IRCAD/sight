@@ -41,6 +41,7 @@
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreVector2.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 
@@ -418,6 +419,8 @@ private:
 
     /// Viewport parameters: left, top, width, height.
     ViewportConfigType m_viewportCfg { 0.f, 0.f, 1.f, 1.f};
+
+    float m_dpi { 96.f };
 
 };
 

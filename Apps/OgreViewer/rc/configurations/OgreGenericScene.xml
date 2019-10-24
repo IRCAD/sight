@@ -196,6 +196,7 @@
                 <adaptor uid="pointListAdp" />
                 <adaptor uid="landmarksAdp" />
                 <adaptor uid="renderStatsAdp" />
+                <adaptor uid="textAdp" />
             </scene>
         </service>
 
@@ -246,8 +247,14 @@
             <config layer="default" />
         </service>
 
+        <service uid="textAdp" type="::visuOgreAdaptor::SText">
+            <text>Not for clinical use.&#xA;Demonstration only.</text>
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="24"
+                    hAlign="center" vAlign="bottom" color="#eeeeee" />
+        </service>
+
         <service uid="renderStatsAdp" type="::visuOgreAdaptor::SRenderStats">
-            <config layer="default" color="#ff0000" height="0.02"/>
+            <config layer="default" color="#ff0000" fontSize="12" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -344,6 +351,7 @@
         <start uid="pointListAdp" />
         <start uid="landmarksAdp" />
         <start uid="renderStatsAdp" />
+        <start uid="textAdp" />
 
         <update uid="volumeRenderingEditorAct" />
 

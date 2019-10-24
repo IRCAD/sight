@@ -71,8 +71,9 @@ static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
 static const std::string s_QUERY_CONFIG             = "queryFlags";
 static const std::string s_RADIUS_CONFIG            = "radius";
 static const std::string s_DISPLAY_LABEL_CONFIG     = "displayLabel";
-static const std::string s_CHARACTER_HEIGHT_CONFIG  = "charHeight";
 static const std::string s_LABEL_COLOR_CONFIG       = "labelColor";
+static const std::string s_FONT_SOURCE_CONFIG       = "fontSource";
+static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
 
 //-----------------------------------------------------------------------------
 
@@ -162,10 +163,11 @@ void SPointList::configuring()
             hexaMask.substr(0, 2) == "0x");
         m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
+    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
     m_radius       = config.get(s_RADIUS_CONFIG, 1.f);
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
-    m_charHeight   = config.get(s_CHARACTER_HEIGHT_CONFIG, m_charHeight);
 
     const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
     m_labelColor = ::fwData::Color::New();
@@ -270,9 +272,10 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
 {
     ::Ogre::SceneManager* sceneMgr          = this->getSceneManager();
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+
+    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     size_t i                = 0;
     std::string labelNumber = std::to_string(i);
@@ -289,9 +292,8 @@ void SPointList::createLabel(const ::fwData::PointList::csptr& _pointList)
             labelNumber = std::to_string(i);
         }
         m_labels.push_back(::fwRenderOgre::Text::New(this->getID() + labelNumber, sceneMgr, textContainer,
-                                                     dejaVuSansFont, cam));
+                                                     m_fontSource, m_fontSize, dpi, cam));
         m_labels[i]->setText(labelNumber);
-        m_labels[i]->setCharHeight(m_charHeight);
         m_labels[i]->setTextColor(::Ogre::ColourValue(m_labelColor->red(), m_labelColor->green(),
                                                       m_labelColor->blue()));
         m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
