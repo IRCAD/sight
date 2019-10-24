@@ -638,7 +638,19 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr _i
 
 void Layer::addInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor, int _priority)
 {
-    m_interactors.insert(std::make_pair(_priority, _interactor));
+    using PairType = typename decltype(m_interactors)::value_type;
+    const PairType pair = std::make_pair(_priority, _interactor);
+
+    const auto isPair = [&pair](const PairType& _p)
+                        {
+                            return pair.second.lock() == _p.second.lock();
+                        };
+
+    // Add the interactor if it doesn't already exit.
+    if(std::find_if(m_interactors.begin(), m_interactors.end(), isPair) == m_interactors.end())
+    {
+        m_interactors.insert(pair);
+    }
 }
 
 // ----------------------------------------------------------------------------

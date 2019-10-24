@@ -161,6 +161,10 @@ public:
     FWRENDEROGRE_API static void copyOgreMxToTM3D(const ::Ogre::Matrix4& _mx,
                                                   const ::fwData::TransformationMatrix3D::sptr& _tm3d);
 
+    /// Copies the image's spacing and origin into Ogre vectors.
+    FWRENDEROGRE_API static std::pair< ::Ogre::Vector3, ::Ogre::Vector3 >
+    convertSpacingAndOrigin(const ::fwData::Image::csptr& _img);
+
 private:
 
     /// Parses all resources.cfg files and adds resource locations to the resource group manager.

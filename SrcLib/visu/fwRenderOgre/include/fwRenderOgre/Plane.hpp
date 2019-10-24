@@ -63,6 +63,8 @@ public:
         ANISOTROPIC
     } FilteringEnumType;
 
+    using sptr = std::shared_ptr<Plane>;
+
     FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
                            ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
                            ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _entityOpacity = 1.0f);

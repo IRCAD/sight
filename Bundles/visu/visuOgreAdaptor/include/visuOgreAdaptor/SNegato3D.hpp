@@ -37,6 +37,8 @@
 #include <fwRenderOgre/Plane.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
 
+#include <OGRE/OgreManualObject.h>
+
 #include <optional>
 
 namespace visuOgreAdaptor
@@ -44,7 +46,10 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor to display a 3D negato.
- * *
+ *
+ * @section Signals Signals
+ * - \b pickedVoxel(string): sends the coordinates and intensity of the voxel picked by the cross widget.
+ *
  * @section Slots Slots
  * - \b newImage() : update the image display to show the new content.
  * - \b sliceType(int, int) : update image slice index .
@@ -70,6 +75,7 @@ namespace visuOgreAdaptor
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
+ * - \b interactive (optional, true/false, default=false): enables interactions on the negato
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
@@ -122,51 +128,40 @@ protected:
 
 private:
 
-    /// Sets the displayed slices if the middle button is pressed.
-    virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy) final;
+    /** Interacts with the negato if it was picked by pressing any mouse button.
+     * Interactions will take place while holding down the button. The following actions are available:
+     * - Left mouse click: shows a cross widget to select a voxel and retrieve its intensity.
+     * - Middle mouse click: move the slice's intersection to where the mouse cursor is.
+     * - Right mouse click: adjust the transfer function level and window by moving
+     *                      the mouse up/down and left/right respectively.
+     */
+    virtual void mouseMoveEvent(MouseButton button, int _x, int _y, int _dx, int _dy) final;
 
-    /// Sets the displayed slices if the middle button is pressed.
-    virtual void buttonPressEvent(MouseButton button, int x, int y) final;
+    /// Attempts to pick the negato and starts interactions if picking was successful.
+    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) final;
+
+    /// Ends all interactions, regardless of the input.
+    virtual void buttonReleaseEvent(MouseButton, int, int ) final;
 
     /** @brief Unused ::fwRenderOgre::interactor::IInteractor API.
      * @{
      */
-    virtual void buttonReleaseEvent(MouseButton, int, int ) final
-    {
-    }
-    //------------------------------------------------------------------------------
-
-    virtual void wheelEvent(int, int, int) final
-    {
-    }
-    //------------------------------------------------------------------------------
-
-    virtual void resizeEvent(int, int) final
-    {
-    }
-    //------------------------------------------------------------------------------
-
-    virtual void keyPressEvent(int) final
-    {
-    }
-    //------------------------------------------------------------------------------
-
-    virtual void keyReleaseEvent(int) final
-    {
-    }
-    //------------------------------------------------------------------------------
-
-    virtual void focusInEvent() final
-    {
-    }
-    //------------------------------------------------------------------------------
-
-    virtual void focusOutEvent() final
-    {
-    }
+    virtual void wheelEvent(int, int, int) final;
+    virtual void resizeEvent(int, int) final;
+    virtual void keyPressEvent(int) final;
+    virtual void keyReleaseEvent(int) final;
+    virtual void focusInEvent() final;
+    virtual void focusOutEvent() final;
     /**@} */
 
-    void middleButtonInteraction(int _x, int _y);
+    /// Sets the slice intersection at the (_x, _y) screen position if possible.
+    void moveSlices(int _x, int _y);
+
+    /// Picks the intensity value at the (_x, _y) screen position.
+    void pickIntensity(int _x, int _y);
+
+    /// Updates the transfer function window and level by adding the input values.
+    void updateWindowing(double _windowDelta, double _levelDelta);
 
     /// Slot: update image buffer
     void newImage();
@@ -190,14 +185,20 @@ private:
     /// Sets the picking flags on all three negato planes.
     void setPlanesQueryFlags(std::uint32_t _flags);
 
-    /// Attemps to pick the negato planes, returns the image-space of the intersection if successful.
-    std::optional< ::Ogre::Vector3i> getPickedSlices(int x, int y);
+    /// Attemps to pick the negato planes, returns the world space position of the intersection if successful.
+    std::optional< ::Ogre::Vector3 > getPickedSlices(int _x, int _y);
+
+    /// Updates the intensity picking widget's position.
+    void updatePickingCross(const ::Ogre::Vector3& _pickedPos);
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera;
+    bool m_autoResetCamera { true };
 
     /// Sets the opacity to that of the transfer function.
     bool m_enableAlpha {false};
+
+    /// Sets whether or not interaction are enables on the negato.
+    bool m_interactive { false };
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
@@ -206,18 +207,35 @@ private:
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// Stores the planes on which we will apply our texture
-    std::array< ::fwRenderOgre::Plane*, 3> m_planes;
+    std::array< ::fwRenderOgre::Plane::sptr, 3> m_planes;
+
+    /// Points to the plane that the user is currently interacting with.
+    ::fwRenderOgre::Plane::sptr m_pickedPlane;
+
+    /// Widget used to pick intensities.
+    ::Ogre::ManualObject* m_pickingCross { nullptr };
 
     /// The scene node allowing to move the entire negato
-    ::Ogre::SceneNode* m_negatoSceneNode;
+    ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
     /// Defines the filtering type for this negato
-    ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
+    ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
-    /// Image orientation
-    OrientationMode m_orientation;
-
+    /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    /// Stores the transfer function window value at the time the interaction started.
+    double m_initialWindow { 0.f };
+
+    /// Stores the transfer function level value at the time the interaction started.
+    double m_initialLevel { 0.f };
+
+    /// Stores the mouse position at the time the windowing interaction started.
+    ::Ogre::Vector2i m_initialPos { -1, -1 };
+
+    using PickedVoxelSigType = ::fwCom::Signal< void (std::string) >;
+    /// Sent when a voxel is picked using the left mouse button.
+    PickedVoxelSigType::sptr m_pickedVoxelSignal;
 };
 
 //------------------------------------------------------------------------------

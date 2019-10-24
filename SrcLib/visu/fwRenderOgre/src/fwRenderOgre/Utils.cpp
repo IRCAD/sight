@@ -749,6 +749,23 @@ void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const fwData::Transformat
 
 //------------------------------------------------------------------------------
 
+std::pair< ::Ogre::Vector3, ::Ogre::Vector3 > Utils::convertSpacingAndOrigin(const ::fwData::Image::csptr& _img)
+{
+    const auto& imgOrigin = _img->getOrigin2();
+    const ::Ogre::Vector3 origin(static_cast< float >(imgOrigin[0]),
+                                 static_cast< float >(imgOrigin[1]),
+                                 static_cast< float >(imgOrigin[2]));
+
+    const auto& imgSpacing = _img->getSpacing2();
+    const ::Ogre::Vector3 spacing(static_cast< float >(imgSpacing[0]),
+                                  static_cast< float >(imgSpacing[1]),
+                                  static_cast< float >(imgSpacing[2]));
+
+    return std::make_pair(spacing, origin);
+}
+
+//------------------------------------------------------------------------------
+
 bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output)
 {
     bool keyFound = false;
