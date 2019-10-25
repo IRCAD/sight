@@ -41,7 +41,7 @@ namespace visuOgreAdaptor
 const ::fwCom::Slots::SlotKeyType SAxis::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis)
 
 //-----------------------------------------------------------------------------
 
@@ -191,8 +191,8 @@ void SAxis::starting()
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
-    yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, 0.f, -coneRadius),
-                                                 ::Ogre::Vector3(coneRadius, m_length, coneRadius)));
+    yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
+                                                 ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
     yLineNode->attachObject(yLine);
     yLineNode->roll(::Ogre::Degree(90));
 
@@ -204,8 +204,8 @@ void SAxis::starting()
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
-    yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, -coneRadius, 0.f),
-                                                 ::Ogre::Vector3(coneRadius, coneRadius, m_length)));
+    zLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
+                                                 ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
     zLineNode->attachObject(zLine);
     zLineNode->yaw(::Ogre::Degree(-90));
 
