@@ -341,7 +341,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
         static_cast<float>(_axialIndex    ) / (static_cast<float>(image->getSize()[2] - 1))
     };
 
-    for (int i = 0; i < 3; ++i)
+    for (std::uint8_t i = 0; i < 3; ++i)
     {
         m_planes[i]->changeSlice( sliceIndices[i] );
     }
