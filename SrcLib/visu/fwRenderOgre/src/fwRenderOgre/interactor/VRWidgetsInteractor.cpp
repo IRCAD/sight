@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,7 +60,7 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
     const int height = camera->getViewport()->getActualHeight();
     const int width  = camera->getViewport()->getActualWidth();
 
-    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0xFFFFFFFF );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
