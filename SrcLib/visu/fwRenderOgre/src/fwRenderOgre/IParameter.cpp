@@ -158,6 +158,7 @@ void IParameter::updating()
     {
         return;
     }
+    this->getRenderService()->makeCurrent();
     if(m_techniqueName.empty())
     {
         bool bSet                                      = false;
@@ -202,6 +203,7 @@ void IParameter::updating()
 
 void IParameter::stopping()
 {
+    this->getRenderService()->makeCurrent();
     m_material.reset();
 
     if(m_texture)
