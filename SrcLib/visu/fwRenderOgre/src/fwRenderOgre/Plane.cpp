@@ -504,4 +504,11 @@ void Plane::setQueryFlags(std::uint32_t _flags)
 }
 
 //-----------------------------------------------------------------------------
+
+void Plane::setRenderQueuerGroupAndPriority(std::uint8_t _groupId, std::uint16_t _priority)
+{
+    m_sceneManager->getEntity(m_entityName)->setRenderQueueGroupAndPriority(_groupId, _priority);
+}
+
+//-----------------------------------------------------------------------------
 } // namespace fwRenderOgre

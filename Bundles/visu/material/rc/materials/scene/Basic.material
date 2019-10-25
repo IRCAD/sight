@@ -30,10 +30,6 @@ material BasicAmbient
             vertex_program_ref Default/Ambient_VP
             {
             }
-
-            fragment_program_ref Default/Ambient_FP
-            {
-            }
         }
     }
 }
@@ -68,10 +64,6 @@ material BasicPhong
             cull_software none
 
             vertex_program_ref Default/PixelLit_VP
-            {
-            }
-
-            fragment_program_ref Default/PixelLit_FP
             {
             }
         }

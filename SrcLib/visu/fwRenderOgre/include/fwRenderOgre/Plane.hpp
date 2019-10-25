@@ -115,6 +115,9 @@ public:
     /// Sets the picking flags.
     FWRENDEROGRE_API void setQueryFlags(std::uint32_t _flags);
 
+    /// Sets this object's render queue group and render priority.
+    FWRENDEROGRE_API void setRenderQueuerGroupAndPriority(std::uint8_t _groupId, std::uint16_t _priority);
+
 private:
 
     /// Sets the plane's original position.

@@ -35,6 +35,7 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/picker/IPicker.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
@@ -67,6 +68,8 @@ static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 
 static const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
 static const std::string VISIBILITY_FIELD   = "VISIBILITY";
+
+static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID - 1;
 
 //------------------------------------------------------------------------------
 
@@ -189,7 +192,7 @@ void SNegato3D::starting()
         auto crossMat              = basicAmbientMat->clone(this->getID() + "_CrossMaterial");
         crossMat->setAmbient(::Ogre::ColourValue::Red);
         crossMat->setDiffuse(::Ogre::ColourValue::Red);
-        crossMat->setDepthBias(1.f, 1.f);
+        crossMat->setDepthCheckEnabled(false);
         m_pickingCross->estimateVertexCount(4);
         m_pickingCross->begin(crossMat, ::Ogre::RenderOperation::OT_LINE_LIST);
         for(std::uint8_t i = 0; i < 4; ++i)
@@ -198,6 +201,8 @@ void SNegato3D::starting()
         }
         m_pickingCross->end();
         m_pickingCross->setVisible(false);
+        // Always render the widget after the plane it is displayed on.
+        m_pickingCross->setRenderQueueGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 1);
         m_negatoSceneNode->attachObject(m_pickingCross);
     }
 }
@@ -503,8 +508,12 @@ void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
 
 void SNegato3D::buttonReleaseEvent(MouseButton, int, int)
 {
-    m_pickedPlane.reset();
-    m_pickingCross->setVisible(false);
+    if(m_pickedPlane)
+    {
+        m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
+        m_pickedPlane.reset();
+    }
+    // m_pickingCross->setVisible(false);
     m_pickedVoxelSignal->asyncEmit("");
 }
 
@@ -544,6 +553,11 @@ void SNegato3D::moveSlices(int _x, int _y)
 
 void SNegato3D::pickIntensity(int _x, int _y)
 {
+    if(m_pickedPlane)
+    {
+        m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
+    }
+
     const auto pickedPos = this->getPickedSlices(_x, _y);
 
     if(pickedPos.has_value() && m_pickedVoxelSignal->getNumberOfConnections() > 0)
@@ -563,6 +577,9 @@ void SNegato3D::pickIntensity(int _x, int _y)
                                  + ", " + std::to_string(pickedVoxel[2]) + "): " + intensity;
 
         m_pickedVoxelSignal->asyncEmit(pickingText);
+
+        // Render the picked plane before the widget.
+        m_pickedPlane->setRenderQueuerGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 0);
     }
 }
 
