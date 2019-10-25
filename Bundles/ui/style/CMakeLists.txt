@@ -15,4 +15,4 @@ qt5_add_binary_resources(${FWPROJECT_NAME}_FLATDARK_RCC
 )
 
 add_dependencies(${FWPROJECT_NAME} ${FWPROJECT_NAME}_DARKSTYLE_RCC)
-
+add_dependencies(${FWPROJECT_NAME} ${FWPROJECT_NAME}_FLATDARK_RCC)
