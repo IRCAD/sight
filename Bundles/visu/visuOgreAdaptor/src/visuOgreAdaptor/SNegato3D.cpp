@@ -44,6 +44,7 @@
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
+#include <OGRE/OgreVector.h>
 
 #include <algorithm>
 
@@ -372,7 +373,7 @@ void SNegato3D::updateTF()
         const ::fwData::mt::ObjectReadLock tfLock(tf);
         m_gpuTF->updateTexture(tf);
 
-        for(int i(0); i < 3; ++i)
+        for(std::uint8_t i = 0; i < 3; ++i)
         {
             m_planes[i]->switchThresholding(tf->getIsClamped());
 
@@ -513,7 +514,7 @@ void SNegato3D::buttonReleaseEvent(MouseButton, int, int)
         m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
         m_pickedPlane.reset();
     }
-    // m_pickingCross->setVisible(false);
+    m_pickingCross->setVisible(false);
     m_pickedVoxelSignal->asyncEmit("");
 }
 
@@ -570,7 +571,14 @@ void SNegato3D::pickIntensity(int _x, int _y)
         auto imageBufferLock = image->lock();
 
         const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
-        const ::Ogre::Vector3i pickedVoxel(pickedPos.value() / spacing - origin);
+        const auto pickedPosImageSpace = pickedPos.value() / spacing - origin;
+
+        const auto& imgSize = image->getSize2();
+        ::fwData::Image::Size pickedVoxel;
+        for(std::uint8_t i = 0; i < 3; ++i)
+        {
+            pickedVoxel[i] = std::clamp(static_cast<size_t>(pickedPosImageSpace[i]), size_t{0}, imgSize[i] - 1);
+        }
 
         const auto intensity   = image->getPixelAsString(pickedVoxel[0], pickedVoxel[1], pickedVoxel[2]);
         const auto pickingText = "(" + std::to_string(pickedVoxel[0]) + ", " + std::to_string(pickedVoxel[1])
