@@ -49,23 +49,25 @@ macro(linux_install PRJ_NAME)
         install_qt_plugins()
     endif()
 
-    if(${PRJ_NAME} STREQUAL "sight")
-        # Needed for fixup_bundle first argument
-        set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
+    if(NOT USE_SYSTEM_LIB)
+        if(${PRJ_NAME} STREQUAL "sight")
+            # Needed for fixup_bundle first argument
+            set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
+        endif()
+
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
+        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+
+        set(CPACK_OUTPUT_FILE_PREFIX packages)
+        set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
+
+        execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
+        set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-linux_${ARCHITECTURE}-Sight_${GIT_TAG}")
+        set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
+        set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
+        set(CPACK_PACKAGE_VERSION "${VERSION}")
     endif()
-
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
-
-    set(CPACK_OUTPUT_FILE_PREFIX packages)
-    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
-
-    execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-
-    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-linux_${ARCHITECTURE}-Sight_${GIT_TAG}")
-    set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
-    set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
-    set(CPACK_PACKAGE_VERSION "${VERSION}")
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
