@@ -79,7 +79,7 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 {
 public:
 
-    fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer);
+    fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer)
     fwCoreAllowSharedFromThis()
 
     /// Extrinsic x Intrinsic camera calibrations.

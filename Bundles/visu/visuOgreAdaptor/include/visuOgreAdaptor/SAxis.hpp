@@ -67,7 +67,7 @@ class VISUOGREADAPTOR_CLASS_API SAxis : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceMacro(SAxis, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SAxis, ::fwRenderOgre::IAdaptor)
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
