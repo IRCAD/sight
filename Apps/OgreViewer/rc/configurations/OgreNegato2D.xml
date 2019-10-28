@@ -70,7 +70,7 @@
 
         <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <config layer="default" />
+            <config layer="default" fontSize="32"/>
         </service>
 
         <!-- ******************************* Actions ****************************************** -->

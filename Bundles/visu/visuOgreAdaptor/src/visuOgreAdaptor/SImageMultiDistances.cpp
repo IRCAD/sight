@@ -56,6 +56,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
+#include <boost/numeric/conversion/cast.hpp>
+
 #include <glm/glm.hpp>
 
 #include <OgreMeshManager.h>
@@ -64,9 +66,9 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT     = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
 
 SImageMultiDistances::SImageMultiDistances() noexcept
@@ -86,6 +88,12 @@ SImageMultiDistances::~SImageMultiDistances() noexcept
 void SImageMultiDistances::configuring()
 {
     this->configureParams();
+
+    const ConfigType srvconfig = this->getConfigTree();
+    const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
+
+    m_fontSource = config.get("fontSource", m_fontSource);
+    m_fontSize   = config.get<size_t>("fontSize", m_fontSize);
 }
 
 //------------------------------------------------------------------------------
@@ -153,11 +161,12 @@ void SImageMultiDistances::updating()
             const ::fwData::Point::cwptr pointBack  = distance->getPoints().back();
             const ::fwData::Point::csptr p1         = pointFront.lock();
             const ::fwData::Point::csptr p2         = pointBack.lock();
+
             float ps1[3];
             float ps2[3];
-            std::copy(p1->getCoord().begin(), (p1)->getCoord().end(), ps1 );
-            std::copy(p2->getCoord().begin(), (p2)->getCoord().end(), ps2 );
-            this->createDistance(ps1, ps2, m_distanceNb, generateColor(m_distanceNb));
+            std::transform(p1->getCoord().begin(), p1->getCoord().end(), ps1, ::boost::numeric_cast<float, double>);
+            std::transform(p2->getCoord().begin(), p2->getCoord().end(), ps2, ::boost::numeric_cast<float, double>);
+            this->createDistance(ps1, ps2, m_distanceNb, this->generateColor(m_distanceNb));
             ++m_distanceNb;
         }
         /// remove the origin to my distances copy
@@ -367,17 +376,17 @@ void SImageMultiDistances::removeCurrentOrigin() const
 void SImageMultiDistances::createMillimeterLabel(const float _point[3], const Ogre::Real _distance, size_t _id,
                                                  const ::Ogre::ColourValue _color)
 {
-    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
-    const ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
+    ::Ogre::Camera* const cam               = this->getLayer()->getDefaultCamera();
+
     const std::string labelNumber = std::to_string(_distance) + "mm";
+    const float dpi               = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     m_millimeterValue[_id] = ::fwRenderOgre::Text::New(this->getID() + labelNumber + std::to_string(_id),
-                                                       m_sceneMgr,
-                                                       textContainer,
-                                                       dejaVuSansFont, cam);
+                                                       m_sceneMgr, textContainer,
+                                                       m_fontSource, m_fontSize, dpi, cam);
+
     m_millimeterValue[_id]->setText(labelNumber);
-    m_millimeterValue[_id]->setCharHeight(0.03f);
     m_millimeterValue[_id]->setTextColor(_color);
 
     m_millimeterNodes[_id] = m_rootSceneNode->createChildSceneNode(this->getID() + "_distance" +
@@ -409,15 +418,17 @@ void SImageMultiDistances::deleteMillimeterLabel(size_t _id)
 
 void SImageMultiDistances::createIdLabel(const float ps1[3], size_t _id, const ::Ogre::ColourValue& _color)
 {
-    ::Ogre::OverlayContainer* textContainer = this->getRenderService()->getOverlayTextPanel();
-    const ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
+    ::Ogre::Camera* const cam               = this->getLayer()->getDefaultCamera();
+
     const std::string labelNumber = std::to_string(_id);
-    ::fwRenderOgre::Text* const text = ::fwRenderOgre::Text::New(this->getID() + labelNumber, m_sceneMgr, textContainer,
-                                                                 dejaVuSansFont, cam);
+    const float dpi               = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
+
+    auto* const text = ::fwRenderOgre::Text::New(this->getID() + labelNumber, m_sceneMgr, textContainer,
+                                                 m_fontSource, m_fontSize, dpi, cam);
+
     m_labels[_id] = text;
     text->setText(labelNumber);
-    text->setCharHeight(0.03f);
     text->setTextColor(_color);
 
     m_labelNodes[_id] = m_rootSceneNode->createChildSceneNode(this->getID() + "_id" + labelNumber);
@@ -868,7 +879,7 @@ Ogre::MovableObject* SImageMultiDistances::pickObject(int _x, int _y)
 
     const int height       = cam->getViewport()->getActualHeight();
     const int width        = cam->getViewport()->getActualWidth();
-    const bool pickSuccess = m_picker.executeRaySceneQuery( _x, _y, width, height, 0 );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( _x, _y, width, height, 0xffffffff );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
@@ -938,8 +949,8 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
         const ::fwData::Point::csptr p1         = pointFront.lock();
         const ::fwData::Point::csptr p2         = pointBack.lock();
 
-        std::copy(p1->getCoord().begin(), (p1)->getCoord().end(), m_ps1 );
-        std::copy(p2->getCoord().begin(), (p2)->getCoord().end(), m_ps2 );
+        std::transform(p1->getCoord().begin(), p1->getCoord().end(), m_ps1, ::boost::numeric_cast<float, double>);
+        std::transform(p2->getCoord().begin(), p2->getCoord().end(), m_ps2, ::boost::numeric_cast<float, double>);
         m_activeInteraction = true;
         this->mouseMoveEvent(_button, _x, _y, 0, 0);
         this->addCurrentOrigin();

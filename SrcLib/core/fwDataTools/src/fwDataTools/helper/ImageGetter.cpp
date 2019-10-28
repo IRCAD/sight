@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,6 +40,8 @@ namespace helper
 ImageGetter::ImageGetter( ::fwData::Image::csptr ImageGetter ) :
     m_image(ImageGetter)
 {
+    FW_DEPRECATED_MSG("::fwDataTools::helper::ImageGetter is no longer supported, the methods have been moved to "
+                      "::fwData::Image", "22.0")
     if ( ImageGetter )
     {
         m_lock = ImageGetter->getDataArray()->getBufferObject()->lock();

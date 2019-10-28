@@ -180,10 +180,12 @@
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender">
-            <scene overlays="LogoOverlay">
+            <scene>
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                <layer id="video" depth="1" />
-                <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3"/>
+                <layer id="video" depth="1" >
+                    <viewport hOffset="0.03" vOffset="0.03" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
+                </layer>
+                <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3" overlays="LogoOverlay" />
                 <adaptor uid="videoAdp" />
                 <adaptor uid="videoInteractorAdp" />
                 <adaptor uid="defaultInteractorAdp" />
@@ -194,6 +196,7 @@
                 <adaptor uid="pointListAdp" />
                 <adaptor uid="landmarksAdp" />
                 <adaptor uid="renderStatsAdp" />
+                <adaptor uid="textAdp" />
             </scene>
         </service>
 
@@ -213,12 +216,12 @@
         </service>
 
         <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" picker="Mesh" queryFlags="1"/>
+            <config layer="default" picker="Mesh" queryMask="0x1"/>
         </service>
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
             <in key="model" uid="${modelSeries}" />
-            <config layer="default" />
+            <config layer="default" queryFlags="0x1" />
         </service>
 
         <service uid="volumeAdp" type="::visuOgreAdaptor::SVolumeRender">
@@ -236,7 +239,7 @@
 
         <service uid="pointListAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes">
             <in key="pointList" uid="pointList" />
-            <config layer="default" autoresetcamera="no" color="#ff0000" radius="1" fixedSize="true" queryFlags="1"/>
+            <config layer="default" autoresetcamera="no" color="#ff0000" radius="1" fixedSize="true" />
         </service>
 
         <service uid="landmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes">
@@ -244,8 +247,14 @@
             <config layer="default" />
         </service>
 
+        <service uid="textAdp" type="::visuOgreAdaptor::SText">
+            <text>Not for clinical use.&#xA;Demonstration only.</text>
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="24"
+                    hAlign="center" vAlign="bottom" color="#eeeeee" />
+        </service>
+
         <service uid="renderStatsAdp" type="::visuOgreAdaptor::SRenderStats">
-            <config layer="default" color="#ff0000" height="0.02"/>
+            <config layer="default" color="#ff0000" fontSize="12" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -342,6 +351,7 @@
         <start uid="pointListAdp" />
         <start uid="landmarksAdp" />
         <start uid="renderStatsAdp" />
+        <start uid="textAdp" />
 
         <update uid="volumeRenderingEditorAct" />
 

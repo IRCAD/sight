@@ -46,7 +46,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service type="::visuOgreAdaptor::SText">
         <in key="object" uid="..." />
-        <config layer="default" fontSize="32" hAlign="right" vAlign="bottom" color="#ff3396" />
+        <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32"
+                hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
  *
@@ -55,7 +56,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service type="::visuOgreAdaptor::SText">
         <text>Hello World!</text>
-        <config layer="default" fontSize="32" hAlign="right" vAlign="bottom" color="#ff3396" />
+        <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32"
+                hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
 
@@ -65,10 +67,13 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory) : not really used but it is needed to be bound to a render service.
  * - \b color (optional, default=#ffffffff): the color and opacity of the text.
- * - \b fontSize (optional, default=32): font size in inches.
+ * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, default=16): font size in points.
  * - \b hAlign (optional, values=left|center|right, default="left"): horizontal alignment.
  * - \b vAlign (optional, values=top|center|bottom, default="bottom"): vertical alignment.
  * - \b text (optional): text to display, only available when no input is set.
+ * - \b x (optional, float, default=0.f): horizontal coordinate relatively to the screen.
+ * - \b y (optional, float, default=0.f): vertical coordinate relatively to the screen.
  */
 class VISUOGREADAPTOR_CLASS_API SText : public ::fwRenderOgre::IAdaptor
 {
@@ -102,7 +107,7 @@ protected:
 private:
 
     /// Sets the text string.
-    void setText(const std::string& str);
+    void setText(std::string str);
 
     /// Updates the displayed text from the input object.
     void updateText();
@@ -116,12 +121,10 @@ private:
     /// The text's color.
     ::Ogre::ColourValue m_textColor;
 
-    /// The text's height, expressed as a fraction of the viewport height.
-    /// FIXME: should be computed from the font size and the screen's physical size.
-    const float m_textHeight { 0.03f };
+    /// Font size in points.
+    size_t m_fontSize { 16 };
 
-    /// Font size in inches.
-    unsigned int m_fontSize;
+    ::Ogre::Vector2 m_position { 0.f, 0.f };
 
     /// Vertical alignment type (top, center or bottom).
     std::string m_verticalAlignment;
@@ -131,6 +134,9 @@ private:
 
     /// Displayed message.
     std::string m_textString;
+
+    /// TrueType font source file.
+    std::string m_fontSource {"DejaVuSans.ttf"};
 
 };
 

@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Manage interactor style for Ogre
+ * @brief Manage interactor style for Ogre.
  *
  * @section Signals Signals
  * - \b picked(::fwDataTools::PickingInfo) : Emit the picked informations.
@@ -48,118 +48,82 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type=" ::visuOgreAdaptor::SInteractorStyle ">
-            <config layer=" ... " movement=" ... " picker=" ..." queryFlags="..."/>
+            <config layer="..." movement="..." picker="..." queryMask="0xFFFFFFFF" />
        </service>
    @endcode
  * @subsection Configuration Configuration:
- * - \b layer (mandatory) : Layer on which the interactions will be done.
- * - \b movement (optional) : Style of the movement interactor: 'Trackball', 'Fixed', 'Negato2D', or 'VR'.
- * - \b picker (optional) : Style of the picker interactor: 'Mesh' or 'Video'.
- * - \b queryFlags (optional) : Used for picking. Picked only displayed entities with the same flag.
+ * - \b layer (mandatory): Layer on which the interactions will be done.
+ * - \b movement (optional, 'Trackball'/'Fixed'/'Negato2D'/'VR', default=''): Style of the movement
+ * interactor.
+ * - \b picker (optional, 'Mesh'/'Video', default=''): Style of the picker interactor.
+ * - \b queryMask (optional, uint32, default=0xFFFFFFFF): (uint32) Used for picking. Picked only displayed entities with
+ * the matching flag.
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
-    fwCoreServiceMacro(SInteractorStyle, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SInteractorStyle, ::fwRenderOgre::IAdaptor)
 
-    /**
-     * @name Signals API
-     * @{
-     */
+    /// Slots used to forward the picker signal.
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
 
-    /// Signal used to forward the interactor sinal
+    /// Signal used to forward the interactor signal.
     typedef ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) > PointClickedSigType;
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
 
-    /// Deprecated
-    typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSignalTypeDeprecated;
-
-    /** @} */
-
-    /**
-     * @name Slots API
-     * @{
-     */
-
-    /// Slots used to forward the picker sinal
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT;
-
-    /** @} */
-
-    /// Constructor. Creates signals and slots
+    /// Creates signals and slots.
     VISUOGREADAPTOR_API SInteractorStyle() noexcept;
 
-    /// Destructor. Does nothing
+    /// Destruct all members.
     VISUOGREADAPTOR_API virtual ~SInteractorStyle() noexcept;
 
 protected:
 
-    /// Select the interactor style
+    /// Select the interactor style.
     VISUOGREADAPTOR_API void configuring() override;
 
-    /// Starting method
+    /// Create signals and slots.
     VISUOGREADAPTOR_API void starting() override;
 
-    /// Update the interactor
+    /// Update the interactor.
     VISUOGREADAPTOR_API void updating() override;
 
-    /// Stopping method
+    /// Stopping method.
     VISUOGREADAPTOR_API void stopping() override;
 
 private:
 
     /**
-     * @name Slots methods
-     * @{
+     * @brief Called by the interactor, forward the signal.
+     * @param _info Picking informations.
      */
+    void picked(::fwDataTools::PickingInfo _info);
 
-    /// Slot: forward the signal sent by the interactor
-    void picked(::fwDataTools::PickingInfo);
-
-    /// Deprecated
-    void addPointDeprecated(::fwData::Object::sptr obj);
-
-    /// Deprecated
-    void removePointDeprecated(::fwData::Object::sptr obj);
-
-    /**
-     * @}
-     */
-
-    /// Set interactor style
+    /// Set interactor style.
     void setInteractorStyle();
 
-    /**
-     * @name Signals attributes
-     * @{
-     */
-
-    /// Pointer to the generic signal
+    /// Pointer to the generic signal.
     PointClickedSigType::sptr m_sigPicked;
 
-    /**
-     * @}
-     */
+    /// Type of the picker style.
+    std::string m_pickerStyle {""};
 
-    /// Type of the picker style
-    std::string m_pickerStyle;
+    /// Type of the movement style.
+    std::string m_movementStyle {""};
 
-    /// Type of the movement style
-    std::string m_movementStyle;
-
-    ///Connection service, needed for slot/signal association
+    /// Connection service, needed for slot/signal association.
     ::fwCom::helper::SigSlotConnection m_connections;
 
-    /// Mask for picking requests
-    std::uint32_t m_queryFlags {0};
+    /// Mask for picking requests.
+    std::uint32_t m_queryMask {0xFFFFFFFF};
 
-    /// Pointer on move interactor
-    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;
+    /// Pointer on move interactor.
+    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor {nullptr};
 
-    /// Pointer on select interactor
-    ::fwRenderOgre::interactor::IInteractor::sptr m_selectInteractor;
+    /// Pointer on select interactor.
+    ::fwRenderOgre::interactor::IInteractor::sptr m_selectInteractor {nullptr};
 };
 
 } //namespace visuOgreAdaptor

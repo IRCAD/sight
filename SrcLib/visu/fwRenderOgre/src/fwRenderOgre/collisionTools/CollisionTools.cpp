@@ -60,19 +60,17 @@
 namespace fwRenderOgre
 {
 
-CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr)
+CollisionTools::CollisionTools(::Ogre::SceneManager* _sceneMgr, std::uint32_t _queryMask)
 {
-    mSceneMgr = sceneMgr;
+    mSceneMgr = _sceneMgr;
 
-    mRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray());
+    mRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray(), _queryMask);
     if (nullptr == mRaySceneQuery)
     {
         // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
         return;
     }
     mRaySceneQuery->setSortByDistance(true);
-
-    mTSMRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray());
 }
 
 CollisionTools::~CollisionTools()
@@ -81,32 +79,29 @@ CollisionTools::~CollisionTools()
     {
         delete mRaySceneQuery;
     }
-
-    if (mTSMRaySceneQuery != nullptr)
-    {
-        delete mTSMRaySceneQuery;
-    }
 }
 
 //------------------------------------------------------------------------------
 
-bool CollisionTools::collidesWithEntity(const Ogre::Vector3& fromPoint, const Ogre::Vector3& toPoint,
-                                        const float collisionRadius, const float rayHeightLevel,
-                                        const Ogre::uint32 queryMask)
+bool CollisionTools::collidesWithEntity(const Ogre::Vector3& _fromPoint,
+                                        const Ogre::Vector3& _toPoint,
+                                        const Ogre::uint32 _queryMask,
+                                        const float _collisionRadius,
+                                        const float _rayHeightLevel)
 {
-    Ogre::Vector3 fromPointAdj(fromPoint.x, fromPoint.y + rayHeightLevel, fromPoint.z);
-    Ogre::Vector3 toPointAdj(toPoint.x, toPoint.y + rayHeightLevel, toPoint.z);
+    Ogre::Vector3 fromPointAdj(_fromPoint.x, _fromPoint.y + _rayHeightLevel, _fromPoint.z);
+    Ogre::Vector3 toPointAdj(_toPoint.x, _toPoint.y + _rayHeightLevel, _toPoint.z);
     Ogre::Vector3 normal = toPointAdj - fromPointAdj;
     float distToDest     = normal.normalise();
     float distToColl     = 0.0f;
 
     std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*,
-               float> res = raycastFromPoint(fromPointAdj, normal, queryMask);
+               float> res = raycastFromPoint(fromPointAdj, normal, _queryMask);
 
     if (std::get<0>(res))
     {
         distToColl  = std::get<3>(res);
-        distToColl -= collisionRadius;
+        distToColl -= _collisionRadius;
         return (distToColl <= distToDest);
     }
     else
@@ -117,36 +112,39 @@ bool CollisionTools::collidesWithEntity(const Ogre::Vector3& fromPoint, const Og
 
 //------------------------------------------------------------------------------
 
-std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycastFromCamera(::Ogre::RenderWindow* rw,
-                                                                                               Ogre::Camera* camera,
-                                                                                               const Ogre::Vector2& mousecoords,
-                                                                                               const Ogre::uint32 queryMask)
+std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycastFromCamera(
+    ::Ogre::RenderWindow* _rw,
+    Ogre::Camera* _camera,
+    const Ogre::Vector2& _mousecoords,
+    const Ogre::uint32 _queryMask)
 {
     // Create the ray to test
-    Ogre::Real tx = mousecoords.x / static_cast< ::Ogre::Real>(rw->getWidth());
-    Ogre::Real ty = mousecoords.y / static_cast< ::Ogre::Real>(rw->getHeight());
-    Ogre::Ray ray = camera->getCameraToViewportRay(tx, ty);
+    Ogre::Real tx = _mousecoords.x / static_cast< ::Ogre::Real>(_rw->getWidth());
+    Ogre::Real ty = _mousecoords.y / static_cast< ::Ogre::Real>(_rw->getHeight());
+    Ogre::Ray ray = _camera->getCameraToViewportRay(tx, ty);
 
-    return raycast(ray, queryMask);
+    return raycast(ray, _queryMask);
 }
 
 //------------------------------------------------------------------------------
 
 std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycastFromPoint(
-    const Ogre::Vector3& point, const Ogre::Vector3& normal, const Ogre::uint32 queryMask)
+    const Ogre::Vector3& _point,
+    const Ogre::Vector3& _normal,
+    const Ogre::uint32 _queryMask)
 {
     // create the ray to test
     static Ogre::Ray ray;
-    ray.setOrigin(point);
-    ray.setDirection(normal);
+    ray.setOrigin(_point);
+    ray.setDirection(_normal);
 
-    return raycast(ray, queryMask);
+    return raycast(ray, _queryMask);
 }
 
 //------------------------------------------------------------------------------
 
-std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycast(const Ogre::Ray& ray,
-                                                                                     const Ogre::uint32 queryMask)
+std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycast(const Ogre::Ray& _ray,
+                                                                                     const Ogre::uint32 _queryMask)
 {
     Ogre::Vector3 result;
     Ogre::MovableObject* target = nullptr;
@@ -156,9 +154,9 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
     if (mRaySceneQuery != nullptr)
     {
         // Create a query object.
-        mRaySceneQuery->setRay(ray);
+        mRaySceneQuery->setRay(_ray);
         mRaySceneQuery->setSortByDistance(true);
-        mRaySceneQuery->setQueryMask(queryMask);
+        mRaySceneQuery->setQueryMask(_queryMask);
         // Execute the query, returns a vector of hits.
         if (mRaySceneQuery->execute().size() <= 0)
         {
@@ -342,7 +340,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
 
                         const ::Ogre::Matrix4 viewProjMatrix = projMatrix * viewMatrix;
 
-                        const ::Ogre::Vector3 resPointWVP = viewProjMatrix * ray.getPoint(queryResult[qrIdx].distance);
+                        const ::Ogre::Vector3 resPointWVP = viewProjMatrix * _ray.getPoint(queryResult[qrIdx].distance);
                         const ::Ogre::Vector2 resPointSS  = (resPointWVP.xy() / 2.f) + 0.5f;
 
                         static const ::Ogre::Real s_TOLERANCE = 0.02f;
@@ -358,7 +356,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                                     resPointSS.distance(pointSS) < s_TOLERANCE)
                                 {
                                     newClosestFound = true;
-                                    closestDistance = vertices[indices[i]].distance(ray.getOrigin());
+                                    closestDistance = vertices[indices[i]].distance(_ray.getOrigin());
                                 }
                             }
                         }
@@ -373,7 +371,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                                     resPointSS.distance(pointSS) < s_TOLERANCE)
                                 {
                                     newClosestFound = true;
-                                    closestDistance = vertices[i].distance(ray.getOrigin());
+                                    closestDistance = vertices[i].distance(_ray.getOrigin());
                                 }
                             }
                         }
@@ -385,7 +383,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         {
                             for(size_t i = 0; i < indices.size(); i += 4)
                             {
-                                const auto firstHit = intersect(ray, vertices[indices[i]],  vertices[indices[i+1]],
+                                const auto firstHit = intersect(_ray, vertices[indices[i]],  vertices[indices[i+1]],
                                                                 vertices[indices[i+2]], closestDistance, positiveSide,
                                                                 negativeSide);
                                 if(firstHit.first)
@@ -393,7 +391,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                                     newClosestFound = true;
                                     closestDistance = firstHit.second;
                                 }
-                                const auto secondHit = intersect(ray, vertices[indices[i+2]],  vertices[indices[i+3]],
+                                const auto secondHit = intersect(_ray, vertices[indices[i+2]],  vertices[indices[i+3]],
                                                                  vertices[indices[i]], closestDistance, positiveSide,
                                                                  negativeSide);
                                 if(secondHit.first)
@@ -407,14 +405,14 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         {
                             for(size_t i = 0; i < vertices.size(); i += 4)
                             {
-                                const auto firstHit = intersect(ray, vertices[i],  vertices[i+1], vertices[i+2],
+                                const auto firstHit = intersect(_ray, vertices[i],  vertices[i+1], vertices[i+2],
                                                                 closestDistance, positiveSide, negativeSide);
                                 if(firstHit.first)
                                 {
                                     newClosestFound = true;
                                     closestDistance = firstHit.second;
                                 }
-                                const auto secondHit = intersect(ray, vertices[i+2],  vertices[i+3], vertices[i],
+                                const auto secondHit = intersect(_ray, vertices[i+2],  vertices[i+3], vertices[i],
                                                                  closestDistance, positiveSide, negativeSide);
                                 if(secondHit.first)
                                 {
@@ -430,7 +428,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         {
                             for(size_t i = 0; i < indices.size(); i += 3)
                             {
-                                const auto firstHit = intersect(ray, vertices[indices[i]],  vertices[indices[i+1]],
+                                const auto firstHit = intersect(_ray, vertices[indices[i]],  vertices[indices[i+1]],
                                                                 vertices[indices[i+2]], closestDistance, positiveSide,
                                                                 negativeSide);
                                 if(firstHit.first)
@@ -444,7 +442,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         {
                             for(size_t i = 0; i < vertices.size(); i += 3)
                             {
-                                const auto firstHit = intersect(ray, vertices[i],  vertices[i+1], vertices[i+2],
+                                const auto firstHit = intersect(_ray, vertices[i],  vertices[i+1], vertices[i+2],
                                                                 closestDistance, positiveSide, negativeSide);
                                 if(firstHit.first)
                                 {
@@ -462,7 +460,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                 if(newClosestFound)
                 {
                     target        = pentity;
-                    closestResult = ray.getPoint(closestDistance);
+                    closestResult = _ray.getPoint(closestDistance);
                 }
             }
         }

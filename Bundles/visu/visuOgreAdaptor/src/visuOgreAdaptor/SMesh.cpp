@@ -46,7 +46,7 @@
 
 #include <cstdint>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMesh, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMesh, ::fwData::Mesh )
 
 //-----------------------------------------------------------------------------
 
@@ -62,15 +62,18 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modif
 
 static const std::string s_MESH_INOUT = "mesh";
 
+static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
+static const std::string s_MATERIAL_NAME_CONFIG     = "materialName";
+static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
+static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
+static const std::string s_SHADING_MODE_CONFIG      = "shadingMode";
+static const std::string s_DYNAMIC_CONFIG           = "dynamic";
+static const std::string s_DYNAMIC_VERTICES_CONFIG  = "dynamicVertices";
+static const std::string s_QUERY_CONFIG             = "queryFlags";
+
 //-----------------------------------------------------------------------------
 
-SMesh::SMesh() noexcept :
-    m_autoResetCamera(true),
-    m_entity(nullptr),
-    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_isReconstructionManaged(false),
-    m_useNewMaterialAdaptor(false),
-    m_isVisible(true)
+SMesh::SMesh() noexcept
 {
     m_material = ::fwData::Material::New();
 
@@ -93,14 +96,14 @@ SMesh::~SMesh() noexcept
 
 //-----------------------------------------------------------------------------
 
-void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
+void visuOgreAdaptor::SMesh::updateVisibility(bool _isVisible)
 {
-    m_isVisible = isVisible;
+    m_isVisible = _isVisible;
     if(m_entity)
     {
-        m_entity->setVisible(isVisible);
+        m_entity->setVisible(_isVisible);
 
-        m_meshGeometry->setVisible(isVisible);
+        m_meshGeometry->setVisible(_isVisible);
 
         this->requestRender();
     }
@@ -117,46 +120,47 @@ void SMesh::configuring()
     const std::string color = config.get<std::string>("color", "");
 
     SLM_ASSERT("Material not found", m_material);
-    m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
+    m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
-    if(config.count("autoresetcamera"))
+    if(config.count(s_AUTORESET_CAMERA_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG) == "yes";
     }
 
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created SMaterial
-    if ( config.count("materialName"))
+    if (config.count(s_MATERIAL_NAME_CONFIG))
     {
-        m_materialName = config.get<std::string>("materialName");
+        m_materialName = config.get<std::string>(s_MATERIAL_NAME_CONFIG);
     }
     else
     {
         // An existing Ogre material will be used for this mesh
-        if( config.count("materialTemplate"))
-        {
-            m_materialTemplateName = config.get<std::string>("materialTemplate");
-        }
+        m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
 
         // The mesh adaptor will pass the texture name to the created material adaptor
-        if ( config.count("textureName"))
-        {
-            m_textureName = config.get<std::string>("textureName");
-        }
+        m_textureName = config.get<std::string>(s_TEXTURE_NAME_CONFIG, m_textureName);
 
-        if( config.count("shadingMode"))
-        {
-            m_shadingMode = config.get<std::string>("shadingMode");
-        }
+        m_shadingMode = config.get<std::string>(s_SHADING_MODE_CONFIG, m_shadingMode);
     }
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_isDynamic         = config.get<bool>("dynamic", m_isDynamic);
-    m_isDynamicVertices = config.get<bool>("dynamicVertices", m_isDynamicVertices);
-    m_queryFlags        = config.get<std::uint32_t>("queryFlags", m_queryFlags);
+    m_isDynamic         = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
+    m_isDynamicVertices = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
+
+    if(config.count(s_QUERY_CONFIG))
+    {
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -289,7 +293,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
-        m_entity->addQueryFlags(m_queryFlags);
+        m_entity->setQueryFlags(m_queryFlags);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
     else
@@ -344,6 +348,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
                 renderable->m_materialAdaptor = r2vbMtlAdaptor;
             }
             // Attach r2vb object in the scene graph
+            renderable->setQueryFlags(m_queryFlags);
             this->attachNode(renderable);
         }
         else

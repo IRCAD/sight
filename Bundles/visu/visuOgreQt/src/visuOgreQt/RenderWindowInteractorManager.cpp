@@ -194,10 +194,10 @@ int RenderWindowInteractorManager::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::setEnabledOverlays(
-    const fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays)
+float RenderWindowInteractorManager::getLogicalDotsPerInch() const
 {
-    m_qOgreWidget->setEnabledOverlays(enabledOverlays);
+    SLM_ASSERT("Trying to query dots per inch on a non-existing windows.", m_qOgreWidget);
+    return static_cast<float>(m_qOgreWidget->screen()->logicalDotsPerInchY());
 }
 
 //-----------------------------------------------------------------------------

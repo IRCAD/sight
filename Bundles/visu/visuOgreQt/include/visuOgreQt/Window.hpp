@@ -71,9 +71,6 @@ public:
     /// Returns Ogre render window.
     virtual ::Ogre::RenderWindow* getOgreRenderWindow();
 
-    /// Returns Ogre render window.
-    virtual ::Ogre::OverlaySystem* getOgreOverlaySystem();
-
     /// Get this window ID
     int getId();
 
@@ -83,18 +80,8 @@ public:
     /// Enables visuOgreQt's shared gl context on this thread against this window.
     void makeCurrent();
 
-    /// Sets the list of overlays to be rendered in this window.
-    void setEnabledOverlays(
-        const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays);
-
     /// Destroy ogre window
     void destroyWindow();
-
-    /// Called right before rendering in the viewport. Activates the overlays enabled for this viewport.
-    virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt) override;
-
-    /// Called right after rendering in the viewport. Disables the overlays enabled for this viewport.
-    virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override;
 
     void setFullScreen(bool fullscreen);
 
@@ -185,12 +172,6 @@ private:
      */
     Ogre::Root* m_ogreRoot;
     Ogre::RenderWindow* m_ogreRenderWindow;
-
-    /// List of overlays to display on this window.
-    ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType m_enabledOverlays;
-
-    /// Ogre overlay system.
-    static ::Ogre::OverlaySystem* m_ogreOverlaySystem;
 
     /// Tells if an update is requested
     bool m_update_pending;

@@ -87,7 +87,8 @@ void SLandmarks::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_textSize = config.get<float>(s_TEXT_SIZE_CONFIG, m_textSize);
+    m_fontSource = config.get("fontSource", m_fontSource);
+    m_fontSize   = config.get<size_t>("fontSize", m_fontSize);
 }
 
 //-----------------------------------------------------------------------------
@@ -115,8 +116,7 @@ void SLandmarks::starting()
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
     m_materialAdaptor->update();
 
-    m_text = this->getRenderService()->getOverlayTextPanel();
-    m_font = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
+    m_text = this->getLayer()->getOverlayTextPanel();
 
     this->updating();
 }
@@ -131,6 +131,8 @@ void SLandmarks::updating()
 
     ::Ogre::Camera* cam            = this->getLayer()->getDefaultCamera();
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+
+    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     const ::fwData::Landmarks::csptr landmarks = this->getInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
     SLM_ASSERT("Input '" + s_LANDMARKS_INPUT + "' is missing", landmarks);
@@ -152,14 +154,13 @@ void SLandmarks::updating()
 
                 const std::string textName = baseName + "_text";
                 ::fwRenderOgre::Text* text
-                    = fwRenderOgre::Text::New(textName, sceneMgr, m_text, m_font, cam);
+                    = fwRenderOgre::Text::New(textName, sceneMgr, m_text, m_fontSource, m_fontSize, dpi, cam);
                 m_labels.push_back(text);
 
                 const ::Ogre::ColourValue color
                     = ::Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
 
                 text->setText(groupName + "_" + std::to_string(index));
-                text->setCharHeight(m_textSize);
                 text->setTextColor(color);
                 text->setVisible(group.m_visibility);
 
@@ -216,7 +217,6 @@ void SLandmarks::stopping()
     this->unregisterServices();
     m_materialAdaptor.reset();
     m_material.reset();
-    m_font.reset();
 }
 
 //-----------------------------------------------------------------------------

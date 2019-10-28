@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_UT_IMAGETEST_HPP__
-#define __FWDATA_UT_IMAGETEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -39,6 +38,11 @@ private:
     CPPUNIT_TEST( testReallocation );
     CPPUNIT_TEST( testPixelType );
     CPPUNIT_TEST( testSetGetPixel );
+    CPPUNIT_TEST( testIterator );
+    CPPUNIT_TEST( testRGBAIterator );
+    CPPUNIT_TEST( testRGBIterator );
+    CPPUNIT_TEST( testBGRAIterator );
+    CPPUNIT_TEST( testBGRIterator );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,8 +55,12 @@ public:
     void testReallocation();
     void testPixelType();
     void testSetGetPixel();
+    void testIterator();
+    void testRGBAIterator();
+    void testRGBIterator();
+    void testBGRIterator();
+    void testBGRAIterator();
 };
 
 } //namespace ut
 } //namespace fwData
-#endif //__FWDATA_UT_IMAGETEST_HPP__

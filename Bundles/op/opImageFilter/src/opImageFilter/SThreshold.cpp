@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,9 +35,9 @@
 #include <fwServices/macros.hpp>
 
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeKeyTypeMapping.hpp>
 
 namespace opImageFilter
 {
@@ -118,22 +118,21 @@ struct ThresholdFilter
         ::fwData::Image::sptr imageOut = param.imageOut;
         SLM_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3 );
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
-        imageOut->allocate(); // Allocate the image buffer
+        imageOut->resize(); // Allocate the image buffer
 
         ::fwDataTools::helper::ImageGetter imageInHelper(imageIn); // helper used to access the image source buffer
         ::fwDataTools::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
 
         // Get image buffers
-        const PIXELTYPE* buffer1 = (PIXELTYPE*)imageInHelper.getBuffer();
-        PIXELTYPE* buffer2       = (PIXELTYPE*)imageOutHelper.getBuffer();
-
-        // Get number of pixels
-        const size_t NbPixels = imageIn->getSize()[0] * imageIn->getSize()[1] * imageIn->getSize()[2];
+        auto it1          = imageIn->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
+        const auto it1End = imageIn->end< ::fwData::Image::Iteration<PIXELTYPE> >();
+        auto it2          = imageOut->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
+        const auto it2End = imageOut->end< ::fwData::Image::Iteration<PIXELTYPE> >();
 
         // Fill the target buffer considering the thresholding
-        for( size_t i = 0; i < NbPixels; ++i, ++buffer1, ++buffer2 )
+        for(; it1 != it1End && it2 != it2End; ++it1, ++it2 )
         {
-            * buffer2 = ( *buffer1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
+            * it2 = ( it1->value < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
         }
     }
 };
@@ -182,10 +181,10 @@ void SThreshold::updating()
      * The dispatcher allows to apply the filter on any type of image.
      * It invokes the template functor ThresholdFilter using the image type.
      */
-    ::fwTools::DynamicType type = param.imageIn->getPixelType(); // image type
+    ::fwTools::Type type = param.imageIn->getType(); // image type
 
     // Invoke filter functor
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ThresholdFilter >::invoke( type, param );
+    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ThresholdFilter >::invoke( type, param );
 
     this->setOutput(s_IMAGE_OUTPUT, output);
 }

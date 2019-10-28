@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,20 +37,19 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SReconstruction, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SReconstruction, ::fwData::Reconstruction)
 
 const ::fwCom::Slots::SlotKeyType SReconstruction::s_CHANGE_MESH_SLOT = "changeMesh";
-const ::fwCom::Slots::SlotKeyType SReconstruction::s_VISIBILITY_SLOT  = "modifyVisibility";
+const ::fwCom::Slots::SlotKeyType SReconstruction::s_VISIBILITY_SLOT = "modifyVisibility";
 
 static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
 
+static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
+static const std::string s_QUERY_CONFIG            = "queryFlags";
+
 //------------------------------------------------------------------------------
 
-SReconstruction::SReconstruction() noexcept :
-    m_autoResetCamera(true),
-    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_isDynamic(false),
-    m_isDynamicVertices(false)
+SReconstruction::SReconstruction() noexcept
 {
     m_slots(s_CHANGE_MESH_SLOT, &SReconstruction::changeMesh, this);
     m_slots(s_VISIBILITY_SLOT, &SReconstruction::modifyVisibility, this);
@@ -70,11 +69,22 @@ void SReconstruction::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
-    if (config.count("autoresetcamera"))
+    this->setTransformId(config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                 this->getID() + "_transform"));
+    if (config.count(s_AUTORESET_CAMERA_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG) == "yes";
+    }
+
+    if(config.count(s_QUERY_CONFIG))
+    {
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 }
 
@@ -176,7 +186,7 @@ void SReconstruction::setForceHide(bool _hide)
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::changeMesh( SPTR( ::fwData::Mesh) )
+void SReconstruction::changeMesh(::fwData::Mesh::sptr)
 {
     if (!m_meshAdaptor.expired())
     {

@@ -25,6 +25,7 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 #include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/overlay/ViewportListener.hpp"
 #include "fwRenderOgre/picker/IPicker.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
@@ -46,6 +47,7 @@
 #include <OGRE/Overlay/OgreOverlay.h>
 
 #include <map>
+#include <tuple>
 
 namespace fwRenderOgre
 {
@@ -60,10 +62,13 @@ class Layer;
  * @code{.xml}
     <service uid="..." type="::fwRenderOgre::SRender" autoconnect="yes">
         <scene renderMode="auto">
-            <layer id="rendererId" depth="1" compositors="Invert;Laplace;Posterize" defaultLight="no" />
+            <layer id="..." depth="1">
+                <viewport hOffset="0.03" vOffset="0.03" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
+            </layer>
+            <layer id="..." depth="2" compositors="Invert;Laplace;Posterize" defaultLight="no" overlays="..."/>
 
-            <adaptor uid="meshAdaptor"/>
-            <adaptor uid="transformAdaptor"/>
+            <adaptor uid="..."/>
+            <adaptor uid="..."/>
         </scene>
     </service>
    @endcode
@@ -78,8 +83,14 @@ class Layer;
  *        (only when the slot "requestRender" is called). Default is 'auto'.
  *    - \b width (optional, "1280" by default): width for off-screen rendering
  *    - \b height (optional, "720" by default): height for off-screen rendering
- *    - \b overlays (optional): list of overlay names (separated by semicolons) rendered on top of this scene.
  *  - \b layer : mandatory, defines the scene's layer
+ *    - \b viewport (optional):
+ *      - \b hAlign (optional, values=left|center|right, default=left): defines the horizontal origin of the viewport.
+ *      - \b vAlign (optional, values=top|center|bottom, default=top): defines the vertical origin of the viewport.
+ *      - \b hOffset (optional, float, default=0.f): horizontal offset from the origin relatively to the window.
+ *      - \b vOffset (optional, float, default=0.f): vertical offset from the origin relatively to the window.
+ *      - \b width (optional, float, default=1.f): viewport width relatively to the window.
+ *      - \b height (optional, float, default=1.f): viewport height relatively to the window.
  *    - \b id (mandatory): the identifier of the layer
  *    - \b depth (mandatory): the depth of the layer, starting from 1
  *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
@@ -91,6 +102,7 @@ class Layer;
  *    - \b stereoMode (optional, yes/no, default="no"): Sets the mode used for stereoscopic 3D rendering,
  *                                          available modes are "AutoStereo5", "AutoStereo8" and "no".
  *    - \b defaultLight (optional, yes/no, default="yes"): Sets if a default light is created in the layer.
+ *    - \b overlays (optional): list of overlay names (separated by semicolons) rendered on top of the layer's viewport.
  *  - \b adaptor
  *    - \b uid (mandatory): the identifier of the adaptor
  */
@@ -98,7 +110,7 @@ class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
 {
 public:
-    fwCoreServiceMacro(SRender, ::fwRender::IRender);
+    fwCoreServiceMacro(SRender, ::fwRender::IRender)
 
     FWRENDEROGRE_API SRender() noexcept;
     FWRENDEROGRE_API virtual ~SRender() noexcept;
@@ -174,9 +186,6 @@ public:
     /// Computes camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void computeCameraClipping();
 
-    /// Creates or retrieves the overlay panel in which adaptors can render 2D text.
-    FWRENDEROGRE_API ::Ogre::OverlayContainer* getOverlayTextPanel();
-
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
 
@@ -209,8 +218,8 @@ private:
     /// Configure each layer of the scene
     void configureLayer(const ConfigType& _cfg );
 
-    /// Contains the scene configuration which is the scene xml node
-    ConfigurationType m_sceneConfiguration;
+    /// Retrieves the viewport parameters from the configuration.
+    static Layer::ViewportConfigType configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg);
 
     /// Contains all the layers of the scene
     LayerMapType m_layers;
@@ -221,20 +230,20 @@ private:
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;
 
-    /// Set of overlays enabled for this renderer.
-    ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType m_enabledOverlays;
+    /// Maps viewports to their overlays. Needed by the viewport listener.
+    overlay::ViewportListener::ViewportOverlaysMapType m_viewportOverlaysMap;
 
-    /// Overlay panel to which all the UI's text is attached.
-    ::Ogre::OverlayContainer* m_overlayTextPanel;
+    /// Listens for render target updates for all viewports and enables the required overlays.
+    overlay::ViewportListener m_viewportListener { m_viewportOverlaysMap };
 
     /// Ogre root
-    ::Ogre::Root* m_ogreRoot;
+    ::Ogre::Root* m_ogreRoot { nullptr };
 
     /// How the rendering is triggered ?
-    RenderMode m_renderMode;
+    RenderMode m_renderMode { RenderMode::AUTO };
 
     /// True if the render window is in fullscreen.
-    bool m_fullscreen;
+    bool m_fullscreen { false };
 
     /// Width for off-screen rendering
     unsigned int m_width { 0 };

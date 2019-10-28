@@ -49,7 +49,7 @@
 
 #include <stack>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData::Composite )
 
 namespace fwRenderOgre
 {
@@ -78,11 +78,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 //-----------------------------------------------------------------------------
 
-SRender::SRender() noexcept :
-    m_interactorManager(nullptr),
-    m_overlayTextPanel(nullptr),
-    m_renderMode(RenderMode::AUTO),
-    m_fullscreen(false)
+SRender::SRender() noexcept
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -183,6 +179,8 @@ void SRender::starting()
 
     const ConfigType sceneCfg = config.get_child("scene");
 
+    SLM_ERROR_IF("Overlays should be enabled at the layer level.", !sceneCfg.get("<xmlattr>.overlays", "").empty());
+
     auto layerConfigs = sceneCfg.equal_range("layer");
     for( auto it = layerConfigs.first; it != layerConfigs.second; ++it )
     {
@@ -215,6 +213,7 @@ void SRender::starting()
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
         ogreLayer->setHasDefaultLight(false);
+        ogreLayer->setViewportConfig({0.f, 0.f, 1.f, 1.f});
 
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
@@ -237,29 +236,16 @@ void SRender::starting()
     // Initialize resources to load overlay scripts.
     ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-    std::istringstream overlays(sceneCfg.get<std::string>("<xmlattr>.overlays", ""));
-
-    for(std::string overlayName; std::getline(overlays, overlayName, ';'); )
-    {
-        ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingleton().getByName(overlayName);
-
-        if(overlay)
-        {
-            m_enabledOverlays.insert(overlay);
-        }
-        else
-        {
-            SLM_ERROR("Can't find overlay : " + overlayName);
-        }
-    }
-
-    m_interactorManager->setEnabledOverlays(m_enabledOverlays);
+    m_interactorManager->getRenderTarget()->addListener(&m_viewportListener);
 
     for (auto it : m_layers)
     {
         ::fwRenderOgre::Layer::sptr layer = it.second;
         layer->setRenderTarget(m_interactorManager->getRenderTarget());
         layer->createScene();
+
+        auto* vp = layer->getViewport();
+        m_viewportOverlaysMap.emplace(vp, layer->getEnabledOverlays());
     }
 
     // Everything is started now, we can safely create connections and thus receive interactions from the widget
@@ -273,6 +259,9 @@ void SRender::stopping()
     this->makeCurrent();
 
     m_connections.disconnect();
+
+    m_interactorManager->getRenderTarget()->removeAllListeners();
+    m_viewportOverlaysMap.clear();
 
     for (auto it : m_layers)
     {
@@ -314,6 +303,14 @@ void SRender::configureLayer(const ConfigType& _cfg )
     const std::string numPeels              = attributes.get<std::string>("numPeels", "");
     const std::string stereoMode            = attributes.get<std::string>("stereoMode", "");
     const std::string defaultLight          = attributes.get<std::string>("defaultLight", "");
+    const auto viewportConfig               = configureLayerViewport(_cfg);
+
+    auto overlays = std::istringstream(attributes.get<std::string>("overlays", ""));
+    std::vector< std::string > enabledOverlays;
+    for(std::string overlayName; std::getline(overlays, overlayName, ';'); )
+    {
+        enabledOverlays.push_back(overlayName);
+    }
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "Unknown 3D mode : " << stereoMode,
@@ -336,6 +333,8 @@ void SRender::configureLayer(const ConfigType& _cfg )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
+    ogreLayer->setViewportConfig(viewportConfig);
+    ogreLayer->setEnabledOverlays(enabledOverlays);
 
     if(!defaultLight.empty() && defaultLight == "no")
     {
@@ -377,6 +376,47 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
     }
 
     m_layers[s_OGREBACKGROUNDID] = ogreLayer;
+}
+
+//-----------------------------------------------------------------------------
+
+Layer::ViewportConfigType
+SRender::configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg)
+{
+    Layer::ViewportConfigType cfgType { 0.f, 0.f, 1.f, 1.f };
+    const auto _vpConfig = _cfg.get_child_optional("viewport.<xmlattr>");
+    if(_vpConfig.has_value())
+    {
+        const auto cfg = _vpConfig.value();
+
+        float xPos = cfg.get<float>("hOffset", 0.f);
+        float yPos = cfg.get<float>("vOffset", 0.f);
+
+        const float width  = cfg.get<float>("width");
+        const float height = cfg.get<float>("height");
+
+        const std::map< std::string, float > horizAlignToX {
+            { "left", xPos },
+            { "center", 0.5f - width * 0.5f + xPos},
+            { "right", 1.f - width - xPos }
+        };
+
+        const std::map< std::string, float > vertAlignToY {
+            { "bottom", 1.f -height - yPos },
+            { "center", 0.5f - height * 0.5f + yPos },
+            { "top", yPos }
+        };
+
+        const std::string hAlign = cfg.get("hAlign", "left");
+        const std::string vAlign = cfg.get("vAlign", "top");
+
+        xPos = horizAlignToX.at(hAlign);
+        yPos = vertAlignToY.at(vAlign);
+
+        cfgType = std::tie(xPos, yPos, width, height);
+    }
+
+    return cfgType;
 }
 
 //-----------------------------------------------------------------------------
@@ -439,36 +479,6 @@ void SRender::computeCameraClipping()
         ::fwRenderOgre::Layer::sptr layer = it.second;
         layer->resetCameraClippingRange();
     }
-}
-
-//-----------------------------------------------------------------------------
-
-::Ogre::OverlayContainer* SRender::getOverlayTextPanel()
-{
-    static std::mutex overlayManagerLock;
-
-    overlayManagerLock.lock();
-    if(m_overlayTextPanel == nullptr)
-    {
-        auto& overlayManager = ::Ogre::OverlayManager::getSingleton();
-
-        m_overlayTextPanel =
-            static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel",
-                                                                                         this->getID() + "_GUI"));
-        m_overlayTextPanel->setMetricsMode(::Ogre::GMM_PIXELS);
-        m_overlayTextPanel->setPosition(0, 0);
-        m_overlayTextPanel->setDimensions(1.0f, 1.0f);
-
-        ::Ogre::Overlay* uiOverlay = overlayManager.create(this->getID() + "_UIOverlay");
-        uiOverlay->add2D(m_overlayTextPanel);
-
-        m_enabledOverlays.insert(uiOverlay);
-
-        m_interactorManager->setEnabledOverlays(m_enabledOverlays);
-    }
-    overlayManagerLock.unlock();
-
-    return m_overlayTextPanel;
 }
 
 //-----------------------------------------------------------------------------

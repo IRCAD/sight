@@ -128,8 +128,6 @@ public:
 
     typedef std::string FactoryRegistryKeyType;
 
-    typedef std::unordered_set< ::Ogre::Overlay* > OverlaySetType;
-
     FWRENDEROGRE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
     FWRENDEROGRE_API static const FactoryRegistryKeyType OFFSCREEN_REGISTRY_KEY;
@@ -182,11 +180,12 @@ public:
     /// Returns the texture in which this window manager is rendering. Only implemented for offscreen windows.
     FWRENDEROGRE_API virtual ::Ogre::TexturePtr getRenderTexture() = 0;
 
-    /// Sets the list of overlays to display on the window.
-    FWRENDEROGRE_API virtual void setEnabledOverlays(const OverlaySetType& overlaySet);
-
     /// Spawns a worker able to handle graphics resources in parallel.
     FWRENDEROGRE_API virtual IGraphicsWorker* createGraphicsWorker() = 0;
+
+    /// Gets the vertical logical DPI of the monitor on which the window is displayed.
+    /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
+    FWRENDEROGRE_API virtual float getLogicalDotsPerInch() const = 0;
 
     /// Set the render service using the IOgreRenderWindowInteractor
     virtual void setRenderService(::fwServices::IService::sptr srv)

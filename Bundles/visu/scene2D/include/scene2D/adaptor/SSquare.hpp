@@ -27,6 +27,8 @@
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <QGraphicsItem>
 
 namespace scene2D
@@ -52,13 +54,16 @@ namespace adaptor
  *    - \b size (mandatory): specify size of the square
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b color (optional, default black): color of the square
+ *
+ * @section Slots Slots
+ * -\b setDoubleParameter(double, std::string): set the double parameters 'x' and 'y'
  */
 class SCENE2D_CLASS_API SSquare : public ::fwRenderQt::IAdaptor
 {
 
 public:
 
-    fwCoreServiceMacro(SSquare, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SSquare, ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SSquare() noexcept;
     SCENE2D_API virtual ~SSquare() noexcept;
@@ -87,6 +92,8 @@ private:
     ::fwRenderQt::data::Coord m_oldCoord;
 
     bool m_pointIsCaptured;
+    static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    void setDoubleParameter(const double val, std::string key);
 };
 
 } // namespace adaptor

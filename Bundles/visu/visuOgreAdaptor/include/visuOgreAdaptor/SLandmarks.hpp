@@ -49,8 +49,8 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines landmarks layer.
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
- * - \b textSize (optional): text size relatively to the screen's height (default 0.025f).
- * in the STransform adaptor.
+ * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, default=16): font size in points.
  *
  */
 class VISUOGREADAPTOR_CLASS_API SLandmarks : public ::fwRenderOgre::IAdaptor,
@@ -104,15 +104,15 @@ private:
     /// Used to store landmark`s nodes.
     std::vector< ::Ogre::SceneNode* > m_nodes;
 
-    /// Text size relatively to the screen's height.
-    /// FIXME: should be computed from the font size and the screen's physical size.
-    float m_textSize {0.025f};
-
     /// Text container.
     ::Ogre::OverlayContainer* m_text {nullptr};
 
-    /// Font.
-    ::Ogre::FontPtr m_font;
+    /// Label font size in points.
+    size_t m_fontSize { 16 };
+
+    /// TrueType font source file.
+    std::string m_fontSource {"DejaVuSans.ttf"};
+
 };
 
 } //namespace visuOgreAdaptor

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,17 +22,19 @@
 
 #include "scene2D/adaptor/SSquare.hpp"
 
+#include <fwCom/Slots.hxx>
+
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SSquare);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SSquare)
 
 namespace scene2D
 {
 namespace adaptor
 {
-
+const ::fwCom::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 //-----------------------------------------------------------------------------
 
 SSquare::SSquare() noexcept :
@@ -41,6 +43,7 @@ SSquare::SSquare() noexcept :
     m_rec(nullptr),
     m_pointIsCaptured(false)
 {
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SSquare::setDoubleParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +172,22 @@ bool SSquare::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphi
 }
 //-----------------------------------------------------------------------------
 
+void SSquare::setDoubleParameter(const double _val, std::string _key)
+{
+    this->configureParams();
+    if(_key == "X")
+    {
+        m_coord.setX(_val);
+    }
+    else if(_key == "Y")
+    {
+        m_coord.setY(_val);
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
+    m_rec->setPos(m_coord.getX(), m_coord.getY());
+}
 } // namespace adaptor
 } // namespace scene2D
-

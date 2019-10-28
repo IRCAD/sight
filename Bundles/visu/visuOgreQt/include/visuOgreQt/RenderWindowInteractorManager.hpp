@@ -23,7 +23,7 @@
 #pragma once
 
 #include "visuOgreQt/config.hpp"
-#include <visuOgreQt/Window.hpp>
+#include "visuOgreQt/Window.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -55,7 +55,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager);
+    fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)
 
     /// Constructor
     VISUOGREQT_API RenderWindowInteractorManager(::fwRenderOgre::IRenderWindowInteractorManager::Key key);
@@ -94,12 +94,12 @@ public:
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
     VISUOGREQT_API virtual ::Ogre::TexturePtr getRenderTexture() final;
 
-    /// Sets the list of overlays to be rendered in this window.
-    VISUOGREQT_API virtual void setEnabledOverlays(
-        const ::fwRenderOgre::IRenderWindowInteractorManager::OverlaySetType& enabledOverlays) final;
-
     /// Creates a worker able to handle resources from the window's OpenGL context.
     VISUOGREQT_API ::fwRenderOgre::IGraphicsWorker* createGraphicsWorker() final;
+
+    /// Gets the vertical logical DPI of the monitor on which the window is displayed.
+    /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
+    VISUOGREQT_API virtual float getLogicalDotsPerInch() const final;
 
 private Q_SLOTS:
 
