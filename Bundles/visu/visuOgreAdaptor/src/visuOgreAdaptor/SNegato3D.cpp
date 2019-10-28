@@ -136,21 +136,20 @@ void SNegato3D::starting()
 {
     this->initialize();
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("Missing '" + s_IMAGE_INOUT + "' inout.", image);
 
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture >(
-        ::Ogre::TextureManager::getSingleton().createOrRetrieve(this->getID() + "_Texture",
-                                                                ::Ogre::ResourceGroupManager::
-                                                                DEFAULT_RESOURCE_GROUP_NAME, true).first );
+    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+        this->getID() + "_Negato3DTexture",
+        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        true);
 
     // TF texture initialization
-    m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());
+    m_gpuTF = std::make_unique< ::fwRenderOgre::TransferFunction>();
     m_gpuTF->createTexture(this->getID());
 
     // Scene node's instantiation
@@ -177,11 +176,7 @@ void SNegato3D::starting()
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
 
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
-    if (isValid)
-    {
-        this->newImage();
-    }
+    this->newImage();
 
     if(m_interactive)
     {
@@ -228,6 +223,8 @@ void SNegato3D::stopping()
 
         this->getSceneManager()->destroyManualObject(m_pickingCross);
     }
+
+    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
 
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
@@ -282,27 +279,34 @@ void SNegato3D::createPlanes(const ::fwData::Image::SpacingType& _spacing, const
 void SNegato3D::newImage()
 {
     this->getRenderService()->makeCurrent();
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing '" + s_IMAGE_INOUT + "' inout.", image);
+        const ::fwData::mt::ObjectReadLock imageLock(image);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        {
+            return;
+        }
 
-    ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    createPlanes(image->getSpacing(), image->getOrigin());
+        this->createPlanes(image->getSpacing(), image->getOrigin());
 
-    // Update Slice
-    const auto axialIndex =
-        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-    const auto frontalIndex =
-        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-    const auto sagittalIndex =
-        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        // Update Slice
+        const auto axialIndex =
+            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+        const auto frontalIndex =
+            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+        const auto sagittalIndex =
+            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
-    this->changeSliceIndex(
-        static_cast<int>(axialIndex),
-        static_cast<int>(frontalIndex),
-        static_cast<int>(sagittalIndex)
-        );
+        this->changeSliceIndex(
+            static_cast<int>(axialIndex),
+            static_cast<int>(frontalIndex),
+            static_cast<int>(sagittalIndex)
+            );
+    }
 
     // Update tranfer function in Gpu programs
     this->updateTF();
@@ -391,6 +395,7 @@ void SNegato3D::setPlanesOpacity()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    const ::fwData::mt::ObjectReadLock imageLock(image);
 
     ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
     ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
@@ -418,6 +423,7 @@ void SNegato3D::setVisibility(bool visibility)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    const ::fwData::mt::ObjectReadLock imageLock(image);
 
     image->setField(VISIBILITY_FIELD, ::fwData::Boolean::New(visibility));
 
