@@ -30,169 +30,6 @@ namespace fwData
 namespace iterator
 {
 
-MeshIteratorBase::MeshIteratorBase()
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-MeshIteratorBase::MeshIteratorBase(const MeshIteratorBase& other) :
-    m_pointers(other.m_pointers),
-    m_locks(other.m_locks),
-    m_idx(other.m_idx),
-    m_numberOfElements(other.m_numberOfElements),
-    m_elementSizes(other.m_elementSizes),
-    m_nbArrays(other.m_nbArrays)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-MeshIteratorBase::~MeshIteratorBase()
-{
-    m_locks.clear();
-}
-
-//------------------------------------------------------------------------------
-
-MeshIteratorBase& MeshIteratorBase::operator=(const MeshIteratorBase& other)
-{
-    if (this != &other)
-    {
-        m_pointers         = other.m_pointers;
-        m_locks            = other.m_locks;
-        m_idx              = other.m_idx;
-        m_numberOfElements = other.m_numberOfElements;
-        m_elementSizes     = other.m_elementSizes;
-        m_nbArrays         = other.m_nbArrays;
-    }
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-bool MeshIteratorBase::operator==(const MeshIteratorBase& other) const
-{
-    return m_idx == other.m_idx;
-}
-//------------------------------------------------------------------------------
-
-bool MeshIteratorBase::operator!=(const MeshIteratorBase& other) const
-{
-    return m_idx != other.m_idx;
-}
-
-//------------------------------------------------------------------------------
-
-MeshIteratorBase& MeshIteratorBase::operator++()
-{
-    ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] += m_elementSizes[i];
-    }
-    return *this;
-}
-//------------------------------------------------------------------------------
-
-MeshIteratorBase MeshIteratorBase::operator++(int)
-{
-    MeshIteratorBase tmp(*this);
-    ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] += m_elementSizes[i];
-    }
-    return tmp;
-}
-//------------------------------------------------------------------------------
-
-MeshIteratorBase MeshIteratorBase::operator+(difference_type index)
-{
-    MeshIteratorBase tmp(*this);
-    tmp += index;
-    return tmp;
-}
-//------------------------------------------------------------------------------
-
-MeshIteratorBase& MeshIteratorBase::operator+=(difference_type index)
-{
-    m_idx += index;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] += index*m_elementSizes[i];
-    }
-    return *this;
-}
-//------------------------------------------------------------------------------
-
-MeshIteratorBase& MeshIteratorBase::operator--()
-{
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
-    --m_idx;
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] -= m_elementSizes[i];
-    }
-    return *this;
-}
-//------------------------------------------------------------------------------
-
-MeshIteratorBase MeshIteratorBase::operator--(int)
-{
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
-    --m_idx;
-    MeshIteratorBase tmp(*this);
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] -= m_elementSizes[i];
-    }
-    return tmp;
-}
-
-//------------------------------------------------------------------------------
-
-MeshIteratorBase MeshIteratorBase::operator-(difference_type index)
-{
-    MeshIteratorBase tmp(*this);
-    tmp -= index;
-    return tmp;
-}
-//------------------------------------------------------------------------------
-
-MeshIteratorBase& MeshIteratorBase::operator-=(difference_type index)
-{
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx -= index;
-    for(size_t i = 0; i < m_nbArrays; ++i)
-    {
-        m_pointers[i] -= index*m_elementSizes[i];
-    }
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-MeshIteratorBase::difference_type MeshIteratorBase::operator+(const MeshIteratorBase& other) const
-{
-    return m_idx + other.m_idx;
-}
-//------------------------------------------------------------------------------
-
-MeshIteratorBase::difference_type MeshIteratorBase::operator-(const MeshIteratorBase& other) const
-{
-    return m_idx - other.m_idx;
-}
-
 //------------------------------------------------------------------------------
 
 PointIterator::PointIterator(::fwData::Mesh* mesh)
@@ -231,8 +68,8 @@ PointIterator::PointIterator(::fwData::Mesh* mesh)
 
 //------------------------------------------------------------------------------
 
-PointIterator::PointIterator(const MeshIteratorBase& other) :
-    MeshIteratorBase(other)
+PointIterator::PointIterator(const PointIteratorBase& other) :
+    PointIteratorBase(other)
 {
 
 }
@@ -246,7 +83,7 @@ PointIterator::~PointIterator()
 
 //------------------------------------------------------------------------------
 
-PointIterator& PointIterator::operator=(const MeshIteratorBase& other)
+PointIterator& PointIterator::operator=(const PointIteratorBase& other)
 {
     if (this != &other)
     {
@@ -337,8 +174,8 @@ ConstPointIterator::ConstPointIterator(const ::fwData::Mesh* mesh)
 
 //------------------------------------------------------------------------------
 
-ConstPointIterator::ConstPointIterator(const MeshIteratorBase& other) :
-    MeshIteratorBase(other)
+ConstPointIterator::ConstPointIterator(const PointIteratorBase& other) :
+    PointIteratorBase(other)
 {
 
 }
@@ -352,7 +189,7 @@ ConstPointIterator::~ConstPointIterator()
 
 //------------------------------------------------------------------------------
 
-ConstPointIterator& ConstPointIterator::operator=(const MeshIteratorBase& other)
+ConstPointIterator& ConstPointIterator::operator=(const PointIteratorBase& other)
 {
     if (this != &other)
     {
@@ -416,7 +253,7 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
     m_locks.push_back(mesh->m_cellTypes->lock());
     m_locks.push_back(mesh->m_cellDataOffsets->lock());
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfCells());
-    m_cellDataPointer  = static_cast<std::uint64_t*>(mesh->m_cellData->getBuffer());
+    m_cellDataPointer  = static_cast<point_idx_value_type*>(mesh->m_cellData->getBuffer());
     m_cellDataSize     = mesh->getCellDataSize();
     m_pointers[0]      = static_cast<char*>(mesh->m_cellDataOffsets->getBuffer());
     m_pointers[1]      = static_cast<char*>(mesh->m_cellTypes->getBuffer());
@@ -452,15 +289,6 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
 
 //------------------------------------------------------------------------------
 
-CellIterator::CellIterator(const CellIterator& other) :
-    MeshIteratorBase(other),
-    m_cellDataPointer(other.m_cellDataPointer)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
 CellIterator::~CellIterator()
 {
     m_locks.clear();
@@ -468,27 +296,9 @@ CellIterator::~CellIterator()
 
 //------------------------------------------------------------------------------
 
-CellIterator& CellIterator::operator=(const CellIterator& other)
-{
-    if (this != &other)
-    {
-        m_cellDataPointer  = other.m_cellDataPointer;
-        m_pointers         = other.m_pointers;
-        m_locks            = other.m_locks;
-        m_idx              = other.m_idx;
-        m_numberOfElements = other.m_numberOfElements;
-        m_elementSizes     = other.m_elementSizes;
-        m_nbArrays         = other.m_nbArrays;
-    }
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
 CellIterator::point_idx_reference CellIterator::pointIdx(size_t id)
 {
-    const point_idx_value_type offset = *reinterpret_cast<point_idx_value_type*>(m_pointers[0]) + id;
-    return *(m_cellDataPointer + offset);
+    return *static_cast<point_idx_value_type*>(m_cellDataPointer + id);
 }
 
 //------------------------------------------------------------------------------
@@ -530,11 +340,11 @@ CellIterator::celloffset_reference CellIterator::cellOffset()
 
 size_t CellIterator::nbPoints() const
 {
-    const auto currentOffset = *(reinterpret_cast<celloffset_value_type*>(m_pointers[0]));
-    celloffset_value_type nextOffset;
+    const auto currentOffset = static_cast<std::uint64_t>(m_currentOffset);
+    std::uint64_t nextOffset;
     if (m_idx < m_numberOfElements -1)
     {
-        nextOffset = *(reinterpret_cast<celloffset_value_type*>(m_pointers[0])+1);
+        nextOffset = *(reinterpret_cast<std::uint64_t*>(m_pointers[0])+1);
     }
     else
     {
@@ -551,7 +361,7 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
     m_locks.push_back(mesh->m_cellTypes->lock());
     m_locks.push_back(mesh->m_cellDataOffsets->lock());
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfCells());
-    m_cellDataPointer  = static_cast<const std::uint64_t*>(mesh->m_cellData->getBuffer());
+    m_cellDataPointer  = static_cast<point_idx_value_type*>(mesh->m_cellData->getBuffer());
     m_cellDataSize     = mesh->getCellDataSize();
     m_pointers[0]      = static_cast<char*>(mesh->m_cellDataOffsets->getBuffer());
     m_pointers[1]      = static_cast<char*>(mesh->m_cellTypes->getBuffer());
@@ -587,11 +397,21 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
 
 //------------------------------------------------------------------------------
 
-ConstCellIterator::ConstCellIterator(const CellIterator& other) :
-    MeshIteratorBase(other),
-    m_cellDataPointer(other.m_cellDataPointer)
+ConstCellIterator::ConstCellIterator(const CellIterator& other)
 {
+    m_locks            = other.m_locks;
+    m_idx              = other.m_idx;
+    m_numberOfElements = other.m_numberOfElements;
+    m_elementSizes     = other.m_elementSizes;
+    m_nbArrays         = other.m_nbArrays;
+    m_colorIdx         = other.m_colorIdx;
+    m_normalIdx        = other.m_normalIdx;
+    m_texIdx           = other.m_texIdx;
 
+    for(size_t i = 0; i < m_nbArrays; ++i)
+    {
+        m_pointers[i] = other.m_pointers[i];
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -603,27 +423,9 @@ ConstCellIterator::~ConstCellIterator()
 
 //------------------------------------------------------------------------------
 
-ConstCellIterator& ConstCellIterator::operator=(const ConstCellIterator& other)
-{
-    if (this != &other)
-    {
-        m_cellDataPointer  = other.m_cellDataPointer;
-        m_pointers         = other.m_pointers;
-        m_locks            = other.m_locks;
-        m_idx              = other.m_idx;
-        m_numberOfElements = other.m_numberOfElements;
-        m_elementSizes     = other.m_elementSizes;
-        m_nbArrays         = other.m_nbArrays;
-    }
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
 ConstCellIterator::point_idx_reference ConstCellIterator::pointIdx(size_t id)
 {
-    const point_idx_value_type offset = *reinterpret_cast<point_idx_value_type*>(m_pointers[0]) + id;
-    return *(m_cellDataPointer + offset);
+    return *static_cast<point_idx_value_type*>(m_cellDataPointer + id);
 }
 
 //------------------------------------------------------------------------------
@@ -665,15 +467,15 @@ ConstCellIterator::celloffset_reference ConstCellIterator::cellOffset()
 
 size_t ConstCellIterator::nbPoints() const
 {
-    const auto currentOffset = *(reinterpret_cast<celloffset_value_type*>(m_pointers[0]));
+    const auto currentOffset = static_cast<std::uint64_t>(m_currentOffset);
     std::uint64_t nextOffset;
     if (m_idx < m_numberOfElements -1)
     {
-        nextOffset = *(reinterpret_cast<std::uint64_t*>(m_pointers[0])+1);
+        nextOffset = *(reinterpret_cast<celloffset_value_type*>(m_pointers[0])+1);
     }
     else
     {
-        nextOffset = m_cellDataSize-1;
+        nextOffset = m_cellDataSize;
     }
     return nextOffset - currentOffset;
 }

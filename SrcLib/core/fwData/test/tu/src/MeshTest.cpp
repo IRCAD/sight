@@ -829,10 +829,13 @@ void MeshTest::pointIteratorTest()
         size_t count = 0;
         for (; it != itEnd; ++it)
         {
-            CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), it.nbPoints());
-            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint64_t>(count), it.pointIdx(0));
-            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint64_t>(count+1), it.pointIdx(1));
-            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint64_t>(count+2), it.pointIdx(2));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), static_cast<size_t>(3), it.nbPoints());
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint64_t>(count), it.pointIdx(0));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint64_t>(count+1), it.pointIdx(1));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint64_t>(count+2), it.pointIdx(2));
 
             ::fwData::iterator::RGBA c = it.color();
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);

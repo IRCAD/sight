@@ -51,7 +51,7 @@ struct Point {
     element_type x;
     element_type y;
     element_type z;
-    static const size_t elementSize{3};
+    static constexpr size_t elementSize{3};
 };
 
 struct Normal {
@@ -70,7 +70,7 @@ struct Normal {
     element_type nx;
     element_type ny;
     element_type nz;
-    static const size_t elementSize{3};
+    static constexpr size_t elementSize{3};
 };
 
 struct RGBA {
@@ -91,7 +91,7 @@ struct RGBA {
     element_type g;
     element_type b;
     element_type a;
-    static const size_t elementSize{4};
+    static constexpr size_t elementSize{4};
 };
 
 struct TextCoords {
@@ -108,15 +108,16 @@ struct TextCoords {
 
     element_type u;
     element_type v;
-    static const size_t elementSize{2};
+    static constexpr size_t elementSize{2};
 };
 
 /**
- * @brief Base class for mesh iterators
+ * @brief Base class for mesh's point iterators
  *
- * Iterate through the arrays and check if the index is not out of the bounds
+ * Iterate through the point arrays and check if the index is not out of the bounds
  */
-class FWDATA_CLASS_API MeshIteratorBase
+template<bool isConst>
+class FWDATA_CLASS_API PointIteratorBase
 {
 public:
 
@@ -124,38 +125,38 @@ public:
      * @name Typedefs required by std::iterator_traits
      * @{
      */
-    typedef char* pointer;
-    typedef char value_type;
-    typedef char& reference;
+    typedef typename std::conditional<isConst, const char, char>::type value_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
     typedef std::ptrdiff_t difference_type;
     typedef std::random_access_iterator_tag iterator_category;
     /// @}
 
     /// Constructor
-    FWDATA_API MeshIteratorBase();
-    /// Copy constructor
-    FWDATA_API MeshIteratorBase(const MeshIteratorBase& other);
+    FWDATA_API PointIteratorBase();
     /// Destructor
-    FWDATA_API virtual ~MeshIteratorBase();
+    FWDATA_API virtual ~PointIteratorBase();
+    /// Copy constructor
+    FWDATA_API PointIteratorBase(const PointIteratorBase& other) = default;
 
-    FWDATA_API MeshIteratorBase& operator=(const MeshIteratorBase& other);
+    FWDATA_API PointIteratorBase& operator=(const PointIteratorBase& other) = default;
 
     /// Comparison operators
-    FWDATA_API bool operator==(const MeshIteratorBase& other) const;
-    FWDATA_API bool operator!=(const MeshIteratorBase& other) const;
+    FWDATA_API bool operator==(const PointIteratorBase& other) const;
+    FWDATA_API bool operator!=(const PointIteratorBase& other) const;
 
     /// Increment/Decrement operators
-    FWDATA_API MeshIteratorBase& operator++();
-    FWDATA_API MeshIteratorBase operator++(int);
-    FWDATA_API MeshIteratorBase operator+(difference_type index);
-    FWDATA_API MeshIteratorBase& operator+=(difference_type index);
-    FWDATA_API MeshIteratorBase& operator--();
-    FWDATA_API MeshIteratorBase operator--(int);
-    FWDATA_API MeshIteratorBase operator-(difference_type index);
-    FWDATA_API MeshIteratorBase& operator-=(difference_type index);
+    FWDATA_API PointIteratorBase& operator++();
+    FWDATA_API PointIteratorBase operator++(int);
+    FWDATA_API PointIteratorBase operator+(difference_type index);
+    FWDATA_API PointIteratorBase& operator+=(difference_type index);
+    FWDATA_API PointIteratorBase& operator--();
+    FWDATA_API PointIteratorBase operator--(int);
+    FWDATA_API PointIteratorBase operator-(difference_type index);
+    FWDATA_API PointIteratorBase& operator-=(difference_type index);
 
-    FWDATA_API difference_type operator+(const MeshIteratorBase& other) const;
-    FWDATA_API difference_type operator-(const MeshIteratorBase& other) const;
+    FWDATA_API difference_type operator+(const PointIteratorBase& other) const;
+    FWDATA_API difference_type operator-(const PointIteratorBase& other) const;
 
 protected:
 
@@ -163,11 +164,11 @@ protected:
     friend class PointIterator;
     friend class ConstPointIterator;
 
-    std::array< pointer, 5> m_pointers;
+    std::array< pointer, 4> m_pointers{nullptr, nullptr, nullptr, nullptr};
     std::vector< ::fwMemory::BufferObject::Lock > m_locks;
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};
-    std::array< difference_type, 5> m_elementSizes;
+    std::array< difference_type, 4> m_elementSizes{0, 0, 0, 0};
     std::uint8_t m_nbArrays{1};
 
     std::uint8_t m_colorIdx{1};
@@ -195,7 +196,7 @@ protected:
     }
    @endcode
  */
-class FWDATA_CLASS_API PointIterator : public MeshIteratorBase
+class FWDATA_CLASS_API PointIterator : public PointIteratorBase<false>
 {
 public:
 
@@ -213,10 +214,12 @@ public:
 
     /// Constructor
     FWDATA_API PointIterator(Mesh* mesh);
-    FWDATA_API PointIterator(const MeshIteratorBase& other);
+    FWDATA_API PointIterator(const PointIterator& other) = default;
+    FWDATA_API PointIterator(const PointIteratorBase& other);
     FWDATA_API virtual ~PointIterator() override;
 
-    FWDATA_API PointIterator& operator=(const MeshIteratorBase& other);
+    FWDATA_API PointIterator& operator=(const PointIterator& other) = default;
+    FWDATA_API PointIterator& operator=(const PointIteratorBase& other);
 
     friend class ConstPointIterator;
 
@@ -248,7 +251,7 @@ public:
     }
    @endcode
  */
-class FWDATA_CLASS_API ConstPointIterator : public MeshIteratorBase
+class FWDATA_CLASS_API ConstPointIterator : public PointIteratorBase<true>
 {
 public:
     typedef const Point point_value_type;
@@ -265,10 +268,12 @@ public:
 
     /// Constructor
     FWDATA_API ConstPointIterator(const Mesh* mesh);
-    FWDATA_API ConstPointIterator(const MeshIteratorBase& other);
+    FWDATA_API ConstPointIterator(const ConstPointIterator& other) = default;
+    FWDATA_API ConstPointIterator(const PointIteratorBase& other);
     FWDATA_API virtual ~ConstPointIterator() override;
 
-    FWDATA_API ConstPointIterator& operator=(const MeshIteratorBase& other);
+    FWDATA_API ConstPointIterator& operator=(const ConstPointIterator& other) = default;
+    FWDATA_API ConstPointIterator& operator=(const PointIteratorBase& other);
 
     FWDATA_API point_reference point();
     FWDATA_API color_reference color();
@@ -276,6 +281,75 @@ public:
     FWDATA_API tex_reference tex();
     FWDATA_API point_reference operator*();
     FWDATA_API ConstPointIterator* operator->();
+};
+
+/**
+ * @brief Base class for mesh's cells iterators
+ *
+ * Iterate through the point arrays and check if the index is not out of the bounds
+ */
+template<bool isConst>
+class FWDATA_CLASS_API CellIteratorBase
+{
+public:
+
+    /**
+     * @name Typedefs required by std::iterator_traits
+     * @{
+     */
+    typedef typename std::conditional<isConst, const char, char>::type value_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::random_access_iterator_tag iterator_category;
+
+    typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cellData_value_type;
+    /// @}
+
+    /// Constructor
+    FWDATA_API CellIteratorBase();
+    /// Destructor
+    FWDATA_API virtual ~CellIteratorBase();
+    /// Copy constructor
+    FWDATA_API CellIteratorBase(const CellIteratorBase& other)            = default;
+    FWDATA_API CellIteratorBase& operator=(const CellIteratorBase& other) = default;
+
+    /// Comparison operators
+    FWDATA_API bool operator==(const CellIteratorBase& other) const;
+    FWDATA_API bool operator!=(const CellIteratorBase& other) const;
+
+    /// Increment/Decrement operators
+    FWDATA_API CellIteratorBase& operator++();
+    FWDATA_API CellIteratorBase operator++(int);
+    FWDATA_API CellIteratorBase operator+(difference_type index);
+    FWDATA_API CellIteratorBase& operator+=(difference_type index);
+    FWDATA_API CellIteratorBase& operator--();
+    FWDATA_API CellIteratorBase operator--(int);
+    FWDATA_API CellIteratorBase operator-(difference_type index);
+    FWDATA_API CellIteratorBase& operator-=(difference_type index);
+
+    FWDATA_API difference_type operator+(const CellIteratorBase& other) const;
+    FWDATA_API difference_type operator-(const CellIteratorBase& other) const;
+
+protected:
+
+    friend class ::fwData::Mesh;
+    friend class CellIterator;
+    friend class ConstCellIterator;
+
+    std::array< pointer, 5> m_pointers{nullptr, nullptr, nullptr, nullptr, nullptr};
+    std::vector< ::fwMemory::BufferObject::Lock > m_locks;
+    difference_type m_idx{0};
+    difference_type m_numberOfElements{0};
+    std::array< difference_type, 5> m_elementSizes{0, 0, 0, 0, 0};
+    std::uint8_t m_nbArrays{1};
+
+    std::uint8_t m_colorIdx{1};
+    std::uint8_t m_normalIdx{2};
+    std::uint8_t m_texIdx{3};
+    cellData_value_type* m_cellDataPointer{nullptr};
+    std::uint64_t m_cellDataSize{0};
+    difference_type m_currentOffset{0};
 };
 
 /**
@@ -301,11 +375,11 @@ public:
     }
    @endcode
  */
-class FWDATA_CLASS_API CellIterator : public MeshIteratorBase
+class FWDATA_CLASS_API CellIterator : public CellIteratorBase<false>
 {
 public:
 
-    typedef std::uint64_t point_idx_value_type;
+    typedef CellIteratorBase<false>::cellData_value_type point_idx_value_type;
     typedef point_idx_value_type& point_idx_reference;
 
     typedef Point point_value_type;
@@ -326,12 +400,14 @@ public:
     typedef std::uint64_t celloffset_value_type;
     typedef celloffset_value_type& celloffset_reference;
 
+    friend class ConstCellIterator;
+
     /// Constructor
     FWDATA_API CellIterator(::fwData::Mesh* mesh);
-    FWDATA_API CellIterator(const CellIterator& other);
+    FWDATA_API CellIterator(const CellIterator& other) = default;
     FWDATA_API virtual ~CellIterator() override;
 
-    FWDATA_API CellIterator& operator=(const CellIterator& other);
+    FWDATA_API CellIterator& operator=(const CellIterator& other) = default;
 
     FWDATA_API point_idx_reference pointIdx(size_t id);
     FWDATA_API color_reference color();
@@ -340,12 +416,6 @@ public:
     FWDATA_API celltype_reference cellType();
     FWDATA_API celloffset_reference cellOffset();
     FWDATA_API size_t nbPoints() const;
-
-protected:
-
-    friend class ConstCellIterator;
-    std::uint64_t* m_cellDataPointer;
-    std::uint64_t m_cellDataSize;
 };
 
 /**
@@ -371,11 +441,11 @@ protected:
     }
    @endcode
  */
-class FWDATA_CLASS_API ConstCellIterator : public MeshIteratorBase
+class FWDATA_CLASS_API ConstCellIterator : public CellIteratorBase<true>
 {
 public:
 
-    typedef const std::uint64_t point_idx_value_type;
+    typedef CellIteratorBase<true>::cellData_value_type point_idx_value_type;
     typedef point_idx_value_type& point_idx_reference;
 
     typedef const Point point_value_type;
@@ -398,10 +468,11 @@ public:
 
     /// Constructor
     FWDATA_API ConstCellIterator(const ::fwData::Mesh* mesh);
+    FWDATA_API ConstCellIterator(const ConstCellIterator& other) = default;
     FWDATA_API ConstCellIterator(const CellIterator& other);
     FWDATA_API virtual ~ConstCellIterator() override;
 
-    FWDATA_API ConstCellIterator& operator=(const ConstCellIterator& other);
+    FWDATA_API ConstCellIterator& operator=(const ConstCellIterator& other) = default;
 
     FWDATA_API point_idx_reference pointIdx(size_t id);
     FWDATA_API color_reference color();
@@ -410,12 +481,9 @@ public:
     FWDATA_API celltype_reference cellType();
     FWDATA_API celloffset_reference cellOffset();
     FWDATA_API size_t nbPoints() const;
-
-protected:
-
-    const std::uint64_t* m_cellDataPointer;
-    std::uint64_t m_cellDataSize;
 };
 
 } // namespace iterator
 } // namespace fwData
+
+#include "fwData/iterator/MeshIterators.hxx"
