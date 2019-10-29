@@ -966,7 +966,8 @@ QTabBar::tab:right:!selected:hover
     background-color: #3daee9;
 }
 
-QTabBar QToolButton
+QTabBar QToolButton,
+QTabBar QToolButton:disabled
 {
     background-color: #31363b;
 }
