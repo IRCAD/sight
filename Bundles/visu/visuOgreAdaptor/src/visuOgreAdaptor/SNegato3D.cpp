@@ -207,6 +207,8 @@ void SNegato3D::starting()
 
 void SNegato3D::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     m_helperTF.removeTFConnections();
 
     m_pickedPlane.reset();
@@ -257,17 +259,13 @@ void SNegato3D::swapping(const KeyType& key)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::createPlanes(const ::fwData::Image::SpacingType& _spacing, const ::fwData::Image::OriginType& _origin)
+void SNegato3D::createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vector3& _origin)
 {
-    ::Ogre::Vector3 origin(static_cast< ::Ogre::Real >(_origin[0]),
-                           static_cast< ::Ogre::Real >(_origin[1]),
-                           static_cast< ::Ogre::Real >(_origin[2]));
-
     // Fits the planes to the new texture
     for(const auto& plane : m_planes)
     {
         plane->setDepthSpacing(_spacing);
-        plane->setOriginPosition(origin);
+        plane->setOriginPosition(_origin);
         plane->initializePlane();
         plane->enableAlpha(m_enableAlpha);
         plane->setQueryFlags(0x1);
@@ -291,7 +289,8 @@ void SNegato3D::newImage()
 
         ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-        this->createPlanes(image->getSpacing(), image->getOrigin());
+        auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        this->createPlanes(spacing, origin);
 
         // Update Slice
         const auto axialIndex =
@@ -547,7 +546,7 @@ void SNegato3D::moveSlices(int _x, int _y)
         }
 
         const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
-        pickedPt                     = pickedPt / spacing - origin;
+        pickedPt                     = (pickedPt - origin) / spacing;
 
         const ::Ogre::Vector3i pickedPtI(pickedPt);
         auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >
@@ -569,7 +568,6 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
     if(pickedPos.has_value() && m_pickedVoxelSignal->getNumberOfConnections() > 0)
     {
-        this->updatePickingCross(pickedPos.value());
 
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
@@ -577,7 +575,9 @@ void SNegato3D::pickIntensity(int _x, int _y)
         auto imageBufferLock = image->lock();
 
         const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
-        const auto pickedPosImageSpace = pickedPos.value() / spacing - origin;
+        const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;
+
+        this->updatePickingCross(pickedPos.value(), origin);
 
         const auto& imgSize = image->getSize2();
         ::fwData::Image::Size pickedVoxel;
@@ -630,7 +630,7 @@ std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::updatePickingCross(const ::Ogre::Vector3& _pickedPos)
+void SNegato3D::updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin)
 {
     const float h = m_pickedPlane->getHeight();
     const float w = m_pickedPlane->getWidth();
@@ -639,22 +639,22 @@ void SNegato3D::updatePickingCross(const ::Ogre::Vector3& _pickedPos)
     switch(m_pickedPlane->getOrientationMode())
     {
         case ::fwRenderOgre::Plane::OrientationMode::X_AXIS:
-            m_pickingCross->position(_pickedPos.x, 0, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, h, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, 0);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, w);
+            m_pickingCross->position(_pickedPos.x, 0 + _imgOrigin.y, _pickedPos.z);
+            m_pickingCross->position(_pickedPos.x, h + _imgOrigin.y, _pickedPos.z);
+            m_pickingCross->position(_pickedPos.x, _pickedPos.y, 0 + _imgOrigin.z);
+            m_pickingCross->position(_pickedPos.x, _pickedPos.y, w + _imgOrigin.z);
             break;
         case ::fwRenderOgre::Plane::OrientationMode::Y_AXIS:
-            m_pickingCross->position(0, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(w, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, 0);
-            m_pickingCross->position(_pickedPos.x, _pickedPos.y, h);
+            m_pickingCross->position(0 + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
+            m_pickingCross->position(w + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
+            m_pickingCross->position(_pickedPos.x, _pickedPos.y, 0 + _imgOrigin.z);
+            m_pickingCross->position(_pickedPos.x, _pickedPos.y, h + _imgOrigin.z);
             break;
         case ::fwRenderOgre::Plane::OrientationMode::Z_AXIS:
-            m_pickingCross->position(0, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(w, _pickedPos.y, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, 0, _pickedPos.z);
-            m_pickingCross->position(_pickedPos.x, h, _pickedPos.z);
+            m_pickingCross->position(0 + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
+            m_pickingCross->position(w + _imgOrigin.x, _pickedPos.y, _pickedPos.z);
+            m_pickingCross->position(_pickedPos.x, 0 + _imgOrigin.y, _pickedPos.z);
+            m_pickingCross->position(_pickedPos.x, h + _imgOrigin.y, _pickedPos.z);
             break;
     }
     m_pickingCross->end();

@@ -444,6 +444,27 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 
 // ----------------------------------------------------------------------------
 
+void Layer::forAllInteractors(std::function< void(interactor::IInteractor::sptr)> _f)
+{
+    auto interactorsBegin = m_interactors.begin();
+    auto interactorsEnd   = m_interactors.end();
+
+    for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
+    {
+        interactor::IInteractor::sptr interactor = it->second.lock();
+        if(interactor)
+        {
+            _f(interactor);
+        }
+        else
+        {
+            it = m_interactors.erase(it);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info)
 {
     this->getRenderService()->makeCurrent();
@@ -455,18 +476,18 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
+                });
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->wheelEvent(info.delta, info.x, info.y);
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->wheelEvent(info.delta, info.x, info.y);
+                });
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
@@ -474,10 +495,10 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             auto sig = this->signal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
             sig->asyncEmit(info.x, info.y);
 
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->resizeEvent(info.x, info.y);
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->resizeEvent(info.x, info.y);
+                });
 
             auto renderService = m_renderService.lock();
             const float newDpi = renderService->getInteractorManager()->getLogicalDotsPerInch();
@@ -498,50 +519,50 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->keyPressEvent(info.key);
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->keyPressEvent(info.key);
+                });
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->keyReleaseEvent(info.key);
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->keyReleaseEvent(info.key);
+                });
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->buttonReleaseEvent(info.button, info.x, info.y);
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->buttonReleaseEvent(info.button, info.x, info.y);
+                });
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->buttonPressEvent(info.button, info.x, info.y);
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->buttonPressEvent(info.button, info.x, info.y);
+                });
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->focusInEvent();
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->focusInEvent();
+                });
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT:
         {
-            for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
-            {
-                it->second.lock()->focusOutEvent();
-            }
+            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+                {
+                    _i->focusOutEvent();
+                });
             break;
         }
     }

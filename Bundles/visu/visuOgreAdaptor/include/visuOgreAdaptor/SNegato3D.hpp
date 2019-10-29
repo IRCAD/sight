@@ -173,7 +173,7 @@ private:
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
 
     /// Makes the planes process their meshes
-    void createPlanes(const ::fwData::Image::SpacingType& _spacing, const fwData::Image::OriginType& _origin);
+    void createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vector3& _origin);
 
     /// Sets the planes's opacity
     /// Also a slot called when image opacity is modified
@@ -189,7 +189,7 @@ private:
     std::optional< ::Ogre::Vector3 > getPickedSlices(int _x, int _y);
 
     /// Updates the intensity picking widget's position.
-    void updatePickingCross(const ::Ogre::Vector3& _pickedPos);
+    void updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin);
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };

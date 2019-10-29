@@ -327,6 +327,9 @@ private:
     /// For a list of semicolon-separated words, returns a vector of these words.
     std::vector< std::string > trimSemicolons(std::string input);
 
+    /// Calls a function on all interactors and deletes the ones that expired.
+    void forAllInteractors(std::function< void(interactor::IInteractor::sptr) > _f);
+
     /// Ogre scene manager of this viewport.
     ::Ogre::SceneManager* m_sceneManager;
 

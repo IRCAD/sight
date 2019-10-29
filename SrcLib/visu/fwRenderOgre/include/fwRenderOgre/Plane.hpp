@@ -84,8 +84,8 @@ public:
 
     FWRENDEROGRE_API void setOriginPosition(const ::Ogre::Vector3& _origPos);
 
-    FWRENDEROGRE_API std::vector< ::Ogre::Real > getDepthSpacing();
-    FWRENDEROGRE_API void setDepthSpacing(std::vector<double> _spacing);
+    FWRENDEROGRE_API ::Ogre::Vector3 getDepthSpacing();
+    FWRENDEROGRE_API void setDepthSpacing(const ::Ogre::Vector3& _spacing);
 
     FWRENDEROGRE_API void setEntityOpacity( float _f );
 
@@ -133,16 +133,16 @@ private:
     void moveAlongAxis();
 
     /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
-    ::Ogre::MovablePlane* setDimensions();
+    ::Ogre::MovablePlane setDimensions();
 
     /// Indicates whether the plane is used by a 3D negato or not
-    bool m_is3D;
+    bool m_is3D { false };
 
     /// Indicates whether whe want to threshold instead of windowing
-    bool m_threshold;
+    bool m_threshold { false };
 
     /// Defines the filtering type for this plane
-    FilteringEnumType m_filtering;
+    FilteringEnumType m_filtering { FilteringEnum::ANISOTROPIC };
 
     /// Orientation mode of the plane
     OrientationMode m_orientation;
@@ -150,13 +150,13 @@ private:
     /// The plane on wich we will apply a texture
     ::Ogre::MeshPtr m_slicePlane;
     /// The origin position of the slice plane according to the source image's origin
-    ::Ogre::Vector3 m_originPosition;
+    ::Ogre::Vector3 m_originPosition { ::Ogre::Vector3::ZERO };
     /// Pointer to the material
     ::Ogre::MaterialPtr m_texMaterial;
     /// Pointer to the texture
     ::Ogre::TexturePtr m_texture;
     /// Points to the scenemanager containing the plane
-    ::Ogre::SceneManager* m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
 
     /// Strings needed to initialize mesh, scenenode, etc.
     std::string m_slicePlaneName;
@@ -166,27 +166,25 @@ private:
     std::string m_sceneNodeName;
 
     /// The scene node on which we will attach the mesh
-    ::Ogre::SceneNode* m_planeSceneNode;
+    ::Ogre::SceneNode* m_planeSceneNode { nullptr };
     /// The parent scene node.
-    ::Ogre::SceneNode* m_parentSceneNode;
+    ::Ogre::SceneNode* m_parentSceneNode { nullptr };
 
     /// Entity's width.
-    ::Ogre::Real m_width;
+    ::Ogre::Real m_width { 0.f };
     /// Entity's height.
-    ::Ogre::Real m_height;
+    ::Ogre::Real m_height { 0.f };
     /// Entity's depth.
-    ::Ogre::Real m_depth;
+    ::Ogre::Real m_depth { 0.f };
 
     /// Spacing in the texture 3d image file.
-    std::vector< ::Ogre::Real > m_spacing;
+    ::Ogre::Vector3 m_spacing { ::Ogre::Vector3::ZERO };
 
     /// Where are we insite the depth range?
-    float m_relativePosition;
+    float m_relativePosition { 0.8f };
 
     /// Opacity applied to the entity.
-    float m_entityOpacity;
-
-    static unsigned int s_id;
+    float m_entityOpacity { 1.f };
 };
 
 //------------------------------------------------------------------------------
@@ -199,7 +197,7 @@ inline void Plane::setOriginPosition(const ::Ogre::Vector3& _origPos)
 
 //------------------------------------------------------------------------------
 
-inline std::vector< ::Ogre::Real > Plane::getDepthSpacing()
+inline ::Ogre::Vector3 Plane::getDepthSpacing()
 {
     return m_spacing;
 }

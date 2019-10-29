@@ -46,9 +46,9 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SNegato2D, ::fwData::Image);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SNegato2D, ::fwData::Image)
 
-const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
+const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
@@ -228,7 +228,8 @@ void SNegato2D::newImage()
     // Retrieves or creates the slice index fields
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    this->createPlane( image->getSpacing() );
+    auto [spacing, _] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+    this->createPlane( spacing );
     this->updateCamera();
 
     // Update Slice
@@ -351,7 +352,7 @@ void SNegato2D::updateTF()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
+void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
 {
     this->getRenderService()->makeCurrent();
     // Fits the plane to the new texture

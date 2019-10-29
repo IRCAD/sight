@@ -67,7 +67,7 @@ public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
-    fwCoreServiceMacro(SNegato2D, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SNegato2D, ::fwRenderOgre::IAdaptor)
 
     /// Constructor.
     VISUOGREADAPTOR_API SNegato2D() noexcept;
@@ -110,8 +110,8 @@ private:
     /// updates image slice index for the current fragment program.
     void updateShaderSliceIndexParameter();
 
-    /// Makes the plane processes his mesh
-    void createPlane(const ::fwData::Image::SpacingType& _spacing);
+    /// Initializes the planar mesh on which the negato is displayed.
+    void createPlane(const ::Ogre::Vector3& _spacing);
 
     /// Adapts the camera to the width and height of the displayed plane.
     void updateCamera();
