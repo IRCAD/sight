@@ -69,10 +69,20 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator++()
     ++m_idx;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    ++m_pointInfo.point;
+    if (m_pointInfo.color)
     {
-        m_pointers[i] += m_elementSizes[i];
+        ++m_pointInfo.color;
     }
+    if (m_pointInfo.normal)
+    {
+        ++m_pointInfo.normal;
+    }
+    if (m_pointInfo.tex)
+    {
+        ++m_pointInfo.tex;
+    }
+
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -84,9 +94,18 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator++(int)
     ++m_idx;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    ++m_pointInfo.point;
+    if (m_pointInfo.color)
     {
-        m_pointers[i] += m_elementSizes[i];
+        ++m_pointInfo.color;
+    }
+    if (m_pointInfo.normal)
+    {
+        ++m_pointInfo.normal;
+    }
+    if (m_pointInfo.tex)
+    {
+        ++m_pointInfo.tex;
     }
     return tmp;
 }
@@ -107,9 +126,18 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator+=(difference_ty
     m_idx += index;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    m_pointInfo.point += index;
+    if (m_pointInfo.color)
     {
-        m_pointers[i] += index*m_elementSizes[i];
+        m_pointInfo.color += index;
+    }
+    if (m_pointInfo.normal)
+    {
+        m_pointInfo.normal += index;
+    }
+    if (m_pointInfo.tex)
+    {
+        m_pointInfo.tex += index;
     }
     return *this;
 }
@@ -120,9 +148,18 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator--()
 {
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    --m_pointInfo.point;
+    if (m_pointInfo.color)
     {
-        m_pointers[i] -= m_elementSizes[i];
+        --m_pointInfo.color;
+    }
+    if (m_pointInfo.normal)
+    {
+        --m_pointInfo.normal;
+    }
+    if (m_pointInfo.tex)
+    {
+        --m_pointInfo.tex;
     }
     return *this;
 }
@@ -134,9 +171,18 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator--(int)
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     PointIteratorBase tmp(*this);
     --m_idx;
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    --m_pointInfo.point;
+    if (m_pointInfo.color)
     {
-        m_pointers[i] -= m_elementSizes[i];
+        --m_pointInfo.color;
+    }
+    if (m_pointInfo.normal)
+    {
+        --m_pointInfo.normal;
+    }
+    if (m_pointInfo.tex)
+    {
+        --m_pointInfo.tex;
     }
     return tmp;
 }
@@ -157,10 +203,19 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator-=(difference_ty
 {
     SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
                                              << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx -= index;
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    m_idx             -= index;
+    m_pointInfo.point -= index;
+    if (m_pointInfo.color)
     {
-        m_pointers[i] -= index*m_elementSizes[i];
+        m_pointInfo.color -= index;
+    }
+    if (m_pointInfo.normal)
+    {
+        m_pointInfo.normal -= index;
+    }
+    if (m_pointInfo.tex)
+    {
+        m_pointInfo.tex -= index;
     }
     return *this;
 }
@@ -180,6 +235,22 @@ typename PointIteratorBase<isConst>::difference_type PointIteratorBase<isConst>:
     const PointIteratorBase& other) const
 {
     return m_idx - other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+typename PointIteratorBase<isConst>::PointInfo PointIteratorBase<isConst>::operator*()
+{
+    return m_pointInfo;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+typename PointIteratorBase<isConst>::PointInfo* PointIteratorBase<isConst>::operator->()
+{
+    return &m_pointInfo;
 }
 
 //------------------------------------------------------------------------------
@@ -219,16 +290,48 @@ template<bool isConst>
 CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
 {
     ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "[",
                m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    ++m_cellInfo.type;
+    ++m_cellInfo.offset;
+
+    std::uint64_t offset;
+    if (m_idx < m_numberOfElements)
     {
-        m_pointers[i] += m_elementSizes[i];
+        offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset);
     }
-    const cellData_value_type offset = *reinterpret_cast<cellData_value_type*>(m_pointers[0]);
-    const difference_type newOffset  = static_cast<difference_type>(offset);
-    m_cellDataPointer += newOffset - m_currentOffset;
-    m_currentOffset    = newOffset;
+    else
+    {
+        offset = m_cellDataSize;
+    }
+
+    const difference_type newOffset = static_cast<difference_type>(offset);
+    m_cellInfo.pointIdx += newOffset - m_currentOffset;
+    m_currentOffset      = newOffset;
+    std::uint64_t nextOffset;
+    if (m_idx < m_numberOfElements-1)
+    {
+        nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset+1);
+    }
+    else
+    {
+        nextOffset = m_cellDataSize;
+    }
+
+    m_cellInfo.nbPoints = nextOffset - offset;
+
+    if (m_cellInfo.color)
+    {
+        ++m_cellInfo.color;
+    }
+    if (m_cellInfo.normal)
+    {
+        ++m_cellInfo.normal;
+    }
+    if (m_cellInfo.tex)
+    {
+        ++m_cellInfo.tex;
+    }
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -257,14 +360,45 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
     m_idx += index;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
-    for(size_t i = 0; i < m_nbArrays; ++i)
+
+    m_cellInfo.type   += index;
+    m_cellInfo.offset += index;
+    std::uint64_t offset;
+    if (m_idx < m_numberOfElements)
     {
-        m_pointers[i] += index*m_elementSizes[i];
+        offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset);
     }
-    const cellData_value_type offset = *reinterpret_cast<cellData_value_type*>(m_pointers[0]);
-    const difference_type newOffset  = static_cast<difference_type>(offset);
-    m_cellDataPointer += newOffset - m_currentOffset;
-    m_currentOffset    = newOffset;
+    else
+    {
+        offset = m_cellDataSize;
+    }
+    const difference_type newOffset = static_cast<difference_type>(offset);
+    m_cellInfo.pointIdx += newOffset - m_currentOffset;
+    m_currentOffset      = newOffset;
+    std::uint64_t nextOffset;
+    if (m_idx < m_numberOfElements-1)
+    {
+        nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset+1);
+    }
+    else
+    {
+        nextOffset = m_cellDataSize;
+    }
+    m_cellInfo.nbPoints = nextOffset - offset;
+
+    if (m_cellInfo.color)
+    {
+        m_cellInfo.color += index;
+    }
+    if (m_cellInfo.normal)
+    {
+        m_cellInfo.normal += index;
+    }
+    if (m_cellInfo.tex)
+    {
+        m_cellInfo.tex += index;
+    }
+
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -274,14 +408,27 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
 {
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
-    for(size_t i = 0; i < m_nbArrays; ++i)
+    --m_cellInfo.type;
+    --m_cellInfo.offset;
+
+    const cell_data_value_type offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset);
+    const difference_type newOffset   = static_cast<difference_type>(offset);
+    m_cellInfo.nbPoints  = m_currentOffset - newOffset;
+    m_cellInfo.pointIdx -= m_currentOffset - newOffset;
+    m_currentOffset      = newOffset;
+
+    if (m_cellInfo.color)
     {
-        m_pointers[i] -= m_elementSizes[i];
+        --m_cellInfo.color;
     }
-    const std::uint64_t offset = *reinterpret_cast<std::uint64_t*>(m_pointers[0]);
-    difference_type newOffset  = static_cast<difference_type>(offset);
-    m_cellDataPointer -= newOffset - m_currentOffset;
-    m_currentOffset    = newOffset;
+    if (m_cellInfo.normal)
+    {
+        --m_cellInfo.normal;
+    }
+    if (m_cellInfo.tex)
+    {
+        --m_cellInfo.tex;
+    }
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -314,14 +461,37 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator-=(difference_type
 
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     m_idx -= index;
-    for(size_t i = 0; i < m_nbArrays; ++i)
+
+    m_cellInfo.type   -= index;
+    m_cellInfo.offset -= index;
+    const cell_data_value_type offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset);
+    const difference_type newOffset   = static_cast<difference_type>(offset);
+    m_cellInfo.pointIdx -= m_currentOffset - newOffset;
+    m_currentOffset      = newOffset;
+
+    std::uint64_t nextOffset;
+    if (m_idx < m_numberOfElements-1)
     {
-        m_pointers[i] -= index*m_elementSizes[i];
+        nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset+1);
     }
-    const std::uint64_t offset = *reinterpret_cast<std::uint64_t*>(m_pointers[0]);
-    difference_type newOffset  = static_cast<difference_type>(offset);
-    m_cellDataPointer -= newOffset - m_currentOffset;
-    m_currentOffset    = newOffset;
+    else
+    {
+        nextOffset = m_cellDataSize;
+    }
+    m_cellInfo.nbPoints = nextOffset - offset;
+
+    if (m_cellInfo.color)
+    {
+        m_cellInfo.color -= index;
+    }
+    if (m_cellInfo.normal)
+    {
+        m_cellInfo.normal -= index;
+    }
+    if (m_cellInfo.tex)
+    {
+        m_cellInfo.tex -= index;
+    }
 
     return *this;
 }
@@ -341,6 +511,40 @@ typename CellIteratorBase<isConst>::difference_type CellIteratorBase<isConst>::o
     const CellIteratorBase& other) const
 {
     return m_idx - other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+typename CellIteratorBase<isConst>::CellInfo CellIteratorBase<isConst>::operator*()
+{
+    return m_cellInfo;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+typename CellIteratorBase<isConst>::CellInfo* CellIteratorBase<isConst>::operator->()
+{
+    return &m_cellInfo;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+typename CellIteratorBase<isConst>::cell_data_value_type& CellIteratorBase<isConst>::operator[](size_t index)
+{
+    OSLM_ASSERT("Index out ou bounds, the cell contains only " << m_cellInfo.nbPoints << " points",
+                index < m_cellInfo.nbPoints);
+    return *(m_cellInfo.pointIdx+index);
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+size_t CellIteratorBase<isConst>::nbPoints() const
+{
+    return m_cellInfo.nbPoints;
 }
 
 //------------------------------------------------------------------------------
