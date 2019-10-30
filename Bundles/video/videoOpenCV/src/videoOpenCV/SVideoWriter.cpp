@@ -27,7 +27,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -51,8 +50,7 @@ static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 
 //------------------------------------------------------------------------------
 
-SVideoWriter::SVideoWriter() noexcept :
-    m_imageType(0)
+SVideoWriter::SVideoWriter() noexcept
 {
     newSlot(s_SAVE_FRAME, &SVideoWriter::saveFrame, this);
     newSlot(s_START_RECORD, &SVideoWriter::startRecord, this);
@@ -129,37 +127,96 @@ void SVideoWriter::updating()
 
 //------------------------------------------------------------------------------
 
+void SVideoWriter::writeBuffer(int width, int height, CSPTR(::arData::FrameTL::BufferType)buffer)
+{
+    SLM_ASSERT("OpenCV video writer not initialized", m_writer);
+    const std::uint8_t* imageBuffer = &buffer->getElement(0);
+
+    ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*)imageBuffer, ::cv::Mat::AUTO_STEP);
+    if (m_imageType == CV_16UC1)
+    {
+        // Convert the image to a RGB image
+        ::cv::Mat img8bit;
+        ::cv::Mat imgColor;
+        image.convertTo(img8bit, CV_8UC1, 1/100.0);
+        ::cv::cvtColor(img8bit, imgColor, ::cv::COLOR_GRAY2RGB);
+
+        m_writer->write(imgColor);
+    }
+    else if (m_imageType == CV_8UC3)
+    {
+        // convert the image from RGB to BGR
+        ::cv::Mat imageBGR;
+        ::cv::cvtColor(image, imageBGR, ::cv::COLOR_RGB2BGR);
+        m_writer->write(imageBGR);
+    }
+    else if (m_imageType == CV_8UC4)
+    {
+        // convert the image from RGBA to BGR
+        ::cv::Mat imageBGR;
+        ::cv::cvtColor(image, imageBGR, ::cv::COLOR_RGBA2BGR);
+        m_writer->write(imageBGR);
+    }
+    else
+    {
+        m_writer->write(image);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    if (m_writer && m_writer->isOpened())
+    if (m_isRecording)
     {
         ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
-
-        // Get the buffer of the copied timeline
-        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
-
-        if (buffer)
+        if(m_writer && m_writer->isOpened())
         {
-            // Save RGB image
-            int width  = static_cast<int>( frameTL->getWidth() );
-            int height = static_cast<int>( frameTL->getHeight() );
-
-            const std::uint8_t* imageBuffer = &buffer->getElement(0);
-
-            ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*)imageBuffer, ::cv::Mat::AUTO_STEP);
-            if (m_imageType == CV_16UC1)
+            // Get the buffer of the copied timeline
+            CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+            if (buffer)
             {
-                // Convert the image to a RGB image
-                ::cv::Mat img8bit;
-                ::cv::Mat imgColor;
-                image.convertTo(img8bit, CV_8UC1, 1/100.0);
-                ::cv::cvtColor(img8bit, imgColor, ::cv::COLOR_GRAY2RGBA, 4);
+                const int width  = static_cast<int>( frameTL->getWidth() );
+                const int height = static_cast<int>( frameTL->getHeight() );
+                this->writeBuffer(width, height, buffer);
+            }
+        }
+        else
+        {
+            if(m_timestamps.size() >= 5 )
+            {
+                // computes number of fps
+                const double fps = 1000 * m_timestamps.size() / (m_timestamps.back() - m_timestamps.front());
+                OSLM_TRACE("Estimated FPS: " << fps);
+                const int width                      = static_cast<int>( frameTL->getWidth() );
+                const int height                     = static_cast<int>( frameTL->getHeight() );
+                const ::boost::filesystem::path path = this->getFile();
 
-                m_writer->write(imgColor);
+                m_writer = std::make_unique< ::cv::VideoWriter >(path.string(), CV_FOURCC('M', 'J', 'P', 'G'),
+                                                                 fps, cvSize(width, height), true);
+
+                if (!m_writer->isOpened())
+                {
+                    ::fwGui::dialog::MessageDialog::showMessageDialog(
+                        "Video recording", "Unable to write the video in the file: " + path.string());
+                    this->stopRecord();
+                }
+                else
+                {
+                    for(const auto& oldTimestamp : m_timestamps)
+                    {
+                        // writes the old frames used to compute the number of fps
+                        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(oldTimestamp);
+                        if (buffer)
+                        {
+                            this->writeBuffer(width, height, buffer);
+                        }
+                    }
+                }
             }
             else
             {
-                m_writer->write(image);
+                m_timestamps.push_back(timestamp);
             }
         }
     }
@@ -176,11 +233,7 @@ void SVideoWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        ::boost::filesystem::path path = this->getFile();
-
         ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
-        int width  = static_cast<int>( frameTL->getWidth() );
-        int height = static_cast<int>( frameTL->getHeight() );
 
         if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -200,16 +253,7 @@ void SVideoWriter::startRecord()
                       std::to_string(frameTL->getNumberOfComponents()) + " components is not supported");
             return;
         }
-
-        m_writer = std::unique_ptr< ::cv::VideoWriter >(
-            new ::cv::VideoWriter(path.string(), CV_FOURCC('M', 'J', 'P', 'G'), 30, cvSize(width, height), true));
-
-        if (!m_writer->isOpened())
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Video recording", "Unable to write the video in the file: "
-                                                              + path.string());
-            m_writer.reset();
-        }
+        m_isRecording = true;
     }
 }
 
@@ -217,10 +261,13 @@ void SVideoWriter::startRecord()
 
 void SVideoWriter::stopRecord()
 {
+    m_isRecording = false;
+    m_timestamps.clear();
     if(m_writer)
     {
         m_writer->release();
         m_writer.reset();
+        this->clearLocations();
     }
 }
 
