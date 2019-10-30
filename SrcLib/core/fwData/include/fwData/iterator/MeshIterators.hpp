@@ -163,15 +163,19 @@ public:
     /// Comparison operators
     FWDATA_API bool operator==(const PointIteratorBase& other) const;
     FWDATA_API bool operator!=(const PointIteratorBase& other) const;
+    FWDATA_API bool operator<(const PointIteratorBase& other) const;
+    FWDATA_API bool operator<=(const PointIteratorBase& other) const;
+    FWDATA_API bool operator>(const PointIteratorBase& other) const;
+    FWDATA_API bool operator>=(const PointIteratorBase& other) const;
 
     /// Increment/Decrement operators
     FWDATA_API PointIteratorBase& operator++();
     FWDATA_API PointIteratorBase operator++(int);
-    FWDATA_API PointIteratorBase operator+(difference_type index);
+    FWDATA_API PointIteratorBase operator+(difference_type index) const;
     FWDATA_API PointIteratorBase& operator+=(difference_type index);
     FWDATA_API PointIteratorBase& operator--();
     FWDATA_API PointIteratorBase operator--(int);
-    FWDATA_API PointIteratorBase operator-(difference_type index);
+    FWDATA_API PointIteratorBase operator-(difference_type index) const;
     FWDATA_API PointIteratorBase& operator-=(difference_type index);
 
     FWDATA_API difference_type operator+(const PointIteratorBase& other) const;
@@ -315,15 +319,19 @@ public:
     /// Comparison operators
     FWDATA_API bool operator==(const CellIteratorBase& other) const;
     FWDATA_API bool operator!=(const CellIteratorBase& other) const;
+    FWDATA_API bool operator<(const CellIteratorBase& other) const;
+    FWDATA_API bool operator<=(const CellIteratorBase& other) const;
+    FWDATA_API bool operator>(const CellIteratorBase& other) const;
+    FWDATA_API bool operator>=(const CellIteratorBase& other) const;
 
     /// Increment/Decrement operators
     FWDATA_API CellIteratorBase& operator++();
     FWDATA_API CellIteratorBase operator++(int);
-    FWDATA_API CellIteratorBase operator+(difference_type index);
+    FWDATA_API CellIteratorBase operator+(difference_type index) const;
     FWDATA_API CellIteratorBase& operator+=(difference_type index);
     FWDATA_API CellIteratorBase& operator--();
     FWDATA_API CellIteratorBase operator--(int);
-    FWDATA_API CellIteratorBase operator-(difference_type index);
+    FWDATA_API CellIteratorBase operator-(difference_type index) const;
     FWDATA_API CellIteratorBase& operator-=(difference_type index);
 
     FWDATA_API difference_type operator+(const CellIteratorBase& other) const;

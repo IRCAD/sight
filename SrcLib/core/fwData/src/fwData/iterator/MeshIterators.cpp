@@ -146,8 +146,8 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
     m_locks.push_back(mesh->m_cellTypes->lock());
     m_locks.push_back(mesh->m_cellDataOffsets->lock());
     m_numberOfElements  = static_cast<difference_type>(mesh->getNumberOfCells());
-    m_cellInfo.pointIdx = static_cast<cell_data_value_type*>(mesh->m_cellData->getBuffer());
     m_cellDataSize      = mesh->getCellDataSize();
+    m_cellInfo.pointIdx = static_cast<cell_data_value_type*>(mesh->m_cellData->getBuffer());
     m_cellInfo.offset   = static_cast<cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo.type     = static_cast<cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
 
@@ -185,8 +185,8 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
     m_locks.push_back(mesh->m_cellTypes->lock());
     m_locks.push_back(mesh->m_cellDataOffsets->lock());
     m_numberOfElements  = static_cast<difference_type>(mesh->getNumberOfCells());
-    m_cellInfo.pointIdx = static_cast<cell_data_value_type*>(mesh->m_cellData->getBuffer());
     m_cellDataSize      = mesh->getCellDataSize();
+    m_cellInfo.pointIdx = static_cast<cell_data_value_type*>(mesh->m_cellData->getBuffer());
     m_cellInfo.offset   = static_cast<cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo.type     = static_cast<cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
 
@@ -216,6 +216,7 @@ ConstCellIterator::ConstCellIterator(const CellIterator& other)
     m_locks             = other.m_locks;
     m_idx               = other.m_idx;
     m_numberOfElements  = other.m_numberOfElements;
+    m_cellDataSize      = other.m_cellDataSize;
     m_cellInfo.pointIdx = other.m_cellInfo.pointIdx;
     m_cellInfo.type     = other.m_cellInfo.type;
     m_cellInfo.offset   = other.m_cellInfo.offset;

@@ -64,6 +64,38 @@ bool PointIteratorBase<isConst>::operator!=(const PointIteratorBase& other) cons
 //------------------------------------------------------------------------------
 
 template<bool isConst>
+bool PointIteratorBase<isConst>::operator<(const PointIteratorBase& other) const
+{
+    return m_idx < other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+bool PointIteratorBase<isConst>::operator<=(const PointIteratorBase& other) const
+{
+    return m_idx <= other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+bool PointIteratorBase<isConst>::operator>(const PointIteratorBase& other) const
+{
+    return m_idx > other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+bool PointIteratorBase<isConst>::operator>=(const PointIteratorBase& other) const
+{
+    return m_idx >= other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
 PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator++()
 {
     ++m_idx;
@@ -112,7 +144,7 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator++(int)
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-PointIteratorBase<isConst> PointIteratorBase<isConst>::operator+(difference_type index)
+PointIteratorBase<isConst> PointIteratorBase<isConst>::operator+(difference_type index) const
 {
     PointIteratorBase tmp(*this);
     tmp += index;
@@ -190,7 +222,7 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator--(int)
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-PointIteratorBase<isConst> PointIteratorBase<isConst>::operator-(difference_type index)
+PointIteratorBase<isConst> PointIteratorBase<isConst>::operator-(difference_type index) const
 {
     PointIteratorBase tmp(*this);
     tmp -= index;
@@ -287,6 +319,38 @@ bool CellIteratorBase<isConst>::operator!=(const CellIteratorBase& other) const
 //------------------------------------------------------------------------------
 
 template<bool isConst>
+bool CellIteratorBase<isConst>::operator<(const CellIteratorBase& other) const
+{
+    return m_idx < other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+bool CellIteratorBase<isConst>::operator<=(const CellIteratorBase& other) const
+{
+    return m_idx <= other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+bool CellIteratorBase<isConst>::operator>(const CellIteratorBase& other) const
+{
+    return m_idx > other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+bool CellIteratorBase<isConst>::operator>=(const CellIteratorBase& other) const
+{
+    return m_idx >= other.m_idx;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
 CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
 {
     ++m_idx;
@@ -346,7 +410,7 @@ CellIteratorBase<isConst> CellIteratorBase<isConst>::operator++(int)
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-CellIteratorBase<isConst> CellIteratorBase<isConst>::operator+(difference_type index)
+CellIteratorBase<isConst> CellIteratorBase<isConst>::operator+(difference_type index) const
 {
     CellIteratorBase tmp(*this);
     tmp += index;
@@ -445,7 +509,7 @@ CellIteratorBase<isConst> CellIteratorBase<isConst>::operator--(int)
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-CellIteratorBase<isConst> CellIteratorBase<isConst>::operator-(difference_type index)
+CellIteratorBase<isConst> CellIteratorBase<isConst>::operator-(difference_type index) const
 {
     CellIteratorBase tmp(*this);
     tmp -= index;

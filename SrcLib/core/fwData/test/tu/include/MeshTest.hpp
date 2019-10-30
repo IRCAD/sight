@@ -41,7 +41,7 @@ private:
     CPPUNIT_TEST( addingArray );
     CPPUNIT_TEST( copy );
     CPPUNIT_TEST( allocationTest );
-    CPPUNIT_TEST( pointIteratorTest );
+    CPPUNIT_TEST( iteratorTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -57,7 +57,7 @@ public:
     void addingArray();
     void copy();
     void allocationTest();
-    void pointIteratorTest();
+    void iteratorTest();
 };
 } //namespace ut
 } //namespace fwData
