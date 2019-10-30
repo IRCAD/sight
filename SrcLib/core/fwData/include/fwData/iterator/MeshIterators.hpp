@@ -117,7 +117,7 @@ struct TexCoords {
  * Iterate through the point arrays and check if the index is not out of the bounds
  */
 template<bool isConst>
-class FWDATA_CLASS_API PointIteratorBase
+class PointIteratorBase
 {
 public:
 
@@ -152,36 +152,36 @@ public:
     /// @}
 
     /// Constructor
-    FWDATA_API PointIteratorBase();
+    PointIteratorBase();
     /// Destructor
-    FWDATA_API virtual ~PointIteratorBase();
+    virtual ~PointIteratorBase();
     /// Copy constructor
-    FWDATA_API PointIteratorBase(const PointIteratorBase& other) = default;
+    PointIteratorBase(const PointIteratorBase& other) = default;
 
-    FWDATA_API PointIteratorBase& operator=(const PointIteratorBase& other) = default;
+    PointIteratorBase& operator=(const PointIteratorBase& other) = default;
 
     /// Comparison operators
-    FWDATA_API bool operator==(const PointIteratorBase& other) const;
-    FWDATA_API bool operator!=(const PointIteratorBase& other) const;
-    FWDATA_API bool operator<(const PointIteratorBase& other) const;
-    FWDATA_API bool operator<=(const PointIteratorBase& other) const;
-    FWDATA_API bool operator>(const PointIteratorBase& other) const;
-    FWDATA_API bool operator>=(const PointIteratorBase& other) const;
+    bool operator==(const PointIteratorBase& other) const;
+    bool operator!=(const PointIteratorBase& other) const;
+    bool operator<(const PointIteratorBase& other) const;
+    bool operator<=(const PointIteratorBase& other) const;
+    bool operator>(const PointIteratorBase& other) const;
+    bool operator>=(const PointIteratorBase& other) const;
 
     /// Increment/Decrement operators
-    FWDATA_API PointIteratorBase& operator++();
-    FWDATA_API PointIteratorBase operator++(int);
-    FWDATA_API PointIteratorBase operator+(difference_type index) const;
-    FWDATA_API PointIteratorBase& operator+=(difference_type index);
-    FWDATA_API PointIteratorBase& operator--();
-    FWDATA_API PointIteratorBase operator--(int);
-    FWDATA_API PointIteratorBase operator-(difference_type index) const;
-    FWDATA_API PointIteratorBase& operator-=(difference_type index);
+    PointIteratorBase& operator++();
+    PointIteratorBase operator++(int);
+    PointIteratorBase operator+(difference_type index) const;
+    PointIteratorBase& operator+=(difference_type index);
+    PointIteratorBase& operator--();
+    PointIteratorBase operator--(int);
+    PointIteratorBase operator-(difference_type index) const;
+    PointIteratorBase& operator-=(difference_type index);
 
-    FWDATA_API difference_type operator+(const PointIteratorBase& other) const;
-    FWDATA_API difference_type operator-(const PointIteratorBase& other) const;
-    FWDATA_API reference operator*();
-    FWDATA_API value_type* operator->();
+    difference_type operator+(const PointIteratorBase& other) const;
+    difference_type operator-(const PointIteratorBase& other) const;
+    reference operator*();
+    value_type* operator->();
 
 protected:
 
@@ -270,7 +270,7 @@ public:
  * Iterate through the point arrays and check if the index is not out of the bounds
  */
 template<bool isConst>
-class FWDATA_CLASS_API CellIteratorBase
+class CellIteratorBase
 {
 public:
 
@@ -310,39 +310,39 @@ public:
     /// @}
 
     /// Constructor
-    FWDATA_API CellIteratorBase();
+    CellIteratorBase();
     /// Destructor
-    FWDATA_API virtual ~CellIteratorBase();
+    virtual ~CellIteratorBase();
     /// Copy constructor
-    FWDATA_API CellIteratorBase(const CellIteratorBase& other)            = default;
-    FWDATA_API CellIteratorBase& operator=(const CellIteratorBase& other) = default;
+    CellIteratorBase(const CellIteratorBase& other)            = default;
+    CellIteratorBase& operator=(const CellIteratorBase& other) = default;
 
     /// Comparison operators
-    FWDATA_API bool operator==(const CellIteratorBase& other) const;
-    FWDATA_API bool operator!=(const CellIteratorBase& other) const;
-    FWDATA_API bool operator<(const CellIteratorBase& other) const;
-    FWDATA_API bool operator<=(const CellIteratorBase& other) const;
-    FWDATA_API bool operator>(const CellIteratorBase& other) const;
-    FWDATA_API bool operator>=(const CellIteratorBase& other) const;
+    bool operator==(const CellIteratorBase& other) const;
+    bool operator!=(const CellIteratorBase& other) const;
+    bool operator<(const CellIteratorBase& other) const;
+    bool operator<=(const CellIteratorBase& other) const;
+    bool operator>(const CellIteratorBase& other) const;
+    bool operator>=(const CellIteratorBase& other) const;
 
     /// Increment/Decrement operators
-    FWDATA_API CellIteratorBase& operator++();
-    FWDATA_API CellIteratorBase operator++(int);
-    FWDATA_API CellIteratorBase operator+(difference_type index) const;
-    FWDATA_API CellIteratorBase& operator+=(difference_type index);
-    FWDATA_API CellIteratorBase& operator--();
-    FWDATA_API CellIteratorBase operator--(int);
-    FWDATA_API CellIteratorBase operator-(difference_type index) const;
-    FWDATA_API CellIteratorBase& operator-=(difference_type index);
+    CellIteratorBase& operator++();
+    CellIteratorBase operator++(int);
+    CellIteratorBase operator+(difference_type index) const;
+    CellIteratorBase& operator+=(difference_type index);
+    CellIteratorBase& operator--();
+    CellIteratorBase operator--(int);
+    CellIteratorBase operator-(difference_type index) const;
+    CellIteratorBase& operator-=(difference_type index);
 
-    FWDATA_API difference_type operator+(const CellIteratorBase& other) const;
-    FWDATA_API difference_type operator-(const CellIteratorBase& other) const;
+    difference_type operator+(const CellIteratorBase& other) const;
+    difference_type operator-(const CellIteratorBase& other) const;
 
-    FWDATA_API reference operator*();
-    FWDATA_API pointer operator->();
+    reference operator*();
+    pointer operator->();
 
-    FWDATA_API cell_data_value_type& operator[](size_t index);
-    FWDATA_API size_t nbPoints() const;
+    cell_data_value_type& operator[](size_t index);
+    size_t nbPoints() const;
 
 protected:
 

@@ -477,8 +477,8 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
 
     const cell_data_value_type offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo.offset);
     const difference_type newOffset   = static_cast<difference_type>(offset);
-    m_cellInfo.nbPoints  = m_currentOffset - newOffset;
     m_cellInfo.pointIdx -= m_currentOffset - newOffset;
+    m_cellInfo.nbPoints  = static_cast<size_t>(m_currentOffset - newOffset);
     m_currentOffset      = newOffset;
 
     if (m_cellInfo.color)
