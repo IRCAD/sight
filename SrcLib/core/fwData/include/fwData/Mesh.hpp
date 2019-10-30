@@ -363,10 +363,10 @@ public:
      *
      * @throw ::fwData::Exception if the allocation failed
      */
-    Id pushPoint(const PointValueType p[3]);
-    Id pushPoint(PointValueType x,
-                 PointValueType y,
-                 PointValueType z);
+    FWDATA_API Id pushPoint(const PointValueType p[3]);
+    FWDATA_API Id pushPoint(PointValueType x,
+                            PointValueType y,
+                            PointValueType z);
     /// @}
     /**
      * @{
@@ -378,16 +378,16 @@ public:
      *
      * @throw ::fwData::Exception if the allocation failed
      */
-    Id pushCell(CellValueType idPt);
-    Id pushCell(CellValueType idP1, CellValueType idP2);
-    Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3);
-    Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
-                CellTypesEnum type = QUAD);
-    Id pushCell(CellTypesEnum type,
-                const std::vector<CellValueType> pointIds);
-    Id pushCell(CellTypesEnum type,
-                const CellValueType* pointIds,
-                size_t nbPoints );
+    FWDATA_API Id pushCell(CellValueType idPt);
+    FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2);
+    FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3);
+    FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
+                           CellTypesEnum type = QUAD);
+    FWDATA_API Id pushCell(CellTypesEnum type,
+                           const std::vector<CellValueType> pointIds);
+    FWDATA_API Id pushCell(CellTypesEnum type,
+                           const CellValueType* pointIds,
+                           size_t nbPoints );
     /// @}
 
     /**
@@ -417,13 +417,14 @@ public:
      *
      * @throw ::fwData::Exception if the mesh is not correctly allocated
      */
-    void setCell(::fwData::Mesh::Id id, CellValueType idPt);
-    void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2);
-    void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3);
-    void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
-                 CellTypesEnum type = QUAD);
-    void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const std::vector<CellValueType> pointIds);
-    void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const CellValueType* pointIds, size_t nbPoints );
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idPt);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3,
+                            CellValueType idP4,
+                            CellTypesEnum type = QUAD);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const std::vector<CellValueType> pointIds);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const CellValueType* pointIds, size_t nbPoints );
     /// @}
 
     /**
