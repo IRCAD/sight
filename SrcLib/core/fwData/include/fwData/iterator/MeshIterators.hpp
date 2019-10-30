@@ -121,17 +121,6 @@ class FWDATA_CLASS_API PointIteratorBase
 {
 public:
 
-    /**
-     * @name Typedefs required by std::iterator_traits
-     * @{
-     */
-    typedef typename std::conditional<isConst, const char, char>::type value_type;
-    typedef value_type* pointer;
-    typedef value_type& reference;
-    typedef std::ptrdiff_t difference_type;
-    typedef std::random_access_iterator_tag iterator_category;
-    /// @}
-
     typedef typename std::conditional<isConst, const Point, Point>::type point_value_type;
     typedef point_value_type& point_reference;
 
@@ -150,6 +139,17 @@ public:
         color_value_type* color{nullptr};
         tex_value_type* tex{nullptr};
     };
+
+    /**
+     * @name Typedefs required by std::iterator_traits
+     * @{
+     */
+    typedef typename std::conditional<isConst, const PointInfo, PointInfo>::type value_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::random_access_iterator_tag iterator_category;
+    /// @}
 
     /// Constructor
     FWDATA_API PointIteratorBase();
@@ -180,8 +180,8 @@ public:
 
     FWDATA_API difference_type operator+(const PointIteratorBase& other) const;
     FWDATA_API difference_type operator-(const PointIteratorBase& other) const;
-    FWDATA_API PointInfo operator*();
-    FWDATA_API PointInfo* operator->();
+    FWDATA_API reference operator*();
+    FWDATA_API value_type* operator->();
 
 protected:
 
@@ -274,17 +274,6 @@ class FWDATA_CLASS_API CellIteratorBase
 {
 public:
 
-    /**
-     * @name Typedefs required by std::iterator_traits
-     * @{
-     */
-    typedef typename std::conditional<isConst, const char, char>::type value_type;
-    typedef value_type* pointer;
-    typedef value_type& reference;
-    typedef std::ptrdiff_t difference_type;
-    typedef std::random_access_iterator_tag iterator_category;
-
-    /// @}
     typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_data_value_type;
     typedef typename std::conditional<isConst, const std::uint8_t, std::uint8_t>::type cell_type_value_type;
     typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_offset_value_type;
@@ -307,6 +296,18 @@ public:
         tex_value_type* tex{nullptr};
         size_t nbPoints{0};
     };
+
+    /**
+     * @name Typedefs required by std::iterator_traits
+     * @{
+     */
+    typedef typename std::conditional<isConst, const CellInfo, CellInfo>::type value_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::random_access_iterator_tag iterator_category;
+
+    /// @}
 
     /// Constructor
     FWDATA_API CellIteratorBase();
@@ -337,8 +338,8 @@ public:
     FWDATA_API difference_type operator+(const CellIteratorBase& other) const;
     FWDATA_API difference_type operator-(const CellIteratorBase& other) const;
 
-    FWDATA_API CellInfo operator*();
-    FWDATA_API CellInfo* operator->();
+    FWDATA_API reference operator*();
+    FWDATA_API pointer operator->();
 
     FWDATA_API cell_data_value_type& operator[](size_t index);
     FWDATA_API size_t nbPoints() const;

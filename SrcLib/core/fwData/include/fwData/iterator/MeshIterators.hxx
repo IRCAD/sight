@@ -272,7 +272,7 @@ typename PointIteratorBase<isConst>::difference_type PointIteratorBase<isConst>:
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-typename PointIteratorBase<isConst>::PointInfo PointIteratorBase<isConst>::operator*()
+typename PointIteratorBase<isConst>::reference PointIteratorBase<isConst>::operator*()
 {
     return m_pointInfo;
 }
@@ -280,7 +280,7 @@ typename PointIteratorBase<isConst>::PointInfo PointIteratorBase<isConst>::opera
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-typename PointIteratorBase<isConst>::PointInfo* PointIteratorBase<isConst>::operator->()
+typename PointIteratorBase<isConst>::pointer PointIteratorBase<isConst>::operator->()
 {
     return &m_pointInfo;
 }
@@ -580,7 +580,7 @@ typename CellIteratorBase<isConst>::difference_type CellIteratorBase<isConst>::o
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-typename CellIteratorBase<isConst>::CellInfo CellIteratorBase<isConst>::operator*()
+typename CellIteratorBase<isConst>::reference CellIteratorBase<isConst>::operator*()
 {
     return m_cellInfo;
 }
@@ -588,7 +588,7 @@ typename CellIteratorBase<isConst>::CellInfo CellIteratorBase<isConst>::operator
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-typename CellIteratorBase<isConst>::CellInfo* CellIteratorBase<isConst>::operator->()
+typename CellIteratorBase<isConst>::pointer CellIteratorBase<isConst>::operator->()
 {
     return &m_cellInfo;
 }

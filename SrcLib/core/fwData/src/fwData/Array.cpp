@@ -140,7 +140,7 @@ size_t Array::resize(const SizeType& size, bool reallocate)
     m_nbOfComponents = (m_nbOfComponents == 0) ? 1 : m_nbOfComponents;
     const size_t bufSize = computeSize(m_type.sizeOf(), size, m_nbOfComponents);
 
-    if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
+    if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()) && this->getSizeInBytes() != bufSize)
     {
         if(m_bufferObject->isEmpty())
         {

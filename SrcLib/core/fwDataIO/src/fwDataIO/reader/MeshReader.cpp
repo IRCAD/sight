@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -87,35 +87,23 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     using boost::phoenix::ref;
     namespace phx = boost::phoenix;
 
-    unsigned long long int nbPoints;
-    unsigned long long int nbCells;
+    size_t nbPoints = 1;
+    size_t nbCells  = 1;
+    size_t count    = 0;
 
-    mesh->allocateCellNormals();
-
-    ::fwData::Array::sptr pointArray           = mesh->getPointsArray();
-    ::fwData::Array::sptr cellDataArray        = mesh->getCellDataArray();
-    ::fwData::Array::sptr cellTypesArray       = mesh->getCellTypesArray();
-    ::fwData::Array::sptr cellDataOffsetsArray = mesh->getCellDataOffsetsArray();
-    ::fwData::Array::sptr cellNormalsArray     = mesh->getCellNormalsArray();
-
-    ::fwDataTools::helper::Array pointHelper(pointArray);
-    ::fwDataTools::helper::Array cellDataHelper(cellDataArray);
-    ::fwDataTools::helper::Array cellNormalsHelper(cellNormalsArray);
-    ::fwDataTools::helper::Array cellDataOffsetsHelper(cellDataOffsetsArray);
-    ::fwDataTools::helper::Array cellTypesHelper(cellTypesArray);
-
-    ::fwData::Array::SizeType pointArraySize;
-    ::fwData::Array::SizeType cellArraySize;
-
-    ::fwData::Mesh::PointValueType* pointArrayBuffer        = 0;
-    ::fwData::Mesh::CellValueType* cellDataArrayBuffer      = 0;
-    ::fwData::Mesh::NormalValueType* cellNormalsArrayBuffer = 0;
+    ::fwData::Mesh::NormalValueType n[3];
 
     // Starting from boost 1.65, the function could not be deduced
-    auto resizeFn =
-        phx::bind(static_cast<size_t(::fwData::Array::*)(const ::fwData::Array::SizeType&,
-                                                         bool)>(&::fwData::Array::resize), pointArray,
-                  std::ref(pointArraySize), true);
+    auto reserveFn =
+        phx::bind(static_cast<size_t(::fwData::Mesh::*)(
+                                  size_t, size_t, ::fwData::Mesh::CellTypesEnum, ::fwData::Mesh::ExtraArrayType)>(
+                      &::fwData::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(nbCells), ::fwData::Mesh::TRIANGLE,
+                  ::fwData::Mesh::ExtraArrayType::CELL_NORMALS);
+
+    // initialize the mesh with 1 point, 1 cell and cell normals to be able to lock all the arrays
+    mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::TRIANGLE, ::fwData::Mesh::ExtraArrayType::CELL_NORMALS);
+
+    const auto lock = mesh->lock();
 
     bool r = phrase_parse(first, last,
 
@@ -124,49 +112,46 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                               ulong_long
                               [
                                   ref(nbPoints) = _1,
-                                  phx::bind(&::fwData::Mesh::setNumberOfPoints, mesh, _1),
-                                  phx::push_back(phx::ref(pointArraySize), phx::ref(nbPoints)),
-                                  resizeFn,
-                                  ref(pointArrayBuffer) =
-                                      phx::bind(&::fwDataTools::helper::Array::begin < ::fwData::Mesh::PointValueType >,
-                                                &pointHelper )
+                                  reserveFn
+
                               ]
 
                               >> repeat(ref(nbPoints))
                               [
                                   (float_ >> float_ >> float_)
                                   [
-                                      *ref(pointArrayBuffer)++ = _1,
-                                      *ref(pointArrayBuffer)++ = _2,
-                                      *ref(pointArrayBuffer)++ = _3
+                                      phx::bind(static_cast< ::fwData::Mesh::Id(::fwData::Mesh::*)(
+                                                                 ::fwData::Mesh::PointValueType,
+                                                                 ::fwData::Mesh::PointValueType,
+                                                                 ::fwData::Mesh::PointValueType)>(
+                                                    &::fwData::Mesh::pushPoint), mesh, _1, _2, _3)
                                   ]
                               ]
 
                               >> ulong_long
                               [
                                   ref(nbCells) = _1,
-                                  phx::bind(&::fwData::Mesh::setNumberOfCells, mesh, _1),
-                                  phx::bind(&::fwData::Mesh::setCellDataSize, mesh, _1*3),
-                                  phx::bind(&::fwData::Mesh::adjustAllocatedMemory, mesh),
-                                  ref(cellDataArrayBuffer) =
-                                      phx::bind(&::fwDataTools::helper::Array::begin < ::fwData::Mesh::CellValueType >,
-                                                &cellDataHelper ),
-                                  ref(cellNormalsArrayBuffer) =
-                                      phx::bind(&::fwDataTools::helper::Array::begin < ::fwData::Mesh::NormalValueType >
-                                                ,
-                                                &cellNormalsHelper )
+                                  reserveFn
                               ]
 
                               >> repeat(ref(nbCells))
                               [
                                   (int_ >> int_ >> int_ >> float_ >> float_ >> float_)
                                   [
-                                      *ref(cellDataArrayBuffer)++ = _1,
-                                      *ref(cellDataArrayBuffer)++ = _2,
-                                      *ref(cellDataArrayBuffer)++ = _3,
-                                      *ref(cellNormalsArrayBuffer)++ = _4,
-                                      *ref(cellNormalsArrayBuffer)++ = _5,
-                                      *ref(cellNormalsArrayBuffer)++ = _6
+                                      phx::bind(static_cast< ::fwData::Mesh::Id(::fwData::Mesh::*)(
+                                                                 ::fwData::Mesh::CellValueType,
+                                                                 ::fwData::Mesh::CellValueType,
+                                                                 ::fwData::Mesh::CellValueType)>( &::fwData::Mesh::
+                                                                                                  pushCell),
+                                                mesh, _1, _2, _3),
+                                      ref(n[0]) = _4,
+                                      ref(n[1]) = _5,
+                                      ref(n[2]) = _6,
+                                      phx::bind(static_cast< void(::fwData::Mesh::*)(
+                                                                 ::fwData::Mesh::Id,
+                                                                 const ::fwData::Mesh::NormalValueType*)>(
+                                                    &::fwData::Mesh::setCellNormal), mesh, ref(count), ref(n)),
+                                      ref(count)++
                                   ]
                               ]
                           ),
@@ -175,32 +160,22 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                           space
                           );
 
-    std::fill(
-        cellTypesHelper.begin< ::fwData::Mesh::CellTypes >(),
-        cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
-        static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE)
-        );
-
-    cell_data_offset_generator cellDataOffsetGenerator;
-
-    std::generate(
-        cellDataOffsetsHelper.begin< ::fwData::Mesh::CellDataOffsetType >(),
-        cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(),
-        cellDataOffsetGenerator
-        );
+    mesh->adjustAllocatedMemory();
 
     // Check if normals array is filled of -1. values
     const float normalBadValue = -1.f;
-    float normal               = normalBadValue;
-    int& n                     = *reinterpret_cast<int*>(&normal);
 
-    std::for_each(
-        cellNormalsHelper.begin< int >(),
-        cellNormalsHelper.end< int >(),
-        ref(n) &= boost::phoenix::arg_names::arg1
-        );
+    auto begin = mesh->begin< ::fwData::iterator::CellIterator >();
+    auto end   = mesh->end< ::fwData::iterator::CellIterator >();
 
-    if (normal == -1)
+    const size_t nbBadValues = std::count_if( begin, end,
+                                              [&normalBadValue](
+                                                  const ::fwData::iterator::CellIterator::value_type& val)
+            {
+                return val.normal->nx == normalBadValue && val.normal->ny == normalBadValue && val.normal->nz == normalBadValue;
+            });
+
+    if (nbBadValues == mesh->getNumberOfCells())
     {
         mesh->clearCellNormals();
         SLM_WARN("normals equals to (-1,-1,-1) : normals removed.");

@@ -156,12 +156,12 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
         m_locks.push_back(mesh->m_cellColors->lock());
         m_cellInfo.color = static_cast<color_value_type*>(mesh->m_cellColors->getBuffer());
     }
-    if (mesh->m_pointNormals)
+    if (mesh->m_cellNormals)
     {
         m_locks.push_back(mesh->m_cellNormals->lock());
         m_cellInfo.normal = static_cast<normal_value_type*>(mesh->m_cellNormals->getBuffer());
     }
-    if (mesh->m_pointTexCoords)
+    if (mesh->m_cellTexCoords)
     {
         m_locks.push_back(mesh->m_cellTexCoords->lock());
         m_cellInfo.tex = static_cast<tex_value_type*>(mesh->m_cellTexCoords->getBuffer());
@@ -195,12 +195,12 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
         m_locks.push_back(mesh->m_cellColors->lock());
         m_cellInfo.color = static_cast<color_value_type*>(mesh->m_cellColors->getBuffer());
     }
-    if (mesh->m_pointNormals)
+    if (mesh->m_cellNormals)
     {
         m_locks.push_back(mesh->m_cellNormals->lock());
         m_cellInfo.normal = static_cast<normal_value_type*>(mesh->m_cellNormals->getBuffer());
     }
-    if (mesh->m_pointTexCoords)
+    if (mesh->m_cellTexCoords)
     {
         m_locks.push_back(mesh->m_cellTexCoords->lock());
         m_cellInfo.tex = static_cast<tex_value_type*>(mesh->m_cellTexCoords->getBuffer());

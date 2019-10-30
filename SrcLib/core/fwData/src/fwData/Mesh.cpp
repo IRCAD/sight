@@ -322,7 +322,7 @@ bool Mesh::adjustAllocatedMemory()
         this->initArrays();
     }
 
-    m_points->resize({size_t(m_nbPoints)});
+    m_points->resizeTMP({size_t(m_nbPoints)}, 3);
     m_cellTypes->resize({size_t(m_nbCells)});
     m_cellData->resize({size_t(m_cellsDataSize)});
     m_cellDataOffsets->resize({size_t(m_nbCells)});
