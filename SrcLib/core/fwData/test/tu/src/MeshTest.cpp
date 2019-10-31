@@ -727,7 +727,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[1]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::EDGE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit.nbPoints());
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(2), cellit.nbPoints());
     CPPUNIT_ASSERT( nullptr == cellit->color);
     CPPUNIT_ASSERT( nullptr == cellit->normal);
     CPPUNIT_ASSERT( nullptr == cellit->tex);
@@ -740,7 +740,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[2]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit.nbPoints());
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), cellit.nbPoints());
     cellit += 2;
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(9), *cellit->offset);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[0]);
@@ -752,7 +752,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[3]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit.nbPoints());
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(4), cellit.nbPoints());
     cellit++;
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(13), *cellit->offset);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
@@ -768,7 +768,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[4]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[5]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit.nbPoints());
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(6), cellit.nbPoints());
     cellit += 1;
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(19), *cellit->offset);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit->pointIdx[0]);
@@ -782,8 +782,8 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[3]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[4]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->nbPoints);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit.nbPoints());
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit->nbPoints);
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit.nbPoints());
     CPPUNIT_ASSERT( nullptr == cellit->color);
     CPPUNIT_ASSERT( nullptr == cellit->normal);
     CPPUNIT_ASSERT( nullptr == cellit->tex);
@@ -802,7 +802,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[4]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[5]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit.nbPoints());
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(6), cellit.nbPoints());
     cellit--;
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(9), *cellit->offset);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[0]);
@@ -814,7 +814,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[3]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit->nbPoints);
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(4), cellit->nbPoints);
     cellit -= 2;
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), *cellit->offset);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
@@ -824,7 +824,7 @@ void MeshTest::insertion()
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
     CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[2]);
     CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->nbPoints);
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), cellit->nbPoints);
 
     mesh->setPoint(4, 45, 59, 48);
     auto itPt = mesh->begin< ::fwData::iterator::PointIterator >();
