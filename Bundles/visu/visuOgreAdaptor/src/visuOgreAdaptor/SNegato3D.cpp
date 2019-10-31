@@ -459,6 +459,7 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
         if(_button == MouseButton::MIDDLE)
         {
             this->moveSlices(_x, _y);
+            this->getLayer()->cancelFurtherInteraction();
         }
         else if(_button == MouseButton::RIGHT)
         {
@@ -472,8 +473,6 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
         {
             this->pickIntensity(_x, _y);
         }
-
-        this->getLayer()->cancelFurtherInteraction();
     }
 }
 
@@ -562,41 +561,45 @@ void SNegato3D::moveSlices(int _x, int _y)
 
 void SNegato3D::pickIntensity(int _x, int _y)
 {
-    if(m_pickedPlane)
+    if(m_pickedVoxelSignal->getNumberOfConnections() > 0)
     {
-        m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
-    }
-
-    const auto pickedPos = this->getPickedSlices(_x, _y);
-
-    if(pickedPos.has_value() && m_pickedVoxelSignal->getNumberOfConnections() > 0)
-    {
-
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-        ::fwData::mt::ObjectReadLock imgLock(image);
-        auto imageBufferLock = image->lock();
-
-        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
-        const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;
-
-        this->updatePickingCross(pickedPos.value(), origin);
-
-        const auto& imgSize = image->getSize2();
-        ::fwData::Image::Size pickedVoxel;
-        for(std::uint8_t i = 0; i < pickedVoxel.size(); ++i)
+        if(m_pickedPlane)
         {
-            pickedVoxel[i] = std::clamp(static_cast<size_t>(pickedPosImageSpace[i]), size_t{0}, imgSize[i] - 1);
+            m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
         }
 
-        const auto intensity   = image->getPixelAsString(pickedVoxel[0], pickedVoxel[1], pickedVoxel[2]);
-        const auto pickingText = "(" + std::to_string(pickedVoxel[0]) + ", " + std::to_string(pickedVoxel[1])
-                                 + ", " + std::to_string(pickedVoxel[2]) + "): " + intensity;
+        const auto pickedPos = this->getPickedSlices(_x, _y);
 
-        m_pickedVoxelSignal->asyncEmit(pickingText);
+        if(pickedPos.has_value())
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+            ::fwData::mt::ObjectReadLock imgLock(image);
+            auto imageBufferLock = image->lock();
 
-        // Render the picked plane before the widget.
-        m_pickedPlane->setRenderQueuerGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 0);
+            const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+            const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;
+
+            this->updatePickingCross(pickedPos.value(), origin);
+
+            const auto& imgSize = image->getSize2();
+            ::fwData::Image::Size pickedVoxel;
+            for(std::uint8_t i = 0; i < pickedVoxel.size(); ++i)
+            {
+                pickedVoxel[i] = std::clamp(static_cast<size_t>(pickedPosImageSpace[i]), size_t{0}, imgSize[i] - 1);
+            }
+
+            const auto intensity   = image->getPixelAsString(pickedVoxel[0], pickedVoxel[1], pickedVoxel[2]);
+            const auto pickingText = "(" + std::to_string(pickedVoxel[0]) + ", " + std::to_string(pickedVoxel[1])
+                                     + ", " + std::to_string(pickedVoxel[2]) + "): " + intensity;
+
+            m_pickedVoxelSignal->asyncEmit(pickingText);
+
+            // Render the picked plane before the widget.
+            m_pickedPlane->setRenderQueuerGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 0);
+        }
+
+        this->getLayer()->cancelFurtherInteraction();
     }
 }
 
