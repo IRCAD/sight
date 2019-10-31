@@ -36,79 +36,27 @@ namespace iterator
 {
 
 struct Point {
-    typedef float element_type;
-    typedef std::array<element_type, 3> value_type;
-    //------------------------------------------------------------------------------
-
-    Point& operator=(const value_type& val)
-    {
-        x = val[0];
-        y = val[1];
-        z = val[2];
-        return *this;
-    }
-
-    element_type x;
-    element_type y;
-    element_type z;
-    static constexpr size_t elementSize{3};
+    float x;
+    float y;
+    float z;
 };
 
 struct Normal {
-    typedef float element_type;
-    typedef std::array<element_type, 3> value_type;
-    //------------------------------------------------------------------------------
-
-    Normal& operator=(const value_type& val)
-    {
-        nx = val[0];
-        ny = val[1];
-        nz = val[2];
-        return *this;
-    }
-
-    element_type nx;
-    element_type ny;
-    element_type nz;
-    static constexpr size_t elementSize{3};
+    float nx;
+    float ny;
+    float nz;
 };
 
 struct RGBA {
-    typedef std::uint8_t element_type;
-    typedef std::array<element_type, 4> value_type;
-    //------------------------------------------------------------------------------
-
-    RGBA& operator=(const value_type& val)
-    {
-        r = val[0];
-        g = val[1];
-        b = val[2];
-        a = val[3];
-        return *this;
-    }
-
-    element_type r;
-    element_type g;
-    element_type b;
-    element_type a;
-    static constexpr size_t elementSize{4};
+    std::uint8_t r;
+    std::uint8_t g;
+    std::uint8_t b;
+    std::uint8_t a;
 };
 
 struct TexCoords {
-    typedef float element_type;
-    typedef std::array<element_type, 2> value_type;
-    //------------------------------------------------------------------------------
-
-    TexCoords& operator=(const value_type& val)
-    {
-        u = val[0];
-        v = val[1];
-        return *this;
-    }
-
-    element_type u;
-    element_type v;
-    static constexpr size_t elementSize{2};
+    float u;
+    float v;
 };
 
 /**
@@ -196,23 +144,24 @@ protected:
 };
 
 /**
- * @brief Iterator on Mesh points, point colors and/or point normals
+ * @brief Iterator on Mesh points, point colors, point normals and/or point texture coordinates
  *
- * Iterate through the buffer and check if the index is not out of the bounds
+ * Iterate through the point buffers and check if the index is not out of the bounds
  *
  * Example:
  * @code{.cpp}
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    mesh->resize(25, 33, TRIANGLE);
-    PointIteratorBase<PointIteration> iter    = img->begin<PointIteration>();
-    const PointIteratorBase<PointIteration> iterEnd = img->end<PointIteration>();
+    mesh->resize(25, 33, ::fwData::Mesh::TRIANGLE);
+    auto iter    = mesh->begin< ::fwData::iterator::PointIterator >();
+    const auto iterEnd = mesh->end< ::fwData::iterator::PointIterator >();
+    float p[3] = {12.f, 16.f, 18.f};
 
-    for (; iter != iterEnd; ++iter)
-    {
-        iter->point().x = val1;
-        iter->point().y = val2;
-        iter->point().z = val2;
-    }
+   for (; iter != iterEnd; ++iter)
+   {
+       iter->point->x = p[0];
+       iter->point->y = p[1];
+       iter->point->z = p[2];
+   }
    @endcode
  */
 class FWDATA_CLASS_API PointIterator : public PointIteratorBase<false>
@@ -232,23 +181,24 @@ public:
 };
 
 /**
- * @brief Const iterator on Mesh points, point colors and/or point normals
+ * @brief Const iterator on Mesh points, point colors, point normals and/or point texture coordinates
  *
- * Iterate through the buffer and check if the index is not out of the bounds
+ * Iterate through the point buffers and check if the index is not out of the bounds
  *
  * Example:
  * @code{.cpp}
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    mesh->resize(25, 33, TRIANGLE);
-    PointIteratorBase<PointIteration> iter    = img->begin<PointIteration>();
-    const PointIteratorBase<PointIteration> iterEnd = img->end<PointIteration>();
+    mesh->resize(25, 33, ::fwData::Mesh::TRIANGLE);
+    auto iter    = mesh->begin< ::fwData::iterator::PointIterator >();
+    const auto iterEnd = mesh->end< ::fwData::iterator::PointIterator >();
+    float p[3];
 
-    for (; iter != iterEnd; ++iter)
-    {
-        iter->point().x = val1;
-        iter->point().y = val2;
-        iter->point().z = val2;
-    }
+   for (; iter != iterEnd; ++iter)
+   {
+       p[0] = iter->point->x;
+       p[1] = iter->point->y;
+       p[2] = iter->point->z;
+   }
    @endcode
  */
 class FWDATA_CLASS_API ConstPointIterator : public PointIteratorBase<true>
@@ -267,7 +217,7 @@ public:
 /**
  * @brief Base class for mesh's cells iterators
  *
- * Iterate through the point arrays and check if the index is not out of the bounds
+ * Iterate through the cell arrays and check if the index is not out of the bounds
  */
 template<bool isConst>
 class CellIteratorBase
@@ -359,9 +309,9 @@ protected:
 };
 
 /**
- * @brief Iterator on Mesh cells, cell colors and/or cell normals
+ * @brief Iterator on Mesh cells, cell colors, cell normals and/or cell texture coordinates
  *
- * Iterate through the buffer and check if the index is not out of the bounds
+ * Iterate through the buffers and check if the index is not out of the bounds
  *
  * Example:
  * @code{.cpp}
@@ -396,7 +346,7 @@ public:
 };
 
 /**
- * @brief Iterator on Mesh cells, cell colors and/or cell normals
+ * @brief Iterator on Mesh cells, cell colors, cell normals and/or cell texture coordinates
  *
  * Iterate through the buffer and check if the index is not out of the bounds
  *
