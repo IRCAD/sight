@@ -548,7 +548,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN:
         {
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([](const interactor::IInteractor::sptr& _i)
                 {
                     _i->focusInEvent();
                 });
@@ -556,7 +556,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT:
         {
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([](const interactor::IInteractor::sptr& _i)
                 {
                     _i->focusOutEvent();
                 });
