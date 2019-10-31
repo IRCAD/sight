@@ -444,7 +444,7 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 
 // ----------------------------------------------------------------------------
 
-void Layer::forAllInteractors(std::function< void(interactor::IInteractor::sptr)> _f)
+void Layer::forAllInteractors(const std::function< void(const interactor::IInteractor::sptr&)>&& _f)
 {
     auto interactorsBegin = m_interactors.begin();
     auto interactorsEnd   = m_interactors.end();
@@ -456,7 +456,7 @@ void Layer::forAllInteractors(std::function< void(interactor::IInteractor::sptr)
         {
             _f(interactor);
         }
-        else
+        else // remove the expired interactor.
         {
             it = m_interactors.erase(it);
         }
@@ -469,14 +469,11 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 {
     this->getRenderService()->makeCurrent();
 
-    auto interactorsBegin = m_interactors.begin();
-    auto interactorsEnd   = m_interactors.end();
-
     switch(info.interactionType)
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
                 });
@@ -484,7 +481,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->wheelEvent(info.delta, info.x, info.y);
                 });
@@ -495,7 +492,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             auto sig = this->signal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
             sig->asyncEmit(info.x, info.y);
 
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->resizeEvent(info.x, info.y);
                 });
@@ -519,7 +516,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->keyPressEvent(info.key);
                 });
@@ -527,7 +524,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->keyReleaseEvent(info.key);
                 });
@@ -535,7 +532,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->buttonReleaseEvent(info.button, info.x, info.y);
                 });
@@ -543,7 +540,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->buttonPressEvent(info.button, info.x, info.y);
                 });
@@ -551,7 +548,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->focusInEvent();
                 });
@@ -559,7 +556,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT:
         {
-            this->forAllInteractors([&info](interactor::IInteractor::sptr& _i)
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->focusOutEvent();
                 });

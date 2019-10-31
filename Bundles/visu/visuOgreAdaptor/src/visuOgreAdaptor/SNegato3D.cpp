@@ -136,11 +136,17 @@ void SNegato3D::starting()
 {
     this->initialize();
 
+    this->getRenderService()->makeCurrent();
+
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing '" + s_IMAGE_INOUT + "' inout.", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
+
+    // TF texture initialization
+    m_gpuTF = std::make_unique< ::fwRenderOgre::TransferFunction>();
+    m_gpuTF->createTexture(this->getID());
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -148,28 +154,19 @@ void SNegato3D::starting()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
-    // TF texture initialization
-    m_gpuTF = std::make_unique< ::fwRenderOgre::TransferFunction>();
-    m_gpuTF->createTexture(this->getID());
-
     // Scene node's instantiation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
     // Instanciation of the planes
-    m_planes[0] = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
-                                                            getSceneManager(),
-                                                            OrientationMode::X_AXIS, true, m_3DOgreTexture,
-                                                            m_filtering);
-    m_planes[1] = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
-                                                            getSceneManager(),
-                                                            OrientationMode::Y_AXIS, true, m_3DOgreTexture,
-                                                            m_filtering);
-    m_planes[2] = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
-                                                            getSceneManager(),
-                                                            OrientationMode::Z_AXIS, true, m_3DOgreTexture,
-                                                            m_filtering);
-
-    this->setPlanesOpacity();
+    int orientationNum { 0 };
+    for(auto& plane : m_planes)
+    {
+        auto imgOrientation = static_cast<OrientationMode>(orientationNum++);
+        plane = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
+                                                          this->getSceneManager(),
+                                                          imgOrientation, true, m_3DOgreTexture,
+                                                          m_filtering);
+    }
 
     if (m_autoResetCamera)
     {
@@ -212,10 +209,13 @@ void SNegato3D::stopping()
     m_helperTF.removeTFConnections();
 
     m_pickedPlane.reset();
-    m_planes[0].reset();
-    m_planes[1].reset();
-    m_planes[2].reset();
 
+    for(auto& plane : m_planes)
+    {
+        plane.reset();
+    }
+
+    m_negatoSceneNode->removeAndDestroyAllChildren();
     this->getSceneManager()->destroySceneNode(m_negatoSceneNode);
 
     if(m_pickingCross)
@@ -338,11 +338,14 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    ::fwData::mt::ObjectReadLock imgLock(image);
+
+    const auto& imgSize = image->getSize2();
 
     ::Ogre::Vector3 sliceIndices = {
-        static_cast<float>(_sagittalIndex ) / (static_cast<float>(image->getSize()[0] - 1)),
-        static_cast<float>(_frontalIndex  ) / (static_cast<float>(image->getSize()[1] - 1)),
-        static_cast<float>(_axialIndex    ) / (static_cast<float>(image->getSize()[2] - 1))
+        static_cast<float>(_sagittalIndex ) / (static_cast<float>(imgSize[0] - 1)),
+        static_cast<float>(_frontalIndex  ) / (static_cast<float>(imgSize[1] - 1)),
+        static_cast<float>(_axialIndex    ) / (static_cast<float>(imgSize[2] - 1))
     };
 
     for (std::uint8_t i = 0; i < 3; ++i)
@@ -376,12 +379,12 @@ void SNegato3D::updateTF()
         const ::fwData::mt::ObjectReadLock tfLock(tf);
         m_gpuTF->updateTexture(tf);
 
-        for(std::uint8_t i = 0; i < 3; ++i)
+        for(const auto& plane : m_planes)
         {
-            m_planes[i]->switchThresholding(tf->getIsClamped());
+            plane->switchThresholding(tf->getIsClamped());
 
             // Sends the TF texture to the negato-related passes
-            m_planes[i]->setTFData(*m_gpuTF.get());
+            plane->setTFData(*m_gpuTF.get());
         }
     }
 
@@ -392,28 +395,28 @@ void SNegato3D::updateTF()
 
 void SNegato3D::setPlanesOpacity()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-    const ::fwData::mt::ObjectReadLock imageLock(image);
+    const auto notNull = std::bind(std::not_equal_to< ::fwRenderOgre::Plane::sptr >(), std::placeholders::_1, nullptr);
 
-    ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
-    ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
-
-    const bool visible  = isVisible->getValue();
-    const float opacity = (100.f - static_cast<float>(transparency->getValue()))/100.f;
-
-    if(m_planes[0] && m_planes[1] && m_planes[2])
+    if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
     {
-        m_planes[0]->setVisible(visible);
-        m_planes[1]->setVisible(visible);
-        m_planes[2]->setVisible(visible);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        const ::fwData::mt::ObjectReadLock imageLock(image);
 
-        m_planes[0]->setEntityOpacity(opacity);
-        m_planes[1]->setEntityOpacity(opacity);
-        m_planes[2]->setEntityOpacity(opacity);
+        ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
+        ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
+
+        const bool visible  = isVisible->getValue();
+        const float opacity = (100.f - static_cast<float>(transparency->getValue()))/100.f;
+
+        for(const auto& plane : m_planes)
+        {
+            plane->setVisible(visible);
+            plane->setEntityOpacity(opacity);
+        }
+
+        this->requestRender();
     }
-
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -581,7 +584,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
         const auto& imgSize = image->getSize2();
         ::fwData::Image::Size pickedVoxel;
-        for(std::uint8_t i = 0; i < 3; ++i)
+        for(std::uint8_t i = 0; i < pickedVoxel.size(); ++i)
         {
             pickedVoxel[i] = std::clamp(static_cast<size_t>(pickedPosImageSpace[i]), size_t{0}, imgSize[i] - 1);
         }
@@ -602,7 +605,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 {
     auto* const sceneManager = this->getSceneManager();
-    SLM_ASSERT("Scene manager not yet created.", sceneManager);
+    SLM_ASSERT("Scene manager not created yet.", sceneManager);
     ::Ogre::Camera* camera = sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
 
     const int height = camera->getViewport()->getActualHeight();

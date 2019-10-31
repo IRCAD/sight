@@ -77,6 +77,7 @@ Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _pare
 
 Plane::~Plane()
 {
+    m_planeSceneNode->removeAndDestroyAllChildren();
     m_parentSceneNode->removeAndDestroyChild(m_planeSceneNode);
 
     if(m_sceneManager->hasEntity(m_entityName))
@@ -110,23 +111,10 @@ void Plane::initializeMaterial()
 
     m_texMaterial = defaultMat->clone(m_slicePlaneName + "_Material");
 
-    ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    const ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
-    int orientationIndex = 0;
-
-    switch (m_orientation)
-    {
-        case OrientationMode::X_AXIS:
-            orientationIndex = 0;
-            break;
-        case OrientationMode::Y_AXIS:
-            orientationIndex = 1;
-            break;
-        case OrientationMode::Z_AXIS:
-            orientationIndex = 2;
-            break;
-    }
+    const int orientationIndex = static_cast<int>(m_orientation);
 
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
@@ -363,7 +351,22 @@ void Plane::setOrientationMode(OrientationMode _newMode)
     SLM_ASSERT("3D negato Plane, cannot change orientation", !m_is3D);
 
     m_orientation = _newMode;
-    this->initializeMaterial();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+
+    for(const auto tech : techniques)
+    {
+        SLM_ASSERT("Technique is not set", tech);
+
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
+        {
+            ::Ogre::Pass* pass = tech->getPass(0);
+            SLM_ASSERT("Material '" + m_texMaterial->getName() + "' does not define any pass.", pass);
+
+            int orientationIndex = static_cast<int>(_newMode);
+            pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+        }
+    }
     this->initializePlane();
 }
 
