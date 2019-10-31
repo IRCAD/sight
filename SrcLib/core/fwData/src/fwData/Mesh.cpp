@@ -603,7 +603,7 @@ Mesh::Id Mesh::pushCell(CellTypesEnum type,
         m_cellDataOffsets->resize({allocatedCellDataOffsets + CELL_REALLOC_STEP});
     }
 
-    if( allocatedCellData <= m_cellsDataSize + nbPoints )
+    if( allocatedCellData < m_cellsDataSize + nbPoints )
     {
         m_cellData->resize({allocatedCellData + CELLDATA_REALLOC_STEP});
     }

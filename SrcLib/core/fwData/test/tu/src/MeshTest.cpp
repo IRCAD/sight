@@ -666,172 +666,228 @@ void MeshTest::allocationTest()
 
 void MeshTest::insertion()
 {
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    const auto lock = mesh->lock();
-    mesh->pushPoint(10, 20, 30);
-    mesh->pushPoint(10, 10, 10);
-    mesh->pushPoint(20, 21, 10);
-    mesh->pushPoint(30, 30, 10);
-    mesh->pushPoint(15, 20, 35);
-    mesh->pushPoint(20, 20, 10);
-    mesh->pushPoint(20, 63, 17);
-    mesh->pushPoint(27, 83, 52);
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        const auto lock = mesh->lock();
+        mesh->pushPoint(10, 20, 30);
+        mesh->pushPoint(10, 10, 10);
+        mesh->pushPoint(20, 21, 10);
+        mesh->pushPoint(30, 30, 10);
+        mesh->pushPoint(15, 20, 35);
+        mesh->pushPoint(20, 20, 10);
+        mesh->pushPoint(20, 63, 17);
+        mesh->pushPoint(27, 83, 52);
 
-    mesh->pushCell(1, 2);
-    mesh->pushCell(1, 3, 4);
-    mesh->pushCell(1, 2, 5, 4);
+        mesh->pushCell(1, 2);
+        mesh->pushCell(1, 3, 4);
+        mesh->pushCell(1, 2, 5, 4);
 
-    ::fwData::Mesh::CellValueType p[4] = {3, 6, 5, 1};
-    mesh->pushCell(::fwData::Mesh::QUAD, p, 4);
+        ::fwData::Mesh::CellValueType p[4] = {3, 6, 5, 1};
+        mesh->pushCell(::fwData::Mesh::QUAD, p, 4);
 
-    ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
-    mesh->pushCell(::fwData::Mesh::POLY, p2, 6);
+        ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
+        mesh->pushCell(::fwData::Mesh::POLY, p2, 6);
 
-    ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
-    mesh->pushCell(::fwData::Mesh::POLY, p3, 5);
+        ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
+        mesh->pushCell(::fwData::Mesh::POLY, p3, 5);
 
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(8), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(6), mesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(8), mesh->getNumberOfPoints());
+        CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(6), mesh->getNumberOfCells());
 
-    auto it = mesh->begin< ::fwData::iterator::PointIterator >();
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), (*it).point->x);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), (*it).point->y);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(30), (*it).point->z);
-    CPPUNIT_ASSERT( nullptr == it->color);
-    CPPUNIT_ASSERT( nullptr == it->normal);
-    CPPUNIT_ASSERT( nullptr == it->tex);
-    it += 2;
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->x);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(21), it->point->y);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), it->point->z);
-    CPPUNIT_ASSERT( nullptr == it->color);
-    CPPUNIT_ASSERT( nullptr == it->normal);
-    CPPUNIT_ASSERT( nullptr == it->tex);
-    it += 5;
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(27), it->point->x);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(83), it->point->y);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(52), it->point->z);
-    --it;
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->x);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(63), it->point->y);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(17), it->point->z);
-    it -= 2;
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(15), it->point->x);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->y);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(35), it->point->z);
+        auto it = mesh->begin< ::fwData::iterator::PointIterator >();
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), (*it).point->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), (*it).point->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(30), (*it).point->z);
+        CPPUNIT_ASSERT( nullptr == it->color);
+        CPPUNIT_ASSERT( nullptr == it->normal);
+        CPPUNIT_ASSERT( nullptr == it->tex);
+        it += 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(21), it->point->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), it->point->z);
+        CPPUNIT_ASSERT( nullptr == it->color);
+        CPPUNIT_ASSERT( nullptr == it->normal);
+        CPPUNIT_ASSERT( nullptr == it->tex);
+        it += 5;
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(27), it->point->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(83), it->point->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(52), it->point->z);
+        --it;
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(63), it->point->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(17), it->point->z);
+        it -= 2;
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(15), it->point->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(35), it->point->z);
 
-    auto cellit = mesh->begin< ::fwData::iterator::CellIterator >();
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(0), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::EDGE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(2), cellit.nbPoints());
-    CPPUNIT_ASSERT( nullptr == cellit->color);
-    CPPUNIT_ASSERT( nullptr == cellit->normal);
-    CPPUNIT_ASSERT( nullptr == cellit->tex);
-    ++cellit;
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit->pointIdx[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[2]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), cellit.nbPoints());
-    cellit += 2;
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(9), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[3]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(4), cellit.nbPoints());
-    cellit++;
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(13), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit->pointIdx[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[4]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[5]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[4]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[5]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(6), cellit.nbPoints());
-    cellit += 1;
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(19), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit->pointIdx[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[4]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[4]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit->nbPoints);
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit.nbPoints());
-    CPPUNIT_ASSERT( nullptr == cellit->color);
-    CPPUNIT_ASSERT( nullptr == cellit->normal);
-    CPPUNIT_ASSERT( nullptr == cellit->tex);
-    --cellit;
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(13), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit->pointIdx[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[4]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[5]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[4]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[5]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(6), cellit.nbPoints());
-    cellit--;
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(9), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[3]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[3]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(4), cellit->nbPoints);
-    cellit -= 2;
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), *cellit->offset);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit->pointIdx[2]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
-    CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[2]);
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), cellit->nbPoints);
+        auto cellit = mesh->begin< ::fwData::iterator::CellIterator >();
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(0), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::EDGE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(2), cellit.nbPoints());
+        CPPUNIT_ASSERT( nullptr == cellit->color);
+        CPPUNIT_ASSERT( nullptr == cellit->normal);
+        CPPUNIT_ASSERT( nullptr == cellit->tex);
+        ++cellit;
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit->pointIdx[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[2]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), cellit.nbPoints());
+        cellit += 2;
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(9), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[3]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(4), cellit.nbPoints());
+        cellit++;
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(13), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit->pointIdx[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[4]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[5]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[4]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[5]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(6), cellit.nbPoints());
+        cellit += 1;
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(19), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit->pointIdx[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[4]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[4]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit->nbPoints);
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit.nbPoints());
+        CPPUNIT_ASSERT( nullptr == cellit->color);
+        CPPUNIT_ASSERT( nullptr == cellit->normal);
+        CPPUNIT_ASSERT( nullptr == cellit->tex);
+        --cellit;
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(13), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit->pointIdx[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit->pointIdx[4]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[5]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(7), cellit[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[4]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[5]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(6), cellit.nbPoints());
+        cellit--;
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(9), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit->pointIdx[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[3]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(6), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(5), cellit[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[3]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(4), cellit->nbPoints);
+        cellit -= 2;
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), *cellit->offset);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit->pointIdx[2]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(1), cellit[0]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(3), cellit[1]);
+        CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(4), cellit[2]);
+        CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast< ::fwData::Mesh::CellTypesEnum >(*cellit->type));
+        CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), cellit->nbPoints);
 
-    mesh->setPoint(4, 45, 59, 48);
-    auto itPt = mesh->begin< ::fwData::iterator::PointIterator >();
-    itPt += 4;
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), itPt->point->x);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(59), itPt->point->y);
-    CPPUNIT_ASSERT_EQUAL(static_cast<float>(48), itPt->point->z);
+        mesh->setPoint(4, 45, 59, 48);
+        auto itPt = mesh->begin< ::fwData::iterator::PointIterator >();
+        itPt += 4;
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), itPt->point->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(59), itPt->point->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(48), itPt->point->z);
+    }
+
+    {
+        const ::fwData::Mesh::Id NB_POINTS               = 60;
+        const ::fwData::Mesh::Id NB_CELLS                = 59;
+        const ::fwData::Mesh::CellTypesEnum CELL_TYPE    = ::fwData::Mesh::TRIANGLE;
+        const ::fwData::Mesh::ExtraArrayType EXTRA_ARRAY =
+            ::fwData::Mesh::ExtraArrayType::POINT_NORMALS |
+            ::fwData::Mesh::ExtraArrayType::POINT_COLORS |
+            ::fwData::Mesh::ExtraArrayType::POINT_TEX_COORDS |
+            ::fwData::Mesh::ExtraArrayType::CELL_NORMALS |
+            ::fwData::Mesh::ExtraArrayType::CELL_COLORS |
+            ::fwData::Mesh::ExtraArrayType::CELL_TEX_COORDS;
+
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+
+        mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
+        const auto lock = mesh->lock();
+
+        for (size_t i = 0; i < NB_POINTS; ++i)
+        {
+            const std::uint8_t val                               = static_cast<uint8_t>(i);
+            const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
+            const float floatVal                                 = static_cast<float>(i);
+            const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
+            const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+            const size_t value                                   = 3*i;
+            const auto id                                        = mesh->pushPoint(static_cast<float>(value),
+                                                                                   static_cast<float>(value+1),
+                                                                                   static_cast<float>(value+2));
+            mesh->setPointColor(id, color);
+            mesh->setPointNormal(id, normal);
+            mesh->setPointTexCoord(id, texCoords);
+        }
+
+        for (size_t i = 0; i < NB_CELLS; ++i)
+        {
+            const auto id = mesh->pushCell(i, i+1, i+2);
+
+            const ::fwData::Mesh::ColorValueType val             = static_cast< ::fwData::Mesh::ColorValueType >(i);
+            const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
+            const float floatVal                                 = static_cast<float>(i);
+            const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
+            const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+            mesh->setCellColor(id, color);
+            mesh->setCellNormal(id, normal);
+            mesh->setCellTexCoord(id, texCoords);
+        }
+        CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh->getNumberOfPoints());
+        CPPUNIT_ASSERT_EQUAL(NB_CELLS, mesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(NB_CELLS*3, mesh->getCellDataSize());
+        CPPUNIT_ASSERT_EQUAL(mesh->getAllocatedSizeInBytes(), mesh->getDataSizeInBytes());
+        const bool resizeMemory = mesh->adjustAllocatedMemory();
+        CPPUNIT_ASSERT_EQUAL(false, resizeMemory);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -1225,6 +1281,10 @@ void MeshTest::iteratorTest()
 
             ++count;
         }
+    }
+
+    {
+
     }
 
 }

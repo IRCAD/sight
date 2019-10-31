@@ -35,12 +35,12 @@ private:
     CPPUNIT_TEST_SUITE( MeshTest );
     CPPUNIT_TEST( deprecatedAllocation );
     CPPUNIT_TEST( deprecatedInsertion );
-    CPPUNIT_TEST( insertion );
     CPPUNIT_TEST( colorsNormals );
     CPPUNIT_TEST( texCoords );
     CPPUNIT_TEST( addingArray );
     CPPUNIT_TEST( copy );
     CPPUNIT_TEST( allocationTest );
+    CPPUNIT_TEST( insertion );
     CPPUNIT_TEST( iteratorTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -51,12 +51,12 @@ public:
 
     void deprecatedAllocation();
     void deprecatedInsertion();
-    void insertion();
     void colorsNormals();
     void texCoords();
     void addingArray();
     void copy();
     void allocationTest();
+    void insertion();
     void iteratorTest();
 };
 } //namespace ut
