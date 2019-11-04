@@ -337,9 +337,9 @@ void SAxis::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SAxis::updateVisibility(bool isVisible)
+void SAxis::updateVisibility(bool _isVisible)
 {
-    m_isVisible = isVisible;
+    m_isVisible = _isVisible;
 
     if(m_sceneNode)
     {
@@ -349,7 +349,7 @@ void SAxis::updateVisibility(bool isVisible)
             for(auto& label : m_axisLabels)
             {
                 SLM_ASSERT("label should not be null", label);
-                label->setVisible(isVisible);
+                label->setVisible(_isVisible);
             }
         }
     }

@@ -80,7 +80,10 @@ public:
 
 private:
 
-    /// Returns proposals to connect service slots to associated object signals.
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
     /// Configures the adaptor.
     void configuring() final;
@@ -91,8 +94,11 @@ private:
     /// Deletes the mesh after unregistering the service, and shutting connections.
     void stopping() final;
 
-    /// Sets visibility of axis.
-    void updateVisibility(bool isVisible);
+    /**
+     * @brief Sets visibility of axis.
+     * @param _isVisible the visibility status.
+     */
+    void updateVisibility(bool _isVisible);
     /// Toggle visibility of axis.
     void toggleVisibility();
 
