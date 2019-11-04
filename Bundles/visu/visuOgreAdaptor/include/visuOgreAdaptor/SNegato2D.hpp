@@ -123,7 +123,7 @@ private:
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// The plane on which we will apply our texture
-    ::fwRenderOgre::Plane* m_plane { nullptr };
+    std::unique_ptr< ::fwRenderOgre::Plane > m_plane;
 
     bool m_enableAlpha {false};
 

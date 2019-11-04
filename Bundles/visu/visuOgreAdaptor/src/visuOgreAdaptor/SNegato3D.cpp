@@ -51,9 +51,7 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SNegato3D, ::fwData::Image)
-
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_NEWIMAGE_SLOT = "newImage";
+const ::fwCom::Slots::SlotKeyType SNegato3D::s_NEWIMAGE_SLOT          = "newImage";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICETYPE_SLOT         = "sliceType";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICEINDEX_SLOT        = "sliceIndex";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_OPACITY_SLOT    = "updateOpacity";
@@ -64,8 +62,6 @@ static const ::fwCom::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
-
-static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 
 static const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
 static const std::string VISIBILITY_FIELD   = "VISIBILITY";
@@ -278,7 +274,7 @@ void SNegato3D::newImage()
 {
     this->getRenderService()->makeCurrent();
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing '" + s_IMAGE_INOUT + "' inout.", image);
         const ::fwData::mt::ObjectReadLock imageLock(image);
 
@@ -289,7 +285,7 @@ void SNegato3D::newImage()
 
         ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-        auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
         this->createPlanes(spacing, origin);
 
         // Update Slice
@@ -326,7 +322,6 @@ void SNegato3D::changeSliceType(int /*_from*/, int /* _to */)
 {
     this->getRenderService()->makeCurrent();
 
-    // Update TF
     this->updateTF();
 
     this->requestRender();
@@ -336,13 +331,13 @@ void SNegato3D::changeSliceType(int /*_from*/, int /* _to */)
 
 void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-    ::fwData::mt::ObjectReadLock imgLock(image);
+    const ::fwData::mt::ObjectReadLock imgLock(image);
 
     const auto& imgSize = image->getSize2();
 
-    ::Ogre::Vector3 sliceIndices = {
+    const ::Ogre::Vector3 sliceIndices = {
         static_cast<float>(_sagittalIndex ) / (static_cast<float>(imgSize[0] - 1)),
         static_cast<float>(_frontalIndex  ) / (static_cast<float>(imgSize[1] - 1)),
         static_cast<float>(_axialIndex    ) / (static_cast<float>(imgSize[2] - 1))
@@ -403,8 +398,8 @@ void SNegato3D::setPlanesOpacity()
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
         const ::fwData::mt::ObjectReadLock imageLock(image);
 
-        ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
-        ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
+        const auto transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
+        const auto isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
 
         const bool visible  = isVisible->getValue();
         const float opacity = (100.f - static_cast<float>(transparency->getValue()))/100.f;
@@ -423,7 +418,7 @@ void SNegato3D::setPlanesOpacity()
 
 void SNegato3D::setVisibility(bool visibility)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imageLock(image);
 
@@ -533,9 +528,9 @@ void SNegato3D::moveSlices(int _x, int _y)
 
     if(pickRes.has_value())
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-        ::fwData::mt::ObjectReadLock imgLock(image);
+        const ::fwData::mt::ObjectReadLock imgLock(image);
 
         auto pickedPt = pickRes.value();
 
@@ -551,8 +546,8 @@ void SNegato3D::moveSlices(int _x, int _y)
         pickedPt                     = (pickedPt - origin) / spacing;
 
         const ::Ogre::Vector3i pickedPtI(pickedPt);
-        auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >
-                       (::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
+        const auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >
+                             (::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
         sig->asyncEmit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
     }
 }
@@ -572,10 +567,10 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
         if(pickedPos.has_value())
         {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-            ::fwData::mt::ObjectReadLock imgLock(image);
-            auto imageBufferLock = image->lock();
+            const ::fwData::mt::ObjectReadLock imgLock(image);
+            const auto imageBufferLock = image->lock();
 
             const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
             const auto pickedPosImageSpace = (pickedPos.value() - origin) / spacing;
@@ -618,10 +613,10 @@ std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
     picker.setSceneManager(this->getSceneManager());
     picker.executeRaySceneQuery(_x, _y, width, height, 0x1);
 
-    auto isPicked = [&picker](const ::fwRenderOgre::Plane::sptr& _p)
-                    {
-                        return _p->getMovableObject() == picker.getSelectedObject();
-                    };
+    const auto isPicked = [&picker](const ::fwRenderOgre::Plane::sptr& _p)
+                          {
+                              return _p->getMovableObject() == picker.getSelectedObject();
+                          };
 
     auto it = std::find_if(m_planes.cbegin(), m_planes.cend(), isPicked);
 
@@ -674,13 +669,13 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
     const double newWindow = m_initialWindow + _dw;
     const double newLevel  = m_initialLevel - _dl;
 
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectWriteLock tfLock(tf);
+        const ::fwData::mt::ObjectWriteLock tfLock(tf);
 
         tf->setWindow( newWindow );
         tf->setLevel( newLevel );
-        auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+        const auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
             ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
         {
             sig->asyncEmit(newWindow, newLevel);
