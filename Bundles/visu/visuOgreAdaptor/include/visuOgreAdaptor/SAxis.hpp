@@ -58,6 +58,9 @@ namespace visuOgreAdaptor
  * - \b layer (mandatory) : defines the mesh's layer.
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor.
+ * - \b visible (optional, bool, default=true): the visibility of the axis.
+ * - \b marker (optional, bool, default=false): the marker visibility.
+ * - \b markerColor (optional, string, default=#FFFFFF): the color of the axis marker.
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, default=16): label font size in points.
@@ -101,6 +104,13 @@ private:
     bool m_isVisible { true };
     /// Handles the visibility of axis labels.
     bool m_enableLabel { true };
+
+    /// Marker on the center.
+    ::Ogre::ManualObject* m_marker { nullptr };
+    /// Marker visibility.
+    bool m_markerVisibility { false };
+    /// Marker color.
+    std::string m_markerColor { "#FFFFFF" };
 
     /// Line along the x axis.
     ::Ogre::ManualObject* m_xLine { nullptr };

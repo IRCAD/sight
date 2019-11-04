@@ -26,6 +26,8 @@
 
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Color.hpp>
+
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
@@ -81,10 +83,19 @@ void SAxis::configuring()
 
     this->setTransformId(transformId);
 
-    m_isVisible   = config.get<bool>("visible", m_isVisible);
-    m_length      = config.get<float>("length", m_length);
-    m_enableLabel = config.get<bool>("label", m_enableLabel);
-    m_fontSize    = config.get<size_t>("fontSize", m_fontSize);
+    m_isVisible        = config.get<bool>("visible", m_isVisible);
+    m_length           = config.get<float>("length", m_length);
+    m_enableLabel      = config.get<bool>("label", m_enableLabel);
+    m_fontSize         = config.get<size_t>("fontSize", m_fontSize);
+    m_markerVisibility = config.get<bool>("marker", m_markerVisibility);
+
+    m_markerColor = config.get<std::string>("markerColor", m_markerColor);
+    OSLM_ASSERT(
+        "Color string should start with '#' and followed by 6 ou 8 "
+        "hexadecimal digits. Given color : " << m_markerColor,
+            m_markerColor[0] == '#'
+            && ( m_markerColor.length() == 7 || m_markerColor.length() == 9)
+        );
 }
 
 //-----------------------------------------------------------------------------
@@ -100,6 +111,11 @@ void SAxis::starting()
     m_sceneNode                      = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+
+    if(m_markerVisibility)
+    {
+        m_marker = sceneMgr->createManualObject(this->getID() + "_marker");
+    }
 
     m_xLine = sceneMgr->createManualObject(this->getID() + "_xline");
     m_yLine = sceneMgr->createManualObject(this->getID() + "_yline");
@@ -129,13 +145,28 @@ void SAxis::starting()
     const auto fontSource = "DejaVuSans.ttf";
 
     // Sizes
-    const float cylinderLength = m_length - m_length/10;
-    const float cylinderRadius = m_length/80;
+    const float markerRadius   = m_length * 0.1f;
+    const float cylinderLength = m_length * 0.8f;
+    const float cylinderRadius = m_length * 0.025f;
     const float coneLength     = m_length - cylinderLength;
     const float coneRadius     = cylinderRadius*3;
     const unsigned sample      = 64;
 
     // Draw
+
+    // Marker
+    if(m_markerVisibility)
+    {
+        ::fwData::Color::sptr markerColor = ::fwData::Color::New();
+        markerColor->setRGBA(m_markerColor);
+        ::fwRenderOgre::helper::ManualObject::createSphere(m_marker, materialAdaptor->getMaterialName(),
+                                                           ::Ogre::ColourValue(markerColor->red(), markerColor->green(),
+                                                                               markerColor->blue(),
+                                                                               markerColor->alpha()),
+                                                           markerRadius,
+                                                           sample);
+        m_sceneNode->attachObject(m_marker);
+    }
 
     // X axis
     ::fwRenderOgre::helper::ManualObject::createCylinder(m_xLine, materialAdaptor->getMaterialName(),
@@ -276,6 +307,11 @@ void SAxis::stopping()
             sceneMgr->destroyMovableObject(label);
             label = nullptr;
         }
+    }
+
+    if(m_markerVisibility)
+    {
+        sceneMgr->destroyManualObject(m_marker);
     }
 
     sceneMgr->destroyManualObject(m_xLine);
