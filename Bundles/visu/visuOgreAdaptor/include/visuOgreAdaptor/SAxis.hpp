@@ -75,7 +75,7 @@ public:
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
-    /// Does nothing.
+    /// Release ressources.
     VISUOGREADAPTOR_API virtual ~SAxis() noexcept;
 
 private:

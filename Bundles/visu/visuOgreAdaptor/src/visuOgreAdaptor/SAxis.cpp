@@ -40,8 +40,8 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
 static const std::string s_VISIBLE_CONFIG      = "visible";
 static const std::string s_LENGTH_CONFIG       = "length";
