@@ -71,8 +71,6 @@ SAxis::~SAxis() noexcept
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SAxis::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( ::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG, ::fwData::Object::s_MODIFIED_SIG,
-                      s_UPDATE_SLOT );
     return connections;
 }
 
