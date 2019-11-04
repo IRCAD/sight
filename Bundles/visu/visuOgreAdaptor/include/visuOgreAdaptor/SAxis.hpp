@@ -81,15 +81,15 @@ public:
 private:
 
     /// Returns proposals to connect service slots to associated object signals.
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
     /// Configures the adaptor.
-    void configuring() override;
+    void configuring() final;
     /// Manually creates a Mesh in the Default Ogre Ressource group.
-    void starting() override;
+    void starting() final;
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void updating() override;
+    void updating() final;
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void stopping() override;
+    void stopping() final;
 
     /// Sets visibility of axis.
     void updateVisibility(bool isVisible);
