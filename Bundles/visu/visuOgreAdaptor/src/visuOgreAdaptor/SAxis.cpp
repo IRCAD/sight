@@ -38,8 +38,8 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SAxis::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis)
 
@@ -55,42 +55,6 @@ SAxis::SAxis() noexcept
 
 SAxis::~SAxis() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void SAxis::updateVisibility(bool isVisible)
-{
-    m_isVisible = isVisible;
-
-    if(m_sceneNode)
-    {
-        m_sceneNode->setVisible(m_isVisible);
-        if(m_enableLabel)
-        {
-            for(auto& label : m_axisLabels)
-            {
-                SLM_ASSERT("label should not be null", label);
-                label->setVisible(isVisible);
-            }
-        }
-    }
-
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SAxis::toggleVisibility()
-{
-    this->updateVisibility(!m_isVisible);
-}
-
-//-----------------------------------------------------------------------------
-
-bool SAxis::getVisibility() const
-{
-    return m_isVisible;
 }
 
 //-----------------------------------------------------------------------------
@@ -116,6 +80,8 @@ void SAxis::configuring()
                                                             this->getID() + "_transform");
 
     this->setTransformId(transformId);
+
+    m_isVisible   = config.get<bool>("visible", m_isVisible);
     m_length      = config.get<float>("length", m_length);
     m_enableLabel = config.get<bool>("label", m_enableLabel);
     m_fontSize    = config.get<size_t>("fontSize", m_fontSize);
@@ -135,13 +101,13 @@ void SAxis::starting()
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
-    xLine = sceneMgr->createManualObject(this->getID() + "_xline");
-    yLine = sceneMgr->createManualObject(this->getID() + "_yline");
-    zLine = sceneMgr->createManualObject(this->getID() + "_zline");
+    m_xLine = sceneMgr->createManualObject(this->getID() + "_xline");
+    m_yLine = sceneMgr->createManualObject(this->getID() + "_yline");
+    m_zLine = sceneMgr->createManualObject(this->getID() + "_zline");
 
-    xCone = sceneMgr->createManualObject(this->getID() + "_xCone");
-    yCone = sceneMgr->createManualObject(this->getID() + "_yCone");
-    zCone = sceneMgr->createManualObject(this->getID() + "_zCone");
+    m_xCone = sceneMgr->createManualObject(this->getID() + "_xCone");
+    m_yCone = sceneMgr->createManualObject(this->getID() + "_yCone");
+    m_zCone = sceneMgr->createManualObject(this->getID() + "_zCone");
 
     // set the material
     m_material = ::fwData::Material::New();
@@ -162,59 +128,58 @@ void SAxis::starting()
     const float dpi       = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
     const auto fontSource = "DejaVuSans.ttf";
 
-    // Size
+    // Sizes
     const float cylinderLength = m_length - m_length/10;
     const float cylinderRadius = m_length/80;
     const float coneLength     = m_length - cylinderLength;
-    const float coneRadius     = cylinderRadius*2;
+    const float coneRadius     = cylinderRadius*3;
     const unsigned sample      = 64;
 
     // Draw
 
     // X axis
-    ::fwRenderOgre::helper::ManualObject::createCylinder(xLine, materialAdaptor->getMaterialName(),
+    ::fwRenderOgre::helper::ManualObject::createCylinder(m_xLine, materialAdaptor->getMaterialName(),
                                                          ::Ogre::ColourValue(::Ogre::ColourValue::Red),
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
-    xLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
-                                                 ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
-    xLineNode->attachObject(xLine);
+    m_xLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
+                                                   ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
+    xLineNode->attachObject(m_xLine);
     xLineNode->pitch(::Ogre::Degree(90));
 
     // Y axis
-    ::fwRenderOgre::helper::ManualObject::createCylinder(yLine,
+    ::fwRenderOgre::helper::ManualObject::createCylinder(m_yLine,
                                                          materialAdaptor->getMaterialName(),
                                                          ::Ogre::ColourValue(::Ogre::ColourValue::Green),
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
-    yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, 0.f, -coneRadius),
-                                                 ::Ogre::Vector3(coneRadius, m_length, coneRadius)));
-    yLineNode->attachObject(yLine);
+    m_yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
+                                                   ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
+    yLineNode->attachObject(m_yLine);
     yLineNode->roll(::Ogre::Degree(90));
 
     // Z axis
-    ::fwRenderOgre::helper::ManualObject::createCylinder(zLine,
+    ::fwRenderOgre::helper::ManualObject::createCylinder(m_zLine,
                                                          materialAdaptor->getMaterialName(),
                                                          ::Ogre::ColourValue(::Ogre::ColourValue::Blue),
                                                          cylinderRadius,
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
-    yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-coneRadius, -coneRadius, 0.f),
-                                                 ::Ogre::Vector3(coneRadius, coneRadius, m_length)));
-    zLineNode->attachObject(zLine);
+    m_zLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
+                                                   ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
+    zLineNode->attachObject(m_zLine);
     zLineNode->yaw(::Ogre::Degree(-90));
 
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
 
     // X cone
-    ::fwRenderOgre::helper::ManualObject::createCone(xCone, materialAdaptor->getMaterialName(),
+    ::fwRenderOgre::helper::ManualObject::createCone(m_xCone, materialAdaptor->getMaterialName(),
                                                      ::Ogre::ColourValue(::Ogre::ColourValue::Red),
                                                      coneRadius,
                                                      coneLength,
@@ -229,17 +194,17 @@ void SAxis::starting()
         xConeNode->attachObject(m_axisLabels[0]);
     }
 
-    xConeNode->attachObject(xCone);
+    xConeNode->attachObject(m_xCone);
     xConeNode->translate(cylinderLength, 0.f, 0.f);
 
     // Y cone
-    ::fwRenderOgre::helper::ManualObject::createCone(yCone, materialAdaptor->getMaterialName(),
+    ::fwRenderOgre::helper::ManualObject::createCone(m_yCone, materialAdaptor->getMaterialName(),
                                                      ::Ogre::ColourValue(::Ogre::ColourValue::Green),
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
     ::Ogre::SceneNode* yConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_yCone");
-    yConeNode->attachObject(yCone);
+    yConeNode->attachObject(m_yCone);
 
     if(m_enableLabel)
     {
@@ -253,13 +218,13 @@ void SAxis::starting()
     yConeNode->roll(::Ogre::Degree(90));
 
     // Z cone
-    ::fwRenderOgre::helper::ManualObject::createCone(zCone, materialAdaptor->getMaterialName(),
+    ::fwRenderOgre::helper::ManualObject::createCone(m_zCone, materialAdaptor->getMaterialName(),
                                                      ::Ogre::ColourValue(::Ogre::ColourValue::Blue),
                                                      coneRadius,
                                                      coneLength,
                                                      sample);
     ::Ogre::SceneNode* zConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_zCone");
-    zConeNode->attachObject(zCone);
+    zConeNode->attachObject(m_zCone);
 
     if(m_enableLabel)
     {
@@ -313,13 +278,13 @@ void SAxis::stopping()
         }
     }
 
-    sceneMgr->destroyManualObject(xLine);
-    sceneMgr->destroyManualObject(yLine);
-    sceneMgr->destroyManualObject(zLine);
+    sceneMgr->destroyManualObject(m_xLine);
+    sceneMgr->destroyManualObject(m_yLine);
+    sceneMgr->destroyManualObject(m_zLine);
 
-    sceneMgr->destroyManualObject(xCone);
-    sceneMgr->destroyManualObject(yCone);
-    sceneMgr->destroyManualObject(zCone);
+    sceneMgr->destroyManualObject(m_xCone);
+    sceneMgr->destroyManualObject(m_yCone);
+    sceneMgr->destroyManualObject(m_zCone);
 
     ::Ogre::SceneNode* rootSceneNode = sceneMgr->getRootSceneNode();
     ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
@@ -327,6 +292,35 @@ void SAxis::stopping()
 
     this->unregisterServices();
     m_material.reset();
+}
+
+//-----------------------------------------------------------------------------
+
+void SAxis::updateVisibility(bool isVisible)
+{
+    m_isVisible = isVisible;
+
+    if(m_sceneNode)
+    {
+        m_sceneNode->setVisible(m_isVisible);
+        if(m_enableLabel)
+        {
+            for(auto& label : m_axisLabels)
+            {
+                SLM_ASSERT("label should not be null", label);
+                label->setVisible(isVisible);
+            }
+        }
+    }
+
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void SAxis::toggleVisibility()
+{
+    this->updateVisibility(!m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
