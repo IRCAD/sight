@@ -96,7 +96,7 @@ public:
      * @brief renderNow
      * Force the renderWindow update
      */
-    void renderNow( const bool force = false);
+    void renderNow();
 
 protected:
 

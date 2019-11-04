@@ -10,12 +10,12 @@ me=$(cd "$(dirname "$0")"; pwd)
 # Setup the directories
 bindir="$me"
 rootdir=`cd "$me/.." ; pwd`
-libdir="$rootdir/lib"
-
+depslibdir="$rootdir/lib"
+libdir="$rootdir/@FWBUNDLE_LIB_PREFIX@"
 bundledir="$rootdir/@FWBUNDLE_RC_PREFIX@"
 
 # export LD_LIBRARY_PATH
-LD_LIBRARY_PATH=$libdir:$libdir/sight:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+LD_LIBRARY_PATH=$depslibdir:$libdir:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
 # Use CMAKE Variable of fwlauncher and Profile.xml path

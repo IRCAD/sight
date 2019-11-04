@@ -60,7 +60,7 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
     const int height = camera->getViewport()->getActualHeight();
     const int width  = camera->getViewport()->getActualWidth();
 
-    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0xffffffff );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0xFFFFFFFF );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }

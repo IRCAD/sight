@@ -261,12 +261,10 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent* exposeEvent)
+void Window::exposeEvent(QExposeEvent*)
 {
-    const bool nonEmptyRegion = !exposeEvent->region().isEmpty();
-
     // Force rendering
-    this->renderNow(nonEmptyRegion);
+    this->renderNow();
 }
 
 // ----------------------------------------------------------------------------
@@ -281,10 +279,10 @@ void Window::moveEvent(QMoveEvent*)
 
 // ----------------------------------------------------------------------------
 
-void Window::renderNow(const bool force)
+void Window::renderNow()
 {
     // Small optimization to not render when not visible
-    if(!force && !isExposed())
+    if(!this->isExposed())
     {
         return;
     }
@@ -447,6 +445,26 @@ void Window::mousePressEvent( QMouseEvent* e )
         m_lastPosRightClick = new QPoint(e->x(), e->y());
 
         info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+    }
+
+    // HACK: send modifiers (if there are any) as keyboard press events first.
+    // TODO: Interaction signals should be refactored to send modifiers.
+    if(e->modifiers())
+    {
+        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo modifierInfo;
+        modifierInfo.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
+
+        switch(e->modifiers())
+        {
+            case ::Qt::ShiftModifier: modifierInfo.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
+            case ::Qt::ControlModifier: modifierInfo.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
+            case ::Qt::MetaModifier: modifierInfo.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
+            case ::Qt::AltModifier: modifierInfo.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
+            default:
+                break;
+        }
+
+        Q_EMIT interacted(modifierInfo);
     }
 
     Q_EMIT interacted(info);

@@ -38,6 +38,7 @@ private:
     CPPUNIT_TEST( testReallocation );
     CPPUNIT_TEST( testPixelType );
     CPPUNIT_TEST( testSetGetPixel );
+    CPPUNIT_TEST( testIterator );
     CPPUNIT_TEST( testRGBAIterator );
     CPPUNIT_TEST( testRGBIterator );
     CPPUNIT_TEST( testBGRAIterator );
@@ -54,6 +55,7 @@ public:
     void testReallocation();
     void testPixelType();
     void testSetGetPixel();
+    void testIterator();
     void testRGBAIterator();
     void testRGBIterator();
     void testBGRIterator();

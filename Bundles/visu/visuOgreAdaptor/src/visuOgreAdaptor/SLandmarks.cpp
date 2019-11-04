@@ -36,7 +36,7 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLandmarks);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLandmarks)
 
 static const std::string s_LANDMARKS_INPUT = "landmarks";
 

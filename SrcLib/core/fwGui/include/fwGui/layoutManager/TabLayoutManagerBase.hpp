@@ -43,7 +43,7 @@ class FWGUI_CLASS_API TabLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreClassMacro(TabLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager);
+    fwCoreClassMacro(TabLayoutManagerBase, ::fwGui::layoutManager::IViewLayoutManager)
 
     typedef std::string RegistryKeyType;
 
@@ -65,8 +65,8 @@ public:
         std::string m_caption;
         bool m_isSelect;
         bool m_useScrollBar;
-        /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
-        std::string m_backgroundColor {"default"};
+        /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
+        std::string m_backgroundColor;
     };
 
     /// Constructor. Do nothing.

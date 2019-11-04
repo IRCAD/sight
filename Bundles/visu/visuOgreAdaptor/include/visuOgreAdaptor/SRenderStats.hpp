@@ -57,7 +57,7 @@ class PostWindowRenderListener;
 class VISUOGREADAPTOR_CLASS_API SRenderStats : public ::fwRenderOgre::IAdaptor
 {
 public:
-    fwCoreServiceMacro(SRenderStats, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SRenderStats, ::fwRenderOgre::IAdaptor)
 
     /// Constructor.
     VISUOGREADAPTOR_API SRenderStats() noexcept;
