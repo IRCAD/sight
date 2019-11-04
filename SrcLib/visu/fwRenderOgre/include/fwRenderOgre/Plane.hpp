@@ -65,12 +65,15 @@ public:
 
     using sptr = std::shared_ptr<Plane>;
 
+    /// Creates a plane, instantiates its material. Call @ref Plane::initializePlane() to create its geometry.
     FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
                            ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
                            ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _entityOpacity = 1.0f);
 
+    /// Destructor, cleans ogre resources.
     FWRENDEROGRE_API virtual ~Plane();
 
+    /// Instantiates the plane mesh and entity.
     FWRENDEROGRE_API void initializePlane();
 
     /// Slot handling slice plane move:
@@ -78,25 +81,34 @@ public:
     ///     - in 3D, it will also move the scene node in space
     FWRENDEROGRE_API void changeSlice( float _sliceIndex );
 
+    /// Sets the image axis orthogonal to the plane.
     FWRENDEROGRE_API void setOrientationMode(OrientationMode _newMode);
 
+    /// Sets whether the negato's opacity is taken into account.
     FWRENDEROGRE_API void enableAlpha(bool);
 
+    /// Sets the real world image's origin .
     FWRENDEROGRE_API void setOriginPosition(const ::Ogre::Vector3& _origPos);
 
-    FWRENDEROGRE_API ::Ogre::Vector3 getDepthSpacing();
-    FWRENDEROGRE_API void setDepthSpacing(const ::Ogre::Vector3& _spacing);
+    /// Sets the real world size of a voxel.
+    FWRENDEROGRE_API void setVoxelSpacing(const ::Ogre::Vector3& _spacing);
 
+    /// Sets the plane's opacity.
     FWRENDEROGRE_API void setEntityOpacity( float _f );
 
+    /// Shows/hides the plane in the scene.
     FWRENDEROGRE_API void setVisible( bool _visible );
 
     /// Adds or updates the texture containing the transfer function data in the negato passes
     FWRENDEROGRE_API void setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture);
 
+    /// Sets whether or not the transfer function uses thresholding.
     FWRENDEROGRE_API void switchThresholding(bool _threshold);
 
+    /// Retrieves the plane's width in model space.
     FWRENDEROGRE_API ::Ogre::Real getWidth() const;
+
+    /// Retrieves the plane's height in model space.
     FWRENDEROGRE_API ::Ogre::Real getHeight() const;
 
     /// Moves the scene node to m_originPosition point
@@ -105,9 +117,11 @@ public:
     /// Returns the x, y or z world position of the plane scene node according to the current orientation mode
     FWRENDEROGRE_API double getSliceWorldPosition() const;
 
+    /// Retrieves the image axis orthogonal to the plane.
     FWRENDEROGRE_API OrientationMode getOrientationMode() const;
 
-    FWRENDEROGRE_API ::Ogre::MaterialPtr getMaterial() const;
+    /// Retrieves the material used to render the plane.
+    FWRENDEROGRE_API ::Ogre::MaterialPtr getMaterial();
 
     /// Retrieves the movable object created by this class.
     FWRENDEROGRE_API const ::Ogre::MovableObject* getMovableObject() const;
@@ -197,13 +211,6 @@ inline void Plane::setOriginPosition(const ::Ogre::Vector3& _origPos)
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::Vector3 Plane::getDepthSpacing()
-{
-    return m_spacing;
-}
-
-//------------------------------------------------------------------------------
-
 inline Plane::OrientationMode Plane::getOrientationMode() const
 {
     return m_orientation;
@@ -211,7 +218,7 @@ inline Plane::OrientationMode Plane::getOrientationMode() const
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::MaterialPtr Plane::getMaterial() const
+inline ::Ogre::MaterialPtr Plane::getMaterial()
 {
     return m_texMaterial;
 }

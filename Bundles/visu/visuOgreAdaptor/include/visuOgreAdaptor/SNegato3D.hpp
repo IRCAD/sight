@@ -197,7 +197,7 @@ private:
     /// Sets the opacity to that of the transfer function.
     bool m_enableAlpha {false};
 
-    /// Sets whether or not interaction are enables on the negato.
+    /// Sets whether or not interactions are enabled on the negato.
     bool m_interactive { false };
 
     /// Ogre texture which will be displayed on the negato

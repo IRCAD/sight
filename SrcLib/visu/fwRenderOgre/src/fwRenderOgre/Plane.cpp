@@ -118,15 +118,15 @@ void Plane::initializeMaterial()
 
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    for(const auto tech : techniques)
+    for(const auto* const tech : techniques)
     {
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            ::Ogre::Pass* const pass = tech->getPass(0);
 
-            ::Ogre::TextureUnitState* texState = pass->getTextureUnitState("image");
+            ::Ogre::TextureUnitState* const texState = pass->getTextureUnitState("image");
             SLM_ASSERT("'image' texture unit is not found", texState);
             texState->setTexture(m_texture);
 
@@ -155,7 +155,7 @@ void Plane::initializeMaterial()
 
 //-----------------------------------------------------------------------------
 
-void Plane::setDepthSpacing(const ::Ogre::Vector3& _spacing)
+void Plane::setVoxelSpacing(const ::Ogre::Vector3& _spacing)
 {
     m_spacing = _spacing;
 }
@@ -353,16 +353,16 @@ void Plane::setOrientationMode(OrientationMode _newMode)
     m_orientation = _newMode;
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    for(const auto tech : techniques)
+    for(const auto* const tech : techniques)
     {
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            const ::Ogre::Pass* const pass = tech->getPass(0);
             SLM_ASSERT("Material '" + m_texMaterial->getName() + "' does not define any pass.", pass);
 
-            int orientationIndex = static_cast<int>(_newMode);
+            const int orientationIndex = static_cast<int>(_newMode);
             pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
             pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
         }
@@ -376,13 +376,13 @@ void Plane::enableAlpha(bool _enable)
 {
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    for(const auto tech : techniques)
+    for(const auto* const tech : techniques)
     {
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            ::Ogre::Pass* const pass = tech->getPass(0);
 
             SLM_ASSERT("Can't find Ogre pass", pass);
             pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable );

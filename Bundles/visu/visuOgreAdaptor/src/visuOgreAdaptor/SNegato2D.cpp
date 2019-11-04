@@ -356,7 +356,7 @@ void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
 {
     this->getRenderService()->makeCurrent();
     // Fits the plane to the new texture
-    m_plane->setDepthSpacing(_spacing);
+    m_plane->setVoxelSpacing(_spacing);
     m_plane->initializePlane();
     m_plane->enableAlpha(m_enableAlpha);
 }
