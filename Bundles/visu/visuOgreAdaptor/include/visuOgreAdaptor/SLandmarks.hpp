@@ -58,7 +58,7 @@ class VISUOGREADAPTOR_CLASS_API SLandmarks : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceMacro(SLandmarks, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SLandmarks, ::fwRenderOgre::IAdaptor)
 
     /// Constructor.
     VISUOGREADAPTOR_API SLandmarks() noexcept;

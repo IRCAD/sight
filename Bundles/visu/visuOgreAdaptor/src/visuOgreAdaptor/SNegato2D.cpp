@@ -154,8 +154,8 @@ void SNegato2D::starting()
     m_plane = std::make_unique< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
                                                         m_orientation, false, m_3DOgreTexture, m_filtering);
 
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
-    m_cameraNode        = cam->getParentSceneNode();
+    ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
+    m_cameraNode              = cam->getParentSceneNode();
     cam->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
     this->newImage();
@@ -372,7 +372,7 @@ void SNegato2D::updateCamera()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imglock(image);
 
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("No default camera found", cam);
 
     const int renderWindowWidth          = cam->getViewport()->getActualWidth();

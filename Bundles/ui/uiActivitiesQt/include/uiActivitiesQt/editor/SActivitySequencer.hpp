@@ -72,6 +72,7 @@ namespace editor
         <activity id="..." name="..." />
         <activity id="..." name="..." />
         <activity id="..." name="..." />
+        <clear>#FFFFFF</clear>
         <theme>#FF00FF</theme>
         <accent>#FF00FF</accent>
         <foreground>#FF00FF</foreground>
@@ -94,6 +95,7 @@ namespace editor
  *     - \b name(optional): name of the activity to display in the editor. If it is empty, the the activity's will be
  *          used
  * - \b theme (optional, lihgt/dark): the global theme used by the sequencer.
+ * - \b clear (optional): the color of the opengl background scene.
  * - \b accent (optional): the accent color used by the sequencer.
  * - \b foreground (optional): the foreground color used by the sequencer.
  * - \b background (optional): the background color used by the sequencer.
@@ -186,6 +188,7 @@ private:
 
     std::string m_theme;
     std::string m_accent;
+    std::string m_clear;
     std::string m_foreground;
     std::string m_background;
     std::string m_primary;

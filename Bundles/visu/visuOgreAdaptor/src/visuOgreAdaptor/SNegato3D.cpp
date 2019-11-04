@@ -487,8 +487,8 @@ void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
     {
         if(this->getPickedSlices(_x, _y) != std::nullopt)
         {
-            ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-            ::fwData::mt::ObjectReadLock tfLock(tf);
+            const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+            const ::fwData::mt::ObjectReadLock tfLock(tf);
 
             m_initialLevel  = tf->getLevel();
             m_initialWindow = tf->getWindow();

@@ -56,6 +56,19 @@ inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(const ImageIterator
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
+inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(const ImageIteratorBase<FORMAT, true>& other) :
+    m_pointer(other.m_pointer),
+    m_lock(other.m_lock),
+    m_idx(other.m_idx),
+    m_elementSize(other.m_elementSize),
+    m_numberOfElements(other.m_numberOfElements)
+{
+    static_assert(isConst == true, "Cannot convert const ImageIterator to not const ImageIterator.");
+}
+
+//------------------------------------------------------------------------------
+
+template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>::~ImageIteratorBase()
 {
     m_lock.reset();
