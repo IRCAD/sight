@@ -271,7 +271,7 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent* exposeEvent)
+void Window::exposeEvent(QExposeEvent*)
 {
     // Force rendering
     this->renderNow();
