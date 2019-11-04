@@ -170,29 +170,29 @@ void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::reserve(size_t nbPts, size_t nbCells, CellTypesEnum cellType, ExtraArrayType arrayMask)
+size_t Mesh::reserve(size_t nbPts, size_t nbCells, CellType cellType, Attributes arrayMask)
 {
     size_t nbCellsData = 0;
     switch (cellType)
     {
-        case POINT:
+        case CellType::POINT:
             nbCellsData = nbCells;
             break;
-        case EDGE:
+        case CellType::EDGE:
             nbCellsData = 2 * nbCells;
             break;
-        case TRIANGLE:
+        case CellType::TRIANGLE:
             nbCellsData = 3 * nbCells;
             break;
-        case QUAD:
+        case CellType::QUAD:
             nbCellsData = 4 * nbCells;
             break;
-        case TETRA:
+        case CellType::TETRA:
             nbCellsData = 4 * nbCells;
             break;
         default:
             SLM_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
-                      "resize(size_t nbPts, size_t nbCells, ExtraArrayType arrayMask, size_t nbCellsData)")
+                      "resize(size_t nbPts, size_t nbCells, Attribute arrayMask, size_t nbCellsData)")
             nbCellsData = 3 * nbCells;
             break;
     }
@@ -202,7 +202,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, CellTypesEnum cellType, Extra
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArrayType arrayMask)
+size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, Attributes arrayMask)
 {
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Cannot not allocate empty size"), nbPts == 0 ||
                           nbCells == 0 || nbCellsData == 0);
@@ -210,7 +210,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArra
     m_points->resizeTMP( {nbPts}, 3 );
 
     // TODO sight 22.0: Add a second dimension on the array to replace the deprecated component
-    if (static_cast<int>(arrayMask & ExtraArrayType::POINT_COLORS))
+    if (static_cast<int>(arrayMask & Attributes::POINT_COLORS))
     {
         if (!m_pointColors )
         {
@@ -218,7 +218,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArra
         }
         m_pointColors->resizeTMP(::fwTools::Type::s_UINT8, {nbPts}, 4);
     }
-    if (static_cast<int>(arrayMask & ExtraArrayType::POINT_NORMALS))
+    if (static_cast<int>(arrayMask & Attributes::POINT_NORMALS))
     {
         if (!m_pointNormals )
         {
@@ -226,7 +226,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArra
         }
         m_pointNormals->resizeTMP(::fwTools::Type::s_FLOAT, {nbPts}, 3 );
     }
-    if (static_cast<int>(arrayMask & ExtraArrayType::POINT_TEX_COORDS))
+    if (static_cast<int>(arrayMask & Attributes::POINT_TEX_COORDS))
     {
         if (!m_pointTexCoords )
         {
@@ -239,7 +239,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArra
     m_cellDataOffsets->resize({nbCells});
     m_cellData->resize({nbCellsData});
 
-    if (static_cast<int>(arrayMask & ExtraArrayType::CELL_COLORS))
+    if (static_cast<int>(arrayMask & Attributes::CELL_COLORS))
     {
         if (!m_cellColors )
         {
@@ -248,7 +248,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArra
         m_cellColors->resizeTMP( ::fwTools::Type::s_UINT8,  {nbCells}, 4 );
     }
 
-    if (static_cast<int>(arrayMask & ExtraArrayType::CELL_NORMALS))
+    if (static_cast<int>(arrayMask & Attributes::CELL_NORMALS))
     {
         if (!m_cellNormals )
         {
@@ -256,7 +256,7 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArra
         }
         m_cellNormals->resizeTMP( ::fwTools::Type::s_FLOAT, {nbCells}, 3 );
     }
-    if (static_cast<int>(arrayMask & ExtraArrayType::CELL_TEX_COORDS))
+    if (static_cast<int>(arrayMask & Attributes::CELL_TEX_COORDS))
     {
         if (!m_cellTexCoords )
         {
@@ -270,29 +270,29 @@ size_t Mesh::reserve(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArra
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::resize(size_t nbPts, size_t nbCells, CellTypesEnum cellType, ExtraArrayType arrayMask)
+size_t Mesh::resize(size_t nbPts, size_t nbCells, CellType cellType, Attributes arrayMask)
 {
     size_t nbCellsData = 0;
     switch (cellType)
     {
-        case POINT:
+        case CellType::POINT:
             nbCellsData = nbCells;
             break;
-        case EDGE:
+        case CellType::EDGE:
             nbCellsData = 2 * nbCells;
             break;
-        case TRIANGLE:
+        case CellType::TRIANGLE:
             nbCellsData = 3 * nbCells;
             break;
-        case QUAD:
+        case CellType::QUAD:
             nbCellsData = 4 * nbCells;
             break;
-        case TETRA:
+        case CellType::TETRA:
             nbCellsData = 4 * nbCells;
             break;
         default:
             SLM_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
-                      "resize(size_t nbPts, size_t nbCells, ExtraArrayType arrayMask, size_t nbCellsData)")
+                      "resize(size_t nbPts, size_t nbCells, Attribute arrayMask, size_t nbCellsData)")
             nbCellsData = 3 * nbCells;
             break;
     }
@@ -302,7 +302,7 @@ size_t Mesh::resize(size_t nbPts, size_t nbCells, CellTypesEnum cellType, ExtraA
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::resize(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArrayType arrayMask)
+size_t Mesh::resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attributes arrayMask)
 {
     const size_t size = this->reserve(nbPts, nbCells, nbCellsData, arrayMask);
     m_nbPoints      = nbPts;
@@ -531,7 +531,7 @@ Mesh::Id Mesh::pushPoint(PointValueType x, PointValueType y, PointValueType z)
 Mesh::Id Mesh::pushCell(CellValueType idPt)
 {
     ::fwData::Mesh::CellValueType point[1] = {idPt};
-    return this->pushCell(::fwData::Mesh::POINT, point, 1);
+    return this->pushCell(::fwData::Mesh::CellType::POINT, point, 1);
 }
 
 //------------------------------------------------------------------------------
@@ -539,7 +539,7 @@ Mesh::Id Mesh::pushCell(CellValueType idPt)
 Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2)
 {
     const ::fwData::Mesh::CellValueType p[2] = {idP1, idP2};
-    return this->pushCell(::fwData::Mesh::EDGE, p, 2);
+    return this->pushCell(::fwData::Mesh::CellType::EDGE, p, 2);
 }
 
 //------------------------------------------------------------------------------
@@ -547,13 +547,13 @@ Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2)
 Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3)
 {
     const ::fwData::Mesh::CellValueType p[3] = {idP1, idP2, idP3};
-    return this->pushCell(::fwData::Mesh::TRIANGLE, p, 3);
+    return this->pushCell(::fwData::Mesh::CellType::TRIANGLE, p, 3);
 }
 
 //------------------------------------------------------------------------------
 
 Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
-                        CellTypesEnum type)
+                        CellType type)
 {
     const ::fwData::Mesh::CellValueType p[4] = {idP1, idP2, idP3, idP4};
     return this->pushCell(type, p, 4);
@@ -561,7 +561,7 @@ Mesh::Id Mesh::pushCell(CellValueType idP1, CellValueType idP2, CellValueType id
 
 //------------------------------------------------------------------------------
 
-Mesh::Id Mesh::pushCell(CellTypesEnum type,
+Mesh::Id Mesh::pushCell(CellType type,
                         const std::vector<CellValueType> pointIds)
 {
     return this->pushCell(type, pointIds.data(), pointIds.size());
@@ -569,24 +569,24 @@ Mesh::Id Mesh::pushCell(CellTypesEnum type,
 
 //------------------------------------------------------------------------------
 
-Mesh::Id Mesh::pushCell(CellTypesEnum type,
+Mesh::Id Mesh::pushCell(CellType type,
                         const CellValueType* pointIds,
                         size_t nbPoints )
 {
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
-               type != ::fwData::Mesh::NO_CELL || nbPoints == 0);
+               type != ::fwData::Mesh::CellType::NO_CELL || nbPoints == 0);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
-               type != ::fwData::Mesh::POINT || nbPoints == 1);
+               type != ::fwData::Mesh::CellType::POINT || nbPoints == 1);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
-               type != ::fwData::Mesh::EDGE || nbPoints == 2);
+               type != ::fwData::Mesh::CellType::EDGE || nbPoints == 2);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
-               type != ::fwData::Mesh::TRIANGLE || nbPoints == 3);
+               type != ::fwData::Mesh::CellType::TRIANGLE || nbPoints == 3);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
-               type != ::fwData::Mesh::QUAD || nbPoints == 4);
+               type != ::fwData::Mesh::CellType::QUAD || nbPoints == 4);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
-               type != ::fwData::Mesh::TETRA || nbPoints == 4);
+               type != ::fwData::Mesh::CellType::TETRA || nbPoints == 4);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
-               type != ::fwData::Mesh::POLY || nbPoints > 4);
+               type != ::fwData::Mesh::CellType::POLY || nbPoints > 4);
 
     ::fwData::Mesh::Id nbCells = m_nbCells;
 
@@ -647,7 +647,7 @@ void Mesh::setPoint(::fwData::Mesh::Id id,
 void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idPt)
 {
     const ::fwData::Mesh::CellValueType p[1] = {idPt};
-    this->setCell(id, ::fwData::Mesh::POINT, p, 12);
+    this->setCell(id, ::fwData::Mesh::CellType::POINT, p, 12);
 }
 
 //------------------------------------------------------------------------------
@@ -655,7 +655,7 @@ void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idPt)
 void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2)
 {
     const ::fwData::Mesh::CellValueType p[2] = {idP1, idP2};
-    this->setCell(id, ::fwData::Mesh::EDGE, p, 2);
+    this->setCell(id, ::fwData::Mesh::CellType::EDGE, p, 2);
 }
 
 //------------------------------------------------------------------------------
@@ -663,42 +663,42 @@ void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2
 void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3)
 {
     const ::fwData::Mesh::CellValueType p[3] = {idP1, idP2, idP3};
-    this->setCell(id, ::fwData::Mesh::TRIANGLE, p, 3);
+    this->setCell(id, ::fwData::Mesh::CellType::TRIANGLE, p, 3);
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3,
                    CellValueType idP4,
-                   CellTypesEnum type)
+                   CellType type)
 {
     const ::fwData::Mesh::CellValueType p[4] = {idP1, idP2, idP3, idP4};
     this->setCell(id, type, p, 4);
 }
 //------------------------------------------------------------------------------
 
-void Mesh::setCell(::fwData::Mesh::Id id, CellTypesEnum type, const std::vector<CellValueType> pointIds)
+void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType> pointIds)
 {
     this->setCell(id, type, pointIds.data(), pointIds.size());
 }
 //------------------------------------------------------------------------------
 
-void Mesh::setCell(::fwData::Mesh::Id id, CellTypesEnum type, const CellValueType* pointIds, size_t nbPoints )
+void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, size_t nbPoints )
 {
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
-               type != ::fwData::Mesh::NO_CELL || nbPoints == 0);
+               type != ::fwData::Mesh::CellType::NO_CELL || nbPoints == 0);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
-               type != ::fwData::Mesh::POINT || nbPoints == 1);
+               type != ::fwData::Mesh::CellType::POINT || nbPoints == 1);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
-               type != ::fwData::Mesh::EDGE || nbPoints == 2);
+               type != ::fwData::Mesh::CellType::EDGE || nbPoints == 2);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
-               type != ::fwData::Mesh::TRIANGLE || nbPoints == 3);
+               type != ::fwData::Mesh::CellType::TRIANGLE || nbPoints == 3);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
-               type != ::fwData::Mesh::QUAD || nbPoints == 4);
+               type != ::fwData::Mesh::CellType::QUAD || nbPoints == 4);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
-               type != ::fwData::Mesh::TETRA || nbPoints == 4);
+               type != ::fwData::Mesh::CellType::TETRA || nbPoints == 4);
     SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
-               type != ::fwData::Mesh::POLY || nbPoints > 4);
+               type != ::fwData::Mesh::CellType::POLY || nbPoints > 4);
 
     m_cellTypes->at< CellTypes >(id) = static_cast< CellTypes >(type);
 

@@ -96,12 +96,13 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     // Starting from boost 1.65, the function could not be deduced
     auto reserveFn =
         phx::bind(static_cast<size_t(::fwData::Mesh::*)(
-                                  size_t, size_t, ::fwData::Mesh::CellTypesEnum, ::fwData::Mesh::ExtraArrayType)>(
-                      &::fwData::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(nbCells), ::fwData::Mesh::TRIANGLE,
-                  ::fwData::Mesh::ExtraArrayType::CELL_NORMALS);
+                                  size_t, size_t, ::fwData::Mesh::CellType, ::fwData::Mesh::Attributes)>(
+                      &::fwData::Mesh::reserve), mesh, std::ref(nbPoints), std::ref(
+                      nbCells), ::fwData::Mesh::CellType::TRIANGLE,
+                  ::fwData::Mesh::Attributes::CELL_NORMALS);
 
     // initialize the mesh with 1 point, 1 cell and cell normals to be able to lock all the arrays
-    mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::TRIANGLE, ::fwData::Mesh::ExtraArrayType::CELL_NORMALS);
+    mesh->reserve(nbPoints, nbCells, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::CELL_NORMALS);
 
     const auto lock = mesh->lock();
 

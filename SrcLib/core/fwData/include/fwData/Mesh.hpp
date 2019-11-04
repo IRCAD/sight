@@ -270,7 +270,7 @@ public:
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;
     typedef std::uint64_t Id;
 
-    typedef enum
+    [[deprecated("replaced by CellType (sight 22.0)")]] typedef enum
     {
         NO_CELL = 0,
         POINT,
@@ -281,21 +281,32 @@ public:
         TETRA
     } CellTypesEnum;
 
-    typedef enum
+    enum class CellType : std::uint8_t
+    {
+        NO_CELL = 0,
+        POINT,
+        EDGE,
+        TRIANGLE,
+        QUAD,
+        POLY,
+        TETRA
+    };
+
+    [[deprecated("replaced by CellType (sight 22.0)")]] typedef enum
     {
         RGB  = 3,
         RGBA = 4
     } ColorArrayTypes;
 
-    enum class ExtraArrayType : int
+    enum class Attributes : std::uint8_t
     {
-        NO_ARRAY         = 0,
-        POINT_COLORS     = 1 << 1,
-        POINT_NORMALS    = 1 << 2,
-        CELL_COLORS      = 1 << 3,
-        CELL_NORMALS     = 1 << 4,
-        POINT_TEX_COORDS = 1 << 5,
-        CELL_TEX_COORDS  = 1 << 6
+        NO_ARRAY             = 0,
+        POINT_COLORS         = 1 << 1,
+            POINT_NORMALS    = 1 << 2,
+            CELL_COLORS      = 1 << 3,
+            CELL_NORMALS     = 1 << 4,
+            POINT_TEX_COORDS = 1 << 5,
+            CELL_TEX_COORDS  = 1 << 6
     };
 
     typedef float PointValueType;
@@ -333,15 +344,16 @@ public:
      * @param nbCells number of cells to allocate
      * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
      *        mix different types of cells in the same mesh, you should use
-     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArrayType arrayMask)
-     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
+     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute arrayMask)
+     * @param arrayMask Mesh attribute: additional Arrays to allocate
+     *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
      * @return Return the allocated memory
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, CellTypesEnum cellType = TRIANGLE,
-                              ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
+    FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, CellType cellType = CellType::TRIANGLE,
+                              Attributes arrayMask = Attributes::NO_ARRAY);
 
     /**
      * @brief Allocate Mesh memory
@@ -353,14 +365,15 @@ public:
      * @param nbPts number of points to allocate
      * @param nbCells number of cells to allocate
      * @param nbCellsData sum of the number of points of each cell, il allows to allocate the cells array.
-     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
+     * @param arrayMask Mesh attribute: additional Arrays to allocate
+     *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
      * @return Return the allocated memory
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
     FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, size_t nbCellsData,
-                              ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
+                              Attributes arrayMask = Attributes::NO_ARRAY);
 
     /**
      * @brief Allocate Mesh memory and initialize the number of points and cells
@@ -371,15 +384,16 @@ public:
      * @param nbCells number of cells to allocate
      * @param cellType type of cell to allocate, it define the number of points by cell to allocate. If you want to
      *        use different types of cells in the same mesh, use
-     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, ExtraArrayType arrayMask)
-     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
+     *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute arrayMask)
+     * @param arrayMask Mesh attribute: additional Arrays to allocate
+     *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
      * @return Return the allocated memory
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
-    FWDATA_API size_t resize(size_t nbPts, size_t nbCells, CellTypesEnum cellType = TRIANGLE,
-                             ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
+    FWDATA_API size_t resize(size_t nbPts, size_t nbCells, CellType cellType = CellType::TRIANGLE,
+                             Attributes arrayMask = Attributes::NO_ARRAY);
 
     /**
      * @brief Allocate Mesh memory and initialize the number of points and cells
@@ -390,14 +404,15 @@ public:
      * @param nbPts number of points to allocate
      * @param nbCells number of cells to allocate
      * @param nbCellsData sum of the number of points of each cell, il allows to allocate the cells array.
-     * @param arrayMask extra Array to allocate (ex: ExtraArrayType::POINT_COLORS | ExtraArrayType::POINT_NORMALS)
+     * @param arrayMask Mesh attribute: additional Arrays to allocate
+     *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
      * @return Return the allocated memory
      *
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
     FWDATA_API size_t resize(size_t nbPts, size_t nbCells, size_t nbCellsData,
-                             ExtraArrayType arrayMask = ExtraArrayType::NO_ARRAY);
+                             Attributes arrayMask = Attributes::NO_ARRAY);
 
     /**
      * @brief Adjust mesh memory usage
@@ -556,10 +571,10 @@ public:
     FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2);
     FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3);
     FWDATA_API Id pushCell(CellValueType idP1, CellValueType idP2, CellValueType idP3, CellValueType idP4,
-                           CellTypesEnum type = QUAD);
-    FWDATA_API Id pushCell(CellTypesEnum type,
+                           CellType type = CellType::QUAD);
+    FWDATA_API Id pushCell(CellType type,
                            const std::vector<CellValueType> pointIds);
-    FWDATA_API Id pushCell(CellTypesEnum type,
+    FWDATA_API Id pushCell(CellType type,
                            const CellValueType* pointIds,
                            size_t nbPoints );
     /// @}
@@ -602,9 +617,9 @@ public:
     FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3);
     FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3,
                             CellValueType idP4,
-                            CellTypesEnum type = QUAD);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const std::vector<CellValueType> pointIds);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellTypesEnum type, const CellValueType* pointIds, size_t nbPoints );
+                            CellType type = CellType::QUAD);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType> pointIds);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, size_t nbPoints );
     /// @}
 
     /**
@@ -950,21 +965,21 @@ protected:
 
 //------------------------------------------------------------------------------
 
-inline Mesh::ExtraArrayType operator|(const Mesh::ExtraArrayType& lhs, const Mesh::ExtraArrayType& rhs)
+inline Mesh::Attributes operator|(const Mesh::Attributes& lhs, const Mesh::Attributes& rhs)
 {
-    return static_cast<Mesh::ExtraArrayType> (
-        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(lhs) |
-        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(rhs)
+    return static_cast<Mesh::Attributes> (
+        static_cast<std::underlying_type<Mesh::Attributes>::type>(lhs) |
+        static_cast<std::underlying_type<Mesh::Attributes>::type>(rhs)
         );
 }
 
 //------------------------------------------------------------------------------
 
-inline Mesh::ExtraArrayType operator&(const Mesh::ExtraArrayType& lhs, const Mesh::ExtraArrayType& rhs)
+inline Mesh::Attributes operator&(const Mesh::Attributes& lhs, const Mesh::Attributes& rhs)
 {
-    return static_cast<Mesh::ExtraArrayType> (
-        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(lhs) &
-        static_cast<std::underlying_type<Mesh::ExtraArrayType>::type>(rhs)
+    return static_cast<Mesh::Attributes> (
+        static_cast<std::underlying_type<Mesh::Attributes>::type>(lhs) &
+        static_cast<std::underlying_type<Mesh::Attributes>::type>(rhs)
         );
 }
 
