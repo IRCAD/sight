@@ -271,12 +271,10 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent* exposeEvent)
+void Window::exposeEvent(QExposeEvent*)
 {
-    const bool nonEmptyRegion = !exposeEvent->region().isEmpty();
-
     // Force rendering
-    this->renderNow(nonEmptyRegion);
+    this->renderNow();
 }
 
 // ----------------------------------------------------------------------------
@@ -291,10 +289,10 @@ void Window::moveEvent(QMoveEvent*)
 
 // ----------------------------------------------------------------------------
 
-void Window::renderNow(const bool force)
+void Window::renderNow()
 {
     // Small optimization to not render when not visible
-    if(!force && !isExposed())
+    if(!this->isExposed())
     {
         return;
     }
