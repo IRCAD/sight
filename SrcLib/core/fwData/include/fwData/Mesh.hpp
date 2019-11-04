@@ -89,7 +89,7 @@ namespace fwData
  *
  * @subsection Allocation Allocation
  *
- * The two methods reserve() and resize() allow to allocate the mesh arrays. The difference between the two methods is
+ * The two methods reserve() and resize() allocate the mesh arrays. The difference between the two methods is
  * that resize modifies the number of points and cells.
  *
  * The pushPoint() and pushCell() methods add new points or cells, they increment the number of points/cells and
