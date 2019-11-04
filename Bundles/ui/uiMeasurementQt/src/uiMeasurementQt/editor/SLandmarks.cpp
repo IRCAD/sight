@@ -71,7 +71,7 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup"
 static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
 
 static const std::string s_SIZE_CONFIG     = "size";
-static const std::string s_OPCAITY_CONFIG  = "opacity";
+static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
@@ -113,7 +113,7 @@ void SLandmarks::configuring()
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
             m_defaultLandmarkSize <= 0.f);
 
-    m_defaultLandmarkOpacity = config.get_optional<float>(s_OPCAITY_CONFIG).get_value_or(1.0);
+    m_defaultLandmarkOpacity = config.get_optional<float>(s_OPACITY_CONFIG).get_value_or(1.0);
     OSLM_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
             m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
