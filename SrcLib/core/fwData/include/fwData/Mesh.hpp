@@ -90,12 +90,13 @@ namespace fwData
  * @subsection Allocation Allocation
  *
  * The two methods reserve() and resize() allow to allocate the mesh arrays. The difference between the two methods is
- * that resize modify the number of points and cells.
+ * that resize modifies the number of points and cells.
  *
- * pushPoint() and pushCell() methods allow to add new points or cells, it increments the number of points and allocate
- * the memory if needed.
+ * The pushPoint() and pushCell() methods add new points or cells, they increment the number of points/cells and
+ * allocate more memory if needed. It is recommended to call reserve() method before it if you know the number of
+ * points and cells, it avoid to allocate more memory than needed.
  *
- * setPoint() and setCell() methods allow to change the value in a given index.
+ * The setPoint() and setCell() methods change the value of a point/cell at a given index.
  *
  * Example with resize(), setPoint() and setCell()
  * @code{.cpp}
@@ -172,7 +173,7 @@ namespace fwData
  *
  * @subsection Iterators Iterators
  *
- * To access the mesh points and cells, you should uses the following iterators:
+ * To access the mesh points and cells, you should use the following iterators:
  *  - ::fwData::iterator::PointIterator: to iterate through mesh points
  *  - ::fwData::iterator::ConstPointIterator: to iterate through mesh points read-only
  *  - ::fwData::iterator::CellIterator: to iterate through mesh cells
@@ -221,10 +222,10 @@ namespace fwData
     }
    @endcode
  *
- * pushCell() and setCell() may not be very efficient, you can use CellIterator to define the cell. But take care to
- * properly define all the cell attribute.
+ * pushCell() and setCell() may not be very efficient, you can use CellIterator to define the cell. But be careful to
+ * properly define all the cell attributes.
  *
- * Example of defining cells usign iterators
+ * Example of defining cells using iterators
  *
  * @code{.cpp}
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
@@ -691,7 +692,7 @@ public:
      *
      * @warning You must allocate all the mesh arrays before to call lock()
      */
-    FWDATA_API LocksType lock() const;
+    [[nodiscard]] FWDATA_API LocksType lock() const;
 
     /**
      * @}

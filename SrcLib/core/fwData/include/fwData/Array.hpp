@@ -334,7 +334,7 @@ public:
      *
      * The buffer cannot be accessed if the array is not locked
      */
-    FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+    [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
     /**
      * @brief Get the value of an element

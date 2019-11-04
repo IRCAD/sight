@@ -364,7 +364,7 @@ public:
      *
      * The buffer cannot be accessed if the image is not locked
      */
-    FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+    [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
     // ---------------------------------------
     // Deprecated API

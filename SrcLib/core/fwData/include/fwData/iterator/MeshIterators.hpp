@@ -129,7 +129,7 @@ public:
     difference_type operator+(const PointIteratorBase& other) const;
     difference_type operator-(const PointIteratorBase& other) const;
     reference operator*();
-    value_type* operator->();
+    pointer operator->();
 
 protected:
 
