@@ -59,8 +59,8 @@ namespace visuOgreAdaptor
  * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor.
  * - \b visible (optional, bool, default=true): the visibility of the axis.
- * - \b marker (optional, bool, default=false): the marker visibility.
- * - \b markerColor (optional, string, default=#FFFFFF): the color of the axis marker.
+ * - \b origin (optional, bool, default=false): the origin visibility.
+ * - \b originColor (optional, string, default=#FFFFFF): the color of the axis origin.
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, default=16): label font size in points.
@@ -75,7 +75,7 @@ public:
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
-    /// Release ressources.
+    /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SAxis() noexcept;
 
 private:
@@ -89,34 +89,34 @@ private:
     void configuring() final;
     /// Manually creates a Mesh in the Default Ogre Ressource group.
     void starting() final;
-    /// Checks if the fwData::Mesh has changed, and updates it if it has.
+    /// Send a render request.
     void updating() final;
-    /// Deletes the mesh after unregistering the service, and shutting connections.
+    /// Deletes ogre's resources.
     void stopping() final;
 
     /**
-     * @brief Sets visibility of axis.
+     * @brief Sets the visibility of the axis.
      * @param _isVisible the visibility status.
      */
     void updateVisibility(bool _isVisible);
-    /// Toggle visibility of axis.
+    /// Toggle the visibility of the axis.
     void toggleVisibility();
 
     /// Pointer to the Material data.
     ::fwData::Material::sptr m_material { nullptr };
-    /// Axis length (in mm).
+    /// Axis length in scene units.
     float m_length { 50.f };
     /// Handles axis visibility.
     bool m_isVisible { true };
     /// Handles the visibility of axis labels.
     bool m_enableLabel { true };
 
-    /// Marker on the center.
-    ::Ogre::ManualObject* m_marker { nullptr };
-    /// Marker visibility.
-    bool m_markerVisibility { false };
-    /// Marker color.
-    std::string m_markerColor { "#FFFFFF" };
+    /// Origin of the axis.
+    ::Ogre::ManualObject* m_origin { nullptr };
+    /// Origin visibility.
+    bool m_originVisibility { false };
+    /// Origin color.
+    std::string m_originColor { "#FFFFFF" };
 
     /// Line along the x axis.
     ::Ogre::ManualObject* m_xLine { nullptr };

@@ -47,8 +47,8 @@ static const std::string s_VISIBLE_CONFIG      = "visible";
 static const std::string s_LENGTH_CONFIG       = "length";
 static const std::string s_LABEL_CONFIG        = "label";
 static const std::string s_FONT_SIZE_CONFIG    = "fontSize";
-static const std::string s_MARKER_CONFIG       = "marker";
-static const std::string s_MARKER_COLOR_CONFIG = "markerColor";
+static const std::string s_ORIGIN_CONFIG       = "origin";
+static const std::string s_ORIGIN_COLOR_CONFIG = "originColor";
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis)
 
@@ -92,14 +92,14 @@ void SAxis::configuring()
     m_length           = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_enableLabel      = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
     m_fontSize         = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
-    m_markerVisibility = config.get<bool>(s_MARKER_CONFIG, m_markerVisibility);
+    m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
 
-    m_markerColor = config.get<std::string>(s_MARKER_COLOR_CONFIG, m_markerColor);
+    m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
     OSLM_ASSERT(
         "Color string should start with '#' and followed by 6 ou 8 "
-        "hexadecimal digits. Given color : " << m_markerColor,
-            m_markerColor[0] == '#'
-            && ( m_markerColor.length() == 7 || m_markerColor.length() == 9)
+        "hexadecimal digits. Given color : " << m_originColor,
+            m_originColor[0] == '#'
+            && ( m_originColor.length() == 7 || m_originColor.length() == 9)
         );
 }
 
@@ -117,9 +117,9 @@ void SAxis::starting()
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
-    if(m_markerVisibility)
+    if(m_originVisibility)
     {
-        m_marker = sceneMgr->createManualObject(this->getID() + "_marker");
+        m_origin = sceneMgr->createManualObject(this->getID() + "_origin");
     }
 
     m_xLine = sceneMgr->createManualObject(this->getID() + "_xline");
@@ -150,7 +150,7 @@ void SAxis::starting()
     const auto fontSource = "DejaVuSans.ttf";
 
     // Sizes
-    const float markerRadius   = m_length * 0.1f;
+    const float originRadius   = m_length * 0.1f;
     const float cylinderLength = m_length * 0.8f;
     const float cylinderRadius = m_length * 0.025f;
     const float coneLength     = m_length - cylinderLength;
@@ -159,18 +159,18 @@ void SAxis::starting()
 
     // Draw
 
-    // Marker
-    if(m_markerVisibility)
+    // origin
+    if(m_originVisibility)
     {
-        const ::fwData::Color::sptr markerColor = ::fwData::Color::New();
-        markerColor->setRGBA(m_markerColor);
-        ::fwRenderOgre::helper::ManualObject::createSphere(m_marker, materialAdaptor->getMaterialName(),
-                                                           ::Ogre::ColourValue(markerColor->red(), markerColor->green(),
-                                                                               markerColor->blue(),
-                                                                               markerColor->alpha()),
-                                                           markerRadius,
+        const ::fwData::Color::sptr originColor = ::fwData::Color::New();
+        originColor->setRGBA(m_originColor);
+        ::fwRenderOgre::helper::ManualObject::createSphere(m_origin, materialAdaptor->getMaterialName(),
+                                                           ::Ogre::ColourValue(originColor->red(), originColor->green(),
+                                                                               originColor->blue(),
+                                                                               originColor->alpha()),
+                                                           originRadius,
                                                            sample);
-        m_sceneNode->attachObject(m_marker);
+        m_sceneNode->attachObject(m_origin);
     }
 
     // X axis
@@ -314,9 +314,9 @@ void SAxis::stopping()
         }
     }
 
-    if(m_markerVisibility)
+    if(m_originVisibility)
     {
-        sceneMgr->destroyManualObject(m_marker);
+        sceneMgr->destroyManualObject(m_origin);
     }
 
     sceneMgr->destroyManualObject(m_xLine);

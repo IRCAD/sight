@@ -188,7 +188,7 @@
             </service>
 
             <service uid="axisAdaptor" type="::visuOgreAdaptor::SAxis" >
-                <config layer="default" length="10" marker="true" markerColor="#808080" />
+                <config layer="default" length="10" origin="true" originColor="#808080" />
             </service>
 
             <!-- ##################################### End Generic Scene ########################################### -->
