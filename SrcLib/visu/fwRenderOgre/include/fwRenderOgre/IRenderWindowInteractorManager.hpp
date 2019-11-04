@@ -124,7 +124,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IRenderWindowInteractorManager, ::fwCore::BaseObject);
+    fwCoreClassMacro(IRenderWindowInteractorManager, ::fwCore::BaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 

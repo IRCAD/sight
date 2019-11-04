@@ -76,7 +76,7 @@ private:
 
 };
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SRenderStats);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SRenderStats)
 
 //------------------------------------------------------------------------------
 
