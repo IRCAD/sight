@@ -22,6 +22,8 @@
 
 #include "fwGuiQt/layoutManager/LineLayoutManager.hpp"
 
+#include "fwGuiQt/App.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwGui/registry/macros.hpp>
@@ -100,11 +102,11 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             subContainer->setQtContainer(panel);
             m_subViews.push_back(subContainer);
 
-            if(viewInfo.m_backgroundColor != "default")
+            if(!viewInfo.m_backgroundColor.empty())
             {
                 const QString style = QString::fromStdString(
                     "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                panel->setStyleSheet(style);
+                panel->setStyleSheet(style + qApp->styleSheet());
             }
 
             if(viewInfo.m_useScrollBar)
@@ -112,11 +114,11 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
                 QScrollArea* scrollArea = new QScrollArea();
                 scrollArea->setWidget(panel);
                 scrollArea->setWidgetResizable( true );
-                if(viewInfo.m_backgroundColor != "default")
+                if(!viewInfo.m_backgroundColor.empty())
                 {
                     const QString style = QString::fromStdString(
                         "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                    scrollArea->setStyleSheet(style);
+                    scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
 
                 layout->addWidget( scrollArea );

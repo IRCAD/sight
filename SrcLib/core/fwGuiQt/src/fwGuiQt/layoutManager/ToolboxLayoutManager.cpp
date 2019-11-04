@@ -22,6 +22,7 @@
 
 #include "fwGuiQt/layoutManager/ToolboxLayoutManager.hpp"
 
+#include "fwGuiQt/App.hpp"
 #include "fwGuiQt/container/QtContainer.hpp"
 
 #include <fwCore/base.hpp>
@@ -76,11 +77,11 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
         QWidget* panel = new QWidget();
         panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
         panel->setContentsMargins(border, border, border, border);
-        if(viewInfo.m_backgroundColor != "default")
+        if(!viewInfo.m_backgroundColor.empty())
         {
             const QString style = QString::fromStdString(
                 "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-            panel->setStyleSheet(style);
+            panel->setStyleSheet(style + qApp->styleSheet());
         }
 
         ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
@@ -92,11 +93,12 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
         {
             QScrollArea* scrollArea = new QScrollArea(toolbox);
             scrollArea->setWidget(panel);
-            scrollArea->setWidgetResizable( true ); if(viewInfo.m_backgroundColor != "default")
+            scrollArea->setWidgetResizable( true );
+            if(!viewInfo.m_backgroundColor.empty())
             {
                 const QString style = QString::fromStdString(
                     "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                scrollArea->setStyleSheet(style);
+                scrollArea->setStyleSheet(style + qApp->styleSheet());
             }
             index = toolbox->addItem(scrollArea, QString::fromStdString(viewInfo.m_caption));
         }
