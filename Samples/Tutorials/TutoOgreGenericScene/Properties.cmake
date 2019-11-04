@@ -8,11 +8,9 @@ set( REQUIREMENTS
     appXml
     gui
     guiQt
-    ctrlSelection
     ioData
     dataReg
     servicesReg
-    uiVisuQt
     uiImageQt
     uiIO
     fwlauncher

@@ -2,6 +2,9 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
+    <requirement id="guiQt" />
+    <requirement id="visuOgre" />
+    <requirement id="material" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoOgreGenericScene</id>
@@ -185,7 +188,7 @@
             </service>
 
             <service uid="axisAdaptor" type="::visuOgreAdaptor::SAxis" >
-                <config layer="default" length="10"/>
+                <config layer="default" length="10" marker="true" markerColor="#808080" />
             </service>
 
             <!-- ##################################### End Generic Scene ########################################### -->
