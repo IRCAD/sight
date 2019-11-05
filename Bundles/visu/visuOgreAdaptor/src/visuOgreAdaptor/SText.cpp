@@ -153,6 +153,8 @@ void SText::setText(std::string str)
     m_textString = str;
     m_text->setText(str);
     this->updatePositionFromAlignment();
+
+    this->requestRender();
 }
 
 //----------------------------------------------------------------------------

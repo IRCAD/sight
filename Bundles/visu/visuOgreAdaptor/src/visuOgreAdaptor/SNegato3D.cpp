@@ -454,7 +454,6 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
         if(_button == MouseButton::MIDDLE)
         {
             this->moveSlices(_x, _y);
-            this->getLayer()->cancelFurtherInteraction();
         }
         else if(_button == MouseButton::RIGHT)
         {
@@ -462,12 +461,13 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
             const double dy = static_cast<double>(m_initialPos[1] - _y);
 
             this->updateWindowing(dx, dy);
-            this->getLayer()->cancelFurtherInteraction();
         }
         else if(_button == MouseButton::LEFT)
         {
             this->pickIntensity(_x, _y);
         }
+
+        this->getLayer()->cancelFurtherInteraction();
     }
 }
 
@@ -558,11 +558,6 @@ void SNegato3D::pickIntensity(int _x, int _y)
 {
     if(m_pickedVoxelSignal->getNumberOfConnections() > 0)
     {
-        if(m_pickedPlane)
-        {
-            m_pickedPlane->setRenderQueuerGroupAndPriority(::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID, 0);
-        }
-
         const auto pickedPos = this->getPickedSlices(_x, _y);
 
         if(pickedPos.has_value())
@@ -593,8 +588,6 @@ void SNegato3D::pickIntensity(int _x, int _y)
             // Render the picked plane before the widget.
             m_pickedPlane->setRenderQueuerGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 0);
         }
-
-        this->getLayer()->cancelFurtherInteraction();
     }
 }
 
