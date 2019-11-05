@@ -446,12 +446,12 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 
 void Layer::forAllInteractors(const std::function< void(const interactor::IInteractor::sptr&)>&& _f)
 {
-    auto interactorsBegin = m_interactors.begin();
-    auto interactorsEnd   = m_interactors.end();
+    const auto interactorsBegin = m_interactors.begin();
+    const auto interactorsEnd   = m_interactors.end();
 
     for(auto it = interactorsBegin; it != interactorsEnd && !m_cancelFurtherInteraction; ++it)
     {
-        interactor::IInteractor::sptr interactor = it->second.lock();
+        const interactor::IInteractor::sptr interactor = it->second.lock();
         if(interactor)
         {
             _f(interactor);
@@ -665,7 +665,7 @@ void Layer::addInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interac
                         };
 
     // Add the interactor if it doesn't already exit.
-    if(std::find_if(m_interactors.begin(), m_interactors.end(), isPair) == m_interactors.end())
+    if(std::none_of(m_interactors.begin(), m_interactors.end(), isPair))
     {
         m_interactors.insert(pair);
     }
