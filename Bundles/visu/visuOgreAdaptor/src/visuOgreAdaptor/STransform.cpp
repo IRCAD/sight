@@ -112,15 +112,24 @@ void STransform::updating()
         }
     }
 
-    // Decompose the matrix
-    ::Ogre::Vector3 position;
-    ::Ogre::Vector3 scale;
-    ::Ogre::Quaternion orientation;
-    m_ogreTransform.decomposition(position, scale, orientation);
+    if(m_ogreTransform == ::Ogre::Affine3::ZERO)
+    {
+        m_transformNode->setVisible(false);
+    }
+    else
+    {
+        m_transformNode->setVisible(true);
 
-    m_transformNode->setOrientation(orientation);
-    m_transformNode->setPosition(position);
-    m_transformNode->setScale(scale);
+        // Decompose the matrix
+        ::Ogre::Vector3 position;
+        ::Ogre::Vector3 scale;
+        ::Ogre::Quaternion orientation;
+        m_ogreTransform.decomposition(position, scale, orientation);
+
+        m_transformNode->setOrientation(orientation);
+        m_transformNode->setPosition(position);
+        m_transformNode->setScale(scale);
+    }
 
     this->requestRender();
 }
