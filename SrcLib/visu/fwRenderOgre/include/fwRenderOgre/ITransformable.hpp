@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,10 +23,9 @@
 #pragma once
 
 #include "fwRenderOgre/config.hpp"
-#include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/SRender.hpp"
 
-#include <OgreMatrix4.h>
+#include <OgreSceneNode.h>
 
 namespace fwRenderOgre
 {
@@ -55,7 +54,7 @@ public:
      * @param _parentNode The parent node of the created node.
      * @return The node matching m_transformId.
      */
-    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* _parentNode);
+    FWRENDEROGRE_API ::Ogre::SceneNode* getTransformNode(::Ogre::SceneNode* const _parentNode);
 
     /**
      * @brief Retrieve the node matching the given node name.
@@ -64,11 +63,9 @@ public:
      * @return The node matching m_transformId.
      */
     FWRENDEROGRE_API static ::Ogre::SceneNode* getTransformNode(const std::string& _name,
-                                                                ::Ogre::SceneNode* _parentNode);
+                                                                ::Ogre::SceneNode* const _parentNode);
 
-    /**
-     * @brief s_TRANSFORM_CONFIG The key used in xml configuration.
-     */
+    /// The key used in xml configuration.
     FWRENDEROGRE_API static const std::string s_TRANSFORM_CONFIG;
 
 private:
