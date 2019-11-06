@@ -722,56 +722,106 @@ void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* po
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
+void Mesh::setPointColor(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::ColorValueType, 4>& c)
 {
-    m_pointColors->at<ColorValueType>(4*id)   = c[0];
-    m_pointColors->at<ColorValueType>(4*id+1) = c[1];
-    m_pointColors->at<ColorValueType>(4*id+2) = c[2];
-    m_pointColors->at<ColorValueType>(4*id+3) = c[3];
+    this->setPointColor(id, c[0], c[1], c[2], c[3]);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4])
+void Mesh::setPointColor(::fwData::Mesh::Id id, ::fwData::Mesh::ColorValueType r, ::fwData::Mesh::ColorValueType g,
+                         ::fwData::Mesh::ColorValueType b,
+                         ::fwData::Mesh::ColorValueType a)
 {
-    m_cellColors->at<ColorValueType>(4*id)   = c[0];
-    m_cellColors->at<ColorValueType>(4*id+1) = c[1];
-    m_cellColors->at<ColorValueType>(4*id+2) = c[2];
-    m_cellColors->at<ColorValueType>(4*id+3) = c[3];
+    m_pointColors->at<ColorValueType>(4*id)   = r;
+    m_pointColors->at<ColorValueType>(4*id+1) = g;
+    m_pointColors->at<ColorValueType>(4*id+2) = b;
+    m_pointColors->at<ColorValueType>(4*id+3) = a;
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
+void Mesh::setCellColor(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::ColorValueType, 4>& c)
 {
-    m_pointNormals->at<NormalValueType>(3*id)   = n[0];
-    m_pointNormals->at<NormalValueType>(3*id+1) = n[1];
-    m_pointNormals->at<NormalValueType>(3*id+2) = n[2];
+    this->setCellColor(id, c[0], c[1], c[2], c[3]);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
+void Mesh::setCellColor(::fwData::Mesh::Id id, ::fwData::Mesh::ColorValueType r, ::fwData::Mesh::ColorValueType g,
+                        ::fwData::Mesh::ColorValueType b,
+                        ::fwData::Mesh::ColorValueType a)
 {
-    m_cellNormals->at<NormalValueType>(3*id)   = n[0];
-    m_cellNormals->at<NormalValueType>(3*id+1) = n[1];
-    m_cellNormals->at<NormalValueType>(3*id+2) = n[2];
+    m_cellColors->at<ColorValueType>(4*id)   = r;
+    m_cellColors->at<ColorValueType>(4*id+1) = g;
+    m_cellColors->at<ColorValueType>(4*id+2) = b;
+    m_cellColors->at<ColorValueType>(4*id+3) = a;
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+void Mesh::setPointNormal(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::NormalValueType, 3>& n)
 {
-    m_pointTexCoords->at<TexCoordValueType>(2*id)   = t[0];
-    m_pointTexCoords->at<TexCoordValueType>(2*id+1) = t[1];
+    this->setPointNormal(id, n[0], n[1], n[2]);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+void Mesh::setPointNormal(::fwData::Mesh::Id id, ::fwData::Mesh::NormalValueType nx, ::fwData::Mesh::NormalValueType ny,
+                          ::fwData::Mesh::NormalValueType nz)
 {
-    m_cellTexCoords->at<TexCoordValueType>(2*id)   = t[0];
-    m_cellTexCoords->at<TexCoordValueType>(2*id+1) = t[1];
+    m_pointNormals->at<NormalValueType>(3*id)   = nx;
+    m_pointNormals->at<NormalValueType>(3*id+1) = ny;
+    m_pointNormals->at<NormalValueType>(3*id+2) = nz;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellNormal(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::NormalValueType, 3>& n)
+{
+    this->setCellNormal(id, n[0], n[1], n[2]);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellNormal(::fwData::Mesh::Id id, ::fwData::Mesh::NormalValueType nx, ::fwData::Mesh::NormalValueType ny,
+                         ::fwData::Mesh::NormalValueType nz)
+{
+    m_cellNormals->at<NormalValueType>(3*id)   = nx;
+    m_cellNormals->at<NormalValueType>(3*id+1) = ny;
+    m_cellNormals->at<NormalValueType>(3*id+2) = nz;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointTexCoord(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::TexCoordValueType, 2>& t)
+{
+    this->setPointTexCoord(id, t[0], t[1]);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointTexCoord(::fwData::Mesh::Id id, ::fwData::Mesh::TexCoordValueType u,
+                            ::fwData::Mesh::TexCoordValueType v)
+{
+    m_pointTexCoords->at<TexCoordValueType>(2*id)   = u;
+    m_pointTexCoords->at<TexCoordValueType>(2*id+1) = v;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::TexCoordValueType, 2>& t)
+{
+    this->setCellTexCoord(id, t[0], t[1]);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellTexCoord(::fwData::Mesh::Id id, ::fwData::Mesh::TexCoordValueType u,
+                           ::fwData::Mesh::TexCoordValueType v)
+{
+    m_cellTexCoords->at<TexCoordValueType>(2*id)   = u;
+    m_cellTexCoords->at<TexCoordValueType>(2*id+1) = v;
 }
 
 //------------------------------------------------------------------------------

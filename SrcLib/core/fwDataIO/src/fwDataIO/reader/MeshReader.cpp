@@ -91,8 +91,6 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     size_t nbCells  = 1;
     size_t count    = 0;
 
-    ::fwData::Mesh::NormalValueType n[3];
-
     // Starting from boost 1.65, the function could not be deduced
     auto reserveFn =
         phx::bind(static_cast<size_t(::fwData::Mesh::*)(
@@ -145,13 +143,12 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                                                                  ::fwData::Mesh::CellValueType)>( &::fwData::Mesh::
                                                                                                   pushCell),
                                                 mesh, _1, _2, _3),
-                                      ref(n[0]) = _4,
-                                      ref(n[1]) = _5,
-                                      ref(n[2]) = _6,
                                       phx::bind(static_cast< void(::fwData::Mesh::*)(
                                                                  ::fwData::Mesh::Id,
-                                                                 const ::fwData::Mesh::NormalValueType*)>(
-                                                    &::fwData::Mesh::setCellNormal), mesh, ref(count), ref(n)),
+                                                                 ::fwData::Mesh::NormalValueType,
+                                                                 ::fwData::Mesh::NormalValueType,
+                                                                 ::fwData::Mesh::NormalValueType)>(
+                                                    &::fwData::Mesh::setCellNormal), mesh, ref(count), _4, _5, _6),
                                       ref(count)++
                                   ]
                               ]

@@ -94,7 +94,7 @@ namespace fwData
  *
  * The pushPoint() and pushCell() methods add new points or cells, they increment the number of points/cells and
  * allocate more memory if needed. It is recommended to call reserve() method before it if you know the number of
- * points and cells, it avoid to allocate more memory than needed.
+ * points and cells, it avoids allocating more memory than needed.
  *
  * The setPoint() and setCell() methods change the value of a point/cell at a given index.
  *
@@ -300,7 +300,7 @@ public:
 
     enum class Attributes : std::uint8_t
     {
-        NO_ARRAY             = 0,
+        NONE                 = 0,
         POINT_COLORS         = 1 << 1,
             POINT_NORMALS    = 1 << 2,
             CELL_COLORS      = 1 << 3,
@@ -353,7 +353,7 @@ public:
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
     FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, CellType cellType = CellType::TRIANGLE,
-                              Attributes arrayMask = Attributes::NO_ARRAY);
+                              Attributes arrayMask = Attributes::NONE);
 
     /**
      * @brief Allocate Mesh memory
@@ -373,7 +373,7 @@ public:
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
     FWDATA_API size_t reserve(size_t nbPts, size_t nbCells, size_t nbCellsData,
-                              Attributes arrayMask = Attributes::NO_ARRAY);
+                              Attributes arrayMask = Attributes::NONE);
 
     /**
      * @brief Allocate Mesh memory and initialize the number of points and cells
@@ -382,7 +382,7 @@ public:
      * parameters.
      * @param nbPts number of points to allocate
      * @param nbCells number of cells to allocate
-     * @param cellType type of cell to allocate, it define the number of points by cell to allocate. If you want to
+     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
      *        use different types of cells in the same mesh, use
      *        resize(size_t nbPts, size_t nbCells, size_t nbCellsData, Attribute arrayMask)
      * @param arrayMask Mesh attribute: additional Arrays to allocate
@@ -393,7 +393,7 @@ public:
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
     FWDATA_API size_t resize(size_t nbPts, size_t nbCells, CellType cellType = CellType::TRIANGLE,
-                             Attributes arrayMask = Attributes::NO_ARRAY);
+                             Attributes arrayMask = Attributes::NONE);
 
     /**
      * @brief Allocate Mesh memory and initialize the number of points and cells
@@ -412,7 +412,7 @@ public:
      * @throw Raise ::fwData::Exception if the memory can not be allocated.
      */
     FWDATA_API size_t resize(size_t nbPts, size_t nbCells, size_t nbCellsData,
-                             Attributes arrayMask = Attributes::NO_ARRAY);
+                             Attributes arrayMask = Attributes::NONE);
 
     /**
      * @brief Adjust mesh memory usage
@@ -561,7 +561,7 @@ public:
      * @{
      * @brief Insert a cell into the mesh.
      *
-     * Reallocates the mesh concerned arrays if needed.
+     * Reallocates the mesh's concerned arrays if needed.
      *
      * @return The id of the new cell
      *
@@ -580,7 +580,7 @@ public:
     /// @}
 
     /**
-     * @brief Set a point coordinates.
+     * @brief Set a point's coordinates.
      *
      * The mesh must be allocated before calling this method.
      *
@@ -608,7 +608,7 @@ public:
      * @brief Set a cell into the mesh.
      *
      * @warning Use this method carefully, the cell should be properly allocated. If the current cell does not contain
-     * as much point as the previous one the the following cells will be corrupted.
+     * as many points as the previous one the following cells will be corrupted.
      *
      * @throw ::fwData::Exception if the mesh is not correctly allocated (ie. the id is out of bounds)
      */
@@ -623,64 +623,88 @@ public:
     /// @}
 
     /**
-     * @brief Set a point color.
+     * @{
+     * @brief Set a point's color.
      *
      * @warning The point colors must be allocated with 4 components (RBGA)
      *
      * @param id point index
      * @param c color
      */
-    FWDATA_API void setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
-
+    FWDATA_API void setPointColor(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::ColorValueType, 4>& c);
+    FWDATA_API void setPointColor(::fwData::Mesh::Id id, ::fwData::Mesh::ColorValueType r,
+                                  ::fwData::Mesh::ColorValueType g, ::fwData::Mesh::ColorValueType b,
+                                  ::fwData::Mesh::ColorValueType a);
+    /// @}
+    ///
     /**
-     * @brief Set a cell color.
+     * @{
+     * @brief Set a cell's color.
      *
      * @warning The cell colors must be allocated with 4 components (RBGA)
      *
      * @param id cell index
      * @param c color
      */
-    FWDATA_API void setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
+    FWDATA_API void setCellColor(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::ColorValueType, 4>& c);
+    FWDATA_API void setCellColor(::fwData::Mesh::Id id, ::fwData::Mesh::ColorValueType r,
+                                 ::fwData::Mesh::ColorValueType g, ::fwData::Mesh::ColorValueType b,
+                                 ::fwData::Mesh::ColorValueType a);
+    /// @}
 
     /**
-     * @brief Set a point normal.
+     * @{
+     * @brief Set a point's normal.
      *
      * The normal array must be allocated before calling this method.
      *
      * @param id point index
      * @param n normal
      */
-    FWDATA_API void setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
-
+    FWDATA_API void setPointNormal(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::NormalValueType, 3>& n);
+    FWDATA_API void setPointNormal(::fwData::Mesh::Id id, ::fwData::Mesh::NormalValueType nx,
+                                   ::fwData::Mesh::NormalValueType ny, ::fwData::Mesh::NormalValueType nz);
+    ///@}
     /**
-     * @brief Set a cell normal.
+     * @{
+     * @brief Set a cell's normal.
      *
      * The normal array must be allocated before calling this method.
      *
      * @param id cell index
      * @param n normal
      */
-    FWDATA_API void setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
-
+    FWDATA_API void setCellNormal(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::NormalValueType, 3>& n);
+    FWDATA_API void setCellNormal(::fwData::Mesh::Id id, ::fwData::Mesh::NormalValueType nx,
+                                  ::fwData::Mesh::NormalValueType ny, ::fwData::Mesh::NormalValueType nz);
+    /// @}
     /**
-     * @brief Set a point texCoord.
+     * @{
+     * @brief Set a point's texCoord.
      *
      * The texCoord array must be allocated before calling this method.
      *
      * @param id point index
      * @param t texCoord
+     * /// @}
      */
-    FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+    FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::TexCoordValueType, 2>& t);
+    FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, ::fwData::Mesh::TexCoordValueType u,
+                                     ::fwData::Mesh::TexCoordValueType v);
 
     /**
-     * @brief Set a cell texCoord.
+     * @{
+     * @brief Set a cell's texCoord.
      *
      * The texCoord array must be allocated before calling this method.
      *
      * @param id cell index
      * @param t texCoord
      */
-    FWDATA_API void setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+    FWDATA_API void setCellTexCoord(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::TexCoordValueType, 2>& t);
+    FWDATA_API void setCellTexCoord(::fwData::Mesh::Id id, ::fwData::Mesh::TexCoordValueType u,
+                                    ::fwData::Mesh::TexCoordValueType v);
+    /// @}
 
     /**
      * @brief Returns the begin/end iterators to the mesh buffers
@@ -705,7 +729,7 @@ public:
      *
      * The buffer cannot be accessed if the mesh is not locked
      *
-     * @warning You must allocate all the mesh arrays before to call lock()
+     * @warning You must allocate all the mesh's arrays before to call lock()
      */
     [[nodiscard]] FWDATA_API LocksType lock() const;
 

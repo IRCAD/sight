@@ -856,15 +856,18 @@ void MeshTest::insertion()
 
         for (size_t i = 0; i < NB_POINTS; ++i)
         {
-            const std::uint8_t val                               = static_cast<uint8_t>(i);
-            const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
-            const float floatVal                                 = static_cast<float>(i);
-            const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-            const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
-            const size_t value                                   = 3*i;
-            const auto id                                        = mesh->pushPoint(static_cast<float>(value),
-                                                                                   static_cast<float>(value+1),
-                                                                                   static_cast<float>(value+2));
+            const std::uint8_t val                                            = static_cast<uint8_t>(i);
+            const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+            const float floatVal                                              = static_cast<float>(i);
+            const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+            const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
+            const size_t value                                                = 3*i;
+            const auto id                                                     = mesh->pushPoint(
+                static_cast<float>(value),
+                static_cast<float>(value
+                                   +1),
+                static_cast<float>(value
+                                   +2));
             mesh->setPointColor(id, color);
             mesh->setPointNormal(id, normal);
             mesh->setPointTexCoord(id, texCoords);
@@ -874,11 +877,12 @@ void MeshTest::insertion()
         {
             const auto id = mesh->pushCell(i, i+1, i+2);
 
-            const ::fwData::Mesh::ColorValueType val             = static_cast< ::fwData::Mesh::ColorValueType >(i);
-            const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
-            const float floatVal                                 = static_cast<float>(i);
-            const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-            const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+            const ::fwData::Mesh::ColorValueType val =
+                static_cast< ::fwData::Mesh::ColorValueType >(i);
+            const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+            const float floatVal                                              = static_cast<float>(i);
+            const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+            const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
             mesh->setCellColor(id, color);
             mesh->setCellNormal(id, normal);
             mesh->setCellTexCoord(id, texCoords);
@@ -914,12 +918,12 @@ void MeshTest::iteratorTest()
 
     for (size_t i = 0; i < NB_POINTS; ++i)
     {
-        const std::uint8_t val                               = static_cast<uint8_t>(i);
-        const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
-        const float floatVal                                 = static_cast<float>(i);
-        const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-        const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
-        const size_t value                                   = 3*i;
+        const std::uint8_t val                                            = static_cast<uint8_t>(i);
+        const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+        const float floatVal                                              = static_cast<float>(i);
+        const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+        const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
+        const size_t value                                                = 3*i;
         mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
         mesh->setPointColor(i, color);
         mesh->setPointNormal(i, normal);
@@ -930,11 +934,12 @@ void MeshTest::iteratorTest()
     {
         mesh->setCell(i, i, i+1, i+2);
 
-        const ::fwData::Mesh::ColorValueType val             = static_cast< ::fwData::Mesh::ColorValueType >(i);
-        const ::fwData::Mesh::ColorValueType color[4]        = {val, val, val, val};
-        const float floatVal                                 = static_cast<float>(i);
-        const ::fwData::Mesh::NormalValueType normal[3]      = {floatVal, floatVal, floatVal};
-        const ::fwData::Mesh::TexCoordValueType texCoords[2] = {floatVal, floatVal};
+        const ::fwData::Mesh::ColorValueType val =
+            static_cast< ::fwData::Mesh::ColorValueType >(i);
+        const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+        const float floatVal                                              = static_cast<float>(i);
+        const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+        const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
         mesh->setCellColor(i, color);
         mesh->setCellNormal(i, normal);
         mesh->setCellTexCoord(i, texCoords);
