@@ -151,10 +151,10 @@ void SAxis::starting()
 
     // Sizes
     const float originRadius   = m_length * 0.1f;
-    const float cylinderLength = m_length * 0.8f;
+    const float cylinderLength = m_length * 0.85f;
     const float cylinderRadius = m_length * 0.025f;
     const float coneLength     = m_length - cylinderLength;
-    const float coneRadius     = cylinderRadius*3;
+    const float coneRadius     = cylinderRadius*2.f;
     const unsigned sample      = 64;
 
     // Draw
@@ -305,7 +305,7 @@ void SAxis::stopping()
 
     if(m_enableLabel)
     {
-        for(auto& label : m_axisLabels)
+        for(::fwRenderOgre::Text* label : m_axisLabels)
         {
             SLM_ASSERT("label should not be null", label);
             label->detachFromParent();
@@ -346,7 +346,7 @@ void SAxis::updateVisibility(bool _isVisible)
         m_sceneNode->setVisible(m_isVisible);
         if(m_enableLabel)
         {
-            for(auto& label : m_axisLabels)
+            for(::fwRenderOgre::Text* const label : m_axisLabels)
             {
                 SLM_ASSERT("label should not be null", label);
                 label->setVisible(_isVisible);
