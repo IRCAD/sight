@@ -132,7 +132,11 @@ void SVideoWriter::writeBuffer(int width, int height, CSPTR(::arData::FrameTL::B
     SLM_ASSERT("OpenCV video writer not initialized", m_writer);
     const std::uint8_t* imageBuffer = &buffer->getElement(0);
 
-    ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*)imageBuffer, ::cv::Mat::AUTO_STEP);
+    const ::cv::Mat image(
+        ::cv::Size(width, height),
+        m_imageType, const_cast<std::uint8_t*>(imageBuffer),
+        ::cv::Mat::AUTO_STEP
+        );
     if (m_imageType == CV_16UC1)
     {
         // Convert the image to a RGB image
