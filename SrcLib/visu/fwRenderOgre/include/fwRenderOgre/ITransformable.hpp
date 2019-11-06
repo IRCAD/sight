@@ -65,7 +65,7 @@ public:
     FWRENDEROGRE_API static ::Ogre::SceneNode* getTransformNode(const std::string& _name,
                                                                 ::Ogre::SceneNode* const _parentNode);
 
-    /// The key used in xml configuration.
+    /// The xml attribute to retrieve the transform's id.
     FWRENDEROGRE_API static const std::string s_TRANSFORM_CONFIG;
 
 private:

@@ -45,9 +45,8 @@ namespace visuOgreAdaptor
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b transform [::fwData::TransformationMatrix3D](mandatory): Sight transform matrix. The matrix will be updated as
- * well if the
- * scene node is modified from Ogre.
+ * - \b transform [::fwData::TransformationMatrix3D]: Sight transform matrix.
+ * The matrix will be updated as well if the scene node is modified from Ogre.
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the transform's layer.
  * - \b transform (mandatory): name of the Ogre Transform.
@@ -72,6 +71,8 @@ private:
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to ::visuOgreAdaptor::STransform::s_UPDATE_SLOT
      */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
 
