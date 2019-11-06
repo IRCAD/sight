@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,11 +65,11 @@ public:
     };
 
     /// Render queue group for surface rendering.
-    static const std::uint8_t s_SURFACE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
+    static constexpr std::uint8_t s_SURFACE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
 
     /// Render queue group for volume rendering. Leave an extra render queue between
     /// surfaces and volumes for some effects.
-    static const std::uint8_t s_VOLUME_RQ_GROUP_ID = s_SURFACE_RQ_GROUP_ID + 2;
+    static constexpr std::uint8_t s_VOLUME_RQ_GROUP_ID = s_SURFACE_RQ_GROUP_ID + 2;
 
     typedef std::shared_ptr < Core > sptr;
 
