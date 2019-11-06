@@ -729,7 +729,7 @@ public:
      *
      * The buffer cannot be accessed if the mesh is not locked
      *
-     * @warning You must allocate all the mesh's arrays before to call lock()
+     * @warning You must allocate all the mesh's arrays before calling lock()
      */
     [[nodiscard]] FWDATA_API LocksType lock() const;
 
