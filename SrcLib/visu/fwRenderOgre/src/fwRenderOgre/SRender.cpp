@@ -65,12 +65,15 @@ static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
+const ::fwCom::Signals::SignalKeyType SRender::s_FULLSCREEN_SET_SIG     = "fullscreenSet";
 
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
 const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
+const ::fwCom::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN           = "disableFullscreen";
+const ::fwCom::Slots::SlotKeyType SRender::s_ENABLE_FULLSCREEN            = "enableFullscreen";
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
@@ -83,10 +86,13 @@ SRender::SRender() noexcept
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
+    m_fullscreenSetSig = newSignal<FullscreenSetSignalType>(s_FULLSCREEN_SET_SIG);
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
+    newSlot(s_DISABLE_FULLSCREEN, &SRender::disableFullscreen, this);
+    newSlot(s_ENABLE_FULLSCREEN, &SRender::enableFullscreen, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -423,36 +429,33 @@ SRender::configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg)
 
 void SRender::requestRender()
 {
-    if( this->isShownOnScreen() )
+    if ( m_renderMode == RenderMode::SYNC )
     {
-        if ( m_renderMode == RenderMode::SYNC )
+        m_interactorManager->renderNow();
+    }
+    else
+    {
+        m_interactorManager->requestRender();
+    }
+
+    if(m_offScreen)
+    {
+        FW_PROFILE("Offscreen rendering");
+
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
+        SLM_ASSERT("Offscreen image not found.", image);
+
         {
-            m_interactorManager->renderNow();
+            ::fwData::mt::ObjectWriteLock lock(image);
+
+            this->makeCurrent();
+            ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
+            SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image, m_flip);
         }
-        else
-        {
-            m_interactorManager->requestRender();
-        }
 
-        if(m_offScreen)
-        {
-            FW_PROFILE("Offscreen rendering");
-
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
-            SLM_ASSERT("Offscreen image not found.", image);
-
-            {
-                ::fwData::mt::ObjectWriteLock lock(image);
-
-                this->makeCurrent();
-                ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
-                SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
-                ::fwRenderOgre::Utils::convertFromOgreTexture(renderTexture, image, m_flip);
-            }
-
-            auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
-        }
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 
@@ -492,11 +495,7 @@ void SRender::render()
 
 bool SRender::isShownOnScreen()
 {
-    if( m_offScreen )
-    {
-        return true;
-    }
-    return this->getContainer()->isShownOnScreen();
+    return m_offScreen || m_fullscreen || this->getContainer()->isShownOnScreen();
 }
 
 // ----------------------------------------------------------------------------
@@ -531,6 +530,26 @@ bool SRender::isShownOnScreen()
 ::fwRenderOgre::IRenderWindowInteractorManager::sptr SRender::getInteractorManager() const
 {
     return m_interactorManager;
+}
+
+// ----------------------------------------------------------------------------
+
+void SRender::disableFullscreen()
+{
+    m_fullscreen = false;
+    m_interactorManager->setFullscreen(m_fullscreen, -1);
+
+    m_fullscreenSetSig->asyncEmit(false);
+}
+
+// ----------------------------------------------------------------------------
+
+void SRender::enableFullscreen(int screen)
+{
+    m_fullscreen = true;
+    m_interactorManager->setFullscreen(m_fullscreen, screen);
+
+    m_fullscreenSetSig->asyncEmit(true);
 }
 
 // ----------------------------------------------------------------------------

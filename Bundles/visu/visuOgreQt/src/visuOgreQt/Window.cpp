@@ -45,18 +45,8 @@ int Window::m_counter = 0;
 
 Window::Window(QWindow* parent) :
     QWindow(parent),
-    m_id(Window::m_counter++),
-    m_ogreRoot(nullptr),
-    m_ogreRenderWindow(nullptr),
-    m_update_pending(false),
-    m_animating(false),
-    m_fullscreen(false),
-    m_lastPosLeftClick(nullptr),
-    m_lastPosMiddleClick(nullptr),
-    m_frameId(0)
+    m_id(Window::m_counter++)
 {
-    setAnimating(false);
-
     connect(this,  &Window::screenChanged, this, &Window::onScreenChanged);
 }
 
@@ -76,7 +66,7 @@ void Window::render(QPainter* painter)
 
 // ----------------------------------------------------------------------------
 
-void Window::initialise()
+void Window::initialize()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -600,12 +590,6 @@ void Window::onScreenChanged(QScreen*)
 {
     if(m_ogreRenderWindow != nullptr)
     {
-        // This allows correct rendering on dual screen displays when dragging the window to another screen.
-        QWindow* parent = this->parent();
-        if(parent != nullptr)
-        {
-            parent->requestUpdate();
-        }
         this->ogreResize(this->size());
     }
 }
