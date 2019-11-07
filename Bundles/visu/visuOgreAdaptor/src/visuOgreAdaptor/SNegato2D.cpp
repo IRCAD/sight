@@ -260,6 +260,8 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
+    this->getRenderService()->makeCurrent();
+
     const auto& imgSize    = image->getSize2();
     const auto& imgSpacing = image->getSpacing2();
 
@@ -305,6 +307,8 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
+
+    this->getRenderService()->makeCurrent();
 
     const auto& imgSize = image->getSize2();
 
@@ -378,6 +382,8 @@ void SNegato2D::updateCamera()
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imglock(image);
+
+    this->getRenderService()->makeCurrent();
 
     ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("No default camera found", cam);
