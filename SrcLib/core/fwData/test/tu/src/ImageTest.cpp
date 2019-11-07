@@ -697,7 +697,7 @@ void ImageTest::imageDeepCopy()
 
         const ::fwData::Image::sptr imgCopy = ::fwData::Image::New();
 
-        // Lock the imgCopy buffer too make sure the underlying array isn't deleted.
+        // Lock the imgCopy buffer to make sure the underlying array isn't deleted.
         // Attempting to delete a locked array raises an assert in `fwMemory::BufferManager::unregisterBufferImpl()`.
         const auto imgCopyLock = imgCopy->lock();
 
