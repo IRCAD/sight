@@ -28,6 +28,8 @@
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Image.hpp>
 
+#include <fwTest/generator/Image.hpp>
+
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <exception>
@@ -43,6 +45,39 @@ namespace fwData
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
+
+static bool imagesEqual(const ::fwData::Image::sptr& _leftImg, const ::fwData::Image::sptr& _rightImg)
+{
+    bool result            = false;
+    const bool equalFormat = _leftImg->getPixelFormat() == _rightImg->getPixelFormat() &&
+                             _leftImg->getNumberOfComponents() == _rightImg->getNumberOfComponents();
+    const bool equalDims = _leftImg->getSize2() == _rightImg->getSize2() &&
+                           _leftImg->getSpacing2() == _rightImg->getSpacing2() &&
+                           _leftImg->getOrigin2() == _rightImg->getOrigin2();
+
+    if(equalFormat && equalDims)
+    {
+        // Compare images bytewise.
+        const auto leftLock  = _leftImg->lock();
+        const auto rightLock = _rightImg->lock();
+        auto leftIt          = _leftImg->begin();
+        auto rightIt         = _rightImg->begin();
+        const auto leftEnd   = _leftImg->end();
+        const auto rightEnd  = _rightImg->end();
+        bool bytesEqual      = true;
+
+        for(; leftIt != leftEnd && rightIt != rightEnd && bytesEqual; ++leftIt, ++rightIt)
+        {
+            bytesEqual = (leftIt->value == rightIt->value);
+        }
+
+        result = bytesEqual;
+    }
+
+    return result;
+}
 
 //------------------------------------------------------------------------------
 
@@ -639,6 +674,58 @@ void ImageTest::testBGRAIterator()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].a",
                                      static_cast<BGRAIteration::type>(4*count+3), iter2->a);
         ++count;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::imageDeepCopy()
+{
+    {
+        const ::fwData::Image::sptr img = ::fwData::Image::New();
+        const ::fwData::Image::Size size { 32, 32, 32 };
+        const ::fwData::Image::Origin origin { 0.2, 123.4, 999.666 };
+        const ::fwData::Image::Spacing spacing { 0.6, 0.6, 1.8};
+        const auto type   = ::fwTools::Type::s_UINT8;
+        const auto format = ::fwData::Image::PixelFormat::RGB;
+
+        {
+            const auto imgDumpLock = img->lock();
+            ::fwTest::generator::Image::generateImage(img, size, spacing, origin, type, format);
+            ::fwTest::generator::Image::randomizeImage(img);
+        }
+
+        const ::fwData::Image::sptr imgCopy = ::fwData::Image::New();
+
+        // Lock the imgCopy buffer too make sure the underlying array isn't deleted.
+        // Attempting to delete a locked array raises an assert in `fwMemory::BufferManager::unregisterBufferImpl()`.
+        const auto imgCopyLock = imgCopy->lock();
+
+        imgCopy->deepCopy(img);
+
+        CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
+    }
+
+    {
+        const ::fwData::Image::sptr img = ::fwData::Image::New();
+        const ::fwData::Image::Size size { 156, 126, 0 };
+        const ::fwData::Image::Origin origin { 1., 1., 0. };
+        const ::fwData::Image::Spacing spacing {10., 10., 0. };
+        const auto type   = ::fwTools::Type::s_FLOAT;
+        const auto format = ::fwData::Image::PixelFormat::GRAY_SCALE;
+
+        {
+            const auto imgDumpLock = img->lock();
+            ::fwTest::generator::Image::generateImage(img, size, spacing, origin, type, format);
+            ::fwTest::generator::Image::randomizeImage(img);
+        }
+
+        const ::fwData::Image::sptr imgCopy = ::fwData::Image::New();
+        const auto imgCopyLock              = imgCopy->lock();
+
+        imgCopy->deepCopy(img);
+
+        CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
     }
 }
 
