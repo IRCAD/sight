@@ -46,11 +46,10 @@ namespace visuOgreAdaptor
    @endcode
  * @subsection In-Out In-Out:
  * - \b transform [::fwData::TransformationMatrix3D]: Sight transform matrix.
- * The matrix will be updated as well if the scene node is modified from Ogre.
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the transform's layer.
- * - \b transform (mandatory): name of the Ogre Transform.
- * - \b parent (optional) : name of the parent Ogre Transform you want to attach to.
+ * - \b layer (mandatory): Defines the transform's layer.
+ * - \b transform (mandatory): Name of the Ogre Transform.
+ * - \b parent (optional) : Name of the parent Ogre Transform you want to attach to.
  */
 class VISUOGREADAPTOR_CLASS_API STransform : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable
@@ -64,7 +63,7 @@ public:
     VISUOGREADAPTOR_API STransform() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~STransform() noexcept;
+    VISUOGREADAPTOR_API virtual ~STransform() noexcept final;
 
 private:
 

@@ -102,14 +102,7 @@ void STransform::updating()
 
     {
         const ::fwData::mt::ObjectReadLock lock(fwTransform);
-
-        for(uint8_t lt = 0; lt < 4; ++lt)
-        {
-            for(uint8_t ct = 0; ct < 4; ++ct)
-            {
-                m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(fwTransform->getCoefficient(ct, lt));
-            }
-        }
+        m_ogreTransform = ::Ogre::Affine3(::fwRenderOgre::Utils::convertTM3DToOgreMx(fwTransform));
     }
 
     if(m_ogreTransform == ::Ogre::Affine3::ZERO)
