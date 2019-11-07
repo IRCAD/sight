@@ -23,12 +23,12 @@
 #pragma once
 
 #include "openvslamIO/config.hpp"
+#include "openvslamIO/OpenvslamConfig.hpp"
 
 #include <arData/Camera.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
-#include <openvslam/feature/orb_params.h>
 
 namespace openvslamIO
 {
@@ -39,36 +39,48 @@ class OPENVSLAMIO_CLASS_API Helper
 {
 public:
     /**
-     * @brief fromSight
-     * @param _sightCam
-     * @return
+     * @brief converts sight camera data to ::openvslam::camera::perspective.
+     * @param _sightCam pointer to a sight camera.
+     * @return ::openvslam::camera::perspective* pointer to a openvslam perspective camera.
      */
     static ::openvslam::camera::perspective* fromSight(const ::arData::Camera::csptr _sightCam);
 
     /**
-     * @brief toSight
-     * @param _oVSlamCam
-     * @return
+     * @brief converts openvslam  perpective camera to sight camera
+     * @param _oVSlamCam is a pointer to an openvlsam perspective camera.
+     * @return an ::arData::Camera::sptr.
      */
     static ::arData::Camera::sptr toSight(const ::openvslam::camera::perspective* _oVSlamCam);
 
     /**
-     * @brief createConfig
-     * @param _sightCam
-     * @param _orbParams
-     * @return
+     * @brief create an openvslam monocular config file from camera, orb parameters and initializer parameters (both
+     * optionnals).
+     * @param _sightCam sight camera
+     * @param _orbParams orb parameters (optionnal).
+     * @param _orbParams initialize parameters (optionnal).
+     * @return shared_ptr of ::openvslam::config, to initialize openvslam system.
      */
-    static std::shared_ptr< ::openvslam::config > createConfig(const ::arData::Camera::csptr _sightCam,
-                                                               const ::openvslam::feature::orb_params& _orbParams);
-    /**
-     * @brief createConfig
-     * @param _oVSlamCam
-     * @param _orbParams
-     * @return
-     */
-    static std::shared_ptr< ::openvslam::config > createConfig(::openvslam::camera::base* _oVSlamCam,
-                                                               const ::openvslam::feature::orb_params& _orbParams);
+    static std::shared_ptr< ::openvslam::config > createMonocularConfig(const ::arData::Camera::csptr _sightCam,
+                                                                        const ::openvslamIO::OrbParams& _orbParams
+                                                                            = ::openvslamIO::OrbParams(),
+                                                                        const ::openvslamIO::InitParams& _initParams
+                                                                            = ::openvslamIO::InitParams());
 
+    static void writeOpenvslamConfig(const std::shared_ptr< ::openvslam::config > config, const std::string& _filepath);
+
+    /**
+     * @brief write
+     * @param _node
+     * @param _filepath
+     */
+    static void writeOpenvslamConfig(const ::YAML::Node& _node, const std::string& _filepath);
+
+    /**
+     * @brief readOpenvslamConfig
+     * @param _filepath
+     * @return
+     */
+    static std::shared_ptr< ::openvslam::config > readOpenvslamConfig(const std::string& _filepath);
 };
 
 } // namespace openvslamIO

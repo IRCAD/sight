@@ -26,7 +26,12 @@
 
 #include <arData/Camera.hpp>
 
+#include <fwTools/System.hpp>
+
 #include <openvslam/camera/perspective.h>
+#include <openvslam/system.h>
+
+#include <spdlog/spdlog.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::openvslamIO::ut::HelperTest );
 
@@ -136,9 +141,14 @@ void HelperTest::createConfig()
     cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
     cam->setMaximumFrameRate(60.0);
 
-    ::openvslam::feature::orb_params orbParam(8000, 1.2f, 8, 2, 1);
+    ::openvslamIO::OrbParams orbParam;
+    orbParam.maxNumKeyPts = 8000;
+    orbParam.scaleFactor  = 1.2f;
+    orbParam.iniFastThr   = 2;
+    orbParam.minFastThr   = 1;
+    orbParam.numLevels    = 8;
 
-    const auto config = ::openvslamIO::Helper::createConfig(cam, orbParam);
+    const auto config = ::openvslamIO::Helper::createMonocularConfig(cam, orbParam);
 
     // We know that the camera is perspective.
     ::openvslam::camera::perspective* camera = dynamic_cast< ::openvslam::camera::perspective* >(config->camera_);
@@ -161,11 +171,96 @@ void HelperTest::createConfig()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[3], camera->p2_, 10e-8);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[4], camera->k3_, 10e-8);
 
-    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.max_num_keypts_, orbParam.max_num_keypts_);
-    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.num_levels_, orbParam.num_levels_);
-    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.ini_fast_thr_, orbParam.ini_fast_thr_);
-    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.min_fast_thr, orbParam.min_fast_thr);
-    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.scale_factor_, orbParam.scale_factor_);
+    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.max_num_keypts_, orbParam.maxNumKeyPts);
+    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.num_levels_, orbParam.numLevels);
+    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.ini_fast_thr_, orbParam.iniFastThr);
+    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.min_fast_thr, orbParam.minFastThr);
+    CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.scale_factor_, orbParam.scaleFactor);
+
+}
+
+//-----------------------------------------------------------------------------
+
+void HelperTest::writeReadConfig()
+{
+
+    //Create a dummy ::arData::Camera;
+    ::arData::Camera::sptr cam = ::arData::Camera::New();
+
+    cam->setCameraID("Dummy Test Camera");
+    cam->setWidth(1920);
+    cam->setWidth(1080);
+    cam->setFx(400);
+    cam->setFy(401);
+    cam->setCx(200);
+    cam->setCy(201);
+    cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
+    cam->setMaximumFrameRate(60.0);
+
+    ::openvslamIO::OrbParams orbParam;
+    orbParam.maxNumKeyPts = 8000;
+    orbParam.scaleFactor  = 1.2f;
+    orbParam.iniFastThr   = 2;
+    orbParam.minFastThr   = 1;
+    orbParam.numLevels    = 8;
+
+    ::openvslamIO::InitParams initParams;
+    initParams.reprojErrThr          = 10.f;
+    initParams.scalingFactor         = 2.f;
+    initParams.parallaxDegThr        = 3.f;
+    initParams.numBAIterations       = 101;
+    initParams.numRansacIterations   = 9;
+    initParams.minNumTriangulatedPts = 45;
+
+    const auto config = ::openvslamIO::Helper::createMonocularConfig(cam, orbParam, initParams);
+
+    const ::boost::filesystem::path tmp = ::fwTools::System::getTemporaryFolder();
+
+    CPPUNIT_ASSERT_NO_THROW(::openvslamIO::Helper::writeOpenvslamConfig(config->yaml_node_,
+                                                                        tmp.string() + "/test.yaml"));
+
+    const auto config2 = ::openvslamIO::Helper::readOpenvslamConfig(tmp.string() + "/test.yaml");
+    CPPUNIT_ASSERT(config2 != nullptr);
+
+    const auto orb = config2->orb_params_;
+    ::openvslam::camera::perspective* camera = dynamic_cast< ::openvslam::camera::perspective* >(config2->camera_);
+
+    CPPUNIT_ASSERT_EQUAL(orbParam.maxNumKeyPts, orb.max_num_keypts_);
+    CPPUNIT_ASSERT_EQUAL(orbParam.numLevels, orb.num_levels_ );
+    CPPUNIT_ASSERT_EQUAL(orbParam.iniFastThr, orb.ini_fast_thr_ );
+    CPPUNIT_ASSERT_EQUAL(orbParam.minFastThr, orb.min_fast_thr );
+    CPPUNIT_ASSERT_EQUAL(orbParam.scaleFactor, orb.scale_factor_ );
+
+    CPPUNIT_ASSERT_EQUAL(camera->name_, cam->getCameraID());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(camera->cols_), cam->getWidth());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(camera->rows_), cam->getHeight());
+    CPPUNIT_ASSERT_EQUAL(camera->fx_, cam->getFx());
+    CPPUNIT_ASSERT_EQUAL(camera->fy_, cam->getFy());
+    CPPUNIT_ASSERT_EQUAL(camera->cx_, cam->getCx());
+    CPPUNIT_ASSERT_EQUAL(camera->cy_, cam->getCy());
+
+    const auto dist = cam->getDistortionCoefficient();
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->k1_, dist[0], 10e-8);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->k2_, dist[1], 10e-8);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->p1_, dist[2], 10e-8);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->p2_, dist[3], 10e-8);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->k3_, dist[4], 10e-8);
+
+    // Since config doesn't export initializer parameters we need to parse the node to check if parameters are correct.
+
+    const auto node = config2->yaml_node_;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(initParams.reprojErrThr),
+                                 node["Initializer.reprojection_error_threshold"].as<double>(), 10e-7);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(initParams.scalingFactor),
+                                 node["Initializer.scaling_factor"].as<double>(),  10e-7);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(initParams.parallaxDegThr),
+                                 node["Initializer.parallax_deg_threshold"].as<double>(), 10e-7);
+    CPPUNIT_ASSERT_EQUAL(initParams.numBAIterations, node["Initializer.num_ba_iterations"].as<unsigned int>());
+    CPPUNIT_ASSERT_EQUAL(initParams.numRansacIterations, node["Initializer.num_ransac_iterations"].as<unsigned int>());
+    CPPUNIT_ASSERT_EQUAL(initParams.minNumTriangulatedPts,
+                         node["Initializer.num_min_triangulated_pts"].as<unsigned int>());
 
 }
 

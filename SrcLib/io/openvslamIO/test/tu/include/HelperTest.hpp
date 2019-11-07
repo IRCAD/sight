@@ -41,6 +41,7 @@ public:
     CPPUNIT_TEST(toSight);
     CPPUNIT_TEST(fromSight);
     CPPUNIT_TEST(createConfig);
+    CPPUNIT_TEST(writeReadConfig);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,8 +50,8 @@ public:
 
     void toSight();
     void fromSight();
-
     void createConfig();
+    void writeReadConfig();
 
 };
 

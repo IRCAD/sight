@@ -82,26 +82,88 @@ arData::Camera::sptr Helper::toSight(const openvslam::camera::perspective* _oVSl
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr< ::openvslam::config > Helper::createConfig(const arData::Camera::csptr _sightCam,
-                                                            const openvslam::feature::orb_params& _orbParams)
+std::shared_ptr<openvslam::config> Helper::createMonocularConfig(const arData::Camera::csptr _sightCam,
+                                                                 const OrbParams& _orbParams,
+                                                                 const InitParams& _initParams)
 {
-    // First convert into openvslam camera
-    const auto slamCam = fromSight(_sightCam);
-    // Call the createConfig function.
-    const auto conf = createConfig(slamCam, _orbParams);
+    //Create a YAML node for other parameters.
+    ::YAML::Node node;
+    node["Camera.name"] = _sightCam->getCameraID();
+    // Only Monocular
+    node["Camera.setup"] = "monocular";
+    // In sight only handles perspective modeles.
+    node["Camera.model"] = "perspective";
+    node["Camera.fx"]    = _sightCam->getFx();
+    node["Camera.fy"]    = _sightCam->getFy();
+    node["Camera.cx"]    = _sightCam->getCx();
+    node["Camera.cy"]    = _sightCam->getCy();
 
+    node["Camera.k1"] = _sightCam->getDistortionCoefficient()[0];
+    node["Camera.k2"] = _sightCam->getDistortionCoefficient()[1];
+    node["Camera.p1"] = _sightCam->getDistortionCoefficient()[2];
+    node["Camera.p2"] = _sightCam->getDistortionCoefficient()[3];
+    node["Camera.k3"] = _sightCam->getDistortionCoefficient()[4];
+
+    node["Camera.fps"]  = _sightCam->getMaximumFrameRate();
+    node["Camera.cols"] = _sightCam->getWidth();
+    node["Camera.rows"] = _sightCam->getHeight();
+    // Values can be RGB, BGR or GRAY.
+    //TODO: maybe use _sightCam->getPixelFormatName() and translate result to RGB-BGR or GRAY.
+    node["Camera.color_order"] = "RGB";
+
+    // Features (ORB):
+    node["Feature.max_num_keypoints"]  = _orbParams.maxNumKeyPts;
+    node["Feature.scale_factor"]       = _orbParams.scaleFactor;
+    node["Feature.num_levels"]         = _orbParams.numLevels;
+    node["Feature.ini_fast_threshold"] = _orbParams.iniFastThr;
+    node["Feature.min_fast_threshold"] = _orbParams.minFastThr;
+
+    // Initializer parameters:
+    node["Initializer.num_ransac_iterations"]        = _initParams.numRansacIterations;
+    node["Initializer.num_min_triangulated_pts"]     = _initParams.minNumTriangulatedPts;
+    node["Initializer.parallax_deg_threshold"]       = _initParams.parallaxDegThr;
+    node["Initializer.reprojection_error_threshold"] = _initParams.reprojErrThr;
+    node["Initializer.num_ba_iterations"]            = _initParams.numBAIterations;
+    node["Initializer.scaling_factor"]               = _initParams.scalingFactor;
+
+    // Create the config with YAML node (constructor was added on our version of openvslam).
+    std::shared_ptr< ::openvslam::config > conf = std::make_shared< ::openvslam::config>(node);
     return conf;
-
 }
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr< ::openvslam::config > Helper::createConfig( openvslam::camera::base* _oVSlamCam,
-                                                             const openvslam::feature::orb_params& _orbParams)
+void Helper::writeOpenvslamConfig(const std::shared_ptr<openvslam::config> config, const std::string& _filepath)
 {
-    std::shared_ptr< ::openvslam::config > conf = std::make_shared< ::openvslam::config>(_oVSlamCam, _orbParams);
+    writeOpenvslamConfig(config->yaml_node_, _filepath);
+}
+
+//-----------------------------------------------------------------------------
+
+void Helper::writeOpenvslamConfig(const YAML::Node& _node, const std::string& _filepath)
+{
+    std::ofstream fout(_filepath);
+    fout << _node;
+}
+
+//-----------------------------------------------------------------------------
+
+std::shared_ptr<openvslam::config> Helper::readOpenvslamConfig(const std::string& _filepath)
+{
+    std::shared_ptr< ::openvslam::config > conf;
+    try
+    {
+        conf = std::make_shared< ::openvslam::config>(_filepath);
+
+    }
+    catch (std::exception& e)
+    {
+        SLM_ERROR("Something went wrong when tying to load '" + _filepath + "'. Error: " + e.what());
+        return nullptr;
+    }
 
     return conf;
+
 }
 
 //-----------------------------------------------------------------------------
