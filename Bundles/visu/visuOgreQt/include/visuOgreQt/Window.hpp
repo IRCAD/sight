@@ -184,8 +184,10 @@ private:
     /// Logs right click positions.
     QPoint* m_lastPosRightClick { nullptr };
 
+    /// Counts the number of frames rendered since the window's creation.
     int m_frameId { 0 };
 
+    /// OpenGL context used by this window.
     std::shared_ptr<QOpenGLContext> m_glContext;
 
     /// Last size sent to ogre
