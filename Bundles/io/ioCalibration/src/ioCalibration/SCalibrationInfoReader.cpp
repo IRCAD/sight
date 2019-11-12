@@ -146,12 +146,12 @@ void SCalibrationInfoReader::updating()
         for(const ::boost::filesystem::path& dirEntry : ::boost::filesystem::directory_iterator(folder))
         {
             ::cv::Mat img = ::cv::imread(dirEntry.string(), ::cv::IMREAD_COLOR);
-            ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
-
             std::string errorMessage;
 
             if(!img.empty())
             {
+                ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
+
                 ::fwData::PointList::sptr chessboardPts = ::calibration3d::helper::detectChessboard(img,
                                                                                                     m_width, m_height,
                                                                                                     m_scale);
