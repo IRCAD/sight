@@ -237,8 +237,6 @@ void Plane::initializePosition()
 
 void Plane::moveAlongAxis()
 {
-    SLM_ASSERT("2D Plane, cannot move along its normal.", m_is3D);
-
     this->initializePosition();
     ::Ogre::Real distance = m_relativePosition * m_depth;
 
@@ -443,11 +441,8 @@ void Plane::changeSlice(float sliceIndex)
         }
     }
 
-    if (m_is3D)
-    {
-        this->setRelativePosition( sliceIndex );
-        this->moveAlongAxis();
-    }
+    this->setRelativePosition( sliceIndex );
+    this->moveAlongAxis();
 }
 
 //-----------------------------------------------------------------------------

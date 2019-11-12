@@ -262,28 +262,22 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
 
     this->getRenderService()->makeCurrent();
 
-    const auto& imgSize    = image->getSize2();
-    const auto& imgSpacing = image->getSpacing2();
+    const auto& imgOrigin = image->getOrigin2();
+    m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(imgOrigin[0]),
+                                               static_cast<float>(imgOrigin[1]),
+                                               static_cast<float>(imgOrigin[2])));
 
     OrientationMode newOrientationMode = OrientationMode::X_AXIS;
     switch (_to)
     {
         case 0:
-            m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(imgSize[0]) *
-                                                       static_cast<float>(imgSpacing[0]), 0, 0));
             newOrientationMode = OrientationMode::X_AXIS;
             break;
         case 1:
-            m_plane->setOriginPosition(::Ogre::Vector3(0,
-                                                       static_cast<float>(imgSize[1]) *
-                                                       static_cast<float>(imgSpacing[1]), 0));
             newOrientationMode = OrientationMode::Y_AXIS;
             break;
         case 2:
             newOrientationMode = OrientationMode::Z_AXIS;
-            m_plane->setOriginPosition(::Ogre::Vector3(0, 0,
-                                                       static_cast<float>(imgSize[2]) *
-                                                       static_cast<float>(imgSpacing[2])));
             break;
     }
 
@@ -409,21 +403,27 @@ void SNegato2D::updateCamera()
 
     m_cameraNode->setPosition(::Ogre::Vector3(0, 0, 0));
     m_cameraNode->resetOrientation();
+
+    const auto& imgOrigin = image->getOrigin2();
+    m_cameraNode->translate(::Ogre::Vector3(static_cast<float>(imgOrigin[0]),
+                                            static_cast<float>(imgOrigin[1]),
+                                            static_cast<float>(imgOrigin[2])));
+
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(-90.f));
             m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(-90.f));
-            m_cameraNode->translate(::Ogre::Vector3(0, m_plane->getHeight()/2, m_plane->getWidth()/2));
+            m_cameraNode->translate(::Ogre::Vector3(-1, m_plane->getHeight()/2, m_plane->getWidth()/2));
             break;
         case OrientationMode::Y_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(90.f));
-            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, 0, m_plane->getHeight()/2));
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, -1, m_plane->getHeight()/2));
             break;
         case OrientationMode::Z_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(180.f));
             m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(180.f));
-            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2, 0));
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2, -1));
             break;
     }
 
