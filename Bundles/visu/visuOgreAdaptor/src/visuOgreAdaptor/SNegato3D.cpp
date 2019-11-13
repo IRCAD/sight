@@ -160,7 +160,7 @@ void SNegato3D::starting()
         auto imgOrientation = static_cast<OrientationMode>(orientationNum++);
         plane = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
                                                           this->getSceneManager(),
-                                                          imgOrientation, true, m_3DOgreTexture,
+                                                          imgOrientation, m_3DOgreTexture,
                                                           m_filtering);
     }
 

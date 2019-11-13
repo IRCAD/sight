@@ -38,9 +38,8 @@ namespace fwRenderOgre
 //-----------------------------------------------------------------------------
 
 Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
-              ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
-              ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _entityOpacity) :
-    m_is3D( _is3D ),
+              ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
+              FilteringEnumType _filtering, float _entityOpacity) :
     m_filtering( _filtering ),
     m_orientation( _orientation ),
     m_texture( _tex ),
@@ -346,8 +345,6 @@ double Plane::getSliceWorldPosition() const
 
 void Plane::setOrientationMode(OrientationMode _newMode)
 {
-    SLM_ASSERT("3D negato Plane, cannot change orientation", !m_is3D);
-
     m_orientation = _newMode;
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
@@ -393,8 +390,6 @@ void Plane::enableAlpha(bool _enable)
 
 void Plane::setEntityOpacity(float _f)
 {
-    SLM_ASSERT("2D negato Plane, cannot change opacity", m_is3D);
-
     m_entityOpacity = _f;
 
     ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);

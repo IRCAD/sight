@@ -153,7 +153,7 @@ void SNegato2D::starting()
 
     // Plane's instanciation
     m_plane = std::make_unique< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                                        m_orientation, false, m_3DOgreTexture, m_filtering);
+                                                        m_orientation, m_3DOgreTexture, m_filtering);
 
     ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
     m_cameraNode              = cam->getParentSceneNode();
@@ -262,24 +262,10 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
 
     this->getRenderService()->makeCurrent();
 
-    const auto& imgOrigin = image->getOrigin2();
-    m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(imgOrigin[0]),
-                                               static_cast<float>(imgOrigin[1]),
-                                               static_cast<float>(imgOrigin[2])));
+    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+    m_plane->setOriginPosition(imgOrigin);
 
-    OrientationMode newOrientationMode = OrientationMode::X_AXIS;
-    switch (_to)
-    {
-        case 0:
-            newOrientationMode = OrientationMode::X_AXIS;
-            break;
-        case 1:
-            newOrientationMode = OrientationMode::Y_AXIS;
-            break;
-        case 2:
-            newOrientationMode = OrientationMode::Z_AXIS;
-            break;
-    }
+    OrientationMode newOrientationMode = static_cast<OrientationMode>(_to);
 
     // The orientation update setter will change the fragment shader
     m_plane->setOrientationMode(newOrientationMode);
@@ -404,10 +390,8 @@ void SNegato2D::updateCamera()
     m_cameraNode->setPosition(::Ogre::Vector3(0, 0, 0));
     m_cameraNode->resetOrientation();
 
-    const auto& imgOrigin = image->getOrigin2();
-    m_cameraNode->translate(::Ogre::Vector3(static_cast<float>(imgOrigin[0]),
-                                            static_cast<float>(imgOrigin[1]),
-                                            static_cast<float>(imgOrigin[2])));
+    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+    m_cameraNode->translate(imgOrigin);
 
     switch(m_orientation)
     {
