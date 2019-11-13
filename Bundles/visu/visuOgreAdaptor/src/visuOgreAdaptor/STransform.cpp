@@ -107,11 +107,11 @@ void STransform::updating()
 
     if(m_ogreTransform == ::Ogre::Affine3::ZERO)
     {
-        m_transformNode->setVisible(false);
+        m_transformNode->setVisible(false, false);
     }
     else
     {
-        m_transformNode->setVisible(true);
+        m_transformNode->setVisible(true, false);
 
         // Decompose the matrix
         ::Ogre::Vector3 position;
