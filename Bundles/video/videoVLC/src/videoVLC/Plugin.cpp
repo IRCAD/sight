@@ -25,6 +25,7 @@
 #include <fwCore/spyLog.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwRuntime/Runtime.hpp>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -60,7 +61,8 @@ void Plugin::start()
     }
     else
     {
-        const ::boost::filesystem::path vlcPluginDir = ::boost::filesystem::absolute("./vlc/plugins");
+        const ::boost::filesystem::path workingPath  = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+        const ::boost::filesystem::path vlcPluginDir = workingPath / "vlc/plugins";
         SLM_ASSERT("VLC plugins directory is not found.", ::boost::filesystem::exists(vlcPluginDir));
         Plugin::exportVLCPluginsEnv(vlcPluginDir.string());
     }
