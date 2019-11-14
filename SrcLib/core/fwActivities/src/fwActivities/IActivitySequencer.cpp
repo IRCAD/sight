@@ -135,18 +135,34 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
         // FIXME: update all the data or only the requirement ?
         if(overrides)
         {
+            const std::string activityId                       = m_activityIds[index];
+            const ::fwActivities::registry::ActivityInfo& info =
+                ::fwActivities::registry::Activities::getDefault()->getInfo(activityId);
+
             auto overridesContainer = overrides->getContainer();
-            for (const auto& elt : composite->getContainer())
+
+            for(const auto& req : info.requirements)
             {
-                composite->getContainer()[elt.first] = overridesContainer.count(elt.first) == 0 ?
-                                                       m_requirements[elt.first] : overridesContainer[elt.first];
+                if(m_requirements.find(req.name) != m_requirements.end() ||
+                   overridesContainer.find(req.name) != m_requirements.end())
+                {
+                    composite->getContainer()[req.name] = overridesContainer.count(req.name) == 0 ?
+                                                          m_requirements[req.name] : overridesContainer[req.name];
+                }
             }
         }
         else
         {
-            for (const auto& elt : composite->getContainer())
+            const std::string activityId                       = m_activityIds[index];
+            const ::fwActivities::registry::ActivityInfo& info =
+                ::fwActivities::registry::Activities::getDefault()->getInfo(activityId);
+
+            for(const auto& req : info.requirements)
             {
-                composite->getContainer()[elt.first] = m_requirements[elt.first];
+                if(m_requirements.find(req.name) != m_requirements.end())
+                {
+                    composite->getContainer()[req.name] = m_requirements[req.name];
+                }
             }
         }
     }
