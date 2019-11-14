@@ -23,12 +23,15 @@
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 
 #include "fwDataTools/fieldHelper/Image.hpp"
+#include "fwDataTools/helper/Composite.hpp"
+#include "fwDataTools/helper/Field.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/ResectionDB.hpp>
 #include <fwData/String.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwMath/MeshFunctions.hpp>
 
@@ -59,8 +62,6 @@ bool MedicalImageHelpers::checkLandmarks( ::fwData::Image::sptr _pImg )
 
 bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::csptr _pImg )
 {
-    SLM_TRACE_FUNC();
-
     // Test if the image is allocated
     bool dataImageIsAllocated = (_pImg != ::fwData::Image::sptr());
 
@@ -69,9 +70,13 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::csptr _pImg )
         size_t nbDim = _pImg->getNumberOfDimensions();
         dataImageIsAllocated &= nbDim > 1;
 
+        // TMP: check if the image support the deprecated API (if old size, spacing and origin are supported)
+        SLM_ERROR_IF("The image '" + _pImg->getID() + "' does not support deprecated API",
+                     nbDim != _pImg->getSize().size())
+
         for ( size_t k = 0; dataImageIsAllocated && k < nbDim; ++k )
         {
-            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
+            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize2()[k] >= 1 );
         }
     }
 
@@ -86,7 +91,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
     bool fieldIsModified = false;
 
-    const ::fwData::Image::SizeType& imageSize = _pImg->getSize();
+    const ::fwData::Image::Size& imageSize = _pImg->getSize2();
 
     ::fwData::Integer::sptr axialIdx = _pImg->getField< ::fwData::Integer >(
         ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId );
@@ -117,19 +122,19 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
         );
 
     // Get value
-    if( axialIdx->value() < 0 ||  imageSize[2] < axialIdx->value() )
+    if( axialIdx->value() < 0 ||  imageSize[2] < static_cast<size_t>(axialIdx->value()) )
     {
         axialIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[2] / 2);
         fieldIsModified   = true;
     }
 
-    if( frontalIdx->value() < 0 ||  imageSize[1] < frontalIdx->value() )
+    if( frontalIdx->value() < 0 ||  imageSize[1] < static_cast<size_t>(frontalIdx->value()) )
     {
         frontalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[1] / 2);
         fieldIsModified     = true;
     }
 
-    if( sagittalIdx->value() < 0 ||  imageSize[0] < sagittalIdx->value() )
+    if( sagittalIdx->value() < 0 ||  imageSize[0] < static_cast<size_t>(sagittalIdx->value()) )
     {
         sagittalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[0] / 2);
         fieldIsModified      = true;
@@ -182,6 +187,7 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 ::fwData::Image::sptr MedicalImageHelpers::initialize( ::fwData::Image::sptr imgSrc,
                                                        ::fwData::Image::sptr imgToInitialize)
 {
+    FW_DEPRECATED_MSG("This method is no longer supported", "22.0")
     SLM_ASSERT("Image source must be initialized", imgSrc);
     SLM_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
 
@@ -196,7 +202,7 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 
     imgSrc->setDataArray(imgData, false);
 
-    imgToInitialize->allocate();
+    imgToInitialize->resize();
 
     return imgToInitialize;
 }
@@ -214,6 +220,54 @@ bool MedicalImageHelpers::isBufNull(const ::fwData::Image::BufferType* buf, cons
         std::bit_or< ::fwData::Image::BufferType>()
         );
     return isNull;
+}
+
+//------------------------------------------------------------------------------
+
+bool MedicalImageHelpers::checkTransferFunctionPool(const ::fwData::Image::sptr& image)
+{
+    bool fieldIsCreated             = false;
+    const std::string poolFieldName = ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId;
+    ::fwData::Composite::sptr tfPool;
+
+    tfPool = image->getField< ::fwData::Composite >(poolFieldName);
+    // Transfer functions
+    if ( !tfPool )
+    {
+        tfPool = ::fwData::Composite::New();
+
+        // Set in selected image
+        ::fwDataTools::helper::Field fieldHelper(image);
+        fieldHelper.setField(poolFieldName, tfPool);
+        fieldHelper.notify();
+
+        // TF pool is modified
+        fieldIsCreated = true;
+    }
+
+    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    if(tfPool->find(defaultTFName) == tfPool->end())
+    {
+        ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
+        if (image->getWindowWidth() != 0. )
+        {
+            tf->setWindow( image->getWindowWidth() );
+            tf->setLevel( image->getWindowCenter() );
+        }
+        else if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        {
+            double min, max;
+            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+            tf->setWLMinMax(wlMinMax);
+        }
+        // Set in TFPool
+        ::fwDataTools::helper::Composite compositeHelper(tfPool);
+        compositeHelper.add(defaultTFName, tf);
+        compositeHelper.notify();
+    }
+
+    return fieldIsCreated;
 }
 
 //------------------------------------------------------------------------------

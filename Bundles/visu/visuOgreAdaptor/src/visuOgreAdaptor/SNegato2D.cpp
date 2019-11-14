@@ -46,16 +46,12 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SNegato2D, ::fwData::Image);
-
 const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
-
-static const std::string s_ENABLE_APLHA_CONFIG = "tfalpha";
 
 //------------------------------------------------------------------------------
 
@@ -126,7 +122,7 @@ void SNegato2D::configuring()
         this->setFiltering(filtering);
     }
 
-    m_enableAlpha = config.get<bool>(s_ENABLE_APLHA_CONFIG, m_enableAlpha);
+    m_enableAlpha = config.get<bool>("tfalpha", m_enableAlpha);
 }
 
 //------------------------------------------------------------------------------
@@ -134,6 +130,7 @@ void SNegato2D::configuring()
 void SNegato2D::starting()
 {
     this->initialize();
+    this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
@@ -155,24 +152,22 @@ void SNegato2D::starting()
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
     // Plane's instanciation
-    m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                        m_orientation, false, m_3DOgreTexture, m_filtering);
+    m_plane = std::make_unique< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
+                                                        m_orientation, false, m_3DOgreTexture, m_filtering);
 
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
-    m_cameraNode        = cam->getParentSceneNode();
+    ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
+    m_cameraNode              = cam->getParentSceneNode();
     cam->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
-    if(isValid)
-    {
-        this->newImage();
-    }
+    this->newImage();
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato2D::stopping()
 {
+    this->getRenderService()->makeCurrent();
+
     m_helperTF.removeTFConnections();
 
     if (!m_connection.expired())
@@ -180,7 +175,7 @@ void SNegato2D::stopping()
         m_connection.disconnect();
     }
 
-    delete m_plane;
+    m_plane.reset();
 
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
@@ -222,62 +217,73 @@ void SNegato2D::newImage()
     }
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    const ::fwData::mt::ObjectReadLock imgLock(image);
 
-    // Retrieves or creates the slice index fields
-    ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    {
+        // Retrieves or creates the slice index fields
+        ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    this->createPlane( image->getSpacing() );
-    this->updateCamera();
+        const auto [spacing, _] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        this->createPlane( spacing );
+        this->updateCamera();
 
-    // Update Slice
-    const auto axialIndex =
-        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-    const auto frontalIndex =
-        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-    const auto sagittalIndex =
-        image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        // Update Slice
+        const auto axialIndex =
+            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+        const auto frontalIndex =
+            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+        const auto sagittalIndex =
+            image->getField< ::fwData::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
-    this->changeSliceIndex(
-        static_cast<int>(axialIndex),
-        static_cast<int>(frontalIndex),
-        static_cast<int>(sagittalIndex)
-        );
-    this->changeSliceType(0, m_orientation);
+        this->changeSliceIndex(
+            static_cast<int>(axialIndex),
+            static_cast<int>(frontalIndex),
+            static_cast<int>(sagittalIndex)
+            );
+        this->changeSliceType(0, m_orientation);
 
-    // Update tranfer function in Gpu programs
-    this->updateTF();
+        // Update tranfer function in Gpu programs
+        this->updateTF();
 
-    this->requestRender();
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato2D::changeSliceType(int /*_from*/, int _to)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    const ::fwData::mt::ObjectReadLock imgLock(image);
+
+    this->getRenderService()->makeCurrent();
+
+    const auto& imgSize    = image->getSize2();
+    const auto& imgSpacing = image->getSpacing2();
 
     OrientationMode newOrientationMode = OrientationMode::X_AXIS;
     switch (_to)
     {
         case 0:
-            m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(image->getSize()[0]) *
-                                                       static_cast<float>(image->getSpacing()[0]), 0, 0));
+            m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(imgSize[0]) *
+                                                       static_cast<float>(imgSpacing[0]), 0, 0));
             newOrientationMode = OrientationMode::X_AXIS;
             break;
         case 1:
             m_plane->setOriginPosition(::Ogre::Vector3(0,
-                                                       static_cast<float>(image->getSize()[1]) *
-                                                       static_cast<float>(image->getSpacing()[1]), 0));
+                                                       static_cast<float>(imgSize[1]) *
+                                                       static_cast<float>(imgSpacing[1]), 0));
             newOrientationMode = OrientationMode::Y_AXIS;
             break;
         case 2:
             newOrientationMode = OrientationMode::Z_AXIS;
             m_plane->setOriginPosition(::Ogre::Vector3(0, 0,
-                                                       static_cast<float>(image->getSize()[2]) *
-                                                       static_cast<float>(image->getSpacing()[2])));
+                                                       static_cast<float>(imgSize[2]) *
+                                                       static_cast<float>(imgSpacing[2])));
             break;
     }
 
@@ -290,19 +296,26 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
     this->updateTF();
 
     this->updateShaderSliceIndexParameter();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    const ::fwData::mt::ObjectReadLock imgLock(image);
+
+    this->getRenderService()->makeCurrent();
+
+    const auto& imgSize = image->getSize2();
 
     m_currentSliceIndex = {
-        static_cast<float>(_sagittalIndex ) / (static_cast<float>(image->getSize()[0] - 1)),
-        static_cast<float>(_frontalIndex  ) / (static_cast<float>(image->getSize()[1] - 1)),
-        static_cast<float>(_axialIndex    ) / (static_cast<float>(image->getSize()[2] - 1))
+        static_cast<float>(_sagittalIndex ) / (static_cast<float>(imgSize[0] - 1)),
+        static_cast<float>(_frontalIndex  ) / (static_cast<float>(imgSize[1] - 1)),
+        static_cast<float>(_axialIndex    ) / (static_cast<float>(imgSize[2] - 1))
     };
 
     this->updateShaderSliceIndexParameter();
@@ -322,6 +335,8 @@ void SNegato2D::updateShaderSliceIndexParameter()
 
 void SNegato2D::updateTF()
 {
+    this->getRenderService()->makeCurrent();
+
     const ::fwData::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
     {
         const ::fwData::mt::ObjectReadLock tfLock(tf);
@@ -351,11 +366,11 @@ void SNegato2D::updateTF()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
+void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
 {
     this->getRenderService()->makeCurrent();
     // Fits the plane to the new texture
-    m_plane->setDepthSpacing(_spacing);
+    m_plane->setVoxelSpacing(_spacing);
     m_plane->initializePlane();
     m_plane->enableAlpha(m_enableAlpha);
 }
@@ -364,10 +379,13 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 void SNegato2D::updateCamera()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    const ::fwData::mt::ObjectReadLock imglock(image);
 
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+    this->getRenderService()->makeCurrent();
+
+    ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
     SLM_ASSERT("No default camera found", cam);
 
     const int renderWindowWidth          = cam->getViewport()->getActualWidth();

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTOOLS_DYNAMICTYPE_HPP__
-#define __FWTOOLS_DYNAMICTYPE_HPP__
+#pragma once
 
 #include <string>
 #include <list>
@@ -33,16 +32,12 @@
 #include "fwTools/Stringizer.hpp"
 #include "fwTools/config.hpp"
 
-
 namespace fwTools
 {
 
 /**
  * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
- * @class   DynamicType
- *
- * @date    2007-2009.
- *
+ * @deprecated This class is no longer supported and will be removed in sight 22.0
  **/
 class FWTOOLS_CLASS_API DynamicType
 {
@@ -51,18 +46,17 @@ public:
     FWTOOLS_API DynamicType();
 
     /// Constructor by copy
-    FWTOOLS_API DynamicType(const DynamicType &);
+    FWTOOLS_API DynamicType(const DynamicType&);
 
     /**
      * @brief comparison operator
      */
-    FWTOOLS_API bool operator==(const DynamicType &) const;
+    FWTOOLS_API bool operator==(const DynamicType&) const;
 
     /**
      * @brief comparison operator
      */
-    FWTOOLS_API bool operator!=(const DynamicType &) const;
-
+    FWTOOLS_API bool operator!=(const DynamicType&) const;
 
     /**
      * @brief  define an order (lexicographic) for dynamicType
@@ -76,7 +70,6 @@ public:
     template< class TYPE>
     void setType();
 
-
     /**
      * @brief   Return true iff the DynamicType value represents the TYPE
      * @note    A BOOST_ASSERTION can be raised if TYPE is not managed by isMapping
@@ -89,21 +82,19 @@ public:
      */
     FWTOOLS_API unsigned char sizeOf() const;
 
-
     /**
      * @brief Register a new type to be managed within DynamicType.
      *
      * Check are performed to ensure robsutess
      */
     template<class NEWTYPE>
-    static void registerNewType(const std::string &newKey);
-
+    static void registerNewType(const std::string& newKey);
 
     /// Default destrucor : do nothing
     FWTOOLS_API virtual ~DynamicType();
 
     /// Return a human readable string
-    FWTOOLS_API const std::string &string() const;
+    FWTOOLS_API const std::string& string() const;
 
     /**
      * @brief Return a human readable string for type (static version no instanciation ...)
@@ -114,10 +105,11 @@ public:
     static const std::string string();
 
     /**
-     * @brief return the min and max storable in the DynamicType. take care that min/max value are casted into template T
+     * @brief return the min and max storable in the DynamicType. take care that min/max value are casted into template
+     * T
      */
     template<class T>
-    std::pair<T,T> minMax();
+    std::pair<T, T> minMax();
 
     /// return true iff the type use a fixed precision
     FWTOOLS_API bool isFixedPrecision();
@@ -150,32 +142,26 @@ protected:
     FWTOOLS_API static const std::string m_unSpecifiedType;
 };
 
-
-
 /// Helper to create object DynamicType from a given type TYPE in { (un)signed char, ... , double }
 template<class TYPE>
 DynamicType makeDynamicType();
 
 /**
- * @brief   Helper to create object DynamicType from a given type from a KEYTYPE representing a type in { (un)signed char, ... , double }
+ * @brief   Helper to create object DynamicType from a given type from a KEYTYPE representing a type in { (un)signed
+ * char, ... , double }
  *
  * Example makeDynamicType(type_id(int)) and   makeDynamicType("signed int")  should work
  */
 // #include "KEYTYPEMapping.hpp" is mandatory
 template<class KEYTYPE>
-DynamicType makeDynamicType(const KEYTYPE &keyType);
-
-
-template<>
-FWTOOLS_API std::string getString(const DynamicType &dt);
+DynamicType makeDynamicType(const KEYTYPE& keyType);
 
 template<>
-FWTOOLS_API std::string getString(const std::vector<DynamicType> &dtv);
+FWTOOLS_API std::string getString(const DynamicType& dt);
+
+template<>
+FWTOOLS_API std::string getString(const std::vector<DynamicType>& dtv);
 
 } //end namespace fwTools
 
-
 #include "fwTools/DynamicType.hxx"
-
-
-#endif /*__FWTOOLS_DYNAMICTYPE_HPP__*/

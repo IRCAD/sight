@@ -32,7 +32,10 @@ include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
-include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
+if(NOT FW_BUILD_EXTERNAL)
+    include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
+endif()
+
 
 file(REMOVE "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake")
 
@@ -1053,12 +1056,14 @@ macro(fwManageWarnings PROJECT)
     if(${${PROJECT}_WARNINGS_AS_ERRORS})
         if(MSVC)
             if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-                target_compile_options(${PROJECT} PRIVATE /WX)
+                # wd4996: deprecated declaration will be displayed as warning and not errors
+                target_compile_options(${PROJECT} PRIVATE /WX /wd4996)
             else()
                 message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
             endif()
         elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-            target_compile_options(${PROJECT} PRIVATE "-Werror")
+            # deprecated declaration will be displayed as warning and not errors
+            target_compile_options(${PROJECT} PRIVATE "-Werror" "-Wno-error=deprecated-declarations")
         endif ()
     endif()
 endmacro()

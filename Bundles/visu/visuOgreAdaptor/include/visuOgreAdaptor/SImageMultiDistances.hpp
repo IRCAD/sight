@@ -48,13 +48,15 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <config layer="default" />
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="12" />
         </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image containing the distance field.
  * @subsection Configuration Configuration
  * - \b layer(mandatory) : defines distance's layer.
+ * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, default=16): font size in points.
  */
 
 class SImageMultiDistances : public ::fwRenderOgre::IAdaptor,
@@ -62,7 +64,7 @@ class SImageMultiDistances : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor)
 
     /// Constructor
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
@@ -242,10 +244,10 @@ private:
     bool m_activeInteraction { false };
 
     /// Position of the first point
-    float m_ps1[3] { 0, 0, 0 };
+    float m_ps1[3] { 0.f, 0.f, 0.f };
 
     /// Position of the second point
-    float m_ps2[3] { 0, 0, 0 };
+    float m_ps2[3] { 0.f, 0.f, 0.f };
 
     /// The picker used by this interactor.
     ::fwRenderOgre::picker::IPicker m_picker;
@@ -255,6 +257,12 @@ private:
 
     /// Pointer to the material data
     ::fwData::Material::sptr m_material {nullptr};
+
+    /// TrueType font source file.
+    std::string m_fontSource { "DejaVuSans.ttf" };
+
+    /// Font size in points.
+    size_t m_fontSize { 16 };
 
 };
 }

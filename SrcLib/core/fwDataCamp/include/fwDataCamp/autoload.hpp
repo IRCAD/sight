@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATACAMP_AUTOLOAD_HPP__
-#define __FWDATACAMP_AUTOLOAD_HPP__
+#pragma once
 
+#include "fwDataCamp/Image.hpp"
 #include "fwDataCamp/Material.hpp"
 #include "fwDataCamp/StructureTraits.hpp"
 #include "fwDataCamp/TransferFunction.hpp"
@@ -79,6 +79,7 @@ struct runner
         localDeclarefwDataVector();
         localDeclarefwDataColor();
         localDeclarefwDataArray();
+        localDeclarefwDataImagePixelFormat();
         localDeclarefwDataImage();
         localDeclarefwDataMesh();
         localDeclarefwDataMaterialOptionsType();
@@ -121,5 +122,3 @@ struct runner
     static runner r;
 };
 } //end namespace fwDataCamp
-
-#endif //__FWDATACAMP_AUTOLOAD_HPP__

@@ -160,7 +160,6 @@ size_t Array::resize(const SizeType& size, bool reallocate)
 
     m_strides = computeStrides(size, m_nbOfComponents, m_type.sizeOf());
     m_size    = size;
-
     return bufSize;
 }
 
@@ -487,12 +486,23 @@ size_t Array::resize(const SizeType& size, size_t nbOfComponents, bool reallocat
 
 //------------------------------------------------------------------------------
 
+size_t Array::resizeTMP(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents)
+{
+    // Array m_numberOfComponents attribute is deprecated, but to support the old Image API,
+    // we need to use it temporary
+    m_nbOfComponents = nbOfComponents;
+    m_type           = type;
+    return this->resize(size, true);
+}
+
+//------------------------------------------------------------------------------
+
 size_t Array::resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
                      bool reallocate)
 {
     FW_DEPRECATED("resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate)",
                   "resize(const SizeType &size, const ::fwTools::Type &type, bool reallocate)",
-                  "22.0");
+                  "22.0")
     m_nbOfComponents = nbOfComponents;
     m_type           = ::fwTools::Type::create(type);
     return this->resize( size, reallocate);
@@ -525,9 +535,7 @@ size_t Array::getNumberOfComponents() const
 
 size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType) const
 {
-    FW_DEPRECATED("getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType )",
-                  "getBufferOffset( const ::fwData::Array::IndexType& id, size_t sizeOfType )",
-                  "22.0");
+    // this method should be removed in sight 22.0. There is no warning here because it will be very slow
 
     OSLM_ASSERT(
         "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",

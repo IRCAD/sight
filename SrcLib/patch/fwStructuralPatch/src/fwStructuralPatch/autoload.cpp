@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 
 #include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
 #include "fwStructuralPatch/fwData/Image/V1ToV2.hpp"
+#include "fwStructuralPatch/fwData/Image/V2ToV3.hpp"
+#include "fwStructuralPatch/fwData/Image/V3ToV2.hpp"
 #include "fwStructuralPatch/fwData/Material/V1ToV2.hpp"
 #include "fwStructuralPatch/fwData/Material/V2ToV3.hpp"
 #include "fwStructuralPatch/fwData/Material/V3ToV4.hpp"
@@ -56,6 +58,8 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Study::V1ToFwMedDataStudyV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V3ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V2ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V3ToV4::New());

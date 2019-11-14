@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "PatchTest.hpp"
+
+#include <arMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwData/Object.hpp>
 
@@ -144,7 +146,7 @@ void PatchTest::arPatchMedicalDataTest()
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context", "MedicalData");
-    patcherCfg->setAttributeValue("version", "V13AR");
+    patcherCfg->setAttributeValue("version", ::arMDSemanticPatch::PatchLoader::getCurrentVersion());
     srvCfg->addConfigurationElement(patcherCfg);
 
     ::fwMedData::SeriesDB::sptr sdb = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader" );

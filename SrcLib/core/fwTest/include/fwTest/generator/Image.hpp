@@ -66,8 +66,27 @@ public:
                                          std::vector<double> origin,
                                          ::fwTools::Type type);
 
+    /**
+     * @brief Generate an image with the given informations. Buffer is filled with 0.
+     * @param image     image to generate
+     * @param size      vector of image size
+     * @param spacing   vector of image spacing
+     * @param origin    vector of image origin
+     * @param type      image type
+     * @param format    image format
+     */
+    FWTEST_API static void generateImage(::fwData::Image::sptr image,
+                                         fwData::Image::Size size,
+                                         fwData::Image::Spacing spacing,
+                                         fwData::Image::Origin origin,
+                                         ::fwTools::Type type,
+                                         fwData::Image::PixelFormat format);
+
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
     FWTEST_API static void generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type type);
+
+    /// Fill image array with random value
+    FWTEST_API static void randomizeImage(::fwData::Image::sptr image);
 
     /// Fill array with random value
     FWTEST_API static void randomizeArray(::fwData::Array::sptr array);

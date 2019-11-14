@@ -39,7 +39,7 @@ class FWGUI_CLASS_API IToolBarSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceMacro(IToolBarSrv, ::fwServices::IService);
+    fwCoreServiceMacro(IToolBarSrv, ::fwServices::IService)
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -71,7 +71,7 @@ protected:
      * @code{.xml}
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
-               <layout hideAction="false" style="ToolButtonIconOnly">
+               <layout hideActions="false" style="ToolButtonIconOnly">
                    <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/>
                    <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/icons/system.png"/>
                    <separator />
@@ -95,7 +95,7 @@ protected:
        @endcode
      * - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
-     *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
+     *     - \b hideActions: (optional, default=false): if true, the actions are hidden when they are stopped.
      *     - \b style: (optional, default=ToolButtonIconOnly):  describe the style of the tool button (possible values:
      * ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon/ToolButtonFollowStyle )
      * - \<registry\> \</registry\> : (mandatory) describe the service management.

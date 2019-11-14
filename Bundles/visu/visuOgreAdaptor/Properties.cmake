@@ -19,3 +19,4 @@ set( DEPENDENCIES
     arData
 )
 set( REQUIREMENTS visuOgre )
+set( WARNINGS_AS_ERRORS ON )

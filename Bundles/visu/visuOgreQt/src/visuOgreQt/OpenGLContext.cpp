@@ -33,7 +33,7 @@ std::weak_ptr<QOpenGLContext> OpenGLContext::s_globalOgreOpenGLContext;
 
 //-----------------------------------------------------------------------------
 
-QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* _sharedContext)
+QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* const _sharedContext)
 {
     auto* glContext = new QOpenGLContext();
     QSurfaceFormat format;

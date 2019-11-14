@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,6 +46,8 @@ Image::Image( ::fwData::Image::sptr image ) :
     m_image(image),
     m_sliceModified(false)
 {
+    FW_DEPRECATED_MSG("::fwDataTools::helper::Image is no longer supported, the methods have been moved to "
+                      "::fwData::Image", "22.0")
     if ( image )
     {
         m_lock = image->getDataArray()->getBufferObject()->lock();
@@ -62,6 +64,9 @@ Image::~Image()
 
 bool Image::createLandmarks()
 {
+    FW_DEPRECATED_MSG("'::fwDataTools::helper::Image::createLandmarks()' is deprecated, use "
+                      "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks()' instead.",
+                      "22.0")
     bool fieldIsCreated = false;
 
     // Manage image landmarks
@@ -79,7 +84,10 @@ bool Image::createLandmarks()
 
 bool Image::createTransferFunctionPool()
 {
-    bool fieldIsCreated             = false;
+    FW_DEPRECATED_MSG("'::fwDataTools::helper::Image::createTransferFunctionPool()' is deprecated, use "
+                      "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool()' instead.",
+                      "22.0")
+    bool fieldIsCreated = false;
     const std::string poolFieldName = ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId;
     ::fwData::Composite::sptr tfPool;
 
@@ -127,6 +135,9 @@ bool Image::createTransferFunctionPool()
 
 bool Image::createImageSliceIndex()
 {
+    FW_DEPRECATED_MSG("'::fwDataTools::helper::Image::createImageSliceIndex()' is deprecated, use "
+                      "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex()' instead.",
+                      "22.0")
     bool fieldIsCreated = false;
 
     const ::fwData::Image::SizeType& imageSize = m_image->getSize();

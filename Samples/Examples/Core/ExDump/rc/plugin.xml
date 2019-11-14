@@ -128,7 +128,7 @@
             <service uid="actionQuit" type="::gui::action::SQuit" />
 
             <service uid="actionOpen" type="::uiIO::action::SSeriesDBMerger">
-                <in key="seriesDB" uid="seriesDB" />
+                <inout key="seriesDB" uid="seriesDB" />
                 <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
             </service>
 

@@ -26,6 +26,7 @@ material Text
             cull_hardware none
             cull_software none
             scene_blend alpha_blend
+            colour_write on on on off
 
             vertex_program_ref Text_VP
             {
@@ -37,9 +38,8 @@ material Text
 
             texture_unit fontMap
             {
-                tex_address_mode border
-                tex_border_colour 0 0 0 0
-                filtering none
+                tex_address_mode clamp
+                filtering bilinear
             }
         }
     }

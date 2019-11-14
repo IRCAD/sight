@@ -48,7 +48,7 @@ class FWDATA_CLASS_API Array : public ::fwData::Object
 {
 public:
 
-    fwCoreClassMacro(Array, ::fwData::Object, ::fwData::factory::New< Array >);
+    fwCoreClassMacro(Array, ::fwData::Object, ::fwData::factory::New< Array >)
 
     fwCampMakeFriendDataMacro((fwData)(Array))
 
@@ -444,8 +444,9 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API virtual size_t resize(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents,
-                                     bool reallocate = false);
+    [[deprecated]] FWDATA_API virtual size_t resize(const ::fwTools::Type& type, const SizeType& size,
+                                                    size_t nbOfComponents,
+                                                    bool reallocate = false);
 
     /**
      * @brief  Aliases to the resize method
@@ -453,10 +454,18 @@ public:
      * removed in sight 22.0. Use resize(const ::fwTools::Type& type, const SizeType& size, bool reallocate = false).
      * @{
      */
-    FWDATA_API virtual size_t resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
-                                     bool reallocate = false);
-    FWDATA_API virtual size_t resize(const SizeType& size, size_t nbOfComponents, bool reallocate = false);
+    [[deprecated]] FWDATA_API virtual size_t resize(const std::string& type, const SizeType& size,
+                                                    size_t nbOfComponents,
+                                                    bool reallocate = false);
+    [[deprecated]] FWDATA_API virtual size_t resize(const SizeType& size, size_t nbOfComponents,
+                                                    bool reallocate = false);
     /// @}
+
+    /**
+     * @brief  Temporary method to resize an image's array.
+     * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Image
+     */
+    FWDATA_API virtual size_t resizeTMP(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents);
 
     /**
      * @brief Setter for array's number of components
@@ -466,7 +475,7 @@ public:
      * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
      * removed in sight 22.0
      */
-    FWDATA_API virtual void setNumberOfComponents(size_t nb);
+    [[deprecated]] FWDATA_API virtual void setNumberOfComponents(size_t nb);
 
     /**
      * @brief Getter for number of components
@@ -475,7 +484,7 @@ public:
      * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
      * removed in sight 22.0
      */
-    FWDATA_API virtual size_t getNumberOfComponents() const;
+    [[deprecated]] FWDATA_API virtual size_t getNumberOfComponents() const;
 
 protected:
 

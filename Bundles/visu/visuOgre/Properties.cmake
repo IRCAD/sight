@@ -16,3 +16,4 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     material
 )
+set( WARNINGS_AS_ERRORS ON )
