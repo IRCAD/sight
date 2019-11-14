@@ -269,7 +269,7 @@
 
             <!-- save poses matrices in a file -->
             <service uid="matricesWriter" type="::ioTimeline::SMatrixWriter">
-                <in key="data" uid="matrixTL" autoConnect="yes" />
+                <in key="data" uid="matrixTL" autoConnect="no" />
             </service>
 
             <!-- Scene in which the video and the 3D will be rendered -->
@@ -581,6 +581,11 @@
             <connect>
                 <signal>synchronizer/matrixUnsynchronized</signal>
                 <slot>reprojectionMatrixStatus/changeToRed</slot>
+            </connect>
+
+            <connect>
+                <signal>synchronizer/synchronizationDone</signal>
+                <slot>matricesWriter/write</slot>
             </connect>
 
             <connect>
