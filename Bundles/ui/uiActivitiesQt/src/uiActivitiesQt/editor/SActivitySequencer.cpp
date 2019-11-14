@@ -34,6 +34,7 @@
 #include <fwServices/macros.hpp>
 
 #include <QApplication>
+#include <QDir>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
@@ -162,7 +163,16 @@ void SActivitySequencer::starting()
         }
     }
 
-    engine->addImportPath(QML_IMPORT_PATH);
+    // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
+    QDir qmlPluginPath("./qml");
+    if (qmlPluginPath.exists())
+    {
+        engine->addImportPath("./qml");
+    }
+    else
+    {
+        engine->addImportPath(QML_IMPORT_PATH);
+    }
 
     QStringList activitiesName;
 
