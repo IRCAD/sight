@@ -110,17 +110,6 @@ void SMatrixWriter::configureWithIHM()
         _sDefaultPath = result->getPath();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         this->setFile(_sDefaultPath);
-
-        if(m_filestream.is_open())
-        {
-            m_filestream.flush();
-            m_filestream.close();
-        }
-
-        m_filestream.open(this->getFile().string(), std::ofstream::out | std::ofstream::trunc);
-        // Set the needed default precision to read our float values
-        m_filestream.precision(7);
-        m_filestream << std::fixed;
     }
     else
     {
@@ -194,21 +183,31 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 
 void SMatrixWriter::startRecord()
 {
+    // Default mode when opening a file is in append mode
+    std::ios_base::openmode openMode = std::ofstream::app;
     if(!this->hasLocationDefined())
     {
         this->configureWithIHM();
+        // In trunc mode, any contents that existed in the file before it is open are discarded.
+        // This is the needed behavior when opening the file for the first time.
+        openMode = std::ofstream::trunc;
     }
 
     if(this->hasLocationDefined())
     {
         if(!m_filestream.is_open())
         {
-            m_filestream.open(this->getFile().string(), std::ofstream::out | std::ofstream::app);
+            m_filestream.open(this->getFile().string(), std::ofstream::out | openMode);
             m_filestream.precision(7);
             m_filestream << std::fixed;
+            m_isRecording = true;
         }
-
-        m_isRecording = true;
+        else
+        {
+            SLM_WARN(
+                "The file " + this->getFile().string() +
+                " can't be open. Please check if it is already open in another program.");
+        }
     }
 }
 
