@@ -36,7 +36,6 @@
 namespace uiVisuOgre
 {
 
-
 const ::fwCom::Slots::SlotKeyType SAddPoint::s_PICK_SLOT         = "pick";
 const ::fwCom::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoints";
 
@@ -45,6 +44,7 @@ const std::string s_POINTLIST_KEY = "pointList";
 fwServicesRegisterMacro( ::fwServices::IController, ::uiVisuOgre::SAddPoint, ::fwData::PointList)
 
 //------------------------------------------------------------------------------
+
 SAddPoint::SAddPoint() noexcept
 {
     FW_DEPRECATED("::uiVisuOgre::SAddPoint", "::opPicking::SAddPoint", "21.0");
