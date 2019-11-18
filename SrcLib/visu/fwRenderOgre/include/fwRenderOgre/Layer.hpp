@@ -41,10 +41,12 @@
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreVector2.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 
 #include <cstdint>
+#include <map>
 #include <vector>
 
 namespace fwData
@@ -78,7 +80,7 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 {
 public:
 
-    fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer);
+    fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer)
     fwCoreAllowSharedFromThis()
 
     /// Extrinsic x Intrinsic camera calibrations.
@@ -172,8 +174,13 @@ public:
 
     /**
      * @brief set Ogre Select interactor.
+     * @deprecated use \b addInteractor instead.
      */
-    FWRENDEROGRE_API virtual void setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr interactor);
+    [[deprecated("Use Layer::addInteractor instead.")]]
+    FWRENDEROGRE_API virtual void setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor);
+
+    /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
+    FWRENDEROGRE_API void addInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor, int _priority = 0);
 
     /**
      * @brief get Ogre Movement interactor.
@@ -184,6 +191,7 @@ public:
      * @brief get Ogre Select interactor.
      * @deprecated This will be removed soon.
      */
+    [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IPickerInteractor::sptr getSelectInteractor();
 
     /// Returns m_depth.
@@ -303,6 +311,9 @@ public:
     /// Retrieves the overlays enabled on this layer's viewport.
     FWRENDEROGRE_API const OverlaySetType& getEnabledOverlays() const;
 
+    /// Cancels interaction for all interactors with a lower priority than the one calling this.
+    FWRENDEROGRE_API void cancelFurtherInteraction();
+
 private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
@@ -313,8 +324,8 @@ private:
     /// Stops and starts all adaptors belonging to this layer. Subadaptors are expected to be managed by their parent.
     void restartAdaptors();
 
-    /// For a list of semicolon-separated words, returns a vector of these words.
-    std::vector< std::string > trimSemicolons(std::string input);
+    /// Calls a function on all interactors and deletes the ones that expired.
+    void forAllInteractors(const std::function< void(const interactor::IInteractor::sptr&)>&& _f);
 
     /// Ogre scene manager of this viewport.
     ::Ogre::SceneManager* m_sceneManager;
@@ -365,8 +376,11 @@ private:
     /// Ogre movement interactor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr m_moveInteractor;
 
-    /// List of interactors
-    std::vector< ::fwRenderOgre::interactor::IInteractor::wptr > m_interactors;
+    /// List of interactors, sorted by priority.
+    std::multimap< int, ::fwRenderOgre::interactor::IInteractor::wptr, std::greater<int> > m_interactors;
+
+    /// Flag cancelling all further interaction when enabled.
+    bool m_cancelFurtherInteraction { false };
 
     ///Connection service, needed for slot/signal association.
     ::fwCom::helper::SigSlotConnection m_connections;
@@ -418,6 +432,8 @@ private:
 
     /// Viewport parameters: left, top, width, height.
     ViewportConfigType m_viewportCfg { 0.f, 0.f, 1.f, 1.f};
+
+    float m_dpi { 96.f };
 
 };
 

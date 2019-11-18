@@ -3,6 +3,7 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="guiQt" />
     <requirement id="preferences" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExStereoARCVConfig</id>
@@ -85,6 +86,9 @@
                         <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <separator/>
+                        <menuItem name="Start camera pose recording" icon="arMedia-0.1/icons/start-record.svg" />
+                        <menuItem name="Stop camera pose recording" icon="arMedia-0.1/icons/stop-record.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -94,6 +98,8 @@
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="actionRecord" start="yes" />
+                    <menuItem sid="stopRecord" start="yes" />
                 </registry>
             </service>
 
@@ -207,6 +213,23 @@
                 </slots>
             </service>
 
+            <service uid="actionRecord" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>matricesWriter/startRecord</slot>
+                    <slot>actionRecord/hide</slot>
+                    <slot>stopRecord/show</slot>
+                </slots>
+            </service>
+
+            <service uid="stopRecord" type="::gui::action::SSlotCaller">
+                <state visible="false" />
+                <slots>
+                    <slot>matricesWriter/stopRecord</slot>
+                    <slot>stopRecord/hide</slot>
+                    <slot>actionRecord/show</slot>
+                </slots>
+            </service>
+
             <!-- hide axis adaptor until a marker is found -->
             <service uid="hideAxis" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
@@ -242,6 +265,11 @@
                     <key uid="camera2" />
                     <key uid="extrinsic" />
                 </out>
+            </service>
+
+            <!-- save poses matrices in a file -->
+            <service uid="matricesWriter" type="::ioTimeline::SMatrixWriter">
+                <in key="data" uid="matrixTL" autoConnect="no" />
             </service>
 
             <!-- Scene in which the video and the 3D will be rendered -->
@@ -556,6 +584,11 @@
             </connect>
 
             <connect>
+                <signal>synchronizer/synchronizationDone</signal>
+                <slot>matricesWriter/write</slot>
+            </connect>
+
+            <connect>
                 <signal>arucoParams/boolChanged</signal>
                 <slot>tracker1/setBoolParameter</slot>
                 <slot>tracker2/setBoolParameter</slot>
@@ -614,6 +647,7 @@
             <start uid="frameGrabber1" />
             <start uid="frameGrabber2" />
             <start uid="synchronizer" />
+            <start uid="matricesWriter" />
             <start uid="tracker1" />
             <start uid="tracker2" />
             <start uid="registration" />

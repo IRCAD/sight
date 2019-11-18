@@ -105,7 +105,7 @@ std::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const ::fwThread:
 
     worker->post(ftask);
 
-    return std::move(ufuture);
+    return ufuture;
 }
 
 //-----------------------------------------------------------------------------

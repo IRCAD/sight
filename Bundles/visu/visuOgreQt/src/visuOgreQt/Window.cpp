@@ -45,18 +45,8 @@ int Window::m_counter = 0;
 
 Window::Window(QWindow* parent) :
     QWindow(parent),
-    m_id(Window::m_counter++),
-    m_ogreRoot(nullptr),
-    m_ogreRenderWindow(nullptr),
-    m_update_pending(false),
-    m_animating(false),
-    m_fullscreen(false),
-    m_lastPosLeftClick(nullptr),
-    m_lastPosMiddleClick(nullptr),
-    m_frameId(0)
+    m_id(Window::m_counter++)
 {
-    setAnimating(false);
-
     connect(this,  &Window::screenChanged, this, &Window::onScreenChanged);
 }
 
@@ -76,7 +66,7 @@ void Window::render(QPainter* painter)
 
 // ----------------------------------------------------------------------------
 
-void Window::initialise()
+void Window::initialize()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -87,7 +77,8 @@ void Window::initialise()
 
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
-    parameters["currentGLContext"] = "true";
+    parameters["currentGLContext"]  = "true";
+    parameters["externalGLControl"] = "true"; // Let us handle buffer swapping and vsync.
 
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
@@ -198,6 +189,8 @@ void Window::render()
     m_ogreRenderWindow->update();
     m_ogreRoot->_fireFrameRenderingQueued();
     m_ogreRoot->_fireFrameEnded();
+
+    m_glContext->swapBuffers(this);
 }
 
 // ----------------------------------------------------------------------------
@@ -271,12 +264,10 @@ bool Window::event(QEvent* event)
 }
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent* exposeEvent)
+void Window::exposeEvent(QExposeEvent*)
 {
-    const bool nonEmptyRegion = !exposeEvent->region().isEmpty();
-
     // Force rendering
-    this->renderNow(nonEmptyRegion);
+    this->renderNow();
 }
 
 // ----------------------------------------------------------------------------
@@ -291,10 +282,10 @@ void Window::moveEvent(QMoveEvent*)
 
 // ----------------------------------------------------------------------------
 
-void Window::renderNow(const bool force)
+void Window::renderNow()
 {
     // Small optimization to not render when not visible
-    if(!force && !isExposed())
+    if(!this->isExposed())
     {
         return;
     }
@@ -459,6 +450,26 @@ void Window::mousePressEvent( QMouseEvent* e )
         info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
     }
 
+    // HACK: send modifiers (if there are any) as keyboard press events first.
+    // TODO: Interaction signals should be refactored to send modifiers.
+    if(e->modifiers())
+    {
+        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo modifierInfo;
+        modifierInfo.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
+
+        switch(e->modifiers())
+        {
+            case ::Qt::ShiftModifier: modifierInfo.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
+            case ::Qt::ControlModifier: modifierInfo.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
+            case ::Qt::MetaModifier: modifierInfo.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
+            case ::Qt::AltModifier: modifierInfo.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
+            default:
+                break;
+        }
+
+        Q_EMIT interacted(modifierInfo);
+    }
+
     Q_EMIT interacted(info);
     this->requestRender();
 }
@@ -582,12 +593,6 @@ void Window::onScreenChanged(QScreen*)
 {
     if(m_ogreRenderWindow != nullptr)
     {
-        // This allows correct rendering on dual screen displays when dragging the window to another screen.
-        QWindow* parent = this->parent();
-        if(parent != nullptr)
-        {
-            parent->requestUpdate();
-        }
         this->ogreResize(this->size());
     }
 }

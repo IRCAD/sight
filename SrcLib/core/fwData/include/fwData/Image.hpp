@@ -600,6 +600,9 @@ inline void Image::setSize2(const Size& size)
 template< typename F >
 inline Image::Iterator<F> Image::begin()
 {
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<typename F::type>().string() + "'",
+                m_type != ::fwTools::Type::create<typename F::type>())
     return Iterator<F>(this);
 }
 
@@ -608,8 +611,13 @@ inline Image::Iterator<F> Image::begin()
 template< typename F >
 inline Image::Iterator<F> Image::end()
 {
+    using FormatType = typename F::type;
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<FormatType>().string() + "'",
+                m_type != ::fwTools::Type::create<FormatType>())
+    const auto elementSize = sizeof(FormatType)*F::elementSize;
     auto itr = Iterator<F>(this);
-    itr += static_cast< typename Iterator<F>::difference_type>(this->getNumElements()/F::elementSize);
+    itr += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/elementSize);
     return itr;
 }
 
@@ -618,6 +626,9 @@ inline Image::Iterator<F> Image::end()
 template< typename F >
 inline Image::ConstIterator<F> Image::begin() const
 {
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<typename F::type>().string() + "'",
+                m_type != ::fwTools::Type::create<typename F::type>())
     return ConstIterator<F>(this);
 }
 
@@ -626,8 +637,13 @@ inline Image::ConstIterator<F> Image::begin() const
 template< typename F >
 inline Image::ConstIterator<F> Image::end() const
 {
+    using FormatType = typename F::type;
+    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
+                ::fwTools::Type::create<FormatType>().string() + "'",
+                m_type != ::fwTools::Type::create<FormatType>())
+    const auto elementSize = sizeof(FormatType)*F::elementSize;
     auto itr = ConstIterator<F>(this);
-    itr += static_cast< typename Iterator<F>::difference_type>(this->getNumElements()/F::elementSize);
+    itr += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/elementSize);
     return itr;
 }
 

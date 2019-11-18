@@ -218,6 +218,8 @@ public:
     ImageIteratorBase(ImageType image);
     /// Copy constructor
     ImageIteratorBase(const ImageIteratorBase<FORMAT, false>& other);
+    /// Copy constructor
+    ImageIteratorBase(const ImageIteratorBase<FORMAT, true>& other);
     /// Destructor
     ~ImageIteratorBase();
 

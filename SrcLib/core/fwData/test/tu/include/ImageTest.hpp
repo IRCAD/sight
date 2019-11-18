@@ -38,10 +38,12 @@ private:
     CPPUNIT_TEST( testReallocation );
     CPPUNIT_TEST( testPixelType );
     CPPUNIT_TEST( testSetGetPixel );
+    CPPUNIT_TEST( testIterator );
     CPPUNIT_TEST( testRGBAIterator );
     CPPUNIT_TEST( testRGBIterator );
     CPPUNIT_TEST( testBGRAIterator );
     CPPUNIT_TEST( testBGRIterator );
+    CPPUNIT_TEST( imageDeepCopy );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,10 +56,12 @@ public:
     void testReallocation();
     void testPixelType();
     void testSetGetPixel();
+    void testIterator();
     void testRGBAIterator();
     void testRGBIterator();
     void testBGRIterator();
     void testBGRAIterator();
+    void imageDeepCopy();
 };
 
 } //namespace ut

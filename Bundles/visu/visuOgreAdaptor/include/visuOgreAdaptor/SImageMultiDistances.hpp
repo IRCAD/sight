@@ -48,13 +48,15 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <config layer="default" />
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="12" />
         </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image containing the distance field.
  * @subsection Configuration Configuration
  * - \b layer(mandatory) : defines distance's layer.
+ * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, default=16): font size in points.
  */
 
 class SImageMultiDistances : public ::fwRenderOgre::IAdaptor,
@@ -255,6 +257,12 @@ private:
 
     /// Pointer to the material data
     ::fwData::Material::sptr m_material {nullptr};
+
+    /// TrueType font source file.
+    std::string m_fontSource { "DejaVuSans.ttf" };
+
+    /// Font size in points.
+    size_t m_fontSize { 16 };
 
 };
 }

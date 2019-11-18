@@ -22,6 +22,8 @@
 
 #include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
 
+#include "fwGuiQt/App.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwGui/registry/macros.hpp>
@@ -92,11 +94,11 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
                        !hasCentral);
 
-            if(viewInfo.m_backgroundColor != "default")
+            if(!viewInfo.m_backgroundColor.empty())
             {
                 const QString style = QString::fromStdString(
                     "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                widget->setStyleSheet(style);
+                widget->setStyleSheet(style + qApp->styleSheet());
             }
 
             if (viewInfo.m_useScrollBar)
@@ -104,11 +106,11 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 scrollArea = new QScrollArea(m_qtWindow);
                 scrollArea->setWidget(widget);
                 scrollArea->setWidgetResizable( true );
-                if(viewInfo.m_backgroundColor != "default")
+                if(!viewInfo.m_backgroundColor.empty())
                 {
                     const QString style = QString::fromStdString(
                         "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                    scrollArea->setStyleSheet(style);
+                    scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
                 m_qtWindow->setCentralWidget(scrollArea);
             }

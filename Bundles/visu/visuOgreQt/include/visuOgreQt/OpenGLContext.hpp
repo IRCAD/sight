@@ -47,7 +47,7 @@ public:
      * @param _sharedContext context to share resources with or nullptr for no context sharing.
      * @pre   if a _sharedContext is used then it must be on the same thread as the one calling this method.
      */
-    static QOpenGLContext* createOgreGLContext(QOpenGLContext* _sharedContext = nullptr);
+    static QOpenGLContext* createOgreGLContext(QOpenGLContext* const _sharedContext = nullptr);
 
 private:
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _i
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* _parentNode)
+::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* const _parentNode)
 {
     SLM_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
     m_transformNode = this->getTransformNode(m_transformId, _parentNode);
@@ -55,7 +55,7 @@ void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType _i
 //------------------------------------------------------------------------------
 
 ::Ogre::SceneNode* ITransformable::getTransformNode(const std::string& _name,
-                                                    ::Ogre::SceneNode* _parentNode)
+                                                    ::Ogre::SceneNode* const _parentNode)
 {
     SLM_ASSERT("Transform name is not set.", !_name.empty());
     auto transformNode = ::fwRenderOgre::helper::Scene::getNodeById(_name, _parentNode);

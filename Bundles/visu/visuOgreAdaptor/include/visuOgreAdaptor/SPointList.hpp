@@ -62,8 +62,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SPointList" >
         <in key="pointList" uid="..." />
-        <config layer="..." transform="..." textureName="..." radius="1.0" displayLabel="false" charHeight="0.03"
- * labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" />
+        <config layer="..." transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
+ *              labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -86,12 +86,12 @@ namespace visuOgreAdaptor
  * - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
  * - \b radius (optional, default=1.f) : billboard radius.
  * - \b displayLabel (optional, default=false) : display the label points (default = false).
- * - \b charHeight (optional): size of the character label (default = 0.03).
  * - \b labelColor (optional, default=0xFFFFFF): color of the label in hexadecimal (default = white).
  * - \b fixedSize (optional, default="false") : if true, the billboard will have a fixed size in screen space.
- * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
- * flag.
+ * - \b queryFlags (optional, default=0x40000000): Picking flags. Points can be picked by pickers with a matching mask.
  * - \b visible (optional, default=true): If pointlist should be visible or not at start.
+ * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, default=16): font size in points.
  */
 class VISUOGREADAPTOR_CLASS_API SPointList : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable
@@ -244,9 +244,6 @@ private:
     /// Display the labelNumber
     bool m_displayLabel {false};
 
-    /// Size of the character label
-    float m_charHeight {0.03f};
-
     /// RGB Color for the labelPoint color
     ::fwData::Color::sptr m_labelColor {nullptr};
 
@@ -260,7 +257,14 @@ private:
     std::vector< ::Ogre::SceneNode* > m_nodes;
 
     /// Scene node where all of our manual objects are attached
-    ::Ogre::SceneNode* m_sceneNode {nullptr};
+    ::Ogre::SceneNode* m_sceneNode { nullptr };
+
+    /// TrueType font source file.
+    std::string m_fontSource {"DejaVuSans.ttf"};
+
+    /// Font size in points.
+    size_t m_fontSize { 16 };
+
 };
 
 //------------------------------------------------------------------------------

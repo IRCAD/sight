@@ -104,7 +104,7 @@ std::shared_future< R > SlotCall< R(A ...) >::postWeakCall( const ::fwThread::Wo
 
     worker->post(ftask);
 
-    return std::move(ufuture);
+    return ufuture;
 }
 
 } // namespace fwCom

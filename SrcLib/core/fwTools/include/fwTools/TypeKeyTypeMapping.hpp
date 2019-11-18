@@ -40,7 +40,6 @@ namespace fwTools
  * Header declare function already specialized while src provide definition
  * @warning isMapping does not need to be exported since fwTools Library is builded as static
  */
-// FIX UNSIGNED
 template<> FWTOOLS_API
 bool isMapping<std::uint8_t>(const Type& type);
 

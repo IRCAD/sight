@@ -29,7 +29,7 @@ namespace fwTools
 template<>
 bool isMapping<std::uint8_t>(const Type& type)
 {
-    return type.isOfType<std::int8_t>();
+    return type.isOfType<std::uint8_t>();
 }
 //------------------------------------------------------------------------------
 

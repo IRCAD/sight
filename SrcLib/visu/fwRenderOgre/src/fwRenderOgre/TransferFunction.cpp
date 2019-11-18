@@ -92,7 +92,7 @@ void TransferFunction::removeTexture()
 {
     if(m_texture)
     {
-        ::Ogre::TextureManager::getSingleton().remove(m_texture->getHandle());
+        ::Ogre::TextureManager::getSingleton().remove(m_texture);
     }
     m_texture.reset();
 }
