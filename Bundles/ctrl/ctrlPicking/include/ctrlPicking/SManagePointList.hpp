@@ -39,7 +39,7 @@ namespace ctrlPicking
  * @section Slots Slots
  * - \b pick(::fwDataTools::PickingInfo): Add or remove the closest point to the picking position, actions occur when
  * `CTRL` is pressed.
- * - \b clearPoints(): Remove all points from the points lists.
+ * - \b clearPoints(): Remove all points from the point lists.
 
  * @section XML XML Configuration
  *
@@ -55,11 +55,11 @@ namespace ctrlPicking
  * - \b pointList [::fwData::PointList]: Target point list.
  *
  * @subsection Input Input:
- * - \b matrix [::fwData::TransformationMatrix3D](optional): Apply a transformation matrix on a picked point.
+ * - \b matrix [::fwData::TransformationMatrix3D](optional): Transformation applied to picked positions.
  *
  * @subsection Configuration Configuration:
  * - \b max (optional, default=0): Set the maximum number of points contained in the point list, if it's 0, the capacity
- * is set to the maximum. If the maximum is reached, the oldest point added to the list will be removed.
+ * is set to the maximum. If the maximum is reached, the first point in the list will be removed.
  * - \b removable (optional, default=true): Allow points to be removed.
  * - \b label (optional, default=false): Add an ID label to added points.
  */
