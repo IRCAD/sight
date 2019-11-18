@@ -93,7 +93,7 @@ private:
     /// Ogre transform node.
     ::Ogre::SceneNode* m_transformNode {nullptr};
 
-    /// Ogre parent Transform sceneNode.
+    /// Ogre parent transform sceneNode.
     ::Ogre::SceneNode* m_parentTransformNode {nullptr};
 
     /// Ogre transformation of this service
