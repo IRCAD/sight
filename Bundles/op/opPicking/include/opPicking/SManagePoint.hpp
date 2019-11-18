@@ -44,31 +44,37 @@ namespace opPicking
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::opPicking::SAddPoint">
+        <service uid="..." type="::opPicking::SManagePoint">
             <inout key="pointList" uid="..." />
-            <config max="0" removable="true" />
+            <in key="matrix" uid="..." />
+            <config max="0" removable="true" label="false" />
        </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b pointList [::fwData::PointList]: Target point list.
+ *
+ * @subsection Input Input:
+ * - \b matrix [::fwData::TransformationMatrix3D](optional): Apply a transformation matrix on a picked point.
  *
  * @subsection Configuration Configuration:
  * - \b max (optional, default=0): Set the maximum number of points contained in the point list, if it's 0, the capacity
  * is set to the maximum. If the maximum is reached, the oldest point added to the list will be removed.
  * - \b removable (optional, default=true): Allow points to be removed.
+ * - \b label (optional, default=false): Add an ID label to added points.
  */
-class OPPICKING_CLASS_API SAddPoint : public ::fwServices::IController
+class OPPICKING_CLASS_API SManagePoint : public ::fwServices::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SAddPoint, ::fwServices::IController)
+    fwCoreServiceMacro(SManagePoint, ::fwServices::IController)
 
     /// Initialize slots.
-    OPPICKING_API SAddPoint() noexcept;
+    OPPICKING_API SManagePoint() noexcept;
 
     /// Destroys the service.
-    OPPICKING_API virtual ~SAddPoint() noexcept final;
+    OPPICKING_API virtual ~SManagePoint() noexcept final;
 
 private:
 
@@ -85,31 +91,34 @@ private:
     virtual void stopping() final;
 
     /**
-     * @brief Add a point in the point list
-     * @param _point the point added to the list.
-     */
-    void addPoint(const ::fwData::Point::sptr _point) const;
-
-    /**
-     * @brief Remove a point from the point list.
-     * @param _point the point removed from the list.
-     */
-    void removePoint(const ::fwData::Point::csptr _point) const;
-
-    /**
      * @brief SLOT: Add or remove a point from picking informations.
      * @param _info picking informations.
      */
     void pick(::fwDataTools::PickingInfo _info) const;
 
-    /// SLOT: Clear the point list.
+    /**
+     * @brief Adds a point in the point list
+     * @param _point the point added to the list.
+     */
+    void addPoint(const ::fwData::Point::sptr _point) const;
+
+    /**
+     * @brief Removes a point from the point list.
+     * @param _point the point removed from the list.
+     */
+    void removePoint(const ::fwData::Point::csptr _point) const;
+
+    /// SLOT: Clears the point list.
     void clearPoints() const;
 
     /// Maximum number of contained points.
     size_t m_max {0};
 
-    /// Allow points to be removed.
+    /// Allows points to be removed.
     bool m_removable {true};
+
+    /// Allows to add an ID label the points.
+    bool m_label {false};
 
 };
 } // opPicking

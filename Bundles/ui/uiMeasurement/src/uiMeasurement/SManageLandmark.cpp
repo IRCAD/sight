@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::uiMeasurement::SManageLandmark, ::fwData::PointList);
+fwServicesRegisterMacro(::fwServices::IController, ::uiMeasurement::SManageLandmark, ::fwData::PointList)
 
 namespace uiMeasurement
 {
@@ -47,6 +47,8 @@ const ::fwCom::Slots::SlotKeyType SManageLandmark::s_CLEAR_SLOT           = "cle
 SManageLandmark::SManageLandmark() noexcept :
     m_counter(0)
 {
+    FW_DEPRECATED("::uiMeasurement::SManageLandmark", "::opPicking::SManagePoint", "21.0");
+
     newSlot(s_CREATE_LANDMARK_SLOT, &SManageLandmark::createLandmark, this);
     newSlot(s_CLEAR_SLOT, &SManageLandmark::clearPointlist, this);
 }
