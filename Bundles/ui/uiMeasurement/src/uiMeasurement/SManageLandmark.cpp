@@ -47,7 +47,7 @@ const ::fwCom::Slots::SlotKeyType SManageLandmark::s_CLEAR_SLOT           = "cle
 SManageLandmark::SManageLandmark() noexcept :
     m_counter(0)
 {
-    FW_DEPRECATED("::uiMeasurement::SManageLandmark", "::opPicking::SManagePoint", "21.0");
+    FW_DEPRECATED("::uiMeasurement::SManageLandmark", "::ctrlPicking::SManagePointList", "21.0");
 
     newSlot(s_CREATE_LANDMARK_SLOT, &SManageLandmark::createLandmark, this);
     newSlot(s_CLEAR_SLOT, &SManageLandmark::clearPointlist, this);

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "opPicking/SManagePoint.hpp"
+#include "ctrlPicking/SManagePointList.hpp"
 
 #include <fwCom/Connection.hpp>
 #include <fwCom/Signal.hxx>
@@ -41,7 +41,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-namespace opPicking
+namespace ctrlPicking
 {
 
 static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT         = "pick";
@@ -55,25 +55,23 @@ static const std::string s_MAX_CONFIG       = "max";
 static const std::string s_REMOVABLE_CONFIG = "removable";
 static const std::string s_LABEL_CONFIG     = "label";
 
-fwServicesRegisterMacro( ::fwServices::IController, ::opPicking::SManagePoint, ::fwData::PointList)
-
 //------------------------------------------------------------------------------
 
-SManagePoint::SManagePoint() noexcept
+SManagePointList::SManagePointList() noexcept
 {
-    newSlot(s_PICK_SLOT, &SManagePoint::pick, this );
-    newSlot(s_CLEAR_POINTS_SLOT, &SManagePoint::clearPoints, this );
+    newSlot(s_PICK_SLOT, &SManagePointList::pick, this );
+    newSlot(s_CLEAR_POINTS_SLOT, &SManagePointList::clearPoints, this );
 }
 
 //------------------------------------------------------------------------------
 
-SManagePoint::~SManagePoint() noexcept
+SManagePointList::~SManagePointList() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::configuring()
+void SManagePointList::configuring()
 {
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
@@ -84,25 +82,25 @@ void SManagePoint::configuring()
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::starting()
+void SManagePointList::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::updating()
+void SManagePointList::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::stopping()
+void SManagePointList::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::pick(::fwDataTools::PickingInfo _info) const
+void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
 {
     if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
     {
@@ -140,7 +138,7 @@ void SManagePoint::pick(::fwDataTools::PickingInfo _info) const
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::addPoint(const ::fwData::Point::sptr _point) const
+void SManagePointList::addPoint(const ::fwData::Point::sptr _point) const
 {
     const auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
     SLM_ASSERT("'" + s_POINTLIST_INOUT + "' does not exist.", pointList);
@@ -170,7 +168,7 @@ void SManagePoint::addPoint(const ::fwData::Point::sptr _point) const
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::removePoint(const ::fwData::Point::csptr _point) const
+void SManagePointList::removePoint(const ::fwData::Point::csptr _point) const
 {
     if(m_removable)
     {
@@ -192,7 +190,7 @@ void SManagePoint::removePoint(const ::fwData::Point::csptr _point) const
 
 //------------------------------------------------------------------------------
 
-void SManagePoint::clearPoints() const
+void SManagePointList::clearPoints() const
 {
     const auto pointList = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
     SLM_ASSERT("'" + s_POINTLIST_INOUT + "' does not exist.", pointList);
@@ -212,4 +210,4 @@ void SManagePoint::clearPoints() const
     }
 }
 
-} // namespace opPicking
+} // namespace ctrlPicking

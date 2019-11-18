@@ -22,23 +22,23 @@
 
 #pragma once
 
-#include "opPicking/config.hpp"
+#include "ctrlPicking/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace opPicking
+namespace ctrlPicking
 {
 
 /// @brief This class is started when the bundle is loaded.
-struct OPPICKING_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct CTRLPICKING_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
-    OPPICKING_API ~Plugin();
+    CTRLPICKING_API ~Plugin();
 
-    OPPICKING_API void start();
+    CTRLPICKING_API void start();
 
-    OPPICKING_API void stop() noexcept;
+    CTRLPICKING_API void stop() noexcept;
 
 };
 
-} // namespace opPicking
+} // namespace ctrlPicking

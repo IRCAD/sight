@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "opPicking/config.hpp"
+#include "ctrlPicking/config.hpp"
 
 #include <fwData/Point.hpp>
 
@@ -30,7 +30,7 @@
 
 #include <fwServices/IController.hpp>
 
-namespace opPicking
+namespace ctrlPicking
 {
 
 /**
@@ -44,7 +44,7 @@ namespace opPicking
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::opPicking::SManagePoint">
+        <service uid="..." type="::ctrlPicking::SManagePointList">
             <inout key="pointList" uid="..." />
             <in key="matrix" uid="..." />
             <config max="0" removable="true" label="false" />
@@ -63,18 +63,18 @@ namespace opPicking
  * - \b removable (optional, default=true): Allow points to be removed.
  * - \b label (optional, default=false): Add an ID label to added points.
  */
-class OPPICKING_CLASS_API SManagePoint : public ::fwServices::IController
+class CTRLPICKING_CLASS_API SManagePointList : public ::fwServices::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SManagePoint, ::fwServices::IController)
+    fwCoreServiceMacro(SManagePointList, ::fwServices::IController)
 
     /// Initialize slots.
-    OPPICKING_API SManagePoint() noexcept;
+    CTRLPICKING_API SManagePointList() noexcept;
 
     /// Destroys the service.
-    OPPICKING_API virtual ~SManagePoint() noexcept final;
+    CTRLPICKING_API virtual ~SManagePointList() noexcept final;
 
 private:
 
@@ -121,4 +121,4 @@ private:
     bool m_label {false};
 
 };
-} // opPicking
+} // ctrlPicking

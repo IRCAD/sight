@@ -20,9 +20,35 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "ctrlPicking/Plugin.hpp"
 
-/// @brief The namespace opPicking contains services for picking operation
-namespace opPicking
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+namespace ctrlPicking
 {
-} // namespace opPicking
+
+//------------------------------------------------------------------------------
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ctrlPicking::Plugin");
+
+//------------------------------------------------------------------------------
+
+Plugin::~Plugin()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::start()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::stop() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace ctrlPicking
