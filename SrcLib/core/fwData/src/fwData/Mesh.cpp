@@ -677,7 +677,7 @@ void Mesh::setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2
 }
 //------------------------------------------------------------------------------
 
-void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType> pointIds)
+void Mesh::setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType>& pointIds)
 {
     this->setCell(id, type, pointIds.data(), pointIds.size());
 }

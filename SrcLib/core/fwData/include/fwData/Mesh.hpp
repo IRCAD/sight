@@ -618,7 +618,7 @@ public:
     FWDATA_API void setCell(::fwData::Mesh::Id id, CellValueType idP1, CellValueType idP2, CellValueType idP3,
                             CellValueType idP4,
                             CellType type = CellType::QUAD);
-    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType> pointIds);
+    FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const std::vector<CellValueType>& pointIds);
     FWDATA_API void setCell(::fwData::Mesh::Id id, CellType type, const CellValueType* pointIds, size_t nbPoints );
     /// @}
 
