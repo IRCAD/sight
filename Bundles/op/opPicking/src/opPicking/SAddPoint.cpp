@@ -169,11 +169,19 @@ void SAddPoint::clearPoints() const
 
     const ::fwData::mt::ObjectWriteLock lock(pointList);
 
+    using PLContainer = ::fwData::PointList::PointListContainer;
+    const PLContainer container = pointList->getPoints();
     pointList->clear();
-    const auto& sig = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
-        ::fwData::PointList::s_MODIFIED_SIG);
+
+    for(PLContainer::size_type i = 0; i < container.size(); ++i)
     {
-        sig->asyncEmit();
+        const ::fwData::Point::sptr point = container[i];
+
+        const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+            ::fwData::PointList::s_POINT_REMOVED_SIG);
+        {
+            sig->asyncEmit(point);
+        }
     }
 }
 
