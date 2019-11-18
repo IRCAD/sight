@@ -46,6 +46,7 @@ namespace opPicking
  * @code{.xml}
         <service uid="..." type="::opPicking::SAddPoint">
             <inout key="pointList" uid="..." />
+            <config max="0" removable="true" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
@@ -90,7 +91,7 @@ private:
     void addPoint(const ::fwData::Point::sptr _point) const;
 
     /**
-     * @brief Remove a point in the point list.
+     * @brief Remove a point from the point list.
      * @param _point the point removed from the list.
      */
     void removePoint(const ::fwData::Point::csptr _point) const;

@@ -79,12 +79,12 @@ private:
     /// Does nothing.
     virtual void updating() final;
 
-    /// Configure the service.
+    /// Configures the service.
     virtual void configuring() final;
 
     /**
-     * @brief SLOT: This method transform the picking coordinate.
-     * @param _info picking informations.
+     * @brief SLOT: This method transforms picking coordinates.
+     * @param _info picking information.
      */
     void pickedPoint(::fwDataTools::PickingInfo _info);
 
