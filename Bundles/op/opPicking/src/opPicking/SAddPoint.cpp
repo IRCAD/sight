@@ -102,10 +102,11 @@ void SAddPoint::addPoint(const ::fwData::Point::sptr _point) const
         pointList->pushBack(_point);
         if(m_max != 0 && pointList->getPoints().size() > m_max)
         {
+            const ::fwData::Point::sptr removedPoint = pointList->getPoints()[0];
             pointList->remove(0);
             const auto& sig = pointList->signal< ::fwData::PointList::PointRemovedSignalType >(
                 ::fwData::PointList::s_POINT_REMOVED_SIG);
-            sig->asyncEmit(_point);
+            sig->asyncEmit(removedPoint);
         }
     }
 
