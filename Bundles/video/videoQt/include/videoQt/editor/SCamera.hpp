@@ -87,59 +87,21 @@ namespace editor
  * - \b createCameraNumber (optional, by default "0") : number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
  */
-class VIDEOQT_CLASS_API SCamera : public QObject,
-                                  public ::fwGui::editor::IEditor
+class VIDEOQT_CLASS_API SCamera final : public QObject,
+                                        public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCamera, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCamera, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
-    VIDEOQT_API SCamera() noexcept;
+    VIDEOQT_API SCamera();
 
     /// Destructor. Do nothing.
     VIDEOQT_API virtual ~SCamera() noexcept;
-
-    /// Type of the 'configuredCameras' signal
-    using ConfiguredCamerasSignalType = ::fwCom::Signal<void()>;
-
-    /// Key of the 'configuredCameras' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
-
-    /// Key of the 'configuredDevice' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_DEVICE_SIG;
-
-    /// Key of the 'configuredFile' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_FILE_SIG;
-
-    /// Key of the 'configuredStream' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG;
-
-    /// Key of the 'configureDevice' slot
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT;
-    /// Key of the 'configureFile' slot
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT;
-    /// Key of the 'configureStream' slot
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT;
-
-protected:
-
-    /// Configure the service
-    virtual void configuring() override;
-
-    /// Installs the layout
-    virtual void starting() override;
-
-    /// Destroys the layout
-    virtual void stopping() override;
-
-    /// Does nothing
-    virtual void updating() override;
-
-    /// Does nothing
-    virtual void swapping() override;
 
 protected Q_SLOTS:
 
@@ -148,10 +110,26 @@ protected Q_SLOTS:
 
 private:
 
-    typedef ::fwCom::Signal< void () > SourceConfiguredSignal;
+    /// Type of the 'configured' signal.
+    typedef ::fwCom::Signal<void()> ConfiguredSignalType;
 
+    /// Configure the service
+    virtual void configuring() final;
+
+    /// Installs the layout
+    virtual void starting() final;
+
+    /// Destroys the layout
+    virtual void stopping() final;
+
+    /// Does nothing
+    virtual void updating() final;
+
+    /// Does nothing
     void onChooseFile();
+
     void onChooseStream();
+
     void onChooseDevice();
 
     /// Retrieve camera objects according to the XML configuration
@@ -161,13 +139,13 @@ private:
     QPointer<QComboBox> m_devicesComboBox;
 
     /// Do we offer the possibility to select a video file (no by default) ?
-    bool m_bVideoSupport;
+    bool m_bVideoSupport {false};
 
     /// Number of cameras to create when using a camera series as input
-    size_t m_numCreateCameras;
+    size_t m_numCreateCameras {0};
 
     /// Signal emitted when the cameraSeries has been configured
-    ConfiguredCamerasSignalType::sptr m_sigConfiguredCameras;
+    ConfiguredSignalType::sptr m_sigConfiguredCameras;
 };
 
 } // editor
