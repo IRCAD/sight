@@ -42,25 +42,25 @@ namespace editor
 {
 
 /**
- * @brief   This editor allows to select the device to use. It updates the data camera identifier.
+ * @brief This editor allows to select the device to use. It updates the data camera identifier.
  *
  * @section Signals Signals
- * - \b configuredCameras(): emitted when the cameras have been successfully configured.
- * - \b configuredDevice(): emitted when the user selects a device as the video source.
- * - \b configuredFile(): emitted when the user selects a file as the video source.
- * - \b configuredStream(): emitted when the user selects a stream as the video source.
+ * - \b configuredCameras(): Emitted when the cameras have been successfully configured.
+ * - \b configuredDevice(): Emitted when the user selects a device as the video source.
+ * - \b configuredFile(): Emitted when the user selects a file as the video source.
+ * - \b configuredStream(): Emitted when the user selects a stream as the video source.
  *
  * @section Slots Slots
- * - \b configureDevice(): configure the cameras as device sources.
- * - \b configureFile(): configure the cameras as file sources.
- * - \b configureStream(): configure the cameras as stream sources.
+ * - \b configureDevice(): Configure the cameras as device sources.
+ * - \b configureFile(): Configure the cameras as file sources.
+ * - \b configureStream(): Configure the cameras as stream sources.
  *
  * @section XML XML Configuration
  *
  * Configure this service either with a single camera data:
  *
  * @code{.xml}
-    <service uid="..." type="::videoQt::editor::SCamera" autoConnect="no">
+    <service uid="..." type="::videoQt::editor::SCamera" >
         <inout key="camera" uid="..."/>
         <videoSupport>yes</videoSupport>
     </service>
@@ -71,7 +71,7 @@ namespace editor
  * \b createCameraNumber. This may be useful to load/save camera data without an existing calibration.
  *
  * @code{.xml}
-    <service uid="..." type="::videoQt::editor::SCamera" autoConnect="no">
+    <service uid="..." type="::videoQt::editor::SCamera" >
         <inout key="cameraSeries" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
         <videoSupport>yes</videoSupport>
@@ -79,12 +79,12 @@ namespace editor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b camera [::arData::Camera]: camera data
- * - \b cameraSeries [::arData::CameraSeries]: camera series, thus containing several camera.
+ * - \b camera [::arData::Camera]: Camera data.
+ * - \b cameraSeries [::arData::CameraSeries]: Camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
- * - \b videoSupport (optional, by default "no") : if we can open a video file in addition with cameras.
- * - \b createCameraNumber (optional, by default "0") : number of cameras to create. If the parameter is set and the
+ * - \b videoSupport (optional, default="no"): If we can open a video file in addition with cameras.
+ * - \b createCameraNumber (optional, default="0"): Number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
  */
 class VIDEOQT_CLASS_API SCamera final : public QObject,
@@ -97,54 +97,59 @@ public:
 
     fwCoreServiceMacro(SCamera, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
+    /// Initialize signals and slots.
     VIDEOQT_API SCamera();
 
-    /// Destructor. Do nothing.
+    /// Destroys the service.
     VIDEOQT_API virtual ~SCamera() noexcept;
 
 protected Q_SLOTS:
 
-    /// Calls when user select another device
-    void onApply(int index);
+    /**
+     * @brief Calls when user select another device.
+     * @param _index the index of the selected device.
+     */
+    void onApply(int _index);
 
 private:
 
     /// Type of the 'configured' signal.
-    typedef ::fwCom::Signal<void()> ConfiguredSignalType;
+    typedef ::fwCom::Signal<void ()> ConfiguredSignalType;
 
-    /// Configure the service
+    /// Configures the service.
     virtual void configuring() final;
 
-    /// Installs the layout
+    /// Installs the layout.
     virtual void starting() final;
 
-    /// Destroys the layout
+    /// Destroys the layout.
     virtual void stopping() final;
 
-    /// Does nothing
+    /// Does nothing.
     virtual void updating() final;
 
-    /// Does nothing
+    /// Calls when user select a file.
     void onChooseFile();
 
+    /// Calls when user select a stream.
     void onChooseStream();
 
+    /// Calls when user select a device.
     void onChooseDevice();
 
-    /// Retrieve camera objects according to the XML configuration
+    /// Retrieve camera objects according to the XML configuration.
     std::vector< ::arData::Camera::sptr > getCameras() const;
 
-    /// Combobox for camera selection
+    /// Combobox for camera selection.
     QPointer<QComboBox> m_devicesComboBox;
 
-    /// Do we offer the possibility to select a video file (no by default) ?
+    /// Offer the possibility to select a video file.
     bool m_bVideoSupport {false};
 
-    /// Number of cameras to create when using a camera series as input
+    /// Number of cameras to create when using a camera series as input.
     size_t m_numCreateCameras {0};
 
-    /// Signal emitted when the cameraSeries has been configured
+    /// Signal emitted when the cameraSeries has been configured.
     ConfiguredSignalType::sptr m_sigConfiguredCameras;
 };
 
