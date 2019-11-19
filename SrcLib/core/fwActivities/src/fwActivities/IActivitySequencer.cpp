@@ -77,7 +77,7 @@ int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& serie
         }
         else
         {
-            const auto&[ok, _] = this->validateActivity(activity);
+            const bool ok = this->validateActivity(activity).first;
             if(ok)
             {
                 ++lastActivityIndex;
