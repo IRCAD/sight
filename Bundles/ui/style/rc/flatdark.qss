@@ -137,7 +137,6 @@ QMenu::indicator:non-exclusive
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
     margin-left: -22px;
     margin-right: 22px;
 }
@@ -177,7 +176,6 @@ QMenu::indicator:exclusive
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
     margin-left: -22px;
     margin-right: 22px;
 }
@@ -404,7 +402,6 @@ QCheckBox::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QCheckBox::indicator:unchecked:hover,
@@ -454,7 +451,6 @@ QGroupBox::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QGroupBox::indicator:unchecked:hover,
@@ -840,7 +836,6 @@ QScrollBar::down-arrow:vertical
     background: transparent;
 }
 
-
 QScrollBar::add-page:vertical,
 QScrollBar::sub-page:vertical
 {
@@ -868,7 +863,6 @@ QRadioButton::indicator
     border-radius: 7px;
     width: 10px;
     height: 10px;
-    pading: 10px;
 }
 
 QRadioButton::indicator:unchecked:hover,
@@ -953,7 +947,6 @@ QListView::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QListView::indicator:unchecked:hover,
@@ -1031,7 +1024,6 @@ QTreeView::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QTreeView::indicator:unchecked:hover,
