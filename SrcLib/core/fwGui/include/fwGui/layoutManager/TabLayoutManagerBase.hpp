@@ -61,6 +61,10 @@ public:
         }
 
         int m_border;
+        int m_leftBorder {0};
+        int m_topBorder {0};
+        int m_rightBorder {0};
+        int m_bottomBorder {0};
         std::pair< int, int >  m_minSize;
         std::string m_caption;
         bool m_isSelect;

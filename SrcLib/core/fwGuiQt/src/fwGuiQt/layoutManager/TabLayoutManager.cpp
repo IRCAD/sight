@@ -67,12 +67,27 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
 
     for ( ViewInfo viewInfo : views)
     {
-        const int border        = viewInfo.m_border;
+        int leftBorder;
+        int topBorder;
+        int rightBorder;
+        int bottomBorder;
+        if(viewInfo.m_border != 0)
+        {
+            leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
+        }
+        else
+        {
+            leftBorder   = viewInfo.m_leftBorder;
+            topBorder    = viewInfo.m_topBorder;
+            rightBorder  = viewInfo.m_rightBorder;
+            bottomBorder = viewInfo.m_bottomBorder;
+        }
+
         QWidget* const widget   = new QWidget(m_tabWidget);
         const int minWidthSize  = std::max(viewInfo.m_minSize.first, 0);
         const int minHeightSize = std::max(viewInfo.m_minSize.second, 0);
         widget->setMinimumSize(minWidthSize, minHeightSize);
-        widget->setContentsMargins(border, border, border, border);
+        widget->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
 
         if(!viewInfo.m_backgroundColor.empty())
         {

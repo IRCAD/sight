@@ -33,14 +33,14 @@
 #include <QScrollArea>
 #include <QStyle>
 
-fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY )
 
 namespace fwGui
 {
 
 //-----------------------------------------------------------------------------
 
-LineLayoutManager::LineLayoutManager(::fwGui::GuiBaseObject::Key key)
+LineLayoutManager::LineLayoutManager(::fwGui::GuiBaseObject::Key)
 {
 }
 
@@ -79,20 +79,38 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
         else
         {
             QWidget* panel;
-            int border = viewInfo.m_border;
+            int leftBorder;
+            int topBorder;
+            int rightBorder;
+            int bottomBorder;
+            if(viewInfo.m_border != 0)
+            {
+                leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
+            }
+            else
+            {
+                leftBorder   = viewInfo.m_leftBorder;
+                topBorder    = viewInfo.m_topBorder;
+                rightBorder  = viewInfo.m_rightBorder;
+                bottomBorder = viewInfo.m_bottomBorder;
+            }
+
             if(viewInfo.m_caption.first)
             {
                 QGroupBox* groupbox = new QGroupBox();
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
-                panel   = groupbox;
-                border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
+                panel         = groupbox;
+                leftBorder   += groupbox->style()->pixelMetric(QStyle::PM_LayoutLeftMargin);
+                topBorder    += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
+                rightBorder  += groupbox->style()->pixelMetric(QStyle::PM_LayoutRightMargin);
+                bottomBorder += groupbox->style()->pixelMetric(QStyle::PM_LayoutBottomMargin);
             }
             else
             {
                 panel = new QWidget();
             }
             panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
-            panel->setContentsMargins(border, border, border, border);
+            panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
             if(!viewInfo.m_toolTip.empty())
             {
                 panel->setToolTip(QString::fromStdString(viewInfo.m_toolTip));

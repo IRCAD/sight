@@ -73,10 +73,25 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
     const std::list< ViewInfo>& views = this->getViewsInfo();
     for ( ViewInfo viewInfo : views)
     {
-        int border     = viewInfo.m_border;
+        int leftBorder;
+        int topBorder;
+        int rightBorder;
+        int bottomBorder;
+        if(viewInfo.m_border != 0)
+        {
+            leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
+        }
+        else
+        {
+            leftBorder   = viewInfo.m_leftBorder;
+            topBorder    = viewInfo.m_topBorder;
+            rightBorder  = viewInfo.m_rightBorder;
+            bottomBorder = viewInfo.m_bottomBorder;
+        }
+
         QWidget* panel = new QWidget();
         panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
-        panel->setContentsMargins(border, border, border, border);
+        panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
         if(!viewInfo.m_backgroundColor.empty())
         {
             const QString style = QString::fromStdString(
