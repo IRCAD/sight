@@ -63,6 +63,7 @@ namespace editor
     <service uid="..." type="::videoQt::editor::SCamera" >
         <inout key="camera" uid="..."/>
         <videoSupport>yes</videoSupport>
+        <label>Video source: </label>
     </service>
    @endcode
 
@@ -75,6 +76,7 @@ namespace editor
         <inout key="cameraSeries" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
         <videoSupport>yes</videoSupport>
+        <label>Video source: </label>
     </service>
    @endcode
  *
@@ -86,6 +88,7 @@ namespace editor
  * - \b videoSupport (optional, default="no"): If we can open a video file in addition with cameras.
  * - \b createCameraNumber (optional, default="0"): Number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
+ * - \b label (optional, default="Video source: "): Label of the selector.
  */
 class VIDEOQT_CLASS_API SCamera final : public QObject,
                                         public ::fwGui::editor::IEditor
@@ -151,6 +154,10 @@ private:
 
     /// Signal emitted when the cameraSeries has been configured.
     ConfiguredSignalType::sptr m_sigConfiguredCameras;
+
+    /// Label of the selector.
+    std::string m_label {"Video source: "};
+
 };
 
 } // editor

@@ -72,6 +72,10 @@ static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStr
 static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
 static const ::fwServices::IService::KeyType s_CAMERA_INOUT        = "camera";
 
+static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
+static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
+static const std::string s_LABEL_CONFIG                = "label";
+
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::videoQt::editor::SCamera )
 
 //------------------------------------------------------------------------------
@@ -100,8 +104,9 @@ void SCamera::configuring()
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    m_bVideoSupport    = (config.get<std::string>("videoSupport", "no") == "yes");
-    m_numCreateCameras = config.get<size_t>("createCameraNumber", 0);
+    m_bVideoSupport    = (config.get<std::string>(s_VIDEO_SUPPORT_CONFIG, "no") == "yes");
+    m_numCreateCameras = config.get<size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
+    m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
 
     this->initialize();
 }
@@ -115,10 +120,15 @@ void SCamera::starting()
     const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    QPointer<QHBoxLayout> layout       = new QHBoxLayout();
-    const QPointer<QLabel> sourceLabel = new QLabel(QObject::tr("Video source: "));
+    QPointer<QHBoxLayout> layout = new QHBoxLayout();
+
+    if(!m_label.empty())
+    {
+        const QPointer<QLabel> sourceLabel = new QLabel(QString::fromStdString(m_label));
+        layout->addWidget(sourceLabel);
+    }
+
     m_devicesComboBox = new QComboBox();
-    layout->addWidget(sourceLabel);
     layout->addWidget(m_devicesComboBox);
 
     m_devicesComboBox->addItem("Device...", "device");
