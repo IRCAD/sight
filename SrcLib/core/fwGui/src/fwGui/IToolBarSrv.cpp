@@ -158,7 +158,9 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
-            m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
+            const bool isInverted = actionSrv->getIsInverted();
+            const bool isActive   = actionSrv->getIsActive();
+            m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
             m_layoutManager->menuItemSetVisible(menuItem, actionSrv->isVisible());
         })).wait();
 }
@@ -170,9 +172,13 @@ void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
+    ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
+    ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
-            m_layoutManager->menuItemSetChecked(menuItem, isActive);
+            const bool isInverted = actionSrv->getIsInverted();
+            m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
         })).wait();
 }
 

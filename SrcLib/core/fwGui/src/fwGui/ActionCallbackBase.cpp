@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,15 @@
  *
  ***********************************************************************/
 
-#include <fwTools/fwID.hpp>
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-
-#include "fwGui/IActionSrv.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
 
+#include "fwGui/IActionSrv.hpp"
+
+#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
+
+#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
@@ -38,7 +39,8 @@ const ActionCallbackBase::RegistryKeyType ActionCallbackBase::REGISTRY_KEY = "::
 
 //-----------------------------------------------------------------------------
 
-ActionCallbackBase::ActionCallbackBase() : m_sid("")
+ActionCallbackBase::ActionCallbackBase() :
+    m_sid("")
 {
 }
 
@@ -74,7 +76,7 @@ void ActionCallbackBase::check(bool checked)
     OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     ::fwGui::IActionSrv::sptr action = ::fwGui::IActionSrv::dynamicCast(service);
     OSLM_ASSERT("Service "<<m_sid<<" is not an action.", action);
-    checked = (checked == action->getActiveStateValue());
+    checked = (action->getIsInverted() ? !checked : checked);
     if (action->getIsActive() != checked)
     {
         action->setIsActive(checked);
@@ -83,7 +85,4 @@ void ActionCallbackBase::check(bool checked)
 
 //-----------------------------------------------------------------------------
 
-
 } // namespace fwGui
-
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@ const ::fwCom::Signals::SignalKeyType IActionSrv::s_CHECKED_SIG   = "checked";
 const ::fwCom::Signals::SignalKeyType IActionSrv::s_UNCHECKED_SIG = "unchecked";
 
 IActionSrv::IActionSrv() :
-    m_activeStateValue(true),
+    m_isInverted(false),
     m_isActive(false),
     m_isExecutable(true),
     m_isVisible(true),
@@ -94,7 +94,7 @@ void IActionSrv::initialize()
                 !m_configuration->hasAttribute("enable"));
     OSLM_ASSERT(
         "Depreciated tag <specialAction> in "<< this->getID() << " configuration.",
-        !m_configuration->hasAttribute("specialAction"));
+            !m_configuration->hasAttribute("specialAction"));
     OSLM_ASSERT("Depreciated tag <style> in "<< this->getID() << " configuration.",
                 !m_configuration->hasAttribute("style"));
     OSLM_ASSERT("Depreciated tag <state> in "<< this->getID() << " configuration.",
@@ -112,7 +112,7 @@ void IActionSrv::initialize()
                 std::string invertState = stateCfg->getExistingAttributeValue("inverse");
                 SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
                            (invertState == "true") || (invertState == "false"));
-                m_activeStateValue = !(invertState == "true");
+                m_isInverted = (invertState == "true");
             }
 
             if( stateCfg->hasAttribute("active") )
@@ -184,8 +184,9 @@ void IActionSrv::actionServiceStarting()
 void IActionSrv::setIsActive(bool isActive)
 {
     m_isActive = isActive;
-    this->m_registrar->actionServiceSetActive(m_activeStateValue == isActive);
-    if(isActive)
+
+    this->m_registrar->actionServiceSetActive(m_isActive);
+    if(m_isActive)
     {
         m_sigChecked->asyncEmit();
     }
@@ -221,8 +222,9 @@ bool IActionSrv::getIsActive() const
 void IActionSrv::setIsExecutable(bool isExecutable)
 {
     m_isExecutable = isExecutable;
-    this->m_registrar->actionServiceSetExecutable(isExecutable);
-    if(isExecutable)
+
+    this->m_registrar->actionServiceSetExecutable(m_isExecutable);
+    if(m_isExecutable)
     {
         m_sigEnabled->asyncEmit();
     }
@@ -280,6 +282,21 @@ void IActionSrv::hide()
 bool IActionSrv::isVisible() const
 {
     return m_isVisible;
+}
+
+//-----------------------------------------------------------------------------
+
+bool IActionSrv::getActiveStateValue() const
+{
+    FW_DEPRECATED_MSG("`getActiveStateValue` is deprecated, please use `getIsInverted` instead.", "21.0");
+    return this->getIsInverted();
+}
+
+//-----------------------------------------------------------------------------
+
+bool IActionSrv::getIsInverted() const
+{
+    return m_isInverted;
 }
 
 //-----------------------------------------------------------------------------
