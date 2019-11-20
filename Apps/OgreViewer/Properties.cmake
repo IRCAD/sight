@@ -14,10 +14,6 @@ set( REQUIREMENTS
 
     visuOgreQt              # Allow Ogre to be displayed in QT.
 
-    # Objects declaration
-    fwData
-    fwMedData
-
     # UI declaration/Actions
     gui
     media
@@ -38,10 +34,12 @@ set( REQUIREMENTS
     videoQt
     ctrlCamp
     uiMeasurement
+    ctrlPicking
+    ioActivity
 
     # Generic Scene
-    fwRenderOgre
-    fwRenderVTK
+    visuOgre
+    visuVTK
     visuOgreAdaptor
     visuVTKAdaptor
     visuVTKVRAdaptor
