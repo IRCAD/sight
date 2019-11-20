@@ -77,6 +77,8 @@ namespace visuOgreAdaptor
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
  * - \b interactive (optional, true/false, default=false): enables interactions on the negato
  * - \b priority (optional, int, default=2): interaction priority of the negato.
+ * - \b transform (optional): the name of the Ogre transform node where to attach the negato, as it was specified
+ * in the STransform adaptor.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,

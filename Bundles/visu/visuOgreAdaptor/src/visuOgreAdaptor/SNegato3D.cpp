@@ -125,6 +125,10 @@ void SNegato3D::configuring()
     m_enableAlpha         = config.get<bool>("tfalpha", m_enableAlpha);
     m_interactive         = config.get<bool>("interactive", m_interactive);
     m_interactionPriority = config.get<int>("priority", m_interactionPriority);
+
+    const std::string transformId =
+        config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
+    this->setTransformId(transformId);
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +156,9 @@ void SNegato3D::starting()
         true);
 
     // Scene node's instantiation
-    m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    m_negatoSceneNode                      = transformNode->createChildSceneNode();
 
     // Instanciation of the planes
     int orientationNum { 0 };
