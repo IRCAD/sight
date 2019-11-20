@@ -289,7 +289,7 @@ QToolButton
 QToolButton:disabled
 {
     background: transparent;
-    color: rgb(42, 48, 63);
+    color: rgb(194, 198, 199);
 }
 
 QToolButton:hover,
