@@ -29,10 +29,7 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector3.h>
 
-namespace fwRenderOgre
-{
-
-namespace ui
+namespace fwRenderOgre::widget
 {
 
 /**
@@ -212,5 +209,4 @@ private:
     ClippingUpdateCallbackType m_clippingUpdateCallback;
 };
 
-} // namespace ui
-} // namespace fwRenderOgre
+} // namespace fwRenderOgre::widget

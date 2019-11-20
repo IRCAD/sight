@@ -143,7 +143,7 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::setWidget(ui::ClippingBox::sptr widget)
+void VRWidgetsInteractor::setWidget(widget::ClippingBox::sptr widget)
 {
     m_widget = widget;
 }

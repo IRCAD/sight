@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "fwRenderOgre/ui/ClippingBox.hpp"
+#include "fwRenderOgre/widget/ClippingBox.hpp"
 
 namespace fwRenderOgre::ui
 {
-using VRWidget [[deprecated("VRWidget was renamed to ClippingBox.")]] = ClippingBox;
+using VRWidget [[deprecated("VRWidget was renamed to ClippingBox.")]] = ::fwRenderOgre::widget::ClippingBox;
 } // namespace fwRenderOgre::ui

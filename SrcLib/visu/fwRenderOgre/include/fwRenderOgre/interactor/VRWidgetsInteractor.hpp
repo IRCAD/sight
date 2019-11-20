@@ -24,7 +24,7 @@
 
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 #include "fwRenderOgre/picker/IPicker.hpp"
-#include "fwRenderOgre/ui/ClippingBox.hpp"
+#include "fwRenderOgre/widget/ClippingBox.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -60,7 +60,7 @@ public:
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
 
     /// Sets the widget handled by this interactor.
-    FWRENDEROGRE_API void setWidget(ui::ClippingBox::sptr widget);
+    FWRENDEROGRE_API void setWidget(widget::ClippingBox::sptr widget);
 
     /// Initializes the picker.
     FWRENDEROGRE_API void initPicker();
@@ -71,7 +71,7 @@ private:
     ::Ogre::MovableObject* m_pickedObject { nullptr };
 
     /// The widget with whom we interact.
-    ui::ClippingBox::wptr m_widget;
+    widget::ClippingBox::wptr m_widget;
 
     /// The picker used by this interactor.
     fwRenderOgre::picker::IPicker m_picker;

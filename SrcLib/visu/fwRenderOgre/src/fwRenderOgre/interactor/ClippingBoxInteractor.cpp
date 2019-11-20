@@ -33,12 +33,12 @@ ClippingBoxInteractor::ClippingBoxInteractor(Layer::sptr _layer,
                                              const std::string& _id,
                                              ::Ogre::SceneNode* _parentSceneNode,
                                              const ::Ogre::Matrix4& _clippingMatrix,
-                                             const ui::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCallback,
+                                             const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
                                              const std::string& _boxMtlName,
                                              const std::string& _handleMtlName) noexcept :
     IInteractor(_layer),
     m_widget(_id, _parentSceneNode, _layer->getDefaultCamera(), _layer->getSceneManager(),
-             _clippingMatrix, _clippingUpdateCallback, _boxMtlName, _handleMtlName)
+             _clippingMatrix, _clippingUpdateCb, _boxMtlName, _handleMtlName)
 {
     SLM_ASSERT("This interactor must know its layer.", _layer);
 

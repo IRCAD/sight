@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwRenderOgre/ui/ClippingBox.hpp"
+#include "fwRenderOgre/widget/ClippingBox.hpp"
 
 #include "fwRenderOgre/compositor/Core.hpp"
 
@@ -37,9 +37,7 @@
 
 #include <numeric>
 
-namespace fwRenderOgre
-{
-namespace ui
+namespace fwRenderOgre::widget
 {
 
 const std::string s_VR_MATERIALS_GROUP = "VRMaterials";
@@ -615,5 +613,4 @@ void ClippingBox::applyTransform(const ::Ogre::Matrix4& _clippingMx)
 
 //-----------------------------------------------------------------------------
 
-} // namespace ui
-} // namespace fwRenderOgre
+} // namespace fwRenderOgre::widget
