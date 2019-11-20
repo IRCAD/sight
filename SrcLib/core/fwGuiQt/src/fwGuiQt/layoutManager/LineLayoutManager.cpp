@@ -83,6 +83,12 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             int topBorder;
             int rightBorder;
             int bottomBorder;
+
+            if(viewInfo.m_spacing != -1)
+            {
+                layout->setSpacing(viewInfo.m_spacing);
+            }
+
             if(viewInfo.m_border != 0)
             {
                 leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;

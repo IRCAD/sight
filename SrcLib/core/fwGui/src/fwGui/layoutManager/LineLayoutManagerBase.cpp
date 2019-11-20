@@ -115,6 +115,11 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
                     vi.m_bottomBorder = ::boost::lexical_cast< int >(border);
                 }
             }
+            if( view->hasAttribute("spacing") )
+            {
+                const std::string proportion = view->getExistingAttributeValue("spacing");
+                vi.m_spacing = ::boost::lexical_cast< int >(proportion);
+            }
             if( view->hasAttribute("caption") )
             {
                 vi.m_caption.first  = true;
