@@ -673,6 +673,23 @@ void Layer::addInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interac
 
 // ----------------------------------------------------------------------------
 
+void Layer::removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor)
+{
+    const auto interactorEqual = [&_interactor](typename decltype(m_interactors)::value_type _i)
+                                 {
+                                     return _i.second.lock() == _interactor;
+                                 };
+
+    const auto it = std::find_if(m_interactors.cbegin(), m_interactors.cend(), interactorEqual);
+
+    if(it != m_interactors.end())
+    {
+        m_interactors.erase(it);
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 ::fwRenderOgre::interactor::IMovementInteractor::sptr Layer::getMoveInteractor()
 {
     return m_moveInteractor;

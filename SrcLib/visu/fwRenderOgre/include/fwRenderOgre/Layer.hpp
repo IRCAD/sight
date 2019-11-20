@@ -182,6 +182,9 @@ public:
     /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
     FWRENDEROGRE_API void addInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor, int _priority = 0);
 
+    /// Removes the given interactor.
+    FWRENDEROGRE_API void removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor);
+
     /**
      * @brief get Ogre Movement interactor.
      */

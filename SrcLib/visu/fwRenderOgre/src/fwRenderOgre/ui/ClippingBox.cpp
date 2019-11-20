@@ -279,7 +279,8 @@ void ClippingBox::initWidgets()
         const auto volScale         = m_volumeSceneNode->getScale();
         const ::Ogre::Real scaleMin = std::min(volScale[0], std::min(volScale[1], volScale[2]));
 
-        const ::Ogre::Vector3 widgetScale((0.05f * scaleMin) / newWidget->getBoundingRadius());
+        // Scale the handle to be 1/100th of the volume's initial size.
+        const ::Ogre::Vector3 widgetScale((0.01f * scaleMin) / newWidget->getBoundingRadius());
         sphereSceneNode->setScale(widgetScale);
 
         sphereSceneNode->attachObject(newWidget);
@@ -403,7 +404,7 @@ void ClippingBox::widgetReleased()
 
 //-----------------------------------------------------------------------------
 
-void ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
+bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
 {
     const int width  = m_camera->getViewport()->getActualWidth();
     const int height = m_camera->getViewport()->getActualHeight();
@@ -457,45 +458,34 @@ void ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
         // Image to world space.
         oldPos            = m_volumeSceneNode->convertLocalToWorldPosition(boxPos);
         intersectionPlane = ::Ogre::Plane(camDir, oldPos);
-    }
-    else
-    {
-        intersectionPlane = ::Ogre::Plane(camDir, m_volumeSceneNode->getPosition());
-        oldPos            = oldPosRay.getPoint(oldPosRay.intersects(intersectionPlane).second);
-    }
 
-    const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
-        static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
-        static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
+        const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
+            static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
+            static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
 
-    const std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
+        const std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
 
-    const ::Ogre::Vector3 newPos = newPosRay.getPoint(planeInter.second);
+        const ::Ogre::Vector3 newPos = newPosRay.getPoint(planeInter.second);
 
-    ::Ogre::Vector3 d = newPos - oldPos;
+        ::Ogre::Vector3 d = newPos - oldPos;
 
-    if(boxSelected)
-    {
         // Translate clipping box in image space.
         d = m_volumeSceneNode->convertWorldToLocalDirection(d, true);
 
         m_clippingCube[0] += d;
         m_clippingCube[1] += d;
-    }
-    else
-    {
-        // Translate the camera.
-        m_camera->getParentNode()->translate(-d, ::Ogre::Node::TS_WORLD);
+
+        this->updateWidgets();
+
+        m_clippingUpdateCallback();
     }
 
-    this->updateWidgets();
-
-    m_clippingUpdateCallback();
+    return boxSelected;
 }
 
 //-----------------------------------------------------------------------------
 
-void ClippingBox::scaleClippingBox(int x, int y, int dy)
+bool ClippingBox::scaleClippingBox(int x, int y, int dy)
 {
     const int width  = m_camera->getViewport()->getActualWidth();
     const int height = m_camera->getViewport()->getActualHeight();
@@ -533,13 +523,8 @@ void ClippingBox::scaleClippingBox(int x, int y, int dy)
         }
     }
 
-    if(m_selectionMode == CAMERA)
-    {
-        const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
-
-        m_camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
-    }
-    else if(m_selectionMode == BOX)
+    const bool boxSelected = m_selectionMode == BOX;
+    if(boxSelected)
     {
         const auto volumeSize = m_volumeSceneNode->getScale();
 
@@ -552,11 +537,13 @@ void ClippingBox::scaleClippingBox(int x, int y, int dy)
         // Scale clipping cube along its center.
         m_clippingCube[0] = (m_clippingCube[0] - ccCenter) * scale + ccCenter;
         m_clippingCube[1] = (m_clippingCube[1] - ccCenter) * scale + ccCenter;
+
+        this->updateWidgets();
+
+        m_clippingUpdateCallback();
     }
 
-    this->updateWidgets();
-
-    m_clippingUpdateCallback();
+    return boxSelected;
 }
 
 //-----------------------------------------------------------------------------

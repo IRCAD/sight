@@ -94,8 +94,10 @@ public:
      * @param y  cursor current vertical position.
      * @param dx displacement along the horizontal axis.
      * @param dy displacement along the vertical axis.
+     *
+     * @return whether the box was selected and moved.
      */
-    FWRENDEROGRE_API void moveClippingBox(int x, int y, int dx, int dy);
+    FWRENDEROGRE_API bool moveClippingBox(int x, int y, int dx, int dy);
 
     /**
      * @brief Scales the clipping box.
@@ -103,8 +105,10 @@ public:
      * @param x  cursor current horizontal position.
      * @param y  cursor current vertical position.
      * @param dy displacement along the vertical axis, used to compute scale factor.
+     *
+     * @return whether the box was selected and scaled.
      */
-    FWRENDEROGRE_API void scaleClippingBox(int x, int y, int dy);
+    FWRENDEROGRE_API bool scaleClippingBox(int x, int y, int dy);
 
     /// Returns whether the widgets are visible or hidden.
     FWRENDEROGRE_API bool getVisibility() const;

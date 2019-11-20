@@ -107,6 +107,7 @@ void SVolumeRender::configuring()
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_dynamic                = config.get<bool>("dynamic", m_dynamic);
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
+    m_widgetPriority         = config.get<int>("widgetPriority", m_widgetPriority);
     m_nbSamples              = config.get<std::uint16_t>("samples", m_nbSamples);
 
     // Advanced illumination parameters.
@@ -663,7 +664,7 @@ void SVolumeRender::toggleWidgets(bool visible)
 
     if(m_widget)
     {
-        m_widget->setVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
+        m_widget->setBoxVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
 
         this->requestRender();
     }
@@ -782,26 +783,19 @@ void SVolumeRender::createWidget()
         ogreClippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
     }
 
+    const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+
     this->destroyWidget(); // Destroys the old widgets if they were created.
-    m_widget = std::make_shared< ::fwRenderOgre::ui::VRWidget>(this->getID(), m_volumeSceneNode,
-                                                               m_camera, m_sceneManager,
-                                                               ogreClippingMx, clippingMxUpdate,
-                                                               "BasicAmbient", "BasicPhong");
+    m_widget = std::make_shared< ::fwRenderOgre::interactor::ClippingBoxInteractor>(layer,
+                                                                                    this->getID(), m_volumeSceneNode,
+                                                                                    ogreClippingMx, clippingMxUpdate,
+                                                                                    "BasicAmbient", "BasicPhong");
 
-    ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
-    ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
-
-    auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
-
-    if(vrInteractor)
-    {
-        vrInteractor->initPicker();
-        vrInteractor->setWidget(m_widget);
-    }
+    layer->addInteractor(m_widget, 2);
 
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
-    m_widget->setVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
+    m_widget->setBoxVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
 }
 
 //-----------------------------------------------------------------------------
@@ -810,20 +804,9 @@ void SVolumeRender::destroyWidget()
 {
     if(m_widget)
     {
-        ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
-
-        auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
-
-        if(vrInteractor)
-        {
-            vrInteractor->setWidget(nullptr);
-        }
-
-        SLM_ASSERT("There should be only one remaining instance of 'm_widget' at this points.",
-                   m_widget.use_count() == 1);
-
-        m_widget = nullptr;
+        ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+        layer->removeInteractor(m_widget);
+        m_widget.reset();
     }
 }
 
@@ -955,7 +938,7 @@ void SVolumeRender::updateVisibility(bool visibility)
 
         if(m_widget)
         {
-            m_widget->setVisibility(visibility && m_widgetVisibilty);
+            m_widget->setBoxVisibility(visibility && m_widgetVisibilty);
         }
 
         this->requestRender();
