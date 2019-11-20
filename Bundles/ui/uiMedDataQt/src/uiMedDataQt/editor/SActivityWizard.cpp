@@ -149,6 +149,7 @@ void SActivityWizard::starting()
     QWidget* const container = qtContainer->getQtContainer();
 
     QVBoxLayout* layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
 
     m_title = new QLabel("");
     m_title->setObjectName("SActivityWizard_title");

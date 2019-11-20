@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SActivityView );
+fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SActivityView )
 
 const fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
@@ -69,7 +69,9 @@ void SActivityView::starting()
         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
-    QWidget* widget     = new QWidget();
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* widget = new QWidget();
     layout->addWidget( widget );
 
     ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
