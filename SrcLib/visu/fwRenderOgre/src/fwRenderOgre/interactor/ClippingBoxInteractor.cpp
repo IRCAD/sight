@@ -188,32 +188,32 @@ void ClippingBoxInteractor::cancelFurtherLayerInteractions()
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::wheelEvent(int, int, int)
+void ClippingBoxInteractor::wheelEvent(int, int, int) noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::resizeEvent(int, int)
+void ClippingBoxInteractor::resizeEvent(int, int) noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::keyPressEvent(int)
+void ClippingBoxInteractor::keyPressEvent(int) noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::keyReleaseEvent(int)
+void ClippingBoxInteractor::keyReleaseEvent(int) noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::focusInEvent()
+void ClippingBoxInteractor::focusInEvent() noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::focusOutEvent()
+void ClippingBoxInteractor::focusOutEvent() noexcept
 {
 }
 
