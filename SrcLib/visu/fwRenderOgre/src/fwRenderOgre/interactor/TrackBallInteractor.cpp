@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,6 +73,13 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, int, int, int dx, i
     else if(button == MIDDLE)
     {
         cameraTranslate(dx, dy);
+    }
+    else if(button == RIGHT)
+    {
+        ::Ogre::Camera* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+        const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
+
+        camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
     }
 }
 
