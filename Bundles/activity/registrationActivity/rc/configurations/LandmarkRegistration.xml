@@ -143,12 +143,14 @@
         </service>
 
         <!-- Landmark handling services -->
-        <service uid="referenceLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <inout key="landmarks" uid="referencePL" />
+        <service uid="referenceLandmarkManager" type="::ctrlPicking::SManagePointList">
+            <inout key="pointList" uid="referencePL" />
+            <config label="true" />
         </service>
 
-        <service uid="targetLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <inout key="landmarks" uid="targetPL" />
+        <service uid="targetLandmarkManager" type="::ctrlPicking::SManagePointList">
+            <inout key="pointList" uid="targetPL" />
+            <config label="true" />
         </service>
 
         <service uid="landmarkRegistration" type="::basicRegistration::SPointListRegistration">
@@ -262,12 +264,12 @@
 
         <connect>
             <signal>referencePickerInteractor/picked</signal>
-            <slot>referenceLandmarkManager/createLandmark</slot>
+            <slot>referenceLandmarkManager/pick</slot>
         </connect>
 
         <connect>
             <signal>targetPickerInteractor/picked</signal>
-            <slot>targetLandmarkManager/createLandmark</slot>
+            <slot>targetLandmarkManager/pick</slot>
         </connect>
 
         <connect>
@@ -279,8 +281,8 @@
         <connect>
             <signal>resetLandmarks/clicked</signal>
             <slot>resetTransformedImage/update</slot>
-            <slot>referenceLandmarkManager/clearPointlist</slot>
-            <slot>targetLandmarkManager/clearPointlist</slot>
+            <slot>referenceLandmarkManager/clearPoints</slot>
+            <slot>targetLandmarkManager/clearPoints</slot>
         </connect>
 
         <start uid="landmarkRegistrationView" />
