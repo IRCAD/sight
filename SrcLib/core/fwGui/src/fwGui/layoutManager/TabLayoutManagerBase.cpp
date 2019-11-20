@@ -68,22 +68,22 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("leftBorder") )
             {
                 const std::string border = view->getExistingAttributeValue("leftBorder");
-                vi.m_leftBorder = ::boost::lexical_cast< int >(border);
+                vi.m_leftBorder = std::stoi(border);
             }
             if( view->hasAttribute("topBorder") )
             {
                 const std::string border = view->getExistingAttributeValue("topBorder");
-                vi.m_topBorder = ::boost::lexical_cast< int >(border);
+                vi.m_topBorder = std::stoi(border);
             }
             if( view->hasAttribute("rightBorder") )
             {
                 const std::string border = view->getExistingAttributeValue("rightBorder");
-                vi.m_rightBorder = ::boost::lexical_cast< int >(border);
+                vi.m_rightBorder = std::stoi(border);
             }
             if( view->hasAttribute("bottomBorder") )
             {
                 const std::string border = view->getExistingAttributeValue("bottomBorder");
-                vi.m_bottomBorder = ::boost::lexical_cast< int >(border);
+                vi.m_bottomBorder = std::stoi(border);
             }
         }
         if( view->hasAttribute("caption") )

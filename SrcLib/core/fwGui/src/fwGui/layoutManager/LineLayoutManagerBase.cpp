@@ -30,8 +30,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 namespace fwGui
 {
 
@@ -85,40 +83,40 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("proportion") )
             {
                 const std::string proportion = view->getExistingAttributeValue("proportion");
-                vi.m_proportion = ::boost::lexical_cast< int >(proportion);
+                vi.m_proportion = std::stoi(proportion);
             }
             if( view->hasAttribute("border") )
             {
                 const std::string border = view->getExistingAttributeValue("border");
-                vi.m_border = ::boost::lexical_cast< int >(border);
+                vi.m_border = std::stoi(border);
             }
             else
             {
                 if( view->hasAttribute("leftBorder") )
                 {
                     const std::string border = view->getExistingAttributeValue("leftBorder");
-                    vi.m_leftBorder = ::boost::lexical_cast< int >(border);
+                    vi.m_leftBorder = std::stoi(border);
                 }
                 if( view->hasAttribute("topBorder") )
                 {
                     const std::string border = view->getExistingAttributeValue("topBorder");
-                    vi.m_topBorder = ::boost::lexical_cast< int >(border);
+                    vi.m_topBorder = std::stoi(border);
                 }
                 if( view->hasAttribute("rightBorder") )
                 {
                     const std::string border = view->getExistingAttributeValue("rightBorder");
-                    vi.m_rightBorder = ::boost::lexical_cast< int >(border);
+                    vi.m_rightBorder = std::stoi(border);
                 }
                 if( view->hasAttribute("bottomBorder") )
                 {
                     const std::string border = view->getExistingAttributeValue("bottomBorder");
-                    vi.m_bottomBorder = ::boost::lexical_cast< int >(border);
+                    vi.m_bottomBorder = std::stoi(border);
                 }
             }
             if( view->hasAttribute("spacing") )
             {
                 const std::string proportion = view->getExistingAttributeValue("spacing");
-                vi.m_spacing = ::boost::lexical_cast< int >(proportion);
+                vi.m_spacing = std::stoi(proportion);
             }
             if( view->hasAttribute("caption") )
             {
@@ -128,12 +126,12 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("minWidth") )
             {
                 const std::string width = view->getExistingAttributeValue("minWidth");
-                vi.m_minSize.first = ::boost::lexical_cast< int >(width);
+                vi.m_minSize.first = std::stoi(width);
             }
             if( view->hasAttribute("minHeight") )
             {
                 const std::string height = view->getExistingAttributeValue("minHeight");
-                vi.m_minSize.second = ::boost::lexical_cast< int >(height);
+                vi.m_minSize.second = std::stoi(height);
             }
             if( view->hasAttribute("visible") )
             {
