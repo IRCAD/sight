@@ -63,10 +63,13 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image)
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
-static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
+static const ::fwServices::IService::KeyType s_TF_INOUT = "tf";
+
+static const std::string s_AUTO_WINDOWING_CONFIG   = "autoWindowing";
+static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
 
 //------------------------------------------------------------------------------
 
@@ -87,23 +90,47 @@ WindowLevel::~WindowLevel() noexcept
 
 //------------------------------------------------------------------------------
 
+void WindowLevel::configuring()
+{
+    this->initialize();
+
+    const ConfigType srvConfig = this->getConfigTree();
+
+    if (srvConfig.count("config.<xmlattr>"))
+    {
+        const ConfigType config = srvConfig.get_child("config.<xmlattr>");
+
+        const std::string autoWindowing = config.get(s_AUTO_WINDOWING_CONFIG, "no");
+        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
+                   autoWindowing == "yes" || autoWindowing == "no");
+        m_autoWindowing = (autoWindowing == "yes");
+
+        const std::string enableSquareTF = config.get(s_ENABLE_SQUARE_TF_CONFIG, "yes");
+        SLM_ASSERT("Bad value for 'enableSquareTF' attribute. It must be 'yes' or 'no'!",
+                   enableSquareTF == "yes" || enableSquareTF == "no");
+        m_enableSquareTF = (enableSquareTF == "yes");
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void WindowLevel::starting()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
 
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    QGridLayout* layout = new QGridLayout();
+    QGridLayout* const layout = new QGridLayout();
 
     m_valueTextMin = new QLineEdit();
-    QDoubleValidator* minValidator = new QDoubleValidator(m_valueTextMin);
+    QDoubleValidator* const minValidator = new QDoubleValidator(m_valueTextMin);
     m_valueTextMin->setValidator(minValidator);
 
     m_valueTextMax = new QLineEdit();
-    QDoubleValidator*  maxValidator = new QDoubleValidator(m_valueTextMax);
+    QDoubleValidator* const maxValidator = new QDoubleValidator(m_valueTextMax);
     m_valueTextMax->setValidator(maxValidator);
 
     m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider();
@@ -116,6 +143,7 @@ void WindowLevel::starting()
     ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
     m_toggleTFButton->setIcon(ico);
     m_toggleTFButton->setCheckable(true);
+    m_toggleTFButton->setToolTip("Function style");
 
     m_toggleAutoButton = new QToolButton();
     QIcon icon;
@@ -132,10 +160,10 @@ void WindowLevel::starting()
     m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
 
     m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
-    QAction* action1 = m_dynamicRangeMenu->addAction( "-1024; 1023" );
-    QAction* action2 = m_dynamicRangeMenu->addAction( "-100; 300" );
-    QAction* action3 = m_dynamicRangeMenu->addAction( "Fit W/L" );
-    QAction* action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
+    QAction* const action1 = m_dynamicRangeMenu->addAction( "-1024; 1023" );
+    QAction* const action2 = m_dynamicRangeMenu->addAction( "-100; 300" );
+    QAction* const action3 = m_dynamicRangeMenu->addAction( "Fit W/L" );
+    QAction* const action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
     //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
     m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
 
@@ -159,14 +187,14 @@ void WindowLevel::starting()
     // Set the visibility after the layout is created so it doesn't open its own window.
     m_toggleTFButton->setVisible(m_enableSquareTF);
 
-    QObject::connect(m_valueTextMin, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
-    QObject::connect(m_valueTextMax, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
+    QObject::connect(m_valueTextMin, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
+    QObject::connect(m_valueTextMax, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
     QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited(double,double)), this,
                      SLOT(onWindowLevelWidgetChanged(double,double)));
-    QObject::connect(m_toggleTFButton, SIGNAL(toggled(bool)), this, SLOT(onToggleTF(bool)));
-    QObject::connect(m_toggleAutoButton, SIGNAL(toggled(bool)), this, SLOT(onToggleAutoWL(bool)));
-    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered(QAction*)), this,
-                     SLOT(onDynamicRangeSelectionChanged(QAction*)));
+    QObject::connect(m_toggleTFButton, &::QToolButton::toggled, this, &WindowLevel::onToggleTF);
+    QObject::connect(m_toggleAutoButton, &::QToolButton::toggled, this, &WindowLevel::onToggleAutoWL);
+    QObject::connect(m_dynamicRangeSelection, &::QToolButton::triggered, this,
+                     &WindowLevel::onDynamicRangeSelectionChanged);
 
     const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -176,54 +204,13 @@ void WindowLevel::starting()
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::stopping()
-{
-    m_helperTF.removeTFConnections();
-    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered(QAction*)), this,
-                        SLOT(onDynamicRangeSelectionChanged(QAction*)));
-    QObject::disconnect(m_toggleTFButton, SIGNAL(toggled(bool)), this, SLOT(onToggleTF(bool)));
-    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited(double,double)), this,
-                        SLOT(onWindowLevelWidgetChanged(double,double)));
-    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished()), this,
-                        SLOT(onTextEditingFinished()));
-    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished()), this,
-                        SLOT(onTextEditingFinished()));
-
-    this->destroy();
-}
-
-//------------------------------------------------------------------------------
-
-void WindowLevel::configuring()
-{
-    this->initialize();
-
-    const ConfigType srvConfig = this->getConfigTree();
-
-    if (srvConfig.count("config.<xmlattr>"))
-    {
-        const ConfigType config = srvConfig.get_child("config.<xmlattr>");
-
-        const std::string autoWindowing = config.get("autoWindowing", "no");
-        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
-                   autoWindowing == "yes" || autoWindowing == "no");
-        m_autoWindowing = (autoWindowing == "yes");
-
-        const std::string enableSquareTF = config.get("enableSquareTF", "yes");
-        SLM_ASSERT("Bad value for 'enableSquareTF' attribute. It must be 'yes' or 'no'!",
-                   enableSquareTF == "yes" || enableSquareTF == "no");
-        m_enableSquareTF = (enableSquareTF == "yes");
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void WindowLevel::updating()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
+    const ::fwData::mt::ObjectReadLock imgLock(image);
 
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     this->setEnabled(imageIsValid);
 
     if(imageIsValid)
@@ -245,13 +232,31 @@ void WindowLevel::updating()
 
 //------------------------------------------------------------------------------
 
+void WindowLevel::stopping()
+{
+    m_helperTF.removeTFConnections();
+
+    QObject::disconnect(m_dynamicRangeSelection, &::QToolButton::triggered, this,
+                        &WindowLevel::onDynamicRangeSelectionChanged);
+    QObject::disconnect(m_toggleAutoButton, &::QToolButton::toggled, this, &WindowLevel::onToggleAutoWL);
+    QObject::disconnect(m_toggleTFButton, &::QToolButton::toggled, this, &WindowLevel::onToggleTF);
+    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited(double,double)), this,
+                        SLOT(onWindowLevelWidgetChanged(double,double)));
+    QObject::disconnect(m_valueTextMax, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
+    QObject::disconnect(m_valueTextMin, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
+
+    this->destroy();
+}
+
+//------------------------------------------------------------------------------
+
 void WindowLevel::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
         {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("Missing image", image);
+            const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
 
             const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
             m_helperTF.setOrCreateTF(tf, image);
@@ -287,8 +292,8 @@ WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 //------------------------------------------------------------------------------
 void WindowLevel::updateWidgetMinMax(double _imageMin, double _imageMax)
 {
-    double rangeMin = this->fromWindowLevel(_imageMin);
-    double rangeMax = this->fromWindowLevel(_imageMax);
+    const double rangeMin = this->fromWindowLevel(_imageMin);
+    const double rangeMax = this->fromWindowLevel(_imageMax);
 
     m_rangeSlider->setPos(rangeMin, rangeMax);
 }
@@ -305,7 +310,7 @@ double WindowLevel::fromWindowLevel(double val)
 
     this->setWidgetDynamicRange(valMin, valMax);
 
-    double res = (val - m_widgetDynamicRangeMin) / m_widgetDynamicRangeWidth;
+    const double res = (val - m_widgetDynamicRangeMin) / m_widgetDynamicRangeWidth;
     return res;
 }
 
@@ -320,14 +325,14 @@ double WindowLevel::toWindowLevel(double _val)
 
 void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
-    ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    ::fwData::mt::ObjectWriteLock tfLock(tf);
+    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    const ::fwData::mt::ObjectWriteLock tfLock(tf);
     tf->setWLMinMax( ::fwData::TransferFunction::TFValuePairType(_imageMin,
                                                                  _imageMax) );
     auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
         ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
+        const ::fwCom::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
         sig->asyncEmit( tf->getWindow(), tf->getLevel());
     }
 }
@@ -336,8 +341,8 @@ void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 
 void WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 {
-    double imageMin = this->toWindowLevel(_min);
-    double imageMax = this->toWindowLevel(_max);
+    const double imageMin = this->toWindowLevel(_min);
+    const double imageMax = this->toWindowLevel(_max);
     this->updateImageWindowLevel(imageMin, imageMax);
     this->updateTextWindowLevel(imageMin, imageMax);
 }
@@ -371,8 +376,11 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
             max = std::max(wl.first, wl.second);
             break;
         case 4:         // Fit Image Range
+        {
+            const ::fwData::mt::ObjectReadLock imgLock(image);
             ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-            break;
+        }
+        break;
         case 5:         // Custom : TODO
             break;
         default:

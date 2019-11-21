@@ -56,9 +56,9 @@ namespace uiImageQt
 {
 
 /**
- * @brief   WindowLevel service allows to change the min / max value of windowing.
+ * @brief WindowLevel service allows to change the min/max value of windowing.
  *
- * This is represented by two sliders to modify the min and max values of windowing
+ * This is represented by two sliders to modify the min and max values of windowing.
  *
  * @section XML XML Configuration
  *
@@ -71,59 +71,62 @@ namespace uiImageQt
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image on which the windowing will be changed
- * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b image [::fwData::Image]: Image on which the windowing will be changed.
+ * - \b tf [::fwData::TransferFunction] (optional): The current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
- * - \b autoWindowing(optional, default no) : if 'yes', image windowing will be automatically compute from image pixel
- * min/max intensity when this service receive BUFFER event
- * - \b enableSquareTF(optional, default: yes) : if 'yes' enable the button to switch between current TF and square TF
+ * - \b autoWindowing(optional, default="no"): If 'yes', image windowing will be automatically compute from image pixel
+ * min/max intensity when this service receive BUFFER event.
+ * - \b enableSquareTF(optional, default="yes"): If 'yes' enable the button to switch between current TF and square TF.
  */
-class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
-                                        public ::fwGui::editor::IEditor
+class UIIMAGEQT_CLASS_API WindowLevel final : public QObject,
+                                              public ::fwGui::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(WindowLevel, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(WindowLevel, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
+    /// Initialize signals and slots.
     UIIMAGEQT_API WindowLevel() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Destroys the service.
     UIIMAGEQT_API virtual ~WindowLevel() noexcept;
 
 protected:
 
-    /// Install the layout.
-    virtual void starting() override;
+    /// Configures the service.
+    virtual void configuring() override final;
 
-    ///Destroy the layout.
-    virtual void stopping() override;
+    /// Installs the layout.
+    virtual void starting() override final;
 
-    /// Update editor information from the image.
-    virtual void updating() override;
+    /// Updates editor information from the image.
+    virtual void updating() override final;
 
-    /// Select the current tf
-    virtual void swapping(const KeyType& key) override;
+    /// Destroys the layout.
+    virtual void stopping() override final;
 
-    /// Parse the xml configuration
-    virtual void configuring() override;
+    /// Selects the current tf.
+    virtual void swapping(const KeyType&) override final;
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
      *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG to ::uiImageQt::WindowLevel::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to ::uiImageQt::WindowLevel::s_UPDATE_SLOT
      */
-    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const override final;
 
-    /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream& _sstream ) override;
+    /**
+     * @brief Adds informations about this service into the stream.
+     * @param _sstream Stream where stores information.
+     */
+    UIIMAGEQT_API virtual void info(std::ostream& _sstream) override final;
 
     /// Slot: Updates the slider position
     UIIMAGEQT_API virtual void updateTF();
@@ -183,6 +186,7 @@ private:
     ::fwData::TransferFunction::sptr m_previousTF;
 
     ::fwDataTools::helper::TransferFunction m_helperTF;
+
 };
 
 } // uiImageQt
