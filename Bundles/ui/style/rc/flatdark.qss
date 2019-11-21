@@ -125,7 +125,7 @@ QMenu::separator
 
 QMenu::right-arrow
 {
-    image: url(:/resources/right_arrow.png)
+    image: url(:/resources/right_arrow.png);
 }
 
 /******************************* Checkbox *******************************/
