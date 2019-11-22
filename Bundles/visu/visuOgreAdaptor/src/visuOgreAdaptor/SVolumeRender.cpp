@@ -791,7 +791,7 @@ void SVolumeRender::createWidget()
                                                                                     ogreClippingMx, clippingMxUpdate,
                                                                                     "BasicAmbient", "BasicPhong");
 
-    layer->addInteractor(m_widget, 2);
+    layer->addInteractor(m_widget, m_widgetPriority);
 
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
