@@ -93,17 +93,22 @@ public:
      * @{
      */
     typedef ::fwCom::Signal< void () > RenderRequestedSigType;
+    [[deprecated("Removed in sight 21.0")]]
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
     /** @} */
 
-    /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
+    /// Constructor. Sets the scene manager from the layer if it exists.
     FWRENDEROGRE_API IInteractor(SPTR(Layer)_layer = nullptr);
 
     /// Destructor
     FWRENDEROGRE_API virtual ~IInteractor();
 
     /// Change point of interest viewed by the camera
+    [[deprecated("Set the scene from the layer instead.")]]
     FWRENDEROGRE_API void setSceneID(const std::string&);
+
+    /// Sets the scene's length, that is the length of the scene's bounding cube.
+    FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength);
 
     /// Behaviour on a MouseMoveEvent
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) = 0;
@@ -135,6 +140,7 @@ public:
 protected:
 
     /// Ogre Root
+    [[deprecated("Removed in sight 21.0")]]
     ::Ogre::Root* m_ogreRoot { nullptr };
 
     /// Current scene manager
@@ -149,6 +155,7 @@ protected:
      * @{
      */
     /// Signal triggered when a render is requested
+    [[deprecated("Call the render request on the Layer directly.")]]
     RenderRequestedSigType::sptr m_sigRenderRequested;
     /**
      * @}

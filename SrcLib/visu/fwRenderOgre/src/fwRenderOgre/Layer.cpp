@@ -87,32 +87,23 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 {
     Layer* m_layer;
     int m_frameId;
-    ::fwRenderOgre::interactor::IMovementInteractor::sptr m_interactor;
 
     //------------------------------------------------------------------------------
 
-    LayerCameraListener(Layer* renderer, ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor) :
+    LayerCameraListener(Layer* renderer) :
         m_layer(renderer),
-        m_frameId(0),
-        m_interactor(interactor)
+        m_frameId(0)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void cameraPreRenderScene(::Ogre::Camera* _camera)
+    virtual void cameraPreRenderScene(::Ogre::Camera*) final
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
         if(m_layer->getStereoMode() != ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
         {
-            // Set the focal length using the point of interest of the interactor
-            // This works well for the trackball but this would need to be adjusted for an another interactor type
-            // For a FPS camera style for instance, we would fix the focal length once and for all according
-            // to the scale of the world
-            float focalLength = std::max(0.001f, std::abs(m_interactor->getLookAtZ()));
-            _camera->setFocalLength(focalLength);
-
             const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
             {
@@ -368,15 +359,7 @@ void Layer::createScene()
         m_lightAdaptor->start();
     }
 
-    // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
-    ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor =
-        ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
-            ::fwRenderOgre::interactorFactory::New("::fwRenderOgre::interactor::TrackballInteractor",
-                                                   m_sceneManager->getName()));
-
-    this->setMoveInteractor(interactor);
-
-    m_cameraListener = new LayerCameraListener(this, interactor);
+    m_cameraListener = new LayerCameraListener(this);
     m_camera->addListener(m_cameraListener);
 
     // Setup transparency compositors
@@ -607,41 +590,11 @@ void Layer::setRenderService( const ::fwRenderOgre::SRender::sptr& _service)
 
 // ----------------------------------------------------------------------------
 
-void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::sptr _interactor)
+void Layer::setMoveInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor)
 {
-    m_connections.disconnect();
-
-    bool alreadyExist = false;
-    for(auto& [priority, interactor] : m_interactors)
-    {
-        auto moveInteractor = ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor.lock());
-        if(moveInteractor)
-        {
-            interactor   = _interactor;
-            alreadyExist = true;
-            break;
-        }
-    }
-
-    if(!alreadyExist)
-    {
-        m_interactors.insert(std::make_pair(0, _interactor));
-    }
-
+    FW_DEPRECATED_MSG("Use addInteractor instead.", "21.0");
     m_moveInteractor = _interactor;
-    m_moveInteractor->resizeEvent(static_cast<int>(m_renderTarget->getWidth()),
-                                  static_cast<int>(m_renderTarget->getHeight()) );
-
-    m_connections.connect(_interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
-                          this->getSptr(), s_RESET_CAMERA_SLOT);
-
-    m_connections.connect(_interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RENDER_REQUESTED_SIG,
-                          this->getRenderService(), ::fwRenderOgre::SRender::s_REQUEST_RENDER_SLOT);
-
-    if(m_cameraListener)
-    {
-        m_cameraListener->m_interactor = _interactor;
-    }
+    this->addInteractor(m_moveInteractor);
 }
 
 // ----------------------------------------------------------------------------
@@ -654,7 +607,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr _i
 
 // ----------------------------------------------------------------------------
 
-void Layer::addInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor, int _priority)
+void Layer::addInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor, int _priority)
 {
     using PairType = typename decltype(m_interactors)::value_type;
     const PairType pair = std::make_pair(_priority, _interactor);
@@ -690,8 +643,9 @@ void Layer::removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr
 
 // ----------------------------------------------------------------------------
 
-::fwRenderOgre::interactor::IMovementInteractor::sptr Layer::getMoveInteractor()
+::fwRenderOgre::interactor::IInteractor::sptr Layer::getMoveInteractor()
 {
+    FW_DEPRECATED_MSG("Removed in sight 21.0.", "21.0");
     return m_moveInteractor;
 }
 
@@ -865,7 +819,7 @@ void Layer::removeDefaultLight()
 
 //-----------------------------------------------------------------------------
 
-void Layer::resetCameraCoordinates() const
+void Layer::resetCameraCoordinates()
 {
     const ::Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
@@ -896,9 +850,12 @@ void Layer::resetCameraCoordinates() const
             camNode->setPosition((worldCoordBoundingBox.getCenter() + coeffZoom * direction ) );
 
             // Update interactor's mouse scale
-            m_moveInteractor->setMouseScale( coeffZoom );
+            this->forAllInteractors([coeffZoom](const interactor::IInteractor::sptr& _i)
+                {
+                    _i->setSceneLength(coeffZoom);
+                });
 
-            resetCameraClippingRange(worldCoordBoundingBox);
+            this->resetCameraClippingRange(worldCoordBoundingBox);
         }
 
         m_renderService.lock()->requestRender();
@@ -907,7 +864,7 @@ void Layer::resetCameraCoordinates() const
 
 //-----------------------------------------------------------------------------
 
-void Layer::computeCameraParameters() const
+void Layer::computeCameraParameters()
 {
     const ::Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
@@ -926,9 +883,12 @@ void Layer::computeCameraParameters() const
             const float distance      = div.z;
 
             // Update interactor's mouse scale
-            m_moveInteractor->setMouseScale( distance );
+            this->forAllInteractors([distance](const interactor::IInteractor::sptr& _i)
+                {
+                    _i->setSceneLength(distance);
+                });
 
-            resetCameraClippingRange(worldCoordBoundingBox);
+            this->resetCameraClippingRange(worldCoordBoundingBox);
         }
     }
 }
@@ -937,7 +897,7 @@ void Layer::computeCameraParameters() const
 
 void Layer::resetCameraClippingRange() const
 {
-    resetCameraClippingRange(computeWorldBoundingBox());
+    this->resetCameraClippingRange(this->computeWorldBoundingBox());
 }
 
 //-----------------------------------------------------------------------------

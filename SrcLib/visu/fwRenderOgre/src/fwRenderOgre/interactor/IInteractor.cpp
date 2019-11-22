@@ -44,6 +44,11 @@ IInteractor::IInteractor(Layer::sptr _layer)  :
     m_layer(_layer)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
+
+    if(_layer)
+    {
+        m_sceneManager = _layer->getSceneManager();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -57,6 +62,12 @@ IInteractor::~IInteractor()
 void IInteractor::setSceneID(const std::string& sceneID)
 {
     m_sceneManager = m_ogreRoot->getSceneManager(sceneID);
+}
+
+// ----------------------------------------------------------------------------
+
+void IInteractor::setSceneLength(float)
+{
 }
 
 // ----------------------------------------------------------------------------

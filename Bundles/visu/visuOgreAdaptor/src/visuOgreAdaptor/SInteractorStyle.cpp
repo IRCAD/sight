@@ -126,6 +126,20 @@ void SInteractorStyle::updating()
 
 void SInteractorStyle::stopping()
 {
+    const auto layer = this->getLayer();
+
+    if(m_selectInteractor)
+    {
+        layer->removeInteractor(m_selectInteractor);
+        m_selectInteractor.reset();
+    }
+
+    if(m_moveInteractor)
+    {
+        layer->removeInteractor(m_moveInteractor);
+        m_moveInteractor.reset();
+    }
+
     m_connections.disconnect();
 }
 
@@ -163,15 +177,28 @@ void SInteractorStyle::setInteractorStyle()
 
     if(!m_movementStyle.empty())
     {
-        if(s_STYLES_MOVEMENT.count(m_movementStyle))
+        const auto layer = this->getLayer();
+        if(m_movementStyle == "Trackball")
+        {
+            m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::TrackballInteractor >(layer);
+            FW_DEPRECATED_MSG("::visuOgreAdaptor::STrackball should be used instead SInteractorStyle.", "21.0");
+            layer->addInteractor(m_moveInteractor);
+        }
+        else if(m_movementStyle == "VR")
+        {
+            // HACK: temporarily fix the legacy VR interactor until everybody uses the new API.
+            m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::VRWidgetsInteractor >(layer);
+            FW_DEPRECATED_MSG("::visuOgreAdaptor::STrackball should be used instead SInteractorStyle.", "21.0");
+            layer->setMoveInteractor(m_moveInteractor);
+        }
+        else if(s_STYLES_MOVEMENT.count(m_movementStyle))
         {
             const auto style = s_STYLES_MOVEMENT.at(m_movementStyle);
 
             m_moveInteractor = ::fwRenderOgre::interactorFactory::New(style, this->getSceneManager()->getName());
             SLM_ASSERT(this->getID() + " : Unknown movement interactor style : " + style, m_moveInteractor);
 
-            auto layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(m_moveInteractor));
+            layer->addInteractor(m_moveInteractor);
         }
         else
         {
