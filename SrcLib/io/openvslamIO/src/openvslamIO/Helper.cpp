@@ -22,6 +22,8 @@
 
 #include "openvslamIO/Helper.hpp"
 
+#include <fstream>
+
 namespace openvslamIO
 {
 
