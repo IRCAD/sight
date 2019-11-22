@@ -55,7 +55,7 @@ class VIDEOOPENCV_CLASS_API SVideoWriter : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceMacro(SVideoWriter, ::fwIO::IWriter);
+    fwCoreServiceMacro(SVideoWriter, ::fwIO::IWriter)
 
     /// Constructor.
     VIDEOOPENCV_API SVideoWriter() noexcept;
@@ -91,15 +91,26 @@ private:
     /// SLOT: add the current frame in the video
     void saveFrame(::fwCore::HiResClock::HiResClockType timestamp);
 
+    /// save current buffer with OpenCV video writer (m_writer must be initialized)
+    void writeBuffer(int width, int height, CSPTR(::arData::FrameTL::BufferType) buffer);
+
     /// SLOT: Start recording
     void startRecord();
 
     /// SLOT: Strop recording
     void stopRecord();
 
-    UPTR(::cv::VideoWriter) m_writer; ///< opencv video writer
+    /// opencv video writer
+    UPTR(::cv::VideoWriter) m_writer;
 
-    int m_imageType; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
+    /// opencv image type ( CV_8UC3, CV_8UC4, ...)
+    int m_imageType{0};
+
+    /// flag if the service is recording.
+    bool m_isRecording{false};
+
+    /// container used to store first video frame timestamps to compute framerate of the video stream
+    std::vector< ::fwCore::HiResClock::HiResClockType > m_timestamps;
 
 };
 

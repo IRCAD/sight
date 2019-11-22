@@ -107,11 +107,14 @@ void STransform::updating()
 
     if(m_ogreTransform == ::Ogre::Affine3::ZERO)
     {
-        m_transformNode->setVisible(false, false);
+        m_parentTransformNode->removeChild(m_transformNode);
     }
     else
     {
-        m_transformNode->setVisible(true, false);
+        if(!m_transformNode->isInSceneGraph())
+        {
+            m_parentTransformNode->addChild(m_transformNode);
+        }
 
         // Decompose the matrix
         ::Ogre::Vector3 position;

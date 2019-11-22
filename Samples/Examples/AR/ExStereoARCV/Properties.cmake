@@ -14,6 +14,7 @@ set( REQUIREMENTS
     gui
     guiQt
     ioCalibration
+    ioTimeline
     uiPreferences
     uiTools
     maths

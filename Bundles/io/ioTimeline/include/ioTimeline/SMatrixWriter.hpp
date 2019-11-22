@@ -28,6 +28,8 @@
 
 #include <fwIO/IWriter.hpp>
 
+#include <fstream>
+
 namespace ioTimeline
 {
 
@@ -63,7 +65,7 @@ class IOTIMELINE_CLASS_API SMatrixWriter : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceMacro(SMatrixWriter, ::fwIO::IWriter);
+    fwCoreServiceMacro(SMatrixWriter, ::fwIO::IWriter)
 
     /// Constructor.
     IOTIMELINE_API SMatrixWriter() noexcept;
@@ -110,7 +112,7 @@ private:
 
     bool m_isRecording; ///< flag if the service is recording.
 
-    std::ofstream* m_filestream;
+    std::ofstream m_filestream;
 };
 
 } // ioTimeline
