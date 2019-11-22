@@ -17,15 +17,15 @@ if(USE_SYSTEM_LIB OR NOT PYTHONINTERP_FOUND)
     # No conan or python, means we must use hard coded default
     # We simply use CMAKE one plus some very basic stuff
     add_compile_options(
-        "$<$CXX_COMPILER_ID:GNU>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
-        "$<$CXX_COMPILER_ID:Clang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
-        "$<$CXX_COMPILER_ID:AppleClang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+        "$<$<CXX_COMPILER_ID:GNU>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+        "$<$<CXX_COMPILER_ID:Clang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
+        "$<$<CXX_COMPILER_ID:AppleClang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
         "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:AVX;/MP;/bigobj>"
     )
 
-    add_definitions(
-        "$<$<CXX_COMPILER_ID:AppleClang>>:-DGL_SILENCE_DEPRECATION>"
-        "$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>"
+    add_compile_definitions(
+         "$<$<CXX_COMPILER_ID:AppleClang>:-DGL_SILENCE_DEPRECATION>"
+         "$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>"
     )
 elseif(PYTHONINTERP_FOUND)
     # Get our default from common.py

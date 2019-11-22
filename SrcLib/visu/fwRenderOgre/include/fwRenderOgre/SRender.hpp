@@ -58,6 +58,17 @@ class Layer;
 /**
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
  *
+ * @section Signals Signals
+ *  - \b compositorUpdated(): sent when the compositor chain is modified.
+ *  - \b fullscreenSet(bool): sent when fullscreen is enabled/disabled.
+ *
+ * @section Slots Slots
+ *  - \b computeCameraParameters(): resets the camera position to visualize the whole scene.
+ *  - \b computeCameraClipping(): recomputes the camera's clipping range when the scene is updated.
+ *  - \b requestRender(): request the service to repaint the scene.
+ *  - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
+ *  - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
+ *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::fwRenderOgre::SRender" autoconnect="yes">
@@ -135,8 +146,13 @@ public:
      * @name Signals API
      * @{
      */
+    /// Signal: sent when the compositor chain has been modified.
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
     typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
+
+    /// Signal: sent when fullscreen was enabled/disabled.
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_FULLSCREEN_SET_SIG;
+    using FullscreenSetSignalType = ::fwCom::Signal< void(bool) >;
     /** @} */
 
     /**
@@ -157,6 +173,13 @@ public:
     typedef ::fwCom::Slot< void () > RequestRenderSlotType;
     /// Slot: Request a rendering.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
+
+    /// Slot: Disables fullscreen rendering if it was enabled.
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DISABLE_FULLSCREEN;
+
+    /// Slot: Enables fullscreen rendering on a specific screen.
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_ENABLE_FULLSCREEN;
+
     /** @} */
 
     /// Sets this render service as the current OpenGL context.
@@ -221,11 +244,20 @@ private:
     /// Retrieves the viewport parameters from the configuration.
     static Layer::ViewportConfigType configureLayerViewport(const ::fwServices::IService::ConfigType& _cfg);
 
+    /// Render the scene in fullscreen on the screen with the given index.
+    void enableFullscreen(int screen);
+
+    /// Switch back to windowed rendering if fullscreen is on.
+    void disableFullscreen();
+
     /// Contains all the layers of the scene
     LayerMapType m_layers;
 
     /// Signal/ Slot connection
     ::fwCom::helper::SigSlotConnection m_connections;
+
+    /// Signal sent when fullscreen is enabled/disabled.
+    FullscreenSetSignalType::sptr m_fullscreenSetSig;
 
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;

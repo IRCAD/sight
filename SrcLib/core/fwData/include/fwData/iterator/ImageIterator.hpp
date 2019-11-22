@@ -218,6 +218,8 @@ public:
     ImageIteratorBase(ImageType image);
     /// Copy constructor
     ImageIteratorBase(const ImageIteratorBase<FORMAT, false>& other);
+    /// Copy constructor
+    ImageIteratorBase(const ImageIteratorBase<FORMAT, true>& other);
     /// Destructor
     ~ImageIteratorBase();
 
@@ -230,11 +232,11 @@ public:
     /// Increment/Decrement operators
     ImageIteratorBase& operator++();
     ImageIteratorBase operator++(int);
-    ImageIteratorBase& operator+(difference_type index);
+    ImageIteratorBase operator+(difference_type index);
     ImageIteratorBase& operator+=(difference_type index);
     ImageIteratorBase& operator--();
     ImageIteratorBase operator--(int);
-    ImageIteratorBase& operator-(difference_type index);
+    ImageIteratorBase operator-(difference_type index);
     ImageIteratorBase& operator-=(difference_type index);
 
     difference_type operator+(const ImageIteratorBase& other) const;

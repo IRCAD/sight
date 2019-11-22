@@ -37,6 +37,8 @@ namespace helper
 Mesh::Mesh( ::fwData::Mesh::sptr mesh ) :
     m_mesh(mesh)
 {
+    FW_DEPRECATED_MSG("::fwDataTools::helper::Mesh is no longer supported, the methods have been moved to "
+                      "::fwData::Mesh", "22.0")
     SLM_ASSERT("Mesh ptr is null.", mesh);
     this->updateLock();
 }
@@ -52,6 +54,7 @@ Mesh::~Mesh()
 void Mesh::updateLock()
 {
     SLM_ASSERT("Mesh ptr is null.", m_mesh);
+    m_mesh->getPointsArray()->setNumberOfComponents(3);
     m_helperPoints          = ::fwDataTools::helper::Array::New(m_mesh->getPointsArray());
     m_helperCellTypes       = ::fwDataTools::helper::Array::New(m_mesh->getCellTypesArray());
     m_helperCellData        = ::fwDataTools::helper::Array::New(m_mesh->getCellDataArray());

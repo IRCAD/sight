@@ -24,6 +24,10 @@
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
+#include <fwRuntime/Runtime.hpp>
+
+#include <boost/filesystem.hpp>
+
 #include <QDir>
 #include <QQmlComponent>
 #include <QQuickWindow>
@@ -42,10 +46,11 @@ QmlEngine::QmlEngine()
     m_engine = new QQmlApplicationEngine();
 
     // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
-    QDir path("./qml");
-    if (path.exists())
+    const auto runtimePath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+    const auto qmlDir      = runtimePath / "qml";
+    if (::boost::filesystem::exists(qmlDir))
     {
-        m_engine->addImportPath("./qml");
+        m_engine->addImportPath(QString::fromStdString(qmlDir.string()));
     }
     else
     {

@@ -109,18 +109,6 @@ void SInteractorStyle::starting()
     this->initialize();
 
     this->setInteractorStyle();
-
-    if(!m_pickerStyle.empty())
-    {
-        ::fwRenderOgre::interactor::IPickerInteractor::sptr pickerInteractor =
-            this->getRenderService()->getLayer(m_layerID)->getSelectInteractor();
-
-        if(pickerInteractor)
-        {
-            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
-                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -154,6 +142,9 @@ void SInteractorStyle::setInteractorStyle()
             pickerInteractor->initPicker();
             pickerInteractor->setQueryMask(m_queryMask);
             layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor));
+
+            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
+                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
         }
         else
         {

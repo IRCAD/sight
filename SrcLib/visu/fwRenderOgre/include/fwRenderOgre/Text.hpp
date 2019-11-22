@@ -34,6 +34,8 @@
 namespace fwRenderOgre
 {
 
+class ResizeListener;
+
 /**
  * @brief Class used to display overlay text.
  *
@@ -50,13 +52,29 @@ public:
      * @param _id id of the new 'Text' object.
      * @param _sm scene manager instantiating the object.
      * @param _parent overlay panel in which this text is displayed.
-     * @param _font font used to render this text.
-     * @param _cam camera used when this text follows a 3D object.
+     * @param _fontSource TrueType font (*.ttf) source file used to render the text.
+     * @param _fontSize text font size in points.
+     * @param _fontResolution font map resolution, should match the screen's dpi to get the best rendering quality.
+     * @param _cam camera on the viewport rendering this text.
      * @return A new 'Text' instance.
      */
     static FWRENDEROGRE_API Text* New(const std::string& _id, ::Ogre::SceneManager* _sm,
                                       ::Ogre::OverlayContainer* _parent,
-                                      ::Ogre::FontPtr _font, ::Ogre::Camera* _cam = nullptr);
+                                      const std::string& _fontSource, size_t _fontSize,
+                                      float _fontResolution, ::Ogre::Camera* _cam);
+
+    /**
+     * @brief Text object factory.
+     * @param _id id of the new 'Text' object.
+     * @param _sm scene manager instantiating the object.
+     * @param _parent overlay panel in which this text is displayed.
+     * @param _font font used to render this text.
+     * @param _cam camera used when this text follows a 3D object.
+     * @return A new 'Text' instance.
+     */
+    [[deprecated("Text objects manage their own font now.")]] static FWRENDEROGRE_API
+    Text* New(const std::string& _id, ::Ogre::SceneManager* _sm, ::Ogre::OverlayContainer* _parent,
+              ::Ogre::FontPtr _font, ::Ogre::Camera* _cam = nullptr);
 
     /// Constructors, instantiates the overlay text element.
     FWRENDEROGRE_API Text(const std::string& _id);
@@ -72,16 +90,25 @@ public:
 
     /// Sets the character height relatively to the screen height.
     /// It would be better to set this from the font size but we let the user set it for now.
+    [[deprecated("Text objects are now rendered using the font size")]]
     FWRENDEROGRE_API void setCharHeight(float _height);
 
+    /// Gets the text height relatively to that of the screen.
+    FWRENDEROGRE_API float getTextHeight() const;
+
+    /// Sets the screen's dpi. Recomputes the text geometry and sets a font map with the new resolution.
+    /// Internal method, called by the layer on resize events.
+    void setDotsPerInch(float _dpi);
+
     /// Text color, white by default.
-    FWRENDEROGRE_API void setTextColor(::Ogre::ColourValue _color);
+    FWRENDEROGRE_API void setTextColor(const ::Ogre::ColourValue& _color);
 
     /// Set the visibility of the text. Beware this hides ::Ogre::MovableObject::setVisible() which is not virtual !
     FWRENDEROGRE_API void setVisible(bool _visible);
 
-    /// Aligns the text by setting the x coordinate origin.
-    FWRENDEROGRE_API void setTextAlignment(const ::Ogre::TextAreaOverlayElement::Alignment _alignement);
+    /// Aligns the text by setting the x and y coordinates' origin.
+    FWRENDEROGRE_API void setTextAlignment(const ::Ogre::TextAreaOverlayElement::Alignment _hAlignement,
+                                           const ::Ogre::GuiVerticalAlignment _vAlignment = ::Ogre::GVA_TOP);
 
     /// Returns this MovableObject's type as a string.
     FWRENDEROGRE_API virtual const ::Ogre::String& getMovableType() const override;
@@ -105,6 +132,14 @@ public:
 
 private:
 
+    friend class ResizeListener;
+
+    /// Sets the font to be used for rendering. Updates the text's material.
+    void setFont(::Ogre::FontPtr _font);
+
+    /// Recomputes the text height and position when the viewport is resized.
+    void resize();
+
     /// Viewport in which the parent node is displayed, used to compute its projection onto the screen.
     ::Ogre::Camera* m_camera {nullptr};
 
@@ -117,6 +152,21 @@ private:
 
     /// Container holding the text.
     ::Ogre::OverlayContainer* m_parentContainer {nullptr};
+
+    /// Font used to display the text.
+    ::Ogre::FontPtr m_font;
+
+    /// The text's height in pixels. Computed using the font size and screen dpi.
+    float m_heightInPixels { 0.f };
+
+    /// Current position not taking alignemnt into account.
+    ::Ogre::Vector2 m_position { 0.f, 0.f };
+
+    /// Listens to when the viewport dimension are changed. Resizes the text.
+    ResizeListener* m_listener { nullptr };
+
+    /// Color of the displayed text.
+    ::Ogre::ColourValue m_textColor { 1.f, 1.f, 1.f, 1.f };
 
 };
 

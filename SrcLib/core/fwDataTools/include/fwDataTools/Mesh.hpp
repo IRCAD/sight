@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -162,7 +162,11 @@ public:
                                                   const std::uint8_t colorR,
                                                   const std::uint8_t colorG, const std::uint8_t colorB,
                                                   const std::uint8_t _colorA = 255);
-
+    /*!
+     * @brief Return true if the mesh is closed.
+     * The result is computed for each call.
+     */
+    FWDATATOOLS_API bool isClosed(const ::fwData::Mesh::csptr& mesh);
 };
 
 } // namespace fwDataTools

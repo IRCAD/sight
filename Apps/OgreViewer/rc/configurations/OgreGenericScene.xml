@@ -60,6 +60,9 @@
                     <menuItem name="Play" icon="arMedia-0.1/icons/start-cam.svg" />
                     <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                     <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                    <spacer />
+                    <menuItem name="Fullscreen" icon="media-0.1/icons/Fullscreen.svg" />
+                    <menuItem name="Windowed" icon="media-0.1/icons/Minimize.svg" shortcut="Escape" />
                 </layout>
             </gui>
             <registry>
@@ -72,6 +75,8 @@
                 <menuItem sid="actionStartVideo" start="yes" />
                 <menuItem sid="pauseVideoAct" start="yes" />
                 <menuItem sid="stopVideoAct" start="yes" />
+                <menuItem sid="fullscreenAct" start="yes" />
+                <menuItem sid="windowedAct" start="yes" />
             </registry>
         </service>
 
@@ -177,6 +182,18 @@
             </slots>
         </service>
 
+        <service uid="fullscreenAct" type="::uiVisuOgre::SScreenSelector" >
+            <config mode="select" />
+        </service>
+
+        <service uid="windowedAct" type="::gui::action::SSlotCaller">
+            <state visible="false" />
+            <slots>
+                <slot>genericSceneSrv/disableFullscreen</slot>
+                <slot>fullscreenAct/show</slot>
+            </slots>
+        </service>
+
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender">
@@ -196,6 +213,8 @@
                 <adaptor uid="pointListAdp" />
                 <adaptor uid="landmarksAdp" />
                 <adaptor uid="renderStatsAdp" />
+                <adaptor uid="textAdp" />
+                <adaptor uid="pickedVoxelTextAdp" />
             </scene>
         </service>
 
@@ -233,7 +252,7 @@
         <service uid="3DNegatoAdp" type="::visuOgreAdaptor::SNegato3D">
             <inout key="image" uid="${image}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" optional="yes" />
-            <config layer="default" />
+            <config layer="default" interactive="true" />
         </service>
 
         <service uid="pointListAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes">
@@ -246,8 +265,20 @@
             <config layer="default" />
         </service>
 
+        <service uid="textAdp" type="::visuOgreAdaptor::SText">
+            <text>Not for clinical use.&#xA;Demonstration only.</text>
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="24"
+                    hAlign="center" vAlign="bottom" color="#eeeeee" />
+        </service>
+
+        <service uid="pickedVoxelTextAdp" type="::visuOgreAdaptor::SText">
+            <text></text>
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="12"
+                    x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ff0000" />
+        </service>
+
         <service uid="renderStatsAdp" type="::visuOgreAdaptor::SRenderStats">
-            <config layer="default" color="#ff0000" height="0.02"/>
+            <config layer="default" color="#ff0000" fontSize="12" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -277,7 +308,7 @@
             <videoSupport>yes</videoSupport>
         </service>
 
-        <service uid="pointListModifierSrv" type="::uiVisuOgre::SAddPoint">
+        <service uid="pointListModifierSrv" type="::ctrlPicking::SManagePointList">
             <inout key="pointList" uid="pointList" />
         </service>
 
@@ -327,6 +358,28 @@
             <slot>negatoVisibilityAct/setIsActive</slot>
         </connect>
 
+        <connect>
+            <signal>fullscreenAct/screenSelected</signal>
+            <slot>fullscreenAct/hide</slot>
+            <slot>genericSceneSrv/enableFullscreen</slot>
+        </connect>
+
+        <connect>
+            <signal>genericSceneSrv/fullscreenSet</signal>
+            <slot>windowedAct/setVisible</slot>
+            <slot>windowedAct/setIsExecutable</slot>
+        </connect>
+
+        <connect>
+            <signal>windowedAct/disabled</signal>
+            <slot>fullscreenAct/show</slot>
+        </connect>
+        
+        <connect>
+            <signal>3DNegatoAdp/pickedVoxel</signal>
+            <slot>pickedVoxelTextAdp/setText</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
@@ -344,6 +397,8 @@
         <start uid="pointListAdp" />
         <start uid="landmarksAdp" />
         <start uid="renderStatsAdp" />
+        <start uid="textAdp" />
+        <start uid="pickedVoxelTextAdp" />
 
         <update uid="volumeRenderingEditorAct" />
 

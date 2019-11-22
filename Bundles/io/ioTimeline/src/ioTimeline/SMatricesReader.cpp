@@ -41,13 +41,12 @@
 #include <boost/tokenizer.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL);
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL)
 
 static const ::fwServices::IService::KeyType s_MATRIXTL = "matrixTL";
 
@@ -146,9 +145,9 @@ void SMatricesReader::configureWithIHM()
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        this->setFile(_sDefaultPath);
+        this->setFile(result->getPath());
 
         if(nullptr != m_filestream)
         {

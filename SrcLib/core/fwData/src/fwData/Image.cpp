@@ -100,15 +100,15 @@ void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
     Image::csptr other = Image::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+                               + " to " + this->getClassname()), !other );
     this->fieldDeepCopy( _source, cache );
 
     // Assign
-    copyInformation( other );
+    this->copyInformation( other );
 
     if( other->m_dataArray )
     {
-        m_dataArray = ::fwData::Object::copy(other->m_dataArray, cache);
+        m_dataArray->cachedDeepCopy(other->m_dataArray, cache);
     }
 }
 
@@ -335,7 +335,7 @@ Image::Iterator<iterator::IterationBase<char>::Raw> Image::begin()
 Image::Iterator<iterator::IterationBase<char>::Raw> Image::end()
 {
     auto itr = Iterator<iterator::IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getNumElements());
+    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 

@@ -12,8 +12,12 @@ set( DEPENDENCIES
         fwGui
         fwGuiQt
         fwRenderOgre
-        uiIO
+        fwIO
+)
+
+set( REQUIREMENTS
         material
+        uiIO
 )
 
 set( CONAN_DEPS
