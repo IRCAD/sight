@@ -76,7 +76,7 @@ public:
      * @brief Defines camera actions when the keyboard is pressed.
      * @param _key pressed key code. Defines the following behaviour:
      * - 'A' or 'a': animates the camera to rotate around the focus point.
-     * - 'R' or 'r': moves the camera backwards to see the whole seen.
+     * - 'R' or 'r': moves the camera backwards to see the whole scene.
      */
     FWRENDEROGRE_API virtual void keyPressEvent(int _key) final;
 

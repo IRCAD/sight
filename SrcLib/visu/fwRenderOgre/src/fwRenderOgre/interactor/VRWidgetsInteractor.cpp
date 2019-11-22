@@ -44,6 +44,7 @@ VRWidgetsInteractor::VRWidgetsInteractor(Layer::sptr _layer) noexcept :
     TrackballInteractor(_layer),
     m_pickedObject(nullptr)
 {
+    FW_DEPRECATED_MSG("Use 'ClippingBoxInteractor' and 'TrackBallInteractor' instead.", "21.0");
 }
 
 //------------------------------------------------------------------------------

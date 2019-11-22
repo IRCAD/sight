@@ -44,13 +44,12 @@ namespace interactor
  *
  * @deprecated removed in sight 21.0
  */
-class FWRENDEROGRE_CLASS_API [[deprecated("Use 'ClippingBoxInteractor' and 'TrackBallInteractor' instead.")]]
-    VRWidgetsInteractor : public ::fwRenderOgre::interactor::TrackballInteractor
+class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::interactor::TrackballInteractor
 {
 public:
 
     /// Constructor.
-    FWRENDEROGRE_API VRWidgetsInteractor(SPTR(Layer) _layer = nullptr) noexcept;
+    FWRENDEROGRE_API VRWidgetsInteractor(SPTR(Layer)_layer = nullptr) noexcept;
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidgetsInteractor() noexcept;
