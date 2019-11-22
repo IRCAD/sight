@@ -43,14 +43,14 @@ public:
      * @param _sightCam pointer to a sight camera.
      * @return ::openvslam::camera::perspective* pointer to a openvslam perspective camera.
      */
-    static ::openvslam::camera::perspective* fromSight(const ::arData::Camera::csptr _sightCam);
+    static ::openvslam::camera::perspective fromSight(const ::arData::Camera::csptr _sightCam);
 
     /**
      * @brief converts openvslam  perpective camera to sight camera
      * @param _oVSlamCam is a pointer to an openvlsam perspective camera.
      * @return an ::arData::Camera::sptr.
      */
-    static ::arData::Camera::sptr toSight(const ::openvslam::camera::perspective* _oVSlamCam);
+    static ::arData::Camera::sptr toSight(const ::openvslam::camera::perspective _oVSlamCam);
 
     /**
      * @brief create an openvslam monocular config file from camera, orb parameters and initializer parameters (both

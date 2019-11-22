@@ -39,7 +39,7 @@ Plugin::~Plugin() noexcept
 
 //-----------------------------------------------------------------------------
 
-void Plugin::start()
+void Plugin::start() noexcept
 {
 }
 

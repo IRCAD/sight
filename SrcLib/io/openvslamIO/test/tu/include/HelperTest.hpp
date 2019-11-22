@@ -22,7 +22,11 @@
 
 #pragma once
 
+#include <arData/Camera.hpp>
+
 #include <cppunit/extensions/HelperMacros.h>
+
+#include <openvslam/camera/perspective.h>
 
 namespace openvslamIO
 {
@@ -52,6 +56,10 @@ public:
     void fromSight();
     void createConfig();
     void writeReadConfig();
+
+    /// Comparision of camera, set _sightExpected to true if the expected values are sight camera, false otherwise.
+    void compareCam(const ::arData::Camera::csptr _sightCam, const ::openvslam::camera::perspective& _ovsCam,
+                    bool _sightExpected = true);
 
 };
 

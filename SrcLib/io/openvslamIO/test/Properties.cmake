@@ -8,5 +8,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS )
 
 set( CONAN_DEPS
-     openvslam/1.0.0@sight/testing
+  ${CONAN_OPENVSLAM}
 )

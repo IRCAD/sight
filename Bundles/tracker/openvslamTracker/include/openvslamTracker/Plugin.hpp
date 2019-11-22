@@ -37,15 +37,15 @@ class OPENVSLAMTRACKER_CLASS_API Plugin : public ::fwRuntime::Plugin
 public:
 
     /**
-     * @brief   destructor
+     * @brief destructor
      */
-    OPENVSLAMTRACKER_API ~Plugin() noexcept;
+    OPENVSLAMTRACKER_API ~Plugin() noexcept final;
 
     // Overrides
-    OPENVSLAMTRACKER_API void start();
+    OPENVSLAMTRACKER_API void start() noexcept final;
 
     // Overrides
-    OPENVSLAMTRACKER_API void stop() noexcept;
+    OPENVSLAMTRACKER_API void stop() noexcept final;
 };
 
 } // namespace orbSlamTracker

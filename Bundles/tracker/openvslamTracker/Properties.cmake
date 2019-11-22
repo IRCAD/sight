@@ -6,17 +6,17 @@ set( DEPENDENCIES
         fwCore
         fwCom
         fwData
+        fwDataTools
         fwRuntime
         fwServices
-        fwTools
+        fwThread
         arServices
-        fwVtkIO
         fwGui
         arData
         cvIO
         openvslamIO
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS )
 
 set( CONAN_DEPS
     ${CONAN_BOOST}

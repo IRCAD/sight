@@ -58,31 +58,16 @@ void HelperTest::tearDown()
 
 void HelperTest::toSight()
 {
-    ::openvslam::camera::perspective* oVSlamCam =
-        new ::openvslam::camera::perspective("Dummy SLAM camera", ::openvslam::camera::setup_type_t::Monocular,
-                                             ::openvslam::camera::color_order_t::RGB,
-                                             1920, 1080, 60,
-                                             400, 401, 200, 201, 0.0, 0.1, 0.2, 0.3, 0.4);
+    const ::openvslam::camera::perspective oVSlamCam =
+        ::openvslam::camera::perspective("Dummy SLAM camera", ::openvslam::camera::setup_type_t::Monocular,
+                                         ::openvslam::camera::color_order_t::RGB,
+                                         1920, 1080, 60,
+                                         400, 401, 200, 201, 0.0, 0.1, 0.2, 0.3, 0.4);
 
     const ::arData::Camera::sptr cam = ::openvslamIO::Helper::toSight(oVSlamCam);
 
-    CPPUNIT_ASSERT_EQUAL(cam->getCameraID(), oVSlamCam->name_);
-    CPPUNIT_ASSERT_EQUAL(cam->getWidth(), static_cast<size_t>(oVSlamCam->cols_));
-    CPPUNIT_ASSERT_EQUAL(cam->getHeight(), static_cast<size_t>(oVSlamCam->rows_));
-    CPPUNIT_ASSERT_EQUAL(cam->getFx(), oVSlamCam->fx_);
-    CPPUNIT_ASSERT_EQUAL(cam->getFy(), oVSlamCam->fy_);
-    CPPUNIT_ASSERT_EQUAL(cam->getCx(), oVSlamCam->cx_);
-    CPPUNIT_ASSERT_EQUAL(cam->getCy(), oVSlamCam->cy_);
+    compareCam(cam, oVSlamCam, true);
 
-    const auto dist = cam->getDistortionCoefficient();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[0], oVSlamCam->k1_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[1], oVSlamCam->k2_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[2], oVSlamCam->p1_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[3], oVSlamCam->p2_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[4], oVSlamCam->k3_, 10e-8);
-
-    delete oVSlamCam;
 }
 
 //-----------------------------------------------------------------------------
@@ -105,22 +90,7 @@ void HelperTest::fromSight()
     const auto oVSlamCam = ::openvslamIO::Helper::fromSight(cam);
 
     // Compare values.
-
-    CPPUNIT_ASSERT_EQUAL(oVSlamCam->name_, cam->getCameraID());
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(oVSlamCam->cols_), cam->getWidth());
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(oVSlamCam->rows_), cam->getHeight());
-    CPPUNIT_ASSERT_EQUAL(oVSlamCam->fx_, cam->getFx());
-    CPPUNIT_ASSERT_EQUAL(oVSlamCam->fy_, cam->getFy());
-    CPPUNIT_ASSERT_EQUAL(oVSlamCam->cx_, cam->getCx());
-    CPPUNIT_ASSERT_EQUAL(oVSlamCam->cy_, cam->getCy());
-
-    const auto dist = cam->getDistortionCoefficient();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(oVSlamCam->k1_, dist[0], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(oVSlamCam->k2_, dist[1], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(oVSlamCam->p1_, dist[2], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(oVSlamCam->p2_, dist[3], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(oVSlamCam->k3_, dist[4],  10e-8);
+    compareCam(cam, oVSlamCam, false);
 
 }
 
@@ -155,21 +125,7 @@ void HelperTest::createConfig()
 
     ::openvslam::feature::orb_params orbParamFromConfig = config->orb_params_;
 
-    CPPUNIT_ASSERT_EQUAL(cam->getCameraID(), camera->name_);
-    CPPUNIT_ASSERT_EQUAL(cam->getWidth(), static_cast<size_t>(camera->cols_));
-    CPPUNIT_ASSERT_EQUAL(cam->getHeight(), static_cast<size_t>(camera->rows_));
-    CPPUNIT_ASSERT_EQUAL(cam->getFx(), camera->fx_);
-    CPPUNIT_ASSERT_EQUAL(cam->getFy(), camera->fy_);
-    CPPUNIT_ASSERT_EQUAL(cam->getCx(), camera->cx_);
-    CPPUNIT_ASSERT_EQUAL(cam->getCy(), camera->cy_);
-
-    const auto dist = cam->getDistortionCoefficient();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[0], camera->k1_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[1], camera->k2_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[2], camera->p1_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[3], camera->p2_, 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[4], camera->k3_, 10e-8);
+    compareCam(cam, *camera, true);
 
     CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.max_num_keypts_, orbParam.maxNumKeyPts);
     CPPUNIT_ASSERT_EQUAL(orbParamFromConfig.num_levels_, orbParam.numLevels);
@@ -183,7 +139,6 @@ void HelperTest::createConfig()
 
 void HelperTest::writeReadConfig()
 {
-
     //Create a dummy ::arData::Camera;
     ::arData::Camera::sptr cam = ::arData::Camera::New();
 
@@ -231,21 +186,7 @@ void HelperTest::writeReadConfig()
     CPPUNIT_ASSERT_EQUAL(orbParam.minFastThr, orb.min_fast_thr );
     CPPUNIT_ASSERT_EQUAL(orbParam.scaleFactor, orb.scale_factor_ );
 
-    CPPUNIT_ASSERT_EQUAL(camera->name_, cam->getCameraID());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(camera->cols_), cam->getWidth());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(camera->rows_), cam->getHeight());
-    CPPUNIT_ASSERT_EQUAL(camera->fx_, cam->getFx());
-    CPPUNIT_ASSERT_EQUAL(camera->fy_, cam->getFy());
-    CPPUNIT_ASSERT_EQUAL(camera->cx_, cam->getCx());
-    CPPUNIT_ASSERT_EQUAL(camera->cy_, cam->getCy());
-
-    const auto dist = cam->getDistortionCoefficient();
-
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->k1_, dist[0], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->k2_, dist[1], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->p1_, dist[2], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->p2_, dist[3], 10e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->k3_, dist[4], 10e-8);
+    compareCam(cam, *camera, false);
 
     // Since config doesn't export initializer parameters we need to parse the node to check if parameters are correct.
 
@@ -262,6 +203,49 @@ void HelperTest::writeReadConfig()
     CPPUNIT_ASSERT_EQUAL(initParams.minNumTriangulatedPts,
                          node["Initializer.num_min_triangulated_pts"].as<unsigned int>());
 
+}
+
+//-----------------------------------------------------------------------------
+
+void HelperTest::compareCam(const arData::Camera::csptr _sightCam, const openvslam::camera::perspective& _ovsCam,
+                            bool _sightExpected)
+{
+    if(_sightExpected)
+    {
+        CPPUNIT_ASSERT_EQUAL(_sightCam->getCameraID(), _ovsCam.name_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam->getWidth(), static_cast<size_t>(_ovsCam.cols_));
+        CPPUNIT_ASSERT_EQUAL(_sightCam->getHeight(), static_cast<size_t>(_ovsCam.rows_));
+        CPPUNIT_ASSERT_EQUAL(_sightCam->getFx(), _ovsCam.fx_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam->getFy(), _ovsCam.fy_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam->getCx(), _ovsCam.cx_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam->getCy(), _ovsCam.cy_);
+
+        const auto dist = _sightCam->getDistortionCoefficient();
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[0], _ovsCam.k1_, 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[1], _ovsCam.k2_, 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[2], _ovsCam.p1_, 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[3], _ovsCam.p2_, 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[4], _ovsCam.k3_, 10e-8);
+    }
+    else
+    {
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.name_, _sightCam->getCameraID());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.cols_), _sightCam->getWidth());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.rows_), _sightCam->getHeight());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.fx_, _sightCam->getFx());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.fy_, _sightCam->getFy());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.cx_, _sightCam->getCx());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.cy_, _sightCam->getCy());
+
+        const auto dist = _sightCam->getDistortionCoefficient();
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(_ovsCam.k1_, dist[0], 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(_ovsCam.k2_, dist[1], 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(_ovsCam.p1_, dist[2], 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(_ovsCam.p2_, dist[3], 10e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(_ovsCam.k3_, dist[4], 10e-8);
+    }
 }
 
 //-----------------------------------------------------------------------------

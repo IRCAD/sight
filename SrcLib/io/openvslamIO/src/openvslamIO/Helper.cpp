@@ -27,7 +27,7 @@ namespace openvslamIO
 
 //-----------------------------------------------------------------------------
 
-openvslam::camera::perspective* Helper::fromSight(const arData::Camera::csptr _sightCam)
+openvslam::camera::perspective Helper::fromSight(const arData::Camera::csptr _sightCam)
 {
     const auto name = _sightCam->getCameraID();
     const auto dist = _sightCam->getDistortionCoefficient();
@@ -41,41 +41,41 @@ openvslam::camera::perspective* Helper::fromSight(const arData::Camera::csptr _s
     const double fps        = static_cast<double>(_sightCam->getMaximumFrameRate());
 
     // Create a perspective camera (equirectangular and fisheye needs additional information).
-    ::openvslam::camera::perspective* oVSlamCamera =
-        new ::openvslam::camera::perspective(name, cameraType, colorType, cols, rows,
-                                             fps, _sightCam->getFx(), _sightCam->getFy(),
-                                             _sightCam->getCx(),
-                                             _sightCam->getCy(), dist[0], dist[1], dist[2], dist[3], dist[4]);
+    const ::openvslam::camera::perspective oVSlamCamera =
+        ::openvslam::camera::perspective(name, cameraType, colorType, cols, rows,
+                                         fps, _sightCam->getFx(), _sightCam->getFy(),
+                                         _sightCam->getCx(),
+                                         _sightCam->getCy(), dist[0], dist[1], dist[2], dist[3], dist[4]);
 
     return oVSlamCamera;
 }
 
 //-----------------------------------------------------------------------------
 
-arData::Camera::sptr Helper::toSight(const openvslam::camera::perspective* _oVSlamCam)
+arData::Camera::sptr Helper::toSight(const openvslam::camera::perspective _oVSlamCam)
 {
     ::arData::Camera::sptr cam = ::arData::Camera::New();
 
-    cam->setCameraID( _oVSlamCam->name_);
-    cam->setWidth(_oVSlamCam->cols_);
-    cam->setHeight(_oVSlamCam->rows_);
+    cam->setCameraID( _oVSlamCam.name_);
+    cam->setWidth(_oVSlamCam.cols_);
+    cam->setHeight(_oVSlamCam.rows_);
 
-    cam->setFx(_oVSlamCam->fx_);
-    cam->setFy(_oVSlamCam->fy_);
-    cam->setCx(_oVSlamCam->cx_);
-    cam->setCy(_oVSlamCam->cy_);
+    cam->setFx(_oVSlamCam.fx_);
+    cam->setFy(_oVSlamCam.fy_);
+    cam->setCx(_oVSlamCam.cx_);
+    cam->setCy(_oVSlamCam.cy_);
 
     std::array<double, 5> dist;
 
-    dist[0] = _oVSlamCam->k1_; //k1
-    dist[1] = _oVSlamCam->k2_; //k2
-    dist[2] = _oVSlamCam->p1_; //p1
-    dist[3] = _oVSlamCam->p2_; //p2
-    dist[4] = _oVSlamCam->k3_; //k3
+    dist[0] = _oVSlamCam.k1_; //k1
+    dist[1] = _oVSlamCam.k2_; //k2
+    dist[2] = _oVSlamCam.p1_; //p1
+    dist[3] = _oVSlamCam.p2_; //p2
+    dist[4] = _oVSlamCam.k3_; //k3
 
     cam->setDistortionCoefficient(dist);
 
-    cam->setMaximumFrameRate(static_cast<float>(_oVSlamCam->fps_));
+    cam->setMaximumFrameRate(static_cast<float>(_oVSlamCam.fps_));
 
     return cam;
 }
