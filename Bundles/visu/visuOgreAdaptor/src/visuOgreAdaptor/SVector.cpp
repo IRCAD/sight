@@ -185,8 +185,6 @@ void SVector::createVector()
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* lineNode = m_sceneNode->createChildSceneNode(this->getID() + "_lineNode");
-    m_line->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
-                                                  ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
     lineNode->attachObject(m_line);
     // Rotate around y axis to create the cylinder on z Axis (consistent with SLine adaptor)
     lineNode->yaw(::Ogre::Degree(-90));
