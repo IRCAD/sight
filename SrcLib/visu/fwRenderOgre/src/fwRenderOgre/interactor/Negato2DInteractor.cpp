@@ -64,7 +64,6 @@ Negato2DInteractor::Negato2DInteractor() :
 
 void Negato2DInteractor::wheelEvent(int delta, int mouseX, int mouseY)
 {
-    this->updateRenderWindowDimensions();
     this->updateTotalSize();
 
     if(m_totalWidth > 1)
@@ -127,9 +126,12 @@ void Negato2DInteractor::buttonPressEvent(MouseButton, int, int)
 
 //------------------------------------------------------------------------------
 
-void Negato2DInteractor::resizeEvent(int, int)
+void Negato2DInteractor::resizeEvent(int _width, int _height)
 {
-    this->updateRenderWindowDimensions();
+    m_renderWindowWidth  = static_cast<float>(_width);
+    m_renderWindowHeight = static_cast<float>(_height);
+    m_renderWindowRatio  = m_renderWindowWidth / m_renderWindowHeight;
+
     this->updateTotalSize();
     m_currentWidth  = m_zoomScale * m_totalWidth;
     m_currentHeight = m_zoomScale * m_totalHeight;
@@ -299,18 +301,6 @@ void Negato2DInteractor::updateTotalSize()
             }
         }
     }
-}
-
-// ----------------------------------------------------------------------------
-
-void Negato2DInteractor::updateRenderWindowDimensions()
-{
-    // Retrieve the render window bounds
-    ::Ogre::RenderSystem* renderSystem = m_sceneManager->getDestinationRenderSystem();
-
-    m_renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
-    m_renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());
-    m_renderWindowRatio  = m_renderWindowWidth / m_renderWindowHeight;
 }
 
 // ----------------------------------------------------------------------------
