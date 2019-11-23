@@ -158,8 +158,8 @@
                 </scene>
             </service>
 
-            <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" movement="Trackball" />
+            <service uid="interactorAdaptor" type="::visuOgreAdaptor::STrackballCamera">
+                <config layer="default" />
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera" autoConnect="yes">

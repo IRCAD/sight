@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,10 @@
  *
  ***********************************************************************/
 
-#include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/Utils.hpp>
+#include "fwRenderOgre/interactor/IInteractor.hpp"
+
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -38,10 +40,15 @@ const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_R
 
 // ----------------------------------------------------------------------------
 
-IInteractor::IInteractor()  :
-    m_sceneManager(nullptr)
+IInteractor::IInteractor(Layer::sptr _layer)  :
+    m_layer(_layer)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
+
+    if(_layer)
+    {
+        m_sceneManager = _layer->getSceneManager();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -55,6 +62,12 @@ IInteractor::~IInteractor()
 void IInteractor::setSceneID(const std::string& sceneID)
 {
     m_sceneManager = m_ogreRoot->getSceneManager(sceneID);
+}
+
+// ----------------------------------------------------------------------------
+
+void IInteractor::setSceneLength(float)
+{
 }
 
 // ----------------------------------------------------------------------------

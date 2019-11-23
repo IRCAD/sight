@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,6 +37,8 @@
 
 namespace fwRenderOgre
 {
+
+class Layer;
 
 namespace interactor
 {
@@ -91,17 +93,22 @@ public:
      * @{
      */
     typedef ::fwCom::Signal< void () > RenderRequestedSigType;
+    [[deprecated("Removed in sight 21.0")]]
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
     /** @} */
 
-    /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
-    FWRENDEROGRE_API IInteractor();
+    /// Constructor. Sets the scene manager from the layer if it exists.
+    FWRENDEROGRE_API IInteractor(SPTR(Layer)_layer = nullptr);
 
     /// Destructor
     FWRENDEROGRE_API virtual ~IInteractor();
 
     /// Change point of interest viewed by the camera
+    [[deprecated("Set the scene from the layer instead.")]]
     FWRENDEROGRE_API void setSceneID(const std::string&);
+
+    /// Sets the scene's length, that is the length of the scene's bounding cube.
+    FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength);
 
     /// Behaviour on a MouseMoveEvent
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) = 0;
@@ -133,16 +140,22 @@ public:
 protected:
 
     /// Ogre Root
-    ::Ogre::Root* m_ogreRoot;
+    [[deprecated("Removed in sight 21.0")]]
+    ::Ogre::Root* m_ogreRoot { nullptr };
 
     /// Current scene manager
-    ::Ogre::SceneManager* m_sceneManager;
+    [[deprecated("Retrieve the scene manager from the layer instead. Removed in sight 21.0")]]
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
+
+    /// Weak reference to the layer on which the interactor interacts.
+    WPTR(Layer) m_layer;
 
     /**
      * @name Signals attributes
      * @{
      */
     /// Signal triggered when a render is requested
+    [[deprecated("Call the render request on the Layer directly.")]]
     RenderRequestedSigType::sptr m_sigRenderRequested;
     /**
      * @}

@@ -204,7 +204,6 @@
                 </layer>
                 <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3" overlays="LogoOverlay" />
                 <adaptor uid="videoAdp" />
-                <adaptor uid="videoInteractorAdp" />
                 <adaptor uid="defaultInteractorAdp" />
                 <adaptor uid="defaultPickerAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -224,13 +223,8 @@
             <config layer="video" />
         </service>
 
-        <service uid="videoInteractorAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <in key="object" uid="camera" />
-            <config layer="video" movement="Fixed" />
-        </service>
-
-        <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" movement="VR" />
+        <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
+            <config layer="default" />
         </service>
 
         <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SInteractorStyle">
@@ -374,7 +368,7 @@
             <signal>windowedAct/disabled</signal>
             <slot>fullscreenAct/show</slot>
         </connect>
-        
+
         <connect>
             <signal>3DNegatoAdp/pickedVoxel</signal>
             <slot>pickedVoxelTextAdp/setText</slot>
@@ -388,7 +382,6 @@
         <start uid="pointListModifierSrv" />
         <start uid="clippingBoxResetSrv" />
         <start uid="videoAdp" />
-        <start uid="videoInteractorAdp" />
         <start uid="defaultInteractorAdp" />
         <start uid="defaultPickerAdp" />
         <start uid="modeSeriesAdp" />

@@ -12,6 +12,7 @@ set( REQUIREMENTS
     ioAtoms
     ioVTK
     uiIO
+    uiTF
     fwlauncher
     appXml
     visuOgre

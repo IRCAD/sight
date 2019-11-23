@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,7 @@
 
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 #include "fwRenderOgre/picker/IPicker.hpp"
-#include "fwRenderOgre/ui/VRWidget.hpp"
+#include "fwRenderOgre/widget/ClippingBox.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -34,18 +34,22 @@
 namespace fwRenderOgre
 {
 
+class Layer;
+
 namespace interactor
 {
 
 /**
  * @brief Picks VR widgets and updates clipping cube.
+ *
+ * @deprecated removed in sight 21.0
  */
 class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::interactor::TrackballInteractor
 {
 public:
 
     /// Constructor.
-    FWRENDEROGRE_API VRWidgetsInteractor() noexcept;
+    FWRENDEROGRE_API VRWidgetsInteractor(SPTR(Layer)_layer = nullptr) noexcept;
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidgetsInteractor() noexcept;
@@ -60,7 +64,7 @@ public:
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
 
     /// Sets the widget handled by this interactor.
-    FWRENDEROGRE_API void setWidget(ui::VRWidget::sptr widget);
+    FWRENDEROGRE_API void setWidget(widget::ClippingBox::sptr widget);
 
     /// Initializes the picker.
     FWRENDEROGRE_API void initPicker();
@@ -71,7 +75,7 @@ private:
     ::Ogre::MovableObject* m_pickedObject { nullptr };
 
     /// The widget with whom we interact.
-    ui::VRWidget::wptr m_widget;
+    widget::ClippingBox::wptr m_widget;
 
     /// The picker used by this interactor.
     fwRenderOgre::picker::IPicker m_picker;

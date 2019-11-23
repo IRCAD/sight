@@ -29,6 +29,7 @@
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
+#include <fwRenderOgre/interactor/Negato2DInteractor.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
 
 #include <fwServices/macros.hpp>
@@ -50,13 +51,6 @@ static const std::string s_QUERY_CONFIG    = "queryMask";
 static const std::map<std::string, std::string> s_STYLES_PICKER = {
     { "Mesh", "::fwRenderOgre::interactor::MeshPickerInteractor"},
     { "Video", "::fwRenderOgre::interactor::VideoPickerInteractor"},
-};
-
-static const std::map<std::string, std::string> s_STYLES_MOVEMENT = {
-    { "Trackball", "::fwRenderOgre::interactor::TrackballInteractor"},
-    { "Fixed", "::fwRenderOgre::interactor::FixedStyleInteractor"},
-    { "Negato2D", "::fwRenderOgre::interactor::Negato2DInteractor"},
-    { "VR", "::fwRenderOgre::interactor::VRWidgetsInteractor"}
 };
 
 //------------------------------------------------------------------------------
@@ -84,6 +78,11 @@ void SInteractorStyle::configuring()
 
     m_pickerStyle   = config.get<std::string>(s_PICKER_CONFIG, m_pickerStyle);
     m_movementStyle = config.get<std::string>(s_MOVEMENT_CONFIG, m_movementStyle);
+
+    if(m_movementStyle == "VR" )
+    {
+        FW_DEPRECATED_MSG("VR Interactor is deprecated use a 'Trackball' interactor instead.", "21.0");
+    }
 
     if(config.count(s_QUERY_CONFIG))
     {
@@ -121,6 +120,20 @@ void SInteractorStyle::updating()
 
 void SInteractorStyle::stopping()
 {
+    const auto layer = this->getLayer();
+
+    if(m_selectInteractor)
+    {
+        layer->removeInteractor(m_selectInteractor);
+        m_selectInteractor.reset();
+    }
+
+    if(m_moveInteractor)
+    {
+        layer->removeInteractor(m_moveInteractor);
+        m_moveInteractor.reset();
+    }
+
     m_connections.disconnect();
 }
 
@@ -158,15 +171,29 @@ void SInteractorStyle::setInteractorStyle()
 
     if(!m_movementStyle.empty())
     {
-        if(s_STYLES_MOVEMENT.count(m_movementStyle))
+        const auto layer = this->getLayer();
+        if(m_movementStyle == "Trackball")
         {
-            const auto style = s_STYLES_MOVEMENT.at(m_movementStyle);
-
-            m_moveInteractor = ::fwRenderOgre::interactorFactory::New(style, this->getSceneManager()->getName());
-            SLM_ASSERT(this->getID() + " : Unknown movement interactor style : " + style, m_moveInteractor);
-
-            auto layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(m_moveInteractor));
+            m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::TrackballInteractor >(layer);
+            FW_DEPRECATED_MSG("::visuOgreAdaptor::STrackballCamera should be used instead SInteractorStyle.", "21.0");
+            layer->addInteractor(m_moveInteractor);
+        }
+        else if(m_movementStyle == "VR")
+        {
+            // HACK: temporarily fix the legacy VR interactor until everybody uses the new API.
+            m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::VRWidgetsInteractor >(layer);
+            FW_DEPRECATED_MSG("::visuOgreAdaptor::STrackballCamera should be used instead SInteractorStyle.", "21.0");
+            layer->setMoveInteractor(m_moveInteractor);
+        }
+        else if(m_movementStyle == "Fixed")
+        {
+            FW_DEPRECATED_MSG("'Fixed' interaction is now the default,"
+                              "remove SInteractorStyle for no interactions", "21.0");
+        }
+        else if(m_movementStyle == "Negato2D")
+        {
+            m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::Negato2DInteractor >();
+            layer->addInteractor(m_moveInteractor);
         }
         else
         {
