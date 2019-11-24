@@ -49,9 +49,9 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes">
+        <service uid="..." type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="..." />
-            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="1"/>
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="1" />
         </service>
    @endcode
  *
@@ -85,16 +85,12 @@ private:
     /**
      * @brief Generates a color from a distance ID.
      * @param _id ID of the distance.
-     * @return A generate color.
+     * @return The generate color.
      */
     static ::Ogre::ColourValue generateColor(::fwTools::fwID::IDType _id);
 
-    /// Configures the service.
-    virtual void configuring() override final;
-
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
+     * @brief Proposals to connect service slots to associated object signals.
      *
      * Connect ::fwData::Image::s_DISTANCE_ADDED_SIG to SImageMultiDistances::s_ADD_DISTANCE_SLOT
      * Connect ::fwData::Image::s_DISTANCE_REMOVED_SIG to SImageMultiDistances::s_REMOVE_DISTANCE_SLOT
@@ -102,6 +98,9 @@ private:
      * Connect ::fwData::Image::s_MODIFIED_SIG to SImageMultiDistances::s_UPDATE_SLOT
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
+
+    /// Configures the service.
+    virtual void configuring() override final;
 
     /// Adds the interactor to the layer and create the material.
     virtual void starting() override final;
@@ -112,10 +111,10 @@ private:
     /// Removes the interactor from the layer and destroys Ogre resources.
     virtual void stopping() override final;
 
-    /// Retrieves distances from the image and add it to the scene.
+    /// Retrieves distances from the image and add them to the scene.
     void addDistances();
 
-    /// Retrieves distances from the image and remove it to the scene.
+    /// Retrieves distances from the image and remove them from the scene.
     void removeDistances();
 
     /// Updates distances visibility.
@@ -134,12 +133,12 @@ private:
     void destroyDistance(::fwTools::fwID::IDType _id);
 
     /// Radius of distances spheres.
-    float m_distanceSphereRadius {4.5f};
+    float m_distanceSphereRadius {3.5f};
 
     /// Visibility of distances.
     bool m_visibility {true};
 
-    /// TrueType font source file.
+    /// True type font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Font size in points.

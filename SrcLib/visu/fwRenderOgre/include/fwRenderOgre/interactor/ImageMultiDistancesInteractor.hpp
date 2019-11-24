@@ -48,24 +48,23 @@ public:
     /// Stores Ogre ressource used to display a distance.
     /// Two spheres each attached to a node, a label to display millimeters,
     /// one line rendered with the depth check and a dashed line rendered without depth check.
-    /// The mesh is the common data used by each spheres.
     /// The point list is used to update each points when the interactor move a distance sphere,
     /// it's retrieve from the image via a field.
     struct DistanceData
     {
         ::fwData::PointList::sptr m_pointList;
-        ::Ogre::MeshPtr m_mesh;
         ::Ogre::SceneNode* m_node1;
-        ::Ogre::Entity* m_sphere1;
+        ::Ogre::ManualObject* m_sphere1;
         ::Ogre::SceneNode* m_node2;
-        ::Ogre::Entity* m_sphere2;
+        ::Ogre::ManualObject* m_sphere2;
         ::Ogre::ManualObject* m_line;
-        ::fwRenderOgre::Text* m_label;
         ::Ogre::ManualObject* m_dashedLine;
+        ::Ogre::SceneNode* m_labelNode;
+        ::fwRenderOgre::Text* m_label;
     };
 
     /// Map each distances to there related list ID.
-    typedef std::map<::fwTools::fwID::IDType, DistanceData> DistanceMap;
+    typedef std::map< ::fwTools::fwID::IDType, DistanceData > DistanceMap;
 
     /**
      * @brief Generate a dashed line in a ::Ogre::ManualObject.
@@ -101,9 +100,8 @@ private:
     /// Stores picking informations.
     struct PickedData
     {
-        ::fwTools::fwID::IDType m_id;
+        DistanceData* m_data;
         bool m_first;
-        float m_distance;
     };
 
     /**
@@ -113,7 +111,15 @@ private:
     static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
 
     /**
-     * @brief Moves a distance point stores in m_pickedData.
+     * @brief Retrieves the picked distance and store the result in m_pickedData.
+     * @param _button Mousse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override final;
+
+    /**
+     * @brief Moves a distance stores in m_pickedData.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
@@ -123,37 +129,18 @@ private:
     virtual void buttonReleaseEvent(MouseButton, int, int) override final;
 
     /**
-     * @brief Retrieves the picked entity and store the result in m_pickedData.
-     * @param _button Mousse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
+     * @brief Updates a distance.
+     * @param _data Distance to update.
+     * @param _begin New begin position.
+     * @param _end New end position
      */
-    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override final;
-
-    /**
-     * @brief Updates a distance from its ID.
-     * @param _id ID of the distance.
-     * @param _begin Begin position.
-     * @param _end End position
-     */
-    void updateDistance(::fwTools::fwID::IDType _id, ::Ogre::Vector3 _begin, ::Ogre::Vector3 _end);
-
-    /**
-     * @brief Retrieves a ::Ogre::MovableObject from picking coordinates.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     * @return The picked ::Ogre::MovableObject or nullptr if nothing was found.
-     */
-    ::Ogre::MovableObject* pickObject(int _x, int _y);
-
-    /// Cancel all others interactor.
-    void cancelFurtherLayerInteractions();
+    void updateDistance(const DistanceData* const _data, ::Ogre::Vector3 _begin, ::Ogre::Vector3 _end);
 
     /// Radius of distances spheres.
     float m_distanceSphereRadius {4.5f};
 
     /// Current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
-    PickedData m_pickedData;
+    PickedData m_pickedData {nullptr, true};
 
     /// Distances shared between the service and this interactor.
     DistanceMap& m_distances;

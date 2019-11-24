@@ -61,9 +61,24 @@ fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMult
 
 //------------------------------------------------------------------------------
 
+SImageMultiDistances::SImageMultiDistances() noexcept
+{
+    newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
+    newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SImageMultiDistances::updateVisibility, this);
+}
+
+//------------------------------------------------------------------------------
+
+SImageMultiDistances::~SImageMultiDistances() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
 ::Ogre::ColourValue SImageMultiDistances::generateColor(::fwTools::fwID::IDType _id)
 {
-    switch(std::hash<std::string>()(_id) % 7)
+    switch(std::hash< std::string >()(_id) % 7)
     {
         case 0:
             return ::Ogre::ColourValue(63/255.0f, 105/255.0f, 170/255.0f);
@@ -84,17 +99,14 @@ fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMult
 
 //------------------------------------------------------------------------------
 
-SImageMultiDistances::SImageMultiDistances() noexcept
+::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
 {
-    newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
-    newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SImageMultiDistances::updateVisibility, this);
-}
-
-//------------------------------------------------------------------------------
-
-SImageMultiDistances::~SImageMultiDistances() noexcept
-{
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -107,21 +119,9 @@ void SImageMultiDistances::configuring()
     const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
 
     m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize             = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
-    m_distanceSphereRadius = config.get<float>(s_RADIUS_CONFIG, m_distanceSphereRadius);
-    m_priority             = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    m_fontSize             = config.get< size_t >(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_distanceSphereRadius = config.get< float >(s_RADIUS_CONFIG, m_distanceSphereRadius);
+    m_priority             = config.get< int >(s_PRIORITY_CONFIG, m_priority);
 }
 
 //------------------------------------------------------------------------------
@@ -138,15 +138,15 @@ void SImageMultiDistances::starting()
     m_noDepthMaterialName = this->getID() + "_noDepthMaterial";
 
     // Create materials from our wrapper.
-    m_depthMaterial = std::make_unique<::fwRenderOgre::Material>(m_depthMaterialName,
-                                                                 ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_depthMaterial->setHasVertexColor(true);
-    m_depthMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
-
-    m_noDepthMaterial = std::make_unique<::fwRenderOgre::Material>(m_noDepthMaterialName,
+    m_depthMaterial = std::make_unique< ::fwRenderOgre::Material >(m_depthMaterialName,
                                                                    ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_depthMaterial->setHasVertexColor(true);
+    m_depthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+
+    m_noDepthMaterial = std::make_unique< ::fwRenderOgre::Material >(m_noDepthMaterialName,
+                                                                     ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
     m_noDepthMaterial->setHasVertexColor(true);
-    m_noDepthMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
+    m_noDepthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
     // Retrive the ogre material to change the depth check.
     ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(m_noDepthMaterialName);
@@ -157,8 +157,8 @@ void SImageMultiDistances::starting()
     SLM_ASSERT("No pass found", pass);
     pass->setDepthCheckEnabled(false);
 
-    m_interactor = std::make_shared< ::fwRenderOgre::interactor::ImageMultiDistancesInteractor>(layer, m_distances,
-                                                                                               m_distanceSphereRadius);
+    m_interactor = std::make_shared< ::fwRenderOgre::interactor::ImageMultiDistancesInteractor >(layer, m_distances,
+                                                                                                 m_distanceSphereRadius);
     layer->addInteractor(m_interactor, m_priority);
 }
 
@@ -168,8 +168,8 @@ void SImageMultiDistances::updating()
 {
     const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
 
-    m_depthMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
-    m_noDepthMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
+    m_depthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_noDepthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
     this->removeDistances();
     this->addDistances();
 }
@@ -247,7 +247,7 @@ void SImageMultiDistances::removeDistances()
     std::vector< ::fwTools::fwID::IDType > foundId;
     if(distanceField)
     {
-        for(::fwData::Object::sptr object : *distanceField)
+        for(const ::fwData::Object::csptr& object : *distanceField)
         {
             foundId.push_back(object->getID());
         }
@@ -259,7 +259,7 @@ void SImageMultiDistances::removeDistances()
         currentdId.push_back(id);
     }
 
-    for(const ::fwTools::fwID::IDType id : currentdId)
+    for(const ::fwTools::fwID::IDType& id : currentdId)
     {
         if(std::find(foundId.begin(), foundId.end(), id) == foundId.end())
         {
@@ -276,7 +276,7 @@ void SImageMultiDistances::updateVisibility()
 {
     this->getRenderService()->makeCurrent();
 
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
     ::fwData::mt::ObjectReadLock lock(image);
 
@@ -310,41 +310,42 @@ void SImageMultiDistances::updateVisibility()
 
 void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
 {
-    ::fwTools::fwID::IDType id = _pl->getID();
+    const ::fwTools::fwID::IDType id = _pl->getID();
     SLM_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
     ::Ogre::SceneNode* const rootNode    = sceneMgr->getRootSceneNode();
 
     // Retrieve data used to create Ogre resources.
-    ::Ogre::ColourValue colour = SImageMultiDistances::generateColor(id);
+    const ::Ogre::ColourValue colour = SImageMultiDistances::generateColor(id);
 
-    const std::array<double, 3> front = _pl->getPoints().front()->getCoord();
-    const std::array<double, 3> back  = _pl->getPoints().back()->getCoord();
+    const std::array< double, 3 > front = _pl->getPoints().front()->getCoord();
+    const std::array< double, 3 > back  = _pl->getPoints().back()->getCoord();
 
-    const ::Ogre::Vector3 begin(static_cast<float>(front[0]), static_cast<float>(front[1]),
-                                static_cast<float>(front[2]));
-    const ::Ogre::Vector3 end(static_cast<float>(back[0]), static_cast<float>(back[1]),
-                              static_cast<float>(back[2]));
-
-    // Create the mesh.
-    ::Ogre::ManualObject* const sphere = sceneMgr->createManualObject(this->getID() + "_sphere");
-    ::fwRenderOgre::helper::ManualObject::createSphere(sphere, m_noDepthMaterialName, colour, m_distanceSphereRadius);
-    const ::Ogre::MeshPtr sphereMesh = sphere->convertToMesh(this->getID() + "_sphereMesh_" + id);
-    SLM_ASSERT("Can't create the mesh", sphereMesh);
-    sceneMgr->destroyManualObject(sphere);
+    const ::Ogre::Vector3 begin(static_cast< float >(front[0]),
+                                static_cast< float >(front[1]),
+                                static_cast< float >(front[2]));
+    const ::Ogre::Vector3 end(static_cast< float >(back[0]),
+                              static_cast< float >(back[1]),
+                              static_cast< float >(back[2]));
 
     // First sphere.
-    ::Ogre::Entity* const sphere1 = sceneMgr->createEntity(this->getID() + "_sphere1_" + id, sphereMesh);
+    ::Ogre::ManualObject* const sphere1 = sceneMgr->createManualObject(this->getID() + "_sphere1_" + id);
+    ::fwRenderOgre::helper::ManualObject::createSphere(sphere1, m_noDepthMaterialName, colour, m_distanceSphereRadius);
     sphere1->setQueryFlags(0x45893521);
+    // Render this sphere over all others objects.
+    sphere1->setRenderQueueGroup(::Ogre::RenderQueueGroupID::RENDER_QUEUE_9);
     SLM_ASSERT("Can't create the first entity", sphere1);
     ::Ogre::SceneNode* const node1 = rootNode->createChildSceneNode(this->getID() + "_node1_" + id, begin);
     SLM_ASSERT("Can't create the first node", node1);
     node1->attachObject(sphere1);
 
     // Second sphere.
-    ::Ogre::Entity* const sphere2 = sceneMgr->createEntity(this->getID() + "_sphere2_" + id, sphereMesh);
+    ::Ogre::ManualObject* const sphere2 = sceneMgr->createManualObject(this->getID() + "_sphere2_" + id);
+    ::fwRenderOgre::helper::ManualObject::createSphere(sphere2, m_noDepthMaterialName, colour, m_distanceSphereRadius);
     sphere2->setQueryFlags(0x45893521);
+    // Render this sphere over all others objects.
+    sphere2->setRenderQueueGroup(::Ogre::RenderQueueGroupID::RENDER_QUEUE_9);
     SLM_ASSERT("Can't create the second entity", sphere2);
     ::Ogre::SceneNode* const node2 = rootNode->createChildSceneNode(this->getID() + "_node2_" + id, end);
     SLM_ASSERT("Can't create the second node", node2);
@@ -367,15 +368,16 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     dashedLine->begin(m_noDepthMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
     dashedLine->colour(colour);
     ::fwRenderOgre::interactor::ImageMultiDistancesInteractor::generateDashedLine(dashedLine, begin, end,
-                                                                                 m_distanceSphereRadius);
+                                                                                  m_distanceSphereRadius);
     dashedLine->setQueryFlags(0x00000000);
     // Render this line over all others objects.
     dashedLine->setRenderQueueGroup(::Ogre::RenderQueueGroupID::RENDER_QUEUE_9);
     rootNode->attachObject(dashedLine);
 
     // Label.
-    ::Ogre::OverlayContainer* const textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::Camera* const cam                     = this->getLayer()->getDefaultCamera();
+    const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+    ::Ogre::OverlayContainer* const textContainer = layer->getOverlayTextPanel();
+    ::Ogre::Camera* const cam                     = layer->getDefaultCamera();
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
     ::fwRenderOgre::Text* label = ::fwRenderOgre::Text::New(
         this->getID() + "_label_" + id, sceneMgr, textContainer, m_fontSource, m_fontSize, dpi, cam);
@@ -383,7 +385,10 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     label->setText(length);
     label->setTextColor(colour);
     label->setQueryFlags(0x00000000);
-    node2->attachObject(label);
+    ::Ogre::SceneNode* const labelNode =
+        rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, begin + (end-begin)/2);
+    SLM_ASSERT("Can't create the label node", labelNode);
+    labelNode->attachObject(label);
 
     // Set the visibility.
     sphere1->setVisible(m_visibility);
@@ -397,7 +402,7 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     }
 
     // Store data in the map.
-    DistanceData data {_pl, sphereMesh, node1, sphere1, node2, sphere2, line, label, dashedLine};
+    DistanceData data {_pl, node1, sphere1, node2, sphere2, line, dashedLine, labelNode, label};
     m_distances[id] = data;
 }
 
@@ -410,17 +415,16 @@ void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
 
     // Destroy Ogre ressource.
     const DistanceData distanceData = it->second;
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
+    sceneMgr->destroySceneNode(distanceData.m_node1);
+    sceneMgr->destroyManualObject(distanceData.m_sphere1);
+    sceneMgr->destroySceneNode(distanceData.m_node2);
+    sceneMgr->destroyManualObject(distanceData.m_sphere2);
     sceneMgr->destroyManualObject(distanceData.m_line);
     sceneMgr->destroyManualObject(distanceData.m_dashedLine);
-    sceneMgr->destroyEntity(distanceData.m_sphere1);
-    sceneMgr->destroyEntity(distanceData.m_sphere2);
-    sceneMgr->destroySceneNode(distanceData.m_node1);
-    sceneMgr->destroySceneNode(distanceData.m_node2);
+    sceneMgr->destroySceneNode(distanceData.m_labelNode);
     sceneMgr->destroyMovableObject(distanceData.m_label);
-
-    ::Ogre::MeshManager::getSingleton().remove(distanceData.m_mesh);
 
     // Remove it from the map.
     m_distances.erase(it);
