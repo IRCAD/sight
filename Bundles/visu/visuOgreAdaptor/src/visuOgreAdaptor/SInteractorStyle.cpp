@@ -194,6 +194,7 @@ void SInteractorStyle::setInteractorStyle()
         {
             m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::Negato2DInteractor >();
             layer->addInteractor(m_moveInteractor);
+            m_moveInteractor->setSceneID(this->getSceneManager()->getName());
         }
         else
         {
