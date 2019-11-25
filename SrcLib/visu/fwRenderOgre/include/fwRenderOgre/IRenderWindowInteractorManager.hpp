@@ -81,6 +81,7 @@ public:
         int delta;
         int key;
         interactor::IInteractor::MouseButton button;
+        interactor::IInteractor::Modifier modifier;
         InteractionEnumType interactionType;
     };
 

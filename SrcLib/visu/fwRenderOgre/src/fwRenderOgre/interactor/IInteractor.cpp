@@ -70,6 +70,105 @@ void IInteractor::setSceneLength(float)
 {
 }
 
+//------------------------------------------------------------------------------
+
+void IInteractor::mouseMoveEvent(MouseButton, Modifier, int, int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::wheelEvent(Modifier, int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonReleaseEvent(MouseButton, Modifier, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonPressEvent(MouseButton, Modifier, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyPressEvent(int, Modifier)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyReleaseEvent(int, Modifier)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::wheelEvent(int, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::resizeEvent(int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyPressEvent(int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyReleaseEvent(int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonReleaseEvent(MouseButton, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonPressEvent(MouseButton, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::focusInEvent()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::focusOutEvent()
+{
+
+}
+
 // ----------------------------------------------------------------------------
 
 } // namespace interactor

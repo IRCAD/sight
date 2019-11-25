@@ -39,6 +39,22 @@
 namespace visuOgreQt
 {
 
+// ----------------------------------------------------------------------------
+
+static inline ::fwRenderOgre::interactor::IInteractor::Modifier convertModifiers(::Qt::KeyboardModifiers _qmods)
+{
+    using SightOgreModType = ::fwRenderOgre::interactor::IInteractor::Modifier;
+    SightOgreModType mods = SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::ShiftModifier )   ? SightOgreModType::SHIFT   : SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::ControlModifier ) ? SightOgreModType::CONTROL : SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::AltModifier )     ? SightOgreModType::ALT     : SightOgreModType::NONE;
+    mods |= (_qmods& ::Qt::MetaModifier )    ? SightOgreModType::META    : SightOgreModType::NONE;
+
+    return mods;
+}
+
+// ----------------------------------------------------------------------------
+
 int Window::m_counter = 0;
 
 // ----------------------------------------------------------------------------
@@ -148,15 +164,6 @@ void Window::destroyWindow()
         mgr->unregisterWindow(m_ogreRenderWindow);
         m_ogreRenderWindow = nullptr;
     }
-
-    if (m_lastPosLeftClick)
-    {
-        delete m_lastPosLeftClick;
-    }
-    if (m_lastPosMiddleClick)
-    {
-        delete m_lastPosMiddleClick;
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -195,7 +202,7 @@ void Window::render()
 
 // ----------------------------------------------------------------------------
 
-std::pair<int, int> Window::getDeviceCoordinates(int _x, int _y)
+std::pair<int, int> Window::getDeviceCoordinates(int _x, int _y) const
 {
 #ifdef Q_OS_MAC
     const qreal pixelRatio = this->devicePixelRatio();
@@ -310,16 +317,8 @@ void Window::keyPressEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
-
-    switch(e->key())
-    {
-        case ::Qt::Key_Shift: info.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
-        case ::Qt::Key_Control: info.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
-        case ::Qt::Key_Meta: info.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
-        case ::Qt::Key_Alt: info.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
-        default:
-            info.key = e->key();
-    }
+    info.modifier        = convertModifiers(QApplication::keyboardModifiers());
+    info.key             = e->key();
 
     Q_EMIT interacted(info);
 }
@@ -330,74 +329,49 @@ void Window::keyReleaseEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
-    switch(e->key())
-    {
-        case ::Qt::Key_Shift: info.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
-        case ::Qt::Key_Control: info.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
-        case ::Qt::Key_Meta: info.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
-        case ::Qt::Key_Alt: info.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
-        default:
-            info.key = e->key();
-    }
+    info.modifier        = convertModifiers(QApplication::keyboardModifiers());
+    info.key             = e->key();
 
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
+Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
+                                                  InteractionInfo::InteractionEnum _interactionType) const
+{
+    const auto activeButtons = _evt->buttons();
+    const auto button        = activeButtons & Qt::LeftButton   ? ::fwRenderOgre::interactor::IInteractor::LEFT   :
+                               activeButtons & Qt::MiddleButton ? ::fwRenderOgre::interactor::IInteractor::MIDDLE :
+                               activeButtons & Qt::RightButton  ? ::fwRenderOgre::interactor::IInteractor::RIGHT  :
+                               ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+
+    const int x  = _evt->x();
+    const int y  = _evt->y();
+    const int dx = m_lastMousePosition ? m_lastMousePosition.value().x() - x : 0;
+    const int dy = m_lastMousePosition ? m_lastMousePosition.value().y() - y : 0;
+
+    InteractionInfo info;
+    info.interactionType       = _interactionType;
+    std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
+    std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
+    info.button                = button;
+    info.modifier              = convertModifiers(_evt->modifiers());
+
+    return info;
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::mouseMoveEvent( QMouseEvent* e )
 {
-    if (e->buttons() & ::Qt::LeftButton && m_lastPosLeftClick)
+    if(e->buttons())
     {
-        int x  = m_lastPosLeftClick->x();
-        int y  = m_lastPosLeftClick->y();
-        int dx = x - e->x();
-        int dy = y - e->y();
-        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
-        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
-        info.button                = ::fwRenderOgre::interactor::IInteractor::LEFT;
+        const auto info = this->convertMouseEvent(e, InteractionInfo::MOUSEMOVE);
+        m_lastMousePosition = QPoint(info.x, info.y);
+
         Q_EMIT interacted(info);
 
-        m_lastPosLeftClick->setX(e->x());
-        m_lastPosLeftClick->setY(e->y());
-        this->requestRender();
-    }
-    else if (e->buttons() & ::Qt::MiddleButton && m_lastPosMiddleClick )
-    {
-        int x  = m_lastPosMiddleClick->x();
-        int y  = m_lastPosMiddleClick->y();
-        int dx = x - e->x();
-        int dy = y - e->y();
-
-        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
-        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
-        info.button                = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
-        Q_EMIT interacted(info);
-
-        m_lastPosMiddleClick->setX(e->x());
-        m_lastPosMiddleClick->setY(e->y());
-        this->requestRender();
-    }
-    else if (e->buttons() & ::Qt::RightButton && m_lastPosRightClick )
-    {
-        int x  = m_lastPosRightClick->x();
-        int y  = m_lastPosRightClick->y();
-        int dx = x - e->x();
-        int dy = y - e->y();
-
-        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType       = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
-        std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
-        std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
-        info.button                = ::fwRenderOgre::interactor::IInteractor::RIGHT;
-        Q_EMIT interacted(info);
-
-        m_lastPosRightClick->setX(e->x());
-        m_lastPosRightClick->setY(e->y());
         this->requestRender();
     }
 }
@@ -412,6 +386,7 @@ void Window::wheelEvent(QWheelEvent* e)
     std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
     info.dx                  = 0;
     info.dy                  = 0;
+    info.modifier            = convertModifiers(e->modifiers());
 
     Q_EMIT interacted(info);
     Q_EMIT cameraClippingComputation();
@@ -423,54 +398,9 @@ void Window::wheelEvent(QWheelEvent* e)
 
 void Window::mousePressEvent( QMouseEvent* e )
 {
-    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
-    info.button              = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
-    info.delta               = 0;
-    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
-    info.dx                  = 0;
-    info.dy                  = 0;
-
-    if(e->button() == Qt::LeftButton)
-    {
-        m_lastPosLeftClick = new QPoint(e->x(), e->y());
-
-        info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
-    }
-    else if(e->button() == Qt::MiddleButton)
-    {
-        m_lastPosMiddleClick = new QPoint(e->x(), e->y());
-
-        info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
-    }
-    else if(e->button() == Qt::RightButton)
-    {
-        m_lastPosRightClick = new QPoint(e->x(), e->y());
-
-        info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
-    }
-
-    // HACK: send modifiers (if there are any) as keyboard press events first.
-    // TODO: Interaction signals should be refactored to send modifiers.
-    if(e->modifiers())
-    {
-        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo modifierInfo;
-        modifierInfo.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
-
-        switch(e->modifiers())
-        {
-            case ::Qt::ShiftModifier: modifierInfo.key   = ::fwRenderOgre::interactor::IInteractor::SHIFT; break;
-            case ::Qt::ControlModifier: modifierInfo.key = ::fwRenderOgre::interactor::IInteractor::CONTROL; break;
-            case ::Qt::MetaModifier: modifierInfo.key    = ::fwRenderOgre::interactor::IInteractor::META; break;
-            case ::Qt::AltModifier: modifierInfo.key     = ::fwRenderOgre::interactor::IInteractor::ALT; break;
-            default:
-                break;
-        }
-
-        Q_EMIT interacted(modifierInfo);
-    }
-
+    const auto info = this->convertMouseEvent(e, InteractionInfo::BUTTONPRESS);
     Q_EMIT interacted(info);
+
     this->requestRender();
 }
 
@@ -478,55 +408,12 @@ void Window::mousePressEvent( QMouseEvent* e )
 
 void Window::mouseReleaseEvent( QMouseEvent* e )
 {
-    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
-    info.button              = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
-    info.delta               = 0;
-    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
-    info.dx                  = 0;
-    info.dy                  = 0;
-
-    if(e->button() == Qt::LeftButton && m_lastPosLeftClick)
-    {
-        delete m_lastPosLeftClick;
-        m_lastPosLeftClick = nullptr;
-
-        info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
-    }
-    else if(e->button() == Qt::MiddleButton && m_lastPosMiddleClick)
-    {
-        delete m_lastPosMiddleClick;
-        m_lastPosMiddleClick = nullptr;
-
-        info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
-    }
-    else if(e->button() == Qt::RightButton)
-    {
-        delete m_lastPosRightClick;
-        m_lastPosRightClick = nullptr;
-
-        info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
-    }
+    const auto info = this->convertMouseEvent(e, InteractionInfo::BUTTONRELEASE);
+    m_lastMousePosition.reset();
 
     Q_EMIT interacted(info);
-}
 
-// ----------------------------------------------------------------------------
-
-void Window::focusInEvent(QFocusEvent*)
-{
-    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSIN;
-    Q_EMIT interacted(info);
-}
-
-// ----------------------------------------------------------------------------
-
-void Window::focusOutEvent(QFocusEvent*)
-{
-    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::FOCUSOUT;
-    Q_EMIT interacted(info);
+    this->requestRender();
 }
 
 // ----------------------------------------------------------------------------

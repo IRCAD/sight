@@ -23,26 +23,97 @@
 #include "fwRenderOgre/interactor/MeshPickerInteractor.hpp"
 
 #include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
 
 #include <fwCom/Signal.hxx>
 
 fwRenderOgreRegisterInteractorMacro( ::fwRenderOgre::interactor::MeshPickerInteractor );
 
-namespace fwRenderOgre
+namespace fwRenderOgre::interactor
 {
 
-namespace interactor
+MeshPickerInteractor::MeshPickerInteractor(Layer::sptr _layer) noexcept :
+    IInteractor(_layer)
 {
-
-MeshPickerInteractor::MeshPickerInteractor() noexcept
-{
+    if(_layer)
+    {
+        m_picker.setSceneManager(_layer->getSceneManager());
+    }
 }
 
 //------------------------------------------------------------------------------
 
 MeshPickerInteractor::~MeshPickerInteractor() noexcept
 {
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::setPointClickedSig(const PointClickedSigType::sptr& _sig)
+{
+    m_pointClickedSig = _sig;
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::setQueryMask(std::uint32_t _queryMask)
+{
+    m_queryMask = _queryMask;
+}
+
+//------------------------------------------------------------------------------
+
+void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed)
+{
+    if(m_picker.hasSceneManager())
+    {
+        if(m_picker.executeRaySceneQuery(_x, _y, m_width, m_height, m_queryMask))
+        {
+            ::Ogre::Vector3 click = m_picker.getIntersectionInWorldSpace();
+
+            ::fwDataTools::PickingInfo info;
+            info.m_worldPos[0] = static_cast<double>(click.x);
+            info.m_worldPos[1] = static_cast<double>(click.y);
+            info.m_worldPos[2] = static_cast<double>(click.z);
+
+            using PickingEventType = ::fwDataTools::PickingInfo::Event;
+            switch(_button)
+            {
+                case MouseButton::LEFT:
+                    info.m_eventId = _pressed ? PickingEventType::MOUSE_LEFT_DOWN : PickingEventType::MOUSE_LEFT_UP;
+                    break;
+                case MouseButton::RIGHT:
+                    info.m_eventId = _pressed ? PickingEventType::MOUSE_RIGHT_DOWN : PickingEventType::MOUSE_RIGHT_UP;
+                    break;
+                case MouseButton::MIDDLE:
+                    info.m_eventId = _pressed ? PickingEventType::MOUSE_MIDDLE_DOWN : PickingEventType::MOUSE_MIDDLE_UP;
+                    break;
+                default:
+                    SLM_ERROR("Unknow button");
+                    break;
+            }
+
+            if(static_cast<bool>(_mod & Modifier::CONTROL))
+            {
+                info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
+            }
+
+            if(m_pointClickedSig)
+            {
+                m_pointClickedSig->asyncEmit(info);
+            }
+            else
+            {
+                SLM_ERROR("You must first set the signal sent using 'MeshPickerInteractor::setPointClickedSig'"
+                          " for this interactor to work.");
+            }
+        }
+    }
+    else
+    {
+        SLM_ERROR("The picker scene hasn't been initialized, you are not using this interactor correctly");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -55,141 +126,18 @@ void MeshPickerInteractor::resizeEvent(int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::buttonPressEvent(MouseButton _button, int _x, int _y)
+void MeshPickerInteractor::buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y)
 {
-    if(m_picker->hasSceneManager())
-    {
-        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryMask))
-        {
-            ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
-
-            ::fwDataTools::PickingInfo info;
-            info.m_worldPos[0] = static_cast<double>(click.x);
-            info.m_worldPos[1] = static_cast<double>(click.y);
-            info.m_worldPos[2] = static_cast<double>(click.z);
-
-            switch(_button)
-            {
-                case MouseButton::LEFT:
-                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN;
-                    break;
-                case MouseButton::RIGHT:
-                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_DOWN;
-                    break;
-                case MouseButton::MIDDLE:
-                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_MIDDLE_DOWN;
-                    break;
-                default:
-                    SLM_ERROR("Unknow button");
-                    break;
-            }
-
-            if(m_control)
-            {
-                info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
-            }
-
-            m_picked->asyncEmit(info);
-
-        }
-    }
-    else
-    {
-        SLM_WARN("The picker scene hasn't been initialized, you are not using this interactor correctly");
-    }
+    this->pick(_button, _mod, _x, _y, true);
 }
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
+void MeshPickerInteractor::buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y)
 {
+    this->pick(_button, _mod, _x, _y, false);
 }
 
 //------------------------------------------------------------------------------
 
-void MeshPickerInteractor::wheelEvent(int, int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void MeshPickerInteractor::buttonReleaseEvent(MouseButton _button, int _x, int _y)
-{
-    if(m_picker->hasSceneManager())
-    {
-        if(m_picker->executeRaySceneQuery(_x, _y, m_width, m_height, m_queryMask))
-        {
-            ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
-
-            ::fwDataTools::PickingInfo info;
-            info.m_worldPos[0] = static_cast<double>(click.x);
-            info.m_worldPos[1] = static_cast<double>(click.y);
-            info.m_worldPos[2] = static_cast<double>(click.z);
-
-            switch(_button)
-            {
-                case MouseButton::LEFT:
-                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP;
-                    break;
-                case MouseButton::RIGHT:
-                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP;
-                    break;
-                case MouseButton::MIDDLE:
-                    info.m_eventId = ::fwDataTools::PickingInfo::Event::MOUSE_MIDDLE_UP;
-                    break;
-                default:
-                    SLM_ERROR("Unknow button");
-                    break;
-            }
-
-            if(m_control)
-            {
-                info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
-            }
-
-            m_picked->asyncEmit(info);
-        }
-    }
-    else
-    {
-        SLM_WARN("The picker scene hasn't been initialized, you are not using this interactor correctly");
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void MeshPickerInteractor::keyPressEvent(int _k)
-{
-    if(_k == Modifier::CONTROL)
-    {
-        m_control = true;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void MeshPickerInteractor::keyReleaseEvent(int _k)
-{
-    if(_k == Modifier::CONTROL)
-    {
-        m_control = false;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void MeshPickerInteractor::focusInEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void MeshPickerInteractor::focusOutEvent()
-{
-    m_control = false;
-}
-
-//------------------------------------------------------------------------------
-
-} //namespace interactor
-} //namespace fwRenderOgre
+} //namespace fwRenderOgre::interactor
