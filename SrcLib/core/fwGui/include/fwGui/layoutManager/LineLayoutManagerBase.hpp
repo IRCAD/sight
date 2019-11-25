@@ -119,7 +119,7 @@ public:
      *   - \b leftBorder : define the size of the left border in the layout
      *   - \b topBorder : define the size of the top border in the layout
      *   - \b rightBorder : define the size of the right border in the layout
-     *   - \b bottonBorder : define the size of the bottom border in the layout
+     *   - \b bottomBorder : define the size of the bottom border in the layout
      *   - \b spacing: space between widgets in the layout, if it's -1, nothing will be sets end the default value will
      * be used.
      *   - \b caption : define the title to display.
