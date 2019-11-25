@@ -77,8 +77,8 @@ ImageMultiDistancesInteractor::ImageMultiDistancesInteractor(Layer::sptr _layer,
                                                              DistanceMap& _distances,
                                                              float _radius) noexcept :
     IInteractor(_layer),
-    m_distances(_distances),
-    m_distanceSphereRadius(_radius)
+    m_distanceSphereRadius(_radius),
+    m_distances(_distances)
 {
     SLM_ASSERT("This interactor must know its layer.", _layer);
 }
