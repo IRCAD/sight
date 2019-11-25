@@ -55,6 +55,7 @@ static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT = "updateV
 static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
 static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
 static const std::string s_RADIUS_CONFIG      = "radius";
+static const std::string s_INTERACTIVE_CONFIG = "interactive";
 static const std::string s_PRIORITY_CONFIG    = "priority";
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
@@ -121,6 +122,7 @@ void SImageMultiDistances::configuring()
     m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize             = config.get< size_t >(s_FONT_SIZE_CONFIG, m_fontSize);
     m_distanceSphereRadius = config.get< float >(s_RADIUS_CONFIG, m_distanceSphereRadius);
+    m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority             = config.get< int >(s_PRIORITY_CONFIG, m_priority);
 }
 
@@ -157,9 +159,12 @@ void SImageMultiDistances::starting()
     SLM_ASSERT("No pass found", pass);
     pass->setDepthCheckEnabled(false);
 
-    m_interactor = std::make_shared< ::fwRenderOgre::interactor::ImageMultiDistancesInteractor >(layer, m_distances,
-                                                                                                 m_distanceSphereRadius);
-    layer->addInteractor(m_interactor, m_priority);
+    if(m_interactive)
+    {
+        m_interactor = std::make_shared< ::fwRenderOgre::interactor::ImageMultiDistancesInteractor >(layer, m_distances,
+                                                                                                     m_distanceSphereRadius);
+        layer->addInteractor(m_interactor, m_priority);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -183,7 +188,10 @@ void SImageMultiDistances::stopping()
     m_depthMaterial.reset();
     m_noDepthMaterial.reset();
 
-    this->getLayer()->removeInteractor(m_interactor);
+    if(m_interactive)
+    {
+        this->getLayer()->removeInteractor(m_interactor);
+    }
 
     while(m_distances.size() != 0)
     {

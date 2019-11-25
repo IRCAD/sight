@@ -63,6 +63,7 @@ namespace visuOgreAdaptor
  * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, default=16): Font size in points.
  * - \b radius (optional, default=4.5): Size of the distances spheres.
+ * - \b interactive (optional, true/false, default=true): Enables interactions with distances.
  * - \b priority (optional, default=1): Priority of the interactor.
  */
 class SImageMultiDistances final : public ::fwRenderOgre::IAdaptor
@@ -143,6 +144,9 @@ private:
 
     /// Font size in points.
     size_t m_fontSize {16};
+
+    /// Sets whether or not interactions are enabled with distances.
+    bool m_interactive { true };
 
     /// Priority of the interactor
     int m_priority {1};
