@@ -81,7 +81,7 @@ public:
      * @param[in] _delta: the maximum tolerance  between the reference point and the point to find
      * @return the removed point or nullptr if no point has been removed
      */
-    FWDATATOOLS_API static const ::fwData::Point::sptr removeClosestPoint(::fwData::PointList::sptr& _pointList,
+    FWDATATOOLS_API static const ::fwData::Point::sptr removeClosestPoint(const ::fwData::PointList::sptr& _pointList,
                                                                           const ::fwData::Point::csptr& _point,
                                                                           float _delta);
 

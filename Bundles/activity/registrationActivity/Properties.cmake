@@ -4,13 +4,18 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
+    dataReg
+    servicesReg
+    activities
+    visuVTK
+    ctrlPicking
+    uiIO
+    ioData
     basicRegistration
     gui
     guiQt
     ctrlSelection
     ctrlCamp
-    uiMeasurement
-    uiVisu
     uiVisuQt
     visuVTKAdaptor
     uiImageQt
