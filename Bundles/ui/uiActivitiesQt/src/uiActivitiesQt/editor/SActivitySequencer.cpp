@@ -30,10 +30,14 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/operations.hpp>
+#include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/macros.hpp>
 
+#include <boost/filesystem.hpp>
+
 #include <QApplication>
+#include <QDir>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
@@ -162,7 +166,17 @@ void SActivitySequencer::starting()
         }
     }
 
-    engine->addImportPath(QML_IMPORT_PATH);
+    // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
+    const auto runtimePath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+    const auto qmlDir      = runtimePath / "qml";
+    if (::boost::filesystem::exists(qmlDir))
+    {
+        engine->addImportPath(QString::fromStdString(qmlDir.string()));
+    }
+    else
+    {
+        engine->addImportPath(QML_IMPORT_PATH);
+    }
 
     QStringList activitiesName;
 
@@ -278,6 +292,13 @@ void SActivitySequencer::checkNext()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+
+    // Store current activity data before checking the next one,
+    // new data can be added in the current activity during the process.
+    if (m_currentActivity >= 0)
+    {
+        this->storeActivityData(seriesDB, m_currentActivity);
+    }
 
     const size_t nextIdx = static_cast<size_t>(m_currentActivity + 1);
     if (nextIdx < m_activityIds.size())

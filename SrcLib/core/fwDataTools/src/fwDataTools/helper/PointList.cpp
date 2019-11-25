@@ -163,7 +163,7 @@ void PointList::associate(const ::fwData::PointList::csptr& _pointList1,
 
 //------------------------------------------------------------------------------
 
-const ::fwData::Point::sptr PointList::removeClosestPoint(::fwData::PointList::sptr& _pointList,
+const ::fwData::Point::sptr PointList::removeClosestPoint(const ::fwData::PointList::sptr& _pointList,
                                                           const ::fwData::Point::csptr& _point, float _delta)
 {
     // Initial data

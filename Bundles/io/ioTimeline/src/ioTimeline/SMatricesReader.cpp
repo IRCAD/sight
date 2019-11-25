@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL);
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL)
 
 static const ::fwServices::IService::KeyType s_MATRIXTL = "matrixTL";
 
@@ -143,9 +143,9 @@ void SMatricesReader::configureWithIHM()
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        this->setFile(_sDefaultPath);
+        this->setFile(result->getPath());
 
         if(nullptr != m_filestream)
         {
