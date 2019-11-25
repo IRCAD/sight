@@ -30,6 +30,7 @@
 #include <fwData/PointList.hpp>
 
 #include <OGRE/OgreMovableObject.h>
+#include <OGRE/OgreSceneNode.h>
 
 namespace fwRenderOgre
 {
