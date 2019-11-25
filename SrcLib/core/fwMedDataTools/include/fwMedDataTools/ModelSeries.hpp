@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATATOOLS_MODELSERIES_HPP__
-#define __FWMEDDATATOOLS_MODELSERIES_HPP__
+#pragma once
 
 #include "fwMedDataTools/config.hpp"
 
@@ -39,7 +38,6 @@ namespace fwMedDataTools
 
 /**
  * @brief   This class contains helper to manipulate ::fwData::ModelSeries.
- * @class   ModelSeries
  */
 class ModelSeries
 {
@@ -50,8 +48,8 @@ public:
      * @param _modelSeries Model series where the mesh must be added.
      * @param _rec Reconstruction that must be added
      */
-    FWMEDDATATOOLS_API static void addReconstruction( ::fwMedData::ModelSeries::sptr& _modelSeries,
-                                                      ::fwData::Reconstruction::sptr& _rec);
+    FWMEDDATATOOLS_API static void addReconstruction(const ::fwMedData::ModelSeries::sptr& _modelSeries,
+                                                     const ::fwData::Reconstruction::sptr& _rec);
 
     /**
      * @brief Create a reconstruction from a mesh.
@@ -67,9 +65,9 @@ public:
     createReconstructionFromMesh( const ::fwData::Mesh::sptr& _mesh,
                                   const std::string& _organName,
                                   const std::string& _structureType,
-                                  const ::fwData::Color::sptr& _color = ::fwData::Color::New(),
+                                  const ::fwData::Color::sptr& _color          = ::fwData::Color::New(),
                                   ::fwData::Material::RepresentationType _mode = ::fwData::Material::SURFACE,
-                                  bool _visible = true);
+                                  bool _visible                                = true);
 
     /**
      * @brief Add a mesh into a model series. A reconstruction for this mesh will be automatically created.
@@ -82,14 +80,12 @@ public:
      * @param _visible Visibility flag of the reconstruction.
      */
     FWMEDDATATOOLS_API static void
-    addMesh( ::fwMedData::ModelSeries::sptr& _modelSeries,
-             const ::fwData::Mesh::sptr& _mesh,
-             const std::string& _organName, const std::string& _structureType,
-             const ::fwData::Color::sptr& _color = ::fwData::Color::New(),
-             ::fwData::Material::RepresentationType _mode = ::fwData::Material::SURFACE,
-             bool _visible = true);
+    addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries,
+            const ::fwData::Mesh::sptr& _mesh,
+            const std::string& _organName, const std::string& _structureType,
+            const ::fwData::Color::sptr& _color          = ::fwData::Color::New(),
+            ::fwData::Material::RepresentationType _mode = ::fwData::Material::SURFACE,
+            bool _visible                                = true);
 };
 
 } // end namespace fwMedDataTools
-
-#endif // __FWMEDDATATOOLS_MODELSERIES_HPP__
