@@ -156,8 +156,8 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
     }
     else
     {
-        const ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
-        const ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+        const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
+        const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
 
         ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
@@ -177,8 +177,8 @@ void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    const ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
-    const ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+    const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
+    const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
         {

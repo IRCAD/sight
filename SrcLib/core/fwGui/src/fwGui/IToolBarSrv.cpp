@@ -152,8 +152,8 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    const ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
-    const ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+    const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
+    const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
@@ -172,8 +172,8 @@ void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    const ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
-    const ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+    const ::fwServices::IService::csptr service = ::fwServices::get( actionSrvSID );
+    const ::fwGui::IActionSrv::csptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
