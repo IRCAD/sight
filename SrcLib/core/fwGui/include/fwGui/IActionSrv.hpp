@@ -148,7 +148,7 @@ public:
     FWGUI_API bool getActiveStateValue() const;
 
     /// Return true if the active state should be inverted.
-    FWGUI_API bool getIsInverted() const;
+    FWGUI_API bool isInverted() const;
 
     /**
      * @brief Confirm that the action must be executed.
@@ -200,11 +200,11 @@ private:
     ::fwGui::registrar::ActionRegistrar::sptr m_registrar;
 
     /// Handle the information of the action state inversion.
-    bool m_isInverted;
-    bool m_isActive;
-    bool m_isExecutable;
-    bool m_isVisible;
-    bool m_confirmAction;
+    bool m_isInverted{false};
+    bool m_isActive{false};
+    bool m_isExecutable{true};
+    bool m_isVisible{true};
+    bool m_confirmAction{false};
     std::string m_confirmMessage;
     std::string m_defaultButton;
 

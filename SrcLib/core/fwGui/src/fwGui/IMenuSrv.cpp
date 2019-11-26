@@ -156,13 +156,13 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
     }
     else
     {
-        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
-        ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+        const ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
+        const ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
 
         ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
-                const bool isInverted = actionSrv->getIsInverted();
+                const bool isInverted = actionSrv->isInverted();
                 const bool isActive   = actionSrv->getIsActive();
                 m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
                 m_layoutManager->menuItemSetVisible(menuItem, actionSrv->isVisible());
@@ -177,12 +177,12 @@ void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
-    ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+    const ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
+    const ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
         {
-            const bool isInverted = actionSrv->getIsInverted();
+            const bool isInverted = actionSrv->isInverted();
             m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
         })).wait();
 }

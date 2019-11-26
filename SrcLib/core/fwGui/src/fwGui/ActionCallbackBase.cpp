@@ -39,8 +39,7 @@ const ActionCallbackBase::RegistryKeyType ActionCallbackBase::REGISTRY_KEY = "::
 
 //-----------------------------------------------------------------------------
 
-ActionCallbackBase::ActionCallbackBase() :
-    m_sid("")
+ActionCallbackBase::ActionCallbackBase()
 {
 }
 
@@ -76,7 +75,7 @@ void ActionCallbackBase::check(bool checked)
     OSLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     ::fwGui::IActionSrv::sptr action = ::fwGui::IActionSrv::dynamicCast(service);
     OSLM_ASSERT("Service "<<m_sid<<" is not an action.", action);
-    checked = (action->getIsInverted() ? !checked : checked);
+    checked = (action->isInverted() ? !checked : checked);
     if (action->getIsActive() != checked)
     {
         action->setIsActive(checked);

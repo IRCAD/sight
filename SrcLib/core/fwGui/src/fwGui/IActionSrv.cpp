@@ -51,12 +51,7 @@ const ::fwCom::Signals::SignalKeyType IActionSrv::s_DISABLED_SIG  = "disabled";
 const ::fwCom::Signals::SignalKeyType IActionSrv::s_CHECKED_SIG   = "checked";
 const ::fwCom::Signals::SignalKeyType IActionSrv::s_UNCHECKED_SIG = "unchecked";
 
-IActionSrv::IActionSrv() :
-    m_isInverted(false),
-    m_isActive(false),
-    m_isExecutable(true),
-    m_isVisible(true),
-    m_confirmAction(false)
+IActionSrv::IActionSrv()
 {
     newSlot(s_SET_IS_ACTIVE_SLOT, &IActionSrv::setIsActive, this);
     newSlot(s_ACTIVATE_SLOT, &IActionSrv::activate, this);
@@ -288,13 +283,13 @@ bool IActionSrv::isVisible() const
 
 bool IActionSrv::getActiveStateValue() const
 {
-    FW_DEPRECATED_MSG("`getActiveStateValue` is deprecated, please use `getIsInverted` instead.", "21.0");
-    return this->getIsInverted();
+    FW_DEPRECATED_MSG("`getActiveStateValue` is deprecated, please use `isInverted` instead.", "21.0");
+    return this->isInverted();
 }
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::getIsInverted() const
+bool IActionSrv::isInverted() const
 {
     return m_isInverted;
 }
