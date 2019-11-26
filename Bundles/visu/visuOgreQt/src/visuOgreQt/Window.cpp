@@ -317,7 +317,7 @@ void Window::keyPressEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
-    info.modifier        = convertModifiers(QApplication::keyboardModifiers());
+    info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = e->key();
 
     Q_EMIT interacted(info);
@@ -329,7 +329,7 @@ void Window::keyReleaseEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
-    info.modifier        = convertModifiers(QApplication::keyboardModifiers());
+    info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = e->key();
 
     Q_EMIT interacted(info);
@@ -356,7 +356,7 @@ Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
     std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
     std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
     info.button                = button;
-    info.modifier              = convertModifiers(_evt->modifiers());
+    info.modifiers             = convertModifiers(_evt->modifiers());
 
     return info;
 }
@@ -386,7 +386,7 @@ void Window::wheelEvent(QWheelEvent* e)
     std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
     info.dx                  = 0;
     info.dy                  = 0;
-    info.modifier            = convertModifiers(e->modifiers());
+    info.modifiers           = convertModifiers(e->modifiers());
 
     Q_EMIT interacted(info);
     Q_EMIT cameraClippingComputation();

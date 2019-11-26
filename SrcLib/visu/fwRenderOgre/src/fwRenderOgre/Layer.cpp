@@ -462,7 +462,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->mouseMoveEvent(info.button, info.modifier, info.x, info.y, info.dx, info.dy);
+                    _i->mouseMoveEvent(info.button, info.modifiers, info.x, info.y, info.dx, info.dy);
                 });
             break;
         }
@@ -474,7 +474,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->wheelEvent(info.modifier, info.delta, info.x, info.y);
+                    _i->wheelEvent(info.modifiers, info.delta, info.x, info.y);
                 });
             break;
         }
@@ -513,7 +513,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->keyPressEvent(info.key, info.modifier);
+                    _i->keyPressEvent(info.key, info.modifiers);
                 });
             break;
         }
@@ -525,7 +525,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->keyReleaseEvent(info.key, info.modifier);
+                    _i->keyReleaseEvent(info.key, info.modifiers);
                 });
             break;
         }
@@ -537,7 +537,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->buttonReleaseEvent(info.button, info.modifier, info.x, info.y);
+                    _i->buttonReleaseEvent(info.button, info.modifiers, info.x, info.y);
                 });
             break;
         }
@@ -549,7 +549,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->buttonPressEvent(info.button, info.modifier, info.x, info.y);
+                    _i->buttonPressEvent(info.button, info.modifiers, info.x, info.y);
                 });
             break;
         }
