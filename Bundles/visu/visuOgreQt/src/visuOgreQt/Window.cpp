@@ -34,8 +34,6 @@
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 
-#define ZOOM_SPEED 0.2
-
 namespace visuOgreQt
 {
 
@@ -382,7 +380,7 @@ void Window::wheelEvent(QWheelEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
-    info.delta               = static_cast<int>(e->delta()*ZOOM_SPEED);
+    info.delta               = e->angleDelta().y(); // Assume we only have a 1D mouse wheel scrolling vertically.
     std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
     info.dx                  = 0;
     info.dy                  = 0;
