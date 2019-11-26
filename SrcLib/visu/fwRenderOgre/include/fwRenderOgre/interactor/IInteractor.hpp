@@ -127,11 +127,12 @@ public:
     /**
      * @brief Listens to the mouse's wheel being spun.
      * @param _mods keyboard modifiers.
-     * @param _wheelTicks number of mouse wheel ticks since the last event.
+     * @param _angleDelta distance that the wheel is rotated, in eighths of a degree.
+     *                    See @ref https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    FWRENDEROGRE_API virtual void wheelEvent(Modifier _mods, int _wheelTicks, int _x, int _y);
+    FWRENDEROGRE_API virtual void wheelEvent(Modifier _mods, int _angleDelta, int _x, int _y);
 
     /**
      * @brief Listens to mouse move buttons being released.

@@ -66,7 +66,7 @@ public:
 
     /**
      * @brief Moves the camera towards or away from the focus point.
-     * @param _delta number of mouse wheel ticks since the last event.
+     * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
     FWRENDEROGRE_API virtual void wheelEvent(Modifier, int _delta, int, int) final;
 
