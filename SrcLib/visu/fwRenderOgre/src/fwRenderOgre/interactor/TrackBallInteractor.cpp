@@ -61,7 +61,7 @@ TrackballInteractor::~TrackballInteractor()
 }
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::mouseMoveEvent(MouseButton button, int, int, int dx, int dy)
+void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier, int, int, int dx, int dy)
 {
     if(button == LEFT)
     {
@@ -82,7 +82,7 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, int, int, int dx, i
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::wheelEvent(int delta, int /*x*/, int /*y*/)
+void TrackballInteractor::wheelEvent(Modifier, int delta, int /*x*/, int /*y*/)
 {
     // The zoom factor is reduced when coming closer and increased when going away
     const float fNewZoom = (delta > 0) ? m_zoom * 0.85f : m_zoom / 0.85f;
@@ -113,7 +113,7 @@ void TrackballInteractor::resizeEvent(int x, int y)
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::keyPressEvent(int key)
+void TrackballInteractor::keyPressEvent(int key, Modifier)
 {
     if(auto layer = m_layer.lock())
     {
@@ -149,36 +149,6 @@ void TrackballInteractor::keyPressEvent(int key)
             }
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void TrackballInteractor::keyReleaseEvent(int) noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void TrackballInteractor::buttonReleaseEvent(MouseButton, int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void TrackballInteractor::buttonPressEvent(MouseButton, int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void TrackballInteractor::focusInEvent() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void TrackballInteractor::focusOutEvent() noexcept
-{
 }
 
 // ----------------------------------------------------------------------------

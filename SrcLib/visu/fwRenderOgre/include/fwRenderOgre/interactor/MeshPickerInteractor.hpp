@@ -28,32 +28,27 @@
 
 #include <fwCom/Signal.hpp>
 
-#include <fwData/Point.hpp>
-
-#include <OGRE/OgreSceneManager.h>
-
-namespace fwRenderOgre
-{
-
-namespace interactor
+namespace fwRenderOgre::interactor
 {
 
 /**
- * @brief Implementation for selection of points on Mesh
+ * @brief Runs picking queries when the user clicks in the scene.
+ *
+ * Emits a signal with the relevant intersection data when picking succeeds.
  */
 class FWRENDEROGRE_CLASS_API MeshPickerInteractor : public ::fwRenderOgre::interactor::IInteractor
 {
 
 public:
 
-    /// Type of signal sent when a picking query succeeded/
+    /// Type of signal sent when a picking query succeeded.
     using PointClickedSigType = ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) >;
 
     /// Constructor. Initializes the picker.
     FWRENDEROGRE_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr) noexcept;
 
     /// Destructor. Destroys the interactor.
-    FWRENDEROGRE_API ~MeshPickerInteractor() noexcept;
+    FWRENDEROGRE_API virtual ~MeshPickerInteractor() noexcept;
 
     /// Runs a picking query when a mouse button is released @see MeshPickerInteractor::pick().
     FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
@@ -99,5 +94,5 @@ private:
     PointClickedSigType::sptr m_pointClickedSig;
 
 };
-} //namespace itneractor
-} //namespace fwRenderOgre
+
+} //namespace fwRenderOgre::interactor

@@ -57,13 +57,13 @@ public:
     FWRENDEROGRE_API virtual ~ClippingBoxInteractor() noexcept final;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) final;
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, Modifier, int, int, int, int) final;
 
     /// Ends all interactions with the widget.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) final;
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, Modifier, int, int) final;
 
     /// Picks the object at the (x,y) position on a left click, scales or translates the widget otherwise.
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) final;
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, Modifier, int, int) final;
 
     /// Sets the visibility of the box widget.
     FWRENDEROGRE_API void setBoxVisibility(bool _visibility);
@@ -76,19 +76,6 @@ public:
 
     /// Sets the current clipping box positions from the input transform.
     FWRENDEROGRE_API void updateFromTransform(const ::Ogre::Matrix4& _clippingTrf);
-
-    /** Unused IInteractor API
-     *@{
-     */
-    FWRENDEROGRE_API virtual void wheelEvent(int, int, int) noexcept final;
-    FWRENDEROGRE_API virtual void resizeEvent(int, int) noexcept final;
-    FWRENDEROGRE_API virtual void keyPressEvent(int) noexcept final;
-    FWRENDEROGRE_API virtual void keyReleaseEvent(int) noexcept final;
-    FWRENDEROGRE_API virtual void focusInEvent() noexcept final;
-    FWRENDEROGRE_API virtual void focusOutEvent() noexcept final;
-    /**
-     *@}
-     */
 
 private:
 

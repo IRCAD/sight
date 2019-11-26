@@ -460,7 +460,7 @@ void SNegato3D::setPlanesQueryFlags(std::uint32_t _flags)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
+void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int)
 {
     if(m_pickedPlane)
     {
@@ -486,7 +486,7 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
+void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 {
     this->setPlanesQueryFlags(0x1); // Make all planes pickable again.
     m_pickedPlane.reset();
@@ -522,7 +522,7 @@ void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonReleaseEvent(MouseButton, int, int)
+void SNegato3D::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_pickedPlane)
     {
@@ -687,37 +687,6 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
             sig->asyncEmit(newWindow, newLevel);
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::wheelEvent(int, int, int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::resizeEvent(int, int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::keyPressEvent(int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::keyReleaseEvent(int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::focusInEvent()
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::focusOutEvent()
-{
 }
 
 } // namespace visuOgreAdaptor

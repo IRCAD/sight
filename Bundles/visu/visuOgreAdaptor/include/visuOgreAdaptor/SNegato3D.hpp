@@ -138,24 +138,13 @@ private:
      * - Right mouse click: adjust the transfer function level and window by moving
      *                      the mouse up/down and left/right respectively.
      */
-    virtual void mouseMoveEvent(MouseButton button, int _x, int _y, int _dx, int _dy) final;
+    virtual void mouseMoveEvent(MouseButton button, Modifier, int _x, int _y, int _dx, int _dy) final;
 
     /// Attempts to pick the negato and starts interactions if picking was successful.
-    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) final;
+    virtual void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) final;
 
     /// Ends all interactions, regardless of the input.
-    virtual void buttonReleaseEvent(MouseButton, int, int ) final;
-
-    /** @brief Unused ::fwRenderOgre::interactor::IInteractor API.
-     * @{
-     */
-    virtual void wheelEvent(int, int, int) final;
-    virtual void resizeEvent(int, int) final;
-    virtual void keyPressEvent(int) final;
-    virtual void keyReleaseEvent(int) final;
-    virtual void focusInEvent() final;
-    virtual void focusOutEvent() final;
-    /**@} */
+    virtual void buttonReleaseEvent(MouseButton, Modifier, int, int ) final;
 
     /// Sets the slice intersection at the (_x, _y) screen position if possible.
     void moveSlices(int _x, int _y);
