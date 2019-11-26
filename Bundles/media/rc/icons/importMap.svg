@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg id="svg8" width="33.445mm" height="33.648mm" version="1.1" viewBox="0 0 33.445 33.648" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <metadata id="metadata5">
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g id="layer1" transform="translate(0 -263.35)">
+  <g id="layer1-4" transform="matrix(.26458 0 0 .26458 -100.08 70.849)">
+   <g id="g5406" transform="matrix(1.0965 0 0 1.1037 -42.311 -76.935)">
+    <path id="path5609" d="m441.25 773.47c0 8.7368-6.4508 15.828-14.399 15.828 0 8.7368 6.4509 15.828 14.399 15.828 7.9483 0 14.399-7.0907 14.399-15.828 0-8.7369-6.4508-15.828-14.399-15.828zm0-31.655c-29.533 0-57.596 36.783-57.596 47.483 0 10.699 28.064 47.483 57.596 47.483 29.533 0 57.596-36.783 57.596-47.483 0-10.699-28.064-47.483-57.596-47.483zm0 79.138c-15.904 0-28.798-14.174-28.798-31.655s12.894-31.655 28.798-31.655c15.904 0 28.798 14.174 28.798 31.655s-12.894 31.655-28.798 31.655z"/>
+    <path id="path5396" transform="matrix(1.5789 0 0 1.57 336.68 689.14)" d="m78.272 64.382a11.996 12.122 0 0 1-12.548 11.512 11.996 12.122 0 0 1-11.417-12.657 11.996 12.122 0 0 1 12.503-11.561 11.996 12.122 0 0 1 11.465 12.612" fill="#030017"/>
+   </g>
+   <rect id="rect5410" x="422.91" y="791.21" width="14.395" height="5.5558" ry="1.5718" fill="#fff"/>
+   <rect id="rect5410-0" x="446.02" y="791.21" width="14.142" height="5.5558" ry="1.5718" fill="#fff"/>
+   <rect id="rect5410-3" transform="matrix(.020764 -.99978 .99966 .026132 0 0)" x="-778.27" y="454.99" width="13.882" height="5.5562" ry="1.5719" fill="#fff"/>
+   <rect id="rect5410-3-1" transform="matrix(.021147 -.99978 .99967 .025659 0 0)" x="-800.46" y="455.25" width="13.631" height="5.5562" ry="1.5719" fill="#fff"/>
+   <g id="g5501" transform="translate(-8.0812 -1.2627)">
+    <rect id="rect5461" x="387.3" y="728.83" width="16.668" height="4.2931" ry="1.5719"/>
+    <rect id="rect5461-7" transform="rotate(89.235)" x="734.33" y="-380.84" width="15.91" height="4.2931" ry="1.5719"/>
+   </g>
+   <g id="g5501-7" transform="rotate(180.75 445.88 791.42)">
+    <rect id="rect5461-9" x="387.3" y="728.83" width="16.668" height="4.2931" ry="1.5719"/>
+    <rect id="rect5461-7-8" transform="rotate(89.235)" x="734.33" y="-380.84" width="15.91" height="4.2931" ry="1.5719"/>
+   </g>
+  </g>
+  <g id="layer1-5" transform="translate(50.435 -2.451)">
+   <flowRoot id="flowRoot3761" transform="matrix(-.002331 -.26457 .26457 -.002331 65.409 150.58)" fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px" style="line-height:0.01%" xml:space="preserve"><flowRegion id="flowRegion3763"><rect id="rect3765" x="-35.86" y="3.5674" width="213.39" height="149"/></flowRegion><flowPara id="flowPara3767" font-size="40px" style="line-height:1.25"> </flowPara></flowRoot>
+   <g id="layer1-6" transform="matrix(.26458 0 0 .26458 -90.936 186.32)">
+    <flowRoot id="flowRoot3761-6" transform="rotate(269.5 242.54 4.474)" fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px" style="line-height:0.01%" xml:space="preserve"><flowRegion id="flowRegion3763-8"><rect id="rect3765-5" x="-35.86" y="3.5674" width="213.39" height="149"/></flowRegion><flowPara id="flowPara3767-1" font-size="40px" style="line-height:1.25"> </flowPara></flowRoot>
+    <path id="path968" d="m278.46 427.36c-21.664-58.337-57.165-44.106-57.505-44.101l0.20352 19.389-20.868-30.984 20.433-26.542 0.20579 19.604s49.241-15.265 57.53 62.632z" fill="#f00" fill-rule="evenodd" stroke="#000" stroke-width="1.2207"/>
+   </g>
+  </g>
+ </g>
+</svg>
