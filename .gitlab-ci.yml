@@ -9,6 +9,7 @@ stages:
   variables:
     FW_IGNORE_SLOW_TESTS: 1
   before_script:
+    - sudo ln -sfnv /usr/local/cuda-10.1 /usr/local/cuda
     - export CCACHE_BASEDIR=${PWD}
     - export CCACHE_COMPILERCHECK=content
     - export CCACHE_MAXSIZE=32G

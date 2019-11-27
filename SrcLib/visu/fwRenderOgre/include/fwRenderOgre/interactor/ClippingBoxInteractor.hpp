@@ -104,7 +104,7 @@ private:
     ::fwRenderOgre::picker::IPicker m_picker;
 
     /// Attempts to pick the first object at screen coordinates (x, y), returns nullptr if no object was picked.
-    Ogre::MovableObject* pickObject(int x, int y);
+    ::Ogre::MovableObject* pickObject(int x, int y);
 
 };
 } // namespace interactor

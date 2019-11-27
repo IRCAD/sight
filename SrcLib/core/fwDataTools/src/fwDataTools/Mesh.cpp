@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
 #include "fwDataTools/helper/MeshGetter.hpp"
 #include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/TransformationMatrix3D.hpp"
+
+#include <fwMath/MeshFunctions.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
 
@@ -745,6 +747,29 @@ void Mesh::colorizeMeshCells(
         ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
+
+//------------------------------------------------------------------------------
+
+bool Mesh::isClosed(const ::fwData::Mesh::csptr& mesh)
+{
+    bool isClosed = false;
+
+    ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
+    ::fwData::Mesh::Id nbOfCells    = mesh->getNumberOfCells();
+
+    auto cellDataBegin        = static_cast< ::fwData::Mesh::CellValueType* >(mesh->getCellDataArray()->getBuffer());
+    auto cellDataEnd          = cellDataBegin + cellDataSize;
+    auto cellDataOffsetsBegin =
+        static_cast< ::fwData::Mesh::CellDataOffsetType* >(mesh->getCellDataOffsetsArray()->getBuffer());
+    auto cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
+    auto cellTypesBegin     = static_cast< ::fwData::Mesh::CellTypes* >(mesh->getCellTypesArray()->getBuffer());
+
+    isClosed = ::fwMath::isBorderlessSurface(cellDataBegin,
+                                             cellDataEnd, cellDataOffsetsBegin,
+                                             cellDataOffsetsEnd, cellTypesBegin );
+    return isClosed;
+}
+
 //------------------------------------------------------------------------------
 
 } // namespace fwDataTools
