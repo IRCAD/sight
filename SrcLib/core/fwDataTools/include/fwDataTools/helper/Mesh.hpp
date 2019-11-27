@@ -39,6 +39,7 @@ namespace helper
 
 /**
  * @brief   Helper to manage Mesh. Lock the mesh buffer before to modify it.
+ * @deprecated The helper is no longer required to access the buffers. It will be removed in sight 22.0
  */
 class FWDATATOOLS_CLASS_API Mesh
 {
@@ -258,7 +259,7 @@ public:
      * @brief Return true if the mesh is closed.
      * The result is computed for each call.
      */
-    FWDATATOOLS_API bool isClosed();
+    [[deprecated("moved to ::fwDataTools::Mesh::isClosed()")]] FWDATATOOLS_API bool isClosed();
 
 protected:
 

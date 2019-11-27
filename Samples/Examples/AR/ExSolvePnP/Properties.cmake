@@ -16,19 +16,17 @@ set( REQUIREMENTS
     ioVTK
     uiPreferences
     uiTools
-    uiMeasurement
-    maths
     preferences
     servicesReg
-    trackerAruco
     registrationCV
     videoQt
     videoTools
-    videoCalibration
     visuVTK
     visuVTKAdaptor
     visuVTKARAdaptor
     visuVTKQt
+    ctrlPicking
+    media
     )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExSolvePnPConfig)
