@@ -98,6 +98,10 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
             {
                 info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
             }
+            if(static_cast<bool>(_mod & Modifier::SHIFT))
+            {
+                info.m_modifierMask |= ::fwDataTools::PickingInfo::SHIFT;
+            }
 
             if(m_pointClickedSig)
             {
