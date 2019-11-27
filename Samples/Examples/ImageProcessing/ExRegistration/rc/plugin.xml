@@ -58,6 +58,8 @@ Detail of the ToolBar
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="guiQt" />
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExRegistrationConfig</id>
         <config>
@@ -356,11 +358,12 @@ Detail of the ToolBar
             </service>
 
             <!-- Services to add a point in the pointlist when the user clicks in the scene -->
-            <service uid="addLAndmarksInPL1" type="::uiMeasurement::SManageLandmark">
-                <inout key="landmarks" uid="pointList1" />
+            <service uid="addLAndmarksInPL1" type="::ctrlPicking::SManagePointList">
+                <inout key="pointList" uid="pointList1" />
+                <config label="true" />
             </service>
 
-            <service uid="addLAndmarksInPL2" type="::uiMeasurement::SManageLandmark">
+            <service uid="addLAndmarksInPL2" type="::ctrlPicking::SManagePointList">
                 <inout key="landmarks" uid="pointList2" />
             </service>
 
@@ -368,12 +371,12 @@ Detail of the ToolBar
 
             <connect>
                 <signal>pickerInteractor1/picked</signal>
-                <slot>addLAndmarksInPL1/createLandmark</slot>
+                <slot>addLAndmarksInPL1/pick</slot>
             </connect>
 
             <connect>
                 <signal>pickerInteractor2/picked</signal>
-                <slot>addLAndmarksInPL2/createLandmark</slot>
+                <slot>addLAndmarksInPL2/pick</slot>
             </connect>
 
             <connect>

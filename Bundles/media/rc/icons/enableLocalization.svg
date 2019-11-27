@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg id="svg4451" version="1.0" viewBox="0 0 131.72 131.72" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <g id="layer1" transform="translate(-374.93 -725.15)">
+  <g id="g5501" transform="translate(-8.0812 -1.2627)">
+   <rect id="rect5461" x="387.3" y="728.83" width="16.668" height="4.2931" ry="1.5719"/>
+   <rect id="rect5461-7" transform="matrix(.013345 .99991 -.99991 .013345 0 0)" x="734.33" y="-380.84" width="15.91" height="4.2931" ry="1.5719"/>
+  </g>
+  <g id="g5501-7" transform="matrix(-.99992 -.013017 .013017 -.99992 881.42 1588.6)">
+   <rect id="rect5461-9" x="387.3" y="728.83" width="16.668" height="4.2931" ry="1.5719"/>
+   <rect id="rect5461-7-8" transform="matrix(.013345 .99991 -.99991 .013345 0 0)" x="734.33" y="-380.84" width="15.91" height="4.2931" ry="1.5719"/>
+  </g>
+  <g id="g4318" transform="matrix(1.6499 0 0 1.621 358.7 709.37)">
+   <path id="path4320" d="m50.014 14.491c-12.959 0-23.505 10.625-23.505 23.654 0 4.725 1.388 9.087 3.746 12.778l10.962 17.223c-0.61 0.252-1.193 0.504-1.748 0.812-2.831 1.51-5.134 3.914-5.134 7.073 0 3.188 2.303 5.592 5.134 7.102 2.858 1.538 6.521 2.377 10.545 2.377 3.997 0 7.66-0.839 10.519-2.377 2.83-1.51 5.134-3.914 5.134-7.102 0-3.159-2.304-5.563-5.134-7.073-0.556-0.308-1.11-0.56-1.721-0.812l10.962-17.223c2.358-3.691 3.718-8.053 3.718-12.778-1e-3 -13.029-10.546-23.654-23.478-23.654zm0 4.725c10.407 0 18.788 8.444 18.788 18.929 0 3.774-1.082 7.297-2.97 10.233l-15.79 24.884-15.846-24.884c-1.888-2.936-2.997-6.459-2.997-10.233 0-10.485 8.408-18.929 18.815-18.929zm0 8.696c-5.605 0-10.185 4.614-10.185 10.233 0 5.648 4.579 10.261 10.185 10.261 5.578 0 10.186-4.613 10.186-10.261-1e-3 -5.62-4.608-10.233-10.186-10.233zm0 4.725c3.053 0 5.468 2.432 5.468 5.508s-2.415 5.536-5.468 5.536-5.494-2.46-5.494-5.536 2.441-5.508 5.494-5.508zm-6.189 39.619 4.219 6.626c0.416 0.644 1.193 1.063 1.97 1.063s1.555-0.419 1.971-1.063l4.219-6.626c0.776 0.252 1.498 0.531 2.137 0.867 1.97 1.034 2.636 2.181 2.636 2.907 0 0.755-0.666 1.901-2.636 2.936-1.998 1.063-4.995 1.817-8.326 1.817-3.357 0-6.354-0.755-8.325-1.817-1.97-1.034-2.636-2.181-2.636-2.936 0-0.727 0.666-1.873 2.636-2.907 0.609-0.336 1.331-0.615 2.135-0.867z"/>
+  </g>
+ </g>
+ <metadata id="metadata3009">
+  <rdf:RDF>
+   <cc:Work>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+    <dc:publisher>
+     <cc:Agent rdf:about="http://openclipart.org/">
+      <dc:title>Openclipart</dc:title>
+     </cc:Agent>
+    </dc:publisher>
+    <dc:title/>
+    <dc:date>2011-03-16T17:15:34</dc:date>
+    <dc:description>Radiological warning symbol as seen in nuclear facilities</dc:description>
+    <dc:source>https://openclipart.org/detail/127777/radioactive-warning-by-flooredmusic</dc:source>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>flooredmusic</dc:title>
+     </cc:Agent>
+    </dc:creator>
+    <dc:subject>
+     <rdf:Bag>
+      <rdf:li>nuclear</rdf:li>
+      <rdf:li>radiation</rdf:li>
+      <rdf:li>radioactive</rdf:li>
+      <rdf:li>radiological</rdf:li>
+      <rdf:li>science</rdf:li>
+      <rdf:li>sign</rdf:li>
+      <rdf:li>symbol</rdf:li>
+      <rdf:li>warning</rdf:li>
+     </rdf:Bag>
+    </dc:subject>
+   </cc:Work>
+   <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+   </cc:License>
+  </rdf:RDF>
+ </metadata>
+</svg>

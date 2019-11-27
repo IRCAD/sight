@@ -39,9 +39,9 @@ class ClippingBox
 {
 public:
 
-    typedef std::function< void (void) > ClippingUpdateCallbackType;
-    typedef std::shared_ptr<ClippingBox> sptr;
-    typedef std::weak_ptr<ClippingBox> wptr;
+    using ClippingUpdateCallbackType = std::function< void (void) >;
+    using sptr                       = std::shared_ptr<ClippingBox>;
+    using wptr                       = std::weak_ptr<ClippingBox>;
 
     /**
      * @brief Constructor.
@@ -68,7 +68,7 @@ public:
     FWRENDEROGRE_API virtual ~ClippingBox();
 
     /// Find out if a movable object belongs to this widget.
-    bool belongsToWidget(const Ogre::MovableObject* const _object) const;
+    bool belongsToWidget(const ::Ogre::MovableObject* const _object) const;
 
     /**
      * @brief Drags a widget toward a screen position.
