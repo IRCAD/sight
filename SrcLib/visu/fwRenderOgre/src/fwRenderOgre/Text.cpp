@@ -278,7 +278,7 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
 {
     ::Ogre::Node* parentNode = this->getParentNode();
 
-    if(parentNode != nullptr)
+    if(parentNode != nullptr && m_overlayText->isVisible())
     {
         const ::Ogre::Vector3& pos = parentNode->_getDerivedPosition();
 

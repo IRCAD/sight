@@ -300,15 +300,7 @@ void SImageMultiDistances::updateVisibility()
         data.m_sphere2->setVisible(m_visibility);
         data.m_line->setVisible(m_visibility);
         data.m_dashedLine->setVisible(m_visibility);
-        // FIXME: setVisible doesn't work, so we set the alpha to 0%.
-        if(m_visibility)
-        {
-            data.m_label->setTextColor(SImageMultiDistances::generateColor(data.m_pointList->getID()));
-        }
-        else
-        {
-            data.m_label->setTextColor(::Ogre::ColourValue::ZERO);
-        }
+        data.m_label->setVisible(m_visibility);
     }
 
     this->requestRender();
@@ -403,11 +395,7 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     sphere2->setVisible(m_visibility);
     line->setVisible(m_visibility);
     dashedLine->setVisible(m_visibility);
-    // FIXME: setVisible doesn't work, so we set the alpha to 0%.
-    if(!m_visibility)
-    {
-        label->setTextColor(::Ogre::ColourValue::ZERO);
-    }
+    label->setVisible(m_visibility);
 
     // Store data in the map.
     DistanceData data {_pl, node1, sphere1, node2, sphere2, line, dashedLine, labelNode, label};
