@@ -79,6 +79,7 @@ namespace visuOgreAdaptor
  * - \b priority (optional, int, default=2): interaction priority of the negato.
  * - \b transform (optional): the name of the Ogre transform node where to attach the negato, as it was specified
  * in the STransform adaptor.
+ * - \b queryFlags (optional, default=0x40000000): Mask set to planes for picking request.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
@@ -107,7 +108,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT;
-    ///@}
+///@}
 
 protected:
 
@@ -238,6 +239,9 @@ private:
 
     /// Stores the mouse position at the time the windowing interaction started.
     ::Ogre::Vector2i m_initialPos { -1, -1 };
+
+    /// Mask for picking request.
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     using PickedVoxelSigType = ::fwCom::Signal< void (std::string) >;
     /// Sent when a voxel is picked using the left mouse button.

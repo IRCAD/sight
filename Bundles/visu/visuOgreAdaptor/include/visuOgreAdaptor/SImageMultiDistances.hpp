@@ -27,13 +27,14 @@
 #include <fwData/PointList.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/interactor/ImageMultiDistancesInteractor.hpp>
+#include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/Material.hpp>
 #include <fwRenderOgre/Text.hpp>
 
 #include <OgreVector3.h>
 
 #include <memory>
+#include <optional>
 
 namespace visuOgreAdaptor
 {
@@ -51,7 +52,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service uid="..." type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="..." />
-            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="1" />
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
         </service>
    @endcode
  *
@@ -64,9 +65,13 @@ namespace visuOgreAdaptor
  * - \b fontSize (optional, default=16): Font size in points.
  * - \b radius (optional, default=4.5): Size of the distances spheres.
  * - \b interactive (optional, true/false, default=true): Enables interactions with distances.
- * - \b priority (optional, default=1): Priority of the interactor.
+ * - \b priority (optional, default=2): Priority of the interactor.
+ * - \b queryMask (optional, uint32, default=0xFFFFFFFF): Mask used to filter out entities when the distance is auto
+ * snapped.
+ * - \b distanceQueryFlags (optional, uint32, default=0x40000000): Mask apply to distances spheres.
  */
-class SImageMultiDistances final : public ::fwRenderOgre::IAdaptor
+class SImageMultiDistances final : public ::fwRenderOgre::IAdaptor,
+                                   public ::fwRenderOgre::interactor::IInteractor
 {
 public:
 
@@ -80,8 +85,33 @@ public:
 
 private:
 
-    typedef ::fwRenderOgre::interactor::ImageMultiDistancesInteractor::DistanceData DistanceData;
-    typedef ::fwRenderOgre::interactor::ImageMultiDistancesInteractor::DistanceMap DistanceMap;
+    /// Stores Ogre ressource used to display a distance.
+    /// Two spheres each attached to a node, a label to display millimeters,
+    /// one line rendered with the depth check and a dashed line rendered without depth check.
+    /// The point list is used to update each points when the interactor move a distance sphere,
+    /// it's retrieve from the image via a field.
+    struct DistanceData
+    {
+        ::fwData::PointList::sptr m_pointList;
+        ::Ogre::SceneNode*  m_node1;
+        ::Ogre::ManualObject* m_sphere1;
+        ::Ogre::SceneNode* m_node2;
+        ::Ogre::ManualObject* m_sphere2;
+        ::Ogre::ManualObject* m_line;
+        ::Ogre::ManualObject* m_dashedLine;
+        ::Ogre::SceneNode* m_labelNode;
+        ::fwRenderOgre::Text* m_label;
+    };
+
+    /// Stores picking informations.
+    struct PickedData
+    {
+        DistanceData* m_data;
+        bool m_first;
+    };
+
+    /// Map each distances to there related list ID.
+    typedef std::map< ::fwTools::fwID::IDType, DistanceData > DistanceMap;
 
     /**
      * @brief Generates a color from a distance ID.
@@ -89,6 +119,30 @@ private:
      * @return The generate color.
      */
     static ::Ogre::ColourValue generateColor(::fwTools::fwID::IDType _id);
+
+    /**
+     * @brief Generate a dashed line in a ::Ogre::ManualObject.
+     * @param _object Object where generate the dashed line.
+     * @param _begin Begin position of the line.
+     * @param _end End position of the line.
+     * @param _thickness Thickness of dash.
+     */
+    static void generateDashedLine(::Ogre::ManualObject* const _object,
+                                   const ::Ogre::Vector3& _begin,
+                                   const ::Ogre::Vector3& _end,
+                                   float _thickness);
+
+    /**
+     * @brief Get the formated string used to display the length of a distance.
+     * @return The formated string.
+     */
+    static std::string getLength(const ::Ogre::Vector3&, const ::Ogre::Vector3&);
+
+    /**
+     * @brief Get the normalized camera direction vector.
+     * @return A vector representing the camera direction
+     */
+    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -122,10 +176,44 @@ private:
     void updateVisibility();
 
     /**
+     * @brief Get the nearest picked position if there is one.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     * @return The picked world coordinates.
+     */
+    std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
+
+    /**
+     * @brief Retrieves the picked distance and store the result in m_pickedData.
+     * @param _button Mousse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override final;
+
+    /**
+     * @brief Moves a distance stores in m_pickedData.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    virtual void mouseMoveEvent(MouseButton, int _x, int _y, int, int) override final;
+
+    /// Resets m_pickedData.
+    virtual void buttonReleaseEvent(MouseButton, int, int) override final;
+
+    /**
      * @brief Creates a distance and add it into m_distances.
      * @param _pl The point list used to create the distance.
      */
     void createDistance(::fwData::PointList::sptr _pl);
+
+    /**
+     * @brief Updates a distance.
+     * @param _data Distance to update.
+     * @param _begin New begin position.
+     * @param _end New end position
+     */
+    void updateDistance(const DistanceData* const _data, ::Ogre::Vector3 _begin, ::Ogre::Vector3 _end);
 
     /**
      * @brief Destroys a distance from its ID and remove it from m_distances.
@@ -146,28 +234,53 @@ private:
     size_t m_fontSize {16};
 
     /// Sets whether or not interactions are enabled with distances.
-    bool m_interactive { true };
+    bool m_interactive {true};
 
     /// Priority of the interactor
-    int m_priority {1};
+    int m_priority {2};
 
-    /// Material name with depth check.
-    std::string m_depthMaterialName;
+    /// Current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
+    PickedData m_pickedData {nullptr, true};
 
-    /// Material name with no depth check.
-    std::string m_noDepthMaterialName;
+    /// Mask used to filter out entities when the distance is auto snapped.
+    std::uint32_t m_queryMask {0xFFFFFFFF};
 
-    /// Material used to display distances
-    ::fwRenderOgre::Material::uptr m_depthMaterial {nullptr};
+    /// Mask used to filter distances, it optimise the ray launched to retrive the picked distance.
+    std::uint32_t m_distanceQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    /// Material used to display the full line of the distance.
-    ::fwRenderOgre::Material::uptr m_noDepthMaterial {nullptr};
+    /// Material name with no depth check for spheres.
+    std::string m_sphereMaterialName;
+
+    /// Material name with depth check for lines.
+    std::string m_lineMaterialName;
+
+    /// Material name with no depth check for dashed lines.
+    std::string m_dashedLineMaterialName;
+
+    /// Material with no depth check for spheres.
+    ::fwRenderOgre::Material::uptr m_sphereMaterial {nullptr};
+
+    /// Material with depth check for lines.
+    ::fwRenderOgre::Material::uptr m_lineMaterial {nullptr};
+
+    /// Material with no depth check for dashed lines.
+    ::fwRenderOgre::Material::uptr m_dashedLineMaterial {nullptr};
 
     /// Stores all generates distances.
     DistanceMap m_distances;
 
-    /// Interactor used to move distances spheres.
-    std::shared_ptr< ::fwRenderOgre::interactor::ImageMultiDistancesInteractor > m_interactor {nullptr};
+    /** Unused IInteractor API
+     *@{
+     */
+    virtual void focusInEvent() override final;
+    virtual void focusOutEvent() override final;
+    virtual void wheelEvent(int, int, int) override final;
+    virtual void resizeEvent(int, int) override final;
+    virtual void keyPressEvent(int) override final;
+    virtual void keyReleaseEvent(int) override final;
+    /**
+     *@}
+     */
 
 };
 }

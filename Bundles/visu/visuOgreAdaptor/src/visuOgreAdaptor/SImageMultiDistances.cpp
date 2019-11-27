@@ -28,6 +28,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -36,6 +37,7 @@
 #include <fwDataTools/helper/Vector.hpp>
 
 #include <fwRenderOgre/helper/ManualObject.hpp>
+#include <fwRenderOgre/picker/IPicker.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -52,28 +54,17 @@ static const ::fwCom::Signals::SignalKeyType s_ADD_DISTANCES_SLOT     = "addDist
 static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT  = "removeDistances";
 static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
-static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
-static const std::string s_RADIUS_CONFIG      = "radius";
-static const std::string s_INTERACTIVE_CONFIG = "interactive";
-static const std::string s_PRIORITY_CONFIG    = "priority";
+static const std::string s_FONT_SOURCE_CONFIG          = "fontSource";
+static const std::string s_FONT_SIZE_CONFIG            = "fontSize";
+static const std::string s_RADIUS_CONFIG               = "radius";
+static const std::string s_INTERACTIVE_CONFIG          = "interactive";
+static const std::string s_PRIORITY_CONFIG             = "priority";
+static const std::string s_QUERY_MASK_CONFIG           = "queryMask";
+static const std::string s_DISTANCE_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
+
+static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_9;
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
-
-//------------------------------------------------------------------------------
-
-SImageMultiDistances::SImageMultiDistances() noexcept
-{
-    newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
-    newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SImageMultiDistances::updateVisibility, this);
-}
-
-//------------------------------------------------------------------------------
-
-SImageMultiDistances::~SImageMultiDistances() noexcept
-{
-}
 
 //------------------------------------------------------------------------------
 
@@ -96,6 +87,63 @@ SImageMultiDistances::~SImageMultiDistances() noexcept
         default:
             return ::Ogre::ColourValue(29/255.0f, 45/255.0f, 168/255.0f);
     }
+}
+
+//------------------------------------------------------------------------------
+
+::Ogre::Vector3 SImageMultiDistances::getCamDirection(const ::Ogre::Camera* const _cam)
+{
+    const ::Ogre::Matrix4 view = _cam->getViewMatrix();
+    ::Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
+    direction.normalise();
+    return -direction;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::generateDashedLine(::Ogre::ManualObject* const _object,
+                                              const ::Ogre::Vector3& _begin,
+                                              const ::Ogre::Vector3& _end, float _thickness)
+{
+    ::Ogre::Vector3 dashedLineDirN = (_end-_begin);
+    dashedLineDirN.normalise();
+    const ::Ogre::Vector3 delta           = dashedLineDirN*_thickness;
+    const ::Ogre::Vector3 dashedLineBegin = _begin + delta;
+    const ::Ogre::Vector3 dashedLineEnd   = _end - delta;
+    const float len                       = (dashedLineEnd-dashedLineBegin).length();
+
+    ::Ogre::Vector3 dashedLinePos = dashedLineBegin;
+    for(float i = 0.f; i+_thickness*2 <= len; i += _thickness*2)
+    {
+        _object->position(dashedLinePos);
+        dashedLinePos += dashedLineDirN*_thickness;
+        _object->position(dashedLinePos);
+        dashedLinePos += dashedLineDirN*_thickness;
+    }
+    _object->end();
+}
+
+//------------------------------------------------------------------------------
+
+std::string SImageMultiDistances::getLength(const ::Ogre::Vector3& _begin, const ::Ogre::Vector3& _end)
+{
+    const int length = static_cast< int >(std::round(std::abs((_end-_begin).length())));
+    return std::to_string(length) + ".mm";
+}
+
+//------------------------------------------------------------------------------
+
+SImageMultiDistances::SImageMultiDistances() noexcept
+{
+    newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
+    newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SImageMultiDistances::updateVisibility, this);
+}
+
+//------------------------------------------------------------------------------
+
+SImageMultiDistances::~SImageMultiDistances() noexcept
+{
 }
 
 //------------------------------------------------------------------------------
@@ -124,6 +172,29 @@ void SImageMultiDistances::configuring()
     m_distanceSphereRadius = config.get< float >(s_RADIUS_CONFIG, m_distanceSphereRadius);
     m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority             = config.get< int >(s_PRIORITY_CONFIG, m_priority);
+
+    std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG);
+    if(!hexaMask.empty())
+    {
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
+
+    hexaMask = config.get<std::string>(s_DISTANCE_QUERY_FLAGS_CONFIG);
+    if(!hexaMask.empty())
+    {
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_distanceQueryFlag = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -136,34 +207,49 @@ void SImageMultiDistances::starting()
 
     const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
 
-    m_depthMaterialName   = this->getID() + "_depthMaterial";
-    m_noDepthMaterialName = this->getID() + "_noDepthMaterial";
+    m_sphereMaterialName     = this->getID() + "_sphereMaterialName";
+    m_lineMaterialName       = this->getID() + "_lineMaterialNamel";
+    m_dashedLineMaterialName = this->getID() + "_dashedLineMaterialName";
 
     // Create materials from our wrapper.
-    m_depthMaterial = std::make_unique< ::fwRenderOgre::Material >(m_depthMaterialName,
-                                                                   ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_depthMaterial->setHasVertexColor(true);
-    m_depthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_sphereMaterial = std::make_unique< ::fwRenderOgre::Material >(m_sphereMaterialName,
+                                                                    ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_sphereMaterial->setHasVertexColor(true);
+    m_sphereMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
 
-    m_noDepthMaterial = std::make_unique< ::fwRenderOgre::Material >(m_noDepthMaterialName,
-                                                                     ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_noDepthMaterial->setHasVertexColor(true);
-    m_noDepthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_lineMaterial = std::make_unique< ::fwRenderOgre::Material >(m_lineMaterialName,
+                                                                  ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_lineMaterial->setHasVertexColor(true);
+    m_lineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+
+    m_dashedLineMaterial = std::make_unique< ::fwRenderOgre::Material >(m_dashedLineMaterialName,
+                                                                        ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_dashedLineMaterial->setHasVertexColor(true);
+    m_dashedLineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
     // Retrive the ogre material to change the depth check.
-    ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(m_noDepthMaterialName);
-    SLM_ASSERT("'" + m_noDepthMaterialName + "' does not exist.", ogreMaterial);
-    ::Ogre::Technique* tech = ogreMaterial->getTechnique(0);
-    SLM_ASSERT("No techique found", tech);
-    ::Ogre::Pass* pass = tech->getPass(0);
-    SLM_ASSERT("No pass found", pass);
-    pass->setDepthCheckEnabled(false);
+    const ::Ogre::MaterialPtr ogreSphereMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
+        m_sphereMaterialName);
+    SLM_ASSERT("'" + m_sphereMaterialName + "' does not exist.", ogreSphereMaterial);
+    const ::Ogre::Technique* const sphereTech = ogreSphereMaterial->getTechnique(0);
+    SLM_ASSERT("No techique found", sphereTech);
+    ::Ogre::Pass* const spherePass = sphereTech->getPass(0);
+    SLM_ASSERT("No pass found", spherePass);
+    spherePass->setDepthCheckEnabled(false);
+
+    const ::Ogre::MaterialPtr ogreDashedLineMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
+        m_dashedLineMaterialName);
+    SLM_ASSERT("'" + m_dashedLineMaterialName + "' does not exist.", ogreDashedLineMaterial);
+    const ::Ogre::Technique* const dashedTech = ogreDashedLineMaterial->getTechnique(0);
+    SLM_ASSERT("No techique found", dashedTech);
+    ::Ogre::Pass* const dashedPass = dashedTech->getPass(0);
+    SLM_ASSERT("No pass found", dashedPass);
+    dashedPass->setDepthCheckEnabled(false);
 
     if(m_interactive)
     {
-        m_interactor = std::make_shared< ::fwRenderOgre::interactor::ImageMultiDistancesInteractor >(layer, m_distances,
-                                                                                                     m_distanceSphereRadius);
-        layer->addInteractor(m_interactor, m_priority);
+        auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
+        layer->addInteractor(interactor, m_priority);
     }
 }
 
@@ -173,8 +259,10 @@ void SImageMultiDistances::updating()
 {
     const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
 
-    m_depthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
-    m_noDepthMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_sphereMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
+    m_lineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_dashedLineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+
     this->removeDistances();
     this->addDistances();
 }
@@ -185,12 +273,14 @@ void SImageMultiDistances::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    m_depthMaterial.reset();
-    m_noDepthMaterial.reset();
+    m_sphereMaterial.reset();
+    m_lineMaterial.reset();
+    m_dashedLineMaterial.reset();
 
     if(m_interactive)
     {
-        this->getLayer()->removeInteractor(m_interactor);
+        auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
+        this->getLayer()->removeInteractor(interactor);
     }
 
     while(m_distances.size() != 0)
@@ -308,6 +398,189 @@ void SImageMultiDistances::updateVisibility()
 
 //------------------------------------------------------------------------------
 
+std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(int _x, int _y)
+{
+    const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
+    const ::Ogre::Camera* const cam          = layer->getDefaultCamera();
+
+    const int height = cam->getViewport()->getActualHeight();
+    const int width  = cam->getViewport()->getActualWidth();
+
+    ::fwRenderOgre::picker::IPicker picker;
+    picker.setSceneManager(this->getSceneManager());
+    picker.executeRaySceneQuery(_x, _y, width, height, m_queryMask);
+
+    if(picker.getSelectedObject())
+    {
+        return picker.getIntersectionInWorldSpace();
+    }
+
+    return std::nullopt;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
+{
+    if(_button == LEFT)
+    {
+        const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
+
+        ::Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+
+        const ::Ogre::Camera* const cam = layer->getDefaultCamera();
+
+        const ::Ogre::Real width  = static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth());
+        const ::Ogre::Real height = static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight());
+
+        const ::Ogre::Ray ray = cam->getCameraToViewportRay(
+            static_cast< ::Ogre::Real >(_x)/width,
+            static_cast< ::Ogre::Real >(_y)/height);
+
+        bool found = false;
+
+        ::Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_distanceQueryFlag);
+        raySceneQuery->setSortByDistance(false);
+        if (raySceneQuery->execute().size() != 0)
+        {
+            const ::Ogre::Real scale = 1.15f;
+
+            const ::Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
+            for (size_t qrIdx = 0; qrIdx < queryResult.size() && !found; qrIdx++)
+            {
+                const ::Ogre::MovableObject* const object = queryResult[qrIdx].movable;
+                if(object->isVisible())
+                {
+                    for(auto& [_, distanceData] : m_distances)
+                    {
+                        if(distanceData.m_sphere1 == object)
+                        {
+                            distanceData.m_node1->setScale(scale, scale, scale);
+                            m_pickedData = {&distanceData, true};
+                            found        = true;
+                            break;
+                        }
+                        else if(distanceData.m_sphere2 == object)
+                        {
+                            distanceData.m_node2->setScale(scale, scale, scale);
+                            m_pickedData = {&distanceData, false};
+                            found        = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        delete raySceneQuery;
+
+        if(found)
+        {
+            // Check if something is picked to update the position of the distance.
+            std::optional< ::Ogre::Vector3 > pickedPos = this->getNearestPickedPosition(_x, _y);
+            if(pickedPos.has_value())
+            {
+                if(m_pickedData.m_first)
+                {
+                    const ::Ogre::Vector3 secondPos = m_pickedData.m_data->m_node2->getPosition();
+                    this->updateDistance(m_pickedData.m_data, pickedPos.value(), secondPos);
+                }
+                else
+                {
+                    const ::Ogre::Vector3 firstPos = m_pickedData.m_data->m_node1->getPosition();
+                    this->updateDistance(m_pickedData.m_data, firstPos, pickedPos.value());
+                }
+            }
+
+            this->requestRender();
+            this->getLayer()->cancelFurtherInteraction();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
+{
+    if(m_pickedData.m_data != nullptr)
+    {
+        ::Ogre::Vector3 newPos;
+
+        // Discard the current distance to launch the ray over the scene without picking this one.
+        m_pickedData.m_data->m_sphere1->setQueryFlags(0x0);
+        m_pickedData.m_data->m_sphere2->setQueryFlags(0x0);
+
+        // Check if something is picked.
+        std::optional< ::Ogre::Vector3 > pickedPos = this->getNearestPickedPosition(_x, _y);
+        if(pickedPos.has_value())
+        {
+            newPos = pickedPos.value();
+        }
+        // Else we move the distance along a plane.
+        else
+        {
+            const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+            const ::Ogre::Camera* const cam         = layer->getDefaultCamera();
+            const ::Ogre::Ray ray                   = cam->getCameraToViewportRay(
+                static_cast< ::Ogre::Real >(_x) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth()),
+                static_cast< ::Ogre::Real >(_y) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight()));
+
+            const ::Ogre::Vector3 direction = this->getCamDirection(cam);
+
+            ::Ogre::Vector3 position;
+            if(m_pickedData.m_first)
+            {
+                position = m_pickedData.m_data->m_node1->getPosition();
+            }
+            else
+            {
+                position = m_pickedData.m_data->m_node2->getPosition();
+            }
+
+            const ::Ogre::Plane plane(direction, position);
+
+            const std::pair< bool, Ogre::Real > hit = ::Ogre::Math::intersects(ray, plane);
+            SLM_ASSERT("The ray must intersect the plane", hit.first);
+
+            newPos = ray.getPoint(hit.second);
+        }
+
+        // Reset the query flag.
+        m_pickedData.m_data->m_sphere1->setQueryFlags(m_distanceQueryFlag);
+        m_pickedData.m_data->m_sphere2->setQueryFlags(m_distanceQueryFlag);
+
+        if(m_pickedData.m_first)
+        {
+            const ::Ogre::Vector3 secondPos = m_pickedData.m_data->m_node2->getPosition();
+            this->updateDistance(m_pickedData.m_data, newPos, secondPos);
+        }
+        else
+        {
+            const ::Ogre::Vector3 firstPos = m_pickedData.m_data->m_node1->getPosition();
+            this->updateDistance(m_pickedData.m_data, firstPos, newPos);
+        }
+
+        this->requestRender();
+        this->getLayer()->cancelFurtherInteraction();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::buttonReleaseEvent(MouseButton, int, int)
+{
+    if(m_pickedData.m_data != nullptr)
+    {
+        const ::Ogre::Real scale = 1.f;
+        m_pickedData.m_data->m_node1->setScale(scale, scale, scale);
+        m_pickedData.m_data->m_node2->setScale(scale, scale, scale);
+        m_pickedData = {nullptr, true};
+
+        this->getLayer()->requestRender();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
 {
     const ::fwTools::fwID::IDType id = _pl->getID();
@@ -331,10 +604,10 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
 
     // First sphere.
     ::Ogre::ManualObject* const sphere1 = sceneMgr->createManualObject(this->getID() + "_sphere1_" + id);
-    ::fwRenderOgre::helper::ManualObject::createSphere(sphere1, m_noDepthMaterialName, colour, m_distanceSphereRadius);
-    sphere1->setQueryFlags(0x45893521);
+    ::fwRenderOgre::helper::ManualObject::createSphere(sphere1, m_sphereMaterialName, colour, m_distanceSphereRadius);
+    sphere1->setQueryFlags(m_distanceQueryFlag);
     // Render this sphere over all others objects.
-    sphere1->setRenderQueueGroup(::Ogre::RenderQueueGroupID::RENDER_QUEUE_9);
+    sphere1->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
     SLM_ASSERT("Can't create the first entity", sphere1);
     ::Ogre::SceneNode* const node1 = rootNode->createChildSceneNode(this->getID() + "_node1_" + id, begin);
     SLM_ASSERT("Can't create the first node", node1);
@@ -342,10 +615,10 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
 
     // Second sphere.
     ::Ogre::ManualObject* const sphere2 = sceneMgr->createManualObject(this->getID() + "_sphere2_" + id);
-    ::fwRenderOgre::helper::ManualObject::createSphere(sphere2, m_noDepthMaterialName, colour, m_distanceSphereRadius);
-    sphere2->setQueryFlags(0x45893521);
+    ::fwRenderOgre::helper::ManualObject::createSphere(sphere2, m_sphereMaterialName, colour, m_distanceSphereRadius);
+    sphere2->setQueryFlags(m_distanceQueryFlag);
     // Render this sphere over all others objects.
-    sphere2->setRenderQueueGroup(::Ogre::RenderQueueGroupID::RENDER_QUEUE_9);
+    sphere2->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
     SLM_ASSERT("Can't create the second entity", sphere2);
     ::Ogre::SceneNode* const node2 = rootNode->createChildSceneNode(this->getID() + "_node2_" + id, end);
     SLM_ASSERT("Can't create the second node", node2);
@@ -354,24 +627,24 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     // Line.
     ::Ogre::ManualObject* const line = sceneMgr->createManualObject(this->getID() + "_line_" + id);
     SLM_ASSERT("Can't create the line", line);
-    line->begin(m_depthMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
+    line->begin(m_lineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
     line->colour(colour);
     line->position(begin);
     line->position(end);
     line->end();
-    line->setQueryFlags(0x00000000);
+    line->setQueryFlags(0x0);
     rootNode->attachObject(line);
 
     // Dashed line.
     ::Ogre::ManualObject* const dashedLine = sceneMgr->createManualObject(this->getID() + "_dashedLine_" + id);
     SLM_ASSERT("Can't create the dashed line", dashedLine);
-    dashedLine->begin(m_noDepthMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
+    dashedLine->begin(m_dashedLineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
     dashedLine->colour(colour);
-    ::fwRenderOgre::interactor::ImageMultiDistancesInteractor::generateDashedLine(dashedLine, begin, end,
-                                                                                  m_distanceSphereRadius);
-    dashedLine->setQueryFlags(0x00000000);
+    SImageMultiDistances::generateDashedLine(dashedLine, begin, end,
+                                             m_distanceSphereRadius);
+    dashedLine->setQueryFlags(0x0);
     // Render this line over all others objects.
-    dashedLine->setRenderQueueGroup(::Ogre::RenderQueueGroupID::RENDER_QUEUE_9);
+    dashedLine->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
     rootNode->attachObject(dashedLine);
 
     // Label.
@@ -381,10 +654,10 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
     ::fwRenderOgre::Text* label = ::fwRenderOgre::Text::New(
         this->getID() + "_label_" + id, sceneMgr, textContainer, m_fontSource, m_fontSize, dpi, cam);
-    const std::string length = ::fwRenderOgre::interactor::ImageMultiDistancesInteractor::getLength(end, begin);
+    const std::string length = SImageMultiDistances::getLength(end, begin);
     label->setText(length);
     label->setTextColor(colour);
-    label->setQueryFlags(0x00000000);
+    label->setQueryFlags(0x0);
     ::Ogre::SceneNode* const labelNode =
         rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, begin + (end-begin)/2);
     SLM_ASSERT("Can't create the label node", labelNode);
@@ -400,6 +673,47 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     // Store data in the map.
     DistanceData data {_pl, node1, sphere1, node2, sphere2, line, dashedLine, labelNode, label};
     m_distances[id] = data;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::updateDistance(const DistanceData* const _data,
+                                          ::Ogre::Vector3 _begin,
+                                          ::Ogre::Vector3 _end)
+{
+    SLM_ASSERT("Distance can't be null", _data);
+
+    // Update spheres position.
+    _data->m_node1->setPosition(_begin);
+    _data->m_node2->setPosition(_end);
+
+    // Update the line.
+    ::Ogre::ManualObject* const line = _data->m_line;
+    line->beginUpdate(0);
+    line->position(_begin);
+    line->position(_end);
+    line->end();
+
+    // Update the label.
+    const std::string length = SImageMultiDistances::getLength(_end, _begin);
+    _data->m_label->setText(length);
+    _data->m_labelNode->setPosition(_begin + (_end-_begin)/2);
+
+    // Update the dashed line
+    ::Ogre::ManualObject* const dashedLine = _data->m_dashedLine;
+    dashedLine->beginUpdate(0);
+    SImageMultiDistances::generateDashedLine(dashedLine, _begin, _end, m_distanceSphereRadius);
+
+    // Update the field data.
+    const ::fwData::mt::ObjectWriteLock lock(_data->m_pointList);
+    _data->m_pointList->getPoints().front()->setCoord({_begin[0], _begin[1], _begin[2]});
+    _data->m_pointList->getPoints().back()->setCoord({_end[0], _end[1], _end[2]});
+
+    const auto& sigModified = _data->m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+        ::fwData::PointList::s_MODIFIED_SIG);
+    sigModified->asyncEmit();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -424,6 +738,42 @@ void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
 
     // Remove it from the map.
     m_distances.erase(it);
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::focusOutEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::wheelEvent(int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::resizeEvent(int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::keyPressEvent(int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::keyReleaseEvent(int)
+{
 }
 
 }
