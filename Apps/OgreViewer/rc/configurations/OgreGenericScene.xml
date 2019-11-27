@@ -302,7 +302,7 @@
             <videoSupport>yes</videoSupport>
         </service>
 
-        <service uid="pointListModifierSrv" type="::uiVisuOgre::SAddPoint">
+        <service uid="pointListModifierSrv" type="::ctrlPicking::SManagePointList">
             <inout key="pointList" uid="pointList" />
         </service>
 

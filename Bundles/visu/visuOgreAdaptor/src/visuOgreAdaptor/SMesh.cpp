@@ -366,6 +366,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -473,6 +474,11 @@ void SMesh::modifyVertices()
 
     // Necessary to update the bounding box in the adaptor
     //m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+
+    if (m_autoResetCamera)
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
 
     this->requestRender();
 }

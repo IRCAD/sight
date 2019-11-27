@@ -16,16 +16,13 @@ set( REQUIREMENTS
     ioITK
     ioVTK
     servicesReg
-    uiGenericQt
     uiIO
     uiImageQt
-    uiMeasurement
-    uiVisu
     uiVisuQt
     visuVTK
     visuVTKAdaptor
     visuVTKQt
-
+    ctrlPicking
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRegistrationConfig)

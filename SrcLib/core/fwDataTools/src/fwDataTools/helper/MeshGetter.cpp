@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,9 +38,13 @@ namespace helper
 #define CELL_REALLOC_STEP 1000
 #define CELLDATA_REALLOC_STEP 1000
 
-MeshGetter::MeshGetter( ::fwData::Mesh::csptr mesh ) : m_mesh (mesh)
+MeshGetter::MeshGetter( ::fwData::Mesh::csptr mesh ) :
+    m_mesh(mesh)
 {
-    typedef::fwDataTools::helper::ArrayGetter ArrayGetter;
+    FW_DEPRECATED_MSG("::fwDataTools::helper::MeshGetter is no longer supported, the methods have been moved to "
+                      "::fwData::Mesh", "22.0")
+
+    typedef ::fwDataTools::helper::ArrayGetter ArrayGetter;
     SLM_ASSERT("Mesh ptr is null.", mesh);
 
     SLM_ASSERT("Mesh ptr is null.", m_mesh);
