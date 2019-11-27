@@ -230,7 +230,7 @@
         </service>
 
         <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" movement="VR" />
+            <config layer="default" movement="Trackball" />
         </service>
 
         <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SInteractorStyle">
@@ -374,7 +374,7 @@
             <signal>windowedAct/disabled</signal>
             <slot>fullscreenAct/show</slot>
         </connect>
-        
+
         <connect>
             <signal>3DNegatoAdp/pickedVoxel</signal>
             <slot>pickedVoxelTextAdp/setText</slot>
