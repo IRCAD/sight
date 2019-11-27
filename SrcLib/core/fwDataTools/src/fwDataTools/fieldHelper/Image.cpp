@@ -42,7 +42,7 @@ const std::string Image::m_sagittalSliceIndexId( "Sagittal Slice Index" );
 const std::string Image::m_transferFunctionCompositeId( "m_transferFunctionCompositeId" );
 const std::string Image::m_imageLandmarksId("m_imageLandmarksId");
 const std::string Image::m_imageDistancesId("m_imageDistancesId");
-const std::string Image::m_distanceVisibility(::fwDataTools::fieldHelper::Image::m_distanceVisibility);
+const std::string Image::m_distanceVisibility("ShowDistances");
 const std::string Image::m_commentId("m_commentId");
 const std::string Image::m_labelId("m_labelId");
 const std::string Image::m_colorId("m_colorId");
