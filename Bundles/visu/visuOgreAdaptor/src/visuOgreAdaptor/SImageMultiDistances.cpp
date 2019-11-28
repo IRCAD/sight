@@ -62,7 +62,7 @@ static const std::string s_PRIORITY_CONFIG             = "priority";
 static const std::string s_QUERY_MASK_CONFIG           = "queryMask";
 static const std::string s_DISTANCE_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
 
-static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::Ogre::RenderQueueGroupID::RENDER_QUEUE_9;
+static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID;
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
 
@@ -263,7 +263,10 @@ void SImageMultiDistances::updating()
     m_lineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
     m_dashedLineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
-    this->removeDistances();
+    while(m_distances.size() != 0)
+    {
+        this->destroyDistance(m_distances.begin()->first);
+    }
     this->addDistances();
 }
 
@@ -313,6 +316,9 @@ void SImageMultiDistances::addDistances()
             if(m_distances.find(id) == m_distances.end())
             {
                 this->createDistance(pointList);
+                const auto& sigModified = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+                    ::fwData::PointList::s_MODIFIED_SIG);
+                sigModified->connect(m_slotUpdate);
             }
         }
     }
@@ -711,6 +717,8 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
 
     const auto& sigModified = _data->m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
+
+    ::fwCom::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
     sigModified->asyncEmit();
 
     this->requestRender();
@@ -735,6 +743,10 @@ void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
     sceneMgr->destroyManualObject(distanceData.m_dashedLine);
     sceneMgr->destroySceneNode(distanceData.m_labelNode);
     sceneMgr->destroyMovableObject(distanceData.m_label);
+
+    const auto& sigModified = distanceData.m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+        ::fwData::PointList::s_MODIFIED_SIG);
+    sigModified->disconnect(m_slotUpdate);
 
     // Remove it from the map.
     m_distances.erase(it);
