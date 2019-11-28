@@ -203,6 +203,8 @@ void SMesh::starting()
     }
 
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    ::fwData::mt::ObjectReadLock lock(mesh);
+
     this->updateMesh(mesh);
 }
 
@@ -256,8 +258,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
-
-    ::fwData::mt::ObjectReadLock lock(_mesh);
 
     const size_t uiNumVertices = _mesh->getNumberOfPoints();
     if(uiNumVertices == 0)
