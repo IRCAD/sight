@@ -41,7 +41,7 @@ class FWGUI_CLASS_API IActionSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceMacro(IActionSrv, ::fwServices::IService);
+    fwCoreServiceMacro(IActionSrv, ::fwServices::IService)
     fwCoreAllowSharedFromThis();
 
     /**
@@ -119,12 +119,6 @@ public:
     /// Return true if action service is active.
     FWGUI_API bool getIsActive() const;
 
-    /// Return true if action 'check' feedback is inverted.
-    bool getActiveStateValue() const
-    {
-        return m_activeStateValue;
-    }
-
     /// Set the action service executable or not.
     FWGUI_API virtual void setIsExecutable(bool isExecutable);
 
@@ -148,6 +142,13 @@ public:
 
     /// Returns true if action is visible
     FWGUI_API bool isVisible() const;
+
+    /// Return true if action 'check' feedback is inverted.
+    [[deprecated("Removed in sight 21.0")]]
+    FWGUI_API bool getActiveStateValue() const;
+
+    /// Return true if the active state should be inverted.
+    FWGUI_API bool isInverted() const;
 
     /**
      * @brief Confirm that the action must be executed.
@@ -198,12 +199,12 @@ private:
 
     ::fwGui::registrar::ActionRegistrar::sptr m_registrar;
 
-    /// Value for which the action will be considered 'active'
-    bool m_activeStateValue;
-    bool m_isActive;
-    bool m_isExecutable;
-    bool m_isVisible;
-    bool m_confirmAction;
+    /// Handle the information of the action state inversion.
+    bool m_isInverted{false};
+    bool m_isActive{false};
+    bool m_isExecutable{true};
+    bool m_isVisible{true};
+    bool m_confirmAction{false};
     std::string m_confirmMessage;
     std::string m_defaultButton;
 
