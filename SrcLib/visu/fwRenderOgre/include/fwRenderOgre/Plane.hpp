@@ -67,8 +67,17 @@ public:
 
     /// Creates a plane, instantiates its material. Call @ref Plane::initializePlane() to create its geometry.
     FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
-                           ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
-                           ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _entityOpacity = 1.0f);
+                           ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
+                           FilteringEnumType _filtering, float _entityOpacity = 1.0f);
+
+    /// @deprecated removed in sight 21.0
+    [[deprecated("Deprecated constructor. Removed in sight 21.0")]]
+    FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
+                           ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool,
+                           ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _alpha = 1.0f) :
+        Plane(_negatoId, _parentSceneNode, _sceneManager, _orientation, _tex, _filtering, _alpha)
+    {
+    }
 
     /// Destructor, cleans ogre resources.
     FWRENDEROGRE_API virtual ~Plane();
@@ -148,9 +157,6 @@ private:
 
     /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
     ::Ogre::MovablePlane setDimensions();
-
-    /// Indicates whether the plane is used by a 3D negato or not
-    bool m_is3D { false };
 
     /// Indicates whether whe want to threshold instead of windowing
     bool m_threshold { false };

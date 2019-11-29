@@ -152,7 +152,7 @@ void SNegato2D::starting()
 
     // Plane's instanciation
     m_plane = std::make_unique< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                                        m_orientation, false, m_3DOgreTexture, m_filtering);
+                                                        m_orientation, m_3DOgreTexture, m_filtering);
 
     this->newImage();
 }
@@ -265,30 +265,10 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
 
     this->getRenderService()->makeCurrent();
 
-    const auto& imgSize    = image->getSize2();
-    const auto& imgSpacing = image->getSpacing2();
+    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+    m_plane->setOriginPosition(imgOrigin);
 
-    OrientationMode newOrientationMode = OrientationMode::X_AXIS;
-    switch (_to)
-    {
-        case 0:
-            m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(imgSize[0]) *
-                                                       static_cast<float>(imgSpacing[0]), 0, 0));
-            newOrientationMode = OrientationMode::X_AXIS;
-            break;
-        case 1:
-            m_plane->setOriginPosition(::Ogre::Vector3(0,
-                                                       static_cast<float>(imgSize[1]) *
-                                                       static_cast<float>(imgSpacing[1]), 0));
-            newOrientationMode = OrientationMode::Y_AXIS;
-            break;
-        case 2:
-            newOrientationMode = OrientationMode::Z_AXIS;
-            m_plane->setOriginPosition(::Ogre::Vector3(0, 0,
-                                                       static_cast<float>(imgSize[2]) *
-                                                       static_cast<float>(imgSpacing[2])));
-            break;
-    }
+    OrientationMode newOrientationMode = static_cast<OrientationMode>(_to);
 
     // The orientation update setter will change the fragment shader
     m_plane->setOrientationMode(newOrientationMode);
