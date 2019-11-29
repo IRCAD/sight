@@ -40,6 +40,8 @@ namespace interactor
 
 /**
  * @brief Interface implementation for all movement interaction with the mouse
+ *
+ * @deprecated use the more generic IInteractor interface instead. Removed in sight 21.0
  */
 class FWRENDEROGRE_CLASS_API IMovementInteractor : public ::fwRenderOgre::interactor::IInteractor,
                                                    public ::fwCore::BaseObject,
@@ -66,6 +68,7 @@ public:
     class Registrar
     {
     public:
+        [[deprecated("Removed in sight 21.0")]]
         Registrar(std::string functorKey)
         {
             ::fwRenderOgre::registry::getInteractorRegistry()->addFactory(functorKey,
@@ -73,12 +76,14 @@ public:
         }
     };
 
-    fwCoreClassMacro(IMovementInteractor, ::fwCore::BaseObject);
+    fwCoreClassMacro(IMovementInteractor, ::fwCore::BaseObject)
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
+    [[deprecated("Removed in sight 21.0")]]
     FWRENDEROGRE_API IMovementInteractor();
 
     /// Destructor
+    [[deprecated("Removed in sight 21.0")]]
     FWRENDEROGRE_API virtual ~IMovementInteractor();
 
     /// Update camera's move scale.

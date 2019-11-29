@@ -127,10 +127,13 @@ namespace interactorFactory
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New();
 
+[[deprecated("Removed in sight 21.0")]]
 FWRENDEROGRE_API SPTR( ::fwRenderOgre::interactor::IInteractor ) New(
     const ::fwRenderOgre::registry::KeyType& classname, const std::string&);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME >
+[[deprecated("Removed in sight 21.0")]]
+SPTR( CLASSNAME )  New()
 {
     SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( );
     return obj;

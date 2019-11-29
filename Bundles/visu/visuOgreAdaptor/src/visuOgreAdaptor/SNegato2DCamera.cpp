@@ -205,7 +205,7 @@ void SNegato2DCamera::resetCamera()
     camera->setAspectRatio(vpWidth / vpHeight);
 
     const auto worldBoundingBox = layer->computeWorldBoundingBox();
-    const auto worldHalfSize    = worldBoundingBox.getSize() * 0.5f;
+    const auto worldSize        = worldBoundingBox.getSize();
 
     camNode->setPosition(::Ogre::Vector3::ZERO);
     camNode->resetOrientation();
@@ -214,23 +214,31 @@ void SNegato2DCamera::resetCamera()
         case Orientation::X_AXIS:
             camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
             camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
-            camera->setOrthoWindowHeight(worldHalfSize.z * 2.f);
+            camera->setOrthoWindowHeight(worldSize.z);
             break;
         case Orientation::Y_AXIS:
             camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
-            camera->setOrthoWindowHeight(worldHalfSize.z * 2.f);
+            camera->setOrthoWindowHeight(worldSize.z);
             break;
         case Orientation::Z_AXIS:
             camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
             camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
-            camera->setOrthoWindowHeight(worldHalfSize.y * 2.f);
+            camera->setOrthoWindowHeight(worldSize.y);
             break;
     }
 
-    auto transVec = worldHalfSize;
-    transVec[static_cast<int>(m_currentNegatoOrientation)] *= 2.f;
+    if(worldBoundingBox.isFinite())
+    {
+        const int orientation = static_cast<int>(m_currentNegatoOrientation);
+        auto camPos           = worldBoundingBox.getCenter();
 
-    camNode->translate(transVec);
+        // Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
+        camera->setNearClipDistance(1e-3f);
+        camPos[orientation] = worldBoundingBox.getMinimum()[orientation] - 1.f;
+
+        camNode->setPosition(camPos);
+        layer->resetCameraClippingRange(worldBoundingBox);
+    }
 
     this->requestRender();
 }
