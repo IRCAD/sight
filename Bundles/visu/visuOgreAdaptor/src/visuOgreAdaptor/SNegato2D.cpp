@@ -153,7 +153,7 @@ void SNegato2D::starting()
 
     // Plane's instanciation
     m_plane = std::make_unique< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                                        m_orientation, false, m_3DOgreTexture, m_filtering);
+                                                        m_orientation, m_3DOgreTexture, m_filtering);
 
     ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
     m_cameraNode              = cam->getParentSceneNode();
@@ -262,30 +262,10 @@ void SNegato2D::changeSliceType(int /*_from*/, int _to)
 
     this->getRenderService()->makeCurrent();
 
-    const auto& imgSize    = image->getSize2();
-    const auto& imgSpacing = image->getSpacing2();
+    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+    m_plane->setOriginPosition(imgOrigin);
 
-    OrientationMode newOrientationMode = OrientationMode::X_AXIS;
-    switch (_to)
-    {
-        case 0:
-            m_plane->setOriginPosition(::Ogre::Vector3(static_cast<float>(imgSize[0]) *
-                                                       static_cast<float>(imgSpacing[0]), 0, 0));
-            newOrientationMode = OrientationMode::X_AXIS;
-            break;
-        case 1:
-            m_plane->setOriginPosition(::Ogre::Vector3(0,
-                                                       static_cast<float>(imgSize[1]) *
-                                                       static_cast<float>(imgSpacing[1]), 0));
-            newOrientationMode = OrientationMode::Y_AXIS;
-            break;
-        case 2:
-            newOrientationMode = OrientationMode::Z_AXIS;
-            m_plane->setOriginPosition(::Ogre::Vector3(0, 0,
-                                                       static_cast<float>(imgSize[2]) *
-                                                       static_cast<float>(imgSpacing[2])));
-            break;
-    }
+    OrientationMode newOrientationMode = static_cast<OrientationMode>(_to);
 
     // The orientation update setter will change the fragment shader
     m_plane->setOrientationMode(newOrientationMode);
@@ -409,21 +389,25 @@ void SNegato2D::updateCamera()
 
     m_cameraNode->setPosition(::Ogre::Vector3(0, 0, 0));
     m_cameraNode->resetOrientation();
+
+    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+    m_cameraNode->translate(imgOrigin);
+
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(-90.f));
             m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(-90.f));
-            m_cameraNode->translate(::Ogre::Vector3(0, m_plane->getHeight()/2, m_plane->getWidth()/2));
+            m_cameraNode->translate(::Ogre::Vector3(-1, m_plane->getHeight()/2, m_plane->getWidth()/2));
             break;
         case OrientationMode::Y_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(90.f));
-            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, 0, m_plane->getHeight()/2));
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, -1, m_plane->getHeight()/2));
             break;
         case OrientationMode::Z_AXIS:
             m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(180.f));
             m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(180.f));
-            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2, 0));
+            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2, -1));
             break;
     }
 

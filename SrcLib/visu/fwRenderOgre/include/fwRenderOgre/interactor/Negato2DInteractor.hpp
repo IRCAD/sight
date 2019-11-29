@@ -128,9 +128,6 @@ private:
     /// Updates m_totalWidth/Height according to the size of the negato plane mesh
     void updateTotalSize();
 
-    /// Updates RenderWindow's dimensions
-    void updateRenderWindowDimensions();
-
     /// Update camera Position.
     void updateCameraPosition();
 
