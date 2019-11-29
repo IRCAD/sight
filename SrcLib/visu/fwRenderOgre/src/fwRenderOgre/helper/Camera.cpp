@@ -123,14 +123,14 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(const ::arData::Camera& _calibrati
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, const float _pixelPoint[3])
+::Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, const ::Ogre::Vector3& _screenPosition)
 {
     const ::Ogre::Viewport* viewport = _camera.getViewport();
 
-    const float x = _pixelPoint[0]/static_cast<float>(viewport->getActualWidth()) * 2.f - 1.f;
-    const float y = -(_pixelPoint[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
-    const float z = _pixelPoint[2] * 2.f - 1.f;
-    const ::Ogre::Vector3 ndcCoordinates(x, y, z);
+    const ::Ogre::Vector3 vpSize(static_cast<float>(viewport->getActualWidth()),
+                                 static_cast<float>(viewport->getActualHeight()), 1.f);
+    ::Ogre::Vector3 ndcCoordinates = (_screenPosition / vpSize) * 2.f - 1.f;
+    ndcCoordinates.y              *= -1.f;
 
     ::Ogre::Vector4 clippingCoordinatePixel;
     if(_camera.getProjectionType() == ::Ogre::ProjectionType::PT_PERSPECTIVE)
@@ -156,6 +156,22 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, con
     const ::Ogre::Vector4 result = inversedCombinedMat * clippingCoordinatePixel;
 
     return result.xyz();
+}
+
+//-----------------------------------------------------------------------------
+
+::Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, int _screenX, int _screenY)
+{
+    const ::Ogre::Vector3 pixelPt(static_cast<float>(_screenX), static_cast<float>(_screenY), 0.f);
+    return convertPixelToViewSpace(_camera, pixelPt);
+}
+
+//-----------------------------------------------------------------------------
+
+::Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, const float _pixelPoint[3])
+{
+    const ::Ogre::Vector3 pixelPt(_pixelPoint);
+    return convertPixelToViewSpace(_camera, pixelPt);
 }
 
 } // namespace helper

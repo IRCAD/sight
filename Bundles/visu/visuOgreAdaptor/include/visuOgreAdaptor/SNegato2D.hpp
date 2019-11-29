@@ -38,7 +38,7 @@ namespace visuOgreAdaptor
  * @brief   Adaptor to display a 2D negato.
  * *
  * @section Slots Slots
- * - \b newImage() : update the image display to show the new content.
+ * - \b newImage() : update the image display to show the new content. @deprecated call \b update() instead.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
  *
@@ -85,7 +85,7 @@ protected:
     VISUOGREADAPTOR_API virtual void starting() override;
     /// Disconnects the attached data from the receive slot
     VISUOGREADAPTOR_API virtual void stopping() override;
-    /// Requests a rendering of the scene.
+    /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     VISUOGREADAPTOR_API virtual void updating() override;
     /// Select the current tf
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
@@ -98,8 +98,11 @@ protected:
 
 private:
 
-    /// Slot: update image buffer
+    /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     void newImage();
+
+    /// Slot: updates the image buffer, @deprecated call 'update' instead.
+    void newImageDeprecatedSlot();
 
     /// Slot: update image slice type
     void changeSliceType(int _from, int _to);
@@ -112,9 +115,6 @@ private:
 
     /// Initializes the planar mesh on which the negato is displayed.
     void createPlane(const ::Ogre::Vector3& _spacing);
-
-    /// Adapts the camera to the width and height of the displayed plane.
-    void updateCamera();
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;

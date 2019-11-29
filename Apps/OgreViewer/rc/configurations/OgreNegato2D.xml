@@ -58,8 +58,9 @@
             </scene>
         </service>
 
-        <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::SInteractorStyle">
+        <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::SNegato2DCamera">
             <config layer="default" movement="Negato2D" />
+            <in key="image" uid="${image}" autoConnect="yes" />
         </service>
 
         <service uid="2DNegatoAdp" type="::visuOgreAdaptor::SNegato2D">
@@ -93,6 +94,12 @@
             <inout key="image" uid="${image}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
+
+        <!-- ******************************* Connections ******************************* -->
+        <connect>
+            <signal>2DNegatoAdp/updated</signal>
+            <slot>defaultInteractorAdp/resetCamera</slot>
+        </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
 

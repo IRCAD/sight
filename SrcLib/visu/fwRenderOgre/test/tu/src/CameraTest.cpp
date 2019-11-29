@@ -225,7 +225,7 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
+        const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
         const ::Ogre::Vector3 unprojectedPoint =
             ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, point);
 
@@ -246,7 +246,7 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
+        const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
         const ::Ogre::Vector3 unprojectedPoint =
             ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, point);
 

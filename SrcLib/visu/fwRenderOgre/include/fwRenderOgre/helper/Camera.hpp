@@ -51,11 +51,21 @@ public:
                                                                   float _far);
 
     /**
-     * @brief Convert pixel coordinates to view space coordinates. This ignores the z coordinate as we have no usefull
-     * information on it
-     * @param _camera[in] camera of the layer where the pixel is picked
-     * @param _pixelPoint[in] point in pixel coordinates to convert
+     * @brief Convert pixel coordinates to view space coordinates.
+     * @param[in] _camera camera of the layer where the pixel is picked.
+     * @param[in] _screenPosition point in screen space.
      */
+    static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
+                                                                    const ::Ogre::Vector3& _screenPosition);
+
+    /// Convenience function, casts the inputs and
+    /// calls @ref convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&)
+    static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
+                                                                    int _screenX, int _screenY);
+
+    /// @deprecated, call @ref convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.
+    /// Removed in sight 21.0
+    [[deprecated("Use convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
     static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
                                                                     const float _pixelPoint[3]);
 
