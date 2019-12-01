@@ -88,6 +88,7 @@ namespace editor
          <parameter replace="SERIESDB" by="medicalData"  />
          <parameter replace="ICON_PATH" by="media-0.1/icons/app.ico"  />
      </parameters>
+     <config document="true" />
    </service>
    @endcode
  * - \b mainActivity (optional): information about the main activity (first tab). The activity series will be generated.
@@ -100,6 +101,9 @@ namespace editor
  *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
+ *
+ * @subsection Configuration Configuration:
+ *  - \b document (optional, default="true") : Sets the document mode of the tab bar.
  */
 class GUIQT_CLASS_API SDynamicView : public QObject,
                                      public ::fwGui::view::IActivityView
@@ -108,7 +112,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SDynamicView, ::fwGui::view::IActivityView);
+    fwCoreServiceMacro(SDynamicView, ::fwGui::view::IActivityView)
 
     /// Constructor. Do nothing.
     GUIQT_API SDynamicView() noexcept;
@@ -227,6 +231,9 @@ private:
     NothingSelectedSignalType::sptr m_sigNothingSelected;
 
     bool m_mainActivityClosable;
+
+    /// Allow to set the document mode.
+    bool m_documentMode {true};
 };
 
 } //namespace editor
