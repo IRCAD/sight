@@ -122,6 +122,7 @@ void SDynamicView::starting()
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     layout->addWidget( m_tabWidget );
+    layout->setContentsMargins(0, 0, 0, 0);
 
     parentContainer->setLayout(layout);
 
