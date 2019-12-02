@@ -240,7 +240,7 @@ void SPointList::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    if((!getVisibility() || !this->getRenderService()->isShownOnScreen()))
+    if(!this->getRenderService()->isShownOnScreen())
     {
         return;
     }
