@@ -22,8 +22,7 @@
 
 #include "visuOgreAdaptor/SNegato2D.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
+#include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
@@ -45,6 +44,8 @@
 namespace visuOgreAdaptor
 {
 
+static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
+
 const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
@@ -65,6 +66,8 @@ SNegato2D::SNegato2D() noexcept :
     newSlot(s_NEWIMAGE_SLOT, &SNegato2D::newImageDeprecatedSlot, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
+
+    m_sliceIndexChangedSig = this->newSignal<SliceIndexChangedSignalType>(s_SLICE_INDEX_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -301,6 +304,8 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     };
 
     this->updateShaderSliceIndexParameter();
+
+    m_sliceIndexChangedSig->emit();
 }
 
 //------------------------------------------------------------------------------

@@ -37,6 +37,7 @@ namespace visuOgreAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
+static const ::fwCom::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
 
@@ -46,6 +47,7 @@ SNegato2DCamera::SNegato2DCamera() noexcept
 {
     newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
     newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
+    newSlot(s_MOVE_BACK_SLOT, &SNegato2DCamera::moveBack, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -124,6 +126,7 @@ void SNegato2DCamera::stopping()
     KeyConnectionsMap connections;
     connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);
     connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT);
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT);
 
     return connections;
 }
@@ -132,8 +135,6 @@ void SNegato2DCamera::stopping()
 
 void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
 {
-    using Vec2 = ::Ogre::Vector2;
-
     const auto layer           = this->getLayer();
     const auto* const viewport = layer->getViewport();
     auto* const camera         = layer->getDefaultCamera();
@@ -232,7 +233,7 @@ void SNegato2DCamera::resetCamera()
         const int orientation = static_cast<int>(m_currentNegatoOrientation);
         auto camPos           = worldBoundingBox.getCenter();
 
-        // Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
+        // HACK: Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
         camera->setNearClipDistance(1e-3f);
         camPos[orientation] = worldBoundingBox.getMinimum()[orientation] - 1.f;
 
@@ -249,6 +250,31 @@ void SNegato2DCamera::changeOrientation(int /*_from*/, int _to)
 {
     m_currentNegatoOrientation = static_cast<Orientation>(_to);
     this->resetCamera();
+}
+
+//-----------------------------------------------------------------------------
+
+void SNegato2DCamera::moveBack()
+{
+    const auto layer    = this->getLayer();
+    auto* const camera  = layer->getDefaultCamera();
+    auto* const camNode = camera->getParentNode();
+
+    const auto worldBoundingBox = layer->computeWorldBoundingBox();
+
+    if(worldBoundingBox.isFinite())
+    {
+        const int orientation = static_cast<int>(m_currentNegatoOrientation);
+
+        auto camPos = camNode->getPosition();
+
+        const float backupPos = worldBoundingBox.getMinimum()[orientation] - 1.f;
+        camPos[orientation] = std::min(camPos[orientation], backupPos);
+
+        camNode->setPosition(camPos);
+
+        this->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------

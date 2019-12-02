@@ -24,6 +24,8 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
+#include <fwCom/Signal.hpp>
+
 #include <fwDataTools/helper/MedicalImage.hpp>
 #include <fwDataTools/helper/TransferFunction.hpp>
 
@@ -36,7 +38,10 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor to display a 2D negato.
- * *
+ *
+ * @section Signals Signals
+ * - \b sliceIndexChanged(): emitted when the slice index changed.
+ *
  * @section Slots Slots
  * - \b newImage() : update the image display to show the new content. @deprecated call \b update() instead.
  * - \b sliceType(int, int) : update image slice index .
@@ -146,6 +151,9 @@ private:
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    using SliceIndexChangedSignalType = ::fwCom::Signal<void()>;
+    SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 };
 
 //------------------------------------------------------------------------------

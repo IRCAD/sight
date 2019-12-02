@@ -45,6 +45,11 @@ namespace visuOgreAdaptor
  *
  * @warning may not work as intended when used with another camera adaptor on the same layer.
  *
+ * @section Slots Slots
+ * - \b resetCamera(): zooms out the camera to see the whole scene.
+ * - \b changeOrientation(int,int): sets the camera's orientation to one of the image's axes.
+ * - \b moveBack(): moves the camera backwards outside the scene's bounding box.
+ *
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuOgreAdaptor::SNegato2DCamera">
@@ -109,7 +114,10 @@ private:
     void resetCamera();
 
     /// Sets the camera's orientation to one of the image's axes.
-    void changeOrientation(int /*_from*/, int _to);
+    void changeOrientation(int, int _to);
+
+    /// Moves the camera backwards outside the scene's bounding box.
+    void moveBack();
 
     /// Current image orientation.
     Orientation m_currentNegatoOrientation {  ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS };
