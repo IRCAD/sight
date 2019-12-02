@@ -6,22 +6,14 @@
     <requirement id="visuOgre" />
     <requirement id="material" />
     <requirement id="visuVTKQt" />
-
     <requirement id="arDataReg" />
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/VTKGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>LandmarksAtomsConfig</id>
-        <desc>Json/Xml Reader (Sight)</desc>
-        <config>
-            <patcher context="Landmark" version="V2" />
-        </config>
-    </extension>
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>OgreViewer_Extension</id>

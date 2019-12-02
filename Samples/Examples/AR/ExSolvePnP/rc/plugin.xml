@@ -5,6 +5,7 @@
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />
     <requirement id="visuVTKARAdaptor" />
+    <requirement id="guiQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExSolvePnPConfig</id>
@@ -317,13 +318,14 @@
                 <inout key="pointList" uid="2dPoints" />
             </service>
 
-            <service uid="landmarkManager" type="::uiMeasurement::SManageLandmark" >
-                <inout key="landmarks" uid="3dPoints" />
+            <service uid="landmarkManager" type="::ctrlPicking::SManagePointList" >
+                <inout key="pointList" uid="3dPoints" />
+                <config label="true" />
             </service>
 
             <connect>
                 <signal>pickerModelScene/picked</signal>
-                <slot>landmarkManager/createLandmark</slot>
+                <slot>landmarkManager/pick</slot>
             </connect>
 
             <connect>

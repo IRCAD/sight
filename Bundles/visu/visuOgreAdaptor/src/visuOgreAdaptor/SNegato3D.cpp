@@ -122,8 +122,9 @@ void SNegato3D::configuring()
         this->setFiltering(filtering);
     }
 
-    m_enableAlpha = config.get<bool>("tfalpha", m_enableAlpha);
-    m_interactive = config.get<bool>("interactive", m_interactive);
+    m_enableAlpha         = config.get<bool>("tfalpha", m_enableAlpha);
+    m_interactive         = config.get<bool>("interactive", m_interactive);
+    m_interactionPriority = config.get<int>("priority", m_interactionPriority);
 
     const std::string transformId =
         config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
@@ -166,7 +167,7 @@ void SNegato3D::starting()
         auto imgOrientation = static_cast<OrientationMode>(orientationNum++);
         plane = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
                                                           this->getSceneManager(),
-                                                          imgOrientation, true, m_3DOgreTexture,
+                                                          imgOrientation, m_3DOgreTexture,
                                                           m_filtering);
     }
 
@@ -180,7 +181,7 @@ void SNegato3D::starting()
     if(m_interactive)
     {
         auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
-        this->getLayer()->addInteractor(interactor, 1);
+        this->getLayer()->addInteractor(interactor, m_interactionPriority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
         const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient");
@@ -207,6 +208,12 @@ void SNegato3D::starting()
 void SNegato3D::stopping()
 {
     this->getRenderService()->makeCurrent();
+
+    if(m_interactive)
+    {
+        auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
+        this->getLayer()->removeInteractor(interactor);
+    }
 
     m_helperTF.removeTFConnections();
 

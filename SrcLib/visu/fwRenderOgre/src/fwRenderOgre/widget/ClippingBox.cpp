@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwRenderOgre/ui/VRWidget.hpp"
+#include "fwRenderOgre/widget/ClippingBox.hpp"
 
 #include "fwRenderOgre/compositor/Core.hpp"
 
@@ -37,23 +37,21 @@
 
 #include <numeric>
 
-namespace fwRenderOgre
-{
-namespace ui
+namespace fwRenderOgre::widget
 {
 
 const std::string s_VR_MATERIALS_GROUP = "VRMaterials";
 
 //-----------------------------------------------------------------------------
 
-VRWidget::VRWidget(const std::string& id,
-                   ::Ogre::SceneNode* parentSceneNode,
-                   ::Ogre::Camera* camera,
-                   ::Ogre::SceneManager* sceneManager,
-                   const ::Ogre::Matrix4& clippingMatrix,
-                   const ClippingUpdateCallbackType& clippingUpdateCallback,
-                   const std::string& boxMtlName,
-                   const std::string& handleMtlName) :
+ClippingBox::ClippingBox(const std::string& id,
+                         ::Ogre::SceneNode* parentSceneNode,
+                         ::Ogre::Camera* camera,
+                         ::Ogre::SceneManager* sceneManager,
+                         const ::Ogre::Matrix4& clippingMatrix,
+                         const ClippingUpdateCallbackType& clippingUpdateCallback,
+                         const std::string& boxMtlName,
+                         const std::string& handleMtlName) :
     m_id(id),
     m_sceneManager(sceneManager),
     m_camera(camera),
@@ -72,7 +70,7 @@ VRWidget::VRWidget(const std::string& id,
 
 //-----------------------------------------------------------------------------
 
-VRWidget::~VRWidget()
+ClippingBox::~ClippingBox()
 {
     m_widgetSceneNode->detachAllObjects();
 
@@ -94,7 +92,7 @@ VRWidget::~VRWidget()
 
 //-----------------------------------------------------------------------------
 
-bool VRWidget::belongsToWidget(const Ogre::MovableObject* const _object) const
+bool ClippingBox::belongsToWidget(const Ogre::MovableObject* const _object) const
 {
     return m_widgets.find(_object) != m_widgets.end();
 }
@@ -102,7 +100,7 @@ bool VRWidget::belongsToWidget(const Ogre::MovableObject* const _object) const
 //-----------------------------------------------------------------------------
 
 std::array< ::Ogre::Vector3, 4 >
-VRWidget::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
+ClippingBox::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
 {
     const vr::IVolumeRenderer::CubeFacePositionList positionIndices =
         vr::IVolumeRenderer::s_cubeFaces.at(_faceName);
@@ -118,7 +116,7 @@ VRWidget::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceNa
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 VRWidget::getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
+Ogre::Vector3 ClippingBox::getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
 {
     const auto facePositions = this->getFacePositions(_faceName);
     return std::accumulate(facePositions.cbegin() + 1, facePositions.cend(), facePositions[0]) / 4.f;
@@ -126,7 +124,7 @@ Ogre::Vector3 VRWidget::getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeF
 
 //-----------------------------------------------------------------------------
 
-std::array< ::Ogre::Vector3, 8 > VRWidget::getClippingBoxPositions() const
+std::array< ::Ogre::Vector3, 8 > ClippingBox::getClippingBoxPositions() const
 {
     return {{
                 ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[1].z),
@@ -142,7 +140,7 @@ std::array< ::Ogre::Vector3, 8 > VRWidget::getClippingBoxPositions() const
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::updateWidgets()
+void ClippingBox::updateWidgets()
 {
     const auto clippingBoxPositions = this->getClippingBoxPositions();
 
@@ -183,7 +181,7 @@ void VRWidget::updateWidgets()
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::initWidgets()
+void ClippingBox::initWidgets()
 {
     // Create widget materials
     {
@@ -279,7 +277,8 @@ void VRWidget::initWidgets()
         const auto volScale         = m_volumeSceneNode->getScale();
         const ::Ogre::Real scaleMin = std::min(volScale[0], std::min(volScale[1], volScale[2]));
 
-        const ::Ogre::Vector3 widgetScale((0.05f * scaleMin) / newWidget->getBoundingRadius());
+        // Scale the handle to be 1/100th of the volume's initial size.
+        const ::Ogre::Vector3 widgetScale((0.01f * scaleMin) / newWidget->getBoundingRadius());
         sphereSceneNode->setScale(widgetScale);
 
         sphereSceneNode->attachObject(newWidget);
@@ -288,7 +287,7 @@ void VRWidget::initWidgets()
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::selectFace(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName)
+void ClippingBox::selectFace(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName)
 {
     m_selectedFace->beginUpdate(0);
     {
@@ -305,7 +304,7 @@ void VRWidget::selectFace(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceNam
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::deselectFace()
+void ClippingBox::deselectFace()
 {
     if(m_selectedFace->isAttached())
     {
@@ -315,7 +314,7 @@ void VRWidget::deselectFace()
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY)
+void ClippingBox::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY)
 {
     const int height = m_camera->getViewport()->getActualHeight();
     const int width  = m_camera->getViewport()->getActualWidth();
@@ -382,7 +381,7 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::widgetReleased()
+void ClippingBox::widgetReleased()
 {
     if(m_selectedWidget)
     {
@@ -403,7 +402,7 @@ void VRWidget::widgetReleased()
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
+bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
 {
     const int width  = m_camera->getViewport()->getActualWidth();
     const int height = m_camera->getViewport()->getActualHeight();
@@ -457,45 +456,34 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
         // Image to world space.
         oldPos            = m_volumeSceneNode->convertLocalToWorldPosition(boxPos);
         intersectionPlane = ::Ogre::Plane(camDir, oldPos);
-    }
-    else
-    {
-        intersectionPlane = ::Ogre::Plane(camDir, m_volumeSceneNode->getPosition());
-        oldPos            = oldPosRay.getPoint(oldPosRay.intersects(intersectionPlane).second);
-    }
 
-    const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
-        static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
-        static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
+        const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
+            static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
+            static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
 
-    const std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
+        const std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
 
-    const ::Ogre::Vector3 newPos = newPosRay.getPoint(planeInter.second);
+        const ::Ogre::Vector3 newPos = newPosRay.getPoint(planeInter.second);
 
-    ::Ogre::Vector3 d = newPos - oldPos;
+        ::Ogre::Vector3 d = newPos - oldPos;
 
-    if(boxSelected)
-    {
         // Translate clipping box in image space.
         d = m_volumeSceneNode->convertWorldToLocalDirection(d, true);
 
         m_clippingCube[0] += d;
         m_clippingCube[1] += d;
-    }
-    else
-    {
-        // Translate the camera.
-        m_camera->getParentNode()->translate(-d, ::Ogre::Node::TS_WORLD);
+
+        this->updateWidgets();
+
+        m_clippingUpdateCallback();
     }
 
-    this->updateWidgets();
-
-    m_clippingUpdateCallback();
+    return boxSelected;
 }
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::scaleClippingBox(int x, int y, int dy)
+bool ClippingBox::scaleClippingBox(int x, int y, int dy)
 {
     const int width  = m_camera->getViewport()->getActualWidth();
     const int height = m_camera->getViewport()->getActualHeight();
@@ -533,13 +521,8 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
         }
     }
 
-    if(m_selectionMode == CAMERA)
-    {
-        const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
-
-        m_camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
-    }
-    else if(m_selectionMode == BOX)
+    const bool boxSelected = m_selectionMode == BOX;
+    if(boxSelected)
     {
         const auto volumeSize = m_volumeSceneNode->getScale();
 
@@ -552,37 +535,39 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
         // Scale clipping cube along its center.
         m_clippingCube[0] = (m_clippingCube[0] - ccCenter) * scale + ccCenter;
         m_clippingCube[1] = (m_clippingCube[1] - ccCenter) * scale + ccCenter;
+
+        this->updateWidgets();
+
+        m_clippingUpdateCallback();
     }
 
-    this->updateWidgets();
-
-    m_clippingUpdateCallback();
+    return boxSelected;
 }
 
 //-----------------------------------------------------------------------------
 
-bool VRWidget::getVisibility() const
+bool ClippingBox::getVisibility() const
 {
     return m_widgetSceneNode->getAttachedObject(0)->getVisible();
 }
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::setVisibility(bool visibility)
+void ClippingBox::setVisibility(bool visibility)
 {
     m_widgetSceneNode->setVisible(visibility);
 }
 
 //-----------------------------------------------------------------------------
 
-::Ogre::AxisAlignedBox VRWidget::getClippingBox() const
+::Ogre::AxisAlignedBox ClippingBox::getClippingBox() const
 {
     return ::Ogre::AxisAlignedBox(m_clippingCube[0], m_clippingCube[1]);
 }
 
 //-----------------------------------------------------------------------------
 
-::Ogre::Matrix4 VRWidget::getClippingTransform() const
+::Ogre::Matrix4 ClippingBox::getClippingTransform() const
 {
     const auto aaBox = this->getClippingBox();
 
@@ -605,7 +590,7 @@ void VRWidget::setVisibility(bool visibility)
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::updateFromTransform(const ::Ogre::Matrix4& _clippingMx)
+void ClippingBox::updateFromTransform(const ::Ogre::Matrix4& _clippingMx)
 {
     this->applyTransform(_clippingMx);
     m_clippingUpdateCallback();
@@ -613,7 +598,7 @@ void VRWidget::updateFromTransform(const ::Ogre::Matrix4& _clippingMx)
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::applyTransform(const ::Ogre::Matrix4& _clippingMx)
+void ClippingBox::applyTransform(const ::Ogre::Matrix4& _clippingMx)
 {
     // The clipping matrix is the transform from the initial box position to the new one.
     // Convert to world position because that's how VTK stores its crop matrices...
@@ -628,5 +613,4 @@ void VRWidget::applyTransform(const ::Ogre::Matrix4& _clippingMx)
 
 //-----------------------------------------------------------------------------
 
-} // namespace ui
-} // namespace fwRenderOgre
+} // namespace fwRenderOgre::widget

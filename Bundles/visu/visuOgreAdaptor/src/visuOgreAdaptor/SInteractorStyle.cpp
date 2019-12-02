@@ -85,6 +85,11 @@ void SInteractorStyle::configuring()
     m_pickerStyle   = config.get<std::string>(s_PICKER_CONFIG, m_pickerStyle);
     m_movementStyle = config.get<std::string>(s_MOVEMENT_CONFIG, m_movementStyle);
 
+    if(m_movementStyle == "VR" )
+    {
+        FW_DEPRECATED_MSG("VR Interactor is deprecated use a 'Trackball' interactor instead.", "21.0");
+    }
+
     if(config.count(s_QUERY_CONFIG))
     {
         const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
