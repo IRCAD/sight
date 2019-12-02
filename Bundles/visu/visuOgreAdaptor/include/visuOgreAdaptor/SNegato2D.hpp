@@ -135,9 +135,6 @@ private:
     /// The scene node allowing to move the entire negato
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
-    /// The scene node allowing to move the camera
-    ::Ogre::SceneNode* m_cameraNode { nullptr };
-
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
 
