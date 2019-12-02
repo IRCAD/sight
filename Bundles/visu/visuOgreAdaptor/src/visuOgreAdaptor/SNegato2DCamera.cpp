@@ -230,8 +230,8 @@ void SNegato2DCamera::resetCamera()
 
     if(worldBoundingBox.isFinite())
     {
-        const int orientation = static_cast<int>(m_currentNegatoOrientation);
-        auto camPos           = worldBoundingBox.getCenter();
+        const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
+        auto camPos              = worldBoundingBox.getCenter();
 
         // HACK: Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
         camera->setNearClipDistance(1e-3f);
@@ -264,7 +264,7 @@ void SNegato2DCamera::moveBack()
 
     if(worldBoundingBox.isFinite())
     {
-        const int orientation = static_cast<int>(m_currentNegatoOrientation);
+        const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
 
         auto camPos = camNode->getPosition();
 
