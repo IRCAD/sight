@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,6 +37,8 @@
 
 namespace fwRenderOgre
 {
+
+class Layer;
 
 namespace interactor
 {
@@ -95,7 +97,7 @@ public:
     /** @} */
 
     /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
-    FWRENDEROGRE_API IInteractor();
+    FWRENDEROGRE_API IInteractor(SPTR(Layer)_layer = nullptr);
 
     /// Destructor
     FWRENDEROGRE_API virtual ~IInteractor();
@@ -133,10 +135,14 @@ public:
 protected:
 
     /// Ogre Root
-    ::Ogre::Root* m_ogreRoot;
+    ::Ogre::Root* m_ogreRoot { nullptr };
 
     /// Current scene manager
-    ::Ogre::SceneManager* m_sceneManager;
+    [[deprecated("Retrieve the scene manager from the layer instead. Removed in sight 21.0")]]
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
+
+    /// Weak reference to the layer on which the interactor interacts.
+    WPTR(Layer) m_layer;
 
     /**
      * @name Signals attributes
