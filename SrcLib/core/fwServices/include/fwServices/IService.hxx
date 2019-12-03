@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,19 +26,6 @@
 
 namespace fwServices
 {
-
-//------------------------------------------------------------------------------
-
-template< class DATATYPE >
-SPTR(DATATYPE) IService::getObject()
-{
-    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "20.0");
-
-    SPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
-    OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
-
-    return castData;
-}
 
 //------------------------------------------------------------------------------
 
@@ -167,6 +154,20 @@ inline const IService::OutputMapType& IService::getOutputs() const
 }
 
 //------------------------------------------------------------------------------
+#ifdef BUILD_DEPRECATION
+
+template< class DATATYPE >
+SPTR(DATATYPE) IService::getObject()
+{
+    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "20.0");
+
+    SPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
+    OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
+
+    return castData;
+}
+
+//------------------------------------------------------------------------------
 
 inline std::vector< ::fwData::Object::csptr > IService::getObjects() const
 {
@@ -195,5 +196,7 @@ inline std::vector< ::fwData::Object::csptr > IService::getObjects() const
 }
 
 //------------------------------------------------------------------------------
+
+#endif
 
 } // namespace fwServices

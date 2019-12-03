@@ -164,22 +164,7 @@ std::string ObjectService::getRegistryInformation() const
     std::stringstream info;
     ::fwData::Object::csptr previousObj;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
-#ifndef REMOVE_DEPRECATED
-    for( const ServiceContainerType::left_map::value_type& objSrvMap :  m_container.left)
-    {
-        ::fwData::Object::csptr obj = objSrvMap.first.lock();
 
-        if ( obj && previousObj != obj )
-        {
-            info << "Object ( id = "<<obj->getID()<<" ) has "
-                 << m_container.left.count(obj) <<" services." << std::endl;
-            previousObj = obj;
-        }
-        ::fwServices::IService::sptr service = objSrvMap.second;
-        info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname()
-             <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
-    }
-#endif
     for (const auto& service : m_services )
     {
         info << "Service : uid = "<< service->getID() <<" , classname = "<< service->getClassname()
@@ -218,9 +203,6 @@ void ObjectService::registerService( ::fwServices::IService::sptr service )
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     m_services.insert(service);
-#ifndef REMOVE_DEPRECATED
-    m_container.insert( ServiceContainerType::value_type( ::fwData::Object::wptr(), service ) );
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -283,57 +265,6 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
                                       ::fwServices::IService::sptr service )
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
-
-#ifndef REMOVE_DEPRECATED
-    ::fwData::Object::cwptr obj;
-
-    if(access == ::fwServices::IService::AccessType::INPUT)
-    {
-        obj = service->m_inputsMap[objKey];
-    }
-    else if(access == ::fwServices::IService::AccessType::INOUT)
-    {
-        obj = service->m_inOutsMap.at(objKey);
-    }
-    else
-    {
-        obj = service->m_outputsMap.at(objKey);
-    }
-
-    SLM_ASSERT("Object key '" + objKey + "' not found in service '" + service->getID() + "'", !obj.expired());
-
-    // Remove from the left part
-    {
-        auto range = m_container.left.equal_range(obj);
-        for(auto it = range.first; it != range.second; )
-        {
-            if(it->second == service)
-            {
-                it = m_container.left.erase(it);
-            }
-            else
-            {
-                ++it;
-            }
-        }
-    }
-
-    // Remove from the right part
-    {
-        auto range = m_container.right.equal_range(service);
-        for(auto it = range.first; it != range.second; )
-        {
-            if(it->second.lock() == obj.lock())
-            {
-                it = m_container.right.erase(it);
-            }
-            else
-            {
-                ++it;
-            }
-        }
-    }
-#endif
 
     if(access == ::fwServices::IService::AccessType::INPUT)
     {
@@ -434,21 +365,7 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
 
     if(objKey.empty())
     {
-#ifndef REMOVE_DEPRECATED
-        OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object",
-                    service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
-
-        // Old behavior with 1 object -> N Services
-        OSLM_ASSERT("This service "<< service->getClassname()
-                                   << " is not valid for the object " << object->getClassname(),
-                    ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
-                    );
-
-        OSLM_ASSERT("Service "<< service->getID()<<" already registered",
-                    m_container.right.find(service) == m_container.right.end());
-#else
         OSLM_FATAL("object key is not defined");
-#endif
         service->m_associatedObject = object;
     }
     else
@@ -473,9 +390,6 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
             service->m_outputsMap[objKey] = object;
         }
     }
-#ifndef REMOVE_DEPRECATED
-    m_container.insert( ServiceContainerType::value_type( object, service ) );
-#endif
     m_services.insert(service);
 }
 
@@ -490,9 +404,6 @@ void ObjectService::internalRegisterServiceInput(const fwData::Object::csptr& ob
 
     service->m_inputsMap[objKey] = object;
 
-#ifndef REMOVE_DEPRECATED
-    m_container.insert( ServiceContainerType::value_type( object, service ) );
-#endif
     m_services.insert(service);
 }
 
@@ -501,11 +412,7 @@ void ObjectService::internalRegisterServiceInput(const fwData::Object::csptr& ob
 void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
 {
     SLM_TRACE_FUNC();
-#ifndef REMOVE_DEPRECATED
-    OSLM_ASSERT("Unknown service "<<service->getID()<<" in OSR",
-                m_container.right.find(service) != m_container.right.end());
-    m_container.right.erase(service);
-#endif
+
     auto it = m_services.find(service);
     FW_RAISE_IF("service '" + service->getID() + "' is not found in the OSR", it == m_services.end());
     m_services.erase(it);
@@ -517,18 +424,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( const std::string& 
 {
     ServiceVectorType services;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
-#ifndef REMOVE_DEPRECATED
-    const ServiceContainerType::right_map right = m_container.right;
-    for( ServiceContainerType::right_map::value_type elt :  right)
-    {
-        ::fwServices::IService::sptr service = elt.first;
-        if ( service->isA(serviceType) )
-        {
-            services.insert( service );
-        }
-    }
-    SLM_DEBUG_IF("No service registered", services.empty());
-#else
+
     for (const auto& srv : m_services)
     {
         if (srv->isA(serviceType))
@@ -536,172 +432,9 @@ ObjectService::ServiceVectorType ObjectService::getServices( const std::string& 
             services.insert( srv );
         }
     }
-#endif
     return services;
 }
 } // namespace registry
-
-#ifndef REMOVE_DEPRECATED
-
-namespace OSR
-{
-
-//------------------------------------------------------------------------------
-
-::fwServices::registry::ObjectService::ObjectVectorType getObjects()
-{
-    return ::fwServices::OSR::get()->getObjects();
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj,
-                                                                      const std::string& serviceType )
-{
-    return ::fwServices::OSR::get()->getServices(obj, serviceType);
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj )
-{
-    return ::fwServices::OSR::get()->getServices(obj);
-}
-
-//------------------------------------------------------------------------------
-
-bool has( ::fwData::Object::sptr obj, const std::string& srvType)
-{
-    return ::fwServices::OSR::get()->has(obj, srvType);
-}
-
-//------------------------------------------------------------------------------
-
-void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service )
-{
-    ::fwServices::OSR::get()->registerService(obj, service);
-}
-
-//------------------------------------------------------------------------------
-
-void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
-{
-    ::fwServices::OSR::get()->swapService(objDst, service);
-}
-} //namespace OSR
-
-namespace registry
-{
-//------------------------------------------------------------------------------
-
-void ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service )
-{
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
-    FW_DEPRECATED_MSG("'ObjectService::registerSerice(object, service)' is deprecated. Use "
-                      "'ObjectService::registerService(object, key, INOUT, service)' or "
-                      "service->registerInOut(object, key)'.", "20.0");
-    this->internalRegisterService(object, service, "", ::fwServices::IService::AccessType::INOUT);
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
-{
-    FW_DEPRECATED_MSG("'ObjectService::swapService(object, service)' is deprecated. Use "
-                      "'service->swapKey(key, object)'.", "20.0");
-    ::fwCore::mt::WriteLock lock(m_containerMutex);
-    OSLM_ASSERT("Object "<< service->getObject()->getID()<<" is not registered in OSR",
-                m_container.left.find(service->getObject()) != m_container.left.end());
-
-    OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
-                m_container.right.find(service) != m_container.right.end());
-
-    // TODO: swap pour chaque objet !
-    m_container.right.erase(service);
-    this->internalRegisterService(objDst, service, "", ::fwServices::IService::AccessType::INOUT);
-}
-
-//------------------------------------------------------------------------------
-
-ObjectService::ObjectVectorType ObjectService::getObjects() const
-{
-    ObjectVectorType objects;
-    ::fwCore::mt::ReadLock lock(m_containerMutex);
-
-    for( const ServiceContainerType::right_map::value_type& elt : m_container.right)
-    {
-        auto srvObjects = elt.first->getObjects();
-        std::move(srvObjects.begin(), srvObjects.end(), std::inserter(objects, objects.begin()));
-    }
-    SLM_WARN_IF( "No object registered for the requested type of service", objects.empty() );
-    return objects;
-}
-
-//------------------------------------------------------------------------------
-
-ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj,
-                                                             const std::string& serviceType ) const
-{
-    FW_DEPRECATED_MSG("'ObjectService::getServices(object, srvType)' is deprecated.", "20.0");
-
-    ServiceVectorType allServices = this->getServices(obj);
-    ServiceVectorType services;
-
-    // Search should be optimized
-    for(::fwServices::IService::sptr srv :  allServices)
-    {
-        if( srv->isA(serviceType) )
-        {
-            services.insert( srv );
-        }
-    }
-    return services;
-}
-
-//------------------------------------------------------------------------------
-
-ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj ) const
-{
-    FW_DEPRECATED_MSG("'ObjectService::getServices(object)' is deprecated.", "20.0");
-    ServiceVectorType services;
-    ::fwCore::mt::ReadLock lock(m_containerMutex);
-
-    ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(obj);
-    if(firstElement != m_container.left.end())
-    {
-        ServiceContainerType::left_map::const_iterator lastElement = m_container.left.upper_bound(obj);
-        for (auto iter = firstElement; iter != lastElement; ++iter)
-        {
-            services.insert( iter->second );
-        }
-    }
-    return services;
-}
-
-//------------------------------------------------------------------------------
-
-bool ObjectService::has( ::fwData::Object::sptr obj, const std::string& srvType) const
-{
-    FW_DEPRECATED_MSG("'ObjectService::has(object, srvType)' is deprecated.", "20.0");
-    bool hasServices = false;
-    ::fwCore::mt::ReadLock lock(m_containerMutex);
-    ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(obj);
-    if( firstElement != m_container.left.end())
-    {
-        ServiceContainerType::left_map::const_iterator lastElement = m_container.left.upper_bound(obj);
-        for (auto iter = firstElement; iter != lastElement; ++iter)
-        {
-            if( iter->second->isA(srvType))
-            {
-                hasServices = true;
-                break;
-            }
-        }
-    }
-    return hasServices;
-}
-} // namespace registry
-#endif
 
 //------------------------------------------------------------------------------
 

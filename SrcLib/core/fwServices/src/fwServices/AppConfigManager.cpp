@@ -28,6 +28,7 @@
 #include "fwServices/registry/Proxy.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>

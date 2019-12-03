@@ -42,8 +42,6 @@ namespace ut
 class ObjectServiceTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ObjectServiceTest );
-CPPUNIT_TEST( swapTest );
-CPPUNIT_TEST( registerTest );
 CPPUNIT_TEST( registerKeyTest );
 // Disable registerConnectionTest because it fails randomly on a busy computer (see #72)
 //CPPUNIT_TEST( registerConnectionTest );
@@ -53,11 +51,6 @@ public:
     // interface
     void setUp();
     void tearDown();
-
-    // @deprecated should be removed in 20.0
-    void swapTest();
-    // @deprecated should be removed in 20.0
-    void registerTest();
     void registerKeyTest();
     void registerConnectionTest();
 
