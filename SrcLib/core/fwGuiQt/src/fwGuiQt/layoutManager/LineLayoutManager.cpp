@@ -26,6 +26,8 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwDataTools/Color.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QBoxLayout>
@@ -128,8 +130,14 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 
             if(!viewInfo.m_backgroundColor.empty())
             {
-                const QString style = QString::fromStdString(
-                    "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                std::uint8_t rgba[4];
+                ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                std::stringstream ss;
+                ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+                   << static_cast< short >(rgba[1]) << ','
+                   << static_cast< short >(rgba[2]) << ','
+                   << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                const QString style = QString::fromStdString(ss.str());
                 panel->setStyleSheet(style + qApp->styleSheet());
             }
 
@@ -140,8 +148,14 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
                 scrollArea->setWidgetResizable( true );
                 if(!viewInfo.m_backgroundColor.empty())
                 {
-                    const QString style = QString::fromStdString(
-                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                    std::uint8_t rgba[4];
+                    ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                    std::stringstream ss;
+                    ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+                       << static_cast< short >(rgba[1]) << ','
+                       << static_cast< short >(rgba[2]) << ','
+                       << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                    const QString style = QString::fromStdString(ss.str());
                     scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
 
