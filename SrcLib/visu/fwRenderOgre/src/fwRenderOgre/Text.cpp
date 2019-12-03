@@ -279,7 +279,7 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
 {
     ::Ogre::Node* parentNode = this->getParentNode();
 
-    if(parentNode != nullptr && this->::Ogre::MovableObject::isVisible())
+    if(parentNode != nullptr)
     {
         const ::Ogre::Vector3& pos = parentNode->_getDerivedPosition();
 
