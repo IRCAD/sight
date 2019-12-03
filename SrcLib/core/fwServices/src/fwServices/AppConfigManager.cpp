@@ -655,15 +655,6 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
         }
     }
 
-    // Ok for now we assume we always need the root composite
-    // This is only true for services that will need to perform some stuff like adding new objects, etc...
-    // We will see in the future if this should be replaced or not
-    {
-        srv->registerObject(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
-                            ::fwServices::IService::AccessType::INOUT);
-        srv->setObjectId(::fwServices::IService::s_DEFAULT_OBJECT, "defaultObjectId");
-    }
-
     // Set the size of the key groups
     srv->m_keyGroupSize = srvConfig.m_groupSize;
 

@@ -363,32 +363,20 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
     SLM_ASSERT("Can't register a null service in OSR.", service);
     SLM_ASSERT("Can't register a null object in OSR.", object);
 
-    if(objKey.empty())
+    OSLM_FATAL_IF("object key is not defined", objKey.empty());
+
+    // new behavior with N objects -> N Services
+    if(access == ::fwServices::IService::AccessType::INPUT)
     {
-        OSLM_FATAL("object key is not defined");
-        service->m_associatedObject = object;
+        service->m_inputsMap[objKey] = object;
+    }
+    else if(access == ::fwServices::IService::AccessType::INOUT)
+    {
+        service->m_inOutsMap[objKey] = object;
     }
     else
     {
-        if(service->m_inputsMap.empty() && service->m_inOutsMap.empty() && service->m_outputsMap.empty())
-        {
-            // If we have an appXml but with an old service implementation,
-            // we consider that the primary object is the first one we added
-            service->m_associatedObject = object;
-        }
-        // new behavior with N objects -> N Services
-        if(access == ::fwServices::IService::AccessType::INPUT)
-        {
-            service->m_inputsMap[objKey] = object;
-        }
-        else if(access == ::fwServices::IService::AccessType::INOUT)
-        {
-            service->m_inOutsMap[objKey] = object;
-        }
-        else
-        {
-            service->m_outputsMap[objKey] = object;
-        }
+        service->m_outputsMap[objKey] = object;
     }
     m_services.insert(service);
 }

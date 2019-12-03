@@ -112,7 +112,7 @@ public:
 
     /**
      * @brief Register the service (service) for the object (obj) at the given service key.
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService objects of service to point to obj
      * removal at obj destruction.
      *
      * @param object Object to register
@@ -126,7 +126,7 @@ public:
 
     /**
      * @brief Register the service (service) for the input object (obj) at the given service key.
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService inputs of service to point to obj
      * removal at obj destruction.
      *
      * @param object Object to register
@@ -239,7 +239,7 @@ private:
 
     /**
      * @brief Register the service (service) for the object (obj)
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService objects of service to point to obj
      * removal at obj destruction.
      * @warning not thread-safe
      */
@@ -249,7 +249,7 @@ private:
 
     /**
      * @brief Register the service (service) for the input object (obj)
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService::m_inputs of service to point to obj
      * removal at obj destruction.
      * @warning not thread-safe
      */
@@ -302,7 +302,7 @@ FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
 
 /**
  * @brief Register the service (service) for the object (obj) at the given service key.
- * It also updates IService::m_associatedObject of service to point to obj
+ * It also updates IService objects of service to point to obj
  * removal at obj destruction.
  *
  * @param object Object to register
@@ -315,7 +315,7 @@ FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServic
 
 /**
  * @brief Register the service (service) for the input object (obj) at the given service key.
- * It also updates IService::m_associatedObject of service to point to obj
+ * It also updates IService::m_inputs of service to point to obj
  * removal at obj destruction.
  *
  * @param object Object to register

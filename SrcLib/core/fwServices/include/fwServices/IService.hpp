@@ -86,7 +86,7 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object,
                                       public ::fwCom::HasSignals
 {
 
-// to give to OSR an access on IService.m_associatedObject;
+// to give to OSR an access on IService objects;
 friend class registry::ObjectService;
 friend class AppConfigManager;
 friend class AppManager;
@@ -302,9 +302,9 @@ public:
 
     /**
      * @brief Associate the service to another object
-     * @param[in] _obj change association service from m_associatedObject to _obj
+     * @param[in] _obj change association service from key to _obj
      * @pre m_globalState == STARTED
-     * @pre m_associatedObject != _obj
+     * @pre old object != _obj
      *
      * This method provides to associate the service to another object without stopping
      * and deleting it. Furthermore, this method modify all observations to be aware to
@@ -637,8 +637,7 @@ protected:
     /**
      * @brief IService constructor.
      *
-     * This constructor does nothing. By default, m_associatedObject is null and
-     * service is considered as STOPPED, NOTUPDATING and UNCONFIGURED.
+     * This constructor does nothing. By default, the service is considered as STOPPED, NOTUPDATING and UNCONFIGURED.
      */
     FWSERVICES_API IService();
 
@@ -771,12 +770,6 @@ protected:
      * TODO Make this const, we are not supposed to edit that !
      */
     ::fwRuntime::ConfigurationElement::sptr m_configuration;
-
-    /**
-     * @brief associated object of service
-     * @todo this field must be private
-     */
-    ::fwData::Object::wptr m_associatedObject;
 
     /**
      * @name Slot API

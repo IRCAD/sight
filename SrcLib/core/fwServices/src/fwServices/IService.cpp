@@ -57,8 +57,6 @@ const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
 const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT    = "swap";
 const ::fwCom::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 
-const std::string IService::s_DEFAULT_OBJECT = "defaultObject";
-
 //-----------------------------------------------------------------------------
 
 IService::IService() :
@@ -792,15 +790,9 @@ void IService::autoConnect()
                  ") is set to 'autoConnect=\"yes\"' but is has no object to connect",
                  m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
 
-    // For compatibility with V1, we allow services to connect explicitly with the default object
-    // For these services we will ignore all auto connections with any other data
-    // This is intended notably for managers-like services
-    const bool hasDefaultObjectConnectionV1 =
-        (connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT) != connectionMap.end());
-
     for(const auto& objectCfg : m_serviceConfig.m_objects)
     {
-        if ((m_serviceConfig.m_globalAutoConnect || objectCfg.m_autoConnect) && !hasDefaultObjectConnectionV1)
+        if (m_serviceConfig.m_globalAutoConnect || objectCfg.m_autoConnect)
         {
             ::fwServices::IService::KeyConnectionsType connections;
             if(!connectionMap.empty())
@@ -878,21 +870,6 @@ void IService::autoConnect()
                 m_autoConnections.connect( obj, this->getSptr(), connections );
             }
         }
-    }
-
-    // Autoconnect with the default object - to be cleaned when V1 compatibility is over
-    auto defaultObj = this->getInOut< ::fwData::Object >(s_DEFAULT_OBJECT);
-
-    if(m_serviceConfig.m_globalAutoConnect && defaultObj)
-    {
-        ::fwServices::IService::KeyConnectionsType connections;
-        auto it = connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT);
-        if( it != connectionMap.end())
-        {
-            connections = it->second;
-        }
-
-        m_autoConnections.connect( defaultObj, this->getSptr(), connections );
     }
 }
 
