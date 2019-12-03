@@ -440,7 +440,14 @@ std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(
 
     if(picker.getSelectedObject())
     {
-        return picker.getIntersectionInWorldSpace();
+        const ::Ogre::Ray ray = cam->getCameraToViewportRay(
+            static_cast< ::Ogre::Real >(_x)/width,
+            static_cast< ::Ogre::Real >(_y)/height);
+
+        ::Ogre::Vector3 normal = -ray.getDirection();
+        normal.normalise();
+
+        return picker.getIntersectionInWorldSpace() + normal*0.01f;
     }
 
     return std::nullopt;
@@ -566,7 +573,7 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
 
             const ::Ogre::Plane plane(direction, position);
 
-            const std::pair< bool, Ogre::Real > hit = ::Ogre::Math::intersects(ray, plane);
+            const std::pair< bool, ::Ogre::Real > hit = ::Ogre::Math::intersects(ray, plane);
             SLM_ASSERT("The ray must intersect the plane", hit.first);
 
             newPos = ray.getPoint(hit.second);
@@ -687,7 +694,7 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     label->setTextColor(colour);
     label->setQueryFlags(0x0);
     ::Ogre::SceneNode* const labelNode =
-        rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, begin + (end-begin)/2);
+        rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
     SLM_ASSERT("Can't create the label node", labelNode);
     labelNode->attachObject(label);
 
@@ -725,7 +732,7 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
     // Update the label.
     const std::string length = SImageMultiDistances::getLength(_end, _begin);
     _data->m_label->setText(length);
-    _data->m_labelNode->setPosition(_begin + (_end-_begin)/2);
+    _data->m_labelNode->setPosition(_end);
 
     // Update the dashed line
     ::Ogre::ManualObject* const dashedLine = _data->m_dashedLine;
