@@ -45,8 +45,9 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b addDistance(): Add distances contains in the image from the scene manager.
  * - \b removeDistance(): Remove distances contains in the image from the scene manager.
- * - \b updateVisibility(): Updates the visibility of distances.
-
+ * - \b updateVisibilityFromField(): Updates the visibility of distances from the field status.
+ * - \b updateVisibility(bool): Updates the visibility of distances.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -172,8 +173,14 @@ private:
     /// Retrieves distances from the image and remove them from the scene.
     void removeDistances();
 
-    /// Updates distances visibility.
-    void updateVisibility();
+    /// Updates distances visibility from the image field.
+    void updateVisibilityFromField();
+
+    /**
+     * @brief Updates distances visibility.
+     * @param _visibility Set to true to show distances.
+     */
+    void updateVisibility(bool _visibility);
 
     /**
      * @brief Get the nearest picked position if there is one.
