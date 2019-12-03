@@ -113,7 +113,7 @@ void SImageMultiDistances::generateDashedLine(::Ogre::ManualObject* const _objec
     const float len                       = (dashedLineEnd-dashedLineBegin).length();
 
     ::Ogre::Vector3 dashedLinePos = dashedLineBegin;
-    for(float i = 0.f; i+_thickness*2 <= len; i += _thickness*2)
+    for(float i = 0.f; i+_thickness*1.5 <= len; i += _thickness*2)
     {
         _object->position(dashedLinePos);
         dashedLinePos += dashedLineDirN*_thickness;

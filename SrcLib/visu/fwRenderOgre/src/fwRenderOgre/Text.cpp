@@ -240,6 +240,7 @@ void Text::setVisible(bool _visible)
     {
         m_overlayText->hide();
     }
+    this->::Ogre::MovableObject::setVisible(_visible);
 }
 
 //------------------------------------------------------------------------------
@@ -278,7 +279,7 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
 {
     ::Ogre::Node* parentNode = this->getParentNode();
 
-    if(parentNode != nullptr && m_overlayText->isVisible())
+    if(parentNode != nullptr && this->::Ogre::MovableObject::isVisible())
     {
         const ::Ogre::Vector3& pos = parentNode->_getDerivedPosition();
 
