@@ -117,7 +117,7 @@ void WindowLevel::configuring()
 void WindowLevel::starting()
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
