@@ -73,13 +73,16 @@ namespace editor
  *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
+ *
+ * @subsection Configuration Configuration
+ * - \b border (optional, default="-1"): Contents margins of the layout.
  */
 class GUIQT_CLASS_API SActivityView : public ::fwGui::view::IActivityView
 {
 
 public:
 
-    fwCoreServiceMacro(SActivityView, ::fwGui::view::IActivityView);
+    fwCoreServiceMacro(SActivityView, ::fwGui::view::IActivityView)
 
     /// Constructor. Do nothing.
     GUIQT_API SActivityView();
@@ -98,6 +101,9 @@ public:
      */
 
 protected:
+
+    /// Configures the service.
+    void configuring() final;
 
     /// Install the container.
     virtual void starting() override;
@@ -122,6 +128,9 @@ private:
     std::string m_wid;
 
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
+
+    /// Contents margins of the layout.
+    int m_border {-1};
 };
 
 } //namespace editor

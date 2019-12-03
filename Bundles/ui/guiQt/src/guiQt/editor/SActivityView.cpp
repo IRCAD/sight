@@ -42,9 +42,11 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SActivityView )
-
 const fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+
+static const std::string s_BORDER_CONFIG = "border";
+
+fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SActivityView )
 
 //------------------------------------------------------------------------------
 
@@ -59,6 +61,21 @@ SActivityView::~SActivityView()
 {
 }
 
+//-----------------------------------------------------------------------------
+
+void SActivityView::configuring()
+{
+    this->::fwGui::view::IActivityView::configuring();
+
+    const ConfigType configType = this->getConfigTree();
+    const auto config           = configType.get_child_optional("config.<xmlattr>");
+
+    if(config)
+    {
+        m_border = config->get<int>(s_BORDER_CONFIG, m_border);
+    }
+}
+
 //------------------------------------------------------------------------------
 
 void SActivityView::starting()
@@ -69,7 +86,10 @@ void SActivityView::starting()
         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    if(m_border >= 0)
+    {
+        layout->setContentsMargins(m_border, m_border, m_border, m_border);
+    }
 
     QWidget* widget = new QWidget();
     layout->addWidget( widget );
