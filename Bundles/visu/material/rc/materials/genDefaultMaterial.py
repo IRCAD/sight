@@ -67,7 +67,7 @@ def generatePermutations(baseConfig, *configs):
 lightingParams = [ '// Lighting',
                    'param_named_auto u_f3CameraPos camera_position',
                    'param_named u_fNumLights float 1.0',
-                   'param_named_auto u_f3LightDir light_position_array 10',
+                   'param_named_auto u_f4LightPos light_position_array 10',
                    'param_named_auto u_f4LightAmbientCol ambient_light_colour',
                    'param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10',
                    'param_named_auto u_f3LightSpecularCol light_specular_colour_array 10',

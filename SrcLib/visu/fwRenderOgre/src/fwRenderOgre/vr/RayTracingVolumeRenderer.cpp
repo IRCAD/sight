@@ -639,16 +639,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
         fpParams->setNamedAutoConstant("u_fShininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
         fpParams->setNamedAutoConstant("u_fNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
-        for(size_t i = 0; i < 10; ++i)
-        {
-            auto number = "[" + std::to_string(i) + "]";
-            fpParams->setNamedAutoConstant("u_f3LightDir" + number,
-                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_DIRECTION_OBJECT_SPACE, i);
-            fpParams->setNamedAutoConstant("u_f3LightDiffuseCol" + number,
-                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
-            fpParams->setNamedAutoConstant("u_f3LightSpecularCol" + number,
-                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
-        }
+        fpParams->setNamedAutoConstant("u_f4LightPos",
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 10);
+        fpParams->setNamedAutoConstant("u_f3LightDiffuseCol",
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 10);
+        fpParams->setNamedAutoConstant("u_f3LightSpecularCol",
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR_ARRAY, 10);
         fpParams->setNamedAutoConstant("u_invWorldViewProj",
                                        ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
         fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);

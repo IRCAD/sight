@@ -56,7 +56,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLightEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SLightEditor, ::fwGui::editor::IEditor)
 
     /**
      * @name Slots API
@@ -99,6 +99,10 @@ protected Q_SLOTS:
     /// Slot: called when the theta offset slider value is modified.
     /// Sets the new phi offset value on the light adaptor accurately.
     void onEditPhiOffset(int _value);
+
+    /// Slot: called when the type box value is modified.
+    /// Sets the new type on the light adaptor accurately.
+    void onEditType(const QString& _type);
 
 private:
 

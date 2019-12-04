@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightEditor, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightEditor, ::fwData::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -82,10 +82,8 @@ void SLightEditor::starting()
     m_lightTypeBox = new QComboBox();
     m_lightTypeBox->addItems(QStringList() <<
                              ::fwRenderOgre::ILight::s_POINT_LIGHT.c_str() <<
-                             ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str() <<
-                             ::fwRenderOgre::ILight::s_SPOT_LIGHT.c_str());
+                             ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str());
 
-    //TODO: enable the light type combo box when other light types are implemented.
     m_lightTypeBox->setEnabled(false);
 
     m_diffuseColorBtn = new QPushButton("Diffuse color");
@@ -129,11 +127,13 @@ void SLightEditor::starting()
 
     qtContainer->setLayout(layout);
 
-    QObject::connect(m_diffuseColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditDiffuseColor(bool)));
-    QObject::connect(m_specularColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditSpecularColor(bool)));
+    QObject::connect(m_diffuseColorBtn, &QPushButton::clicked, this, &SLightEditor::onEditDiffuseColor);
+    QObject::connect(m_specularColorBtn, &QPushButton::clicked, this, &SLightEditor::onEditSpecularColor);
 
-    QObject::connect(m_thetaSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditThetaOffset(int)));
-    QObject::connect(m_phiSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditPhiOffset(int)));
+    QObject::connect(m_thetaSlider, &QSlider::valueChanged, this, &SLightEditor::onEditThetaOffset);
+    QObject::connect(m_phiSlider, &QSlider::valueChanged, this, &SLightEditor::onEditPhiOffset);
+
+    QObject::connect(m_lightTypeBox, &QComboBox::currentTextChanged, this, &SLightEditor::onEditType);
 }
 
 //------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ void SLightEditor::onEditDiffuseColor(bool /*_checked*/)
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onEditSpecularColor(bool /*_checked*/)
+void SLightEditor::onEditSpecularColor(bool)
 {
     ::Ogre::ColourValue newSpecularColor = this->editColor(m_currentLight->getSpecularColor(),
                                                            "Light specular color");
@@ -185,6 +185,29 @@ void SLightEditor::onEditPhiOffset(int _value)
 
 //------------------------------------------------------------------------------
 
+void SLightEditor::onEditType(const QString& _type)
+{
+    if(_type == ::fwRenderOgre::ILight::s_POINT_LIGHT.c_str())
+    {
+        m_currentLight->setType(::Ogre::Light::LT_POINT);
+        m_thetaSlider->setEnabled(false);
+        m_phiSlider->setEnabled(false);
+    }
+    else if(_type == ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str())
+    {
+        m_currentLight->setType(::Ogre::Light::LT_DIRECTIONAL);
+        m_thetaSlider->setEnabled(true);
+        m_phiSlider->setEnabled(true);
+    }
+    else
+    {
+        SLM_ASSERT("Unknow type for light", false);
+    }
+    m_currentLight->update();
+}
+
+//------------------------------------------------------------------------------
+
 void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 {
     m_currentLight = _lightAdaptor;
@@ -197,6 +220,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 
         m_diffuseColorBtn->setEnabled(true);
         m_specularColorBtn->setEnabled(true);
+        m_lightTypeBox->setEnabled(true);
 
         if(!m_currentLight->isOrphanNode())
         {
@@ -207,6 +231,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
             m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() +
                                                    ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
             m_phiSlider->setEnabled(true);
+
         }
         else
         {
@@ -220,6 +245,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
         m_specularColorBtn->setEnabled(false);
         m_thetaSlider->setEnabled(false);
         m_phiSlider->setEnabled(false);
+        m_lightTypeBox->setEnabled(false);
     }
 }
 
