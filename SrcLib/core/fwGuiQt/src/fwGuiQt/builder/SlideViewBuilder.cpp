@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -77,7 +77,8 @@ void SlideViewBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
             break;
     }
 
-    ::fwGuiQt::widget::SlideBar* slideBar = new ::fwGuiQt::widget::SlideBar(qtParent, align, m_size, m_opacity);
+    ::fwGuiQt::widget::SlideBar* slideBar = new ::fwGuiQt::widget::SlideBar(qtParent, align, m_size, m_opacity,
+                                                                            m_animable);
     if (!m_styleSheet.empty())
     {
         slideBar->setStyleSheet(QString::fromStdString(m_styleSheet));

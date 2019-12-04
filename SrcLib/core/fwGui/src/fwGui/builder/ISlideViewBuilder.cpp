@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
- * Copyright (C) 2016 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,7 +19,6 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
 
 #include "fwGui/builder/ISlideViewBuilder.hpp"
 
@@ -53,7 +52,6 @@ void ISlideViewBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr conf
 {
     SLM_ASSERT("Bad configuration name " + configuration->getName() + ", must be 'slideView'",
                configuration->getName() == "slideView");
-
 
     if (configuration->hasAttribute("align"))
     {
@@ -92,6 +90,13 @@ void ISlideViewBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr conf
         std::string size = configuration->getExistingAttributeValue("size");
         m_size = std::stoi(size);
         SLM_ASSERT("Size must not be negative", m_size >= 0.);
+    }
+
+    if (configuration->hasAttribute("animable"))
+    {
+        std::string animable = configuration->getExistingAttributeValue("animable");
+        SLM_ASSERT("Animable value must be 'true' or 'false'", animable == "true" || animable == "false");
+        m_animable = animable == "true";
     }
 
     ::fwRuntime::ConfigurationElement::csptr styleCfg = configuration->findConfigurationElement("styleSheet");

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGUIQT_WIDGET_SLIDEBAR_HPP__
-#define __FWGUIQT_WIDGET_SLIDEBAR_HPP__
+#pragma once
 
 #include "fwGuiQt/config.hpp"
 
@@ -55,7 +54,8 @@ public:
     };
 
     /// SlideBar constructor
-    FWGUIQT_API SlideBar(QWidget* parent, Aligment align = LEFT, int buttonWidth = 200, double opacity = 0.8);
+    FWGUIQT_API SlideBar(QWidget* parent, Aligment align = LEFT, int buttonWidth = 200, double opacity = 0.8,
+                         bool _animable = true);
 
     /// Destructor
     FWGUIQT_API virtual ~SlideBar();
@@ -99,10 +99,9 @@ private:
     double m_opacity; /// widget opacity [0 - 1]
     bool m_isShown; ///< flag if widget is visible
     Aligment m_align; ///< defines the widget alignement (left, right, top or bottom)
+    bool m_animable; ///< defines if the widget must use animation or not.
 
 };
 
 } // namespace widget
 } // namespace fwGuiQt
-
-#endif // __FWGUIQT_WIDGET_SLIDEBAR_HPP__

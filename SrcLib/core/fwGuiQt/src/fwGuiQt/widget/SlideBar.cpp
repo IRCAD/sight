@@ -40,12 +40,13 @@ namespace widget
 
 //-----------------------------------------------------------------------------
 
-SlideBar::SlideBar(QWidget* parent, Aligment align, int buttonSize, double opacity) :
+SlideBar::SlideBar(QWidget* parent, Aligment align, int buttonSize, double opacity, bool _animable) :
     QGroupBox(),
     m_buttonSize(buttonSize),
     m_opacity(opacity),
     m_isShown(false),
-    m_align(align)
+    m_align(align),
+    m_animable(_animable)
 {
     this->setParent(parent);
     this->init();
@@ -195,7 +196,7 @@ void SlideBar::slide(bool visible)
 
     // slide animation
     QPropertyAnimation* geomAnimation = new QPropertyAnimation(this, "geometry");
-    geomAnimation->setDuration(500);
+    geomAnimation->setDuration(m_animable ? 500 : 0);
     geomAnimation->setEasingCurve(QEasingCurve::InBack);
     geomAnimation->setStartValue(this->geometry());
 
@@ -213,7 +214,7 @@ void SlideBar::slide(bool visible)
 
     // opacity animation
     QPropertyAnimation* opacityAnimation = new QPropertyAnimation(this, "windowOpacity");
-    opacityAnimation->setDuration(500);
+    opacityAnimation->setDuration(m_animable ? 500 : 0);
     opacityAnimation->setEndValue(visible ? m_opacity : 0);
 
     animations->addAnimation(geomAnimation);
