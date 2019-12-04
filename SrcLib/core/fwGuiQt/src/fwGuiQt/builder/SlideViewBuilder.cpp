@@ -78,7 +78,7 @@ void SlideViewBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
     }
 
     ::fwGuiQt::widget::SlideBar* slideBar = new ::fwGuiQt::widget::SlideBar(qtParent, align, m_size, m_opacity,
-                                                                            m_animable);
+                                                                            m_animatable);
     if (!m_styleSheet.empty())
     {
         slideBar->setStyleSheet(QString::fromStdString(m_styleSheet));

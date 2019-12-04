@@ -55,7 +55,7 @@ public:
 
     /// SlideBar constructor
     FWGUIQT_API SlideBar(QWidget* parent, Aligment align = LEFT, int buttonWidth = 200, double opacity = 0.8,
-                         bool _animable = true);
+                         bool _animatable = false);
 
     /// Destructor
     FWGUIQT_API virtual ~SlideBar();
@@ -99,7 +99,7 @@ private:
     double m_opacity; /// widget opacity [0 - 1]
     bool m_isShown; ///< flag if widget is visible
     Aligment m_align; ///< defines the widget alignement (left, right, top or bottom)
-    bool m_animable; ///< defines if the widget must use animation or not.
+    bool m_animatable; ///< defines if the widget must use animation or not.
 
 };
 

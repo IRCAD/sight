@@ -92,11 +92,11 @@ void ISlideViewBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr conf
         SLM_ASSERT("Size must not be negative", m_size >= 0.);
     }
 
-    if (configuration->hasAttribute("animable"))
+    if (configuration->hasAttribute("animatable"))
     {
-        std::string animable = configuration->getExistingAttributeValue("animable");
-        SLM_ASSERT("Animable value must be 'true' or 'false'", animable == "true" || animable == "false");
-        m_animable = animable == "true";
+        std::string animatable = configuration->getExistingAttributeValue("animatable");
+        SLM_ASSERT("Animatable value must be 'true' or 'false'", animatable == "true" || animatable == "false");
+        m_animatable = animatable == "true";
     }
 
     ::fwRuntime::ConfigurationElement::csptr styleCfg = configuration->findConfigurationElement("styleSheet");
