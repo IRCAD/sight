@@ -501,7 +501,7 @@ void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::
         corners[i].z = cornersHm.at<double>(2, i) / cornersHm.at<double>(3, i);
     }
 
-    ::cv::Mat rVec, tVec, m_distCoeffs;
+    ::cv::Mat rVec, tVec;
     rVec = ::cv::Mat::zeros(3, 1, CV_32FC1);
     tVec = ::cv::Mat::zeros(3, 1, CV_32FC1);
     std::vector < ::cv::Point2f > corners2d;
