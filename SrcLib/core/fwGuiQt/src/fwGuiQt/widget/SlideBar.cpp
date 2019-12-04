@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -247,6 +247,14 @@ bool SlideBar::eventFilter(QObject* obj, QEvent* event)
         {
             mainFrame->removeEventFilter(this);
         }
+    }
+    else if(event->type() == QEvent::Show)
+    {
+        this->forceShow();
+    }
+    else if(event->type() == QEvent::Hide)
+    {
+        this->forceHide();
     }
     return QObject::eventFilter(obj, event);
 }
