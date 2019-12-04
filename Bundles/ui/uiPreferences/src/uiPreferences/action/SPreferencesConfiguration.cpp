@@ -323,8 +323,7 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr result;
-    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    const auto result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
@@ -345,8 +344,7 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
 
-    ::fwData::location::SingleFile::sptr result;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    const auto result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath();
