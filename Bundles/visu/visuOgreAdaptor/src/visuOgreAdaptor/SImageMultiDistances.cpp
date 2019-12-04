@@ -128,8 +128,8 @@ void SImageMultiDistances::generateDashedLine(::Ogre::ManualObject* const _objec
 
 std::string SImageMultiDistances::getLength(const ::Ogre::Vector3& _begin, const ::Ogre::Vector3& _end)
 {
-    const int length = static_cast< int >(std::round(std::abs((_end-_begin).length())));
-    return std::to_string(length) + ".mm";
+    const int length = static_cast< int >(std::round((_end-_begin).length()));
+    return std::to_string(length) + " mm";
 }
 
 //------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ void SImageMultiDistances::addDistances()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
     const ::fwData::mt::ObjectReadLock lock(image);
 
     const ::fwData::Vector::sptr distanceField = image->getField< ::fwData::Vector >(
@@ -344,7 +344,7 @@ void SImageMultiDistances::removeDistances()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
     const ::fwData::mt::ObjectReadLock lock(image);
 
     const ::fwData::Vector::csptr distanceField
@@ -383,7 +383,7 @@ void SImageMultiDistances::updateVisibilityFromField()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
     ::fwData::mt::ObjectReadLock lock(image);
 
     const bool visibility = image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
@@ -441,8 +441,8 @@ std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(
     if(picker.getSelectedObject())
     {
         const ::Ogre::Ray ray = cam->getCameraToViewportRay(
-            static_cast< ::Ogre::Real >(_x)/width,
-            static_cast< ::Ogre::Real >(_y)/height);
+            static_cast< ::Ogre::Real >(_x)/static_cast< ::Ogre::Real >(width),
+            static_cast< ::Ogre::Real >(_y)/static_cast< ::Ogre::Real >(height));
 
         ::Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
@@ -574,7 +574,12 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
             const ::Ogre::Plane plane(direction, position);
 
             const std::pair< bool, ::Ogre::Real > hit = ::Ogre::Math::intersects(ray, plane);
-            SLM_ASSERT("The ray must intersect the plane", hit.first);
+
+            if(!hit.first)
+            {
+                SLM_ERROR("The ray must intersect the plane")
+                return;
+            }
 
             newPos = ray.getPoint(hit.second);
         }
