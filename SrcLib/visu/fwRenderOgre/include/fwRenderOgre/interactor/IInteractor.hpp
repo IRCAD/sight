@@ -166,6 +166,14 @@ public:
      */
     FWRENDEROGRE_API virtual void keyReleaseEvent(int _key, Modifier _mods);
 
+    /**
+     * @brief Checks if the cursor is inside a layer's viewport.
+     * @param mouseX width coordinate of the mouse in pixels.
+     * @param mouseY height coordinate of the mouse in pixels.
+     * @param _layer layer on which to check the cursor's belonging.
+     */
+    static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer);
+
     /** @brief Legacy API, use the equivalent with keyboard modifiers.
      *
      * @deprecated removed in sight 21.0
@@ -175,7 +183,7 @@ public:
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void wheelEvent(int, int, int);
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    [[deprecated("Get the viewport dimensions from the layer instead.")]]
     FWRENDEROGRE_API virtual void resizeEvent(int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void keyPressEvent(int);
@@ -216,6 +224,12 @@ protected:
     /**
      * @}
      */
+
+private:
+
+    /// Checks if the cursor is on top of the given viewport.
+    static bool isInViewport(int _mouseX, int _mouseY, const ::Ogre::Viewport* const _vp);
+
 };
 
 //------------------------------------------------------------------------------

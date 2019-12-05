@@ -610,14 +610,10 @@ std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 {
     auto* const sceneManager = this->getSceneManager();
     SLM_ASSERT("Scene manager not created yet.", sceneManager);
-    ::Ogre::Camera* camera = sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-
-    const int height = camera->getViewport()->getActualHeight();
-    const int width  = camera->getViewport()->getActualWidth();
 
     ::fwRenderOgre::picker::IPicker picker;
-    picker.setSceneManager(this->getSceneManager());
-    picker.executeRaySceneQuery(_x, _y, width, height, 0x1);
+    picker.setSceneManager(sceneManager);
+    picker.executeRaySceneQuery(_x, _y, 0x1);
 
     const auto isPicked = [&picker](const ::fwRenderOgre::Plane::sptr& _p)
                           {

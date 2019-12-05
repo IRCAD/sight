@@ -101,6 +101,11 @@ void TrackballInteractor::wheelEvent(Modifier, int delta, int /*x*/, int /*y*/)
     ::Ogre::Camera* const camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
     camNode->translate( ::Ogre::Vector3(0, 0, -1)*z, ::Ogre::Node::TS_LOCAL );
+
+    if(auto layer = m_layer.lock())
+    {
+        layer->resetCameraClippingRange();
+    }
 }
 
 // ----------------------------------------------------------------------------

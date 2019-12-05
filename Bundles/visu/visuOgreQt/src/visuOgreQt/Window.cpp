@@ -338,22 +338,40 @@ void Window::keyReleaseEvent(QKeyEvent* e)
 Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
                                                   InteractionInfo::InteractionEnum _interactionType) const
 {
+    InteractionInfo info;
+    const auto button        = _evt->button();
     const auto activeButtons = _evt->buttons();
-    const auto button        = activeButtons & Qt::LeftButton   ? ::fwRenderOgre::interactor::IInteractor::LEFT   :
-                               activeButtons & Qt::MiddleButton ? ::fwRenderOgre::interactor::IInteractor::MIDDLE :
-                               activeButtons & Qt::RightButton  ? ::fwRenderOgre::interactor::IInteractor::RIGHT  :
-                               ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+
+    switch (button)
+    {
+        case Qt::NoButton:
+            info.button = (activeButtons& Qt::LeftButton)   ? ::fwRenderOgre::interactor::IInteractor::LEFT   :
+                          (activeButtons& Qt::MiddleButton) ? ::fwRenderOgre::interactor::IInteractor::MIDDLE :
+                          (activeButtons& Qt::RightButton)  ? ::fwRenderOgre::interactor::IInteractor::RIGHT  :
+                          ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+            break;
+        case Qt::LeftButton:
+            info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
+            break;
+        case Qt::MiddleButton:
+            info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
+            break;
+        case Qt::RightButton:
+            info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+            break;
+        default:
+            info.button = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+            break;
+    }
 
     const int x  = _evt->x();
     const int y  = _evt->y();
     const int dx = m_lastMousePosition ? m_lastMousePosition.value().x() - x : 0;
     const int dy = m_lastMousePosition ? m_lastMousePosition.value().y() - y : 0;
 
-    InteractionInfo info;
     info.interactionType       = _interactionType;
     std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
     std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
-    info.button                = button;
     info.modifiers             = convertModifiers(_evt->modifiers());
 
     return info;
@@ -387,7 +405,6 @@ void Window::wheelEvent(QWheelEvent* e)
     info.modifiers           = convertModifiers(e->modifiers());
 
     Q_EMIT interacted(info);
-    Q_EMIT cameraClippingComputation();
 
     this->requestRender();
 }

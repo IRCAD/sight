@@ -56,9 +56,6 @@ public:
     /// Runs a picking query when a mouse button is pressed @see MeshPickerInteractor::pick().
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
 
-    /// Called when the window is resized.
-    FWRENDEROGRE_API virtual void resizeEvent(int _w, int _h) override;
-
     /// Sets the signal to be called when picking succeeded.
     FWRENDEROGRE_API void setPointClickedSig(const PointClickedSigType::sptr& _sig);
 
@@ -83,12 +80,6 @@ private:
 
     /// Picking query mask. Filters out objects with mismatching flags.
     std::uint32_t m_queryMask { 0xffffffff };
-
-    /// Current width of the render window.
-    int m_width {0};
-
-    /// Current height of the render window.
-    int m_height {0};
 
     /// Signal sent when picking succeeded.
     PointClickedSigType::sptr m_pointClickedSig;

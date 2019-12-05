@@ -68,7 +68,15 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
 {
     if(m_picker.hasSceneManager())
     {
-        if(m_picker.executeRaySceneQuery(_x, _y, m_width, m_height, m_queryMask))
+        if(auto layer = m_layer.lock())
+        {
+            if(!isInLayer(_x, _y, layer))
+            {
+                return;
+            }
+        }
+
+        if(m_picker.executeRaySceneQuery(_x, _y, m_queryMask))
         {
             ::Ogre::Vector3 click = m_picker.getIntersectionInWorldSpace();
 
@@ -118,14 +126,6 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
     {
         SLM_ERROR("The picker scene hasn't been initialized, you are not using this interactor correctly");
     }
-}
-
-//------------------------------------------------------------------------------
-
-void MeshPickerInteractor::resizeEvent(int _x, int _y)
-{
-    m_width  = _x;
-    m_height = _y;
 }
 
 //------------------------------------------------------------------------------
