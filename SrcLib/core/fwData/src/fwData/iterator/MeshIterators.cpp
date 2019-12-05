@@ -38,6 +38,8 @@ PointIterator::PointIterator(::fwData::Mesh* mesh)
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
     m_pointInfo.point  = static_cast<point_value_type*>(mesh->m_points->getBuffer());
 
+    SLM_ERROR_IF("Point colors with 3 compnents are not managed in iterators.",
+                 mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() != 4)
     if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_pointColors->lock());
@@ -92,6 +94,8 @@ ConstPointIterator::ConstPointIterator(const ::fwData::Mesh* mesh)
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
     m_pointInfo.point  = static_cast<point_value_type*>(mesh->m_points->getBuffer());
 
+    SLM_ERROR_IF("Point colors with 3 compnents are not managed in iterators.",
+                 mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() != 4)
     if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_pointColors->lock());
@@ -151,6 +155,8 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
     m_cellInfo.offset   = static_cast<cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo.type     = static_cast<cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
 
+    SLM_ERROR_IF("Cell colors with 3 compnents are not managed in iterators.",
+                 mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() != 4)
     if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_cellColors->lock());
@@ -179,6 +185,27 @@ CellIterator::~CellIterator()
 
 //------------------------------------------------------------------------------
 
+CellIterator& CellIterator::operator=(const CellIteratorBase& other)
+{
+    if (this != &other)
+    {
+        m_locks             = other.m_locks;
+        m_idx               = other.m_idx;
+        m_numberOfElements  = other.m_numberOfElements;
+        m_cellDataSize      = other.m_cellDataSize;
+        m_cellInfo.pointIdx = other.m_cellInfo.pointIdx;
+        m_cellInfo.type     = other.m_cellInfo.type;
+        m_cellInfo.offset   = other.m_cellInfo.offset;
+        m_cellInfo.normal   = other.m_cellInfo.normal;
+        m_cellInfo.color    = other.m_cellInfo.color;
+        m_cellInfo.tex      = other.m_cellInfo.tex;
+        m_cellInfo.nbPoints = other.m_cellInfo.nbPoints;
+    }
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
 ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
 {
     m_locks.push_back(mesh->m_cellData->lock());
@@ -190,6 +217,8 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
     m_cellInfo.offset   = static_cast<cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo.type     = static_cast<cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
 
+    SLM_ERROR_IF("Cell colors with 3 compnents are not managed in iterators.",
+                 mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() != 4)
     if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_cellColors->lock());
@@ -233,6 +262,26 @@ ConstCellIterator::~ConstCellIterator()
     m_locks.clear();
 }
 
+//------------------------------------------------------------------------------
+
+ConstCellIterator& ConstCellIterator::operator=(const CellIteratorBase& other)
+{
+    if (this != &other)
+    {
+        m_locks             = other.m_locks;
+        m_idx               = other.m_idx;
+        m_numberOfElements  = other.m_numberOfElements;
+        m_cellDataSize      = other.m_cellDataSize;
+        m_cellInfo.pointIdx = other.m_cellInfo.pointIdx;
+        m_cellInfo.type     = other.m_cellInfo.type;
+        m_cellInfo.offset   = other.m_cellInfo.offset;
+        m_cellInfo.normal   = other.m_cellInfo.normal;
+        m_cellInfo.color    = other.m_cellInfo.color;
+        m_cellInfo.tex      = other.m_cellInfo.tex;
+        m_cellInfo.nbPoints = other.m_cellInfo.nbPoints;
+    }
+    return *this;
+}
 //------------------------------------------------------------------------------
 
 } // namespace iterator

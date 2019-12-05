@@ -343,6 +343,7 @@ public:
     FWDATA_API virtual ~CellIterator() override;
 
     FWDATA_API CellIterator& operator=(const CellIterator& other) = default;
+    FWDATA_API CellIterator& operator=(const CellIteratorBase& other);
 };
 
 /**
@@ -379,6 +380,7 @@ public:
     FWDATA_API virtual ~ConstCellIterator() override;
 
     FWDATA_API ConstCellIterator& operator=(const ConstCellIterator& other) = default;
+    FWDATA_API ConstCellIterator& operator=(const CellIteratorBase& other);
 };
 
 } // namespace iterator
