@@ -70,14 +70,14 @@ namespace editor
  * - \b activitySelected( ::fwData::object::sptr ): this signal is emitted when the current tab selection
  *   changed, it contains the associated ActivitySeries. The activity series is send as a ::fwData::Object in order to
  *   connect this signal to slots receiving a ::fwData::Object.
- * - \b nothingSelected(): This signal is emitted when no tab are selected.
+ * - \b nothingSelected(): this signal is emitted when no tab are selected.
  *
  * @section Slots Slots
- * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): This slot allows to create a tab with the given activity
+ * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b launchActivitySeries( ::fwMedData::Series::sptr ): This slot allows to create a tab with the given activity
+ * - \b launchActivitySeries( ::fwMedData::Series::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b createTab( ::fwActivities::registry::ActivityMsg ): This slot allows to create a tab with the given activity
+ * - \b createTab( ::fwActivities::registry::ActivityMsg ): this slot allows to create a tab with the given activity
  *   information.
  *
  * @section XML XML Configuration
@@ -103,7 +103,7 @@ namespace editor
  *          composite contained in the ActivitySeries.
  *
  * @subsection Configuration Configuration:
- *  - \b document (optional, default="true") : Sets the document mode of the tab bar.
+ *  - \b document (optional, default="true") : sets the document mode of the tab bar.
  */
 class GUIQT_CLASS_API SDynamicView : public QObject,
                                      public ::fwGui::view::IActivityView

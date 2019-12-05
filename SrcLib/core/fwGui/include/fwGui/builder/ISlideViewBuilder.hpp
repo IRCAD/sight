@@ -49,7 +49,7 @@ namespace builder
  *      - \b opacity (optional, default=1.0) : defines the widget opacity
  *      - \b styleSheet (optional) : defines the style of the widget (see Qt style sheets
  *           http://doc.qt.io/qt-5/stylesheet-examples.html )
- *      - \b animatable (optional, default=true) : Defines if the slide bar must use animation or not.
+ *      - \b animatable (optional, default=false) : defines if the slide bar must use animation or not.
  */
 class FWGUI_CLASS_API ISlideViewBuilder : public ::fwGui::GuiBaseObject
 {

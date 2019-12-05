@@ -71,14 +71,14 @@ namespace uiImageQt
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: Image on which the windowing will be changed.
- * - \b tf [::fwData::TransferFunction] (optional): The current TransferFunction. If it is not defined, we use the
+ * - \b image [::fwData::Image]: image on which the windowing will be changed.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
- * - \b autoWindowing(optional, default="no"): If 'yes', image windowing will be automatically compute from image pixel
+ * - \b autoWindowing(optional, default="no"): if 'yes', image windowing will be automatically compute from image pixel
  * min/max intensity when this service receive BUFFER event.
- * - \b enableSquareTF(optional, default="yes"): If 'yes' enable the button to switch between current TF and square TF.
+ * - \b enableSquareTF(optional, default="yes"): if 'yes' enable the button to switch between current TF and square TF.
  */
 class UIIMAGEQT_CLASS_API WindowLevel final : public QObject,
                                               public ::fwGui::editor::IEditor

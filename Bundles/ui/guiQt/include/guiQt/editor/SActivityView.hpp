@@ -49,9 +49,9 @@ namespace editor
  * - \b activityLaunched( ::fwMedData::ActivitySeries::sptr ): signal emitted when the activity is launched
  *
  * @section Slots Slots
- * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): This slot allows to create a view for the given activity
+ * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): this slot allows to create a view for the given activity
  *   series.
- * - \b launchActivitySeries( ::fwMedData::Series::sptr ): This slot allows to create a view for the given activity
+ * - \b launchActivitySeries( ::fwMedData::Series::sptr ): this slot allows to create a view for the given activity
  *   series.
  *
  * @section XML XML Configuration
@@ -75,7 +75,7 @@ namespace editor
  *          composite contained in the ActivitySeries.
  *
  * @subsection Configuration Configuration
- * - \b border (optional, default="-1"): Contents margins of the layout.
+ * - \b border (optional, default="-1"): contents margins of the layout.
  */
 class GUIQT_CLASS_API SActivityView : public ::fwGui::view::IActivityView
 {

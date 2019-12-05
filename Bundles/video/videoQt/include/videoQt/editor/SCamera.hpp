@@ -45,15 +45,15 @@ namespace editor
  * @brief This editor allows to select the device to use. It updates the data camera identifier.
  *
  * @section Signals Signals
- * - \b configuredCameras(): Emitted when the cameras have been successfully configured.
- * - \b configuredDevice(): Emitted when the user selects a device as the video source.
- * - \b configuredFile(): Emitted when the user selects a file as the video source.
- * - \b configuredStream(): Emitted when the user selects a stream as the video source.
+ * - \b configuredCameras(): emitted when the cameras have been successfully configured.
+ * - \b configuredDevice(): emitted when the user selects a device as the video source.
+ * - \b configuredFile(): emitted when the user selects a file as the video source.
+ * - \b configuredStream(): emitted when the user selects a stream as the video source.
  *
  * @section Slots Slots
- * - \b configureDevice(): Configure the cameras as device sources.
- * - \b configureFile(): Configure the cameras as file sources.
- * - \b configureStream(): Configure the cameras as stream sources.
+ * - \b configureDevice(): configure the cameras as device sources.
+ * - \b configureFile(): configure the cameras as file sources.
+ * - \b configureStream(): configure the cameras as stream sources.
  *
  * @section XML XML Configuration
  *
@@ -81,14 +81,14 @@ namespace editor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b camera [::arData::Camera]: Camera data.
- * - \b cameraSeries [::arData::CameraSeries]: Camera series thus containing several camera.
+ * - \b camera [::arData::Camera]: camera data.
+ * - \b cameraSeries [::arData::CameraSeries]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
- * - \b videoSupport (optional, default="no"): If we can open a video file in addition with cameras.
- * - \b createCameraNumber (optional, default="0"): Number of cameras to create. If the parameter is set and the
+ * - \b videoSupport (optional, default="no"): if we can open a video file in addition with cameras.
+ * - \b createCameraNumber (optional, default="0"): number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
- * - \b label (optional, default="Video source: "): Label of the selector.
+ * - \b label (optional, default="Video source: "): label of the selector.
  */
 class VIDEOQT_CLASS_API SCamera final : public QObject,
                                         public ::fwGui::editor::IEditor
