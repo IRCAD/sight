@@ -347,7 +347,7 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
     const auto result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
+        _sDefaultPath = result->getPath().parent_path();
         lineEdit->setText( QString::fromStdString(result->getPath().string()) );
         dialogFile.saveDefaultLocation( ::fwData::location::SingleFile::New(_sDefaultPath) );
     }
