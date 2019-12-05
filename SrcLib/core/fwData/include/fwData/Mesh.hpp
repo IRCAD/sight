@@ -733,9 +733,23 @@ public:
      */
     [[nodiscard]] FWDATA_API LocksType lock() const;
 
-    /**
-     * @}
-     */
+    /// Return true if the mesh has point colors
+    bool hasPointColors() const;
+
+    /// Return true if the mesh has cell colors
+    bool hasCellColors() const;
+
+    /// Return true if the mesh has point normals
+    bool hasPointNormals() const;
+
+    /// Return true if the mesh has cell normals
+    bool hasCellNormals() const;
+
+    /// Return true if the mesh has point texture coordinates
+    bool hasPointTexCoords() const;
+
+    /// Return true if the mesh has cell texture coordinates
+    bool hasCellTexCoords() const;
 
     // ---------------------------------------
     // Deprecated API for sight 22.0
@@ -1042,5 +1056,48 @@ inline ITERATOR Mesh::end() const
     itr += static_cast< typename ITERATOR::difference_type>(itr.m_numberOfElements);
     return itr;
 }
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasPointColors() const
+{
+    return m_pointColors != nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasCellColors() const
+{
+    return m_cellColors != nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasPointNormals() const
+{
+    return m_pointNormals != nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasCellNormals() const
+{
+    return m_cellNormals != nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasPointTexCoords() const
+{
+    return m_pointTexCoords != nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasCellTexCoords() const
+{
+    return m_cellTexCoords != nullptr;
+}
+//------------------------------------------------------------------------------
 
 } // namespace fwData

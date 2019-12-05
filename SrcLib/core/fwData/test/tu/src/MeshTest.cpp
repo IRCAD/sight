@@ -613,6 +613,13 @@ void MeshTest::allocationTest()
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id >(3), mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id >(1), mesh->getNumberOfCells());
 
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellTexCoords());
+
     mesh->reserve(pointSize, cellSize, cellDataSize, ::fwData::Mesh::Attributes::POINT_NORMALS |
                   ::fwData::Mesh::Attributes::POINT_COLORS | ::fwData::Mesh::Attributes::POINT_TEX_COORDS);
 
@@ -623,6 +630,13 @@ void MeshTest::allocationTest()
         pointAllocatedSize + cellTypeAllocatedSize + cellDataOffsetsAllocatedSize + cellDataAllocatedSize +
         pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize,
         mesh->getAllocatedSizeInBytes());
+
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellTexCoords());
 
     mesh->reserve(pointSize, cellSize, cellDataSize,
                   ::fwData::Mesh::Attributes::POINT_NORMALS |
@@ -639,11 +653,25 @@ void MeshTest::allocationTest()
     CPPUNIT_ASSERT_EQUAL(true, adjusted);
     CPPUNIT_ASSERT(oldsize > newSize);
 
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasCellTexCoords());
+
     mesh->clear();
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh->getCellDataSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), mesh->getDataSizeInBytes());
+
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellTexCoords());
 
     ::fwData::Mesh::Id nbPoints        = 300;
     ::fwData::Mesh::Id nbCells         = 200;
