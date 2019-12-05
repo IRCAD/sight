@@ -29,7 +29,6 @@
 #include <fwCom/Slots.hpp>
 
 #include <fwRenderOgre/ILight.hpp>
-#include <fwRenderOgre/ITransformable.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -68,13 +67,12 @@ namespace visuOgreAdaptor
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
-class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight,
-                                         public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight
 {
 
 public:
 
-    fwCoreServiceMacro(SLight, ::fwRenderOgre::ILight);
+    fwCoreServiceMacro(SLight, ::fwRenderOgre::ILight)
 
     /**
      * @name Slots API
@@ -98,6 +96,7 @@ public:
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
+
     /// Starting method. Do nothing
     VISUOGREADAPTOR_API void starting() override;
 
@@ -141,6 +140,7 @@ protected:
     VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override;
 
     /// Parent tranform id setter.
+    [[deprecated("Deprecated method. Removed in sight 21.0")]]
     VISUOGREADAPTOR_API virtual void setParentTransformName(
         const fwRenderOgre::SRender::OgreObjectIdType&) override;
 
@@ -163,6 +163,7 @@ protected:
     VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override;
 
     /// Indicates if the light is attached to a parent node or not.
+    [[deprecated("Deprecated method. Removed in sight 21.0")]]
     VISUOGREADAPTOR_API virtual bool isOrphanNode() const override;
 
 private:
@@ -186,9 +187,6 @@ private:
 
     /// Specular color of the associated Ogre light.
     ::fwData::Color::sptr m_lightSpecularColor;
-
-    /// If we can't retrieve the parent transform adaptor, we will use a scene node without any parent.
-    bool m_useOrphanNode;
 
     /// Light activation flag.
     bool m_switchedOn;
@@ -264,8 +262,8 @@ inline void SLight::setSpecularColor(::fwData::Color::sptr _specularColor)
 
 inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _id)
 {
+    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
     this->setTransformId(_id);
-    m_useOrphanNode = false;
 }
 
 //------------------------------------------------------------------------------
@@ -293,7 +291,8 @@ inline float SLight::getPhiOffset() const
 
 inline bool SLight::isOrphanNode() const
 {
-    return m_useOrphanNode;
+    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
+    return false;
 }
 
 //------------------------------------------------------------------------------

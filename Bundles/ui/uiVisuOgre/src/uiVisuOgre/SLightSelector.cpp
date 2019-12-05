@@ -50,12 +50,12 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::fwData::Composite )
 
 //------------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SLightSelector::s_LIGHT_SELECTED_SIG = "lightSelected";
-const ::fwCom::Slots::SlotKeyType SLightSelector::s_INIT_LIGHT_LIST_SLOT   = "initLightList";
+const ::fwCom::Slots::SlotKeyType SLightSelector::s_INIT_LIGHT_LIST_SLOT = "initLightList";
 
 //------------------------------------------------------------------------------
 
@@ -348,12 +348,10 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
     if(currentLayer)
     {
-        ::fwData::TransformationMatrix3D::sptr lightTransform = ::fwData::TransformationMatrix3D::New();
-        ::fwData::Color::sptr lightDiffuseColor               = ::fwData::Color::New();
-        ::fwData::Color::sptr lightSpecularColor              = ::fwData::Color::New();
+        ::fwData::Color::sptr lightDiffuseColor  = ::fwData::Color::New();
+        ::fwData::Color::sptr lightSpecularColor = ::fwData::Color::New();
 
-        ::fwRenderOgre::ILight::sptr lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(lightTransform,
-                                                                                               lightDiffuseColor,
+        ::fwRenderOgre::ILight::sptr lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(lightDiffuseColor,
                                                                                                lightSpecularColor);
         lightAdaptor->setName(_name);
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);

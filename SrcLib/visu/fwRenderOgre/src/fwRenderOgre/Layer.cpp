@@ -344,16 +344,14 @@ void Layer::createScene()
 
     if(m_hasDefaultLight)
     {
-        m_defaultLightTransform     = ::fwData::TransformationMatrix3D::New();
         m_defaultLightDiffuseColor  = ::fwData::Color::New();
         m_defaultLightSpecularColor = ::fwData::Color::New();
 
-        m_lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(m_defaultLightTransform,
-                                                                    m_defaultLightDiffuseColor,
+        m_lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(m_defaultLightDiffuseColor,
                                                                     m_defaultLightSpecularColor);
         m_lightAdaptor->setName(Layer::DEFAULT_LIGHT_NAME);
         m_lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
-        m_lightAdaptor->setParentTransformName(cameraNode->getName());
+        m_lightAdaptor->setTransformId(cameraNode->getName());
         m_lightAdaptor->setLayerID(this->getLayerID());
         m_lightAdaptor->setRenderService(renderService);
         m_lightAdaptor->start();

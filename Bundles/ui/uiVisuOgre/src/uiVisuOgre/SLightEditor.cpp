@@ -220,24 +220,15 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 
         m_diffuseColorBtn->setEnabled(true);
         m_specularColorBtn->setEnabled(true);
+        m_thetaSlider->setEnabled(true);
+        m_phiSlider->setEnabled(true);
         m_lightTypeBox->setEnabled(true);
 
-        if(!m_currentLight->isOrphanNode())
-        {
-            m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
-                                                     ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
-            m_thetaSlider->setEnabled(true);
+        m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
+                                                 ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
 
-            m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() +
-                                                   ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
-            m_phiSlider->setEnabled(true);
-
-        }
-        else
-        {
-            m_thetaSlider->setEnabled(false);
-            m_phiSlider->setEnabled(false);
-        }
+        m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() +
+                                               ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
     }
     else
     {

@@ -67,7 +67,6 @@ SLight::SLight() noexcept :
     m_light(nullptr),
     m_lightName(""),
     m_lightType(::Ogre::Light::LT_DIRECTIONAL),
-    m_useOrphanNode(true),
     m_switchedOn(true),
     m_thetaOffset(0.f),
     m_phiOffset(0.f)
@@ -81,7 +80,6 @@ SLight::SLight() noexcept :
 SLight::SLight(::fwRenderOgre::ILight::Key /*key*/) :
     m_light(nullptr),
     m_lightName(""),
-    m_useOrphanNode(true),
     m_switchedOn(true),
     m_thetaOffset(0.f),
     m_phiOffset(0.f)
@@ -120,8 +118,6 @@ void SLight::configuring()
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
-
-    m_useOrphanNode = false;
 
     if(config.count("switchedOn"))
     {
@@ -235,8 +231,6 @@ void SLight::switchOn(bool _on)
 
 void SLight::setThetaOffset(float _thetaOffset)
 {
-    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
-
     this->getRenderService()->makeCurrent();
 
     const float thetaDelta = _thetaOffset - m_thetaOffset;
@@ -253,8 +247,6 @@ void SLight::setThetaOffset(float _thetaOffset)
 
 void SLight::setPhiOffset(float _phiOffset)
 {
-    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
-
     this->getRenderService()->makeCurrent();
 
     const float phiDelta = _phiOffset - m_phiOffset;
