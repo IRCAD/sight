@@ -60,7 +60,6 @@ void SlideBar::init()
 
     // Set the widget position
     this->updatePosition();
-    this->setGeometry(m_hiddenPosition);
 
     // window flags to have a frameless dialog that can be displayed over an openGL widget
     this->setWindowFlags(Qt::Tool
@@ -263,7 +262,10 @@ bool SlideBar::eventFilter(QObject* obj, QEvent* event)
     }
     else if(event->type() == QEvent::Show)
     {
-        this->forceShow();
+        if(m_isShown)
+        {
+            this->forceShow();
+        }
     }
     else if(event->type() == QEvent::Hide)
     {
