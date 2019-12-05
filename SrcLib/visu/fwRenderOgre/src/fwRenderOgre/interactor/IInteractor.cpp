@@ -171,5 +171,37 @@ void IInteractor::focusOutEvent()
 
 // ----------------------------------------------------------------------------
 
+bool IInteractor::isInLayer(int _mouseX, int _mouseY, Layer::sptr _layer)
+{
+    const auto* const layerVp = _layer->getViewport();
+    bool isInLayer            = isInViewport(_mouseX, _mouseY, layerVp);
+
+    // Check if there's no layer above.
+    auto* const renderWindow       = layerVp->getTarget();
+    const unsigned short numLayers = renderWindow->getNumViewports();
+    for(unsigned short i = 0; i < numLayers && isInLayer; ++i)
+    {
+        const auto* const vp = renderWindow->getViewport(i);
+        if(vp->getZOrder() > layerVp->getZOrder())
+        {
+            isInLayer = !isInViewport(_mouseX, _mouseY, vp);
+        }
+    }
+
+    return isInLayer;
+}
+
+// ----------------------------------------------------------------------------
+
+bool IInteractor::isInViewport(int _mouseX, int _mouseY, const ::Ogre::Viewport* const _vp)
+{
+    const int top    = _vp->getActualTop();
+    const int left   = _vp->getActualLeft();
+    const int bottom = top + _vp->getActualHeight();
+    const int right  = left + _vp->getActualWidth();
+
+    return _mouseX >= left && _mouseX <= right && _mouseY >= top && _mouseY <= bottom;
+}
+
 } // namespace interactor
 } // namespace fwRenderOgre
