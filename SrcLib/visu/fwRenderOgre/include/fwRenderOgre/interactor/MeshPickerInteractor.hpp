@@ -81,12 +81,6 @@ private:
     /// Picking query mask. Filters out objects with mismatching flags.
     std::uint32_t m_queryMask { 0xffffffff };
 
-    /// Current width of the render window.
-    int m_width {0};
-
-    /// Current height of the render window.
-    int m_height {0};
-
     /// Signal sent when picking succeeded.
     PointClickedSigType::sptr m_pointClickedSig;
 
