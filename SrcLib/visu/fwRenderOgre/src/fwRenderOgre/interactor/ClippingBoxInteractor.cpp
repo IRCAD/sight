@@ -58,12 +58,7 @@ Ogre::MovableObject* ClippingBoxInteractor::pickObject(int x, int y)
 {
     if(auto layer = m_layer.lock())
     {
-        const ::Ogre::Camera* const camera = layer->getDefaultCamera();
-
-        const int height = camera->getViewport()->getActualHeight();
-        const int width  = camera->getViewport()->getActualWidth();
-
-        const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0xFFFFFFFF );
+        const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, 0xFFFFFFFF );
 
         return pickSuccess ? m_picker.getSelectedObject() : nullptr;
     }

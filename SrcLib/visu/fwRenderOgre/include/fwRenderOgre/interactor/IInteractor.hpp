@@ -183,7 +183,7 @@ public:
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void wheelEvent(int, int, int);
-    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    [[deprecated("Get the viewport dimensions from the layer instead.")]]
     FWRENDEROGRE_API virtual void resizeEvent(int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void keyPressEvent(int);
