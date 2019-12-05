@@ -405,7 +405,6 @@ void Window::wheelEvent(QWheelEvent* e)
     info.modifiers           = convertModifiers(e->modifiers());
 
     Q_EMIT interacted(info);
-    Q_EMIT cameraClippingComputation();
 
     this->requestRender();
 }
