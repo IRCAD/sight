@@ -140,7 +140,7 @@ private:
     /// Calls when user select a device.
     void onChooseDevice();
 
-    /// Retrieve camera objects according to the XML configuration.
+    /// Retrieves camera objects according to the XML configuration.
     std::vector< ::arData::Camera::sptr > getCameras() const;
 
     /// Combobox for camera selection.

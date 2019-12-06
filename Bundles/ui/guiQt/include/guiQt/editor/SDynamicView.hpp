@@ -232,7 +232,7 @@ private:
 
     bool m_mainActivityClosable;
 
-    /// Allow to set the document mode.
+    /// Allows to set the document mode.
     bool m_documentMode {true};
 };
 

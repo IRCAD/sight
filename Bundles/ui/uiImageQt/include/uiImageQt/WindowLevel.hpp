@@ -78,7 +78,8 @@ namespace uiImageQt
  * @subsection Configuration Configuration
  * - \b autoWindowing(optional, default="no"): if 'yes', image windowing will be automatically compute from image pixel
  * min/max intensity when this service receive BUFFER event.
- * - \b enableSquareTF(optional, default="yes"): if 'yes' enable the button to switch between current TF and square TF.
+ * - \b enableSquareTF(optional, default="yes"): if 'yes', enables the button to switch between current TF and square
+ * TF.
  */
 class UIIMAGEQT_CLASS_API WindowLevel final : public QObject,
                                               public ::fwGui::editor::IEditor
