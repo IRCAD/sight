@@ -84,8 +84,10 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier, int, int,
 
 void TrackballInteractor::wheelEvent(Modifier, int delta, int /*x*/, int /*y*/)
 {
+    constexpr float mouseScale = 0.01f;
+
     // The zoom factor is reduced when coming closer and increased when going away
-    const float fNewZoom = (delta > 0) ? m_zoom * 0.85f : m_zoom / 0.85f;
+    const float fNewZoom = m_zoom * std::pow(0.85f, static_cast<float>(delta) * mouseScale);
 
     // Moreover we cannot pass through the center of the trackball
     const float z = (m_zoom - fNewZoom) * 200.f / (m_mouseScale );
