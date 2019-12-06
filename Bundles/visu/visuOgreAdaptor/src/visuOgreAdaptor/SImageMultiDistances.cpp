@@ -106,14 +106,12 @@ void SImageMultiDistances::generateDashedLine(::Ogre::ManualObject* const _objec
                                               const ::Ogre::Vector3& _begin,
                                               const ::Ogre::Vector3& _end, float _thickness)
 {
+    const ::Ogre::Vector3 dashedLineDir = (_end-_begin);
+    const float len                     = dashedLineDir.length();
     ::Ogre::Vector3 dashedLineDirN = (_end-_begin);
     dashedLineDirN.normalise();
-    const ::Ogre::Vector3 delta           = dashedLineDirN*_thickness;
-    const ::Ogre::Vector3 dashedLineBegin = _begin + delta;
-    const ::Ogre::Vector3 dashedLineEnd   = _end - delta;
-    const float len                       = (dashedLineEnd-dashedLineBegin).length();
 
-    ::Ogre::Vector3 dashedLinePos = dashedLineBegin;
+    ::Ogre::Vector3 dashedLinePos = _begin;
     for(float i = 0.f; i+_thickness*1.5 <= len; i += _thickness*2)
     {
         _object->position(dashedLinePos);
@@ -129,7 +127,7 @@ void SImageMultiDistances::generateDashedLine(::Ogre::ManualObject* const _objec
 std::string SImageMultiDistances::getLength(const ::Ogre::Vector3& _begin, const ::Ogre::Vector3& _end)
 {
     const int length = static_cast< int >(std::round((_end-_begin).length()));
-    return std::to_string(length) + " mm";
+    return std::to_string(length) + ".mm";
 }
 
 //------------------------------------------------------------------------------
