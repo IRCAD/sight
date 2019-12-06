@@ -127,7 +127,7 @@ void SImageMultiDistances::generateDashedLine(::Ogre::ManualObject* const _objec
 std::string SImageMultiDistances::getLength(const ::Ogre::Vector3& _begin, const ::Ogre::Vector3& _end)
 {
     const int length = static_cast< int >(std::round((_end-_begin).length()));
-    return std::to_string(length) + ".mm";
+    return std::to_string(length) + "mm";
 }
 
 //------------------------------------------------------------------------------
