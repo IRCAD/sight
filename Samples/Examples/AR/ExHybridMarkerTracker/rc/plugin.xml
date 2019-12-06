@@ -14,6 +14,7 @@
             <object uid="camera" type="::arData::Camera" src="deferred" />
             <object uid="frameTL" type="::arData::FrameTL"/>
             <object uid="sourceFrame" type="::fwData::Image" />
+            <object uid="trackedFrame" type="::fwData::Image" />
             <object uid="finalFrame" type="::fwData::Image"/>
             <object uid="poseMatrix" type="::fwData::TransformationMatrix3D"/>
             <object uid="cameraToMarker" type="::fwData::TransformationMatrix3D"/>
@@ -240,10 +241,17 @@
                 <inout key="frameTL" uid="frameTL" autoConnect="yes" />
             </service>
 
+            <service uid="videoUndistorter" type="::videoCalibration::SDistortion">
+                <in key="camera" uid="camera" autoConnect="yes" />
+                <in key="input" uid="trackedFrame" autoConnect="yes" />
+                <inout key="output" uid="finalFrame" />
+                <mode>undistort</mode>
+            </service>
+
             <service uid="hybridMarkerTracker" type="::hybridMarkerTracker::SHybridMarkerTracker" worker="tracking">
-                <in key="camera" uid="camera"/>
+                <in key="camera" uid="camera" autoConnect="yes" />
                 <in key="frameIn" uid="sourceFrame" autoConnect="yes" />
-                <inout key="frame" uid="finalFrame" />
+                <inout key="frame" uid="trackedFrame" />
                 <inout key="pose" uid="poseMatrix" />
             </service>
 
@@ -289,6 +297,11 @@
             </connect>
 
             <connect>
+                <signal>videoUndistorter/started</signal>
+                <slot>videoUndistorter/changeState</slot>
+            </connect>
+
+            <connect>
                 <signal>cameraSeries/modified</signal>
                 <slot>extractor/update</slot>
             </connect>
@@ -317,12 +330,14 @@
             <start uid="calibrationReader" />
             <start uid="extractor" />
             <start uid="cameraSelector" />
-            <start uid="cameraAdpt" />
+            <start uid="videoUndistorter" />
 
             <!-- VTK scene 'genericScene' -->
+            <start uid="cameraAdpt" />
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
             <start uid="tagAxisAdpt" />
+
         </config>
     </extension>
 </plugin>
