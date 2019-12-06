@@ -131,8 +131,8 @@
                 </scene>
             </service>
 
-            <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" movement="VR" />
+            <service uid="interactorAdaptor" type="::visuOgreAdaptor::STrackballCamera">
+                <config layer="default" />
             </service>
 
             <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">

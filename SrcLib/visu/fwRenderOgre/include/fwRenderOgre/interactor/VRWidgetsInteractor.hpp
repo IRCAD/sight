@@ -34,18 +34,22 @@
 namespace fwRenderOgre
 {
 
+class Layer;
+
 namespace interactor
 {
 
 /**
  * @brief Picks VR widgets and updates clipping cube.
+ *
+ * @deprecated removed in sight 21.0
  */
 class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::interactor::TrackballInteractor
 {
 public:
 
     /// Constructor.
-    FWRENDEROGRE_API VRWidgetsInteractor() noexcept;
+    FWRENDEROGRE_API VRWidgetsInteractor(SPTR(Layer)_layer = nullptr) noexcept;
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidgetsInteractor() noexcept;
