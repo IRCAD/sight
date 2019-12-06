@@ -23,5 +23,7 @@ set( REQUIREMENTS
         ioTimeline
         syncTimeline
         uiTools
+        uiIO
+        uiPreferences
         )
 

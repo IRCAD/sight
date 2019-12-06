@@ -10,7 +10,7 @@
         <id>TrackedCameraRegistration</id>
         <title>Tracked camera registration</title>
         <desc>Activity to compute the registration matrix between a camera and an aruco marker</desc>
-        <icon>arMedia-0.1/icons/tagTracking.svg</icon>
+        <icon>media-0.1/icons/tagTracking.svg</icon>
         <requirements>
             <requirement name="firstCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>CameraSeries containing the calibration for the first RGB camera that will see two markers</desc>

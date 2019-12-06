@@ -6,6 +6,8 @@ set( DEPENDENCIES)
 set( REQUIREMENTS
     activities
     arMedia
+    dataReg
+    arDataReg
     ctrlCamp
     gui
     guiQt

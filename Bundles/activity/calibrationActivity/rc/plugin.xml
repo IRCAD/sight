@@ -20,7 +20,7 @@
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
-        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <icon>media-0.1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -42,7 +42,7 @@
                 - edit the resolution
             ]]>
         </desc>
-        <icon>arMedia-0.1/icons/configuration.svg</icon>
+        <icon>media-0.1/icons/configuration.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
@@ -59,7 +59,7 @@
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
-        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <icon>media-0.1/icons/calibrationActivity.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="RGBDCalibration">
@@ -72,7 +72,7 @@
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
-        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <icon>media-0.1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>

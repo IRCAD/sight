@@ -71,17 +71,17 @@
                     <layout>
                         <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
                         <editor/>
-                        <menuItem name="Start" icon="arMedia-0.1/icons/start-cam.svg" />
-                        <menuItem name="Stop" icon="arMedia-0.1/icons/stop-cam.svg" />
-                        <menuItem name="Pause" icon="arMedia-0.1/icons/pause-cam.svg" />
-                        <menuItem name="Loop" icon="arMedia-0.1/icons/loop-cam.svg" style="check"/>
+                        <menuItem name="Start" icon="media-0.1/icons/start-cam.svg" />
+                        <menuItem name="Stop" icon="media-0.1/icons/stop-cam.svg" />
+                        <menuItem name="Pause" icon="media-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Loop" icon="media-0.1/icons/loop-cam.svg" style="check"/>
                         <separator/>
-                        <menuItem name="Enable video image undistortion" icon="arMedia-0.1/icons/distortion.svg" />
-                        <menuItem name="Disable video image undistortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
-                        <menuItem name="Enable 3D rendering distortion" icon="arMedia-0.1/icons/distortion.svg" />
-                        <menuItem name="Disable 3D rendering distortion" icon="arMedia-0.1/icons/disableDistortion.svg" />
+                        <menuItem name="Enable video image undistortion" icon="media-0.1/icons/distortion.svg" />
+                        <menuItem name="Disable video image undistortion" icon="media-0.1/icons/disableDistortion.svg" />
+                        <menuItem name="Enable 3D rendering distortion" icon="media-0.1/icons/distortion.svg" />
+                        <menuItem name="Disable 3D rendering distortion" icon="media-0.1/icons/disableDistortion.svg" />
                         <separator/>
-                        <menuItem name="Show Mesh on tag" icon="arMedia-0.1/icons/show.svg" icon2="arMedia-0.1/icons/hide.svg" style="check"/>
+                        <menuItem name="Show Mesh on tag" icon="media-0.1/icons/show.svg" icon2="media-0.1/icons/hide.svg" style="check"/>
                         <separator/>
                         <menuItem name="Settings" icon="media-0.1/icons/Settings.svg" style="check"/>
                     </layout>
