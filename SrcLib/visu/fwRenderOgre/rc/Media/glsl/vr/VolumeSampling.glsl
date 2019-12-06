@@ -41,15 +41,15 @@ vec4 samplePreIntegrationTable(in sampler3D _volume, in VolumeRay _vray_Ms)
 vec4 sampleVolume(in sampler3D _volume, in VolumeRay _vray_Ms)
 {
 #ifdef PREINTEGRATION
-    vec4 sample = samplePreIntegrationTable(_volume, _vray_Ms);
+    vec4 sampleColor = samplePreIntegrationTable(_volume, _vray_Ms);
 #else // PREINTEGRATION
     float voxelIntensity = texture(_volume, _vray_Ms.position).r;
-    vec4 sample = sampleTransferFunction(voxelIntensity, u_s1TFTexture, u_f2TFWindow);
+    vec4 sampleColor = sampleTransferFunction(voxelIntensity, u_s1TFTexture, u_f2TFWindow);
 
     // Opacity correction.
     // TODO: compute this when generating the GPU transfer function to improve performance.
-    sample.a = 1 - pow(1 - sample.a, _vray_Ms.stepLength * u_fOpacityCorrectionFactor);
+    sampleColor.a = 1 - pow(1 - sampleColor.a, _vray_Ms.stepLength * u_fOpacityCorrectionFactor);
 #endif // PREINTEGRATION
 
-    return sample;
+    return sampleColor;
 }
