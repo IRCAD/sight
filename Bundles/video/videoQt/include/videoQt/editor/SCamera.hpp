@@ -42,7 +42,7 @@ namespace editor
 {
 
 /**
- * @brief   This editor allows to select the device to use. It updates the data camera identifier.
+ * @brief This editor allows to select the device to use. It updates the data camera identifier.
  *
  * @section Signals Signals
  * - \b configuredCameras(): emitted when the cameras have been successfully configured.
@@ -60,9 +60,10 @@ namespace editor
  * Configure this service either with a single camera data:
  *
  * @code{.xml}
-    <service uid="..." type="::videoQt::editor::SCamera" autoConnect="no">
+    <service uid="..." type="::videoQt::editor::SCamera" >
         <inout key="camera" uid="..."/>
         <videoSupport>yes</videoSupport>
+        <label>Video source: </label>
     </service>
    @endcode
 
@@ -71,103 +72,92 @@ namespace editor
  * \b createCameraNumber. This may be useful to load/save camera data without an existing calibration.
  *
  * @code{.xml}
-    <service uid="..." type="::videoQt::editor::SCamera" autoConnect="no">
+    <service uid="..." type="::videoQt::editor::SCamera" >
         <inout key="cameraSeries" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
         <videoSupport>yes</videoSupport>
+        <label>Video source: </label>
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b camera [::arData::Camera]: camera data
- * - \b cameraSeries [::arData::CameraSeries]: camera series, thus containing several camera.
+ * - \b camera [::arData::Camera]: camera data.
+ * - \b cameraSeries [::arData::CameraSeries]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
- * - \b videoSupport (optional, by default "no") : if we can open a video file in addition with cameras.
- * - \b createCameraNumber (optional, by default "0") : number of cameras to create. If the parameter is set and the
+ * - \b videoSupport (optional, default="no"): if we can open a video file in addition with cameras.
+ * - \b createCameraNumber (optional, default="0"): number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
+ * - \b label (optional, default="Video source: "): label of the selector.
  */
-class VIDEOQT_CLASS_API SCamera : public QObject,
-                                  public ::fwGui::editor::IEditor
+class VIDEOQT_CLASS_API SCamera final : public QObject,
+                                        public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCamera, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCamera, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
-    VIDEOQT_API SCamera() noexcept;
+    /// Initialize signals and slots.
+    VIDEOQT_API SCamera();
 
-    /// Destructor. Do nothing.
+    /// Destroys the service.
     VIDEOQT_API virtual ~SCamera() noexcept;
-
-    /// Type of the 'configuredCameras' signal
-    using ConfiguredCamerasSignalType = ::fwCom::Signal<void()>;
-
-    /// Key of the 'configuredCameras' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
-
-    /// Key of the 'configuredDevice' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_DEVICE_SIG;
-
-    /// Key of the 'configuredFile' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_FILE_SIG;
-
-    /// Key of the 'configuredStream' signal
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG;
-
-    /// Key of the 'configureDevice' slot
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT;
-    /// Key of the 'configureFile' slot
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT;
-    /// Key of the 'configureStream' slot
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT;
-
-protected:
-
-    /// Configure the service
-    virtual void configuring() override;
-
-    /// Installs the layout
-    virtual void starting() override;
-
-    /// Destroys the layout
-    virtual void stopping() override;
-
-    /// Does nothing
-    virtual void updating() override;
-
-    /// Does nothing
-    virtual void swapping() override;
 
 protected Q_SLOTS:
 
-    /// Calls when user select another device
-    void onApply(int index);
+    /**
+     * @brief Calls when user select another device.
+     * @param _index the index of the selected device.
+     */
+    void onApply(int _index);
 
 private:
 
-    typedef ::fwCom::Signal< void () > SourceConfiguredSignal;
+    /// Type of the 'configured' signal.
+    typedef ::fwCom::Signal<void ()> ConfiguredSignalType;
 
+    /// Configures the service.
+    virtual void configuring() final;
+
+    /// Installs the layout.
+    virtual void starting() final;
+
+    /// Destroys the layout.
+    virtual void stopping() final;
+
+    /// Does nothing.
+    virtual void updating() final;
+
+    /// Calls when user select a file.
     void onChooseFile();
+
+    /// Calls when user select a stream.
     void onChooseStream();
+
+    /// Calls when user select a device.
     void onChooseDevice();
 
-    /// Retrieve camera objects according to the XML configuration
+    /// Retrieves camera objects according to the XML configuration.
     std::vector< ::arData::Camera::sptr > getCameras() const;
 
-    /// Combobox for camera selection
+    /// Combobox for camera selection.
     QPointer<QComboBox> m_devicesComboBox;
 
-    /// Do we offer the possibility to select a video file (no by default) ?
-    bool m_bVideoSupport;
+    /// Offer the possibility to select a video file.
+    bool m_bVideoSupport {false};
 
-    /// Number of cameras to create when using a camera series as input
-    size_t m_numCreateCameras;
+    /// Number of cameras to create when using a camera series as input.
+    size_t m_numCreateCameras {0};
 
-    /// Signal emitted when the cameraSeries has been configured
-    ConfiguredCamerasSignalType::sptr m_sigConfiguredCameras;
+    /// Signal emitted when the cameraSeries has been configured.
+    ConfiguredSignalType::sptr m_sigConfiguredCameras;
+
+    /// Label of the selector.
+    std::string m_label {"Video source: "};
+
 };
 
 } // editor

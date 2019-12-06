@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const ::fwCom::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
-fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SDynamicView );
+fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SDynamicView )
 
 //------------------------------------------------------------------------------
 
@@ -101,6 +101,18 @@ void SDynamicView::configuring()
         const bool closable = (closableStr == "yes" || closableStr == "true");
         m_mainActivityClosable = closable;
     }
+    ConfigType config = m_configuration->findConfigurationElement("config");
+    if(config)
+    {
+        const std::string documentStr = config->getAttributeValue("document");
+        if(!documentStr.empty())
+        {
+            SLM_ASSERT("'document' attribute value must be 'true' or 'false'",
+                       documentStr == "true" || documentStr == "false");
+            const bool document = documentStr == "true";
+            m_documentMode = document;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +126,7 @@ void SDynamicView::starting()
 
     m_tabWidget = new QTabWidget();
     m_tabWidget->setTabsClosable( true );
-    m_tabWidget->setDocumentMode( true );
+    m_tabWidget->setDocumentMode( m_documentMode );
     m_tabWidget->setMovable( true );
 
     QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTabSignal(int)));

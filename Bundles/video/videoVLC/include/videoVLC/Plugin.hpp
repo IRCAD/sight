@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,6 +43,10 @@ struct VIDEOVLC_CLASS_API Plugin : public ::fwRuntime::Plugin
 
     // Overrides
     VIDEOVLC_API void stop() noexcept;
+
+    private:
+
+        static void exportVLCPluginsEnv(const std::string& path);
 };
 
 } // namespace videoVLC

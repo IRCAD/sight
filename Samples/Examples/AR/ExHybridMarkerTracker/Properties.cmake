@@ -19,6 +19,7 @@ set(REQUIREMENTS
         visuVTKQt
         visuVTKAdaptor
         visuVTKARAdaptor
+        videoCalibration
         videoQt
         videoOpenCV
         videoTools

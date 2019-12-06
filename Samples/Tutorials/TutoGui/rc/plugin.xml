@@ -59,6 +59,7 @@
                     <separator />
                     <menuItem name="start 2-3 / stop A-B" style="radio" icon="TutoGui-0.1/icons/important.png" />
                     <menuItem name="start A-B / stop 2-3" style="radio" icon="TutoGui-0.1/icons/important.png" />
+                    <menuItem name="view5 visibility (inverted)" style="check" icon="TutoGui-0.1/icons/monkey.png" />
                     <spacer/>
                     <menu name="Test Hide/Show" start="yes" />
                     <menuItem name="Quit" icon="TutoGui-0.1/icons/unreadable.png"/>
@@ -75,6 +76,7 @@
                 <menuItem sid="item5" start="no" />
                 <menuItem sid="item16" start="yes" />
                 <menuItem sid="item17" start="yes" />
+                <menuItem sid="view5Visibility" start="yes" />
                 <menu sid="testHideShow" start="yes" />
                 <menuItem sid="actionQuit" start="yes" />
             </registry>
@@ -162,6 +164,7 @@
             <registry>
                 <parent wid="myView" />
                 <view sid="subView3" start="yes" />
+                <view sid="subView4" start="yes" />
                 <view sid="subView5" start="yes" />
             </registry>
         </service>
@@ -189,6 +192,8 @@
             </gui>
             <registry/>
         </service>
+
+        <service uid="subView4" type="::gui::view::SDefaultView" />
 
         <service uid="subView5" type="::gui::view::SDefaultView" >
             <gui>
@@ -294,6 +299,13 @@
             <slots>
                 <slot>start/show</slot>
                 <slot>pause/hide</slot>
+            </slots>
+        </service>
+
+        <service uid="view5Visibility" type="::gui::action::SBooleanSlotCaller">
+            <state active="true" inverse="true" />
+            <slots>
+                <slot>subView5/setVisible</slot>
             </slots>
         </service>
 
