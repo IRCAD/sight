@@ -26,6 +26,8 @@
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
 
+#include <fwDataTools/Color.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QHBoxLayout>
@@ -65,8 +67,14 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
 
     if(!m_backgroundColor.empty())
     {
-        const QString style = QString::fromStdString(
-            "QToolBar { background-color: " + m_backgroundColor + "; } ");
+        std::uint8_t rgba[4];
+        ::fwDataTools::Color::hexaStringToRGBA(m_backgroundColor, rgba);
+        std::stringstream ss;
+        ss << "QToolBar { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+           << static_cast< short >(rgba[1]) << ','
+           << static_cast< short >(rgba[2]) << ','
+           << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+        const QString style = QString::fromStdString(ss.str());
         toolBar->setStyleSheet(qApp->styleSheet() + style);
     }
 

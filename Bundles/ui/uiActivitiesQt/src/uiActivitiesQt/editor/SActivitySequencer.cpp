@@ -127,6 +127,7 @@ void SActivitySequencer::starting()
         ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     m_widget = new QQuickWidget();
     mainLayout->addWidget(m_widget);

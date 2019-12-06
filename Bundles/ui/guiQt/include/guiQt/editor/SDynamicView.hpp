@@ -70,14 +70,14 @@ namespace editor
  * - \b activitySelected( ::fwData::object::sptr ): this signal is emitted when the current tab selection
  *   changed, it contains the associated ActivitySeries. The activity series is send as a ::fwData::Object in order to
  *   connect this signal to slots receiving a ::fwData::Object.
- * - \b nothingSelected(): This signal is emitted when no tab are selected.
+ * - \b nothingSelected(): this signal is emitted when no tab are selected.
  *
  * @section Slots Slots
- * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): This slot allows to create a tab with the given activity
+ * - \b launchActivity( ::fwMedData::ActivitySeries::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b launchActivitySeries( ::fwMedData::Series::sptr ): This slot allows to create a tab with the given activity
+ * - \b launchActivitySeries( ::fwMedData::Series::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b createTab( ::fwActivities::registry::ActivityMsg ): This slot allows to create a tab with the given activity
+ * - \b createTab( ::fwActivities::registry::ActivityMsg ): this slot allows to create a tab with the given activity
  *   information.
  *
  * @section XML XML Configuration
@@ -88,6 +88,7 @@ namespace editor
          <parameter replace="SERIESDB" by="medicalData"  />
          <parameter replace="ICON_PATH" by="media-0.1/icons/app.ico"  />
      </parameters>
+     <config document="true" />
    </service>
    @endcode
  * - \b mainActivity (optional): information about the main activity (first tab). The activity series will be generated.
@@ -100,6 +101,9 @@ namespace editor
  *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
+ *
+ * @subsection Configuration Configuration:
+ *  - \b document (optional, default="true") : sets the document mode of the tab bar.
  */
 class GUIQT_CLASS_API SDynamicView : public QObject,
                                      public ::fwGui::view::IActivityView
@@ -108,7 +112,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SDynamicView, ::fwGui::view::IActivityView);
+    fwCoreServiceMacro(SDynamicView, ::fwGui::view::IActivityView)
 
     /// Constructor. Do nothing.
     GUIQT_API SDynamicView() noexcept;
@@ -227,6 +231,9 @@ private:
     NothingSelectedSignalType::sptr m_sigNothingSelected;
 
     bool m_mainActivityClosable;
+
+    /// Allows to set the document mode.
+    bool m_documentMode {true};
 };
 
 } //namespace editor
