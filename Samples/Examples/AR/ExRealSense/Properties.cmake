@@ -28,8 +28,6 @@ set( REQUIREMENTS
     videoRealSense
     videoTools
     videoQt
-
-    arMedia
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRealSense)

@@ -6,7 +6,6 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     appXml
     arDataReg
-    arMedia
     dataReg
     fwlauncher
     gui

@@ -5,7 +5,6 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
     activities
-    arMedia
     dataReg
     arDataReg
     ctrlCamp

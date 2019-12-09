@@ -21,7 +21,6 @@ set( REQUIREMENTS
     videoOpenni
     videoPCL
     videoTools
-    arMedia
     preferences
 )
 

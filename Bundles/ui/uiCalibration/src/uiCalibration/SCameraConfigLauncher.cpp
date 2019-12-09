@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, ::fwData::Composite);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, ::fwData::Composite)
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept
 {
@@ -112,13 +112,13 @@ void SCameraConfigLauncher::starting()
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon importIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("arMedia",
+    QIcon importIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("media",
                                                                                    "icons/CameraSeries.svg").string()));
     m_importButton = new QPushButton(importIcon, "");
     m_importButton->setToolTip("Import an intrinsic calibration.");
     layout->addWidget(m_importButton);
 
-    QIcon removeIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("arMedia",
+    QIcon removeIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("media",
                                                                                    "icons/remove.svg").string()));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");

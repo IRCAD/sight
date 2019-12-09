@@ -21,7 +21,6 @@ set( REQUIREMENTS
     videoVLC
     videoTools
     media
-    arMedia
     preferences
 )
 
