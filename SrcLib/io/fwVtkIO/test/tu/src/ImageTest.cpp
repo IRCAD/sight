@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -94,12 +94,13 @@ void compareImageAttributes(const ExpSizeType& expSize,
 
 void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 {
-    const ::fwData::Image::Size size = {10, 15, 23};
+    const ::fwData::Image::Size size       = {10, 15, 23};
     const ::fwData::Image::Spacing spacing = {0.85, 2.6, 1.87};
-    const ::fwData::Image::Origin origin = {-45.6, 25.97, -53.9};
+    const ::fwData::Image::Origin origin   = {-45.6, 25.97, -53.9};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype), ::fwData::Image::PixelFormat::GRAY_SCALE);
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(
+                                                  imgtype), ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
 
