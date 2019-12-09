@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -380,4 +381,52 @@
       </cc:License>
     </rdf:RDF>
   </metadata>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.0" viewBox="0 0 131.72 131.72" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g transform="translate(-374.93 -725.15)">
+<path d="m441 766.18c0 7.2811-5.376 13.19-12 13.19 0 7.2811 5.376 13.19 12 13.19 6.624 0 12-5.9093 12-13.19 0-7.2812-5.376-13.19-12-13.19zm0-26.381c-24.612 0-48 30.655-48 39.571 0 8.9167 23.388 39.571 48 39.571 24.612 0 48-30.655 48-39.571 0-8.9168-23.388-39.571-48-39.571zm0 65.952c-13.254 0-24-11.812-24-26.381s10.746-26.381 24-26.381c13.254 0 24 11.812 24 26.381s-10.746 26.381-24 26.381z"/>
+<path d="m460.97 788.4c-0.5856 0.0386-1.1548 0.12573-1.73 0.18901h-0.0393l-1.3762 7.22c-2.243 0.4911-4.3533 1.3245-6.2517 2.4571l-6.1731-4.2715c-1.6688 1.2456-3.1873 2.6982-4.5217 4.2715l4.2858 6.0104c-1.3013 1.9118-2.2798 4.0949-2.831 6.3884-9e-5 0.0114-7e-5 0.0358 0 0.0378l-7.4706 1.134c-0.13659 1.0725-0.1966 2.1809-0.1966 3.2887 0 0.90638 0.0261 1.8006 0.11793 2.6839l7.4706 1.2852c0.53132 2.4941 1.5406 4.8234 2.9489 6.8798l-4.4431 5.8592c1.2725 1.5187 2.7415 2.9014 4.3251 4.1203l6.2911-4.1581c2.1986 1.3484 4.653 2.2939 7.3134 2.7595l1.1796 7.1444c0.8382 0.0733 1.6978 0.0756 2.5557 0.0756 1.2113 0 2.3683-0.0441 3.5387-0.189l1.4155-7.2956c2.5259-0.60433 4.8988-1.6527 6.9595-3.0619l6.0551 4.2337c1.5703-1.2844 3.0062-2.7607 4.2465-4.3471l-4.4038-6.1238c1.1926-1.9802 2.019-4.165 2.4378-6.5018l7.4313-1.134c0.0652-0.74555 0.0786-1.4686 0.0786-2.2302 0-1.3236-0.16002-2.6214-0.35387-3.8935l-7.5493-1.323c-0.59161-2.1002-1.5623-4.0596-2.7917-5.8214l4.4431-5.8591c-1.3772-1.6192-2.9482-3.115-4.679-4.3849l-6.409 4.2337c-1.842-1.0473-3.8243-1.851-5.9765-2.3059l-1.1796-7.1822c-1.0736-0.12141-2.1561-0.18901-3.2635-0.18901-0.29928 0-0.60732-9e-3 -0.90434 0-0.1448 4e-3 -0.28808-8e-3 -0.43251 0-0.0391 3e-3 -0.0789-4e-3 -0.11794 0zm1.0223 18.371c0.14364-7e-3 0.28706 0 0.4325 0 4.6543 0 8.4536 3.6526 8.4536 8.1272 0 4.4746-3.7993 8.0894-8.4536 8.0894-4.6543 0-8.4143-3.6148-8.4143-8.0894 0-4.3348 3.5288-7.91 7.9818-8.1272z" color="#000000" fill="#b5b2b2" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2135"/>
+</g>
+<metadata>
+<rdf:RDF>
+<cc:Work>
+<dc:format>image/svg+xml</dc:format>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+<dc:publisher>
+<cc:Agent rdf:about="http://openclipart.org/">
+<dc:title>Openclipart</dc:title>
+</cc:Agent>
+</dc:publisher>
+<dc:title/>
+<dc:date>2011-03-16T17:15:34</dc:date>
+<dc:description>Radiological warning symbol as seen in nuclear facilities</dc:description>
+<dc:source>https://openclipart.org/detail/127777/radioactive-warning-by-flooredmusic</dc:source>
+<dc:creator>
+<cc:Agent>
+<dc:title>flooredmusic</dc:title>
+</cc:Agent>
+</dc:creator>
+<dc:subject>
+<rdf:Bag>
+<rdf:li>nuclear</rdf:li>
+<rdf:li>radiation</rdf:li>
+<rdf:li>radioactive</rdf:li>
+<rdf:li>radiological</rdf:li>
+<rdf:li>science</rdf:li>
+<rdf:li>sign</rdf:li>
+<rdf:li>symbol</rdf:li>
+<rdf:li>warning</rdf:li>
+</rdf:Bag>
+</dc:subject>
+</cc:Work>
+<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+</cc:License>
+</rdf:RDF>
+</metadata>
+>>>>>>> abe183a... refactor(icons): optimize them
 </svg>
