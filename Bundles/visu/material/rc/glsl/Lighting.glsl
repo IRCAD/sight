@@ -37,7 +37,7 @@ vec4 lighting(vec3 _f3NormalDir_N, vec3 _f3Pos)
         f3DiffuseCol += fCosTheta * u_f3LightDiffuseCol[i] * u_f4DiffuseCol.rgb;
 
         vec3 r = reflect(f3LightDir_N, _f3NormalDir_N);
-        float fCosAlpha  = clamp(dot(f3VecToCamDir_N, r), 0, 1);
+        float fCosAlpha  = clamp(abs(dot(f3VecToCamDir_N, r)), 0, 1);
         f3SpecularCol += pow(fCosAlpha, u_fShininess) * u_f3LightSpecularCol[i] * u_f4SpecularCol.rgb;
     }
 
