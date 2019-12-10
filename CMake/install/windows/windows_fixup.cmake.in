@@ -38,7 +38,9 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP|(NSIS.*))
     endif()
     set(LAUNCHER_PATH @CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@)
 
-    #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
-    fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+    # Ignore VLC dll to avoid "fatal error LNK1328: missing string table"
+    set(IGNORE_VLC_DLL "videoVLC.dll;libvlc.dll;libvlccore.dll")
+    # Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
+    fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}" IGNORE_ITEM ${IGNORE_VLC_DLL})
 
 endif()

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,12 +40,13 @@ namespace widget
 
 //-----------------------------------------------------------------------------
 
-SlideBar::SlideBar(QWidget* parent, Aligment align, int buttonSize, double opacity) :
+SlideBar::SlideBar(QWidget* parent, Aligment align, int buttonSize, double opacity, bool _animatable) :
     QGroupBox(),
     m_buttonSize(buttonSize),
     m_opacity(opacity),
     m_isShown(false),
-    m_align(align)
+    m_align(align),
+    m_animatable(_animatable)
 {
     this->setParent(parent);
     this->init();
@@ -59,7 +60,6 @@ void SlideBar::init()
 
     // Set the widget position
     this->updatePosition();
-    this->setGeometry(m_hiddenPosition);
 
     // window flags to have a frameless dialog that can be displayed over an openGL widget
     this->setWindowFlags(Qt::Tool
@@ -143,7 +143,7 @@ void SlideBar::updatePosition()
         m_hiddenPosition = QRect(pos.x(), pos.y(), width, 0);
     }
 
-    if (m_isShown)
+    if(!m_animatable || m_isShown)
     {
         this->setGeometry(m_shownPosition);
     }
@@ -185,42 +185,54 @@ void SlideBar::forceShow()
 
 void SlideBar::slide(bool visible)
 {
-    // Show the widget with the previous opacity. It must be hidden after the slide(false) because if opacity == 0, the
-    // widget is still clickable.
-    this->forceShow();
-    this->setWindowOpacity(m_isShown ? m_opacity : 0);
-
-    // Set animation to slide the widget and update the opacity
-    QParallelAnimationGroup* animations = new QParallelAnimationGroup();
-
-    // slide animation
-    QPropertyAnimation* geomAnimation = new QPropertyAnimation(this, "geometry");
-    geomAnimation->setDuration(500);
-    geomAnimation->setEasingCurve(QEasingCurve::InBack);
-    geomAnimation->setStartValue(this->geometry());
-
-    if(visible == true)
+    if(m_animatable)
     {
-        geomAnimation->setEndValue(m_shownPosition);
+        // Show the widget with the previous opacity. It must be hidden after the slide(false) because if opacity == 0,
+        // the widget is still clickable.
+        this->forceShow();
+        this->setWindowOpacity(m_isShown ? m_opacity : 0);
+
+        // Set animation to slide the widget and update the opacity
+        QParallelAnimationGroup* animations = new QParallelAnimationGroup();
+
+        // slide animation
+        QPropertyAnimation* geomAnimation = new QPropertyAnimation(this, "geometry");
+        geomAnimation->setDuration(500);
+        geomAnimation->setEasingCurve(QEasingCurve::InBack);
+        geomAnimation->setStartValue(this->geometry());
+
+        if(visible == true)
+        {
+            geomAnimation->setEndValue(m_shownPosition);
+        }
+        else
+        {
+            geomAnimation->setEndValue(m_hiddenPosition);
+
+            // hide the widget when the animation is finished (if opacity == 0, widget is still clickable)
+            QObject::connect(animations, &QAbstractAnimation::finished, this, &SlideBar::forceHide);
+        }
+
+        // opacity animation
+        QPropertyAnimation* opacityAnimation = new QPropertyAnimation(this, "windowOpacity");
+        opacityAnimation->setDuration(500);
+        opacityAnimation->setEndValue(visible ? m_opacity : 0);
+
+        animations->addAnimation(geomAnimation);
+        animations->addAnimation(opacityAnimation);
+
+        animations->start(QPropertyAnimation::DeleteWhenStopped);
+    }
+    else if(visible)
+    {
+        this->forceShow();
     }
     else
     {
-        geomAnimation->setEndValue(m_hiddenPosition);
-
-        // hide the widget when the animation is finished (if opacity == 0, widget is still clickable)
-        QObject::connect(animations, &QAbstractAnimation::finished, this, &SlideBar::forceHide);
+        this->forceHide();
     }
-
-    // opacity animation
-    QPropertyAnimation* opacityAnimation = new QPropertyAnimation(this, "windowOpacity");
-    opacityAnimation->setDuration(500);
-    opacityAnimation->setEndValue(visible ? m_opacity : 0);
-
-    animations->addAnimation(geomAnimation);
-    animations->addAnimation(opacityAnimation);
-
-    animations->start(QPropertyAnimation::DeleteWhenStopped);
     m_isShown = visible;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -247,6 +259,17 @@ bool SlideBar::eventFilter(QObject* obj, QEvent* event)
         {
             mainFrame->removeEventFilter(this);
         }
+    }
+    else if(event->type() == QEvent::Show)
+    {
+        if(m_isShown)
+        {
+            this->forceShow();
+        }
+    }
+    else if(event->type() == QEvent::Hide)
+    {
+        this->forceHide();
     }
     return QObject::eventFilter(obj, event);
 }

@@ -61,6 +61,10 @@ public:
         }
 
         int m_border;
+        int m_leftBorder {0};
+        int m_topBorder {0};
+        int m_rightBorder {0};
+        int m_bottomBorder {0};
         std::pair< int, int >  m_minSize;
         std::string m_caption;
         bool m_visible;
@@ -100,7 +104,11 @@ public:
      *  - \<layout type="::fwGui::ToolboxLayoutManager" \> : define a toolbox layout.
      *  - \<view caption="My view 1" expanded="true" minWidth="30" /\> : define a new view which can have the following
      * attributes
-     *   - \b border : define the size of the border in the layout
+     *   - \b border : defines the size of the border in the layout
+     *   - \b leftBorder : defines the size of the left border in the layout
+     *   - \b topBorder : defines the size of the top border in the layout
+     *   - \b rightBorder : defines the size of the right border in the layout
+     *   - \b bottomBorder : defines the size of the bottom border in the layout
      *   - \b caption : define the title to display.
      *   - \b minWidth  : minimal width of the view.
      *   - \b minHeight : minimal height of the view.
