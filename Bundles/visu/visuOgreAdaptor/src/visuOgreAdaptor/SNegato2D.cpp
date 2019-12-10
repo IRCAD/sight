@@ -225,8 +225,9 @@ void SNegato2D::newImage()
         // Retrieves or creates the slice index fields
         ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-        const auto spacing = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).first;
-        this->createPlane( spacing );
+        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        this->createPlane(spacing);
+        m_plane->setOriginPosition(origin);
 
         // Update Slice
         const auto axialIndex =
@@ -241,7 +242,6 @@ void SNegato2D::newImage()
             static_cast<int>(frontalIndex),
             static_cast<int>(sagittalIndex)
             );
-        this->changeSliceType(0, m_orientation);
 
         // Update tranfer function in Gpu programs
         this->updateTF();
@@ -260,29 +260,35 @@ void SNegato2D::newImageDeprecatedSlot()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::changeSliceType(int /*_from*/, int _to)
+void SNegato2D::changeSliceType(int _from, int _to)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
-    this->getRenderService()->makeCurrent();
+    const auto toOrientation   = static_cast<OrientationMode>(_to);
+    const auto fromOrientation = static_cast<OrientationMode>(_from);
 
-    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
-    m_plane->setOriginPosition(imgOrigin);
+    const auto planeOrientation = m_plane->getOrientationMode();
+    const auto newOrientation   = planeOrientation == toOrientation ? fromOrientation :
+                                  planeOrientation == fromOrientation ? toOrientation : planeOrientation;
 
-    OrientationMode newOrientationMode = static_cast<OrientationMode>(_to);
+    if(planeOrientation != newOrientation)
+    {
+        this->getRenderService()->makeCurrent();
 
-    // The orientation update setter will change the fragment shader
-    m_plane->setOrientationMode(newOrientationMode);
-    m_orientation = newOrientationMode;
+        m_plane->setOrientationMode(newOrientation);
 
-    // Update threshold if necessary
-    this->updateTF();
+        const auto origin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+        m_plane->setOriginPosition(origin);
 
-    this->updateShaderSliceIndexParameter();
+        // Update threshold if necessary
+        this->updateTF();
 
-    this->requestRender();
+        this->updateShaderSliceIndexParameter();
+
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -267,10 +267,21 @@ void SNegato2DCamera::resetCamera()
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::changeOrientation(int /*_from*/, int _to)
+void SNegato2DCamera::changeOrientation(int _from, int _to)
 {
-    m_currentNegatoOrientation = static_cast<Orientation>(_to);
-    this->resetCamera();
+    const auto toOrientation   = static_cast<Orientation>(_to);
+    const auto fromOrientation = static_cast<Orientation>(_from);
+
+    if(m_currentNegatoOrientation == toOrientation)
+    {
+        m_currentNegatoOrientation = fromOrientation;
+        this->resetCamera();
+    }
+    else if(m_currentNegatoOrientation == fromOrientation)
+    {
+        m_currentNegatoOrientation = toOrientation;
+        this->resetCamera();
+    }
 }
 
 //-----------------------------------------------------------------------------
