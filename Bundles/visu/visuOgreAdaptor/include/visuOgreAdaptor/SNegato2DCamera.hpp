@@ -105,13 +105,13 @@ private:
     virtual void wheelEvent(Modifier, int delta, int mouseX, int mouseY) final;
 
     /// Moves the camera along the projection plane.
-    virtual void mouseMoveEvent(IInteractor::MouseButton button, Modifier, int, int, int dx, int dy) final;
+    virtual void mouseMoveEvent(IInteractor::MouseButton button, Modifier, int x, int y, int dx, int dy) final;
 
     /// Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the case.
-    virtual void buttonPressEvent(IInteractor::MouseButton button, Modifier, int, int) final;
+    virtual void buttonPressEvent(IInteractor::MouseButton button, Modifier, int x, int y) final;
 
     /// Disables mouse movements.
-    virtual void buttonReleaseEvent(IInteractor::MouseButton button, Modifier, int, int) final;
+    virtual void buttonReleaseEvent(IInteractor::MouseButton button, Modifier, int x, int y) final;
 
     /// Resets the camera when the 'R' key is pressed.
     virtual void keyPressEvent(int key, Modifier) final;

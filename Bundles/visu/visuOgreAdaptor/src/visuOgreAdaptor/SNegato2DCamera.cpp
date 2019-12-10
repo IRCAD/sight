@@ -152,8 +152,7 @@ void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
         // Zoom in.
         const float orthoHeight    = camera->getOrthoWindowHeight();
         const float newOrthoHeight = orthoHeight + (orthoHeight / zoomAmount);
-        const float clampedHeight  = std::max(newOrthoHeight, 1e-7f); // Make sure the height is strictly greater than
-                                                                      // 0.
+        const float clampedHeight  = std::max(newOrthoHeight, 1e-7f); // Make sure the height is strictly greater than 0
 
         const float vpWidth  = static_cast<float>(viewport->getActualWidth());
         const float vpHeight = static_cast<float>(viewport->getActualHeight());

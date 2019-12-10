@@ -64,6 +64,12 @@ public:
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y,
                                                  int _dx, int _dy) override;
 
+    /// Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the case.
+    virtual void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+
+    /// Disables mouse movements.
+    virtual void buttonReleaseEvent(MouseButton _button, Modifier, int, int) override;
+
     /**
      * @brief Moves the camera towards or away from the focus point.
      * @param _delta distance that the wheel is rotated, in eighths of a degree.
@@ -122,6 +128,9 @@ private:
 
     /// Animate the camera to rotate around the trackball center.
     bool m_animate { false };
+
+    /// Enables/disables mouse move events.
+    bool m_mouseMove { false };
 
     /// Timer used to animate the camera.
     ::fwThread::Timer::sptr m_timer;

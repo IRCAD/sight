@@ -63,50 +63,73 @@ TrackballInteractor::~TrackballInteractor()
 
 void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier, int, int, int dx, int dy)
 {
-    if(button == LEFT)
+    if(m_mouseMove)
     {
-        cameraRotate(dx, dy);
-    }
-    else if(button == MIDDLE)
-    {
-        cameraTranslate(dx, dy);
-    }
-    else if(button == RIGHT)
-    {
-        ::Ogre::Camera* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-        const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
+        if(button == LEFT)
+        {
+            cameraRotate(dx, dy);
+        }
+        else if(button == MIDDLE)
+        {
+            cameraTranslate(dx, dy);
+        }
+        else if(button == RIGHT)
+        {
+            ::Ogre::Camera* const camera = m_layer.lock()->getDefaultCamera();
+            const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
 
-        camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
+            camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
+        }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::wheelEvent(Modifier, int delta, int /*x*/, int /*y*/)
+void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton, Modifier, int _x, int _y)
 {
-    constexpr float mouseScale = 0.01f;
-
-    // The zoom factor is reduced when coming closer and increased when going away
-    const float fNewZoom = m_zoom * std::pow(0.85f, static_cast<float>(delta) * mouseScale);
-
-    // Moreover we cannot pass through the center of the trackball
-    const float z = (m_zoom - fNewZoom) * 200.f / (m_mouseScale );
-
-    // Update the center of interest for future rotations
-    m_lookAtZ -= z;
-
-    this->updateCameraFocalLength();
-
-    m_zoom = fNewZoom;
-
-    // Translate the camera.
-    ::Ogre::Camera* const camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-    ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
-    camNode->translate( ::Ogre::Vector3(0, 0, -1)*z, ::Ogre::Node::TS_LOCAL );
-
     if(auto layer = m_layer.lock())
     {
-        layer->resetCameraClippingRange();
+        m_mouseMove = isInLayer(_x, _y, layer);
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int, int)
+{
+    m_mouseMove = false;
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::wheelEvent(Modifier, int delta, int x, int y)
+{
+    if(auto layer = m_layer.lock())
+    {
+        if(isInLayer(x, y, layer))
+        {
+            constexpr float mouseScale = 0.01f;
+
+            // The zoom factor is reduced when coming closer and increased when going away
+            const float newZoom = m_zoom * std::pow(0.85f, static_cast<float>(delta) * mouseScale);
+
+            // Moreover we cannot pass through the center of the trackball
+            const float z = (m_zoom - newZoom) * 200.f / (m_mouseScale );
+
+            // Update the center of interest for future rotations
+            m_lookAtZ -= z;
+
+            this->updateCameraFocalLength();
+
+            m_zoom = newZoom;
+
+            // Translate the camera.
+            ::Ogre::Camera* const camera     = layer->getDefaultCamera();
+            ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
+            camNode->translate( ::Ogre::Vector3(0, 0, -1)*z, ::Ogre::Node::TS_LOCAL );
+
+            layer->resetCameraClippingRange();
+        }
     }
 }
 
