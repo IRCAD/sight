@@ -76,16 +76,15 @@ public:
      */
     FWRENDEROGRE_API virtual void wheelEvent(Modifier, int _delta, int, int) final;
 
-    /// Sets the current width/height of the render window.
-    FWRENDEROGRE_API virtual void resizeEvent(int _w, int _h) final;
-
     /**
      * @brief Defines camera actions when the keyboard is pressed.
      * @param _key pressed key code. Defines the following behaviour:
      * - 'A' or 'a': animates the camera to rotate around the focus point.
      * - 'R' or 'r': moves the camera backwards to see the whole scene.
+     * @param _mouseX the mouse's width position at the time of the key press.
+     * @param _mouseY the mouse's height position at the time of the key press.
      */
-    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier) final;
+    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier, int _mouseX, int _mouseY) final;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
     FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength) final;
@@ -119,12 +118,6 @@ private:
 
     /// Default mouse scale factor (used to move the camera)
     static constexpr int MOUSE_SCALE_FACTOR = 200;
-
-    /// Current width of the render window.
-    int m_width { 1 };
-
-    /// Current height of the render window.
-    int m_height { 1 };
 
     /// Animate the camera to rotate around the trackball center.
     bool m_animate { false };

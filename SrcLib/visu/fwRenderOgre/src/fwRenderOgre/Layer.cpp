@@ -513,7 +513,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->keyPressEvent(info.key, info.modifiers);
+                    _i->keyPressEvent(info.key, info.modifiers, info.x, info.y);
                 });
             break;
         }
@@ -525,7 +525,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
-                    _i->keyReleaseEvent(info.key, info.modifiers);
+                    _i->keyReleaseEvent(info.key, info.modifiers, info.x, info.y);
                 });
             break;
         }

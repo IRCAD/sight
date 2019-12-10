@@ -135,47 +135,42 @@ void TrackballInteractor::wheelEvent(Modifier, int delta, int x, int y)
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::resizeEvent(int x, int y)
-{
-    m_width  = x;
-    m_height = y;
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::keyPressEvent(int key, Modifier)
+void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mouseY)
 {
     if(auto layer = m_layer.lock())
     {
-        if(key == 'R' || key == 'r')
+        if(isInLayer(_mouseX, _mouseY, layer))
         {
-            layer->resetCameraCoordinates();
-        }
-
-        if(key == 'A' || key == 'a')
-        {
-            m_animate = !m_animate;
-
-            if(!m_animate && m_timer)
+            if(key == 'R' || key == 'r')
             {
-                m_timer->stop();
-                m_timer.reset();
+                layer->resetCameraCoordinates();
             }
 
-            if(m_animate)
+            if(key == 'A' || key == 'a')
             {
-                // We use a timer on the main thread instead of a separate thread.
-                // OpenGL commands need to be sent from the same thread as the one on which the context is created.
-                const auto worker = ::fwServices::registry::ActiveWorkers::getDefault()->getDefaultWorker();
-                m_timer = worker->createTimer();
+                m_animate = !m_animate;
 
-                m_timer->setFunction([this, layer]()
-                        {
-                            this->cameraRotate(10, 0);
-                            layer->requestRender();
-                        } );
-                m_timer->setDuration(std::chrono::milliseconds(33));
-                m_timer->start();
+                if(!m_animate && m_timer)
+                {
+                    m_timer->stop();
+                    m_timer.reset();
+                }
+
+                if(m_animate)
+                {
+                    // We use a timer on the main thread instead of a separate thread.
+                    // OpenGL commands need to be sent from the same thread as the one on which the context is created.
+                    const auto worker = ::fwServices::registry::ActiveWorkers::getDefault()->getDefaultWorker();
+                    m_timer = worker->createTimer();
+
+                    m_timer->setFunction([this, layer]()
+                            {
+                                this->cameraRotate(10, 0);
+                                layer->requestRender();
+                            } );
+                    m_timer->setDuration(std::chrono::milliseconds(33));
+                    m_timer->start();
+                }
             }
         }
     }
@@ -185,16 +180,20 @@ void TrackballInteractor::keyPressEvent(int key, Modifier)
 
 void TrackballInteractor::cameraRotate(int dx, int dy)
 {
-    ::Ogre::Real dx_float = static_cast< ::Ogre::Real>(dx);
-    ::Ogre::Real dy_float = static_cast< ::Ogre::Real>(dy);
+    ::Ogre::Real wDelta = static_cast< ::Ogre::Real>(dx);
+    ::Ogre::Real hDelta = static_cast< ::Ogre::Real>(dy);
 
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
+    ::Ogre::Camera* const camera     = m_layer.lock()->getDefaultCamera();
+    ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
+    const ::Ogre::Viewport* const vp = camera->getViewport();
+
+    const float height = static_cast<float>(vp->getActualHeight());
+    const float width  = static_cast<float>(vp->getActualWidth());
 
     // Current orientation of the camera
-    ::Ogre::Quaternion orientation = camNode->getOrientation();
-    ::Ogre::Vector3 viewRight      = orientation.xAxis();
-    ::Ogre::Vector3 viewUp         = orientation.yAxis();
+    const ::Ogre::Quaternion orientation = camNode->getOrientation();
+    const ::Ogre::Vector3 viewRight      = orientation.xAxis();
+    const ::Ogre::Vector3 viewUp         = orientation.yAxis();
 
     // Rotate around the right vector according to the dy of the mouse
     {
@@ -204,18 +203,18 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        ::Ogre::Vector3 vecX(std::abs(dy_float), 0.f, 0.f);
+        ::Ogre::Vector3 vecX(std::abs(hDelta), 0.f, 0.f);
         ::Ogre::Vector3 rotateX = vecX * viewRight;
         rotateX.normalise();
 
         // 3 - Now determine the rotation direction
         if(rotateX.dotProduct(::Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
         {
-            dy_float *= -1;
+            hDelta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        float angle = (dy_float * ::Ogre::Math::PI / static_cast< float>(m_height));
+        const float angle = (hDelta * ::Ogre::Math::PI / height);
 
         // 5 - Apply the rotation on the scene node
         ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateX);
@@ -233,18 +232,18 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        ::Ogre::Vector3 vecY(0.f, std::abs(dx_float), 0.f);
+        ::Ogre::Vector3 vecY(0.f, std::abs(wDelta), 0.f);
         ::Ogre::Vector3 rotateY = vecY * viewUp;
         rotateY.normalise();
 
         // 3 - Now determine the rotation direction
         if(rotateY.dotProduct(::Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
         {
-            dx_float *= -1;
+            wDelta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        float angle = (dx_float * ::Ogre::Math::PI / static_cast< float>(m_width));
+        const float angle = (wDelta * ::Ogre::Math::PI / width);
 
         // 5 - Apply the rotation on the scene node
         ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateY);

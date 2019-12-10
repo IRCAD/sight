@@ -156,15 +156,19 @@ public:
      * @brief Listens to keyboard keys being pressed.
      * @param _key pressed key.
      * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse at the time of the event.
+     * @param _y height coordinate of the mouse at the time of the event.
      */
-    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier _mods);
+    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
 
     /**
      * @brief Listens to keyboard keys being released.
      * @param _key pressed key.
      * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse at the time of the event.
+     * @param _y height coordinate of the mouse at the time of the event.
      */
-    FWRENDEROGRE_API virtual void keyReleaseEvent(int _key, Modifier _mods);
+    FWRENDEROGRE_API virtual void keyReleaseEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
 
     /**
      * @brief Checks if the cursor is inside a layer's viewport.

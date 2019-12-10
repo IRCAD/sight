@@ -114,7 +114,7 @@ private:
     virtual void buttonReleaseEvent(IInteractor::MouseButton button, Modifier, int x, int y) final;
 
     /// Resets the camera when the 'R' key is pressed.
-    virtual void keyPressEvent(int key, Modifier) final;
+    virtual void keyPressEvent(int key, Modifier, int mouseX, int mouseY) final;
 
     /// Resets the camera's zoom.
     void resetCamera();

@@ -137,7 +137,7 @@ void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
 {
     const auto layer = this->getLayer();
 
-    if(::fwRenderOgre::interactor::IInteractor::isInLayer(mouseX, mouseY, layer))
+    if(IInteractor::isInLayer(mouseX, mouseY, layer))
     {
         const auto* const viewport = layer->getViewport();
         auto* const camera         = layer->getDefaultCamera();
@@ -192,7 +192,7 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, 
 void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton button, Modifier, int x, int y)
 {
     const auto layer = this->getLayer();
-    m_moveCamera = button == MIDDLE && ::fwRenderOgre::interactor::IInteractor::isInLayer(x, y, layer);
+    m_moveCamera = button == MIDDLE && IInteractor::isInLayer(x, y, layer);
 }
 
 //-----------------------------------------------------------------------------
@@ -204,9 +204,10 @@ void SNegato2DCamera::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::keyPressEvent(int key, Modifier)
+void SNegato2DCamera::keyPressEvent(int key, Modifier, int mouseX, int mouseY)
 {
-    if(key == 'R' || key == 'r')
+    const auto layer = this->getLayer();
+    if(IInteractor::isInLayer(mouseX, mouseY, layer) && (key == 'R' || key == 'r'))
     {
         this->resetCamera();
     }
