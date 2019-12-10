@@ -107,6 +107,12 @@ private:
     /// Moves the camera along the projection plane.
     virtual void mouseMoveEvent(IInteractor::MouseButton button, Modifier, int, int, int dx, int dy) final;
 
+    /// Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the case.
+    virtual void buttonPressEvent(IInteractor::MouseButton button, Modifier, int, int) final;
+
+    /// Disables mouse movements.
+    virtual void buttonReleaseEvent(IInteractor::MouseButton button, Modifier, int, int) final;
+
     /// Resets the camera when the 'R' key is pressed.
     virtual void keyPressEvent(int key, Modifier) final;
 
@@ -118,6 +124,8 @@ private:
 
     /// Moves the camera backwards outside the scene's bounding box.
     void moveBack();
+
+    bool m_moveCamera { false };
 
     /// Current image orientation.
     Orientation m_currentNegatoOrientation {  ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS };

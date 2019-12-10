@@ -129,7 +129,10 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(const ::arData::Camera& _calibrati
 
     const ::Ogre::Vector3 vpSize(static_cast<float>(viewport->getActualWidth()),
                                  static_cast<float>(viewport->getActualHeight()), 1.f);
-    ::Ogre::Vector3 ndcCoordinates = (_screenPosition / vpSize) * 2.f - 1.f;
+    const ::Ogre::Vector3 vpPosition(static_cast<float>(viewport->getActualLeft()),
+                                     static_cast<float>(viewport->getActualTop()), 0.f);
+
+    ::Ogre::Vector3 ndcCoordinates = ((_screenPosition - vpPosition) / vpSize ) * 2.f - 1.f;
     ndcCoordinates.y              *= -1.f;
 
     ::Ogre::Vector4 clippingCoordinatePixel;

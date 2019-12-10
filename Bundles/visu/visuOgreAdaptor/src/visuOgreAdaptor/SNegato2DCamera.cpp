@@ -135,42 +135,48 @@ void SNegato2DCamera::stopping()
 
 void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
 {
-    const auto layer           = this->getLayer();
-    const auto* const viewport = layer->getViewport();
-    auto* const camera         = layer->getDefaultCamera();
-    auto* const camNode        = camera->getParentNode();
+    const auto layer = this->getLayer();
 
-    constexpr float mouseWheelScale = 0.05f;
-    const float zoomAmount          = static_cast<float>(-delta) * mouseWheelScale;
+    if(::fwRenderOgre::interactor::IInteractor::isInLayer(mouseX, mouseY, layer))
+    {
+        const auto* const viewport = layer->getViewport();
+        auto* const camera         = layer->getDefaultCamera();
+        auto* const camNode        = camera->getParentNode();
 
-    // Compute the mouse's position in the camera's view.
-    const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
+        constexpr float mouseWheelScale = 0.05f;
+        const float zoomAmount          = static_cast<float>(-delta) * mouseWheelScale;
 
-    // Zoom in.
-    const float orthoHeight    = camera->getOrthoWindowHeight();
-    const float newOrthoHeight = orthoHeight + (orthoHeight / zoomAmount);
-    const float clampedHeight  = std::max(newOrthoHeight, 1e-7f); // Make sure the height is strictly greater than 0.
+        // Compute the mouse's position in the camera's view.
+        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
 
-    const float vpWidth  = static_cast<float>(viewport->getActualWidth());
-    const float vpHeight = static_cast<float>(viewport->getActualHeight());
+        // Zoom in.
+        const float orthoHeight    = camera->getOrthoWindowHeight();
+        const float newOrthoHeight = orthoHeight + (orthoHeight / zoomAmount);
+        const float clampedHeight  = std::max(newOrthoHeight, 1e-7f); // Make sure the height is strictly greater than
+                                                                      // 0.
 
-    camera->setAspectRatio(vpWidth / vpHeight);
-    camera->setOrthoWindowHeight(clampedHeight);
+        const float vpWidth  = static_cast<float>(viewport->getActualWidth());
+        const float vpHeight = static_cast<float>(viewport->getActualHeight());
 
-    // Compute the mouse's position in the zoomed view.
-    const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
+        camera->setAspectRatio(vpWidth / vpHeight);
+        camera->setOrthoWindowHeight(clampedHeight);
 
-    // Translate the camera back to the cursor's previous position.
-    camNode->translate(mousePosView - newMousePosView);
+        // Compute the mouse's position in the zoomed view.
+        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
+
+        // Translate the camera back to the cursor's previous position.
+        camNode->translate(mousePosView - newMousePosView);
+    }
 }
 
 // ----------------------------------------------------------------------------
 
 void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, int x, int y, int dx, int dy)
 {
-    if(button == MIDDLE)
+    if(m_moveCamera && button == MIDDLE)
     {
-        const auto layer    = this->getLayer();
+        const auto layer = this->getLayer();
+
         auto* const camera  = layer->getDefaultCamera();
         auto* const camNode = camera->getParentNode();
 
@@ -180,6 +186,21 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, 
 
         camNode->translate(mousePosView - previousMousePosView);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton button, Modifier, int x, int y)
+{
+    const auto layer = this->getLayer();
+    m_moveCamera = button == MIDDLE && ::fwRenderOgre::interactor::IInteractor::isInLayer(x, y, layer);
+}
+
+//-----------------------------------------------------------------------------
+
+void SNegato2DCamera::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int, int)
+{
+    m_moveCamera = false;
 }
 
 //-----------------------------------------------------------------------------
