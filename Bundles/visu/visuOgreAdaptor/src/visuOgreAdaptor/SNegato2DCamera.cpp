@@ -227,30 +227,31 @@ void SNegato2DCamera::resetCamera()
     camera->setAspectRatio(vpWidth / vpHeight);
 
     const auto worldBoundingBox = layer->computeWorldBoundingBox();
-    const auto worldSize        = worldBoundingBox.getSize();
-
-    camNode->setPosition(::Ogre::Vector3::ZERO);
-    camNode->resetOrientation();
-    switch(m_currentNegatoOrientation)
-    {
-        case Orientation::X_AXIS:
-            camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
-            camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
-            camera->setOrthoWindowHeight(worldSize.z);
-            break;
-        case Orientation::Y_AXIS:
-            camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
-            camera->setOrthoWindowHeight(worldSize.z);
-            break;
-        case Orientation::Z_AXIS:
-            camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
-            camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
-            camera->setOrthoWindowHeight(worldSize.y);
-            break;
-    }
 
     if(worldBoundingBox.isFinite())
     {
+        const auto worldSize = worldBoundingBox.getSize();
+
+        camNode->setPosition(::Ogre::Vector3::ZERO);
+        camNode->resetOrientation();
+        switch(m_currentNegatoOrientation)
+        {
+            case Orientation::X_AXIS:
+                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
+                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
+                camera->setOrthoWindowHeight(worldSize.z);
+                break;
+            case Orientation::Y_AXIS:
+                camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
+                camera->setOrthoWindowHeight(worldSize.z);
+                break;
+            case Orientation::Z_AXIS:
+                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
+                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
+                camera->setOrthoWindowHeight(worldSize.y);
+                break;
+        }
+
         const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
         auto camPos              = worldBoundingBox.getCenter();
 
