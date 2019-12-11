@@ -35,7 +35,7 @@ namespace visuOgreAdaptor
  * @brief Adaptor to render a video frame from a 2D-image.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the video has to be seen or not.
+ * - \b updateVisibility(bool): Sets whether the video is visible or not.
  * - \b updateTF(): Updates the displayed transfer function.
  *
  * @section XML XML Configuration
