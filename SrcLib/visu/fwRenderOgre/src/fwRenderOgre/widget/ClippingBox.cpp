@@ -23,6 +23,7 @@
 #include "fwRenderOgre/widget/ClippingBox.hpp"
 
 #include "fwRenderOgre/compositor/Core.hpp"
+#include "fwRenderOgre/helper/Camera.hpp"
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
@@ -41,20 +42,6 @@ namespace fwRenderOgre::widget
 {
 
 const std::string s_VR_MATERIALS_GROUP = "VRMaterials";
-
-//-----------------------------------------------------------------------------
-
-static inline ::Ogre::Vector2 getPositionInViewport(int _screenX, int _screenY, const ::Ogre::Camera* const _camera)
-{
-    const auto* const vp = _camera->getViewport();
-    const int height     = vp->getActualHeight();
-    const int width      = vp->getActualWidth();
-    const int left       = vp->getActualLeft();
-    const int top        = vp->getActualTop();
-
-    return ::Ogre::Vector2(static_cast<float>(_screenX - left) / static_cast<float>(width),
-                           static_cast<float>(_screenY - top) / static_cast<float>(height));
-}
 
 //-----------------------------------------------------------------------------
 
@@ -330,9 +317,6 @@ void ClippingBox::deselectFace()
 
 void ClippingBox::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY)
 {
-    const int height = m_camera->getViewport()->getActualHeight();
-    const int width  = m_camera->getViewport()->getActualWidth();
-
     SLM_ASSERT("The picked widget does not belong to this widget.", this->belongsToWidget(_pickedWidget));
     const auto face = m_widgets.at(_pickedWidget);
 
@@ -343,7 +327,7 @@ void ClippingBox::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screen
         const ::fwRenderOgre::vr::IVolumeRenderer::CubeFace widgetFace = face.first;
         const ::Ogre::SceneNode* widgetSceneNode                       = face.second;
 
-        const auto vpPos = getPositionInViewport(_screenX, _screenY, m_camera);
+        const auto vpPos = helper::Camera::convertFromWindowToViewportSpace(*m_camera, _screenX, _screenY);
 
         const ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
@@ -418,10 +402,7 @@ void ClippingBox::widgetReleased()
 
 bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
 {
-    const int width  = m_camera->getViewport()->getActualWidth();
-    const int height = m_camera->getViewport()->getActualHeight();
-
-    const auto vpPos = getPositionInViewport(x, y, m_camera);
+    const auto vpPos = helper::Camera::convertFromWindowToViewportSpace(*m_camera, x, y);
 
     const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
@@ -469,7 +450,7 @@ bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
         oldPos            = m_volumeSceneNode->convertLocalToWorldPosition(boxPos);
         intersectionPlane = ::Ogre::Plane(camDir, oldPos);
 
-        const auto newVpPos = getPositionInViewport(x + dx, y + dy, m_camera);
+        const auto newVpPos = helper::Camera::convertFromWindowToViewportSpace(*m_camera, x + dx, y + dy);
 
         const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(newVpPos.x, newVpPos.y);
 
@@ -497,10 +478,7 @@ bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
 
 bool ClippingBox::scaleClippingBox(int x, int y, int dy)
 {
-    const int width  = m_camera->getViewport()->getActualWidth();
-    const int height = m_camera->getViewport()->getActualHeight();
-
-    const auto vpPos = getPositionInViewport(x, y, m_camera);
+    const auto vpPos = helper::Camera::convertFromWindowToViewportSpace(*m_camera, x, y);
 
     const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
@@ -535,6 +513,8 @@ bool ClippingBox::scaleClippingBox(int x, int y, int dy)
     if(boxSelected)
     {
         const auto volumeSize = m_volumeSceneNode->getScale();
+
+        const int height = m_camera->getViewport()->getActualHeight();
 
         // A displacement of 1 pixel along the height axis scales the box by 1/100th of the image's length.
         const float speed = (volumeSize.length() / 100.f) / static_cast<float>(height);
