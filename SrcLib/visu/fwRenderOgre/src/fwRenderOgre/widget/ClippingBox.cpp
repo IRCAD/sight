@@ -44,6 +44,20 @@ const std::string s_VR_MATERIALS_GROUP = "VRMaterials";
 
 //-----------------------------------------------------------------------------
 
+static inline ::Ogre::Vector2 getPositionInViewport(int _screenX, int _screenY, const ::Ogre::Camera* const _camera)
+{
+    const auto* const vp = _camera->getViewport();
+    const int height     = vp->getActualHeight();
+    const int width      = vp->getActualWidth();
+    const int left       = vp->getActualLeft();
+    const int top        = vp->getActualTop();
+
+    return ::Ogre::Vector2(static_cast<float>(_screenX - left) / static_cast<float>(width),
+                           static_cast<float>(_screenY - top) / static_cast<float>(height));
+}
+
+//-----------------------------------------------------------------------------
+
 ClippingBox::ClippingBox(const std::string& id,
                          ::Ogre::SceneNode* parentSceneNode,
                          ::Ogre::Camera* camera,
@@ -329,9 +343,9 @@ void ClippingBox::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screen
         const ::fwRenderOgre::vr::IVolumeRenderer::CubeFace widgetFace = face.first;
         const ::Ogre::SceneNode* widgetSceneNode                       = face.second;
 
-        const ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
-            static_cast< ::Ogre::Real>(_screenX) / static_cast< ::Ogre::Real>(width),
-            static_cast< ::Ogre::Real>(_screenY) / static_cast< ::Ogre::Real>(height));
+        const auto vpPos = getPositionInViewport(_screenX, _screenY, m_camera);
+
+        const ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
         const ::Ogre::Vector3 oldPos = m_volumeSceneNode->convertLocalToWorldPosition(widgetSceneNode->getPosition());
 
@@ -407,11 +421,9 @@ bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
     const int width  = m_camera->getViewport()->getActualWidth();
     const int height = m_camera->getViewport()->getActualHeight();
 
-    const ::Ogre::Vector2 cursor(
-        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
-        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+    const auto vpPos = getPositionInViewport(x, y, m_camera);
 
-    const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
+    const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
     // Get ray in image space.
     const ::Ogre::Ray mouseRayImgSpace(
@@ -457,9 +469,9 @@ bool ClippingBox::moveClippingBox(int x, int y, int dx, int dy)
         oldPos            = m_volumeSceneNode->convertLocalToWorldPosition(boxPos);
         intersectionPlane = ::Ogre::Plane(camDir, oldPos);
 
-        const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
-            static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
-            static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
+        const auto newVpPos = getPositionInViewport(x + dx, y + dy, m_camera);
+
+        const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(newVpPos.x, newVpPos.y);
 
         const std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
 
@@ -488,11 +500,9 @@ bool ClippingBox::scaleClippingBox(int x, int y, int dy)
     const int width  = m_camera->getViewport()->getActualWidth();
     const int height = m_camera->getViewport()->getActualHeight();
 
-    const ::Ogre::Vector2 cursor(
-        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
-        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+    const auto vpPos = getPositionInViewport(x, y, m_camera);
 
-    const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
+    const ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
     // Get ray in image space.
     const ::Ogre::Ray mouseRayImgSpace(
