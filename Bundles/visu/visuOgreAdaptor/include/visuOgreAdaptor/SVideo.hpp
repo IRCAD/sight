@@ -34,8 +34,9 @@ namespace visuOgreAdaptor
 /**
  * @brief Adaptor to render a video frame from a 2D-image.
  *
- *  * @section Slots Slots
- * -\b updateTF(): Updates the displayed transfer function
+ * @section Slots Slots
+ * - \b updateVisibility(bool): Sets whether the video has to be seen or not.
+ * - \b updateTF(): Updates the displayed transfer function.
  *
  * @section XML XML Configuration
  *
@@ -58,7 +59,7 @@ class VISUOGREADAPTOR_CLASS_API SVideo : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreServiceMacro(SVideo, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SVideo, ::fwRenderOgre::IAdaptor)
 
     typedef ::fwCom::Signal< void ( double* ) > UpdateSizeSigType;
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_UPDATE_SIZE_SIG;
@@ -68,6 +69,12 @@ public:
 
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SVideo() noexcept;
+
+    /**
+     * @brief Sets whether the video is to be seen or not.
+     * @param _isVisible Set to true to show the video.
+     */
+    VISUOGREADAPTOR_API void updateVisibility(bool _isVisible);
 
 protected:
 
