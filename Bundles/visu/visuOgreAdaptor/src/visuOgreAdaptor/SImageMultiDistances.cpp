@@ -390,8 +390,9 @@ void SImageMultiDistances::updateVisibilityFromField()
 
     lock.unlock();
 
-    for(const auto& [_, data] : m_distances)
+    for(const auto& distance : m_distances)
     {
+        const DistanceData& data = distance.second;
         data.m_sphere1->setVisible(m_visibility);
         data.m_sphere2->setVisible(m_visibility);
         data.m_line->setVisible(m_visibility);
@@ -410,8 +411,9 @@ void SImageMultiDistances::updateVisibility(bool _visible)
 
     m_visibility = _visible;
 
-    for(const auto& [_, data] : m_distances)
+    for(const auto& distance : m_distances)
     {
+        const DistanceData& data = distance.second;
         data.m_sphere1->setVisible(m_visibility);
         data.m_sphere2->setVisible(m_visibility);
         data.m_line->setVisible(m_visibility);
@@ -484,8 +486,9 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
                 const ::Ogre::MovableObject* const object = queryResult[qrIdx].movable;
                 if(object->isVisible())
                 {
-                    for(auto& [_, distanceData] : m_distances)
+                    for(auto& distance : m_distances)
                     {
+                        DistanceData& distanceData = distance.second;
                         if(distanceData.m_sphere1 == object)
                         {
                             distanceData.m_node1->setScale(scale, scale, scale);
