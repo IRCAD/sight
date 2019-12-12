@@ -86,6 +86,11 @@ public:
      */
     FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier, int _mouseX, int _mouseY) final;
 
+    /**
+     * @brief Recomputes the camera's aspect ratio when the render window is resized.
+     */
+    FWRENDEROGRE_API virtual void resizeEvent(int, int);
+
     /// Recomputes the mouse's scale and focus point from the updated scene length.
     FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength) final;
 

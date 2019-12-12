@@ -178,6 +178,13 @@ public:
      */
     FWRENDEROGRE_API static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer);
 
+    /**
+     * @brief Listen to render window resize events.
+     * @param _width the render window's new width.
+     * @param _height the render window's new height.
+     */
+    FWRENDEROGRE_API virtual void resizeEvent(int _width, int _height);
+
     /** @brief Legacy API, use the equivalent with keyboard modifiers.
      *
      * @deprecated removed in sight 21.0
@@ -187,8 +194,6 @@ public:
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void wheelEvent(int, int, int);
-    [[deprecated("Get the viewport dimensions from the layer instead.")]]
-    FWRENDEROGRE_API virtual void resizeEvent(int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void keyPressEvent(int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]

@@ -178,6 +178,18 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
 
 // ----------------------------------------------------------------------------
 
+void TrackballInteractor::resizeEvent(int, int)
+{
+    ::Ogre::Camera* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    const float width    = static_cast< float >(camera->getViewport()->getActualWidth());
+    const float height   = static_cast <float >(camera->getViewport()->getActualHeight());
+
+    const float aspectRatio = width / height;
+    camera->setAspectRatio(aspectRatio);
+}
+
+// ----------------------------------------------------------------------------
+
 void TrackballInteractor::cameraRotate(int dx, int dy)
 {
     ::Ogre::Real wDelta = static_cast< ::Ogre::Real>(dx);
