@@ -428,21 +428,21 @@ void SImageMultiDistances::updateVisibility(bool _visible)
 
 std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(int _x, int _y)
 {
-    const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
-    const ::Ogre::Camera* const cam          = layer->getDefaultCamera();
-
-    const int height = cam->getViewport()->getActualHeight();
-    const int width  = cam->getViewport()->getActualWidth();
-
     ::fwRenderOgre::picker::IPicker picker;
-    picker.setSceneManager(this->getSceneManager());
-    picker.executeRaySceneQuery(_x, _y, width, height, m_queryMask);
+    ::Ogre::SceneManager* sm = this->getSceneManager();
+    picker.setSceneManager(sm);
+    picker.executeRaySceneQuery(_x, _y, m_queryMask);
 
     if(picker.getSelectedObject())
     {
-        const ::Ogre::Ray ray = cam->getCameraToViewportRay(
-            static_cast< ::Ogre::Real >(_x)/static_cast< ::Ogre::Real >(width),
-            static_cast< ::Ogre::Real >(_y)/static_cast< ::Ogre::Real >(height));
+        const auto* const camera = sm->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+        const auto* const vp     = camera->getViewport();
+
+        // Screen to viewport space conversion.
+        const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+        const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
+
+        const ::Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
 
         ::Ogre::Vector3 normal = -ray.getDirection();
         normal.normalise();
