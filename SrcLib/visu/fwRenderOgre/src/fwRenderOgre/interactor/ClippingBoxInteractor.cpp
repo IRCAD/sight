@@ -58,12 +58,7 @@ Ogre::MovableObject* ClippingBoxInteractor::pickObject(int x, int y)
 {
     if(auto layer = m_layer.lock())
     {
-        const ::Ogre::Camera* const camera = layer->getDefaultCamera();
-
-        const int height = camera->getViewport()->getActualHeight();
-        const int width  = camera->getViewport()->getActualWidth();
-
-        const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0xFFFFFFFF );
+        const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, 0xFFFFFFFF );
 
         return pickSuccess ? m_picker.getSelectedObject() : nullptr;
     }
@@ -73,7 +68,7 @@ Ogre::MovableObject* ClippingBoxInteractor::pickObject(int x, int y)
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
+void ClippingBoxInteractor::mouseMoveEvent(MouseButton button, Modifier, int x, int y, int dx, int dy)
 {
     if(m_widget.getVisibility()) // If a widget is present in the scene.
     {
@@ -101,7 +96,7 @@ void ClippingBoxInteractor::mouseMoveEvent(MouseButton button, int x, int y, int
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
+void ClippingBoxInteractor::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_widget.getVisibility())
     {
@@ -112,7 +107,7 @@ void ClippingBoxInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/
 
 //------------------------------------------------------------------------------
 
-void ClippingBoxInteractor::buttonPressEvent(MouseButton button, int x, int y)
+void ClippingBoxInteractor::buttonPressEvent(MouseButton button, Modifier, int x, int y)
 {
     if(m_widget.getVisibility())
     {
@@ -184,37 +179,6 @@ void ClippingBoxInteractor::cancelFurtherLayerInteractions()
     {
         layer->cancelFurtherInteraction();
     }
-}
-
-//------------------------------------------------------------------------------
-
-void ClippingBoxInteractor::wheelEvent(int, int, int) noexcept
-{
-}
-//------------------------------------------------------------------------------
-
-void ClippingBoxInteractor::resizeEvent(int, int) noexcept
-{
-}
-//------------------------------------------------------------------------------
-
-void ClippingBoxInteractor::keyPressEvent(int) noexcept
-{
-}
-//------------------------------------------------------------------------------
-
-void ClippingBoxInteractor::keyReleaseEvent(int) noexcept
-{
-}
-//------------------------------------------------------------------------------
-
-void ClippingBoxInteractor::focusInEvent() noexcept
-{
-}
-//------------------------------------------------------------------------------
-
-void ClippingBoxInteractor::focusOutEvent() noexcept
-{
 }
 
 } // namespace fwRenderOgre::interactor

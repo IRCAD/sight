@@ -875,11 +875,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, int _x, int _
 
 Ogre::MovableObject* SImageMultiDistances::pickObject(int _x, int _y)
 {
-    ::Ogre::Camera* cam = m_sceneMgr->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-
-    const int height       = cam->getViewport()->getActualHeight();
-    const int width        = cam->getViewport()->getActualWidth();
-    const bool pickSuccess = m_picker.executeRaySceneQuery( _x, _y, width, height, 0xffffffff );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( _x, _y, 0xffffffff );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
