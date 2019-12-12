@@ -184,10 +184,10 @@
             </slots>
         </service>
 
-        <service uid="showHideVideoAct" type="::gui::action::SBooleanSlotCaller">
+        <service uid="showHideVideoAct" type="::gui::action::SSlotCaller">
             <state active="true"/>
             <slots>
-                <slot>videoAdp/updateVisibility</slot>
+                <slot>videoAdp/toggleVisibility</slot>
             </slots>
         </service>
 
