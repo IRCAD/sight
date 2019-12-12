@@ -55,7 +55,8 @@ namespace visuOgreAdaptor
  * one of the two.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the points has to be seen or not.
+ * - \b updateVisibility(bool): Sets whether the points are visible or not.
+ * - \b toggleVisibility(): Toggle whether the points are visible or not.
  * - \b update(): Called when the point list is modified.
  *
  * @section XML XML Configuration
@@ -146,6 +147,9 @@ public:
      * @param _isVisible Set to true to show the point list.
      */
     VISUOGREADAPTOR_API void updateVisibility(bool _isVisible);
+
+    /// Toggle the visibility of the point list.
+    VISUOGREADAPTOR_API void toggleVisibility();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
