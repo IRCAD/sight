@@ -50,10 +50,10 @@ namespace visuOgreAdaptor
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
-static const ::fwCom::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                = "addDistances";
-static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT             = "removeDistances";
-static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELS_SLOT = "updateVisibilityFromField";
-static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT            = "updateVisibility";
+static const ::fwCom::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
+static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
+static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
+static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT             = "updateVisibility";
 
 static const std::string s_FONT_SOURCE_CONFIG          = "fontSource";
 static const std::string s_FONT_SIZE_CONFIG            = "fontSize";
@@ -136,7 +136,7 @@ SImageMultiDistances::SImageMultiDistances() noexcept
 {
     newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
     newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
-    newSlot(s_UPDATE_VISIBILITY_FROM_FIELS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
+    newSlot(s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SImageMultiDistances::updateVisibility, this);
 }
 

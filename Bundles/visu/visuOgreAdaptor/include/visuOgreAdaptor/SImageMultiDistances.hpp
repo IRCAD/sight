@@ -43,8 +43,8 @@ namespace visuOgreAdaptor
  * @brief Displays distances retrieved from an image.
  *
  * @section Slots Slots
- * - \b addDistance(): Add distances contains in the image from the scene manager.
- * - \b removeDistance(): Remove distances contains in the image from the scene manager.
+ * - \b addDistance(): Adds distances contained in the image from the scene manager.
+ * - \b removeDistance(): Removes distances contained in the image from the scene manager.
  * - \b updateVisibilityFromField(): Updates the visibility of distances from the field status.
  * - \b updateVisibility(bool): Updates the visibility of distances.
  *
@@ -86,7 +86,7 @@ public:
 
 private:
 
-    /// Stores Ogre ressource used to display a distance.
+    /// Stores Ogre resources used to display a distance.
     /// Two spheres each attached to a node, a label to display millimeters,
     /// one line rendered with the depth check and a dashed line rendered without depth check.
     /// The point list is used to update each points when the interactor move a distance sphere,
@@ -117,12 +117,12 @@ private:
     /**
      * @brief Generates a color from a distance ID.
      * @param _id ID of the distance.
-     * @return The generate color.
+     * @return The generated color.
      */
     static ::Ogre::ColourValue generateColor(::fwTools::fwID::IDType _id);
 
     /**
-     * @brief Generate a dashed line in a ::Ogre::ManualObject.
+     * @brief Generates a dashed line in a ::Ogre::ManualObject.
      * @param _object Object where generate the dashed line.
      * @param _begin Begin position of the line.
      * @param _end End position of the line.
@@ -134,13 +134,13 @@ private:
                                    float _thickness);
 
     /**
-     * @brief Get the formated string used to display the length of a distance.
+     * @brief Gets the formated string used to display the length of a distance.
      * @return The formated string.
      */
     static std::string getLength(const ::Ogre::Vector3&, const ::Ogre::Vector3&);
 
     /**
-     * @brief Get the normalized camera direction vector.
+     * @brief Gets the normalized camera direction vector.
      * @return A vector representing the camera direction
      */
     static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
@@ -158,7 +158,7 @@ private:
     /// Configures the service.
     virtual void configuring() override final;
 
-    /// Adds the interactor to the layer and create the material.
+    /// Adds the interactor to the layer and creates the material.
     virtual void starting() override final;
 
     /// Updates materials and all distances.
@@ -167,7 +167,7 @@ private:
     /// Removes the interactor from the layer and destroys Ogre resources.
     virtual void stopping() override final;
 
-    /// Retrieves distances from the image and add them to the scene.
+    /// Retrieves distances from the image and adds them to the scene.
     void addDistances();
 
     /// Retrieves distances from the image and remove them from the scene.
@@ -178,12 +178,12 @@ private:
 
     /**
      * @brief Updates distances visibility.
-     * @param _visibility Set to true to show distances.
+     * @param _visibility Sets to true to show distances.
      */
     void updateVisibility(bool _visibility);
 
     /**
-     * @brief Get the nearest picked position if there is one.
+     * @brief Gets the nearest picked position if there is one.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
@@ -191,7 +191,7 @@ private:
     std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
 
     /**
-     * @brief Retrieves the picked distance and store the result in m_pickedData.
+     * @brief Retrieves the picked distance and stores the result in m_pickedData.
      * @param _button Mousse modifier.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
@@ -252,7 +252,7 @@ private:
     /// Mask used to filter out entities when the distance is auto snapped.
     std::uint32_t m_queryMask {0xFFFFFFFF};
 
-    /// Mask used to filter distances, it optimise the ray launched to retrive the picked distance.
+    /// Mask used to filter distances, it optimizes the ray launched to retrive the picked distance.
     std::uint32_t m_distanceQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Material name with no depth check for spheres.
@@ -273,7 +273,7 @@ private:
     /// Material with no depth check for dashed lines.
     ::fwRenderOgre::Material::uptr m_dashedLineMaterial {nullptr};
 
-    /// Stores all generates distances.
+    /// Stores all generatesd distances.
     DistanceMap m_distances;
 
     /** Unused IInteractor API
