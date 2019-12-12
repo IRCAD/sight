@@ -36,6 +36,7 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * - \b updateVisibility(bool): Sets whether the video is visible or not.
+ * - \b toggleVisibility(): Toggle whether the video is visible or not.
  * - \b updateTF(): Updates the displayed transfer function.
  *
  * @section XML XML Configuration
@@ -75,6 +76,9 @@ public:
      * @param _isVisible Set to true to show the video.
      */
     VISUOGREADAPTOR_API void updateVisibility(bool _isVisible);
+
+    /// Toggle the visibility of the video.
+    VISUOGREADAPTOR_API void toggleVisibility();
 
 protected:
 

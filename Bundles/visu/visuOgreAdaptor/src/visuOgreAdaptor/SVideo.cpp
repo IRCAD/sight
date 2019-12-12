@@ -61,12 +61,14 @@ static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT         = "updateTF";
 
 //------------------------------------------------------------------------------
 SVideo::SVideo() noexcept
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVideo::updateVisibility, this);
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SVideo::toggleVisibility, this);
     newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
 }
 
@@ -242,6 +244,16 @@ void SVideo::updateVisibility(bool _isVisible)
         m_entity->setVisible(_isVisible);
 
         this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVideo::toggleVisibility()
+{
+    if(m_entity)
+    {
+        this->updateVisibility(!m_entity->isVisible());
     }
 }
 
