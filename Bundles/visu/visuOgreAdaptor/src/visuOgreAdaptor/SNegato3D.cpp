@@ -472,7 +472,7 @@ void SNegato3D::setPlanesQueryFlags(std::uint32_t _flags)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
+void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int)
 {
     if(m_pickedPlane)
     {
@@ -498,7 +498,7 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
+void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 {
     m_pickedPlane.reset();
     m_pickingCross->setVisible(false);
@@ -533,7 +533,7 @@ void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonReleaseEvent(MouseButton, int, int)
+void SNegato3D::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_pickedPlane)
     {
@@ -622,14 +622,10 @@ std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 {
     auto* const sceneManager = this->getSceneManager();
     SLM_ASSERT("Scene manager not created yet.", sceneManager);
-    ::Ogre::Camera* camera = sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-
-    const int height = camera->getViewport()->getActualHeight();
-    const int width  = camera->getViewport()->getActualWidth();
 
     ::fwRenderOgre::picker::IPicker picker;
-    picker.setSceneManager(this->getSceneManager());
-    picker.executeRaySceneQuery(_x, _y, width, height, m_queryFlags);
+    picker.setSceneManager(sceneManager);
+    picker.executeRaySceneQuery(_x, _y, m_queryFlags);
 
     const auto isPicked = [&picker](const ::fwRenderOgre::Plane::sptr& _p)
                           {
@@ -699,37 +695,6 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
             sig->asyncEmit(newWindow, newLevel);
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::wheelEvent(int, int, int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::resizeEvent(int, int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::keyPressEvent(int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::keyReleaseEvent(int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::focusInEvent()
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::focusOutEvent()
-{
 }
 
 } // namespace visuOgreAdaptor

@@ -57,11 +57,23 @@ IPicker::~IPicker()
 
 //------------------------------------------------------------------------------
 
-bool IPicker::executeRaySceneQuery(int _x, int _y, int _width, int _height, std::uint32_t _queryMask)
+bool IPicker::executeRaySceneQuery(int _x, int _y, int, int, std::uint32_t _queryMask)
 {
-    ::Ogre::Ray r = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getCameraToViewportRay(
-        static_cast< ::Ogre::Real>(_x) / static_cast< ::Ogre::Real>(_width),
-        static_cast< ::Ogre::Real>(_y) / static_cast< ::Ogre::Real>(_height));
+    return executeRaySceneQuery(_x, _y, _queryMask);
+}
+
+//------------------------------------------------------------------------------
+
+bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
+{
+    const auto* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    const auto* const vp     = camera->getViewport();
+
+    // Screen to viewport space conversion.
+    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+    const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
+
+    ::Ogre::Ray r = camera->getCameraToViewportRay(vpX, vpY);
 
     float distance;
     bool entityFound;
