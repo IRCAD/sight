@@ -224,8 +224,8 @@
             <config layer="default" />
         </service>
 
-        <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" picker="Mesh" queryMask="0x1"/>
+        <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SPicker">
+            <config layer="default" queryMask="0x1"/>
         </service>
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">

@@ -23,75 +23,67 @@
 #pragma once
 
 #include <fwRenderOgre/config.hpp>
-#include <fwRenderOgre/interactor/IPickerInteractor.hpp>
+#include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/picker/IPicker.hpp>
 
 #include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
 
-#include <fwData/Point.hpp>
-
-#include <OGRE/OgreSceneManager.h>
-
-namespace fwRenderOgre
-{
-
-namespace interactor
+namespace fwRenderOgre::interactor
 {
 
 /**
- * @brief Implementation for selection of points on Mesh
+ * @brief Runs picking queries when the user clicks in the scene.
+ *
+ * Emits a signal with the relevant intersection data when picking succeeds.
  */
-class FWRENDEROGRE_CLASS_API MeshPickerInteractor : public ::fwRenderOgre::interactor::IPickerInteractor
+class FWRENDEROGRE_CLASS_API MeshPickerInteractor : public ::fwRenderOgre::interactor::IInteractor
 {
 
 public:
 
-    /// Constructor.
-    FWRENDEROGRE_API MeshPickerInteractor() noexcept;
+    /// Type of signal sent when a picking query succeeded.
+    using PointClickedSigType = ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) >;
 
-    /// Destructor. Does nothing
-    FWRENDEROGRE_API ~MeshPickerInteractor() noexcept;
+    /// Constructor. Initializes the picker.
+    FWRENDEROGRE_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr) noexcept;
 
-    /// Behaviour on mouseMoveEvent
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) override;
+    /// Destructor. Destroys the interactor.
+    FWRENDEROGRE_API virtual ~MeshPickerInteractor() noexcept;
 
-    /// Behaviour on a wheelEvent
-    FWRENDEROGRE_API virtual void wheelEvent(int, int, int) override;
+    /// Runs a picking query when a mouse button is released @see MeshPickerInteractor::pick().
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
 
-    /// Behaviour on button release.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) override;
+    /// Runs a picking query when a mouse button is pressed @see MeshPickerInteractor::pick().
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
 
-    /// Behaviour on button press.
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
+    /// Sets the signal to be called when picking succeeded.
+    FWRENDEROGRE_API void setPointClickedSig(const PointClickedSigType::sptr& _sig);
 
-    /// Called when the window is resized
-    FWRENDEROGRE_API virtual void resizeEvent(int, int) override;
-
-    /// Called when a key is press
-    FWRENDEROGRE_API virtual void keyPressEvent(int) override;
-
-    /// Called when a key is release
-    FWRENDEROGRE_API virtual void keyReleaseEvent(int) override;
-
-    /// Called when the focus is win
-    FWRENDEROGRE_API virtual void focusInEvent() override;
-
-    /// Called when the focus is lost
-    FWRENDEROGRE_API virtual void focusOutEvent() override;
+    /// Sets the mask to filter out entities with mismathing query flags.
+    FWRENDEROGRE_API void setQueryMask(std::uint32_t _queryMask);
 
 private:
 
-    /// Render window's width
-    int m_width {0};
+    /**
+     * @brief Triggers a picking query and sends a signal with the corresponding @see fwDataTools::PickingInfo.
+     *
+     * @param _button mouse button pressed.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     * @param _pressed whether the button is pressed (true) or released (false).
+     */
+    void pick(MouseButton _button, Modifier _mods, int _x, int _y, bool _pressed);
 
-    /// Render window's height
-    int m_height {0};
+    /// Executes ray picking operations.
+    ::fwRenderOgre::picker::IPicker m_picker;
 
-    /// Modifier key status (pressed or not)
-    bool m_control {false};
+    /// Picking query mask. Filters out objects with mismatching flags.
+    std::uint32_t m_queryMask { 0xffffffff };
+
+    /// Signal sent when picking succeeded.
+    PointClickedSigType::sptr m_pointClickedSig;
+
 };
-} //namespace itneractor
-} //namespace fwRenderOgre
+
+} //namespace fwRenderOgre::interactor

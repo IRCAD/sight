@@ -170,23 +170,11 @@ void SLandmarks::updating()
                         ::fwRenderOgre::helper::ManualObject::createSphere(object,
                                                                            m_materialAdaptor->getMaterialName(), color,
                                                                            group.m_size/2.0f);
-                        object->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-group.m_size/4.0f,
-                                                                                      -group.m_size/4.0f,
-                                                                                      -group.m_size/4.0f),
-                                                                      ::Ogre::Vector3(group.m_size/4.0f,
-                                                                                      group.m_size/4.0f,
-                                                                                      group.m_size/4.0f)));
                         break;
                     case ::fwData::Landmarks::Shape::CUBE:
                         ::fwRenderOgre::helper::ManualObject::createCube(object,
                                                                          m_materialAdaptor->getMaterialName(), color,
                                                                          group.m_size);
-                        object->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-group.m_size/2.0f,
-                                                                                      -group.m_size/2.0f,
-                                                                                      -group.m_size/2.0f),
-                                                                      ::Ogre::Vector3(group.m_size/2.0f,
-                                                                                      group.m_size/2.0f,
-                                                                                      group.m_size/2.0f)));
                         break;
                 }
 

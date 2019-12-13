@@ -48,15 +48,16 @@ public:
     FWRENDEROGRE_API virtual ~IPicker();
 
     /**
-     * @brief Executes the RaySceneQuery object and returns true or false wether an object has been selected or not.
-     * @param _x X position of the clicked point.
-     * @param _y Y position of the clicked point.
-     * @param _width Width of the render window.
-     * @param _height Height of the render window.
+     * @brief Executes the RaySceneQuery object and returns whether an object has been selected or not.
+     * @param _x screen width position.
+     * @param _y screen height position.
      * @param _queryMask Mask used to query entities with matching flags.
      * @return True if an object has been selected.
      */
-    FWRENDEROGRE_API bool executeRaySceneQuery(int _x, int _y, int _width, int _height, std::uint32_t _queryMask);
+    FWRENDEROGRE_API bool executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask);
+
+    [[deprecated("Use the version with three arguments instead. Removed in sight 21.0")]]
+    FWRENDEROGRE_API bool executeRaySceneQuery(int _x, int _y, int, int, std::uint32_t _queryMask);
 
     /**
      * @brief Get the selected object if there is one.
