@@ -320,13 +320,8 @@
                     <adaptor uid="FrustumAdpt" />
                     <adaptor uid="FrustumListAdpt" />
                     <adaptor uid="InteractorVRScene" />
-                    <adaptor uid="InteractorStyleVideo" />
                     <adaptor uid="VideoAdpt" />
                 </scene>
-            </service>
-
-           <service uid="InteractorStyleVideo" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="video" movement="Fixed" />
             </service>
 
             <service uid="VideoAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes">
@@ -334,8 +329,8 @@
                 <config layer="video" />
             </service>
 
-            <service uid="InteractorVRScene" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" movement="Trackball" />
+            <service uid="InteractorVRScene" type="::visuOgreAdaptor::STrackballCamera">
+                <config layer="default" />
             </service>
 
             <service uid="CameraAxis" type="::visuOgreAdaptor::SAxis">
@@ -582,7 +577,6 @@
             <start uid="FrameGrabber" />
             <start uid="FrameUpdater" />
             <start uid="SaveMesh" />
-            <start uid="InteractorStyleVideo" />
             <start uid="VideoAdpt" />
 
             <start uid="InteractorVRScene" />

@@ -240,6 +240,7 @@ void Text::setVisible(bool _visible)
     {
         m_overlayText->hide();
     }
+    this->::Ogre::MovableObject::setVisible(_visible);
 }
 
 //------------------------------------------------------------------------------

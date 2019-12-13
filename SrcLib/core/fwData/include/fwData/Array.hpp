@@ -269,8 +269,12 @@ public:
         IteratorBase(ArrayType array);
         /// Copy constructor
         IteratorBase(const IteratorBase<TYPE, false>& other);
+        IteratorBase(const IteratorBase<TYPE, true>& other);
         /// Destructor
         ~IteratorBase();
+
+        IteratorBase& operator=(const IteratorBase& other) = default;
+        IteratorBase& operator=(IteratorBase&& other)      = default;
 
         /// Comparison operators
         bool operator==(const IteratorBase& other) const;
@@ -300,7 +304,7 @@ public:
         pointer m_pointer{nullptr};
         ::fwMemory::BufferObject::Lock m_lock;
         difference_type m_idx{0};
-        const difference_type m_numberOfElements;
+        difference_type m_numberOfElements;
     };
 
     template <typename TYPE>
@@ -709,6 +713,18 @@ inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE,
     m_idx(other.m_idx),
     m_numberOfElements(other.m_numberOfElements)
 {
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE, bool isConst>
+inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, true>& other) :
+    m_pointer(other.m_pointer),
+    m_lock(other.m_lock),
+    m_idx(other.m_idx),
+    m_numberOfElements(other.m_numberOfElements)
+{
+    static_assert(isConst == true, "Cannot convert const Iterator to not const Iterator.");
 }
 
 //------------------------------------------------------------------------------

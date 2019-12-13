@@ -204,7 +204,6 @@
                 </layer>
                 <layer id="default" depth="2" transparency="HybridTransparency" numPeels="3" overlays="LogoOverlay" />
                 <adaptor uid="videoAdp" />
-                <adaptor uid="videoInteractorAdp" />
                 <adaptor uid="defaultInteractorAdp" />
                 <adaptor uid="defaultPickerAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -224,17 +223,12 @@
             <config layer="video" />
         </service>
 
-        <service uid="videoInteractorAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <in key="object" uid="camera" />
-            <config layer="video" movement="Fixed" />
+        <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
+            <config layer="default" />
         </service>
 
-        <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" movement="Trackball" />
-        </service>
-
-        <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SInteractorStyle">
-            <config layer="default" picker="Mesh" queryMask="0x1"/>
+        <service uid="defaultPickerAdp" type="::visuOgreAdaptor::SPicker">
+            <config layer="default" queryMask="0x1"/>
         </service>
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
@@ -388,7 +382,6 @@
         <start uid="pointListModifierSrv" />
         <start uid="clippingBoxResetSrv" />
         <start uid="videoAdp" />
-        <start uid="videoInteractorAdp" />
         <start uid="defaultInteractorAdp" />
         <start uid="defaultPickerAdp" />
         <start uid="modeSeriesAdp" />

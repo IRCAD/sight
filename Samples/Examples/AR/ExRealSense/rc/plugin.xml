@@ -216,8 +216,6 @@
                     <layer id="video" depth="1"/>
                     <layer id="AR" depth="2"/>
                     <adaptor uid="depthAdaptor" />
-                    <adaptor uid="interactorStyle" />
-                    <adaptor uid="ardInteractorStyle" />
                     <adaptor uid="pointcloudAdptARD" />
                     <adaptor uid="cameraAdaptorARD" />
                 </scene>
@@ -227,14 +225,6 @@
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="video" />
-            </service>
-
-            <service uid="interactorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="video" movement="Fixed" />
-            </service>
-
-            <service uid="ardInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="AR" movement="Fixed" />
             </service>
 
             <service uid="pointcloudAdptARD" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
@@ -255,8 +245,6 @@
                     <layer id="video" depth="1"/>
                     <layer id="AR"    depth="2" />
                     <adaptor uid="videoAdaptor" />
-                    <adaptor uid="videoInteractorStyle" />
-                    <adaptor uid="arInteractorStyle" />
                     <adaptor uid="pointcloudAdptAR" />
                     <adaptor uid="cameraAdaptorAR" />
                 </scene>
@@ -265,14 +253,6 @@
             <service uid="videoAdaptor" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageVideo" />
                 <config layer="video" />
-            </service>
-
-            <service uid="videoInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="video" movement="Fixed" />
-            </service>
-
-            <service uid="arInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="AR" movement="Fixed" />
             </service>
 
             <service uid="pointcloudAdptAR" type="::visuOgreAdaptor::SPointList"  autoConnect="yes" >
@@ -305,7 +285,7 @@
             </service>
 
             <!-- *************************** Begin scanning services declarations ***************************************** -->
-            
+
             <service uid="presets" type="::guiQt::editor::SParameters">
                 <parameters>
                     <param type="enum" name="Realsense presets" key="preset" defaultValue="Default"
@@ -386,8 +366,8 @@
 
             <service uid="distance" type="::uiTools::editor::STextStatus">
                 <label>Distance To Center (mm)</label>
-            </service> 
-            
+            </service>
+
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
                 <in group="frameTL">
                     <key uid="frameTLVideo" />
@@ -574,15 +554,11 @@
 
             <!-- Ogre scene 'distanceMapRender' -->
             <start uid="depthAdaptor" />
-            <start uid="interactorStyle" />
-            <start uid="ardInteractorStyle" />
             <start uid="pointcloudAdptARD" />
             <start uid="cameraAdaptorARD" />
 
             <!-- Ogre scene 'videoViewRender' -->
             <start uid="videoAdaptor" />
-            <start uid="videoInteractorStyle" />
-            <start uid="arInteractorStyle" />
             <start uid="pointcloudAdptAR" />
             <start uid="cameraAdaptorAR" />
 

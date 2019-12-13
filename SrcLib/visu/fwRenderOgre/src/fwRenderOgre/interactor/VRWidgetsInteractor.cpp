@@ -40,9 +40,11 @@ namespace interactor
 
 //------------------------------------------------------------------------------
 
-VRWidgetsInteractor::VRWidgetsInteractor() noexcept :
+VRWidgetsInteractor::VRWidgetsInteractor(Layer::sptr _layer) noexcept :
+    TrackballInteractor(_layer),
     m_pickedObject(nullptr)
 {
+    FW_DEPRECATED_MSG("Use 'ClippingBoxInteractor' and 'TrackBallInteractor' instead.", "21.0");
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
+void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, Modifier _mods, int x, int y, int dx, int dy)
 {
     auto widget    = m_widget.lock();
     bool trackball = (widget == nullptr);
@@ -94,13 +96,13 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
 
     if(trackball) // Fallback to trackball if the user did not interact with the widget.
     {
-        TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
+        TrackballInteractor::mouseMoveEvent(button, _mods, x, y, dx, dy);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
+void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, Modifier, int /*x*/, int /*y*/)
 {
     auto widget = m_widget.lock();
     if(widget)
@@ -112,7 +114,7 @@ void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, 
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
+void VRWidgetsInteractor::buttonPressEvent(MouseButton button, Modifier, int x, int y)
 {
     auto widget = m_widget.lock();
     if(widget)

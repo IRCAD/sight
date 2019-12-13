@@ -34,30 +34,34 @@
 namespace fwRenderOgre
 {
 
+class Layer;
+
 namespace interactor
 {
 
 /**
  * @brief Picks VR widgets and updates clipping cube.
+ *
+ * @deprecated removed in sight 21.0
  */
 class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::interactor::TrackballInteractor
 {
 public:
 
     /// Constructor.
-    FWRENDEROGRE_API VRWidgetsInteractor() noexcept;
+    FWRENDEROGRE_API VRWidgetsInteractor(SPTR(Layer)_layer = nullptr) noexcept;
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidgetsInteractor() noexcept;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) override;
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, Modifier, int, int, int, int) override;
 
     /// Ends all interactions with the widget.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) override;
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
 
     /// Picks the object at the (x,y) position on a left click, scales or translates the widget otherwise.
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, Modifier, int, int) override;
 
     /// Sets the widget handled by this interactor.
     FWRENDEROGRE_API void setWidget(widget::ClippingBox::sptr widget);

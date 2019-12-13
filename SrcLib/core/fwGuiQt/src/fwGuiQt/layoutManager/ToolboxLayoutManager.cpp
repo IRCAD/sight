@@ -27,6 +27,8 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwDataTools/Color.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QScrollArea>
@@ -73,14 +75,35 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
     const std::list< ViewInfo>& views = this->getViewsInfo();
     for ( ViewInfo viewInfo : views)
     {
-        int border     = viewInfo.m_border;
+        int leftBorder;
+        int topBorder;
+        int rightBorder;
+        int bottomBorder;
+        if(viewInfo.m_border != 0)
+        {
+            leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
+        }
+        else
+        {
+            leftBorder   = viewInfo.m_leftBorder;
+            topBorder    = viewInfo.m_topBorder;
+            rightBorder  = viewInfo.m_rightBorder;
+            bottomBorder = viewInfo.m_bottomBorder;
+        }
+
         QWidget* panel = new QWidget();
         panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
-        panel->setContentsMargins(border, border, border, border);
+        panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
         if(!viewInfo.m_backgroundColor.empty())
         {
-            const QString style = QString::fromStdString(
-                "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+            std::uint8_t rgba[4];
+            ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+            std::stringstream ss;
+            ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+               << static_cast< short >(rgba[1]) << ','
+               << static_cast< short >(rgba[2]) << ','
+               << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+            const QString style = QString::fromStdString(ss.str());
             panel->setStyleSheet(style + qApp->styleSheet());
         }
 
@@ -96,8 +119,14 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
             scrollArea->setWidgetResizable( true );
             if(!viewInfo.m_backgroundColor.empty())
             {
-                const QString style = QString::fromStdString(
-                    "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                std::uint8_t rgba[4];
+                ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                std::stringstream ss;
+                ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+                   << static_cast< short >(rgba[1]) << ','
+                   << static_cast< short >(rgba[2]) << ','
+                   << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                const QString style = QString::fromStdString(ss.str());
                 scrollArea->setStyleSheet(style + qApp->styleSheet());
             }
             index = toolbox->addItem(scrollArea, QString::fromStdString(viewInfo.m_caption));
