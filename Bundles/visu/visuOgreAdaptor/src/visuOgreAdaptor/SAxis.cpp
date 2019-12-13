@@ -180,8 +180,6 @@ void SAxis::starting()
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
-    m_xLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
-                                                   ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
     xLineNode->attachObject(m_xLine);
     xLineNode->pitch(::Ogre::Degree(90));
 
@@ -193,8 +191,6 @@ void SAxis::starting()
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
-    m_yLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
-                                                   ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
     yLineNode->attachObject(m_yLine);
     yLineNode->roll(::Ogre::Degree(90));
 
@@ -206,8 +202,6 @@ void SAxis::starting()
                                                          cylinderLength,
                                                          sample);
     ::Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
-    m_zLine->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -coneRadius, -coneRadius),
-                                                   ::Ogre::Vector3(m_length, coneRadius, coneRadius)));
     zLineNode->attachObject(m_zLine);
     zLineNode->yaw(::Ogre::Degree(-90));
 

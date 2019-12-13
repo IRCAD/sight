@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_FIELDHELPER_IMAGE_HPP__
-#define __FWDATATOOLS_FIELDHELPER_IMAGE_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 
@@ -54,10 +53,12 @@ struct FWDATATOOLS_CLASS_API Image
     FWDATATOOLS_API static const std::string m_errorId;
     FWDATATOOLS_API static const std::string m_imageLandmarksId;
     FWDATATOOLS_API static const std::string m_imageDistancesId;
+    FWDATATOOLS_API static const std::string m_distanceVisibility;
     FWDATATOOLS_API static const std::string m_commentId;
     FWDATATOOLS_API static const std::string m_colorId;
     FWDATATOOLS_API static const std::string m_labelId;         ///< to assign a label
-    FWDATATOOLS_API static const std::string m_relatedServiceId; ///< to store uid (simple) of service which create the object
+    FWDATATOOLS_API static const std::string m_relatedServiceId; ///< to store uid (simple) of service which create the
+    // object
     FWDATATOOLS_API static const std::string m_imageLabelId;
     FWDATATOOLS_API static const std::string m_acquisitionCountId;
     /// @}
@@ -66,7 +67,6 @@ struct FWDATATOOLS_CLASS_API Image
     /// @{
     FWDATATOOLS_API static const std::string m_roi;
     /// @}
-
 
     /// processing oriented data
     /// @{
@@ -77,5 +77,3 @@ struct FWDATATOOLS_CLASS_API Image
 } // fieldHelper
 
 }
-
-#endif /*__FWDATATOOLS_FIELDHELPER_IMAGE_HPP__*/
