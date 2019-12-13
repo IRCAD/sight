@@ -353,7 +353,6 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
         ::fwRenderOgre::ILight::sptr lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(lightDiffuseColor,
                                                                                                lightSpecularColor);
-        lightAdaptor->setName(_name);
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
@@ -362,6 +361,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         config.add("config.<xmlattr>.layer", currentLayer->getLayerID());
         lightAdaptor->setConfiguration(config);
         lightAdaptor->configure();
+        lightAdaptor->setName(_name);
         lightAdaptor->start();
 
         m_managedLightAdaptors.push_back(lightAdaptor);

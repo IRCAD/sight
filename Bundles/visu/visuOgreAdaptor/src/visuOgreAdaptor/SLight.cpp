@@ -146,8 +146,7 @@ void SLight::starting()
     m_lightDiffuseColor  = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
     m_lightSpecularColor = this->getInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
 
-    m_lightName = this->getID() + "_" + m_lightName;
-    m_light     = this->getSceneManager()->createLight(m_lightName);
+    m_light = this->getSceneManager()->createLight(this->getID() + "_" + m_lightName);
 
     // Set the default light direction to the camera's view direction,
     m_light->setDirection(::Ogre::Vector3::NEGATIVE_UNIT_Z);
