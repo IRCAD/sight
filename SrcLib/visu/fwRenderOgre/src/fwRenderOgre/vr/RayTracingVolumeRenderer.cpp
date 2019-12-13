@@ -621,7 +621,9 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
         ::Ogre::Pass* const pass = tech->getPass(0);
         pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
-        pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+        pass->setSeparateSceneBlendingOperation(::Ogre::SBO_ADD, ::Ogre::SBO_ADD);
+        pass->setSeparateSceneBlending(::Ogre::SBF_SOURCE_ALPHA, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA,
+                                       ::Ogre::SBF_ONE, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
         pass->setDepthCheckEnabled(true);
         pass->setDepthWriteEnabled(true);
 
@@ -685,7 +687,6 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
         ::Ogre::Pass* const pass = tech->createPass();
         pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
-        pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
         pass->setDepthCheckEnabled(true);
         pass->setDepthWriteEnabled(true);
 
