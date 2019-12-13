@@ -68,6 +68,8 @@ static const std::string VISIBILITY_FIELD   = "VISIBILITY";
 
 static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID - 1;
 
+static const std::string s_QUERY_CONFIG = "queryFlags";
+
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
@@ -120,6 +122,16 @@ void SNegato3D::configuring()
         }
 
         this->setFiltering(filtering);
+    }
+    if(config.count(s_QUERY_CONFIG))
+    {
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 
     m_enableAlpha         = config.get<bool>("tfalpha", m_enableAlpha);
@@ -277,7 +289,7 @@ void SNegato3D::createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vect
         plane->setOriginPosition(_origin);
         plane->initializePlane();
         plane->enableAlpha(m_enableAlpha);
-        plane->setQueryFlags(0x1);
+        plane->setQueryFlags(m_queryFlags);
     }
 }
 
@@ -488,7 +500,6 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, in
 
 void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 {
-    this->setPlanesQueryFlags(0x1); // Make all planes pickable again.
     m_pickedPlane.reset();
     m_pickingCross->setVisible(false);
 
@@ -531,6 +542,7 @@ void SNegato3D::buttonReleaseEvent(MouseButton, Modifier, int, int)
     }
     m_pickingCross->setVisible(false);
     m_pickedVoxelSignal->asyncEmit("");
+    this->setPlanesQueryFlags(m_queryFlags); // Make all planes pickable again.
 }
 
 //------------------------------------------------------------------------------
@@ -613,7 +625,7 @@ std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 
     ::fwRenderOgre::picker::IPicker picker;
     picker.setSceneManager(sceneManager);
-    picker.executeRaySceneQuery(_x, _y, 0x1);
+    picker.executeRaySceneQuery(_x, _y, m_queryFlags);
 
     const auto isPicked = [&picker](const ::fwRenderOgre::Plane::sptr& _p)
                           {
