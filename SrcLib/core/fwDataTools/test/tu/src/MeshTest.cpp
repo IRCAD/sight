@@ -388,5 +388,150 @@ void MeshTest::transformTest()
 
 //------------------------------------------------------------------------------
 
+void MeshTest::isClosedTest()
+{
+//    {
+//        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+//        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+
+//        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+
+//        CPPUNIT_ASSERT_EQUAL(false, isClosed);
+//    }
+
+//    {
+//        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+//        ::fwTest::generator::Mesh::generateQuadMesh(mesh);
+
+//        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+
+//        CPPUNIT_ASSERT_EQUAL(false, isClosed);
+//    }
+
+//    {
+//        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+//        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh);
+
+//        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+
+//        CPPUNIT_ASSERT_EQUAL(false, isClosed);
+//    }
+
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        const auto dumpLock = mesh->lock();
+
+        mesh->pushPoint(0.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 1.f, 1.f);
+        mesh->pushPoint(0.f, 1.f, 1.f);
+
+        mesh->pushCell(0, 1, 2, 3);
+        mesh->pushCell(0, 4, 5, 1);
+        mesh->pushCell(1, 5, 6, 2);
+        mesh->pushCell(4, 5, 6, 7);
+        mesh->pushCell(0, 4, 7, 3);
+        mesh->pushCell(3, 7, 6, 2);
+
+        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+
+        CPPUNIT_ASSERT_EQUAL(true, isClosed);
+    }
+
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        const auto dumpLock = mesh->lock();
+
+        mesh->pushPoint(0.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 1.f, 1.f);
+        mesh->pushPoint(0.f, 1.f, 1.f);
+
+        mesh->pushCell(0, 1, 3);
+        mesh->pushCell(3, 1, 2);
+        mesh->pushCell(0, 4, 5, 1);
+        mesh->pushCell(1, 5, 6, 2);
+        mesh->pushCell(4, 5, 6, 7);
+        mesh->pushCell(0, 4, 7, 3);
+        mesh->pushCell(3, 7, 6, 2);
+
+        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+
+        CPPUNIT_ASSERT_EQUAL(true, isClosed);
+    }
+
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        const auto dumpLock = mesh->lock();
+
+        mesh->pushPoint(0.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 1.f, 1.f);
+        mesh->pushPoint(0.f, 1.f, 1.f);
+
+        mesh->pushCell(0, 1, 3);
+        mesh->pushCell(3, 1, 2);
+        mesh->pushCell(0, 4, 1);
+        mesh->pushCell(1, 4, 5);
+        mesh->pushCell(1, 5, 2);
+        mesh->pushCell(5, 6, 2);
+        mesh->pushCell(4, 5, 7);
+        mesh->pushCell(5, 6, 7);
+        mesh->pushCell(0, 4, 3);
+        mesh->pushCell(4, 7, 3);
+        mesh->pushCell(3, 7, 2);
+        mesh->pushCell(7, 6, 2);
+
+        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+
+        CPPUNIT_ASSERT_EQUAL(true, isClosed);
+    }
+
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        const auto dumpLock = mesh->lock();
+
+        mesh->pushPoint(0.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 0.f, 0.f);
+        mesh->pushPoint(1.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 1.f, 0.f);
+        mesh->pushPoint(0.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 0.f, 1.f);
+        mesh->pushPoint(1.f, 1.f, 1.f);
+        mesh->pushPoint(0.f, 1.f, 1.f);
+
+        mesh->pushCell(0, 1, 3);
+        mesh->pushCell(3, 1, 2);
+        mesh->pushCell(0, 4, 1);
+        mesh->pushCell(1, 4, 5);
+        mesh->pushCell(1, 5, 2);
+        mesh->pushCell(5, 6, 2);
+        mesh->pushCell(4, 5, 7);
+        mesh->pushCell(5, 6, 7);
+        mesh->pushCell(0, 4, 3);
+        // removed this cell mesh->pushCell(4, 7, 3);
+        mesh->pushCell(3, 7, 2);
+        mesh->pushCell(7, 6, 2);
+
+        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+
+        CPPUNIT_ASSERT_EQUAL(false, isClosed);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwDataTools

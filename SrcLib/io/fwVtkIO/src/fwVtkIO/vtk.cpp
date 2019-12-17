@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -228,7 +228,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     if(dim == 2)
     {
         const ::fwData::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
-                                      static_cast<size_t>(source->GetDimensions()[1]), 0};
+                                            static_cast<size_t>(source->GetDimensions()[1]), 0};
         destination->setSize2(size);
 
         const ::fwData::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.};
@@ -240,11 +240,12 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     else
     {
         const ::fwData::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
-                                      static_cast<size_t>(source->GetDimensions()[1]),
-                                      static_cast<size_t>(source->GetDimensions()[2])};
+                                            static_cast<size_t>(source->GetDimensions()[1]),
+                                            static_cast<size_t>(source->GetDimensions()[2])};
         destination->setSize2(size);
 
-        const ::fwData::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]};
+        const ::fwData::Image::Spacing spacing =
+        {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]};
         destination->setSpacing2(spacing);
 
         const ::fwData::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]};
@@ -261,8 +262,8 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     if (size != 0)
     {
         void* destBuffer;
-        OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
+        OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << source->GetScalarSize() );
         OSLM_TRACE(nbComponents << " components, " << TypeTranslator::translate( source->GetScalarType() ));
         destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
         destination->setNumberOfComponents(static_cast<size_t>(nbComponents));
@@ -293,7 +294,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::csptr _pDataImage )
 {
     const auto dumpLock = _pDataImage->lock();
-
 
     if(_pDataImage->getNumberOfDimensions() == 2)
     {

@@ -721,31 +721,40 @@ bool Mesh::isClosed(const ::fwData::Mesh::csptr& mesh)
     typedef std::map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
 
-    auto itr           = mesh->begin< ::fwData::iterator::ConstCellIterator >();
-    auto itr2          = mesh->begin< ::fwData::iterator::ConstCellIterator >() + 1;
-    const auto itrEnd  = mesh->end < ::fwData::iterator::ConstCellIterator >() - 1;
-    const auto itrEnd2 = mesh->end < ::fwData::iterator::ConstCellIterator >();
+    const auto dumpLock = mesh->lock();
 
+    auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto itrEnd = mesh->end < ::fwData::iterator::ConstCellIterator >();
+
+    size_t count = 0;
     for (; itr != itrEnd; ++itr)
     {
-        for (itr2 = itr+1; itr2 != itrEnd2; ++itr2)
+        ++count;
+        const auto nbPoints = itr->nbPoints;
+        for (size_t i = 0; i < nbPoints-1; ++i)
         {
-            const auto nbPoint1 = itr->nbPoints;
-            const auto nbPoint2 = itr2->nbPoints;
-            for (size_t i = 0; i < nbPoint1; ++i)
+            const auto edge1 = ::fwMath::makeOrderedPair(itr->pointIdx[i], itr->pointIdx[i+1]);
+
+            if (edgesHistogram.find(edge1) == edgesHistogram.end())
             {
-                for (size_t j = 0; j < nbPoint2; ++j)
-                {
-                    const auto edge = ::fwMath::makeOrderedPair(itr->pointIdx[i], itr2->pointIdx[j]);
-                    if (edgesHistogram.find(edge) == edgesHistogram.end())
-                    {
-                        edgesHistogram[edge] = 1;
-                    }
-                    else
-                    {
-                        ++edgesHistogram[edge];
-                    }
-                }
+                edgesHistogram[edge1] = 1;
+            }
+            else
+            {
+                ++edgesHistogram[edge1];
+            }
+        }
+        if (nbPoints > 2)
+        {
+            const auto edge2 = ::fwMath::makeOrderedPair(itr->pointIdx[0], itr->pointIdx[nbPoints-1]);
+
+            if (edgesHistogram.find(edge2) == edgesHistogram.end())
+            {
+                edgesHistogram[edge2] = 1;
+            }
+            else
+            {
+                ++edgesHistogram[edge2];
             }
         }
     }
