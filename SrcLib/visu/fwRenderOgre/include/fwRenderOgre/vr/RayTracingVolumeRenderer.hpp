@@ -26,9 +26,9 @@
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
 #include "fwRenderOgre/vr/GridProxyGeometry.hpp"
+#include "fwRenderOgre/vr/IllumAmbientOcclusionSAT.hpp"
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/vr/RayEntryCompositor.hpp"
-#include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
@@ -100,7 +100,14 @@ public:
     /// Color bleeding factor setter.
     FWRENDEROGRE_API virtual void setColorBleedingFactor(double colorBleedingFactor);
 
-    FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination::sptr illuminationVolume);
+    [[deprecated("replaced by setAmbientOcclusionSAT (sight 21.0)")]]
+    FWRENDEROGRE_API virtual void setIlluminationVolume(IllumAmbientOcclusionSAT::sptr illuminationVolume);
+
+    /**
+     * @brief Sets the ambient occlsuion and soft shadows SAT.
+     * @param _ambientOcclusionSAT SAT that store importances values.
+     */
+    FWRENDEROGRE_API virtual void setAmbientOcclusionSAT(IllumAmbientOcclusionSAT::sptr _ambientOcclusionSAT);
 
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) override;
@@ -122,7 +129,7 @@ public:
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox) override;
 
     /// IllumVolume getter.
-    FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
+    FWRENDEROGRE_API IllumAmbientOcclusionSAT::sptr getIllumVolume();
 
     /// Returns whether or not the volume is visible.
     FWRENDEROGRE_API bool isVisible() const;
@@ -209,7 +216,7 @@ private:
     /// Inverse of the sampling rate accounted by the TF.
     float m_opacityCorrectionFactor;
 
-    std::weak_ptr<SATVolumeIllumination> m_illumVolume;
+    std::weak_ptr<IllumAmbientOcclusionSAT> m_ambientOcclusionSAT;
 
     /// Focal distance in object space : 0 = object front, 1 = object back.
     float m_focalLength;
@@ -224,9 +231,9 @@ private:
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline ::fwRenderOgre::vr::SATVolumeIllumination::sptr RayTracingVolumeRenderer::getIllumVolume()
+inline ::fwRenderOgre::vr::IllumAmbientOcclusionSAT::sptr RayTracingVolumeRenderer::getIllumVolume()
 {
-    return m_illumVolume.lock();
+    return m_ambientOcclusionSAT.lock();
 }
 
 //-----------------------------------------------------------------------------

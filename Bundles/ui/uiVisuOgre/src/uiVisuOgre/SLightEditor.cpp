@@ -119,13 +119,13 @@ void SLightEditor::starting()
     m_zTranslation->setMaximum(2000);
     m_zTranslation->setEnabled(false);
 
-    m_xLabel = new QLineEdit("X: (0)");
+    m_xLabel = new QLineEdit("X: 0");
     m_xLabel->setReadOnly(true);
     m_xLabel->setMaximumWidth(70);
-    m_yLabel = new QLineEdit("Y: (0)");
+    m_yLabel = new QLineEdit("Y: 0");
     m_yLabel->setReadOnly(true);
     m_yLabel->setMaximumWidth(70);
-    m_zLabel = new QLineEdit("Z: (0)");
+    m_zLabel = new QLineEdit("Z: 0");
     m_zLabel->setReadOnly(true);
     m_zLabel->setMaximumWidth(70);
 
@@ -285,7 +285,7 @@ void SLightEditor::onEditXTranslation(int _value)
     lightNode->setPosition(::Ogre::Vector3(static_cast< ::Ogre::Real >(_value), currentPos[1], currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
-    m_xLabel->setText(QString("X: (%1)").arg(_value));
+    m_xLabel->setText(QString("X: %1").arg(_value));
 }
 
 //------------------------------------------------------------------------------
@@ -297,7 +297,7 @@ void SLightEditor::onEditYTranslation(int _value)
     lightNode->setPosition(::Ogre::Vector3(currentPos[0], static_cast< ::Ogre::Real >(_value), currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
-    m_yLabel->setText(QString("Y: (%1)").arg(_value));
+    m_yLabel->setText(QString("Y: %1").arg(_value));
 }
 
 //------------------------------------------------------------------------------
@@ -309,7 +309,7 @@ void SLightEditor::onEditZTranslation(int _value)
     lightNode->setPosition(::Ogre::Vector3(currentPos[0], currentPos[1], static_cast< ::Ogre::Real >(_value)));
     m_currentLight->getRenderService()->requestRender();
 
-    m_zLabel->setText(QString("Z: (%1)").arg(_value));
+    m_zLabel->setText(QString("Z: %1").arg(_value));
 }
 
 //------------------------------------------------------------------------------
@@ -321,7 +321,7 @@ void SLightEditor::onResetXTranslation(bool)
     lightNode->setPosition(::Ogre::Vector3(0.f, currentPos[1], currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
-    m_xLabel->setText("X: (0)");
+    m_xLabel->setText("X: 0");
     m_xTranslation->setValue(0);
 }
 
@@ -334,7 +334,7 @@ void SLightEditor::onResetYTranslation(bool)
     lightNode->setPosition(::Ogre::Vector3(currentPos[0], 0.f, currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
-    m_yLabel->setText("Y: (0)");
+    m_yLabel->setText("Y: 0");
     m_yTranslation->setValue(0);
 }
 
@@ -347,7 +347,7 @@ void SLightEditor::onResetZTranslation(bool)
     lightNode->setPosition(::Ogre::Vector3(currentPos[0], currentPos[1], 0.f));
     m_currentLight->getRenderService()->requestRender();
 
-    m_zLabel->setText("Z: (0)");
+    m_zLabel->setText("Z: 0");
     m_zTranslation->setValue(0);
 }
 
