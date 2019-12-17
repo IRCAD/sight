@@ -8,8 +8,8 @@
 
 void vrayAdvance(inout VolumeRay _vray);
 bool vrayTerminated(in VolumeRay _vray);
-vec4 sampleVolume(in sampler3D _volume, in VolumeRay _vray_Ms);
-vec3 computeLighting(in vec3 _sampleColor, in vec3 _samplePos_Ms, in sampler3D _volume);
+vec4 sampleVolume(in sampler3D _s3Image, in VolumeRay _vray_Ms);
+vec3 computeLighting(in vec3 _f3SampleColor, in vec3 _f3SamplePos_Ms, in sampler3D _s3Image);
 
 //-----------------------------------------------------------------------------
 
@@ -22,12 +22,12 @@ void blendComposite(inout vec4 _destColor, in vec4 _srcColor)
 
 //-----------------------------------------------------------------------------
 
-void advanceUntilOpaque(inout VolumeRay _vray_Ms, in sampler3D _volume)
+void advanceUntilOpaque(inout VolumeRay _vray_Ms, in sampler3D _s3Image)
 {
     // Move the ray to the first non transparent voxel.
     for(; !vrayTerminated(_vray_Ms); vrayAdvance(_vray_Ms))
     {
-        float sampleAlpha = sampleVolume(_volume, _vray_Ms).a;
+        float sampleAlpha = sampleVolume(_s3Image, _vray_Ms).a;
         if(sampleAlpha != 0)
         {
             break;
@@ -37,18 +37,18 @@ void advanceUntilOpaque(inout VolumeRay _vray_Ms, in sampler3D _volume)
 
 //-----------------------------------------------------------------------------
 
-vec4 compositeAlongRay(inout VolumeRay _vray_Ms, in sampler3D _volume)
+vec4 compositeAlongRay(inout VolumeRay _vray_Ms, in sampler3D _s3Image)
 {
     vec4 rayColor = vec4(0.);
     for(; !vrayTerminated(_vray_Ms); vrayAdvance(_vray_Ms))
     {
-        vec4 sampleColor = sampleVolume(_volume, _vray_Ms);
+        vec4 sampleColor = sampleVolume(_s3Image, _vray_Ms);
 
         if(sampleColor.a > 0.)
         {
             vec3 rayPos_Ms = _vray_Ms.position;
 
-            sampleColor.rgb = computeLighting(sampleColor.rgb, rayPos_Ms, _volume);
+            sampleColor.rgb = computeLighting(sampleColor.rgb, rayPos_Ms, _s3Image);
 
             blendComposite(rayColor, sampleColor);
 

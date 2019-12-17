@@ -21,13 +21,13 @@ vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 
 //-----------------------------------------------------------------------------
 
 #ifdef PREINTEGRATION
-vec4 samplePreIntegrationTable(in sampler3D _volume, in VolumeRay _vray_Ms)
+vec4 samplePreIntegrationTable(in sampler3D _s3Image, in VolumeRay _vray_Ms)
 {
     vec3 rayBack_Ms  = _vray_Ms.position;
     vec3 rayFront_Ms = rayBack_Ms + _vray_Ms.direction;
 
-    float sf = texture(_volume, rayBack_Ms).r;
-    float sb = texture(_volume, rayFront_Ms).r;
+    float sf = texture(_s3Image, rayBack_Ms).r;
+    float sb = texture(_s3Image, rayFront_Ms).r;
 
     sf = ((sf * 65535.f) - float(u_iMinImageValue) - 32767.f) / float(u_iMaxImageValue - u_iMinImageValue);
     sb = ((sb * 65535.f) - float(u_iMinImageValue) - 32767.f) / float(u_iMaxImageValue - u_iMinImageValue);
@@ -38,12 +38,12 @@ vec4 samplePreIntegrationTable(in sampler3D _volume, in VolumeRay _vray_Ms)
 
 //-----------------------------------------------------------------------------
 
-vec4 sampleVolume(in sampler3D _volume, in VolumeRay _vray_Ms)
+vec4 sampleVolume(in sampler3D _s3Image, in VolumeRay _vray_Ms)
 {
 #ifdef PREINTEGRATION
-    vec4 sampleColor = samplePreIntegrationTable(_volume, _vray_Ms);
+    vec4 sampleColor = samplePreIntegrationTable(_s3Image, _vray_Ms);
 #else // PREINTEGRATION
-    float voxelIntensity = texture(_volume, _vray_Ms.position).r;
+    float voxelIntensity = texture(_s3Image, _vray_Ms.position).r;
     vec4 sampleColor = sampleTransferFunction(voxelIntensity, u_s1TFTexture, u_f2TFWindow);
 
     // Opacity correction.

@@ -30,10 +30,9 @@ out vec4 f_f4FragCol;
 vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
 vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
 vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
-float rayAxisAlignedBoxIntersection(in vec3 _f3RayPos, in vec3 _f3RayDir,
-                                    in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
-void advanceUntilOpaque(inout VolumeRay _vray_Ms, in sampler3D _volume);
-vec4 compositeAlongRay(inout VolumeRay _vray_Ms, in sampler3D _volume);
+float rayAxisAlignedBoxIntersection(in vec3 _f3RayPos, in vec3 _f3RayDir, in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
+void advanceUntilOpaque(inout VolumeRay _vray_Ms, in sampler3D _s3Image);
+vec4 compositeAlongRay(inout VolumeRay _vray_Ms, in sampler3D _s3Image);
 
 
 //-----------------------------------------------------------------------------

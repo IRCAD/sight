@@ -12,14 +12,14 @@ vec3 gradientNormal(vec3 _f3Pos_Ms, sampler3D _s3Image);
 
 //-----------------------------------------------------------------------------
 
-vec3 computeLighting(in vec3 _sampleColor, in vec3 _samplePos_Ms, in sampler3D _volume)
+vec3 computeLighting(in vec3 _f3SampleColor, in vec3 _f3SamplePos_Ms, in sampler3D _s3Image)
 {
-    vec3 sampleNormal_MsN = gradientNormal(_samplePos_Ms, _volume);
+    vec3 sampleNormal_MsN = gradientNormal(_f3SamplePos_Ms, _s3Image);
 
-    vec3 shadedSampleColor = lightingBlinnPhong(sampleNormal_MsN, _samplePos_Ms, _sampleColor);
+    vec3 shadedSampleColor = lightingBlinnPhong(sampleNormal_MsN, _f3SamplePos_Ms, _f3SampleColor);
 
 #if ADVANCED_LIGHTING || COLOR_BLEEDING
-    vec4 volumeIllumination = texture(u_s3IlluminationVolume, _samplePos_Ms);
+    vec4 volumeIllumination = texture(u_s3IlluminationVolume, _f3SamplePos_Ms);
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
 #if ADVANCED_LIGHTING
