@@ -320,22 +320,16 @@ void ImageReaderWriterTest::testImageReaderExtension()
 void ImageReaderWriterTest::testBitmapImageWriter()
 {
     // Data to write
-    const size_t dim = 2;
-    const ::fwTools::Type type("uint8");
-    ::fwData::Image::SizeType sizeExpected(dim);
-    sizeExpected[0] = 10;
-    sizeExpected[1] = 20;
+    const ::fwTools::Type type               = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size sizeExpected = {10, 20, 0};
     // Use standard information for spacing and origin
     // As the data will be lost in the file format
-    ::fwData::Image::SpacingType spacingExpected(dim);
-    spacingExpected[0] = 1;
-    spacingExpected[1] = 1;
-    ::fwData::Image::OriginType originExpected(dim);
-    originExpected[0] = 0;
-    originExpected[1] = 0;
+    const ::fwData::Image::Spacing spacingExpected = {1., 1., 0};
+    const ::fwData::Image::Origin originExpected   = {0., 0., 0.};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                              ::fwData::Image::RGB);
 
     // Test all teh available extensions
     std::vector<std::string> extensions;
@@ -393,23 +387,14 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 void ImageReaderWriterTest::testVtkImageWriter()
 {
     // Data to write
-    const size_t dim = 3;
-    ::fwTools::Type type("uint8");
-    ::fwData::Image::SizeType sizeExpected(dim);
-    sizeExpected[0] = 10;
-    sizeExpected[1] = 20;
-    sizeExpected[2] = 30;
-    ::fwData::Image::SpacingType spacingExpected(dim);
-    spacingExpected[0] = 0.24;
-    spacingExpected[1] = 1.07;
-    spacingExpected[2] = 2.21;
-    ::fwData::Image::OriginType originExpected(dim);
-    originExpected[0] = -05.6;
-    originExpected[1] = 15.16;
-    originExpected[2] = 11.11;
+    ::fwTools::Type type = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
+    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                              ::fwData::Image::RGBA);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
@@ -486,23 +471,14 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
-    const size_t dim = 3;
-    ::fwTools::Type type("uint8");
-    ::fwData::Image::SizeType sizeExpected(dim);
-    sizeExpected[0] = 10;
-    sizeExpected[1] = 20;
-    sizeExpected[2] = 30;
-    ::fwData::Image::SpacingType spacingExpected(dim);
-    spacingExpected[0] = 0.24;
-    spacingExpected[1] = 1.07;
-    spacingExpected[2] = 2.21;
-    ::fwData::Image::OriginType originExpected(dim);
-    originExpected[0] = -05.6;
-    originExpected[1] = 15.16;
-    originExpected[2] = 11.11;
+    ::fwTools::Type type = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
+    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                              ::fwData::Image::GRAY_SCALE);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
@@ -549,23 +525,14 @@ void ImageReaderWriterTest::testVtiImageWriter()
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
-    const size_t dim = 3;
-    ::fwTools::Type type("uint8");
-    ::fwData::Image::SizeType sizeExpected(dim);
-    sizeExpected[0] = 10;
-    sizeExpected[1] = 20;
-    sizeExpected[2] = 30;
-    ::fwData::Image::SpacingType spacingExpected(dim);
-    spacingExpected[0] = 0.24;
-    spacingExpected[1] = 1.07;
-    spacingExpected[2] = 2.21;
-    ::fwData::Image::OriginType originExpected(dim);
-    originExpected[0] = -05.6;
-    originExpected[1] = 15.16;
-    originExpected[2] = 11.11;
+    ::fwTools::Type type = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
+    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                              ::fwData::Image::RGB);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
@@ -612,23 +579,14 @@ void ImageReaderWriterTest::testMhdImageWriter()
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
-    const size_t dim = 3;
-    ::fwTools::Type type("uint8");
-    ::fwData::Image::SizeType sizeExpected(dim);
-    sizeExpected[0] = 10;
-    sizeExpected[1] = 20;
-    sizeExpected[2] = 30;
-    ::fwData::Image::SpacingType spacingExpected(dim);
-    spacingExpected[0] = 0.24;
-    spacingExpected[1] = 1.07;
-    spacingExpected[2] = 2.21;
-    ::fwData::Image::OriginType originExpected(dim);
-    originExpected[0] = -05.6;
-    originExpected[1] = 15.16;
-    originExpected[2] = 11.11;
+    ::fwTools::Type type = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size sizeExpected       = {10, 20, 30};
+    const ::fwData::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
+    const ::fwData::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
+                                              ::fwData::Image::GRAY_SCALE);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
