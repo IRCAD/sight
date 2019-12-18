@@ -178,19 +178,40 @@ void MeshTest::testMeshToGrid()
 
 void MeshTest::testSyntheticMesh()
 {
-    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
-    ::fwDataTools::Mesh::shakePoint(mesh1);
-    mesh1->adjustAllocatedMemory();
+    {
+        const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+        ::fwDataTools::Mesh::shakePoint(mesh1);
+        mesh1->adjustAllocatedMemory();
 
-    const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
-    ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
-    CPPUNIT_ASSERT( poly );
+        const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
+        ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
+        CPPUNIT_ASSERT( poly );
 
-    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
-    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
+        ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+        ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-    compare(mesh1, mesh2);
+        compare(mesh1, mesh2);
+    }
+    {
+        const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+        ::fwDataTools::Mesh::shakePoint(mesh1);
+        ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+        ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+        ::fwDataTools::Mesh::generatePointNormals(mesh1);
+        ::fwDataTools::Mesh::generateCellNormals(mesh1);
+        mesh1->adjustAllocatedMemory();
+
+        const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
+        ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
+        CPPUNIT_ASSERT( poly );
+
+        ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+        ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
+
+        compare(mesh1, mesh2);
+    }
 }
 
 //------------------------------------------------------------------------------
