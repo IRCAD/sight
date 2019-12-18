@@ -105,6 +105,7 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
     origin[1] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     origin[2] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     image->setOrigin2(origin);
+    image->setPixelFormat(::fwData::Image::GRAY_SCALE);
 
     image->resize();
 

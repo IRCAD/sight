@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,6 @@ namespace ut
 //------------------------------------------------------------------------------
 
 void runImageSrv(
-    const std::string& srvtype,
     const std::string& srvname,
     const SPTR(::fwRuntime::EConfigurationElement)& cfg,
     const SPTR(::fwData::Object)& image)
@@ -149,12 +148,12 @@ void ImageReaderWriterTest::testVtkImageReader()
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
 
-    runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), image);
+    runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data read.
-    ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead  = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead       = image->getSize();
+    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+    ::fwData::Image::Origin originRead   = image->getOrigin2();
+    ::fwData::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -184,7 +183,7 @@ void ImageReaderWriterTest::testVtiImageReader()
                            ::boost::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), image);
+    runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
     const size_t dim = 3;
@@ -206,9 +205,9 @@ void ImageReaderWriterTest::testVtiImageReader()
     ::fwTools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead  = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead       = image->getSize();
+    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+    ::fwData::Image::Origin originRead   = image->getOrigin2();
+    ::fwData::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -239,7 +238,7 @@ void ImageReaderWriterTest::testMhdImageReader()
                            ::boost::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), image);
+    runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
     const size_t dim = 3;
@@ -261,9 +260,9 @@ void ImageReaderWriterTest::testMhdImageReader()
     ::fwTools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead  = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead       = image->getSize();
+    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+    ::fwData::Image::Origin originRead   = image->getOrigin2();
+    ::fwData::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -297,7 +296,6 @@ void ImageReaderWriterTest::testImageReaderExtension()
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
     {
-        const std::string srvtype("::fwIO::IReader");
         const std::string srvname("::ioVTK::SImageReader");
 
         ::fwServices::IService::sptr srv = ::fwServices::add( srvname );
@@ -353,18 +351,18 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         // Write to bitmap image.
         const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / ("temporaryFile." + ext);
 
-        runImageSrv("::fwIO::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
+        runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
         // Read image from disk
         const ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-        runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
+        runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
         ::boost::filesystem::remove(file);
 
         // Data read
-        ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
-        ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
-        ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
+        ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+        ::fwData::Image::Origin originRead   = image->getOrigin2();
+        ::fwData::Image::Size sizeRead       = image->getSize2();
 
         CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
         CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -416,18 +414,18 @@ void ImageReaderWriterTest::testVtkImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
 
-    runImageSrv("::fwIO::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
+    runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     ::boost::filesystem::remove(file);
 
     // Data read
-    ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
-    ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
-    ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
+    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+    ::fwData::Image::Origin originRead   = image->getOrigin2();
+    ::fwData::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -460,7 +458,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
-    ::fwTools::Type type        = ::fwTools::Type::create< float >();
+    ::fwTools::Type type        = ::fwTools::Type::s_FLOAT;
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
@@ -470,11 +468,11 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "imageSeries.vtk";
 
     // Write image series
-    runImageSrv("::fwIO::IWriter", "::ioVTK::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
+    runImageSrv("::ioVTK::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
     ::fwData::Image::sptr newImage = ::fwData::Image::New();
-    runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), newImage);
+    runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), newImage);
 
     ::fwTest::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
@@ -509,16 +507,16 @@ void ImageReaderWriterTest::testVtiImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
 
-    runImageSrv("::fwIO::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
+    runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
-    ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
-    ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
+    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+    ::fwData::Image::Origin originRead   = image->getOrigin2();
+    ::fwData::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -572,16 +570,16 @@ void ImageReaderWriterTest::testMhdImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
 
-    runImageSrv("::fwIO::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
+    runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::fwIO::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
-    ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
-    ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
+    ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+    ::fwData::Image::Origin originRead   = image->getOrigin2();
+    ::fwData::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -636,7 +634,6 @@ void ImageReaderWriterTest::testImageWriterExtension()
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
 
     {
-        const std::string srvtype("::fwIO::IWriter");
         const std::string srvname("::ioVTK::SImageWriter");
 
         ::fwServices::IService::sptr srv = ::fwServices::add( srvname );
