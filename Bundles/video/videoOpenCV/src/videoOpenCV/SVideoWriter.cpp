@@ -192,9 +192,9 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
                 // computes number of fps
                 const double fps = 1000 * m_timestamps.size() / (m_timestamps.back() - m_timestamps.front());
                 OSLM_TRACE("Estimated FPS: " << fps);
-                const int width                      = static_cast<int>( frameTL->getWidth() );
-                const int height                     = static_cast<int>( frameTL->getHeight() );
-                const ::boost::filesystem::path path = this->getFile();
+                const int width                  = static_cast<int>( frameTL->getWidth() );
+                const int height                 = static_cast<int>( frameTL->getHeight() );
+                const std::filesystem::path path = this->getFile();
 
                 m_writer = std::make_unique< ::cv::VideoWriter >(path.string(), CV_FOURCC('M', 'J', 'P', 'G'),
                                                                  fps, cvSize(width, height), true);

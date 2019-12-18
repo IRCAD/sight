@@ -27,9 +27,6 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwRuntime/Runtime.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -55,15 +52,15 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    if(::boost::filesystem::exists(VLC_PLUGINS_DIR))
+    if(std::filesystem::exists(VLC_PLUGINS_DIR))
     {
         Plugin::exportVLCPluginsEnv(VLC_PLUGINS_DIR);
     }
     else
     {
-        const ::boost::filesystem::path workingPath  = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
-        const ::boost::filesystem::path vlcPluginDir = workingPath / "vlc/plugins";
-        SLM_ASSERT("VLC plugins directory is not found.", ::boost::filesystem::exists(vlcPluginDir));
+        const std::filesystem::path workingPath  = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+        const std::filesystem::path vlcPluginDir = workingPath / "vlc/plugins";
+        SLM_ASSERT("VLC plugins directory is not found.", std::filesystem::exists(vlcPluginDir));
         Plugin::exportVLCPluginsEnv(vlcPluginDir.string());
     }
 }

@@ -26,14 +26,13 @@
 
 #include <fwRuntime/Runtime.hpp>
 
-#include <boost/filesystem.hpp>
-
 #include <QDir>
 #include <QQmlComponent>
 #include <QQuickWindow>
 #include <QString>
 #include <QUrl>
 
+#include <filesystem>
 #include <iostream>
 
 namespace fwQml
@@ -48,7 +47,7 @@ QmlEngine::QmlEngine()
     // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
     const auto runtimePath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
     const auto qmlDir      = runtimePath / "qml";
-    if (::boost::filesystem::exists(qmlDir))
+    if (std::filesystem::exists(qmlDir))
     {
         m_engine->addImportPath(QString::fromStdString(qmlDir.string()));
     }

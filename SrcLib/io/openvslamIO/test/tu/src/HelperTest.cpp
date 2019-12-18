@@ -169,7 +169,7 @@ void HelperTest::writeReadConfig()
 
     const auto config = ::openvslamIO::Helper::createMonocularConfig(cam, orbParam, initParams);
 
-    const ::boost::filesystem::path tmp = ::fwTools::System::getTemporaryFolder();
+    const std::filesystem::path tmp = ::fwTools::System::getTemporaryFolder();
 
     CPPUNIT_ASSERT_NO_THROW(::openvslamIO::Helper::writeOpenvslamConfig(config->yaml_node_,
                                                                         tmp.string() + "/test.yaml"));

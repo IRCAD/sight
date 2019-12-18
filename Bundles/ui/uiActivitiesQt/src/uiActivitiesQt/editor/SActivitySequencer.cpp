@@ -170,7 +170,7 @@ void SActivitySequencer::starting()
     // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
     const auto runtimePath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
     const auto qmlDir      = runtimePath / "qml";
-    if (::boost::filesystem::exists(qmlDir))
+    if (std::filesystem::exists(qmlDir))
     {
         engine->addImportPath(QString::fromStdString(qmlDir.string()));
     }
