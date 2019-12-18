@@ -25,6 +25,7 @@
 #include "vtkGdcmIO/config.hpp"
 
 #include <filesystem>
+#include <vector>
 
 namespace vtkGdcmIO
 {
