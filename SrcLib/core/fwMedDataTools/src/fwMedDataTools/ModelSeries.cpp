@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,7 @@
 #include "fwMedDataTools/ModelSeries.hpp"
 
 #include <fwCom/Signal.hxx>
+
 #include <fwCore/spyLog.hpp>
 
 namespace fwMedDataTools
@@ -30,14 +31,14 @@ namespace fwMedDataTools
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::addMesh(::fwMedData::ModelSeries::sptr &_modelSeries, const ::fwData::Mesh::sptr& _mesh,
+void ModelSeries::addMesh(const ::fwMedData::ModelSeries::sptr& _modelSeries, const ::fwData::Mesh::sptr& _mesh,
                           const std::string& _organName, const std::string& _structureType,
                           const ::fwData::Color::sptr& _colour, ::fwData::Material::RepresentationType _mode,
                           bool _visible)
 {
     //reconstruction creation
     ::fwData::Reconstruction::sptr reconstructionQuadMesh =
-        createReconstructionFromMesh(_mesh, _organName, _structureType, _colour,_mode, _visible);
+        createReconstructionFromMesh(_mesh, _organName, _structureType, _colour, _mode, _visible);
 
     addReconstruction(_modelSeries, reconstructionQuadMesh);
 
@@ -76,7 +77,8 @@ void ModelSeries::addMesh(::fwMedData::ModelSeries::sptr &_modelSeries, const ::
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::addReconstruction( ::fwMedData::ModelSeries::sptr& _modelSeries, ::fwData::Reconstruction::sptr& _rec)
+void ModelSeries::addReconstruction( const ::fwMedData::ModelSeries::sptr& _modelSeries,
+                                     const ::fwData::Reconstruction::sptr& _rec)
 {
     ::fwMedData::ModelSeries::ReconstructionVectorType recDB = _modelSeries->getReconstructionDB();
 
@@ -91,5 +93,3 @@ void ModelSeries::addReconstruction( ::fwMedData::ModelSeries::sptr& _modelSerie
 //------------------------------------------------------------------------------
 
 } // end namespace fwDataTools
-
-

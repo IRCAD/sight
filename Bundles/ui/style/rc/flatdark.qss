@@ -4,7 +4,6 @@
 
 QWidget
 {
-    border-radius: 4px;
     color: rgb(255, 255, 255);
     border: none;
 }
@@ -126,7 +125,7 @@ QMenu::separator
 
 QMenu::right-arrow
 {
-    image: url(:/resources/right_arrow.png)
+    image: url(:/resources/right_arrow.png);
 }
 
 /******************************* Checkbox *******************************/
@@ -137,7 +136,6 @@ QMenu::indicator:non-exclusive
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
     margin-left: -22px;
     margin-right: 22px;
 }
@@ -177,7 +175,6 @@ QMenu::indicator:exclusive
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
     margin-left: -22px;
     margin-right: 22px;
 }
@@ -282,6 +279,7 @@ QToolBar::handle:horizontal
 
 QToolButton
 {
+    border-radius: 4px;
     border: none;
     background: transparent;
     margin: 3px;
@@ -291,7 +289,7 @@ QToolButton
 QToolButton:disabled
 {
     background: transparent;
-    color: rgb(42, 48, 63);
+    color: rgb(194, 198, 199);
 }
 
 QToolButton:hover,
@@ -325,6 +323,7 @@ QLabel
 
 QLineEdit
 {
+    border-radius: 4px;
     border: none;
     background: rgb(86, 90, 94);
     color: rgb(255, 255, 255);
@@ -343,6 +342,7 @@ QLineEdit:disabled
 
 QTextEdit
 {
+    border-radius: 4px;
     border: none;
     color: rgb(255, 255, 255);
     background: rgb(86, 90, 94);
@@ -354,6 +354,7 @@ QTextEdit
 
 QPlainTextEdit
 {
+    border-radius: 4px;
     background: rgb(54, 57, 62);
     color: rgb(255, 255, 255);
     border-radius: 4px;
@@ -366,6 +367,7 @@ QPlainTextEdit
 
 QPushButton
 {
+    border-radius: 4px;
     border: none;
     background: rgb(86, 90, 94);
     padding: 5px;
@@ -404,7 +406,6 @@ QCheckBox::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QCheckBox::indicator:unchecked:hover,
@@ -454,7 +455,6 @@ QGroupBox::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QGroupBox::indicator:unchecked:hover,
@@ -514,6 +514,7 @@ QGroupBox#SlideBar
 
 QAbstractSpinBox
 {
+    border-radius: 4px;
     border: none;
     padding: 5px;
     background: rgb(86, 90, 94);
@@ -645,6 +646,7 @@ QSlider::handle:pressed
 
 QComboBox
 {
+    border-radius: 4px;
     border: none;
     background: rgb(86, 90, 94);
     padding: 5px;
@@ -840,7 +842,6 @@ QScrollBar::down-arrow:vertical
     background: transparent;
 }
 
-
 QScrollBar::add-page:vertical,
 QScrollBar::sub-page:vertical
 {
@@ -868,7 +869,6 @@ QRadioButton::indicator
     border-radius: 7px;
     width: 10px;
     height: 10px;
-    pading: 10px;
 }
 
 QRadioButton::indicator:unchecked:hover,
@@ -953,7 +953,6 @@ QListView::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QListView::indicator:unchecked:hover,
@@ -1031,7 +1030,6 @@ QTreeView::indicator
     border-radius: 4px;
     width: 14px;
     height: 14px;
-    pading: 10px;
 }
 
 QTreeView::indicator:unchecked:hover,

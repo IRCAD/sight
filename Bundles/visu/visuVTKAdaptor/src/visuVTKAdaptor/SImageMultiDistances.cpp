@@ -62,7 +62,7 @@
 #include <algorithm>
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageMultiDistances);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageMultiDistances)
 
 namespace visuVTKAdaptor
 {
@@ -348,7 +348,8 @@ void SImageMultiDistances::updating()
     distanceField = image->getField< ::fwData::Vector >( ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     bool isShown;
-    isShown = image->getField("ShowDistances", ::fwData::Boolean::New(true))->value();
+    isShown =
+        image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(true))->value();
 
     this->unregisterServices();
 

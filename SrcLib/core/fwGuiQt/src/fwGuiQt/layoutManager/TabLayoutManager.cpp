@@ -26,6 +26,8 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwDataTools/Color.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QBoxLayout>
@@ -67,17 +69,38 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
 
     for ( ViewInfo viewInfo : views)
     {
-        const int border        = viewInfo.m_border;
+        int leftBorder;
+        int topBorder;
+        int rightBorder;
+        int bottomBorder;
+        if(viewInfo.m_border != 0)
+        {
+            leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
+        }
+        else
+        {
+            leftBorder   = viewInfo.m_leftBorder;
+            topBorder    = viewInfo.m_topBorder;
+            rightBorder  = viewInfo.m_rightBorder;
+            bottomBorder = viewInfo.m_bottomBorder;
+        }
+
         QWidget* const widget   = new QWidget(m_tabWidget);
         const int minWidthSize  = std::max(viewInfo.m_minSize.first, 0);
         const int minHeightSize = std::max(viewInfo.m_minSize.second, 0);
         widget->setMinimumSize(minWidthSize, minHeightSize);
-        widget->setContentsMargins(border, border, border, border);
+        widget->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
 
         if(!viewInfo.m_backgroundColor.empty())
         {
-            const QString style = QString::fromStdString(
-                "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+            std::uint8_t rgba[4];
+            ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+            std::stringstream ss;
+            ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+               << static_cast< short >(rgba[1]) << ','
+               << static_cast< short >(rgba[2]) << ','
+               << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+            const QString style = QString::fromStdString(ss.str());
             widget->setStyleSheet(style + qApp->styleSheet());
         }
 
@@ -93,8 +116,14 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
             scrollArea->setWidgetResizable( true );
             if(!viewInfo.m_backgroundColor.empty())
             {
-                const QString style = QString::fromStdString(
-                    "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                std::uint8_t rgba[4];
+                ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                std::stringstream ss;
+                ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+                   << static_cast< short >(rgba[1]) << ','
+                   << static_cast< short >(rgba[2]) << ','
+                   << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                const QString style = QString::fromStdString(ss.str());
                 scrollArea->setStyleSheet(style + qApp->styleSheet());
             }
             idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));

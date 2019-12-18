@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,11 +32,15 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwDataTools/PickingInfo.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreVector3.h>
 
 namespace fwRenderOgre
 {
+
+class Layer;
 
 namespace interactor
 {
@@ -61,12 +65,13 @@ public:
         UNKNOWN
     };
 
-    enum Modifier
+    enum class Modifier : std::uint8_t
     {
-        SHIFT,
-        CONTROL,
-        META,
-        ALT,
+        NONE     = 0x0,
+        SHIFT    = 0x1,
+        CONTROL  = SHIFT << 1,
+            META = SHIFT << 2,
+            ALT  = SHIFT << 3
     };
 
     /**
@@ -91,62 +96,186 @@ public:
      * @{
      */
     typedef ::fwCom::Signal< void () > RenderRequestedSigType;
+    [[deprecated("Removed in sight 21.0")]]
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
     /** @} */
 
-    /// Constructor. Retrieves the Ogre root and the \<sceneID\> scene manager
-    FWRENDEROGRE_API IInteractor();
+    /// Constructor. Sets the scene manager from the layer if it exists.
+    FWRENDEROGRE_API IInteractor(SPTR(Layer)_layer = nullptr);
 
     /// Destructor
     FWRENDEROGRE_API virtual ~IInteractor();
 
     /// Change point of interest viewed by the camera
+    [[deprecated("Set the scene from the layer instead.")]]
     FWRENDEROGRE_API void setSceneID(const std::string&);
 
-    /// Behaviour on a MouseMoveEvent
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int) = 0;
+    /// Sets the scene's length, that is the length of the scene's bounding cube.
+    FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength);
 
-    /// Behaviour on a WheelEvent
-    FWRENDEROGRE_API virtual void wheelEvent(int, int, int) = 0;
+    /**
+     * @brief Listens to mouse move events when one of the mouse buttons is pressed.
+     * @param _button currently active mouse button.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     * @param _dx width displacement of the mouse since the last event.
+     * @param _dx height displacement of the mouse since the last event.
+     */
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton _button, Modifier _mods, int _x, int _y, int _dx, int _dy);
 
-    /// Called when the window is resized
-    FWRENDEROGRE_API virtual void resizeEvent(int, int) = 0;
+    /**
+     * @brief Listens to the mouse's wheel being spun.
+     * @param _mods keyboard modifiers.
+     * @param _angleDelta distance that the wheel is rotated, in eighths of a degree.
+     *                    See @ref https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     */
+    FWRENDEROGRE_API virtual void wheelEvent(Modifier _mods, int _angleDelta, int _x, int _y);
 
-    /// Called when a key is pressed
-    FWRENDEROGRE_API virtual void keyPressEvent(int) = 0;
+    /**
+     * @brief Listens to mouse move buttons being released.
+     * @param _button released mouse button.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     */
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton _button, Modifier _mods, int _x, int _y);
 
-    /// Called when a key is release
-    FWRENDEROGRE_API virtual void keyReleaseEvent(int) = 0;
+    /**
+     * @brief Listens to mouse move buttons being pressed.
+     * @param _button pressed mouse button.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     */
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y);
 
-    /// Called when a mouse button is released.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) = 0;
+    /**
+     * @brief Listens to keyboard keys being pressed.
+     * @param _key pressed key.
+     * @param _mods keyboard modifiers.
+     */
+    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier _mods);
 
-    /// Called when a mouse button is pressed.
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) = 0;
+    /**
+     * @brief Listens to keyboard keys being released.
+     * @param _key pressed key.
+     * @param _mods keyboard modifiers.
+     */
+    FWRENDEROGRE_API virtual void keyReleaseEvent(int _key, Modifier _mods);
 
-    /// Called when the focus is win
-    FWRENDEROGRE_API virtual void focusInEvent() = 0;
+    /**
+     * @brief Checks if the cursor is inside a layer's viewport.
+     * @param mouseX width coordinate of the mouse in pixels.
+     * @param mouseY height coordinate of the mouse in pixels.
+     * @param _layer layer on which to check the cursor's belonging.
+     */
+    static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer);
 
-    /// Called when the focus is lost
-    FWRENDEROGRE_API virtual void focusOutEvent() = 0;
+    /** @brief Legacy API, use the equivalent with keyboard modifiers.
+     *
+     * @deprecated removed in sight 21.0
+     * @{
+     */
+    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int);
+    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    FWRENDEROGRE_API virtual void wheelEvent(int, int, int);
+    [[deprecated("Get the viewport dimensions from the layer instead.")]]
+    FWRENDEROGRE_API virtual void resizeEvent(int, int);
+    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    FWRENDEROGRE_API virtual void keyPressEvent(int);
+    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    FWRENDEROGRE_API virtual void keyReleaseEvent(int);
+    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int);
+    [[deprecated("Use the equivalent method with keyboard modifiers.")]]
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int);
+    [[deprecated("Removed in sight 21.0.")]]
+    FWRENDEROGRE_API virtual void focusInEvent();
+    [[deprecated("Removed in sight 21.0.")]]
+    FWRENDEROGRE_API virtual void focusOutEvent();
+    /**
+     * @}
+     */
 
 protected:
 
     /// Ogre Root
-    ::Ogre::Root* m_ogreRoot;
+    [[deprecated("Removed in sight 21.0")]]
+    ::Ogre::Root* m_ogreRoot { nullptr };
 
     /// Current scene manager
-    ::Ogre::SceneManager* m_sceneManager;
+    [[deprecated("Retrieve the scene manager from the layer instead. Removed in sight 21.0")]]
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
+
+    /// Weak reference to the layer on which the interactor interacts.
+    WPTR(Layer) m_layer;
 
     /**
      * @name Signals attributes
      * @{
      */
     /// Signal triggered when a render is requested
+    [[deprecated("Call the render request on the Layer directly.")]]
     RenderRequestedSigType::sptr m_sigRenderRequested;
     /**
      * @}
      */
+
+private:
+
+    /// Checks if the cursor is on top of the given viewport.
+    static bool isInViewport(int _mouseX, int _mouseY, const ::Ogre::Viewport* const _vp);
+
 };
+
+//------------------------------------------------------------------------------
+
+template<typename INT_TYPE>
+static inline bool operator==(INT_TYPE _i, IInteractor::Modifier _m)
+{
+    static_assert(std::is_integral<INT_TYPE>::value, "Integral type required.");
+    return static_cast<INT_TYPE>(_m) == _i;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename INT_TYPE>
+static inline bool operator==(IInteractor::Modifier _m, INT_TYPE _i)
+{
+    static_assert(std::is_integral<INT_TYPE>::value, "Integral type required.");
+    return _i == static_cast<INT_TYPE>(_m);
+}
+
+//------------------------------------------------------------------------------
+
+static inline IInteractor::Modifier operator&(IInteractor::Modifier _m1, IInteractor::Modifier _m2)
+{
+    return static_cast<IInteractor::Modifier>(
+        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m1) &
+        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m2)
+        );
+}
+
+//------------------------------------------------------------------------------
+
+static inline IInteractor::Modifier operator|(IInteractor::Modifier _m1, IInteractor::Modifier _m2)
+{
+    return static_cast<IInteractor::Modifier>(
+        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m1) |
+        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m2)
+        );
+}
+
+//------------------------------------------------------------------------------
+
+static inline IInteractor::Modifier operator|=(IInteractor::Modifier& _m1, IInteractor::Modifier _m2)
+{
+    return _m1 = _m1 | _m2;
+}
+
 } // interactor
 } // fwRenderOgre

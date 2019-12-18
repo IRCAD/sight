@@ -203,6 +203,8 @@ void SMesh::starting()
     }
 
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    ::fwData::mt::ObjectReadLock lock(mesh);
+
     this->updateMesh(mesh);
 }
 
@@ -256,8 +258,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
-
-    ::fwData::mt::ObjectReadLock lock(_mesh);
 
     const size_t uiNumVertices = _mesh->getNumberOfPoints();
     if(uiNumVertices == 0)
@@ -366,6 +366,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -473,6 +474,11 @@ void SMesh::modifyVertices()
 
     // Necessary to update the bounding box in the adaptor
     //m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+
+    if (m_autoResetCamera)
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
 
     this->requestRender();
 }

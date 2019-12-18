@@ -65,8 +65,8 @@ int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& serie
             helper.remove(series);
             helper.notify();
         }
-        else if (std::find(m_activityIds.begin(), m_activityIds.end(),
-                           activity->getActivityConfigId()) == m_activityIds.end())
+        else if(!(lastActivityIndex+1 < m_activityIds.size() &&
+                  m_activityIds[lastActivityIndex+1] == activity->getActivityConfigId()))
         {
             // Remove the wrong data
             SLM_ERROR("The activity '" +activity->getActivityConfigId() + "' is unknown, it will be removed")
@@ -77,8 +77,16 @@ int IActivitySequencer::parseActivities(const ::fwMedData::SeriesDB::sptr& serie
         }
         else
         {
-            ++lastActivityIndex;
-            this->storeActivityData(seriesDB, lastActivityIndex);
+            const bool ok = this->validateActivity(activity).first;
+            if(ok)
+            {
+                ++lastActivityIndex;
+                this->storeActivityData(seriesDB, lastActivityIndex);
+            }
+            else
+            {
+                break;
+            }
         }
     }
     return lastActivityIndex;
@@ -135,18 +143,34 @@ void IActivitySequencer::storeActivityData(const ::fwMedData::SeriesDB::sptr& se
         // FIXME: update all the data or only the requirement ?
         if(overrides)
         {
+            const std::string activityId                       = m_activityIds[index];
+            const ::fwActivities::registry::ActivityInfo& info =
+                ::fwActivities::registry::Activities::getDefault()->getInfo(activityId);
+
             auto overridesContainer = overrides->getContainer();
-            for (const auto& elt : composite->getContainer())
+
+            for(const auto& req : info.requirements)
             {
-                composite->getContainer()[elt.first] = overridesContainer.count(elt.first) == 0 ?
-                                                       m_requirements[elt.first] : overridesContainer[elt.first];
+                if(m_requirements.find(req.name) != m_requirements.end() ||
+                   overridesContainer.find(req.name) != m_requirements.end())
+                {
+                    composite->getContainer()[req.name] = overridesContainer.count(req.name) == 0 ?
+                                                          m_requirements[req.name] : overridesContainer[req.name];
+                }
             }
         }
         else
         {
-            for (const auto& elt : composite->getContainer())
+            const std::string activityId                       = m_activityIds[index];
+            const ::fwActivities::registry::ActivityInfo& info =
+                ::fwActivities::registry::Activities::getDefault()->getInfo(activityId);
+
+            for(const auto& req : info.requirements)
             {
-                composite->getContainer()[elt.first] = m_requirements[elt.first];
+                if(m_requirements.find(req.name) != m_requirements.end())
+                {
+                    composite->getContainer()[req.name] = m_requirements[req.name];
+                }
             }
         }
     }

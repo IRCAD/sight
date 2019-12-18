@@ -65,9 +65,7 @@ public:
             KEYPRESS,
             KEYRELEASE,
             BUTTONRELEASE,
-            BUTTONPRESS,
-            FOCUSIN,
-            FOCUSOUT
+            BUTTONPRESS
         } InteractionEnumType;
 
         /**
@@ -81,6 +79,7 @@ public:
         int delta;
         int key;
         interactor::IInteractor::MouseButton button;
+        interactor::IInteractor::Modifier modifiers;
         InteractionEnumType interactionType;
     };
 

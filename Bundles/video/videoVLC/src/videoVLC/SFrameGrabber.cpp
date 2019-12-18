@@ -40,14 +40,6 @@
 
 #include <filesystem>
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 namespace videoVLC
 {
 
@@ -235,20 +227,6 @@ SFrameGrabber::~SFrameGrabber() noexcept
 
 void SFrameGrabber::starting()
 {
-    if(std::filesystem::exists(VLC_PLUGINS_DIR))
-    {
-        SFrameGrabber::exportVLCPluginsEnv(VLC_PLUGINS_DIR);
-    }
-    else
-    {
-        SLM_ASSERT("VLC plugins directory is not found.", std::filesystem::exists("./vlc/plugins"));
-#ifdef WIN32
-        SFrameGrabber::exportVLCPluginsEnv(".\\vlc\\plugins");
-#else
-        SFrameGrabber::exportVLCPluginsEnv("./vlc/plugins");
-#endif
-    }
-
     const std::string networkCaching = "--network-caching=" + m_networkCaching;
 
 // initialize libVLC
@@ -577,28 +555,6 @@ void SFrameGrabber::onEventCallback(const struct libvlc_event_t* event, void* us
         default:
             break;
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SFrameGrabber::exportVLCPluginsEnv(const std::string& path)
-{
-#ifdef WIN32
-    {
-        typedef int (_cdecl* PUTENVPROC)(const char*);
-
-        HMODULE hmodule = GetModuleHandle("msvcrt");
-        SLM_ASSERT("GetModuleHandle msvcrt failed", hmodule);
-
-        PUTENVPROC putenvFunc = (PUTENVPROC) GetProcAddress(hmodule, "_putenv");
-        SLM_ASSERT("GetProcAddress _putenv failed", hmodule);
-
-        const std::string env = "VLC_PLUGIN_PATH=" + path;
-        putenvFunc(env.c_str());
-    }
-#else
-    setenv("VLC_PLUGIN_PATH", path.c_str(), 1);
-#endif
 }
 
 //----------------------------------------------------------------------------

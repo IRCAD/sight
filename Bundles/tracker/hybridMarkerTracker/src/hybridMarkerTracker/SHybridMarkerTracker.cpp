@@ -44,8 +44,6 @@
 namespace hybridMarkerTracker
 {
 
-fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker);
-
 const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
@@ -53,6 +51,8 @@ const ::fwCom::Slots::SlotKeyType SHybridMarkerTracker::s_SET_BOOL_PARAMETER_SLO
 static const ::fwServices::IService::KeyType s_FRAME_INPUT  = "frameIn";
 static const ::fwServices::IService::KeyType s_POSE_INOUT   = "pose";
 static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
+
+fwServicesRegisterMacro(::arServices::ITracker, ::hybridMarkerTracker::SHybridMarkerTracker)
 
 SHybridMarkerTracker::SHybridMarkerTracker() noexcept :
     m_tracker(NULL),
@@ -501,7 +501,7 @@ void SHybridMarkerTracker::drawRect(const ::cv::Mat& cHp, ::cv::Mat& img, ::cv::
         corners[i].z = cornersHm.at<double>(2, i) / cornersHm.at<double>(3, i);
     }
 
-    ::cv::Mat rVec, tVec, m_distCoeffs;
+    ::cv::Mat rVec, tVec;
     rVec = ::cv::Mat::zeros(3, 1, CV_32FC1);
     tVec = ::cv::Mat::zeros(3, 1, CV_32FC1);
     std::vector < ::cv::Point2f > corners2d;

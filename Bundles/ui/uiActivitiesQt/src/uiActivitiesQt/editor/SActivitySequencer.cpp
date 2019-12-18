@@ -127,6 +127,7 @@ void SActivitySequencer::starting()
         ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     m_widget = new QQuickWidget();
     mainLayout->addWidget(m_widget);
@@ -292,6 +293,13 @@ void SActivitySequencer::checkNext()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+
+    // Store current activity data before checking the next one,
+    // new data can be added in the current activity during the process.
+    if (m_currentActivity >= 0)
+    {
+        this->storeActivityData(seriesDB, m_currentActivity);
+    }
 
     const size_t nextIdx = static_cast<size_t>(m_currentActivity + 1);
     if (nextIdx < m_activityIds.size())

@@ -68,6 +68,8 @@ static const std::string VISIBILITY_FIELD   = "VISIBILITY";
 
 static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID - 1;
 
+static const std::string s_QUERY_CONFIG = "queryFlags";
+
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
@@ -121,9 +123,20 @@ void SNegato3D::configuring()
 
         this->setFiltering(filtering);
     }
+    if(config.count(s_QUERY_CONFIG))
+    {
+        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
 
-    m_enableAlpha = config.get<bool>("tfalpha", m_enableAlpha);
-    m_interactive = config.get<bool>("interactive", m_interactive);
+    m_enableAlpha         = config.get<bool>("tfalpha", m_enableAlpha);
+    m_interactive         = config.get<bool>("interactive", m_interactive);
+    m_interactionPriority = config.get<int>("priority", m_interactionPriority);
 
     const std::string transformId =
         config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
@@ -166,7 +179,7 @@ void SNegato3D::starting()
         auto imgOrientation = static_cast<OrientationMode>(orientationNum++);
         plane = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
                                                           this->getSceneManager(),
-                                                          imgOrientation, true, m_3DOgreTexture,
+                                                          imgOrientation, m_3DOgreTexture,
                                                           m_filtering);
     }
 
@@ -180,7 +193,7 @@ void SNegato3D::starting()
     if(m_interactive)
     {
         auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
-        this->getLayer()->addInteractor(interactor, 1);
+        this->getLayer()->addInteractor(interactor, m_interactionPriority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
         const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient");
@@ -207,6 +220,12 @@ void SNegato3D::starting()
 void SNegato3D::stopping()
 {
     this->getRenderService()->makeCurrent();
+
+    if(m_interactive)
+    {
+        auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
+        this->getLayer()->removeInteractor(interactor);
+    }
 
     m_helperTF.removeTFConnections();
 
@@ -270,7 +289,7 @@ void SNegato3D::createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vect
         plane->setOriginPosition(_origin);
         plane->initializePlane();
         plane->enableAlpha(m_enableAlpha);
-        plane->setQueryFlags(0x1);
+        plane->setQueryFlags(m_queryFlags);
     }
 }
 
@@ -453,7 +472,7 @@ void SNegato3D::setPlanesQueryFlags(std::uint32_t _flags)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
+void SNegato3D::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int)
 {
     if(m_pickedPlane)
     {
@@ -479,9 +498,8 @@ void SNegato3D::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
+void SNegato3D::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 {
-    this->setPlanesQueryFlags(0x1); // Make all planes pickable again.
     m_pickedPlane.reset();
     m_pickingCross->setVisible(false);
 
@@ -515,7 +533,7 @@ void SNegato3D::buttonPressEvent(MouseButton _button, int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::buttonReleaseEvent(MouseButton, int, int)
+void SNegato3D::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_pickedPlane)
     {
@@ -524,6 +542,7 @@ void SNegato3D::buttonReleaseEvent(MouseButton, int, int)
     }
     m_pickingCross->setVisible(false);
     m_pickedVoxelSignal->asyncEmit("");
+    this->setPlanesQueryFlags(m_queryFlags); // Make all planes pickable again.
 }
 
 //------------------------------------------------------------------------------
@@ -603,14 +622,10 @@ std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 {
     auto* const sceneManager = this->getSceneManager();
     SLM_ASSERT("Scene manager not created yet.", sceneManager);
-    ::Ogre::Camera* camera = sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-
-    const int height = camera->getViewport()->getActualHeight();
-    const int width  = camera->getViewport()->getActualWidth();
 
     ::fwRenderOgre::picker::IPicker picker;
-    picker.setSceneManager(this->getSceneManager());
-    picker.executeRaySceneQuery(_x, _y, width, height, 0x1);
+    picker.setSceneManager(sceneManager);
+    picker.executeRaySceneQuery(_x, _y, m_queryFlags);
 
     const auto isPicked = [&picker](const ::fwRenderOgre::Plane::sptr& _p)
                           {
@@ -680,37 +695,6 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
             sig->asyncEmit(newWindow, newLevel);
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::wheelEvent(int, int, int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::resizeEvent(int, int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::keyPressEvent(int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::keyReleaseEvent(int)
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::focusInEvent()
-{
-}
-//------------------------------------------------------------------------------
-
-void SNegato3D::focusOutEvent()
-{
 }
 
 } // namespace visuOgreAdaptor

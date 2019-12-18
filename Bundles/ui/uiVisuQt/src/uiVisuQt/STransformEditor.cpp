@@ -24,6 +24,8 @@
 
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -48,7 +50,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------
 
@@ -240,7 +242,7 @@ void STransformEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void STransformEditor::onSliderChanged(int value)
+void STransformEditor::onSliderChanged(int)
 {
     ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
@@ -257,6 +259,7 @@ void STransformEditor::onSliderChanged(int value)
 
     mat[3] = ::glm::dvec4(tx, ty, tz, 1.);
 
+    ::fwData::mt::ObjectWriteLock lock(matrix);
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
 
     for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
@@ -289,6 +292,8 @@ void STransformEditor::updateFromMatrix()
     ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
     SLM_ASSERT("Unable to get matrix", matrix);
+
+    ::fwData::mt::ObjectReadLock lock(matrix);
     const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
 
     const ::glm::dquat quat(mat);

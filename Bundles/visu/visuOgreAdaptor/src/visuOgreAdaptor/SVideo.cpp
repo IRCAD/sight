@@ -47,9 +47,9 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVideo, ::fwData::Image);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVideo, ::fwData::Image)
 
-static const std::string VIDEO_MATERIAL_NAME            = "Video";
+static const std::string VIDEO_MATERIAL_NAME = "Video";
 static const std::string VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
 static const std::string VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
@@ -58,11 +58,15 @@ static const std::string VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT         = "updateTF";
 
 //------------------------------------------------------------------------------
 SVideo::SVideo() noexcept
 {
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SVideo::updateVisibility, this);
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SVideo::toggleVisibility, this);
     newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
 }
 
@@ -227,6 +231,28 @@ void SVideo::updating()
     }
 
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVideo::updateVisibility(bool _isVisible)
+{
+    if(m_entity)
+    {
+        m_entity->setVisible(_isVisible);
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVideo::toggleVisibility()
+{
+    if(m_entity)
+    {
+        this->updateVisibility(!m_entity->isVisible());
+    }
 }
 
 //------------------------------------------------------------------------------

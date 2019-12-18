@@ -221,8 +221,6 @@
                     <layer id="video" depth="1" />
                     <layer id="default" depth="2" compositors="Remap;AlphaModulator" />
                     <adaptor uid="videoAdpt" />
-                    <adaptor uid="interactorStyle" />
-                    <adaptor uid="interactorStyle2" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
                     <adaptor uid="meshAdpt" />
@@ -236,14 +234,6 @@
                 <in key="image" uid="videoImage" />
                 <in key="camera" uid="camera" />
                 <config layer="video" />
-            </service>
-
-            <service uid="interactorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" movement="Fixed" />
-            </service>
-
-            <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="video" movement="Fixed" />
             </service>
 
             <service uid="axis" type="::visuOgreAdaptor::SAxis">
@@ -533,8 +523,6 @@
 
             <!-- Ogre scene 'genericScene' -->
             <start uid="videoAdpt" />
-            <start uid="interactorStyle" />
-            <start uid="interactorStyle2" />
             <start uid="axis" />
             <start uid="cameraAdpt" />
             <start uid="meshAdpt" />
