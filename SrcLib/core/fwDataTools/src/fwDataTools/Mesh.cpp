@@ -462,10 +462,10 @@ void Mesh::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 
     for (; itr != itrEnd; ++itr)
     {
-        itr->color->r = static_cast<std::uint8_t>(rand()%256);
-        itr->color->g = static_cast<std::uint8_t>(rand()%256);
-        itr->color->b = static_cast<std::uint8_t>(rand()%256);
-        itr->color->a = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->r = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->g = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->b = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->a = static_cast<std::uint8_t>(rand()%256);
     }
 }
 //------------------------------------------------------------------------------
@@ -485,10 +485,10 @@ void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 
     for (; itr != itrEnd; ++itr)
     {
-        itr->color->r = static_cast<std::uint8_t>(rand()%256);
-        itr->color->g = static_cast<std::uint8_t>(rand()%256);
-        itr->color->b = static_cast<std::uint8_t>(rand()%256);
-        itr->color->a = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->r = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->g = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->b = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->a = static_cast<std::uint8_t>(rand()%256);
     }
 }
 
@@ -595,10 +595,10 @@ void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& mesh, const std::uint
 
     for (; itr != itrEnd; ++itr)
     {
-        itr->color->r = colorR;
-        itr->color->g = colorG;
-        itr->color->b = colorB;
-        itr->color->a = colorA;
+        itr->rgba->r = colorR;
+        itr->rgba->g = colorG;
+        itr->rgba->b = colorB;
+        itr->rgba->a = colorA;
     }
 
     auto sig = mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
@@ -630,20 +630,20 @@ void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& _mesh, const std::vec
         auto point2 = itrPoint + indexPoint1;
         auto point3 = itrPoint + indexPoint2;
 
-        point1->color->r = _colorR;
-        point1->color->g = _colorG;
-        point1->color->b = _colorB;
-        point1->color->a = _colorA;
+        point1->rgba->r = _colorR;
+        point1->rgba->g = _colorG;
+        point1->rgba->b = _colorB;
+        point1->rgba->a = _colorA;
 
-        point2->color->r = _colorR;
-        point2->color->g = _colorG;
-        point2->color->b = _colorB;
-        point2->color->a = _colorA;
+        point2->rgba->r = _colorR;
+        point2->rgba->g = _colorG;
+        point2->rgba->b = _colorB;
+        point2->rgba->a = _colorA;
 
-        point3->color->r = _colorR;
-        point3->color->g = _colorG;
-        point3->color->b = _colorB;
-        point3->color->a = _colorA;
+        point3->rgba->r = _colorR;
+        point3->rgba->g = _colorG;
+        point3->rgba->b = _colorB;
+        point3->rgba->a = _colorA;
     }
 
     ::fwData::Mesh::PointColorsModifiedSignalType::sptr sig;
@@ -670,10 +670,10 @@ void Mesh::colorizeMeshCells(
 
     for (; itr != itrEnd; ++itr)
     {
-        itr->color->r = colorR;
-        itr->color->g = colorG;
-        itr->color->b = colorB;
-        itr->color->a = colorA;
+        itr->rgba->r = colorR;
+        itr->rgba->g = colorG;
+        itr->rgba->b = colorB;
+        itr->rgba->a = colorA;
     }
 
     auto sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
@@ -700,10 +700,10 @@ void Mesh::colorizeMeshCells(
     {
         auto cell = itrCell + static_cast<std::ptrdiff_t>(index);
 
-        cell->color->r = colorR;
-        cell->color->g = colorG;
-        cell->color->b = colorB;
-        cell->color->a = colorA;
+        cell->rgba->r = colorR;
+        cell->rgba->g = colorG;
+        cell->rgba->b = colorB;
+        cell->rgba->a = colorA;
     }
 
     auto sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(

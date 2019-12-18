@@ -38,12 +38,15 @@ PointIterator::PointIterator(::fwData::Mesh* mesh)
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
     m_pointInfo.point  = static_cast<point_value_type*>(mesh->m_points->getBuffer());
 
-    SLM_ERROR_IF("Point colors with 3 compnents are not managed in iterators.",
-                 mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() != 4)
     if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_pointColors->lock());
-        m_pointInfo.color = static_cast<color_value_type*>(mesh->m_pointColors->getBuffer());
+        m_pointInfo.rgba = static_cast<rgba_value_type*>(mesh->m_pointColors->getBuffer());
+    }
+    else if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 3)
+    {
+        m_locks.push_back(mesh->m_pointColors->lock());
+        m_pointInfo.rgb = static_cast<rgb_value_type*>(mesh->m_pointColors->getBuffer());
     }
     if (mesh->m_pointNormals)
     {
@@ -94,12 +97,15 @@ ConstPointIterator::ConstPointIterator(const ::fwData::Mesh* mesh)
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
     m_pointInfo.point  = static_cast<point_value_type*>(mesh->m_points->getBuffer());
 
-    SLM_ERROR_IF("Point colors with 3 compnents are not managed in iterators.",
-                 mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() != 4)
     if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_pointColors->lock());
-        m_pointInfo.color = static_cast<color_value_type*>(mesh->m_pointColors->getBuffer());
+        m_pointInfo.rgba = static_cast<rgba_value_type*>(mesh->m_pointColors->getBuffer());
+    }
+    else if (mesh->m_pointColors && mesh->m_pointColors->getElementSizeInBytes() == 3)
+    {
+        m_locks.push_back(mesh->m_pointColors->lock());
+        m_pointInfo.rgb = static_cast<rgb_value_type*>(mesh->m_pointColors->getBuffer());
     }
     if (mesh->m_pointNormals)
     {
@@ -155,12 +161,15 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
     m_cellInfo.offset   = static_cast<cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo.type     = static_cast<cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
 
-    SLM_ERROR_IF("Cell colors with 3 compnents are not managed in iterators.",
-                 mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() != 4)
     if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_cellColors->lock());
-        m_cellInfo.color = static_cast<color_value_type*>(mesh->m_cellColors->getBuffer());
+        m_cellInfo.rgba = static_cast<rgba_value_type*>(mesh->m_cellColors->getBuffer());
+    }
+    else if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 3)
+    {
+        m_locks.push_back(mesh->m_pointColors->lock());
+        m_cellInfo.rgb = static_cast<rgb_value_type*>(mesh->m_cellColors->getBuffer());
     }
     if (mesh->m_cellNormals)
     {
@@ -197,7 +206,7 @@ CellIterator& CellIterator::operator=(const CellIteratorBase& other)
         m_cellInfo.type     = other.m_cellInfo.type;
         m_cellInfo.offset   = other.m_cellInfo.offset;
         m_cellInfo.normal   = other.m_cellInfo.normal;
-        m_cellInfo.color    = other.m_cellInfo.color;
+        m_cellInfo.rgba     = other.m_cellInfo.rgba;
         m_cellInfo.tex      = other.m_cellInfo.tex;
         m_cellInfo.nbPoints = other.m_cellInfo.nbPoints;
     }
@@ -217,12 +226,15 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
     m_cellInfo.offset   = static_cast<cell_offset_value_type*>(mesh->m_cellDataOffsets->getBuffer());
     m_cellInfo.type     = static_cast<cell_type_value_type*>(mesh->m_cellTypes->getBuffer());
 
-    SLM_ERROR_IF("Cell colors with 3 compnents are not managed in iterators.",
-                 mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() != 4)
     if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 4)
     {
         m_locks.push_back(mesh->m_cellColors->lock());
-        m_cellInfo.color = static_cast<color_value_type*>(mesh->m_cellColors->getBuffer());
+        m_cellInfo.rgba = static_cast<rgba_value_type*>(mesh->m_cellColors->getBuffer());
+    }
+    else if (mesh->m_cellColors && mesh->m_cellColors->getElementSizeInBytes() == 3)
+    {
+        m_locks.push_back(mesh->m_pointColors->lock());
+        m_cellInfo.rgb = static_cast<rgb_value_type*>(mesh->m_cellColors->getBuffer());
     }
     if (mesh->m_cellNormals)
     {
@@ -250,7 +262,7 @@ ConstCellIterator::ConstCellIterator(const CellIterator& other)
     m_cellInfo.type     = other.m_cellInfo.type;
     m_cellInfo.offset   = other.m_cellInfo.offset;
     m_cellInfo.normal   = other.m_cellInfo.normal;
-    m_cellInfo.color    = other.m_cellInfo.color;
+    m_cellInfo.rgba     = other.m_cellInfo.rgba;
     m_cellInfo.tex      = other.m_cellInfo.tex;
     m_cellInfo.nbPoints = other.m_cellInfo.nbPoints;
 }
@@ -276,7 +288,7 @@ ConstCellIterator& ConstCellIterator::operator=(const CellIteratorBase& other)
         m_cellInfo.type     = other.m_cellInfo.type;
         m_cellInfo.offset   = other.m_cellInfo.offset;
         m_cellInfo.normal   = other.m_cellInfo.normal;
-        m_cellInfo.color    = other.m_cellInfo.color;
+        m_cellInfo.rgba     = other.m_cellInfo.rgba;
         m_cellInfo.tex      = other.m_cellInfo.tex;
         m_cellInfo.nbPoints = other.m_cellInfo.nbPoints;
     }

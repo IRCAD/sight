@@ -54,6 +54,12 @@ struct RGBA {
     std::uint8_t a;
 };
 
+struct RGB {
+    std::uint8_t r;
+    std::uint8_t g;
+    std::uint8_t b;
+};
+
 struct TexCoords {
     float u;
     float v;
@@ -72,8 +78,12 @@ public:
     typedef typename std::conditional<isConst, const Point, Point>::type point_value_type;
     typedef point_value_type& point_reference;
 
-    typedef typename std::conditional<isConst, const RGBA, RGBA>::type color_value_type;
-    typedef color_value_type& color_reference;
+    typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;
+    typedef rgba_value_type& rgba_reference;
+
+    // TMP: to support old API using RGB colors
+    typedef typename std::conditional<isConst, const RGB, RGB>::type rgb_value_type;
+    typedef rgb_value_type& rgb_reference;
 
     typedef typename std::conditional<isConst, const Normal, Normal>::type normal_value_type;
     typedef normal_value_type& normal_reference;
@@ -84,7 +94,8 @@ public:
     struct PointInfo {
         point_value_type* point{nullptr};
         normal_value_type* normal{nullptr};
-        color_value_type* color{nullptr};
+        rgba_value_type* rgba{nullptr};
+        rgb_value_type* rgb{nullptr};
         tex_value_type* tex{nullptr};
     };
 
@@ -228,8 +239,12 @@ public:
     typedef typename std::conditional<isConst, const std::uint8_t, std::uint8_t>::type cell_type_value_type;
     typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_offset_value_type;
 
-    typedef typename std::conditional<isConst, const RGBA, RGBA>::type color_value_type;
-    typedef color_value_type& color_reference;
+    typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;
+    typedef rgba_value_type& rgba_reference;
+
+    // TMP: to support old API using RGB colors
+    typedef typename std::conditional<isConst, const RGB, RGB>::type rgb_value_type;
+    typedef rgb_value_type& rgb_reference;
 
     typedef typename std::conditional<isConst, const Normal, Normal>::type normal_value_type;
     typedef normal_value_type& normal_reference;
@@ -242,7 +257,8 @@ public:
         cell_type_value_type* type{nullptr};
         cell_offset_value_type* offset{nullptr};
         normal_value_type* normal{nullptr};
-        color_value_type* color{nullptr};
+        rgba_value_type* rgba{nullptr};
+        rgb_value_type* rgb{nullptr};
         tex_value_type* tex{nullptr};
         size_t nbPoints{0};
     };

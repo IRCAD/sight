@@ -102,9 +102,13 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator++()
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
     ++m_pointInfo.point;
-    if (m_pointInfo.color)
+    if (m_pointInfo.rgba)
     {
-        ++m_pointInfo.color;
+        ++m_pointInfo.rgba;
+    }
+    if (m_pointInfo.rgb)
+    {
+        ++m_pointInfo.rgb;
     }
     if (m_pointInfo.normal)
     {
@@ -127,9 +131,17 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator++(int)
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
     ++m_pointInfo.point;
-    if (m_pointInfo.color)
+    if (m_pointInfo.rgba)
     {
-        ++m_pointInfo.color;
+        ++m_pointInfo.rgba;
+    }
+    if (m_pointInfo.rgb)
+    {
+        ++m_pointInfo.rgb;
+    }
+    if (m_pointInfo.rgb)
+    {
+        ++m_pointInfo.rgb;
     }
     if (m_pointInfo.normal)
     {
@@ -159,9 +171,17 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator+=(difference_ty
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
     m_pointInfo.point += index;
-    if (m_pointInfo.color)
+    if (m_pointInfo.rgba)
     {
-        m_pointInfo.color += index;
+        m_pointInfo.rgba += index;
+    }
+    if (m_pointInfo.rgb)
+    {
+        m_pointInfo.rgb += index;
+    }
+    if (m_pointInfo.rgb)
+    {
+        m_pointInfo.rgb += index;
     }
     if (m_pointInfo.normal)
     {
@@ -181,9 +201,17 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator--()
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
     --m_pointInfo.point;
-    if (m_pointInfo.color)
+    if (m_pointInfo.rgba)
     {
-        --m_pointInfo.color;
+        --m_pointInfo.rgba;
+    }
+    if (m_pointInfo.rgb)
+    {
+        --m_pointInfo.rgb;
+    }
+    if (m_pointInfo.rgb)
+    {
+        --m_pointInfo.rgb;
     }
     if (m_pointInfo.normal)
     {
@@ -204,9 +232,17 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator--(int)
     PointIteratorBase tmp(*this);
     --m_idx;
     --m_pointInfo.point;
-    if (m_pointInfo.color)
+    if (m_pointInfo.rgba)
     {
-        --m_pointInfo.color;
+        --m_pointInfo.rgba;
+    }
+    if (m_pointInfo.rgb)
+    {
+        --m_pointInfo.rgb;
+    }
+    if (m_pointInfo.rgb)
+    {
+        --m_pointInfo.rgb;
     }
     if (m_pointInfo.normal)
     {
@@ -237,9 +273,13 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator-=(difference_ty
                                              << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
     m_idx             -= index;
     m_pointInfo.point -= index;
-    if (m_pointInfo.color)
+    if (m_pointInfo.rgba)
     {
-        m_pointInfo.color -= index;
+        m_pointInfo.rgba -= index;
+    }
+    if (m_pointInfo.rgb)
+    {
+        m_pointInfo.rgb -= index;
     }
     if (m_pointInfo.normal)
     {
@@ -384,9 +424,13 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
 
     m_cellInfo.nbPoints = nextOffset - offset;
 
-    if (m_cellInfo.color)
+    if (m_cellInfo.rgba)
     {
-        ++m_cellInfo.color;
+        ++m_cellInfo.rgba;
+    }
+    if (m_cellInfo.rgb)
+    {
+        ++m_cellInfo.rgb;
     }
     if (m_cellInfo.normal)
     {
@@ -450,9 +494,13 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
     }
     m_cellInfo.nbPoints = nextOffset - offset;
 
-    if (m_cellInfo.color)
+    if (m_cellInfo.rgba)
     {
-        m_cellInfo.color += index;
+        m_cellInfo.rgba += index;
+    }
+    if (m_cellInfo.rgb)
+    {
+        m_cellInfo.rgb += index;
     }
     if (m_cellInfo.normal)
     {
@@ -481,9 +529,13 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
     m_cellInfo.nbPoints  = static_cast<size_t>(m_currentOffset - newOffset);
     m_currentOffset      = newOffset;
 
-    if (m_cellInfo.color)
+    if (m_cellInfo.rgba)
     {
-        --m_cellInfo.color;
+        --m_cellInfo.rgba;
+    }
+    if (m_cellInfo.rgb)
+    {
+        --m_cellInfo.rgb;
     }
     if (m_cellInfo.normal)
     {
@@ -544,9 +596,13 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator-=(difference_type
     }
     m_cellInfo.nbPoints = nextOffset - offset;
 
-    if (m_cellInfo.color)
+    if (m_cellInfo.rgba)
     {
-        m_cellInfo.color -= index;
+        m_cellInfo.rgba -= index;
+    }
+    if (m_cellInfo.rgb)
+    {
+        m_cellInfo.rgb -= index;
     }
     if (m_cellInfo.normal)
     {

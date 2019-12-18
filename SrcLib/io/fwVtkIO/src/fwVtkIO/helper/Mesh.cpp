@@ -115,18 +115,18 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
                 if (pointColors->GetNumberOfComponents() == 3)
                 {
                     const auto color = pointColors->GetPointer(i*3);
-                    pointIter->color->r = color[0];
-                    pointIter->color->g = color[1];
-                    pointIter->color->b = color[2];
-                    pointIter->color->a = 255;
+                    pointIter->rgba->r = color[0];
+                    pointIter->rgba->g = color[1];
+                    pointIter->rgba->b = color[2];
+                    pointIter->rgba->a = 255;
                 }
                 else
                 {
                     const auto color = pointColors->GetPointer(i*4);
-                    pointIter->color->r = color[0];
-                    pointIter->color->g = color[1];
-                    pointIter->color->b = color[2];
-                    pointIter->color->a = color[3];
+                    pointIter->rgba->r = color[0];
+                    pointIter->rgba->g = color[1];
+                    pointIter->rgba->b = color[2];
+                    pointIter->rgba->a = color[3];
                 }
             }
             if (pointNormals)
@@ -205,18 +205,18 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
                     if (cellColors->GetNumberOfComponents() == 3)
                     {
                         const auto color = cellColors->GetPointer(i*3);
-                        cellIter->color->r = color[0];
-                        cellIter->color->g = color[1];
-                        cellIter->color->b = color[2];
-                        cellIter->color->a = 255;
+                        cellIter->rgba->r = color[0];
+                        cellIter->rgba->g = color[1];
+                        cellIter->rgba->b = color[2];
+                        cellIter->rgba->a = 255;
                     }
                     else
                     {
                         const auto color = cellColors->GetPointer(i*4);
-                        cellIter->color->r = color[0];
-                        cellIter->color->g = color[1];
-                        cellIter->color->b = color[2];
-                        cellIter->color->a = color[3];
+                        cellIter->rgba->r = color[0];
+                        cellIter->rgba->g = color[1];
+                        cellIter->rgba->b = color[2];
+                        cellIter->rgba->a = color[3];
                     }
                 }
                 if (cellNormals)
@@ -306,18 +306,18 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh
                 if (pointColors->GetNumberOfComponents() == 3)
                 {
                     const auto color = pointColors->GetPointer(i*3);
-                    pointIter->color->r = color[0];
-                    pointIter->color->g = color[1];
-                    pointIter->color->b = color[2];
-                    pointIter->color->a = 255;
+                    pointIter->rgba->r = color[0];
+                    pointIter->rgba->g = color[1];
+                    pointIter->rgba->b = color[2];
+                    pointIter->rgba->a = 255;
                 }
                 else
                 {
                     const auto color = pointColors->GetPointer(i*4);
-                    pointIter->color->r = color[0];
-                    pointIter->color->g = color[1];
-                    pointIter->color->b = color[2];
-                    pointIter->color->a = color[3];
+                    pointIter->rgba->r = color[0];
+                    pointIter->rgba->g = color[1];
+                    pointIter->rgba->b = color[2];
+                    pointIter->rgba->a = color[3];
                 }
             }
             if (pointNormals)
@@ -400,18 +400,18 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh
                     if (cellColors->GetNumberOfComponents() == 3)
                     {
                         const auto color = cellColors->GetPointer(i*3);
-                        cellIter->color->r = color[0];
-                        cellIter->color->g = color[1];
-                        cellIter->color->b = color[2];
-                        cellIter->color->a = 255;
+                        cellIter->rgba->r = color[0];
+                        cellIter->rgba->g = color[1];
+                        cellIter->rgba->b = color[2];
+                        cellIter->rgba->a = 255;
                     }
                     else
                     {
                         const auto color = cellColors->GetPointer(i*4);
-                        cellIter->color->r = color[0];
-                        cellIter->color->g = color[1];
-                        cellIter->color->b = color[2];
-                        cellIter->color->a = color[3];
+                        cellIter->rgba->r = color[0];
+                        cellIter->rgba->g = color[1];
+                        cellIter->rgba->b = color[2];
+                        cellIter->rgba->a = color[3];
                     }
                 }
                 if (cellNormals)

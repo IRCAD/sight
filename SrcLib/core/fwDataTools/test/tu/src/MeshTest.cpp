@@ -88,10 +88,10 @@ void MeshTest::colorizePointsTest()
         size_t count = 0;
         for (; itr != itrEnd; ++itr)
         {
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(R), static_cast<int>(itr->color->r));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(G), static_cast<int>(itr->color->g));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(B), static_cast<int>(itr->color->b));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(A), static_cast<int>(itr->color->a));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(R), static_cast<int>(itr->rgba->r));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(G), static_cast<int>(itr->rgba->g));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(B), static_cast<int>(itr->rgba->b));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(A), static_cast<int>(itr->rgba->a));
         }
     }
 
@@ -390,32 +390,32 @@ void MeshTest::transformTest()
 
 void MeshTest::isClosedTest()
 {
-//    {
-//        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-//        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
-//        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+        const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
-//        CPPUNIT_ASSERT_EQUAL(false, isClosed);
-//    }
+        CPPUNIT_ASSERT_EQUAL(false, isClosed);
+    }
 
-//    {
-//        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-//        ::fwTest::generator::Mesh::generateQuadMesh(mesh);
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        ::fwTest::generator::Mesh::generateQuadMesh(mesh);
 
-//        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+        const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
-//        CPPUNIT_ASSERT_EQUAL(false, isClosed);
-//    }
+        CPPUNIT_ASSERT_EQUAL(false, isClosed);
+    }
 
-//    {
-//        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-//        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh);
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh);
 
-//        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+        const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
-//        CPPUNIT_ASSERT_EQUAL(false, isClosed);
-//    }
+        CPPUNIT_ASSERT_EQUAL(false, isClosed);
+    }
 
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
@@ -437,7 +437,7 @@ void MeshTest::isClosedTest()
         mesh->pushCell(0, 4, 7, 3);
         mesh->pushCell(3, 7, 6, 2);
 
-        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+        const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(true, isClosed);
     }
@@ -463,7 +463,7 @@ void MeshTest::isClosedTest()
         mesh->pushCell(0, 4, 7, 3);
         mesh->pushCell(3, 7, 6, 2);
 
-        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+        const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(true, isClosed);
     }
@@ -494,7 +494,7 @@ void MeshTest::isClosedTest()
         mesh->pushCell(3, 7, 2);
         mesh->pushCell(7, 6, 2);
 
-        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+        const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(true, isClosed);
     }
@@ -525,7 +525,7 @@ void MeshTest::isClosedTest()
         mesh->pushCell(3, 7, 2);
         mesh->pushCell(7, 6, 2);
 
-        bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
+        const bool isClosed = ::fwDataTools::Mesh::isClosed(mesh);
 
         CPPUNIT_ASSERT_EQUAL(false, isClosed);
     }
