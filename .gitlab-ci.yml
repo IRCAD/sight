@@ -24,24 +24,6 @@ stages:
     - sudo chown -R sight:sight .
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
 
-.macos_template: &macos_job
-  variables:
-    CONAN_USER_HOME: $CI_PROJECT_DIR/conan
-    FW_IGNORE_SLOW_TESTS: 1
-  before_script:
-    - export CCACHE_BASEDIR=${PWD}
-    - export CCACHE_COMPILERCHECK=content
-    - export CCACHE_MAXSIZE=32G
-    - export CCACHE_COMPRESS=1
-    - export CCACHE_SLOPPINESS=include_file_ctime,include_file_mtime,pch_defines,time_macros,file_macro,system_headers
-    - export CCACHE_NOHASHDIR=1
-    - conan config set storage.path=/Users/$USER/.conan/data
-    - export CC=/usr/local/opt/ccache/libexec/clang
-    - export CXX=/usr/local/opt/ccache/libexec/clang++
-    - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
-  tags:
-    - apple-clang-11.0
-
 .windows_template: &windows_job
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
@@ -193,67 +175,6 @@ build:release-windows:
     paths:
       - build/ctest.log
       - build/fwTest.log
-
-build:debug-macos:
-  <<: *macos_job
-  stage: build
-  dependencies: []
-  script:
-    - cd $CI_PROJECT_DIR/build
-    - ccache -s
-    - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Debug
-     -DBUILD_TESTS=ON
-     -DBUILD_DOCUMENTATION=OFF
-     -DSPYLOG_LEVEL=trace
-     -DENABLE_PCH=OFF
-    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
-    - ninja
-    - ccache -s
-    - >
-     curl --retry 3 --location --insecure --location-trusted
-     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
-     tar xfz - > /dev/null
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
-  artifacts:
-    when: always
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - $CI_PROJECT_DIR/build/ctest.log
-
-build:release-macos:
-  <<: *macos_job
-  stage: build
-  dependencies: []
-  script:
-    - cd $CI_PROJECT_DIR/build
-    - ccache -s
-    - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Release
-     -DBUILD_TESTS=ON
-     -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=OFF
-    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
-    - ninja
-    - ccache -s
-    - >
-     curl --retry 3 --location --insecure --location-trusted
-     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
-     tar xfz - > /dev/null
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
-  artifacts:
-    when: always
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - $CI_PROJECT_DIR/build/ctest.log
 
 build:debian:
   image: registry.ircad.fr/sight/docker-debian:dev
