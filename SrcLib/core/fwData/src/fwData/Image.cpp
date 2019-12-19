@@ -353,7 +353,7 @@ Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::begin() const
 Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::end() const
 {
     auto itr = ConstIterator<iterator::IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getNumElements());
+    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 

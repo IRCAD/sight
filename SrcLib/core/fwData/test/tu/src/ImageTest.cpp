@@ -388,11 +388,45 @@ void ImageTest::testSetGetPixel()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), iter2->value);
     }
 
+    ::fwData::Image::csptr img2 = ::fwData::Image::copy(img);
+
+    const auto lock2 = img2->lock();
+    {
+        auto iterImg2          = img2->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        auto iterImg1          = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        const auto iterImg2End = img2->end<iterator::IterationBase<std::int16_t>::Raw>();
+
+        for (; iterImg2 != iterImg2End; ++iterImg2, ++iterImg1)
+        {
+            CPPUNIT_ASSERT_EQUAL(*iterImg1, *iterImg2);
+        }
+    }
     std::fill(img->begin(), img->end(), 0);
 
     for (const auto& element: *img)
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<char>(0), element.value);
+    }
+
+    auto iter3 = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+    for (; iter3 != iterEnd; ++iter3)
+    {
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(0), iter3->value);
+    }
+
+    std::copy(img2->begin(), img2->end(), img->begin());
+
+    {
+        auto iterImg1          = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        auto iterImg2          = img2->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        const auto iterImg2End = img2->end<iterator::IterationBase<std::int16_t>::Raw>();
+
+        size_t i = 0;
+        for (; iterImg2 != iterImg2End; ++iterImg2, ++iterImg1)
+        {
+            ++i;
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: "+ std::to_string(i), *iterImg2, *iterImg1);
+        }
     }
 }
 
