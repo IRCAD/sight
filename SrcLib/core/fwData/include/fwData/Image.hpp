@@ -480,8 +480,8 @@ public:
 private:
 
     /// Get Pixel buffer
-    void* getPixelBuffer( IndexType index );
-    void* getPixelBuffer( IndexType index ) const;
+    FWDATA_API void* getPixelBuffer( IndexType index );
+    FWDATA_API void* getPixelBuffer( IndexType index ) const;
 
     /**
      * @brief Protected setter for the array buffer.
