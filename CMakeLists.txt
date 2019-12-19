@@ -26,6 +26,10 @@ endif()
 
 project (sight)
 
+if(APPLE)
+    message(WARNING "macOS is no more officially supported and complete support will be removed in sight 21.0")
+endif()
+
 enable_testing()
 
 include(CheckVariableExists)
