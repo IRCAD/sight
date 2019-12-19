@@ -166,7 +166,7 @@ public:
      * @brief Return true if the mesh is closed.
      * The result is computed for each call.
      */
-    [[nodiscard]] FWDATATOOLS_API static bool isClosed(const ::fwData::Mesh::csptr& mesh);
+    FWDATATOOLS_API static bool isClosed(const ::fwData::Mesh::csptr& mesh);
 };
 
 } // namespace fwDataTools

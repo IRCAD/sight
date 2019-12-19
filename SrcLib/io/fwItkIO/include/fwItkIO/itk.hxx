@@ -80,7 +80,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, ::fwData::Image::sp
     }
 
     // Post Condition correct PixelType
-    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != fwTools::Type::s_UNSPECIFIED_TYPE );
+    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE );
 }
 
 //------------------------------------------------------------------------------

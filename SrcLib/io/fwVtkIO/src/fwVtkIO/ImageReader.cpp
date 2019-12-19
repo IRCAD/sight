@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwVtkIO/vtk.hpp"
 #include "fwVtkIO/ImageReader.hpp"
+
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
+#include "fwVtkIO/vtk.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -37,12 +38,11 @@
 
 fwDataIOReaderRegisterMacro( ::fwVtkIO::ImageReader );
 
-
 namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key) :
+ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("VTK Image reader"))
 {
@@ -76,11 +76,10 @@ void ImageReader::read()
         [this](vtkObject* caller, long unsigned int, void* )
         {
             auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
-            m_job->doneWork( filter->GetProgress()*100 );
+            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
-
 
     m_job->addSimpleCancelHook( [&]()
         {
@@ -91,7 +90,7 @@ void ImageReader::read()
     reader->UpdateInformation();
     reader->PropagateUpdateExtent();
 
-    vtkDataObject *obj = reader->GetOutput();
+    vtkDataObject* obj = reader->GetOutput();
     vtkImageData* img  = vtkImageData::SafeDownCast(obj);
 
     m_job->finish();
@@ -101,7 +100,7 @@ void ImageReader::read()
     {
         ::fwVtkIO::fromVTKImage( img, pImage);
     }
-    catch( std::exception &e)
+    catch( std::exception& e)
     {
         FW_RAISE("VTKImage to fwData::Image failed "<<e.what());
     }
@@ -122,6 +121,5 @@ std::string ImageReader::extension()
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace fwVtkIO

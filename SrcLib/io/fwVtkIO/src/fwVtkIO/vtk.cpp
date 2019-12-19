@@ -254,9 +254,11 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     const int nbComponents = source->GetNumberOfScalarComponents();
     const size_t size      = static_cast<size_t>(
-        std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, std::max(3,
-                                                                                       nbComponents),
-                        std::multiplies<size_t>() ));
+        std::accumulate(source->GetDimensions(),
+                        source->GetDimensions()+static_cast<size_t>(dim),
+                        std::max(static_cast<size_t>(3), static_cast<size_t>(nbComponents)),
+                        std::multiplies<size_t>())
+        );
     const void* input = source->GetScalarPointer();
 
     if (size != 0)

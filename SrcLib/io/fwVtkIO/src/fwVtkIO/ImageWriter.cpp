@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("VTK Image Writer"))
 {
@@ -78,7 +78,7 @@ void ImageWriter::write()
     progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
         {
             auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
-            m_job->doneWork( filter->GetProgress()*100 );
+            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
 
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);

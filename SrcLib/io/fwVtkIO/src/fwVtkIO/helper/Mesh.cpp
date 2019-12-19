@@ -183,9 +183,9 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
                                    static_cast< ::fwData::Mesh::Id >(idList->GetId(3)));
                     break;
                 case VTK_POLY_VERTEX:
-                    for(vtkIdType i = 0; i < idList->GetNumberOfIds(); ++i)
+                    for(vtkIdType j = 0; j < idList->GetNumberOfIds(); ++j)
                     {
-                        mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(i)));
+                        mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(j)));
                     }
                     break;
                 default:
@@ -444,20 +444,16 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
     const auto nbCells  = mesh->getNumberOfCells();
     const auto dumpLock = mesh->lock();
 
-    vtkSmartPointer<vtkUnsignedCharArray> colors = nullptr;
-    vtkSmartPointer<vtkFloatArray> normals       = nullptr;
-    vtkSmartPointer<vtkFloatArray> texCoords     = nullptr;
-
     if (nbCells > 0)
     {
         polyData->Allocate(static_cast< int >(nbCells));
         auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
         const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
-        unsigned char* newColors;
-        float* newNormals;
-        float* newTexCoords;
-        int nbColorComponents = 0;
+        unsigned char* newColors = nullptr;
+        float* newNormals        = nullptr;
+        float* newTexCoords      = nullptr;
+        int nbColorComponents    = 0;
 
         if (mesh->hasCellColors())
         {
@@ -473,7 +469,7 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
             newTexCoords = new float[nbCells*2];
         }
 
-        vtkIdType typeVtkCell;
+        int typeVtkCell;
         vtkIdType cell[4];
 
         for (vtkIdType i = 0; itr != itrEnd; ++itr, ++i)
@@ -484,51 +480,51 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
             {
                 case ::fwData::Mesh::POINT:
                     typeVtkCell = VTK_VERTEX;
-                    cell[0]     = itr->pointIdx[0];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     polyData->InsertNextCell( typeVtkCell, 1, cell );
                     break;
                 case ::fwData::Mesh::EDGE:
                     typeVtkCell = VTK_LINE;
-                    cell[0]     = itr->pointIdx[0];
-                    cell[1]     = itr->pointIdx[1];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
+                    cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
                     break;
                 case ::fwData::Mesh::TRIANGLE:
                     typeVtkCell = VTK_TRIANGLE;
-                    cell[0]     = itr->pointIdx[0];
-                    cell[1]     = itr->pointIdx[1];
-                    cell[2]     = itr->pointIdx[2];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
+                    cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
+                    cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
                     polyData->InsertNextCell( typeVtkCell, 3, cell );
                     break;
                 case ::fwData::Mesh::QUAD:
                     typeVtkCell = VTK_QUAD;
-                    cell[0]     = itr->pointIdx[0];
-                    cell[1]     = itr->pointIdx[1];
-                    cell[2]     = itr->pointIdx[2];
-                    cell[3]     = itr->pointIdx[3];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
+                    cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
+                    cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
+                    cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     polyData->InsertNextCell( typeVtkCell, 4, cell );
                     break;
                 case ::fwData::Mesh::TETRA:
                     typeVtkCell = VTK_LINE;
 
-                    cell[0] = itr->pointIdx[1];
-                    cell[1] = itr->pointIdx[2];
+                    cell[0] = static_cast<vtkIdType>(itr->pointIdx[1]);
+                    cell[1] = static_cast<vtkIdType>(itr->pointIdx[2]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
 
-                    cell[0] = itr->pointIdx[2];
-                    cell[1] = itr->pointIdx[3];
+                    cell[0] = static_cast<vtkIdType>(itr->pointIdx[2]);
+                    cell[1] = static_cast<vtkIdType>(itr->pointIdx[3]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
 
-                    cell[0] = itr->pointIdx[3];
-                    cell[1] = itr->pointIdx[0];
+                    cell[0] = static_cast<vtkIdType>(itr->pointIdx[3]);
+                    cell[1] = static_cast<vtkIdType>(itr->pointIdx[0]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
 
-                    cell[0] = itr->pointIdx[2];
-                    cell[1] = itr->pointIdx[0];
+                    cell[0] = static_cast<vtkIdType>(itr->pointIdx[2]);
+                    cell[1] = static_cast<vtkIdType>(itr->pointIdx[0]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
 
-                    cell[0] = itr->pointIdx[1];
-                    cell[1] = itr->pointIdx[3];
+                    cell[0] = static_cast<vtkIdType>(itr->pointIdx[1]);
+                    cell[1] = static_cast<vtkIdType>(itr->pointIdx[3]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
             }
             if (mesh->hasCellColors() && nbColorComponents == 3)
@@ -611,10 +607,6 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
     const auto dumpLock = mesh->lock();
     const auto nbCells  = mesh->getNumberOfCells();
 
-    vtkSmartPointer<vtkUnsignedCharArray> colors = nullptr;
-    vtkSmartPointer<vtkFloatArray> normals       = nullptr;
-    vtkSmartPointer<vtkFloatArray> texCoords     = nullptr;
-
     if (nbCells > 0)
     {
         grid->Allocate(static_cast<int>(nbCells));
@@ -622,10 +614,10 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
         auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
         const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
-        unsigned char* newColors;
-        float* newNormals;
-        float* newTexCoords;
-        int nbColorComponents = 0;
+        unsigned char* newColors = nullptr;
+        float* newNormals        = nullptr;
+        float* newTexCoords      = nullptr;
+        int nbColorComponents    = 0;
 
         if (mesh->hasCellColors())
         {
@@ -641,7 +633,7 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
             newTexCoords = new float[nbCells*2];
         }
 
-        vtkIdType typeVtkCell;
+        int typeVtkCell;
         vtkIdType cell[4];
 
         for (vtkIdType i = 0; itr != itrEnd; ++itr, ++i)
@@ -652,36 +644,36 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
             {
                 case ::fwData::Mesh::POINT:
                     typeVtkCell = VTK_VERTEX;
-                    cell[0]     = itr->pointIdx[0];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     grid->InsertNextCell( typeVtkCell, 1, cell );
                     break;
                 case ::fwData::Mesh::EDGE:
                     typeVtkCell = VTK_LINE;
-                    cell[0]     = itr->pointIdx[0];
-                    cell[1]     = itr->pointIdx[1];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
+                    cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     grid->InsertNextCell( typeVtkCell, 2, cell );
                     break;
                 case ::fwData::Mesh::TRIANGLE:
                     typeVtkCell = VTK_TRIANGLE;
-                    cell[0]     = itr->pointIdx[0];
-                    cell[1]     = itr->pointIdx[1];
-                    cell[2]     = itr->pointIdx[2];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
+                    cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
+                    cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
                     grid->InsertNextCell( typeVtkCell, 3, cell );
                     break;
                 case ::fwData::Mesh::QUAD:
                     typeVtkCell = VTK_QUAD;
-                    cell[0]     = itr->pointIdx[0];
-                    cell[1]     = itr->pointIdx[1];
-                    cell[2]     = itr->pointIdx[2];
-                    cell[3]     = itr->pointIdx[3];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
+                    cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
+                    cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
+                    cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     grid->InsertNextCell( typeVtkCell, 4, cell );
                     break;
                 case ::fwData::Mesh::TETRA:
                     typeVtkCell = VTK_TETRA;
-                    cell[0]     = itr->pointIdx[0];
-                    cell[1]     = itr->pointIdx[1];
-                    cell[2]     = itr->pointIdx[2];
-                    cell[3]     = itr->pointIdx[3];
+                    cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
+                    cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
+                    cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
+                    cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     grid->InsertNextCell( typeVtkCell, 4, cell );
             }
             if (mesh->hasCellColors() && nbColorComponents == 3)
@@ -773,10 +765,10 @@ void Mesh::updatePolyDataPointsAndAttributes(vtkSmartPointer<vtkPolyData> polyDa
         polyDataPoints->SetNumberOfPoints(nbPoints);
     }
 
-    unsigned char* newColors;
-    float* newNormals;
-    float* newTexCoords;
-    int nbColorComponents = 0;
+    unsigned char* newColors = nullptr;
+    float* newNormals        = nullptr;
+    float* newTexCoords      = nullptr;
+    int nbColorComponents    = 0;
     if (meshSrc->hasPointColors())
     {
         nbColorComponents = itr->rgba ? 4 : 3;
@@ -1189,10 +1181,10 @@ void Mesh::updateGridPointsAndAttributes(vtkSmartPointer<vtkUnstructuredGrid> gr
         polyDataPoints->SetNumberOfPoints(nbPoints);
     }
 
-    unsigned char* newColors;
-    float* newNormals;
-    float* newTexCoords;
-    int nbColorComponents = 0;
+    unsigned char* newColors = nullptr;
+    float* newNormals        = nullptr;
+    float* newTexCoords      = nullptr;
+    int nbColorComponents    = 0;
     if (meshSrc->hasPointColors())
     {
         nbColorComponents = itr->rgba ? 4 : 3;

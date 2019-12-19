@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,7 +73,7 @@ namespace vtkGdcmIO
 
 //------------------------------------------------------------------------------
 
-SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader"))
@@ -295,7 +295,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
                                 zspacing = vOrigin2[2] - vOrigin1[2];
                                 OSLM_TRACE(
                                     "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " <<
-                                    vOrigin1[2]);
+                                        vOrigin1[2]);
                             }
                             SLM_ERROR_IF("Cannot read: '" + f1 + "' or: '" + f2 +"'", !canRead);
                         }
@@ -499,4 +499,3 @@ void SeriesDBReader::read()
 }
 
 } //namespace vtkGdcmIO
-

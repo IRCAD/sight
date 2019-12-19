@@ -104,7 +104,7 @@ const ::gdcm::Tag windowWidthTag(0x0028, 0x1051);
 
 //------------------------------------------------------------------------------
 
-SeriesDBLazyReader::SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDBLazyReader::SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader"))

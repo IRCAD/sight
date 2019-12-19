@@ -257,7 +257,7 @@ void testVtkReader(std::string imagetype)
 void ImageTest::setUp()
 {
     // Set up context before running a test.
-    std::srand(static_cast<unsigned int>(std::time(NULL)));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
 
 // ------------------------------------------------------------------------------
