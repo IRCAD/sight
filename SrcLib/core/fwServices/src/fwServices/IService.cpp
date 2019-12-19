@@ -57,8 +57,6 @@ const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
 const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT    = "swap";
 const ::fwCom::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 
-const std::string IService::s_DEFAULT_OBJECT = "defaultObject";
-
 //-----------------------------------------------------------------------------
 
 IService::IService() :
@@ -75,10 +73,6 @@ IService::IService() :
     m_slotStop    = newSlot( s_STOP_SLOT, &IService::stopSlot, this );
     m_slotUpdate  = newSlot( s_UPDATE_SLOT, &IService::updateSlot, this );
     m_slotSwapKey = newSlot( s_SWAPKEY_SLOT, &IService::swapKeySlot, this );
-
-#ifndef REMOVE_DEPRECATED
-    m_slotSwap = newSlot( s_SWAP_SLOT, &IService::swapSlot, this );
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -112,37 +106,6 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
     {
         ::fwServices::OSR::registerServiceOutput(object, outKey, this->getSptr());
     }
-}
-
-//-----------------------------------------------------------------------------
-
-::fwData::Object::sptr IService::getObject()
-{
-    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "20.0");
-
-    // Handle compatibility with new behavior
-    if(m_associatedObject.expired())
-    {
-        // If we have an appXml but with an old service definition, we consider that the old primary object is the
-        // first one in the map
-        if(!m_inputsMap.empty())
-        {
-            return ::fwData::Object::constCast(m_inputsMap.begin()->second.lock());
-        }
-        else if(!m_inOutsMap.empty())
-        {
-            return m_inOutsMap.begin()->second.lock();
-        }
-        else if(!m_outputsMap.empty())
-        {
-            return m_outputsMap.begin()->second;
-        }
-        else
-        {
-            OSLM_ASSERT("Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired", false );
-        }
-    }
-    return m_associatedObject.lock();
 }
 
 //------------------------------------------------------------------------------
@@ -827,15 +790,9 @@ void IService::autoConnect()
                  ") is set to 'autoConnect=\"yes\"' but is has no object to connect",
                  m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
 
-    // For compatibility with V1, we allow services to connect explicitly with the default object
-    // For these services we will ignore all auto connections with any other data
-    // This is intended notably for managers-like services
-    const bool hasDefaultObjectConnectionV1 =
-        (connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT) != connectionMap.end());
-
     for(const auto& objectCfg : m_serviceConfig.m_objects)
     {
-        if ((m_serviceConfig.m_globalAutoConnect || objectCfg.m_autoConnect) && !hasDefaultObjectConnectionV1)
+        if (m_serviceConfig.m_globalAutoConnect || objectCfg.m_autoConnect)
         {
             ::fwServices::IService::KeyConnectionsType connections;
             if(!connectionMap.empty())
@@ -866,11 +823,8 @@ void IService::autoConnect()
             }
             else
             {
-                // V1 compatibility, we didn't implemented the new function, so we stick to the old behavior
-                // This also allows to get the default connection with the s_UPDATE_SLOT. When we remove this
-                // function, we will have to implement this behavior with getAutoConnections()
-                connections = this->getObjSrvConnections();
-                FW_DEPRECATED_IF("getObjSrvConnections()", "getAutoConnections()", "20.0", !connections.empty());
+                SLM_ERROR("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
+                          ") is set to 'autoConnect=\"yes\"' but there is no connection available.");
             }
 
             ::fwData::Object::csptr obj;
@@ -916,26 +870,6 @@ void IService::autoConnect()
                 m_autoConnections.connect( obj, this->getSptr(), connections );
             }
         }
-    }
-
-    // Autoconnect with the default object - to be cleaned when V1 compatibility is over
-    auto defaultObj = this->getInOut< ::fwData::Object >(s_DEFAULT_OBJECT);
-
-    if(m_serviceConfig.m_globalAutoConnect && defaultObj)
-    {
-        ::fwServices::IService::KeyConnectionsType connections;
-        auto it = connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT);
-        if( it != connectionMap.end())
-        {
-            connections = it->second;
-        }
-        else if(m_serviceConfig.m_objects.size() == 0)
-        {
-            // Only use the old callback automatically in case we put a composite as the only data
-            connections = this->getObjSrvConnections();
-        }
-
-        m_autoConnections.connect( defaultObj, this->getSptr(), connections );
     }
 }
 
@@ -1128,15 +1062,6 @@ void IService::registerObjectGroup(const std::string& key, AccessType access, co
 
 //-----------------------------------------------------------------------------
 
-IService::KeyConnectionsType IService::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    return connections;
-}
-
-//-----------------------------------------------------------------------------
-
 /**
  * @brief Streaming a service
  * @see IService::operator<<(std::ostream & _ostream, IService& _service)
@@ -1149,67 +1074,5 @@ std::ostream& operator<<(std::ostream& _ostream, IService& _service)
 }
 
 //-----------------------------------------------------------------------------
-
-#ifndef REMOVE_DEPRECATED
-IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
-{
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
-    {
-        return this->internalSwap(_obj, false);
-    }
-    else
-    {
-        return m_slotSwap->asyncRun( _obj );
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-IService::SharedFutureType IService::swapSlot(::fwData::Object::sptr _obj)
-{
-    return this->internalSwap(_obj, true);
-}
-
-//-----------------------------------------------------------------------------
-
-IService::SharedFutureType IService::internalSwap(::fwData::Object::sptr _obj, bool _async)
-{
-    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
-                m_associatedObject.lock() != _obj );
-    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
-                  m_globalState != STARTED);
-
-    PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
-    SharedFutureType future = task.get_future();
-
-    m_globalState = SWAPPING;
-    ::fwServices::OSR::swapService( _obj, this->getSptr() );
-    task();
-    m_globalState = STARTED;
-
-    try
-    {
-        // This allows to trigger the exception if there was one
-        future.get();
-    }
-    catch (std::exception& e)
-    {
-        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
-
-        if(!_async)
-        {
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-        else
-        {
-            // Rethrow the same exception
-            throw;
-        }
-    }
-
-    return future;
-}
-#endif
 
 }

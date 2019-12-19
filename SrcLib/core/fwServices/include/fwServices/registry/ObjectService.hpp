@@ -64,7 +64,7 @@ class FWSERVICES_CLASS_API ObjectService : public ::fwCore::BaseObject,
 {
 public:
 
-    fwCoreClassMacro(ObjectService, ::fwCore::BaseObject);
+    fwCoreClassMacro(ObjectService, ::fwCore::BaseObject)
     fwCoreAllowSharedFromThis();
 
     /**
@@ -112,7 +112,7 @@ public:
 
     /**
      * @brief Register the service (service) for the object (obj) at the given service key.
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService objects of service to point to obj
      * removal at obj destruction.
      *
      * @param object Object to register
@@ -126,7 +126,7 @@ public:
 
     /**
      * @brief Register the service (service) for the input object (obj) at the given service key.
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService inputs of service to point to obj
      * removal at obj destruction.
      *
      * @param object Object to register
@@ -228,73 +228,8 @@ public:
 
     //@}
 
-#ifndef REMOVE_DEPRECATED
-
-    /**
-     * @brief Register the service (service) for the object (obj)
-     * It also updates IService::m_associatedObject of service to point to obj
-     * removal at obj destruction.
-     *
-     * @param object Object to register
-     * @param service Service whose key should be added
-     */
-    FWSERVICES_API void registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service );
-
-    /**
-     * @brief Return a container with all services of type SERVICE associated to obj in m_container
-     * @deprecated This method will be removed in 20.0
-     */
-    template<class SERVICE>
-    std::set< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj) const;
-
-    /**
-     * @brief Return a container of services of type serviceType which are attached to obj
-     * @deprecated This method will be removed in 20.0
-     */
-    FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj, const std::string& serviceType ) const;
-
-    /**
-     * @brief return a vector containing all services associated with the object obj
-     * @deprecated This method will be removed in 20.0
-     */
-    FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj ) const;
-
-    /**
-     * @brief Return a container with all objects associated with a service of type SERVICE in m_container
-     */
-    template<class SERVICE>
-    ObjectVectorType getObjects() const;
-
-    /**
-     * @brief Return a container with all objects registered in m_container
-     */
-    FWSERVICES_API ObjectVectorType getObjects() const;
-
-    /**
-     * @brief return true if the object has at least one service of type srvType
-     *
-     * @param obj Object to add to the OSR
-     * @param srvType Type of the service
-     */
-    FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType) const;
-
-    /**
-     * @brief Move service (service) to object objDst in the m_container
-     * @deprecated Use service->swapKey(key, object)
-     */
-    FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
-#endif
-
 protected:
 
-#ifndef REMOVE_DEPRECATED
-    /**
-     * @brief Object to service associations container
-     * @note An object can be registered without services
-     * @warning Do not use smart pointers for ::fwData::Object, otherwise they will never destroy
-     */
-    ServiceContainerType m_container;
-#endif
     /// Registered services
     ServiceVectorType m_services;
 
@@ -304,7 +239,7 @@ private:
 
     /**
      * @brief Register the service (service) for the object (obj)
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService objects of service to point to obj
      * removal at obj destruction.
      * @warning not thread-safe
      */
@@ -314,7 +249,7 @@ private:
 
     /**
      * @brief Register the service (service) for the input object (obj)
-     * It also updates IService::m_associatedObject of service to point to obj
+     * It also updates IService::m_inputs of service to point to obj
      * removal at obj destruction.
      * @warning not thread-safe
      */
@@ -367,7 +302,7 @@ FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
 
 /**
  * @brief Register the service (service) for the object (obj) at the given service key.
- * It also updates IService::m_associatedObject of service to point to obj
+ * It also updates IService objects of service to point to obj
  * removal at obj destruction.
  *
  * @param object Object to register
@@ -380,7 +315,7 @@ FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServic
 
 /**
  * @brief Register the service (service) for the input object (obj) at the given service key.
- * It also updates IService::m_associatedObject of service to point to obj
+ * It also updates IService::m_inputs of service to point to obj
  * removal at obj destruction.
  *
  * @param object Object to register
@@ -451,60 +386,6 @@ FWSERVICES_API ::fwData::Object::csptr getRegistered( const ::fwServices::IServi
 
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getRegisterSignal();
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getUnregisterSignal();
-
-#ifndef REMOVE_DEPRECATED
-
-/**
- * @brief Wraps ObjectService::getObjects
- */
-FWSERVICES_API ::fwServices::registry::ObjectService::ObjectVectorType getObjects();
-
-/**
- * @brief Wraps ObjectService::getServices
- */
-template<class SERVICE>
-std::set< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj);
-
-/**
- * @brief Wraps ObjectService::getServices
- */
-FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj,
-                                                                                     const std::string& serviceType );
-
-/**
- * @brief Wraps ObjectService::getServices
- */
-FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj );
-
-/**
- * @brief return true if the object has at least one service of type srvType
- *
- * @param obj Object to add to the OSR
- * @param srvType Type of the service
- * @deprecated This method is deprecated
- */
-FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType);
-
-/**
- * @brief Register the service (service) for the object (obj)
- * It also updates IService::m_associatedObject of service to point to obj
- * removal at obj destruction.
- *
- * @param object Object to register
- * @param service Service whose key should be added
- * @deprecated Use the new API:
- *      registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
- *                      ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service)
- */
-FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
-
-/**
- * @brief Wraps ObjectService::swapService
- * @deprecated
- */
-FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
-
-#endif
 
 } // namespace OSR
 

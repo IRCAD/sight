@@ -50,7 +50,7 @@
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::fwMedData::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -99,9 +99,8 @@ void SSeriesDBReader::configureWithIHM()
         // Init and execute the service
         ::fwServices::IService::sptr filterSelectorSrv;
         ::fwData::String::sptr key = ::fwData::String::New();
-        filterSelectorSrv          = ::fwServices::add(key,
-                                                       "::fwGui::editor::IDialogEditor",
-                                                       "::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv          = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
