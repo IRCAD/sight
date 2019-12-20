@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,6 +75,20 @@ public:
      * @param[out] _polyData vtkPolyData.
      */
     FWVTKIO_API static void toVTKMesh( const ::fwData::Mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _polyData);
+
+    /*!
+     * @brief Update a vtkPolyData with ::fwData::Mesh::sptr points positions, colors, normals and/or textures
+     *
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkPolyData
+     *
+     * Warning : be careful with updatePoints : this may change the number of
+     * vertex of the polydata, cells will not be updated.
+     * Returns the updated vtkPolyPata
+     */
+    FWVTKIO_API static void  updatePolyDataPointsAndAttributes(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                               const ::fwData::Mesh::csptr& meshSrc );
 
     /*!
      * @brief Update a vtkPolyData with ::fwData::Mesh::sptr points
@@ -157,6 +171,20 @@ public:
      */
     FWVTKIO_API static void updatePolyDataCellTexCoords(
         vtkSmartPointer<vtkPolyData> polyDataDst, const ::fwData::Mesh::csptr& meshSrc);
+
+    /*!
+     * @brief Update a vtkUnstructuredGrid with ::fwData::Mesh::sptr points positions, colors, normals and/or textures
+     *
+     * @param[out] gridDataDst vtkUnstructuredGrid
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return vtkUnstructuredGrid
+     *
+     * Warning : be careful with updatePoints : this may change the number of
+     * vertex of the vtkUnstructuredGrid, cells will not be updated.
+     * Returns the updated vtkUnstructuredGrid
+     */
+    FWVTKIO_API static void updateGridPointsAndAttributes(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+                                                          const ::fwData::Mesh::csptr& meshSrc );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with ::fwData::Mesh::sptr points

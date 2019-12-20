@@ -56,12 +56,26 @@ public:
             value = val;
             return *this;
         }
+
         //------------------------------------------------------------------------------
 
         type& operator*()
         {
             return value;
         }
+
+        //------------------------------------------------------------------------------
+
+        type operator*() const
+        {
+            return value;
+        }
+
+        operator value_type() const
+        {
+            return value;
+        }
+
         type value;
         static constexpr size_t elementSize{1};
     };
@@ -79,6 +93,11 @@ public:
             g = val[1];
             b = val[2];
             return *this;
+        }
+
+        operator value_type() const
+        {
+            return value_type({r, g, b});
         }
 
         type r;
@@ -101,6 +120,12 @@ public:
             a = val[3];
             return *this;
         }
+
+        operator value_type() const
+        {
+            return value_type({r, g, b, a});
+        }
+
         type r;
         type g;
         type b;
@@ -121,6 +146,12 @@ public:
             r = val[2];
             return *this;
         }
+
+        operator value_type() const
+        {
+            return value_type({b, g, r});
+        }
+
         type b;
         type g;
         type r;
@@ -141,6 +172,12 @@ public:
             a = val[3];
             return *this;
         }
+
+        operator value_type() const
+        {
+            return value_type({b, g, r, a});
+        }
+
         type b;
         type g;
         type r;

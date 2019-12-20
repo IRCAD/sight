@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwVtkIO/vtk.hpp"
 #include "fwVtkIO/MetaImageReader.hpp"
+
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
+#include "fwVtkIO/vtk.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -31,19 +32,17 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <vtkSmartPointer.h>
-#include <vtkMetaImageReader.h>
 #include <vtkImageData.h>
-
+#include <vtkMetaImageReader.h>
+#include <vtkSmartPointer.h>
 
 fwDataIOReaderRegisterMacro( ::fwVtkIO::MetaImageReader );
-
 
 namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MetaImageReader::MetaImageReader(::fwDataIO::reader::IObjectReader::Key key) :
+MetaImageReader::MetaImageReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Meta image reader"))
 {
@@ -77,7 +76,7 @@ void MetaImageReader::read()
         [&](vtkObject* caller, long unsigned int, void* )
         {
             auto filter = static_cast<vtkMetaImageReader*>(caller);
-            m_job->doneWork( filter->GetProgress()*100 );
+            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
@@ -88,7 +87,7 @@ void MetaImageReader::read()
     reader->UpdateInformation();
     reader->PropagateUpdateExtent();
 
-    vtkDataObject *obj = reader->GetOutput();
+    vtkDataObject* obj = reader->GetOutput();
     vtkImageData* img  = vtkImageData::SafeDownCast(obj);
 
     m_job->finish();
@@ -98,7 +97,7 @@ void MetaImageReader::read()
     {
         ::fwVtkIO::fromVTKImage( img, pImage);
     }
-    catch( std::exception &e)
+    catch( std::exception& e)
     {
         FW_RAISE("MetaImage to fwData::Image failed : "<<e.what());
     }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ void ImageConversionTest::testConversion()
 {
     // create Image
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
 
     typedef itk::Image< std::int16_t, 3 > ImageType;
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
@@ -111,22 +111,14 @@ void ImageConversionTest::stressTest()
 void ImageConversionTest::testConversion2D()
 {
     // create Image
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    const std::uint8_t dim = 2;
-    ::fwData::Image::SizeType size(dim);
-    size[0] = rand()%100 + 2;
-    size[1] = rand()%100 + 2;
-    std::vector<double> spacing(dim);
-    spacing[0] = (rand()%200 +1) / 100.;
-    spacing[1] = (rand()%200 +1) / 100.;
-    std::vector<double> origin(dim);
-    origin[0]            = (rand()%200 - 100) / 3.;
-    origin[1]            = (rand()%200 - 100) / 3.;
-    ::fwTools::Type type = ::fwTools::Type::create< std::int16_t >();
+    ::fwData::Image::sptr image      = ::fwData::Image::New();
+    ::fwData::Image::Size size       = { static_cast<size_t>(rand()%100 + 2), static_cast<size_t>(rand()%100 + 2), 0};
+    ::fwData::Image::Spacing spacing = { (rand()%200 +1) / 100., (rand()%200 +1) / 100., 0.};
+    ::fwData::Image::Origin origin   = {( rand()%200 - 100) / 3., (rand()%200 - 100) / 3., 0.};
+    ::fwTools::Type type             = ::fwTools::Type::s_INT16;
 
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
-    ::fwData::Array::sptr array = image->getDataArray();
-    ::fwTest::generator::Image::randomizeArray(array);
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::randomizeImage(image);
 
     typedef itk::Image< std::int16_t, 2 > ImageType;
 

@@ -45,7 +45,7 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-BitmapImageReader::BitmapImageReader(::fwDataIO::reader::IObjectReader::Key key) :
+BitmapImageReader::BitmapImageReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Bitmap image reader"))
 {

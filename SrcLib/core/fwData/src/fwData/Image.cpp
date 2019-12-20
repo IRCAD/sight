@@ -353,7 +353,7 @@ Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::begin() const
 Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::end() const
 {
     auto itr = ConstIterator<iterator::IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getNumElements());
+    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 
@@ -378,6 +378,42 @@ size_t Image::getNumElements() const
         }
     }
     return nbElts;
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setBuffer(
+    void* buf,
+    bool takeOwnership,
+    const ::fwTools::Type& type,
+    const ::fwData::Image::Size& size,
+    ::fwMemory::BufferAllocationPolicy::sptr policy)
+{
+    m_type = type;
+    m_size = size;
+    this->resize();
+    this->setBuffer(buf, takeOwnership, policy);
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocationPolicy::sptr policy)
+{
+    if(m_dataArray->getIsBufferOwner())
+    {
+        if(!m_dataArray->getBufferObject()->isEmpty())
+        {
+            m_dataArray->getBufferObject()->destroy();
+        }
+    }
+    else
+    {
+        ::fwMemory::BufferObject::sptr newBufferObject = ::fwMemory::BufferObject::New();
+        ::fwMemory::BufferObject::sptr oldBufferObject = m_dataArray->getBufferObject();
+        oldBufferObject->swap(newBufferObject);
+    }
+    m_dataArray->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_dataArray->getSizeInBytes(), policy);
+    m_dataArray->setIsBufferOwner(takeOwnership);
 }
 
 //------------------------------------------------------------------------------

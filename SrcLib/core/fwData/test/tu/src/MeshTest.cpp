@@ -613,6 +613,13 @@ void MeshTest::allocationTest()
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id >(3), mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id >(1), mesh->getNumberOfCells());
 
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellTexCoords());
+
     mesh->reserve(pointSize, cellSize, cellDataSize, ::fwData::Mesh::Attributes::POINT_NORMALS |
                   ::fwData::Mesh::Attributes::POINT_COLORS | ::fwData::Mesh::Attributes::POINT_TEX_COORDS);
 
@@ -623,6 +630,13 @@ void MeshTest::allocationTest()
         pointAllocatedSize + cellTypeAllocatedSize + cellDataOffsetsAllocatedSize + cellDataAllocatedSize +
         pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize,
         mesh->getAllocatedSizeInBytes());
+
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellTexCoords());
 
     mesh->reserve(pointSize, cellSize, cellDataSize,
                   ::fwData::Mesh::Attributes::POINT_NORMALS |
@@ -639,11 +653,25 @@ void MeshTest::allocationTest()
     CPPUNIT_ASSERT_EQUAL(true, adjusted);
     CPPUNIT_ASSERT(oldsize > newSize);
 
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(true, mesh->hasCellTexCoords());
+
     mesh->clear();
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh->getCellDataSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), mesh->getDataSizeInBytes());
+
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(false, mesh->hasCellTexCoords());
 
     ::fwData::Mesh::Id nbPoints        = 300;
     ::fwData::Mesh::Id nbCells         = 200;
@@ -698,14 +726,14 @@ void MeshTest::insertion()
         CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), (*it).point->x);
         CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), (*it).point->y);
         CPPUNIT_ASSERT_EQUAL(static_cast<float>(30), (*it).point->z);
-        CPPUNIT_ASSERT( nullptr == it->color);
+        CPPUNIT_ASSERT( nullptr == it->rgba);
         CPPUNIT_ASSERT( nullptr == it->normal);
         CPPUNIT_ASSERT( nullptr == it->tex);
         it += 2;
         CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->x);
         CPPUNIT_ASSERT_EQUAL(static_cast<float>(21), it->point->y);
         CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), it->point->z);
-        CPPUNIT_ASSERT( nullptr == it->color);
+        CPPUNIT_ASSERT( nullptr == it->rgba);
         CPPUNIT_ASSERT( nullptr == it->normal);
         CPPUNIT_ASSERT( nullptr == it->tex);
         it += 5;
@@ -729,7 +757,7 @@ void MeshTest::insertion()
         CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(2), cellit[1]);
         CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::CellType::EDGE, static_cast< ::fwData::Mesh::CellType >(*cellit->type));
         CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(2), cellit.nbPoints());
-        CPPUNIT_ASSERT( nullptr == cellit->color);
+        CPPUNIT_ASSERT( nullptr == cellit->rgba);
         CPPUNIT_ASSERT( nullptr == cellit->normal);
         CPPUNIT_ASSERT( nullptr == cellit->tex);
         ++cellit;
@@ -786,7 +814,7 @@ void MeshTest::insertion()
         CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::CellType::POLY, static_cast< ::fwData::Mesh::CellType >(*cellit->type));
         CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit->nbPoints);
         CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(5), cellit.nbPoints());
-        CPPUNIT_ASSERT( nullptr == cellit->color);
+        CPPUNIT_ASSERT( nullptr == cellit->rgba);
         CPPUNIT_ASSERT( nullptr == cellit->normal);
         CPPUNIT_ASSERT( nullptr == cellit->tex);
         --cellit;
@@ -958,7 +986,7 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
             CPPUNIT_ASSERT_EQUAL(fValue+2, p.z);
 
-            ::fwData::iterator::RGBA c = *it->color;
+            ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.g);
@@ -992,7 +1020,7 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
             CPPUNIT_ASSERT_EQUAL(fValue+2, p.z);
 
-            ::fwData::iterator::RGBA c = *it->color;
+            ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.g);
@@ -1028,7 +1056,7 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
                                              count), static_cast<std::uint64_t>(count+2), it->pointIdx[2]);
 
-            ::fwData::iterator::RGBA c = *it->color;
+            ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.g);
@@ -1067,7 +1095,7 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
                                              count), static_cast<std::uint64_t>(NB_CELLS-1-count+2), it->pointIdx[2]);
 
-            ::fwData::iterator::RGBA c = *it->color;
+            ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(NB_CELLS-1-count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.g);
@@ -1120,7 +1148,7 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
                                              count), static_cast<std::uint64_t>(NB_CELLS-1-count+2), it->pointIdx[2]);
 
-            ::fwData::iterator::RGBA c = *it->color;
+            ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(NB_CELLS-1-count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), cVal, c.g);
@@ -1159,7 +1187,7 @@ void MeshTest::iteratorTest()
             p->y                         = static_cast<float>(3*count+1);
             p->z                         = static_cast<float>(3*count+2);
 
-            ::fwData::iterator::RGBA* c = it->color;
+            ::fwData::iterator::RGBA* c = it->rgba;
             c->r                        = static_cast<std::uint8_t>(4*count);
             c->g                        = static_cast<std::uint8_t>(4*count+1);
             c->b                        = static_cast<std::uint8_t>(4*count+2);
@@ -1196,7 +1224,7 @@ void MeshTest::iteratorTest()
                 it->pointIdx[i] = count + i;
             }
 
-            ::fwData::iterator::RGBA& c = *it->color;
+            ::fwData::iterator::RGBA& c = *it->rgba;
             c.r                         = static_cast<std::uint8_t>(4*count);
             c.g                         = static_cast<std::uint8_t>(4*count+1);
             c.b                         = static_cast<std::uint8_t>(4*count+2);
@@ -1227,7 +1255,7 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
             CPPUNIT_ASSERT_EQUAL(fValue+2, p.z);
 
-            ::fwData::iterator::RGBA c = *it->color;
+            ::fwData::iterator::RGBA c = *it->rgba;
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), 4*count, static_cast<size_t>(c.r));
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), 4*count+1, static_cast<size_t>(c.g));
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), 4*count+2, static_cast<size_t>(c.b));
@@ -1266,7 +1294,7 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
                                              count), static_cast<std::uint64_t>(count+3), it->pointIdx[3]);
 
-            ::fwData::iterator::RGBA c = *it->color;
+            ::fwData::iterator::RGBA c = *it->rgba;
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), 4*count, static_cast<size_t>(c.r));
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), 4*count+1, static_cast<size_t>(c.g));
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), 4*count+2, static_cast<size_t>(c.b));

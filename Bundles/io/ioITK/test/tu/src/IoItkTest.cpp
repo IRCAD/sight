@@ -80,7 +80,6 @@ void IoItkTest::tearDown()
 
 void executeService(
     const SPTR(::fwData::Object)& obj,
-    const std::string& srvType,
     const std::string& srvImpl,
     const SPTR(::fwRuntime::EConfigurationElement)& cfg,
     const ::fwServices::IService::AccessType access = ::fwServices::IService::AccessType::INOUT)
@@ -120,7 +119,6 @@ void IoItkTest::testImageSeriesWriterJPG()
 
     // Create and execute service
     executeService(imageSeries,
-                   "::fwIO::IWriter",
                    "::ioITK::SJpgImageSeriesWriter",
                    srvCfg,
                    ::fwServices::IService::AccessType::INPUT);
@@ -147,7 +145,6 @@ void IoItkTest::testImageWriterJPG()
     // Create and execute service
     executeService(
         image,
-        "::fwIO::IWriter",
         "::ioITK::JpgImageWriterService",
         srvCfg,
         ::fwServices::IService::AccessType::INPUT);
@@ -165,11 +162,11 @@ double tolerance(double num)
 void IoItkTest::testSaveLoadInr()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
 
     // inr only support image origin (0,0,0)
-    ::fwData::Image::OriginType origin(3, 0);
-    image->setOrigin(origin);
+    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    image->setOrigin2(origin);
 
     // save image in inr
     const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
@@ -184,7 +181,6 @@ void IoItkTest::testSaveLoadInr()
     // Create and execute service
     executeService(
         image,
-        "::fwIO::IWriter",
         "::ioITK::InrImageWriterService",
         srvCfg,
         ::fwServices::IService::AccessType::INPUT);
@@ -193,14 +189,13 @@ void IoItkTest::testSaveLoadInr()
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     executeService(
         image2,
-        "::fwIO::IReader",
         "::ioITK::InrImageReaderService",
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
 
-    ::fwData::Image::SpacingType spacing = image2->getSpacing();
+    ::fwData::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing(spacing);
+    image2->setSpacing2(spacing);
 
     // check Image
     ::fwTest::helper::ExcludeSetType exclude;
@@ -221,8 +216,8 @@ void IoItkTest::ImageSeriesInrTest()
     imageSeries->setImage(image);
 
     // inr only support image origin (0,0,0)
-    ::fwData::Image::OriginType origin(3, 0);
-    image->setOrigin(origin);
+    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    image->setOrigin2(origin);
 
     // save image in inr
     const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
@@ -237,7 +232,6 @@ void IoItkTest::ImageSeriesInrTest()
     // Create and execute service
     executeService(
         imageSeries,
-        "::fwIO::IWriter",
         "::ioITK::SImageSeriesWriter",
         srvCfg,
         ::fwServices::IService::AccessType::INPUT);
@@ -246,14 +240,13 @@ void IoItkTest::ImageSeriesInrTest()
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     executeService(
         image2,
-        "::fwIO::IReader",
         "::ioITK::InrImageReaderService",
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
 
-    ::fwData::Image::SpacingType spacing = image2->getSpacing();
+    ::fwData::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing(spacing);
+    image2->setSpacing2(spacing);
 
     // check Image
     ::fwTest::helper::ExcludeSetType exclude;
@@ -294,13 +287,12 @@ void IoItkTest::SeriesDBInrTest()
     ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
     executeService(
         sdb,
-        "::fwIO::IReader",
         "::ioITK::SInrSeriesDBReader",
         srvCfg,
         ::fwServices::IService::AccessType::INOUT);
 
-    ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
-    ::fwData::Image::SizeType size       = list_of(512)(512)(134);
+    const ::fwData::Image::Spacing spacing = {0.781, 0.781, 1.6};
+    const ::fwData::Image::Size size       = {512, 512, 134};
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
     ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[0]);
@@ -310,10 +302,10 @@ void IoItkTest::SeriesDBInrTest()
     ::fwData::Image::sptr image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().string());
-    CPPUNIT_ASSERT(size == image->getSize());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT(size == image->getSize2());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing2()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing2()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing2()[2], EPSILON);
 
     imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[1]);
     CPPUNIT_ASSERT(imgSeries);
@@ -323,10 +315,10 @@ void IoItkTest::SeriesDBInrTest()
     image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT_EQUAL(std::string("uint8"), image->getType().string());
-    CPPUNIT_ASSERT(size == image->getSize());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
+    CPPUNIT_ASSERT(size == image->getSize2());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing2()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing2()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing2()[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------
