@@ -68,5 +68,5 @@ vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol)
         f3SpecularCol += fLitSpecular * u_f3LightSpecularCol[i];
     }
 
-    return vec3(f3DiffuseCol + f3SpecularCol);
+    return vec3(u_f4LightAmbientCol.rgb + f3DiffuseCol + f3SpecularCol);
 }
