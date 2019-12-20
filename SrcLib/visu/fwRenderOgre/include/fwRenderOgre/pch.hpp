@@ -24,7 +24,9 @@
 // Compile flags will be automatically forwarded so that we get a pch with OpenMP inside
 
 // Cause an internal compiler error on windows...
-#pragma once
+
+#ifndef __FWRENDEROGRE_PCH_HPP__
+#define __FWRENDEROGRE_PCH_HPP__
 
 #ifndef _WIN32
 #include <fwCom/HasSignals.hpp>
@@ -43,3 +45,5 @@
 #include <boost/tokenizer.hpp>
 
 #include <Ogre.h>
+
+#endif // __FWRENDEROGRE_PCH_HPP__
