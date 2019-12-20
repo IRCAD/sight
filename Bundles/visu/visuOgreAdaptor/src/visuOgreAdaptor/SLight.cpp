@@ -43,8 +43,7 @@
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight)
 
-fwRenderOgreRegisterLightMacro( ::visuOgreAdaptor::SLight,
-                                ::fwRenderOgre::ILight::REGISTRY_KEY );
+fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY);
 
 //------------------------------------------------------------------------------
 
@@ -53,9 +52,8 @@ namespace visuOgreAdaptor
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SLight::s_SET_X_OFFSET_SLOT         = "setXOffset";
-const ::fwCom::Slots::SlotKeyType SLight::s_SET_Y_OFFSET_SLOT         = "setYOffset";
-const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
+static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform";
 static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
@@ -63,13 +61,7 @@ static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularC
 
 //------------------------------------------------------------------------------
 
-SLight::SLight() noexcept :
-    m_light(nullptr),
-    m_lightName(""),
-    m_lightType(::Ogre::Light::LT_DIRECTIONAL),
-    m_switchedOn(true),
-    m_thetaOffset(0.f),
-    m_phiOffset(0.f)
+SLight::SLight() noexcept
 {
     newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
     newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
@@ -193,6 +185,19 @@ void SLight::updating()
 
 //------------------------------------------------------------------------------
 
+void SLight::stopping()
+{
+    this->getRenderService()->makeCurrent();
+
+    this->unregisterServices();
+
+    m_light->detachFromParent();
+    this->getSceneManager()->destroyLight(m_light);
+    this->getSceneManager()->destroySceneNode(m_lightNode);
+}
+
+//------------------------------------------------------------------------------
+
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
     SLM_ASSERT("Missing diffuse color data object.", m_lightDiffuseColor);
@@ -256,35 +261,6 @@ void SLight::setPhiOffset(float _phiOffset)
 
     m_lightNode->rotate(xAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SLight::setDoubleParameter(double _val, std::string _key)
-{
-    this->getRenderService()->makeCurrent();
-
-    if(_key == "thetaOffset")
-    {
-        this->setThetaOffset(static_cast<float>(_val));
-    }
-    else if(_key == "phiOffset")
-    {
-        this->setPhiOffset(static_cast<float>(_val));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SLight::stopping()
-{
-    this->getRenderService()->makeCurrent();
-
-    this->unregisterServices();
-
-    m_light->detachFromParent();
-    this->getSceneManager()->destroyLight(m_light);
-    this->getSceneManager()->destroySceneNode(m_lightNode);
 }
 
 //------------------------------------------------------------------------------
