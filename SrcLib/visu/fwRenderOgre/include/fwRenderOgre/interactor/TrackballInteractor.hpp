@@ -61,13 +61,14 @@ public:
      *
      * @todo set to final when the vr interactor is deleted.
      */
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton _button, int _x, int _y, int _dx, int _dy) override;
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y,
+                                                 int _dx, int _dy) override;
 
     /**
      * @brief Moves the camera towards or away from the focus point.
-     * @param _delta number of mouse wheel ticks since the last event.
+     * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
-    FWRENDEROGRE_API virtual void wheelEvent(int _delta, int, int) final;
+    FWRENDEROGRE_API virtual void wheelEvent(Modifier, int _delta, int, int) final;
 
     /// Sets the current width/height of the render window.
     FWRENDEROGRE_API virtual void resizeEvent(int _w, int _h) final;
@@ -78,25 +79,10 @@ public:
      * - 'A' or 'a': animates the camera to rotate around the focus point.
      * - 'R' or 'r': moves the camera backwards to see the whole scene.
      */
-    FWRENDEROGRE_API virtual void keyPressEvent(int _key) final;
+    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier) final;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
     FWRENDEROGRE_API virtual void setSceneLength(float _sceneLength) final;
-
-    /**
-     * @brief Unused IInteractor API.
-     * @todo set to noexcept final when the vr interactor is deleted.
-     * @{
-     */
-    // TODO: set override methods to noexcept override once the VR interactor is deleted (sight 21.0)
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, int, int) override;
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, int, int) override;
-    FWRENDEROGRE_API virtual void keyReleaseEvent(int) noexcept final;
-    FWRENDEROGRE_API virtual void focusInEvent() noexcept final;
-    FWRENDEROGRE_API virtual void focusOutEvent() noexcept final;
-    /**
-     *@}
-     */
 
 private:
     /**

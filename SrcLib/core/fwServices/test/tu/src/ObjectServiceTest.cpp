@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,96 +61,6 @@ void ObjectServiceTest::setUp()
 void ObjectServiceTest::tearDown()
 {
     // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectServiceTest::swapTest()
-{
-#ifndef REMOVE_DEPRECATED
-    FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
-    const std::string srvType("::fwServices::ut::TestService");
-    const std::string srvImplementation("::fwServices::ut::TestServiceImplementation");
-
-    ::fwData::Integer::sptr objSrv1 = ::fwData::Integer::New();
-    ::fwData::Float::sptr objSrv2   = ::fwData::Float::New();
-
-    ::fwServices::IService::sptr service;
-    service = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation );
-
-    ::fwServices::registry::ObjectService osr;
-
-    osr.registerService(objSrv1, service);
-
-    auto servicesByTemplateTypeAndObj1 = osr.getServices< ::fwServices::ut::TestService >( objSrv1 );
-    auto servicesByTemplateTypeAndObj2 = osr.getServices< ::fwServices::ut::TestService >( objSrv2 );
-
-    CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByTemplateTypeAndObj1.size());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), servicesByTemplateTypeAndObj2.size());
-    ::fwServices::IService::sptr osrSrv = *servicesByTemplateTypeAndObj1.begin();
-    CPPUNIT_ASSERT_EQUAL(service, osrSrv);
-
-    osr.swapService(objSrv2, service);
-
-    CPPUNIT_ASSERT(objSrv2 == service->getObject());
-
-    servicesByTemplateTypeAndObj1 = osr.getServices< ::fwServices::ut::TestService >( objSrv1 );
-    servicesByTemplateTypeAndObj2 = osr.getServices< ::fwServices::ut::TestService >( objSrv2 );
-
-    CPPUNIT_ASSERT_EQUAL(size_t(0), servicesByTemplateTypeAndObj1.size());
-    CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByTemplateTypeAndObj2.size());
-    osrSrv = *servicesByTemplateTypeAndObj2.begin();
-    CPPUNIT_ASSERT_EQUAL(service, osrSrv);
-
-    osr.unregisterService(service);
-#endif
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectServiceTest::registerTest()
-{
-#ifndef REMOVE_DEPRECATED
-    FW_DEPRECATED_MSG("This test check a deprecated method.", "20.0");
-
-    const std::string srvType("::fwServices::ut::TestService");
-    const std::string srvImplementation("::fwServices::ut::TestServiceImplementation");
-
-    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
-
-    ::fwServices::IService::sptr service;
-    service = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation );
-
-    ::fwServices::registry::ObjectService osr;
-
-    osr.registerService(obj, service);
-    CPPUNIT_ASSERT(osr.has(obj, srvType) );
-
-    typedef ::fwServices::registry::ObjectService::ServiceVectorType ServiceVectorType;
-    ServiceVectorType servicesByType       = osr.getServices( srvType );
-    ServiceVectorType servicesByObjAndType = osr.getServices( obj, srvType );
-    auto servicesByTemplateType            = osr.getServices< ::fwServices::ut::TestService >( );
-    auto servicesByTemplateTypeAndObj      = osr.getServices< ::fwServices::ut::TestService >( obj );
-
-    CPPUNIT_ASSERT(servicesByType == servicesByObjAndType);
-    CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
-    CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateTypeAndObj.begin()));
-
-    CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
-    typedef ::fwServices::registry::ObjectService::ObjectVectorType ObjectVectorType;
-    ::fwServices::IService::sptr osrService = *servicesByType.begin();
-    CPPUNIT_ASSERT_EQUAL(service, osrService);
-
-    ObjectVectorType objects = osr.getObjects();
-    CPPUNIT_ASSERT_EQUAL(size_t(1), objects.size());
-    ::fwData::Object::csptr osrObject = *objects.begin();
-    CPPUNIT_ASSERT(obj == osrObject);
-
-    osr.unregisterService(service);
-    CPPUNIT_ASSERT( osr.has(obj, srvType) == false );
-    servicesByType = osr.getServices( srvType );
-    CPPUNIT_ASSERT( servicesByType.empty() );
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -235,64 +145,12 @@ void ObjectServiceTest::registerKeyTest()
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
-#ifndef REMOVE_DEPRECATED
-    // Begin deprecated methods
-    // 2 services of type "::fwServices::ut::TestService" working on obj1
-    {
-        auto srvByTplTypeAndObj1 = osr.getServices< ::fwServices::ut::TestService >( obj1 );
-
-        CPPUNIT_ASSERT_EQUAL(size_t(2), srvByTplTypeAndObj1.size());
-    }
-
-    // 1 service of type "::fwServices::ut::TestServiceImplementation" working on obj1
-    {
-        auto srvByTplTypeAndObj1 = osr.getServices< ::fwServices::ut::TestServiceImplementation >( obj1 );
-        CPPUNIT_ASSERT_EQUAL(size_t(1), srvByTplTypeAndObj1.size());
-        CPPUNIT_ASSERT(service1 == *srvByTplTypeAndObj1.begin());
-    }
-
-    // 1 service of type "::fwServices::ut::TestServiceImplementation2" working on obj1
-    {
-        auto srvByTplTypeAndObj1 = osr.getServices< ::fwServices::ut::TestServiceImplementation2 >( obj1 );
-        CPPUNIT_ASSERT_EQUAL(size_t(1), srvByTplTypeAndObj1.size());
-        CPPUNIT_ASSERT(service2 == *srvByTplTypeAndObj1.begin());
-    }
-
-    // 1 service of type "::fwServices::ut::TestServiceImplementation2" working on obj2
-    {
-        auto srvByTplTypeAndObj2 = osr.getServices< ::fwServices::ut::TestServiceImplementation2 >( obj2 );
-        CPPUNIT_ASSERT_EQUAL(size_t(1), srvByTplTypeAndObj2.size());
-        CPPUNIT_ASSERT(service2 == *srvByTplTypeAndObj2.begin());
-    }
-
-    // 2 services of type "::fwServices::ut::TestServiceImplementation" working on obj3
-    {
-        auto srvByObjAndType3    = osr.getServices( obj3, srvType );
-        auto srvByTplTypeAndObj3 = osr.getServices< ::fwServices::ut::TestServiceImplementation >( obj3 );
-
-        CPPUNIT_ASSERT_EQUAL(size_t(2), srvByObjAndType3.size());
-        CPPUNIT_ASSERT(std::equal(srvByObjAndType3.begin(), srvByObjAndType3.end(), srvByTplTypeAndObj3.begin()));
-    }
-
-    // End deprecated methods
-#endif
-
     auto servicesByType = osr.getServices( srvType );
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
     CPPUNIT_ASSERT(servicesByType.find(service1) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service2) != servicesByType.end());
     CPPUNIT_ASSERT(servicesByType.find(service3) != servicesByType.end());
-
-#ifndef REMOVE_DEPRECATED
-    typedef ::fwServices::registry::ObjectService::ObjectVectorType ObjectVectorType;
-    ObjectVectorType objects = osr.getObjects();
-    CPPUNIT_ASSERT_EQUAL(size_t(3), objects.size());
-
-    CPPUNIT_ASSERT(objects.find(obj1) != objects.end());
-    CPPUNIT_ASSERT(objects.find(obj2) != objects.end());
-    CPPUNIT_ASSERT(objects.find(obj3) != objects.end());
-#endif
 
     // Remove key 1 from service 1 and check consistency
     osr.unregisterService("key1", ::fwServices::IService::AccessType::INOUT, service1);

@@ -29,6 +29,7 @@
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
+#include <fwRenderOgre/interactor/MeshPickerInteractor.hpp>
 #include <fwRenderOgre/interactor/Negato2DInteractor.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
 
@@ -47,11 +48,6 @@ const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT
 static const std::string s_PICKER_CONFIG   = "picker";
 static const std::string s_MOVEMENT_CONFIG = "movement";
 static const std::string s_QUERY_CONFIG    = "queryMask";
-
-static const std::map<std::string, std::string> s_STYLES_PICKER = {
-    { "Mesh", "::fwRenderOgre::interactor::MeshPickerInteractor"},
-    { "Video", "::fwRenderOgre::interactor::VideoPickerInteractor"},
-};
 
 //------------------------------------------------------------------------------
 
@@ -141,28 +137,17 @@ void SInteractorStyle::stopping()
 
 void SInteractorStyle::setInteractorStyle()
 {
+    const auto layer = this->getLayer();
+
     if(!m_pickerStyle.empty())
     {
-        if(s_STYLES_PICKER.count(m_pickerStyle))
-        {
-            const auto style = s_STYLES_PICKER.at(m_pickerStyle);
+        FW_DEPRECATED_MSG("::visuOgreAdaptor::SPicker should be used instead of SInteractorStyle", "21.0");
+        auto meshPicker = std::make_shared< ::fwRenderOgre::interactor::MeshPickerInteractor >(layer);
+        meshPicker->setQueryMask(m_queryMask);
+        meshPicker->setPointClickedSig(m_sigPicked);
 
-            m_selectInteractor = ::fwRenderOgre::interactorFactory::New(style, this->getSceneManager()->getName());
-            SLM_ASSERT(this->getID() + " : Unknown picker interactor style : " + style, m_selectInteractor);
-
-            auto layer            = this->getRenderService()->getLayer(m_layerID);
-            auto pickerInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor);
-            pickerInteractor->initPicker();
-            pickerInteractor->setQueryMask(m_queryMask);
-            layer->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(m_selectInteractor));
-
-            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IPickerInteractor::s_PICKED_SIG,
-                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_PICK_SLOT);
-        }
-        else
-        {
-            SLM_WARN(this->getID() + " : '" + s_PICKER_CONFIG +"' has an unknown value : '" + m_pickerStyle +"'");
-        }
+        m_selectInteractor = meshPicker;
+        layer->addInteractor(m_selectInteractor);
     }
     else
     {
@@ -171,7 +156,6 @@ void SInteractorStyle::setInteractorStyle()
 
     if(!m_movementStyle.empty())
     {
-        const auto layer = this->getLayer();
         if(m_movementStyle == "Trackball")
         {
             m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::TrackballInteractor >(layer);

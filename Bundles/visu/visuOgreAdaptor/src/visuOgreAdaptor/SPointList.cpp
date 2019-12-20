@@ -505,7 +505,6 @@ void SPointList::updateMaterialAdaptor()
         auto materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);
         materialFw->setMeshSize(m_radius);
-        m_materialAdaptor->swap(m_material);
     }
     else
     {

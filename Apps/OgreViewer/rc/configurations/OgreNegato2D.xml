@@ -75,11 +75,11 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="addDistanceAct" type="::uiMeasurement::action::AddDistance">
+        <service uid="addDistanceAct" type="::uiMeasurement::action::SAddDistance">
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="removeDistanceAct" type="::uiMeasurement::action::RemoveDistance">
+        <service uid="removeDistanceAct" type="::uiMeasurement::action::SRemoveDistance">
             <inout key="image" uid="${image}" />
         </service>
 

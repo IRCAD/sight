@@ -415,7 +415,6 @@ void SMesh::updateNewMaterialAdaptor()
     else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
-        m_materialAdaptor->swap(m_material);
     }
     else
     {
@@ -448,7 +447,6 @@ void SMesh::updateXMLMaterialAdaptor()
     else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
-        m_materialAdaptor->swap(m_material);
     }
 }
 

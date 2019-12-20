@@ -44,6 +44,8 @@ namespace interactor
 
 /**
  * @brief Interface implementation for all selection with the mouse
+ *
+ * @deprecated removed in sight 21.0
  */
 class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interactor::IInteractor,
                                                  public ::fwCore::BaseObject,
@@ -76,9 +78,11 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG;
 
     /// Retrieves the Ogre root and the \<sceneID\> scene manager.
+    [[deprecated("Class removed in sight 21.0")]]
     FWRENDEROGRE_API IPickerInteractor();
 
     /// Delete resources.
+    [[deprecated("Class removed in sight 21.0")]]
     FWRENDEROGRE_API virtual ~IPickerInteractor();
 
     /// Initialize picker with the corresponding layer's info.

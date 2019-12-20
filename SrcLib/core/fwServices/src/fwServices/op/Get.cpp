@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,19 +29,6 @@
 namespace fwServices
 {
 
-//------------------------------------------------------------------------------
-#ifndef REMOVE_DEPRECATED
-::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType )
-{
-    FW_DEPRECATED_MSG("'fwServices::get(object, srvType)' is deprecated.", "20.0");
-
-    ::fwServices::IService::sptr service;
-    auto services = ::fwServices::OSR::getServices( obj, serviceType );
-    OSLM_ASSERT("Service "<<serviceType<<" is not unique, registered "<<services.size()<<" times",
-                services.size() == 1);
-    return *services.begin();
-}
-#endif
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr get( std::string uid )

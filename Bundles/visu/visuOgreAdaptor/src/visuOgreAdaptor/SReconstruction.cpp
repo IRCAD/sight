@@ -150,7 +150,6 @@ void SReconstruction::updating()
         {
             // Updates the mesh adaptor according to the reconstruction
             meshAdaptor->setMaterial(reconstruction->getMaterial());
-            meshAdaptor->swap(reconstruction->getMesh());
             meshAdaptor->updateVisibility(reconstruction->getIsVisible());
         }
     }
