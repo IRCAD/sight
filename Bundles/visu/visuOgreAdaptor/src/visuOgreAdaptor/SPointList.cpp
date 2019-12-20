@@ -58,6 +58,7 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
 static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
 static const ::fwServices::IService::KeyType s_MESH_INPUT      = "mesh";
@@ -81,6 +82,7 @@ SPointList::SPointList() noexcept
 {
     m_material = ::fwData::Material::New();
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SPointList::updateVisibility, this);
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SPointList::toggleVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -110,6 +112,13 @@ void SPointList::updateVisibility(bool _isVisible)
 
         this->requestRender();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SPointList::toggleVisibility()
+{
+    this->updateVisibility(!m_isVisible);
 }
 
 //-----------------------------------------------------------------------------

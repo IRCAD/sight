@@ -155,6 +155,8 @@
                         <menuItem name="Pause openvslam" icon="media-0.1/icons/pause-tracking.svg" style="check" />
                         <menuItem name="Reset openvslam" icon="arMedia-0-1/icons/reset.svg" />
                         <menuItem name="Localization Mode" icon="media-0.1/icons/enableLocalization.svg" icon2="media-0.1/icons/disableLocalization.svg" style="check"/>
+                        <separator/>
+                        <menuItem name="Hide/Show point cloud" icon="arMedia-0.1/icons/hide.svg" icon2="arMedia-0.1/icons/show.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -169,6 +171,7 @@
                     <menuItem sid="ActionPauseOpenvslam" start="yes" />
                     <menuItem sid="ActionResetOpenvslam" start="yes" />
                     <menuItem sid="ActionEnableLocalization" start="yes" />
+                    <menuItem sid="ActionHideShowPointCloud" start="yes" />
                 </registry>
             </service>
 
@@ -224,6 +227,12 @@
             <service uid="ActionPauseOpenvslam" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>openvslam/pauseTracker</slot>
+                </slots>
+            </service>
+
+            <service uid="ActionHideShowPointCloud" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>PointCloudAdpt/toggleVisibility</slot>
                 </slots>
             </service>
 
