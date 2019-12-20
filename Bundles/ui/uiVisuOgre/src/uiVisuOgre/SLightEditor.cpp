@@ -78,8 +78,8 @@ void SLightEditor::starting()
     const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
 
-    m_lightNameLbl = new QLabel("No light selected");
-    m_lightNameLbl->setAlignment(::Qt::AlignHCenter);
+    m_lightNameLabel = new QLabel("No light selected");
+    m_lightNameLabel->setAlignment(::Qt::AlignHCenter);
 
     m_lightTypeBox = new QComboBox();
     m_lightTypeBox->addItems(QStringList() <<
@@ -135,7 +135,7 @@ void SLightEditor::starting()
 
     // Name of the selected light and its type
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->addWidget(m_lightNameLbl);
+    layout->addWidget(m_lightNameLabel);
     layout->addWidget(m_lightTypeBox);
 
     // Diffuse and specular colors
@@ -196,15 +196,31 @@ void SLightEditor::starting()
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::stopping()
+void SLightEditor::updating()
 {
-    this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::updating()
+void SLightEditor::stopping()
 {
+    QObject::disconnect(m_diffuseColorBtn, &QPushButton::clicked, this, &SLightEditor::onEditDiffuseColor);
+    QObject::disconnect(m_specularColorBtn, &QPushButton::clicked, this, &SLightEditor::onEditSpecularColor);
+
+    QObject::disconnect(m_thetaSlider, &QSlider::valueChanged, this, &SLightEditor::onEditThetaOffset);
+    QObject::disconnect(m_phiSlider, &QSlider::valueChanged, this, &SLightEditor::onEditPhiOffset);
+
+    QObject::disconnect(m_lightTypeBox, &QComboBox::currentTextChanged, this, &SLightEditor::onEditType);
+
+    QObject::disconnect(m_xTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditXTranslation);
+    QObject::disconnect(m_yTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditYTranslation);
+    QObject::disconnect(m_zTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditZTranslation);
+
+    QObject::disconnect(m_xReset, &QPushButton::clicked, this, &SLightEditor::onResetXTranslation);
+    QObject::disconnect(m_yReset, &QPushButton::clicked, this, &SLightEditor::onResetYTranslation);
+    QObject::disconnect(m_zReset, &QPushButton::clicked, this, &SLightEditor::onResetZTranslation);
+
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -369,7 +385,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
     {
         SLM_ASSERT("The selected light adaptor doesn't exist.", _lightAdaptor);
 
-        m_lightNameLbl->setText(m_currentLight->getName().c_str());
+        m_lightNameLabel->setText(m_currentLight->getName().c_str());
         m_lightTypeBox->setCurrentIndex(static_cast<int>(m_currentLight->getType()));
 
         m_diffuseColorBtn->setEnabled(true);

@@ -48,6 +48,7 @@ namespace uiVisuOgre
  * - \b editLight(::fwRenderOgre::ILight::sptr): loads the editor with the parameters from the selected light.
  *
  * @section XML XML Configuration
+ *
  * @code{.xml}
  *  <service uid=SLightEditorUid" type="uiVisuOgre::SLightEditor" />
  */
@@ -66,21 +67,76 @@ public:
     /// Destroys the service.
     UIVISUOGRE_API virtual ~SLightEditor() noexcept;
 
-protected:
+private:
 
-    /// Configure the service.
-    UIVISUOGRE_API virtual void configuring() override;
+    /// Configures the service.
+    UIVISUOGRE_API virtual void configuring() override final;
 
     /// Sets the connections and the UI elements.
-    UIVISUOGRE_API virtual void starting() override;
-
-    /// Destroys the connections and cleans the container.
-    UIVISUOGRE_API virtual void stopping() override;
+    UIVISUOGRE_API virtual void starting() override final;
 
     /// Does nothing.
-    UIVISUOGRE_API virtual void updating() override;
+    UIVISUOGRE_API virtual void updating() override final;
 
-protected Q_SLOTS:
+    /// Destroys the connections and cleans the container.
+    UIVISUOGRE_API virtual void stopping() override final;
+
+    /**
+     * @brief Gets the current light node.
+     * @return Ths node where the current light is attached.
+     */
+    ::Ogre::Node* getLightNode() const;
+
+    /**
+     * @brief Sets the current light adaptor to edit.
+     * @param _lightAdaptor The light adaptor to edit.
+     */
+    void editLight(::fwRenderOgre::ILight::sptr _lightAdaptor);
+
+    /**
+     * @brief Opens a QColorDialog to pick a new color that is returned.
+     * @param _currentColor The curent light color.
+     * @param _title The title of the dialog.
+     */
+    ::Ogre::ColourValue editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title);
+
+    /// Name of the light.
+    QPointer<QLabel> m_lightNameLabel;
+
+    /// List of each light type.
+    QPointer<QComboBox> m_lightTypeBox;
+
+    /// Button that manage the light diffuse color.
+    QPointer<QPushButton> m_diffuseColorBtn;
+
+    /// Button that manage the light specular color.
+    QPointer<QPushButton> m_specularColorBtn;
+
+    /// Slider used to edit the theta value of directional lights.
+    QPointer<QSlider> m_thetaSlider;
+
+    /// Slider used to edit the phi value of directional lights.
+    QPointer<QSlider> m_phiSlider;
+
+    /// Slider used to edit the X translation value of directional lights.
+    QPointer<QSlider> m_xTranslation;
+    QPointer<QLineEdit> m_xLabel;
+    QPointer<QPushButton> m_xReset;
+
+    /// Slider used to edit the Y translation value of directional lights.
+    QPointer<QSlider> m_yTranslation;
+    QPointer<QLineEdit> m_yLabel;
+    QPointer<QPushButton> m_yReset;
+
+    /// Slider used to edit the Z translation value of directional lights.
+    QPointer<QSlider> m_zTranslation;
+    QPointer<QLineEdit> m_zLabel;
+    QPointer<QPushButton> m_zReset;
+
+    /// Current selected light.
+    ::fwRenderOgre::ILight::sptr m_currentLight;
+
+private Q_SLOTS:
 
     /// Slot: called when the light diffuse color button is clicked.
     /// Opens a color picker and lets the user choose a new diffuse color.
@@ -144,51 +200,6 @@ protected Q_SLOTS:
     /// Reset the Z translation of the light.
     void onResetZTranslation(bool);
 
-private:
-
-    /**
-     * @brief Get the current light node.
-     * @return Ths node where the current light is attached.
-     */
-    ::Ogre::Node* getLightNode() const;
-
-    /**
-     * @brief Sets the current light adaptor to edit.
-     * @param _lightAdaptor The light adaptor to edit.
-     */
-    void editLight(::fwRenderOgre::ILight::sptr _lightAdaptor);
-
-    /**
-     * @brief Opens a QColorDialog to pick a new color that is returned.
-     * @param _currentColor The curent light color.
-     * @param _title The title of the dialog.
-     */
-    ::Ogre::ColourValue editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title);
-
-    /// Name of the light.
-    QPointer<QLabel> m_lightNameLbl;
-
-    QPointer<QComboBox> m_lightTypeBox;
-
-    QPointer<QPushButton> m_diffuseColorBtn;
-    QPointer<QPushButton> m_specularColorBtn;
-
-    QPointer<QSlider> m_thetaSlider;
-    QPointer<QSlider> m_phiSlider;
-
-    QPointer<QSlider> m_xTranslation;
-    QPointer<QLineEdit> m_xLabel;
-    QPointer<QPushButton> m_xReset;
-
-    QPointer<QSlider> m_yTranslation;
-    QPointer<QLineEdit> m_yLabel;
-    QPointer<QPushButton> m_yReset;
-
-    QPointer<QSlider> m_zTranslation;
-    QPointer<QLineEdit> m_zLabel;
-    QPointer<QPushButton> m_zReset;
-
-    ::fwRenderOgre::ILight::sptr m_currentLight;
 };
 
 } // namespace uiVisuOgre
