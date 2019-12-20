@@ -58,7 +58,7 @@ class ValueView;
  * (for example fwRenderVTK::SRender with ::visuVTKAdaptor::SModelSeries).
  * It also allows to select a Reconstruction: associated to the ::ctrlSelection::updater::SObjFromSlot, the
  * reconstruction is available to be used by other services.
- * It is mostly associated to ::uiReconstructionQt::OrganMaterialEditor and
+ * It is mostly associated to ::uiReconstructionQt::SOrganMaterialEditor and
  * ::uiReconstructionQt::RepresentationEditor to update the reconstrution color, transparency, ....
  *
  * @section Signals Signals
@@ -97,7 +97,7 @@ class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SModelSeriesList, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SModelSeriesList, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SModelSeriesList() noexcept;
