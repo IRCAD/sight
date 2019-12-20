@@ -63,6 +63,7 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modif
 static const std::string s_MESH_INOUT = "mesh";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
+static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_MATERIAL_NAME_CONFIG     = "materialName";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
 static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
@@ -150,6 +151,7 @@ void SMesh::configuring()
 
     m_isDynamic         = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
     m_isDynamicVertices = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
+    m_isVisible         = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 
     if(config.count(s_QUERY_CONFIG))
     {
