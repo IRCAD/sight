@@ -34,8 +34,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem.hpp>
-
 #include <QApplication>
 #include <QDir>
 #include <QQmlContext>

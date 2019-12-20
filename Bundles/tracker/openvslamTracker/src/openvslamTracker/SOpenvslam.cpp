@@ -45,8 +45,6 @@
 
 #include <openvslamIO/Helper.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
