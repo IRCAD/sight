@@ -39,8 +39,6 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <boost/make_shared.hpp>
-
 #include <gdcmWriter.h>
 
 namespace fwGdcmIO

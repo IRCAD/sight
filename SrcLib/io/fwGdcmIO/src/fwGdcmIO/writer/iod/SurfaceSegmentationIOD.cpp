@@ -40,8 +40,6 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/make_shared.hpp>
-
 #include <gdcmSurfaceWriter.h>
 
 namespace fwGdcmIO

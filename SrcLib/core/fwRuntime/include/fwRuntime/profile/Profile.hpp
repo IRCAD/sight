@@ -26,11 +26,9 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/utility.hpp>
 
 #include <filesystem>
-
 #include <functional>
 #include <vector>
 
@@ -59,7 +57,7 @@ public:
     typedef std::vector< std::string >  ParamsContainer;
     typedef std::function< int () > RunCallbackType;
 
-    fwCoreClassMacro(Profile, BaseObject, std::make_shared< Profile >);
+    fwCoreClassMacro(Profile, BaseObject, std::make_shared< Profile >)
 
     /**
      * @brief   Constructor : does nothing.

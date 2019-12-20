@@ -25,7 +25,6 @@
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupLazyReader.hpp"
 
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 
 #include <dcmtk/dcmdata/dcistrmb.h>
 

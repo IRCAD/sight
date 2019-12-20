@@ -39,7 +39,6 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/make_shared.hpp>
 
 #include <gdcmImageReader.h>
 #include <gdcmScanner.h>
