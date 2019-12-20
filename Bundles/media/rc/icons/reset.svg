@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -393,23 +392,4 @@
       </g>
     </g>
   </g>
-=======
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="37.171mm" height="37.171mm" version="1.1" viewBox="0 0 131.71 131.71" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
-<metadata>
-<rdf:RDF>
-<cc:Work rdf:about="">
-<dc:format>image/svg+xml</dc:format>
-<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-<dc:title/>
-</cc:Work>
-</rdf:RDF>
-</metadata>
-<g transform="translate(-329.15 -590.79)">
-<g transform="translate(-3.3792e-7 2.4895)" fill="#0aab00" fill-rule="evenodd" stroke="#065f00" stroke-width="2.6151">
-<path d="m399.14 648.04 24.792-31.544-40.343-6.5364 4.3886 11.293s-14.227 3.8541-20.131 12.704c-5.9043 8.8494-0.72257 22.101-0.72257 22.101s2.2037-7.6322 9.5916-12.987c7.388-5.3548 17.197-7.8391 17.197-7.8391l5.2257 12.809z"/>
-<path d="m390.86 660.28-24.792 31.544 40.343 6.5364-4.3887-11.293s14.227-3.8541 20.131-12.704c5.9043-8.8494 0.72256-22.101 0.72256-22.101s-2.2037 7.6322-9.5916 12.987c-7.388 5.3548-17.197 7.8392-17.197 7.8392l-5.2257-12.809z"/>
-</g>
-</g>
->>>>>>> abe183a... refactor(icons): optimize them
 </svg>
