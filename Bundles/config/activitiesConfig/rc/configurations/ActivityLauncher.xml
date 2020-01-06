@@ -151,12 +151,12 @@
 
         <!-- ************************************* Begin reader/writer declaration *************************************** -->
 
-        <service uid="SDBReader" type="::uiIO::editor::SIOSelector" config="ActivityReaderConfig">
+        <service uid="SDBReader" type="::uiIO::editor::SIOSelector" config="${ACTIVITY_READER_CONFIG}">
             <inout key="data" uid="${seriesDB}" />
         </service>
 
         <!-- Service to save the launched activities -->
-        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="ActivityWriterConfig">
+        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="${ACTIVITY_WRITER_CONFIG}">
             <inout key="data" uid="${seriesDB}" />
         </service>
 
