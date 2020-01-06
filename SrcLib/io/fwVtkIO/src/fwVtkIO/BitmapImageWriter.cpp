@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-BitmapImageWriter::BitmapImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+BitmapImageWriter::BitmapImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("Bitmap image writer"))
 {

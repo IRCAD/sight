@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,6 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <filesystem>
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
 #include <vtkPolyData.h>
@@ -49,13 +48,15 @@
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
 
+#include <filesystem>
+
 fwDataIOWriterRegisterMacro( ::fwVtkIO::ModelSeriesObjWriter );
 
 namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("ModelSeries Writer"))
 {

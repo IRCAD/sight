@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::fwMedData::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -99,9 +99,8 @@ void SSeriesDBReader::configureWithIHM()
         // Init and execute the service
         ::fwServices::IService::sptr filterSelectorSrv;
         ::fwData::String::sptr key = ::fwData::String::New();
-        filterSelectorSrv          = ::fwServices::add(key,
-                                                       "::fwGui::editor::IDialogEditor",
-                                                       "::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv          = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,19 +26,6 @@
 
 namespace fwServices
 {
-
-//------------------------------------------------------------------------------
-
-template< class DATATYPE >
-SPTR(DATATYPE) IService::getObject()
-{
-    FW_DEPRECATED("getObject()", "getInput() or getInOut()", "20.0");
-
-    SPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
-    OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
-
-    return castData;
-}
 
 //------------------------------------------------------------------------------
 
@@ -164,34 +151,6 @@ inline const IService::InOutMapType& IService::getInOuts() const
 inline const IService::OutputMapType& IService::getOutputs() const
 {
     return m_outputsMap;
-}
-
-//------------------------------------------------------------------------------
-
-inline std::vector< ::fwData::Object::csptr > IService::getObjects() const
-{
-    std::vector< ::fwData::Object::csptr > objectsVector;
-    if(!m_inputsMap.empty() || !m_inOutsMap.empty() ||  !m_outputsMap.empty())
-    {
-        for(auto itObj : m_inputsMap)
-        {
-            objectsVector.push_back(itObj.second.lock());
-        }
-        for(auto itObj : m_inOutsMap)
-        {
-            objectsVector.push_back(itObj.second.lock());
-        }
-        for(auto itObj : m_outputsMap)
-        {
-            objectsVector.push_back(itObj.second);
-        }
-    }
-    else
-    {
-        objectsVector.push_back(m_associatedObject.lock());
-    }
-
-    return objectsVector;
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
@@ -36,12 +35,13 @@
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwTools/System.hpp>
 
-#include <filesystem>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 #include <vtkTexturedSphereSource.h>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
@@ -95,8 +95,8 @@ void MeshTest::testMeshToVtk()
     source->Update();
     const vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfPoints());
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -107,12 +107,11 @@ void MeshTest::testMeshToVtk()
 
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
-    CPPUNIT_ASSERT( mesh1->getPointNormalsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getPointColorsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getCellColorsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray() );
-    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray()->getSize()[0] );
+    CPPUNIT_ASSERT( mesh1->hasPointNormals() );
+    CPPUNIT_ASSERT( mesh1->hasCellNormals() );
+    CPPUNIT_ASSERT( mesh1->hasPointColors() );
+    CPPUNIT_ASSERT( mesh1->hasCellColors() );
+    CPPUNIT_ASSERT( mesh1->hasPointTexCoords() );
 
     const vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, vtkMesh);
@@ -144,8 +143,8 @@ void MeshTest::testMeshToGrid()
     source->Update();
     const vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfPoints());
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -156,13 +155,11 @@ void MeshTest::testMeshToGrid()
 
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
-    CPPUNIT_ASSERT( mesh1->getPointNormalsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getPointColorsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getCellColorsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray() );
-    CPPUNIT_ASSERT( mesh1->getPointTexCoordsArray()->getSize()[0] );
-
+    CPPUNIT_ASSERT( mesh1->hasPointNormals() );
+    CPPUNIT_ASSERT( mesh1->hasCellNormals() );
+    CPPUNIT_ASSERT( mesh1->hasPointColors() );
+    CPPUNIT_ASSERT( mesh1->hasCellColors() );
+    CPPUNIT_ASSERT( mesh1->hasPointTexCoords() );
     const vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
     ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);
     CPPUNIT_ASSERT( vtkGrid );
@@ -180,19 +177,40 @@ void MeshTest::testMeshToGrid()
 
 void MeshTest::testSyntheticMesh()
 {
-    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
-    ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
-    ::fwDataTools::Mesh::shakePoint(mesh1);
-    mesh1->adjustAllocatedMemory();
+    {
+        const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+        ::fwDataTools::Mesh::shakePoint(mesh1);
+        mesh1->adjustAllocatedMemory();
 
-    const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
-    ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
-    CPPUNIT_ASSERT( poly );
+        const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
+        ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
+        CPPUNIT_ASSERT( poly );
 
-    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
-    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
+        ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+        ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-    compare(mesh1, mesh2);
+        compare(mesh1, mesh2);
+    }
+    {
+        const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+        ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+        ::fwDataTools::Mesh::shakePoint(mesh1);
+        ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+        ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+        ::fwDataTools::Mesh::generatePointNormals(mesh1);
+        ::fwDataTools::Mesh::generateCellNormals(mesh1);
+        mesh1->adjustAllocatedMemory();
+
+        const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
+        ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
+        CPPUNIT_ASSERT( poly );
+
+        ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+        ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
+
+        compare(mesh1, mesh2);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -234,24 +252,23 @@ void MeshTest::testExportImportSyntheticMesh()
 
 void MeshTest::testPointCloud()
 {
-    const std::uint64_t NB_POINTS = (100 + rand()%1000);
+    const std::uint64_t NB_POINTS = static_cast< std::uint64_t>(100 + rand()%1000);
 
     const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
 
-    mesh1->allocate(NB_POINTS, NB_POINTS, NB_POINTS);
+    mesh1->reserve(NB_POINTS, NB_POINTS, ::fwData::Mesh::CellType::POINT);
 
-    ::fwDataTools::helper::Mesh helper(mesh1);
+    const auto dumpLock = mesh1->lock();
 
     for (std::uint64_t i = 0; i < NB_POINTS; ++i)
     {
         ::fwData::Mesh::PointValueType point[3];
-        point[0] = (rand()%1000 - 500.f) / 3.f;
-        point[1] = (rand()%1000 - 500.f) / 3.f;
-        point[2] = (rand()%1000 - 500.f) / 3.f;
-        helper.insertNextPoint(point);
-        helper.insertNextCell(i);
+        point[0] = (static_cast<float>(rand()%1000) - 500.f) / 3.f;
+        point[1] = (static_cast<float>(rand()%1000) - 500.f) / 3.f;
+        point[2] = (static_cast<float>(rand()%1000) - 500.f) / 3.f;
+        mesh1->pushPoint(point);
+        mesh1->pushCell(i);
     }
-    mesh1->adjustAllocatedMemory();
 
     const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
@@ -280,8 +297,8 @@ void MeshTest::testMeshUpdatePoints()
     source->Update();
     vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfPoints());
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -310,8 +327,8 @@ void MeshTest::testMeshUpdateColors()
     source->Update();
     vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfPoints());
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -341,8 +358,8 @@ void MeshTest::testMeshUpdateNormals()
     source->Update();
     vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfPoints());
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -374,8 +391,8 @@ void MeshTest::testGridUpdatePoints()
     source->Update();
     const vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfPoints());
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -439,8 +456,8 @@ void MeshTest::testGridUpdateNormals()
     source->Update();
     const vtkSmartPointer< vtkPolyData > poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(0), mesh1->getNumberOfPoints());
 
     ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 

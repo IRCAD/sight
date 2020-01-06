@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -316,6 +316,25 @@ public:
     FWDATA_API void* getBuffer() const;
     /// @}
 
+    /**
+     * @brief Setter for the array buffer.
+     *
+     * An existing buffer will be released if the array own it.
+     *
+     * @param buf            Buffer to set as Array's buffer
+     * @param takeOwnership  if true, the Array will manage allocation and destroy the buffer when needed.
+     * @param type           Type of the array view
+     * @param size           Size of the array view
+     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
+     */
+    FWDATA_API void setBuffer(
+        void* buf,
+        bool takeOwnership,
+        const ::fwTools::Type& type,
+        const ::fwData::Image::Size& size,
+        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        );
+
     /** @{
      *  @brief Get/set pixel format
      */
@@ -463,6 +482,20 @@ private:
     /// Get Pixel buffer
     FWDATA_API void* getPixelBuffer( IndexType index );
     FWDATA_API void* getPixelBuffer( IndexType index ) const;
+
+    /**
+     * @brief Protected setter for the array buffer.
+     * An existing buffer will be released if the array own it.
+     *
+     * @param buf Buffer to set as Array's buffer
+     * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
+     * @param policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
+     */
+    void setBuffer(
+        void* buf,
+        bool takeOwnership                              = false,
+        ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
+        );
 
     //! Size of the image (in terms of points)
     Size m_size{0, 0, 0};

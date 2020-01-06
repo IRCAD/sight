@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -104,7 +104,7 @@ const ::gdcm::Tag windowWidthTag(0x0028, 0x1051);
 
 //------------------------------------------------------------------------------
 
-SeriesDBLazyReader::SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDBLazyReader::SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader"))

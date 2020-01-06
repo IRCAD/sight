@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/MeshReader.hpp"
+
+#include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <fwCore/base.hpp>
@@ -41,7 +42,7 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key key) :
+MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Mesh reader"))
 {
@@ -75,7 +76,7 @@ void MeshReader::read()
         [&](vtkObject* caller, long unsigned int, void*)
         {
             auto filter = static_cast< vtkGenericDataObjectReader* >(caller);
-            m_job->doneWork(filter->GetProgress() * 100);
+            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
@@ -84,7 +85,7 @@ void MeshReader::read()
 
     reader->Update();
 
-    vtkDataObject *obj = reader->GetOutput();
+    vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
     FW_RAISE_IF("MeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
     ::fwVtkIO::helper::Mesh::fromVTKMesh(mesh, pMesh);

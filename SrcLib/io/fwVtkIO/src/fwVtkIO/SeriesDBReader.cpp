@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,6 @@
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/stream.hpp>
 
-#include <filesystem>
 #include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -70,6 +69,7 @@
 #include <vtkXMLImageDataReader.h>
 
 #include <algorithm>
+#include <filesystem>
 #include <iosfwd>
 #include <numeric>
 
@@ -108,10 +108,10 @@ void  initSeries(::fwMedData::Series::sptr series, const std::string& instanceUI
 
 //------------------------------------------------------------------------------
 
-SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >(this),
-    m_lazyMode(true),
-    m_job(::fwJobs::Observer::New("SeriesDB reader"))
+    m_job(::fwJobs::Observer::New("SeriesDB reader")),
+    m_lazyMode(true)
 {
     SLM_TRACE_FUNC();
 }
@@ -139,7 +139,7 @@ vtkSmartPointer< vtkDataObject  > getObj(FILE& file, const ::fwJobs::Observer::s
         progressCallback->SetCallback([&](vtkObject* caller, long unsigned int, void* )
             {
                 auto filter = static_cast<T*>(caller);
-                job->doneWork( filter->GetProgress()*100 );
+                job->doneWork( static_cast<std::uint64_t>(filter->GetProgress()*100.) );
             });
         reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
@@ -278,7 +278,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-bool checkIfReadDataTypeIsImage(const vtkSmartPointer< vtkMetaImageReader >& reader)
+bool checkIfReadDataTypeIsImage(const vtkSmartPointer< vtkMetaImageReader >&)
 {
     return true;
 }
@@ -303,26 +303,24 @@ void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation >& info, const
 {
     int extent[6];
     info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-    ::fwData::Image::SizeType size(3, 0);
-    size[0] = extent[1]-extent[0]+1;
-    size[1] = extent[3]-extent[2]+1;
-    size[2] = extent[5]-extent[4]+1;
-    imgObj->setSize(size);
+    const ::fwData::Image::Size size = { static_cast<size_t>(extent[1]-extent[0]+1),
+                                         static_cast<size_t>(extent[3]-extent[2]+1),
+                                         static_cast<size_t>(extent[5]-extent[4]+1)};
+    imgObj->setSize2(size);
 
-    ::fwData::Image::SpacingType spacing(3, 0);
+    ::fwData::Image::Spacing spacing;
     info->Get(vtkDataObject::SPACING(), &spacing[0]);
-    imgObj->setSpacing(spacing);
+    imgObj->setSpacing2(spacing);
 
-    ::fwData::Image::OriginType origin(3, 0);
+    ::fwData::Image::Origin origin;
     info->Get(vtkDataObject::ORIGIN(), &origin[0]);
-    imgObj->setOrigin(origin);
+    imgObj->setOrigin2(origin);
 
     vtkInformation* attrInfo = vtkDataObject::GetActiveFieldInformation(info, vtkDataObject::FIELD_ASSOCIATION_POINTS,
                                                                         vtkDataSetAttributes::SCALARS);
-    int type           = attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
     int nbOfComponents = attrInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
     imgObj->setType( ::fwVtkIO::TypeTranslator::translate( attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE()) ) );
-    imgObj->setNumberOfComponents(nbOfComponents);
+    imgObj->setNumberOfComponents(static_cast<size_t>(nbOfComponents));
     imgObj->getDataArray()->setType(imgObj->getType());
 }
 

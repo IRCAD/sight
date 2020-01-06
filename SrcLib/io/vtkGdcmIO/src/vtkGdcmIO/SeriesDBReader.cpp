@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,6 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-#include <filesystem>
 #include <gdcmAttribute.h>
 #include <gdcmDataSet.h>
 #include <gdcmImageHelper.h>
@@ -65,6 +64,7 @@
 #include <vtkStringArray.h>
 
 #include <exception>
+#include <filesystem>
 
 fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBReader );
 
@@ -73,7 +73,7 @@ namespace vtkGdcmIO
 
 //------------------------------------------------------------------------------
 
-SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader"))

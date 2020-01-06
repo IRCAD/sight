@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -166,7 +166,7 @@ public:
      * @brief Return true if the mesh is closed.
      * The result is computed for each call.
      */
-    FWDATATOOLS_API bool isClosed(const ::fwData::Mesh::csptr& mesh);
+    FWDATATOOLS_API static bool isClosed(const ::fwData::Mesh::csptr& mesh);
 };
 
 } // namespace fwDataTools

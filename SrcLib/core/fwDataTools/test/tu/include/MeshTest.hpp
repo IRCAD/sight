@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_UT_MESHTEST_HPP__
-#define __FWDATATOOLS_UT_MESHTEST_HPP__
+#pragma once
 
 #include <fwData/Image.hpp>
 
@@ -41,6 +40,7 @@ CPPUNIT_TEST_SUITE( MeshTest );
 CPPUNIT_TEST( colorizePointsTest );
 CPPUNIT_TEST( colorizeCellsTest );
 CPPUNIT_TEST( transformTest );
+CPPUNIT_TEST( isClosedTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,10 +51,9 @@ public:
     void colorizePointsTest();
     void colorizeCellsTest();
     void transformTest();
+    void isClosedTest();
 
 };
 
 } //namespace ut
 } //namespace fwDataTools
-
-#endif //__FWDATATOOLS_UT_MESHTEST_HPP__

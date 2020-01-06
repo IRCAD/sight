@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,26 +35,6 @@
 namespace fwServices
 {
 
-//------------------------------------------------------------------------------
-#ifndef REMOVE_DEPRECATED
-::fwServices::IService::sptr add( ::fwData::Object::sptr _obj,
-                                  const std::string& _serviceType,
-                                  const std::string& _implType,
-                                  const std::string& _uid)
-{
-    FW_DEPRECATED_MSG("'fwServices::add(object, srvType, srvImpl[,uid])' is deprecated.", "20.0");
-    ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create( _serviceType, _implType );
-    FW_RAISE_IF("Failed to add " + _implType, !srv );
-    ::fwServices::OSR::registerService( _obj, srv );
-    if(!_uid.empty())
-    {
-        SLM_ASSERT( "Try to set ID: " + _uid + " but already has an ID: " + srv->getID(), !srv->hasID() );
-        srv->setID( _uid );
-    }
-    return srv;
-}
-#endif
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr add( const std::string& _implType, const std::string& _uid)

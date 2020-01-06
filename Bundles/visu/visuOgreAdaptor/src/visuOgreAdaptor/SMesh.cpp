@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,6 +63,7 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modif
 static const std::string s_MESH_INOUT = "mesh";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
+static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_MATERIAL_NAME_CONFIG     = "materialName";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
 static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
@@ -150,6 +151,7 @@ void SMesh::configuring()
 
     m_isDynamic         = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
     m_isDynamicVertices = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
+    m_isVisible         = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 
     if(config.count(s_QUERY_CONFIG))
     {
@@ -415,7 +417,6 @@ void SMesh::updateNewMaterialAdaptor()
     else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
-        m_materialAdaptor->swap(m_material);
     }
     else
     {
@@ -448,7 +449,6 @@ void SMesh::updateXMLMaterialAdaptor()
     else if(m_materialAdaptor->getInOut< ::fwData::Material >(SMaterial::s_MATERIAL_INOUT) != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
-        m_materialAdaptor->swap(m_material);
     }
 }
 
