@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,6 @@
 
 #include <fwData/Landmarks.hpp>
 #include <fwData/String.hpp>
-
-#include <boost/assign/std/vector.hpp>
-
-using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::LandmarksTest );
@@ -64,7 +60,7 @@ void LandmarksTest::propertiesTest()
 {
     const std::string VALUE_NAME = "myValueName";
     const std::string VALUE      = "myValue";
-    ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields");
+    ::DataCampHelper::PropertiesNameType dataProperties = { "fields" };
 
     ::fwData::Landmarks::sptr obj = ::fwData::Landmarks::New();
     ::fwData::String::sptr str    = ::fwData::String::New(VALUE);

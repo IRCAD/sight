@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,10 +63,10 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
+    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           ::boost::filesystem::exists(path));
+                           std::filesystem::exists(path));
 
     ::vtkGdcmIO::SeriesDBLazyReader::sptr reader = ::vtkGdcmIO::SeriesDBLazyReader::New();
     reader->setObject(seriesDB);

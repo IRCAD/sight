@@ -28,11 +28,10 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
-
 #include <QGuiApplication>
 #include <QVector>
+
+#include <filesystem>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
 
@@ -146,7 +145,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     Q_EMIT messageChanged();
     //set icon
     auto pathIcon = ::fwRuntime::getLibraryResourceFilePath(icon);
-    if (!boost::filesystem::exists(pathIcon))
+    if (!std::filesystem::exists(pathIcon))
     {
         pathIcon = "";
     }

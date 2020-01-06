@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,9 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <boost/filesystem.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <filesystem>
 #include <QCoreApplication>
 #include <QTcpServer>
 

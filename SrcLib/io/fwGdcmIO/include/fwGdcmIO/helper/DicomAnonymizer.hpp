@@ -28,8 +28,8 @@
 #include <fwZip/WriteZipArchive.hpp>
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
-#include <boost/filesystem/path.hpp>
 
+#include <filesystem>
 #include <gdcmAnonymizer.h>
 #include <gdcmDicts.h>
 #include <gdcmStringFilter.h>
@@ -80,7 +80,7 @@ public:
     typedef std::map< ::gdcm::Tag, std::string > ExceptionTagMapType;
 
     /// Anonymize a folder containing Dicom files
-    FWGDCMIO_API void anonymize(const ::boost::filesystem::path& dirPath);
+    FWGDCMIO_API void anonymize(const std::filesystem::path& dirPath);
 
     FWGDCMIO_API void anonymize(std::istream& inputStream, std::ostream& outputStream);
 
@@ -92,8 +92,8 @@ public:
      * @param input Input file
      * @param output Output file
      */
-    FWGDCMIO_API static void copyDirectory(const ::boost::filesystem::path& input,
-                                           const ::boost::filesystem::path& output);
+    FWGDCMIO_API static void copyDirectory(const std::filesystem::path& input,
+                                           const std::filesystem::path& output);
 
     /// Get job observer
     FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
@@ -140,7 +140,7 @@ public:
 
 private:
 
-    void anonymizationProcess(const ::boost::filesystem::path& dirPath);
+    void anonymizationProcess(const std::filesystem::path& dirPath);
 
     ///D: replace with a non-zero length value that may be a dummy value and consistent with the VR
     void applyActionCodeD(const ::gdcm::Tag& tag);

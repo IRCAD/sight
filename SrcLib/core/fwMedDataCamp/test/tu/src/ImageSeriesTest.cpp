@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,10 +36,6 @@
 #include <fwMedData/Study.hpp>
 
 #include <fwTest/generator/Image.hpp>
-
-#include <boost/assign/std/vector.hpp>
-
-using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::ImageSeriesTest );
@@ -76,18 +72,18 @@ void ImageSeriesTest::propertiesTest()
     const std::string time                                    = "143328";
     const std::string performing_physicians_name              = "John Doe";
     const std::string description                             = "description";
-    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                    ("image")
-                                                                    ("patient")
-                                                                    ("study")
-                                                                    ("equipment")
-                                                                    ("instance_uid")
-                                                                    ("modality")
-                                                                    ("date")
-                                                                    ("time")
-                                                                    ("performing_physicians_name")
-                                                                    ("description")
-                                                                    ("dicom_reference");
+    const ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
+                                                                  { "image" },
+                                                                  { "patient" },
+                                                                  { "study" },
+                                                                  { "equipment" },
+                                                                  { "instance_uid" },
+                                                                  { "modality" },
+                                                                  { "date" },
+                                                                  { "time" },
+                                                                  { "performing_physicians_name" },
+                                                                  { "description" },
+                                                                  { "dicom_reference" }, };
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("uint8"));

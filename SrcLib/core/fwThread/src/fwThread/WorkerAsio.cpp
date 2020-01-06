@@ -139,7 +139,7 @@ protected:
     void cancelNoLock();
     void rearmNoLock(TimeDurationType duration);
 
-    void call(const ::boost::system::error_code& code);
+    void call(const std::error_code& code);
 
     /// Copy constructor forbidden.
     TimerAsio( const TimerAsio& );
@@ -308,7 +308,7 @@ void TimerAsio::rearmNoLock(TimeDurationType duration)
 
 //------------------------------------------------------------------------------
 
-void TimerAsio::call(const ::boost::system::error_code& error)
+void TimerAsio::call(const std::error_code& error)
 {
     if(!error)
     {

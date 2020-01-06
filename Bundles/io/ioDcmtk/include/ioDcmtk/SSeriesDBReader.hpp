@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -58,7 +58,7 @@ class IODCMTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
     /**
      * @brief   constructor
      *
@@ -125,7 +125,7 @@ private:
 
     void notificationOfDBUpdate();
 
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
+    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
 
     /// Selector config used to select a filter to apply
     std::string m_filterSelectorSrvConfig;

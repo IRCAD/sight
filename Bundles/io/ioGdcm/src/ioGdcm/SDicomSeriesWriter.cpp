@@ -73,7 +73,7 @@ SDicomSeriesWriter::~SDicomSeriesWriter() noexcept
 
 void SDicomSeriesWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
@@ -122,8 +122,8 @@ void SDicomSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         ::fwMedData::DicomSeries::csptr series = this->getInput< ::fwMedData::DicomSeries >(::fwIO::s_DATA_KEY);
-        const ::boost::filesystem::path& folder = this->getFolder();
-        if(!::boost::filesystem::is_empty(folder))
+        const std::filesystem::path& folder = this->getFolder();
+        if(!std::filesystem::is_empty(folder))
         {
             ::fwGui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
@@ -173,7 +173,7 @@ void SDicomSeriesWriter::updating()
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesWriter::saveDicomSeries( const ::boost::filesystem::path folder,
+void SDicomSeriesWriter::saveDicomSeries( const std::filesystem::path folder,
                                           const ::fwMedData::DicomSeries::csptr& series ) const
 {
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();

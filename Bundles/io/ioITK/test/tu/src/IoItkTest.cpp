@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,10 +44,7 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
-
-using namespace ::boost::assign;
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioITK::ut::IoItkTest );
@@ -108,8 +105,8 @@ void IoItkTest::testImageSeriesWriterJPG()
     imageSeries->setImage(image);
 
     // Create path
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageSeriesJPG";
-    ::boost::filesystem::create_directories(path);
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageSeriesJPG";
+    std::filesystem::create_directories(path);
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg    = ::fwRuntime::EConfigurationElement::New("service");
@@ -133,8 +130,8 @@ void IoItkTest::testImageWriterJPG()
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // Create path
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageJPG";
-    ::boost::filesystem::create_directories( path );
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageJPG";
+    std::filesystem::create_directories( path );
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg    = ::fwRuntime::EConfigurationElement::New("service");
@@ -169,8 +166,8 @@ void IoItkTest::testSaveLoadInr()
     image->setOrigin2(origin);
 
     // save image in inr
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
-    ::boost::filesystem::create_directories( path.parent_path() );
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
+    std::filesystem::create_directories( path.parent_path() );
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
@@ -220,8 +217,8 @@ void IoItkTest::ImageSeriesInrTest()
     image->setOrigin2(origin);
 
     // save image in inr
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
-    ::boost::filesystem::create_directories( path.parent_path() );
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
+    std::filesystem::create_directories( path.parent_path() );
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
@@ -264,14 +261,14 @@ void IoItkTest::SeriesDBInrTest()
      * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
      * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
      */
-    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
-    const ::boost::filesystem::path skinFile  = ::fwTest::Data::dir() / "sight/image/inr/skin.inr.gz";
+    const std::filesystem::path imageFile = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
+    const std::filesystem::path skinFile  = ::fwTest::Data::dir() / "sight/image/inr/skin.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
-                           ::boost::filesystem::exists(imageFile));
+                           std::filesystem::exists(imageFile));
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + skinFile.string() + "' does not exist",
-                           ::boost::filesystem::exists(skinFile));
+                           std::filesystem::exists(skinFile));
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg       = ::fwRuntime::EConfigurationElement::New("service");

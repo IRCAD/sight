@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,6 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/filesystem/path.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDataSet.h>
@@ -65,6 +64,7 @@
 #include <vtkStringArray.h>
 
 #include <exception>
+#include <filesystem>
 
 fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBReader );
 
@@ -90,7 +90,7 @@ SeriesDBReader::~SeriesDBReader()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB( const ::boost::filesystem::path& dicomDir )
+::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir )
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
@@ -483,7 +483,7 @@ void SeriesDBReader::read()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        for(::boost::filesystem::path file :  this->getFiles())
+        for(std::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }

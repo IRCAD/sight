@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,9 +37,10 @@
 
 #include <fwZip/IReadArchive.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+
+#include <filesystem>
 
 #include <sstream>
 
@@ -155,7 +156,7 @@ struct PTreeVisitor
                       const ::boost::property_tree::ptree::value_type* s2)
             {
                 const unsigned long n1 = std::stoul(s1->first),
-                n2 = std::stoul(s2->first);
+                n2                     = std::stoul(s2->first);
                 return n1 <= n2;
             });
 
@@ -237,7 +238,7 @@ struct PTreeVisitor
     class AtomsBoostIOReadStream : public ::fwMemory::stream::in::IFactory
     {
     public:
-        AtomsBoostIOReadStream(const ::fwZip::IReadArchive::sptr& archive, const boost::filesystem::path& path) :
+        AtomsBoostIOReadStream(const ::fwZip::IReadArchive::sptr& archive, const std::filesystem::path& path) :
             m_archive(archive),
             m_path(path)
         {
@@ -251,7 +252,7 @@ struct PTreeVisitor
         }
 
         ::fwZip::IReadArchive::sptr m_archive;
-        ::boost::filesystem::path m_path;
+        std::filesystem::path m_path;
     };
 
     //------------------------------------------------------------------------------
@@ -271,11 +272,11 @@ struct PTreeVisitor
             size_t buffSize = pt.get<size_t>("blob.buffer_size");
             if(buffSize > 0)
             {
-                const ::boost::filesystem::path bufFile = pt.get<std::string>("blob.buffer");
-                ::boost::filesystem::path sourceFile    = "";
-                ::fwMemory::FileFormatType format       = ::fwMemory::OTHER;
+                const std::filesystem::path bufFile = pt.get<std::string>("blob.buffer");
+                std::filesystem::path sourceFile    = "";
+                ::fwMemory::FileFormatType format   = ::fwMemory::OTHER;
 
-                if( ::boost::filesystem::is_directory(m_archive->getArchivePath()))
+                if( std::filesystem::is_directory(m_archive->getArchivePath()))
                 {
                     sourceFile = m_archive->getArchivePath() / bufFile;
                     format     = ::fwMemory::RAW;
@@ -362,7 +363,7 @@ struct PTreeVisitor
 //-----------------------------------------------------------------------------
 
 ::fwAtoms::Base::sptr Reader::read( const ::fwZip::IReadArchive::sptr& archive,
-                                    const ::boost::filesystem::path& rootFilename,
+                                    const std::filesystem::path& rootFilename,
                                     FormatType format ) const
 {
     ::boost::property_tree::ptree root;
@@ -404,7 +405,7 @@ struct PTreeVisitor
         "Failed to read file '" << rootFilename.string() << "':\n"
                                 << "Detected file version is '" << writerVersion << "'"
                                 << " whereas current version is '" << Writer::s_VERSION << "'",
-        Writer::s_VERSION != writerVersion);
+            Writer::s_VERSION != writerVersion);
 
     FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\n"
                                         << "Detected atoms version is '" << atomsVersion << "'"
@@ -418,4 +419,3 @@ struct PTreeVisitor
 }
 
 }
-

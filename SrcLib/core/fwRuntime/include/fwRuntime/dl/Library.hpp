@@ -26,7 +26,7 @@
 #include "fwRuntime/dl/Native.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <memory>
 
@@ -51,7 +51,7 @@ public:
      * @param[in]   modulePath      a path pointing the module to load without any extension
      *                          information
      */
-    FWRUNTIME_API Library( const ::boost::filesystem::path& modulePath ) noexcept;
+    FWRUNTIME_API Library( const std::filesystem::path& modulePath ) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
@@ -77,7 +77,7 @@ public:
      *
      * @see     getPath
      */
-    const ::boost::filesystem::path getFullPath() const
+    const std::filesystem::path getFullPath() const
     {
         return m_implementor->getFullPath();
     }
@@ -91,7 +91,7 @@ public:
      *
      * @see     getFullPath
      */
-    const ::boost::filesystem::path getPath() const
+    const std::filesystem::path getPath() const
     {
         return m_implementor->getPath();
     }

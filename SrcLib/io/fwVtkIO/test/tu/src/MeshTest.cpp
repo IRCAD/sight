@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,14 +35,13 @@
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 #include <vtkTexturedSphereSource.h>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
@@ -228,14 +227,14 @@ void MeshTest::testExportImportSyntheticMesh()
 
     mesh1->adjustAllocatedMemory();
 
-    const ::boost::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
-                                               "testExportImportSyntheticMesh.vtk";
+    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+                                           "testExportImportSyntheticMesh.vtk";
 
     const ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     writer->write();
-    CPPUNIT_ASSERT(::boost::filesystem::exists(testFile));
+    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
 
     const ::fwData::Mesh::sptr mesh2         = ::fwData::Mesh::New();
     const ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
@@ -245,7 +244,7 @@ void MeshTest::testExportImportSyntheticMesh()
 
     compare(mesh1, mesh2);
 
-    const bool suppr = ::boost::filesystem::remove(testFile);
+    const bool suppr = std::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);
 }
 

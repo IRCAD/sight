@@ -28,7 +28,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -109,7 +109,7 @@ private:
     void initSeries(SPTR(::fwMedData::Series) series, const std::string& instanceUID);
 
     /// Reads specified inr file in image.
-    bool createImage( const ::boost::filesystem::path inrFile, SPTR(::fwData::Image) image );
+    bool createImage( const std::filesystem::path inrFile, SPTR(::fwData::Image) image );
 };
 
 } // namespace ioITK

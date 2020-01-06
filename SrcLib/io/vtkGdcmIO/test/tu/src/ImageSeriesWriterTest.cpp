@@ -39,8 +39,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::vtkGdcmIO::ut::ImageSeriesWriterTest );
@@ -92,9 +91,9 @@ void ImageSeriesWriterTest::writeReadTest()
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
-    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
 
-    ::boost::filesystem::create_directories( PATH );
+    std::filesystem::create_directories( PATH );
 
     ::vtkGdcmIO::ImageSeriesWriter::sptr writer = ::vtkGdcmIO::ImageSeriesWriter::New();
     writer->setObject(imgSeries);

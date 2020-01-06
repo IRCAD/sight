@@ -38,8 +38,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>

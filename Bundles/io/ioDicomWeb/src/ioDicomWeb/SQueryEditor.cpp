@@ -36,11 +36,11 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
 
+#include <filesystem>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>

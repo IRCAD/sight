@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_FILEWRITER_HPP__
-#define __FWGDCMIO_HELPER_FILEWRITER_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
 #include <fwCore/macros.hpp>
 
+#include <filesystem>
 #include <gdcmDataSet.h>
 #include <gdcmWriter.h>
-#include <boost/filesystem/path.hpp>
 
 namespace fwGdcmIO
 {
@@ -48,11 +47,9 @@ public:
      * @brief[in] filename Filename
      * @brief[in] writer GDCM writer
      */
-    FWGDCMIO_API static void write(const ::boost::filesystem::path& filename,
+    FWGDCMIO_API static void write(const std::filesystem::path& filename,
                                    const SPTR(::gdcm::Writer)& writer);
 };
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_HELPER_FILEWRITER_HPP__ */

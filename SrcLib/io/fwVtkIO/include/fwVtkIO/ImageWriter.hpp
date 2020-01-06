@@ -29,8 +29,7 @@
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <vtkActor.h>
 
 namespace fwJobs

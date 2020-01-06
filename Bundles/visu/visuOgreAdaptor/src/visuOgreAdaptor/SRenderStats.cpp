@@ -28,8 +28,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
@@ -135,7 +133,7 @@ void SRenderStats::starting()
 
     auto* renderWindow = renderSrv->getInteractorManager()->getRenderTarget();
 
-    m_listener = ::boost::make_unique<visuOgreAdaptor::PostWindowRenderListener>(*this);
+    m_listener = std::make_unique<visuOgreAdaptor::PostWindowRenderListener>(*this);
     renderWindow->addListener(m_listener.get());
 }
 

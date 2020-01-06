@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,8 @@
 #include <fwVtkIO/BitmapImageReader.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/filesystem/operations.hpp>
+
+#include <filesystem>
 
 namespace ioVTK
 {
@@ -83,7 +84,7 @@ SImageSeriesReader::SImageSeriesReader() noexcept
 
 void SImageSeriesReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     // Initialize the available extensions for BitmapImageReader
     std::vector<std::string> ext;

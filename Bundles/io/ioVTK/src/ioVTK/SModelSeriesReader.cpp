@@ -54,7 +54,7 @@
 
 #include <fwVtkIO/MeshReader.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 namespace ioVTK
 {
@@ -81,7 +81,7 @@ SModelSeriesReader::SModelSeriesReader() noexcept
 
 void SModelSeriesReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
@@ -178,7 +178,7 @@ void SModelSeriesReader::updating()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwData::Mesh::sptr mesh )
+void SModelSeriesReader::loadMesh( const std::filesystem::path file, ::fwData::Mesh::sptr mesh )
 {
     ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
 

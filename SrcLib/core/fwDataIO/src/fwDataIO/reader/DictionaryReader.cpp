@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -217,12 +217,12 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         (
             line
             , phx::ref( (std::ostream&)error )
-            << phx::val("Error! Expecting ")
-            << qi::_4                              // what failed?
-            << phx::val(" here: \"")
-            << phx::construct<std::string>(qi::_3, qi::_2)           // iterators to error-pos, end
-            << phx::val("\"")
-            << std::endl
+                << phx::val("Error! Expecting ")
+                << qi::_4                          // what failed?
+                << phx::val(" here: \"")
+                << phx::construct<std::string>(qi::_3, qi::_2)       // iterators to error-pos, end
+                << phx::val("\"")
+                << std::endl
         );
 
     }
@@ -288,7 +288,7 @@ void DictionaryReader::read()
 {
     SLM_TRACE_FUNC();
     assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    std::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
     OSLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
     SLM_ASSERT("Empty path for dictionary file", !path.empty());
@@ -372,7 +372,7 @@ std::string DictionaryReader::extension()
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path DictionaryReader::getDefaultDictionaryPath()
+std::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
     return ::fwRuntime::getLibraryResourceFilePath(PRJ_NAME "-" FWDATAIO_VER "/OrganDictionary.dic");
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_SEGMENTEDPROPERTYREGISTRY_HPP__
-#define __FWGDCMIO_HELPER_SEGMENTEDPROPERTYREGISTRY_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 
 #include <fwData/Object.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <array>
 #include <string>
@@ -77,8 +76,8 @@ public:
      * @param[in] omitFirstLine If set to 'true', the first line of the file is omitted
      * @param[in] logger Logger used to display errors
      */
-    FWGDCMIO_API bool readSegmentedPropertyRegistryFile(const ::boost::filesystem::path& filepath,
-                                                        bool omitFirstLine = false,
+    FWGDCMIO_API bool readSegmentedPropertyRegistryFile(const std::filesystem::path& filepath,
+                                                        bool omitFirstLine                  = false,
                                                         const SPTR(::fwLog::Logger)& logger = 0);
 
     /**
@@ -96,7 +95,7 @@ public:
      * @param[in] logger Logger used to display errors
      */
     FWGDCMIO_API bool readSegmentedPropertyRegistryFile(std::istream& csvStream,
-                                                        bool omitFirstLine = false,
+                                                        bool omitFirstLine                  = false,
                                                         const SPTR(::fwLog::Logger)& logger = 0);
 
     /// Returns whether the registry is empty or not
@@ -161,5 +160,3 @@ private:
 
 } //namespace helper
 } //namespace fwGdcmIO
-
-#endif // __FWGDCMIO_HELPER_SEGMENTEDPROPERTYREGISTRY_HPP__

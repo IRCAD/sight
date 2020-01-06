@@ -30,7 +30,7 @@
 
 #include <fwMemory/BufferObject.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 fwCampAutoDeclareDataMacro((fwMedData)(AttachmentSeries), FWMEDDATA_API);
 
@@ -74,9 +74,9 @@ public:
     /**
      * @brief Local path of attachment file
      * @{ */
-    FWMEDDATA_API const ::boost::filesystem::path& getAttachmentPath() const;
+    FWMEDDATA_API const std::filesystem::path& getAttachmentPath() const;
 
-    FWMEDDATA_API void setAttachmentPath(const ::boost::filesystem::path& path);
+    FWMEDDATA_API void setAttachmentPath(const std::filesystem::path& path);
     /**  @} */
 
     /// Returns BufferObject of the current attachment file
@@ -97,7 +97,7 @@ protected:
     ::fwMemory::BufferObject::sptr m_buffer;
 
     /// Local path of attachment file
-    ::boost::filesystem::path m_attachmentPath;
+    std::filesystem::path m_attachmentPath;
 
     /// Attachment availability
     AttachmentAvailability m_attachmentAvailability;

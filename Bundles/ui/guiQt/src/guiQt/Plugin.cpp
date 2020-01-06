@@ -65,7 +65,7 @@ void Plugin::start()
     char** argv = profile->getRawParams();
 
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [this](int& argc, char** argv)
+        = [](int& argc, char** argv)
           {
               return QSharedPointer< QApplication > ( new ::fwGuiQt::App(argc, argv, true) );
           };
@@ -105,7 +105,7 @@ int Plugin::run() noexcept
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    int result = ::boost::any_cast<int>(m_workerQt->getFuture().get());
+    int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
     m_workerQt.reset();

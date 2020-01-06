@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+
+#include <filesystem>
 
 #include <opencv2/opencv.hpp>
 
@@ -30,7 +31,7 @@
 #include <iostream>
 
 namespace po = ::boost::program_options;
-namespace fs = ::boost::filesystem;
+namespace fs = std::filesystem;
 
 using namespace openni;
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,8 +51,6 @@
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -71,6 +69,7 @@
 #include <vtkXMLImageDataReader.h>
 
 #include <algorithm>
+#include <filesystem>
 #include <iosfwd>
 #include <numeric>
 
@@ -160,7 +159,7 @@ vtkSmartPointer< vtkDataObject  > getObj(FILE& file, const ::fwJobs::Observer::s
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  >& obj, const boost::filesystem::path& file)
+::fwData::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  >& obj, const std::filesystem::path& file)
 {
     vtkSmartPointer< vtkPolyData > mesh         = vtkPolyData::SafeDownCast(obj);
     vtkSmartPointer< vtkImageData > img         = vtkImageData::SafeDownCast(obj);
@@ -244,7 +243,7 @@ class ImageStream : public ::fwMemory::stream::in::IFactory
 {
 public:
 
-    ImageStream( const ::boost::filesystem::path& path ) :
+    ImageStream( const std::filesystem::path& path ) :
         m_path(path)
     {
     }
@@ -255,7 +254,7 @@ protected:
 
     ::fwData::Image::sptr getImage()
     {
-        if(!::boost::filesystem::exists(m_path))
+        if(!std::filesystem::exists(m_path))
         {
             FW_RAISE("file "<< m_path.string() << " does not exist anymore or has moved.");
         }
@@ -274,7 +273,7 @@ protected:
         return is;
     }
 
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 };
 
 //------------------------------------------------------------------------------
@@ -339,7 +338,7 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader >& reader, const 
     imgObj->getDataArray()->resize(imgObj->getSize(), false);
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
-    boost::filesystem::path file = reader->GetFileName();
+    std::filesystem::path file = reader->GetFileName();
     buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkStructuredPointsReader> >(file),
                                 imgObj->getSizeInBytes());
 }
@@ -359,7 +358,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader >& reader, con
     imgObj->getDataArray()->resize(imgObj->getSize(), false);
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
-    boost::filesystem::path file = reader->GetFileName();
+    std::filesystem::path file = reader->GetFileName();
     buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkXMLImageDataReader> >(file),
                                 imgObj->getSizeInBytes());
 
@@ -368,7 +367,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader >& reader, con
 //------------------------------------------------------------------------------
 
 template< typename DATA_READER >
-::fwData::Image::sptr lazyRead( const ::boost::filesystem::path& file, const ::fwJobs::Observer::sptr& job)
+::fwData::Image::sptr lazyRead( const std::filesystem::path& file, const ::fwJobs::Observer::sptr& job)
 {
     vtkSmartPointer< DATA_READER > reader = vtkSmartPointer< DATA_READER >::New();
     reader->SetFileName(file.string().c_str());

@@ -26,8 +26,6 @@
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <QMessageBox>
 
 MessageDialogs::MessageDialogs()

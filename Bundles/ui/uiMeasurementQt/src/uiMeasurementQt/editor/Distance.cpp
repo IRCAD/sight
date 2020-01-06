@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,7 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/convenience.hpp>
-
+#include <filesystem>
 #include <QIcon>
 #include <QVBoxLayout>
 
@@ -79,7 +77,7 @@ void Distance::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
     fs::path pathImageDist = ::fwRuntime::getBundleResourceFilePath("uiMeasurementQt", "distance.png");
     OSLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 

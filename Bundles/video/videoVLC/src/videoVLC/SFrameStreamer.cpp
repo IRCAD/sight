@@ -31,9 +31,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/make_unique.hpp>
+#include <filesystem>
 
 namespace videoVLC
 {
@@ -219,7 +217,7 @@ void SFrameStreamer::updateFrame(::fwCore::HiResClock::HiResClockType timestamp 
 
         // Memory - vlc callback transition object.
 
-        m_imemData = ::boost::make_unique<MemoryVideoData>();
+        m_imemData = std::make_unique<MemoryVideoData>();
 
         m_imemData->m_videoBuffer = frame;
         m_imemData->m_bytes       = imageSize;

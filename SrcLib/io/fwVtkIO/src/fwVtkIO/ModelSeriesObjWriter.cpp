@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,8 +39,6 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <boost/filesystem.hpp>
-
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
 #include <vtkPolyData.h>
@@ -49,6 +47,8 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
+
+#include <filesystem>
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::ModelSeriesObjWriter );
 
@@ -109,7 +109,7 @@ void ModelSeriesObjWriter::write()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::boost::filesystem::path prefix = this->getFolder();
+    std::filesystem::path prefix = this->getFolder();
 
     ::fwMedData::ModelSeries::csptr modelSeries = getConcreteObject();
 

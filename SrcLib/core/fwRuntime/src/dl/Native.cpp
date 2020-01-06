@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,9 +25,7 @@
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/Runtime.hpp"
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <limits.h>
 
 #include <string>
@@ -40,7 +38,7 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Native::Native( const ::boost::filesystem::path& modulePath ) noexcept :
+Native::Native( const std::filesystem::path& modulePath ) noexcept :
     m_modulePath( modulePath ),
     m_bundle( 0 )
 {
@@ -54,19 +52,19 @@ Native::~Native() noexcept
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path Native::getBundleLocation() const
+const std::filesystem::path Native::getBundleLocation() const
 {
     return m_bundle->getLibraryLocation();
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
+const std::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
 {
     // Pre-condition
     SLM_ASSERT("bundle not initialized", m_bundle != 0 );
 
-    ::boost::filesystem::path result;
+    std::filesystem::path result;
 
     result = this->getBundleLocation() / this->getPath();
 
@@ -75,11 +73,11 @@ const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) c
     {
         throw RuntimeException("Unable to find a native library for the bundle.");
     }
-    if( !::boost::filesystem::exists(result) )
+    if( !std::filesystem::exists(result) )
     {
         throw RuntimeException("'" + result.string() + "': invalid native module file name.");
     }
-    if(_bMustBeFile && ::boost::filesystem::is_directory(result) )
+    if(_bMustBeFile && std::filesystem::is_directory(result) )
     {
         throw RuntimeException("'" + result.string() + "': is a directory. Perhaps dynamic library is missing.");
     }
@@ -88,20 +86,20 @@ const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) c
 
 //------------------------------------------------------------------------------
 
-const ::boost::regex Native::getNativeName() const
+const std::regex Native::getNativeName() const
 {
-    const ::boost::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
-    ::boost::regex nativeName;
+    const std::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
+    std::regex nativeName;
 
 #if defined(linux) || defined(__linux)
-    nativeName = ::boost::regex(
+    nativeName = std::regex(
         "lib" + fullModulePath.filename().string() + "\\.so" +
         "[0-9\\.]*" );
 #elif defined(WIN32)
-    nativeName = ::boost::regex(
+    nativeName = std::regex(
         fullModulePath.filename().string() + "\\.dll");
 #elif defined (__APPLE__)
-    nativeName = ::boost::regex(
+    nativeName = std::regex(
         "lib" + fullModulePath.filename().string() + "[0-9\\.]*\\.dylib" );
 #endif
 
@@ -110,23 +108,23 @@ const ::boost::regex Native::getNativeName() const
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path Native::getPath() const
+const std::filesystem::path Native::getPath() const
 {
     // Pre-condition
     SLM_ASSERT("bundle not initialized", m_bundle != 0 );
 
-    ::boost::filesystem::path result;
+    std::filesystem::path result;
 
-    const ::boost::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
-    const ::boost::regex nativeFileRegex( this->getNativeName() );
+    const std::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
+    const std::regex nativeFileRegex( this->getNativeName() );
 
     // Walk through the module directory, seeking for a matching file.
-    ::boost::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
-    ::boost::filesystem::directory_iterator endDirEntry;
+    std::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
+    std::filesystem::directory_iterator endDirEntry;
     for(; curDirEntry != endDirEntry; ++curDirEntry)
     {
-        ::boost::filesystem::path curEntryPath( *curDirEntry );
-        if( ::boost::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
+        std::filesystem::path curEntryPath( *curDirEntry );
+        if( std::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
         {
             result = m_modulePath.parent_path() / curEntryPath.filename();
             break;

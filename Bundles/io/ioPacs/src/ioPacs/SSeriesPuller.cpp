@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,8 +46,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/foreach.hpp>
+#include <filesystem>
 
 #include <sstream>
 
@@ -108,11 +107,11 @@ void SSeriesPuller::configuring()
     bool success;
 
     // Dicom Reader
-    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
+    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
     SLM_ASSERT("It should be a \"dicomReader\" in the ::ioPacs::SSeriesPuller config element.", success);
 
     // Dicom Reader Config
-    ::boost::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
+    std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
 }
 
 //------------------------------------------------------------------------------
@@ -357,7 +356,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             // Clear temporary series
             tempSDBhelper.clear();
 
-            ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicom/";
+            std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicom/";
             m_dicomReader->setFolder(path.string() + selectedSeriesUID + "/");
             m_dicomReader->update();
 

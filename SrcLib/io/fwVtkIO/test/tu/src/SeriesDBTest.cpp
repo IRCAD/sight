@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,8 +39,7 @@
 
 #include <fwTest/Data.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::SeriesDBTest );
@@ -70,11 +69,11 @@ void SeriesDBTest::testImportSeriesDB()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
-    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const std::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), ::boost::filesystem::exists(imagePath));
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), ::boost::filesystem::exists(meshPath));
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));
 
     ::fwData::location::ILocation::VectPathType paths;
     paths.push_back(imagePath);
@@ -145,11 +144,11 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
-    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const std::filesystem::path meshPath( ::fwTest::Data::dir() / "sight/mesh/vtk/sphere.vtk" );
 
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), ::boost::filesystem::exists(imagePath));
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), ::boost::filesystem::exists(meshPath));
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));
 
     ::fwData::location::ILocation::VectPathType paths;
     paths.push_back(imagePath);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,8 @@
 #include <fwDataIO/reader/MeshReader.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
 
-#include <fwDataTools/Mesh.hpp>
 #include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
 
@@ -62,7 +62,7 @@ void MeshTrianTest::tearDown()
 
 void MeshTrianTest::testSimpleMesh()
 {
-    ::boost::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
+    std::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
 
     ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
@@ -82,7 +82,7 @@ void MeshTrianTest::testSimpleMesh()
     reader->setFile(trianPath);
     reader->read();
 
-    bool suppr = ::boost::filesystem::remove(trianPath);
+    bool suppr = std::filesystem::remove(trianPath);
     CPPUNIT_ASSERT(suppr);
 
     this->compareMesh(mesh, mesh2);
@@ -92,7 +92,7 @@ void MeshTrianTest::testSimpleMesh()
 
 void MeshTrianTest::testMeshWithCellNormals()
 {
-    ::boost::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
+    std::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
 
     ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
@@ -113,7 +113,7 @@ void MeshTrianTest::testMeshWithCellNormals()
     reader->setFile(trianPath);
     reader->read();
 
-    bool suppr = ::boost::filesystem::remove(trianPath);
+    bool suppr = std::filesystem::remove(trianPath);
     CPPUNIT_ASSERT(suppr);
 
     this->compareMesh(mesh, mesh2);

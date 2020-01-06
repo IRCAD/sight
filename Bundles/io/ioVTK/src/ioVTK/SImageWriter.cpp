@@ -77,7 +77,7 @@ SImageWriter::SImageWriter() noexcept
 void SImageWriter::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
@@ -133,7 +133,7 @@ void SImageWriter::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
+bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
                               const CSPTR(::fwData::Image)& image,
                               const SPTR(JobCreatedSignalType)& sigJobCreated )
 {
@@ -142,7 +142,7 @@ bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
 
     ::fwDataIO::writer::IObjectWriter::sptr myWriter;
     fwGui::dialog::ProgressDialog progressMeterGUI("Saving images... ");
-    std::string ext = ::boost::filesystem::extension(imgFile);
+    std::string ext = imgFile.extension().string();
     ::boost::algorithm::to_lower(ext);
 
     if(ext == ".vtk")

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwMemory
 {
@@ -39,9 +39,9 @@ public:
     FileHolder()
     {
     }
-    FWMEMORY_API FileHolder(const ::boost::filesystem::path& file, bool autodelete = false);
+    FWMEMORY_API FileHolder(const std::filesystem::path& file, bool autodelete = false);
 
-    operator :: boost::filesystem::path() const
+    operator std::filesystem::path() const
     {
         return m_path;
     }
@@ -69,7 +69,7 @@ public:
     }
 
 protected:
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
     SPTR(FileAutoDelete) m_autoDelete;
 };
 

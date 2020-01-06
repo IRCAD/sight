@@ -27,7 +27,7 @@
 #include <fwTools/System.hpp>
 #include <fwTools/Type.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <fstream>
 
@@ -62,8 +62,8 @@ void DicomSeriesTest::dicomTest()
     CPPUNIT_ASSERT(m_series);
 
     //Create Path
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicomtest";
-    ::boost::filesystem::create_directories(path);
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicomtest";
+    std::filesystem::create_directories(path);
     const std::string filename = path.string()+"/"+"file";
     std::ofstream file;
     file.open(filename.c_str(), std::ofstream::out);

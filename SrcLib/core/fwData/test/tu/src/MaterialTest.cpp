@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,16 @@
  *
  ***********************************************************************/
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <fwData/Material.hpp>
-#include <fwData/Color.hpp>
 #include "MaterialTest.hpp"
 
+#include <fwData/Color.hpp>
+#include <fwData/Material.hpp>
+
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::MaterialTest );
@@ -40,24 +39,30 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void MaterialTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void MaterialTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
+
 void MaterialTest::methode1()
 {
     //-----------test values
     ::fwData::Color::sptr CAMBIENT = ::fwData::Color::New();
-    CAMBIENT->setRGBA(0.5f,0.5f,0.5f,0.5f);
+    CAMBIENT->setRGBA(0.5f, 0.5f, 0.5f, 0.5f);
 
     ::fwData::Color::sptr CDIFF = ::fwData::Color::New();
-    CDIFF->setRGBA(0.8f,0.2f,0.5f,0.4f);
+    CDIFF->setRGBA(0.8f, 0.2f, 0.5f, 0.4f);
 
     ::fwData::Material::sptr material = ::fwData::Material::New();
 
@@ -70,4 +75,3 @@ void MaterialTest::methode1()
 
 } //namespace ut
 } //namespace fwData
-

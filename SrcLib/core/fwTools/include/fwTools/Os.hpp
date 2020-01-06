@@ -25,7 +25,7 @@
 #include "fwTools/config.hpp"
 #include "fwTools/Exception.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -82,7 +82,7 @@ FWTOOLS_API std::string  getUserDataDir(
  * @return path to the library on the filesystem
  * @throw ::fwTools::Exception if the library could not be found (not loaded for instance)
  */
-FWTOOLS_API ::boost::filesystem::path getSharedLibraryPath(const std::string& _libName);
+FWTOOLS_API std::filesystem::path getSharedLibraryPath(const std::string& _libName);
 
 } // namespace os
 

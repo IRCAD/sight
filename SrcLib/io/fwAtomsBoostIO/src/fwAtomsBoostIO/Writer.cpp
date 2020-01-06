@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,18 +30,18 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
-#include <fwMemory/BufferManager.hpp>
 
 #include <fwMemory/BufferManager.hpp>
+
 #include <fwTools/UUID.hpp>
 
 #include <fwZip/IWriteArchive.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+
+#include <filesystem>
 
 namespace fwAtomsBoostIO
 {
@@ -61,7 +61,7 @@ struct AtomVisitor
     ::fwZip::IWriteArchive::sptr m_archive;
     const std::string m_dirPrefix;
 
-    AtomVisitor(const ::fwZip::IWriteArchive::sptr& archive, const std::string &dirPrefix) :
+    AtomVisitor(const ::fwZip::IWriteArchive::sptr& archive, const std::string& dirPrefix) :
         m_archive(archive),
         m_dirPrefix(dirPrefix)
     {
@@ -69,7 +69,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    PropTreeCacheType::mapped_type hitCache(const PropTreeCacheType::key_type &atom) const
+    PropTreeCacheType::mapped_type hitCache(const PropTreeCacheType::key_type& atom) const
     {
         PropTreeCacheType::const_iterator iter = m_cache.find(atom);
         if(iter != m_cache.end())
@@ -81,7 +81,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
+    void cache(const PropTreeCacheType::key_type& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree ref;
         ref.put("ref", ptpath );
@@ -90,7 +90,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Boolean::sptr &atom, const std::string &ptpath)
+    ::boost::property_tree::ptree visit(const ::fwAtoms::Boolean::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -100,7 +100,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Numeric::sptr &atom, const std::string &ptpath)
+    ::boost::property_tree::ptree visit(const ::fwAtoms::Numeric::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -110,7 +110,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::String::sptr &atom, const std::string &ptpath)
+    ::boost::property_tree::ptree visit(const ::fwAtoms::String::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -120,7 +120,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Map::sptr &atom, const std::string &ptpath)
+    ::boost::property_tree::ptree visit(const ::fwAtoms::Map::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree map;
@@ -142,7 +142,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Sequence::sptr &atom, const std::string &ptpath)
+    ::boost::property_tree::ptree visit(const ::fwAtoms::Sequence::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree seq;
@@ -161,7 +161,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Object::sptr &atom, const std::string &ptpath)
+    ::boost::property_tree::ptree visit(const ::fwAtoms::Object::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree object;
@@ -198,7 +198,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Blob::sptr &atom, const std::string &ptpath)
+    ::boost::property_tree::ptree visit(const ::fwAtoms::Blob::sptr& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree pt;
         this->cache(atom, ptpath);
@@ -214,11 +214,11 @@ struct AtomVisitor
         }
         else
         {
-            ::boost::filesystem::path bufFile = m_dirPrefix;
-            size_t buffSize                   = buffObj->getSize();
+            std::filesystem::path bufFile = m_dirPrefix;
+            size_t buffSize               = buffObj->getSize();
 
             const ::fwMemory::BufferManager::StreamInfo streamInfo = buffObj->getStreamInfo();
-            const ::boost::filesystem::path dumpedFile             = streamInfo.fsFile;
+            const std::filesystem::path dumpedFile                 = streamInfo.fsFile;
             const ::fwMemory::FileFormatType& format               = streamInfo.format;
 
             bufFile /= ::fwTools::UUID::generateUUID() + ".raw";
@@ -233,7 +233,7 @@ struct AtomVisitor
                 SLM_ASSERT("no istream", is);
 
                 SPTR(std::ostream) os = m_archive->createFile(bufFile);
-                *os << is->rdbuf();
+                * os << is->rdbuf();
             }
 
             pt.put("blob.buffer_size", buffSize);
@@ -245,7 +245,7 @@ struct AtomVisitor
 
 //-----------------------------------------------------------------------------
 
-    ::boost::property_tree::ptree visit(const ::fwAtoms::Base::sptr &atom, std::string ptpath = "")
+    ::boost::property_tree::ptree visit(const ::fwAtoms::Base::sptr& atom, std::string ptpath = "")
     {
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree ref;
@@ -295,11 +295,11 @@ struct AtomVisitor
 //-----------------------------------------------------------------------------
 
 void Writer::write( const ::fwZip::IWriteArchive::sptr& archive,
-                    const ::boost::filesystem::path& rootFilename,
+                    const std::filesystem::path& rootFilename,
                     FormatType format ) const
 {
     ::boost::property_tree::ptree root;
-    AtomVisitor visitor(archive, rootFilename.stem().string() + "-" + ((format==JSON) ? "json" : "xml"));
+    AtomVisitor visitor(archive, rootFilename.stem().string() + "-" + ((format == JSON) ? "json" : "xml"));
 
     root = visitor.visit(m_atom);
 

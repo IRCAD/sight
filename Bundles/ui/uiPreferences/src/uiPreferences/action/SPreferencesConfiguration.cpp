@@ -36,7 +36,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <QDialog>
@@ -298,7 +297,7 @@ void SPreferencesConfiguration::updating()
 
 void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select Storage directory");

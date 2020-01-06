@@ -27,7 +27,7 @@
 
 #include <fwServices/IService.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwIO
 {
@@ -36,7 +36,7 @@ namespace fwIO
  * @brief Reader service API. It manages extension points definition and extension configuration
  *
  * @section Slots Slots
- * - \b setFileFolder(const ::boost::filesystem::path&) : Sets the folder when a path is configured in FILE or
+ * - \b setFileFolder(const std::filesystem::path&) : Sets the folder when a path is configured in FILE or
  * FILES mode
  *
  * This class represents the base interface for reader services.
@@ -98,13 +98,13 @@ public:
      * @pre exception if a file path is not defined  ( m_locations.empty() )
      * @pre exception if service does not support FILE mode
      */
-    FWIO_API const ::boost::filesystem::path& getFile() const;
+    FWIO_API const std::filesystem::path& getFile() const;
 
     /**
      * @brief Sets file path
      * @pre exception if service does not support FILE mode
      */
-    FWIO_API void setFile(const ::boost::filesystem::path& file);
+    FWIO_API void setFile(const std::filesystem::path& file);
 
     /**
      * @brief Returns file paths set by the user or set during service configuration
@@ -124,7 +124,7 @@ public:
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FOLDER mode
      */
-    FWIO_API const ::boost::filesystem::path& getFolder() const;
+    FWIO_API const std::filesystem::path& getFolder() const;
 
     /**
      * @brief Clear any location set by the setFile/setFiles/setFolder setter
@@ -141,7 +141,7 @@ public:
      * @brief Sets folder path
      * @pre exception if service does not support FOLDER mode
      */
-    FWIO_API void setFolder(const ::boost::filesystem::path& folder);
+    FWIO_API void setFolder(const std::filesystem::path& folder);
 
     /**
      * @brief Slot: Sets the folder when a path is configured in FILE or FILES mode
@@ -149,7 +149,7 @@ public:
      *
      * @pre exception if service does not support FILE or FILES mode
      */
-    FWIO_API void setFileFolder(::boost::filesystem::path folder);
+    FWIO_API void setFileFolder(std::filesystem::path folder);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     FWIO_API bool hasLocationDefined() const;
@@ -231,9 +231,9 @@ protected:
 private:
 
     /// Slot to read folder
-    void readFolder(::boost::filesystem::path path);
+    void readFolder(std::filesystem::path path);
     /// Slot to read file
-    void readFile(::boost::filesystem::path path);
+    void readFile(std::filesystem::path path);
     /// Slot to read files
     void readFiles(::fwIO::LocationsType files);
 

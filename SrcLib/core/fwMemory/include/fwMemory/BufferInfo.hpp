@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,18 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_BUFFERINFO_HPP__
-#define __FWMEMORY_BUFFERINFO_HPP__
+#pragma once
 
 #include "fwMemory/BufferAllocationPolicy.hpp"
+#include "fwMemory/config.hpp"
 #include "fwMemory/FileFormat.hpp"
 #include "fwMemory/FileHolder.hpp"
-#include "fwMemory/config.hpp"
 #include "fwMemory/stream/in/IFactory.hpp"
 
 #include <fwCore/LogicStamp.hpp>
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwMemory
 {
@@ -71,6 +70,3 @@ struct FWMEMORY_CLASS_API BufferInfo
 };
 
 } // namespace fwMemory
-
-#endif // __FWMEMORY_BUFFERINFO_HPP__
-

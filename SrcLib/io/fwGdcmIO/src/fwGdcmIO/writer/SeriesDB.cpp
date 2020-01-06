@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::SeriesDB);
 
@@ -73,8 +73,8 @@ void SeriesDB::write()
     for( ::fwMedData::Series::sptr series : seriesContainer)
     {
         // Create a new directory
-        const ::boost::filesystem::path& seriesPath = this->getFolder() / series->getInstanceUID();
-        ::boost::filesystem::create_directories(seriesPath);
+        const std::filesystem::path& seriesPath = this->getFolder() / series->getInstanceUID();
+        std::filesystem::create_directories(seriesPath);
         writer->setObject(series);
         writer->setFolder(seriesPath);
 

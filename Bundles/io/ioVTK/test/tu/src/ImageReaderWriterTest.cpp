@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,9 +46,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/operations.hpp>
-
+#include <filesystem>
 #include <fstream>
 
 // Registers the fixture into the 'registry'
@@ -109,7 +107,7 @@ void ImageReaderWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path& file)
+::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const std::filesystem::path& file)
 {
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr readerCfg    = ::fwRuntime::EConfigurationElement::New("file");
@@ -124,10 +122,10 @@ void ImageReaderWriterTest::tearDown()
 void ImageReaderWriterTest::testVtkImageReader()
 {
 
-    const ::boost::filesystem::path file = ::fwTest::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path file = ::fwTest::Data::dir() / "sight/image/vtk/img.vtk";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
-                           ::boost::filesystem::exists(file));
+                           std::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
@@ -177,10 +175,10 @@ void ImageReaderWriterTest::testVtkImageReader()
 
 void ImageReaderWriterTest::testVtiImageReader()
 {
-    const ::boost::filesystem::path file = ::fwTest::Data::dir() /"sight/image/vti/BostonTeapot.vti";
+    const std::filesystem::path file = ::fwTest::Data::dir() /"sight/image/vti/BostonTeapot.vti";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
-                           ::boost::filesystem::exists(file));
+                           std::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
@@ -232,10 +230,10 @@ void ImageReaderWriterTest::testVtiImageReader()
 void ImageReaderWriterTest::testMhdImageReader()
 {
 
-    const ::boost::filesystem::path file = ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd";
+    const std::filesystem::path file = ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
-                           ::boost::filesystem::exists(file));
+                           std::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
@@ -287,7 +285,7 @@ void ImageReaderWriterTest::testMhdImageReader()
 
 void ImageReaderWriterTest::testImageReaderExtension()
 {
-    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "img.xxx";
+    const std::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "img.xxx";
 
     std::ofstream ofile;
     ofile.open(file.string().c_str());
@@ -311,7 +309,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
         CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
         ::fwServices::OSR::unregisterService( srv );
     }
-    ::boost::filesystem::remove(file);
+    std::filesystem::remove(file);
 
 }
 
@@ -343,7 +341,7 @@ void ImageReaderWriterTest::testBitmapImageWriter()
     for(const std::string ext : extensions)
     {
         // Write to bitmap image.
-        const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / ("temporaryFile." + ext);
+        const std::filesystem::path file = ::fwTools::System::getTemporaryFolder() / ("temporaryFile." + ext);
 
         runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
@@ -351,7 +349,7 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         const ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
         runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
-        ::boost::filesystem::remove(file);
+        std::filesystem::remove(file);
 
         // Data read
         ::fwData::Image::Spacing spacingRead = image->getSpacing2();
@@ -397,7 +395,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
                                               ::fwData::Image::RGBA);
 
     // Write to vtk image.
-    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
+    const std::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
 
     runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
@@ -405,7 +403,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
-    ::boost::filesystem::remove(file);
+    std::filesystem::remove(file);
 
     // Data read
     ::fwData::Image::Spacing spacingRead = image->getSpacing2();
@@ -450,7 +448,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
     imageSeries->setImage(image);
 
-    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "imageSeries.vtk";
+    const std::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "imageSeries.vtk";
 
     // Write image series
     runImageSrv("::ioVTK::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
@@ -481,7 +479,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
                                               ::fwData::Image::GRAY_SCALE);
 
     // Write to vtk image.
-    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
+    const std::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
 
     runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
@@ -535,7 +533,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
                                               ::fwData::Image::RGB);
 
     // Write to vtk image.
-    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
+    const std::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
 
     runImageSrv("::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
@@ -589,7 +587,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
                                               ::fwData::Image::GRAY_SCALE);
 
     // Write to vtk image.
-    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
+    const std::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
 
     {
         const std::string srvname("::ioVTK::SImageWriter");

@@ -28,7 +28,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/assign/list_of.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace fwGui
@@ -43,12 +42,13 @@ const CardinalLayoutManagerBase::RegistryKeyType CardinalLayoutManagerBase::REGI
 
 //-----------------------------------------------------------------------------
 
-const std::map<std::string, CardinalLayoutManagerBase::Align> CardinalLayoutManagerBase::STRING_TO_ALIGN =
-    ::boost::assign::map_list_of("center", CENTER)
-        ("right", RIGHT)
-        ("left", LEFT)
-        ("bottom", BOTTOM)
-        ("top", TOP);
+const std::map<std::string, CardinalLayoutManagerBase::Align> CardinalLayoutManagerBase::STRING_TO_ALIGN = {
+    { "center", CENTER },
+    { "right", RIGHT },
+    { "left", LEFT },
+    { "bottom", BOTTOM },
+    { "top", TOP },
+};
 
 //-----------------------------------------------------------------------------
 

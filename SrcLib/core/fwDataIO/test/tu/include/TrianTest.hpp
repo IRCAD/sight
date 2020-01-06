@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,9 +24,9 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
+
+#include <filesystem>
 
 namespace fwDataIO
 {
@@ -55,10 +55,10 @@ public:
 
 protected:
 
-    void generateTrian(::boost::filesystem::path trianFile);
+    void generateTrian(std::filesystem::path trianFile);
 
-    ::boost::filesystem::path m_tmpTrianPath1;
-    ::boost::filesystem::path m_tmpTrianPath2;
+    std::filesystem::path m_tmpTrianPath1;
+    std::filesystem::path m_tmpTrianPath2;
 };
 
 } //namespace ut

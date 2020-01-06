@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -88,7 +88,7 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
@@ -224,7 +224,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir)
 {
     SLM_TRACE_FUNC();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

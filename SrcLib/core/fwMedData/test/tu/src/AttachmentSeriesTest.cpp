@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,8 @@
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
-#include <fwAtomsBoostIO/Writer.hpp>
 #include <fwAtomsBoostIO/types.hpp>
+#include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwMemory/BufferObject.hpp>
 
@@ -38,8 +38,7 @@
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <fstream>
 
@@ -51,14 +50,16 @@ namespace fwMedData
 namespace ut
 {
 
-::fwAtoms::Object::sptr readAttachment( const ::boost::filesystem::path& filePath )
+//------------------------------------------------------------------------------
+
+::fwAtoms::Object::sptr readAttachment( const std::filesystem::path& filePath )
 {
-    const ::boost::filesystem::path folderPath = filePath.parent_path();
-    const ::boost::filesystem::path filename   = filePath.filename();
-    const std::string extension                = ::boost::filesystem::extension(filePath);
+    const std::filesystem::path folderPath = filePath.parent_path();
+    const std::filesystem::path filename   = filePath.filename();
+    const std::string extension            = filePath.extension().string();
 
     ::fwZip::IReadArchive::sptr readArchive;
-    ::boost::filesystem::path archiveRootName;
+    std::filesystem::path archiveRootName;
     ::fwAtomsBoostIO::FormatType format = ::fwAtomsBoostIO::UNSPECIFIED;
 
     if ( extension == ".json" )
@@ -87,16 +88,16 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-void writeAttachment( const ::boost::filesystem::path& filePath, const ::fwAtoms::Object::sptr atom )
+void writeAttachment( const std::filesystem::path& filePath, const ::fwAtoms::Object::sptr atom )
 {
-    const ::boost::filesystem::path folderPath = filePath.parent_path();
-    const ::boost::filesystem::path filename   = filePath.filename();
-    std::string extension                      = ::boost::filesystem::extension(filePath);
+    const std::filesystem::path folderPath = filePath.parent_path();
+    const std::filesystem::path filename   = filePath.filename();
+    std::string extension                  = filePath.extension().string();
 
     // Write atom
     ::fwZip::IWriteArchive::sptr writeArchive;
     ::fwAtomsBoostIO::FormatType format;
-    ::boost::filesystem::path archiveRootName;
+    std::filesystem::path archiveRootName;
 
     if ( extension == ".json" )
     {
@@ -106,9 +107,9 @@ void writeAttachment( const ::boost::filesystem::path& filePath, const ::fwAtoms
     }
     else if ( extension == ".jsonz" )
     {
-        if ( ::boost::filesystem::exists( filePath ) )
+        if ( std::filesystem::exists( filePath ) )
         {
-            ::boost::filesystem::remove( filePath );
+            std::filesystem::remove( filePath );
         }
         writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
         archiveRootName = "root.json";
@@ -146,17 +147,17 @@ void AttachmentSeriesTest::attachmentTest()
     CPPUNIT_ASSERT(m_series);
 
     //Create Path
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "attachmenttest";
-    ::boost::filesystem::create_directories(path);
-    const std::string filename                     = "attach.ext";
-    const ::boost::filesystem::path attachmentFile = path / filename;
-    const std::string mediaType                    = "text";
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "attachmenttest";
+    std::filesystem::create_directories(path);
+    const std::string filename                 = "attach.ext";
+    const std::filesystem::path attachmentFile = path / filename;
+    const std::string mediaType                = "text";
 
     std::ofstream file;
     file.open(attachmentFile.string().c_str(), std::ofstream::out);
     file << "42";
     file.close();
-    size_t fileSize = ::boost::filesystem::file_size(attachmentFile);
+    size_t fileSize = std::filesystem::file_size(attachmentFile);
 
     //None
     CPPUNIT_ASSERT_EQUAL(::fwMedData::AttachmentSeries::NONE, m_series->getAttachmentAvailability());

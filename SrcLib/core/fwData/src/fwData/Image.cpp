@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,8 +29,6 @@
 
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-
-#include <boost/assign.hpp>
 
 #include <numeric>
 
@@ -611,36 +609,28 @@ void Image::setSize(const SizeType& size)
     FW_DEPRECATED("getPixelType(", "getType()", "22.0")
     typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
 
-    static DynamicTypeMapType dynamicTypeMap = ::boost::assign::map_list_of
-                                                   (::fwTools::Type().string(), ::fwTools::DynamicType() )
-                                                   ("uint8", ::fwTools::makeDynamicType<std::string>("unsigned char")  )
-                                                   ("uint16",
-                                                   ::fwTools::makeDynamicType<std::string>("unsigned short") )
-                                                   ("uint32",
-                                                   ::fwTools::makeDynamicType<std::string>("unsigned int")   )
-                                                   ("int8",  ::fwTools::makeDynamicType<std::string>("signed char")    )
-                                                   ("int16",
-                                                   ::fwTools::makeDynamicType<std::string>("signed short")   )
-                                                   ("int32",
-                                                   ::fwTools::makeDynamicType<std::string>("signed int")     )
-                                                   ("float",
-                                                   ::fwTools::makeDynamicType<std::string>("float")          )
-                                                   ("double",
-                                                   ::fwTools::makeDynamicType<std::string>("double")         )
+    static DynamicTypeMapType dynamicTypeMap = {
+        { ::fwTools::Type().string(), ::fwTools::DynamicType() },
+        { "uint8",  ::fwTools::makeDynamicType<std::string>("unsigned char")  },
+        { "uint16", ::fwTools::makeDynamicType<std::string>("unsigned short") },
+        { "uint32", ::fwTools::makeDynamicType<std::string>("unsigned int")   },
+        { "int8",   ::fwTools::makeDynamicType<std::string>("signed char")    },
+        { "int16",  ::fwTools::makeDynamicType<std::string>("signed short")   },
+        { "int32",  ::fwTools::makeDynamicType<std::string>("signed int")     },
+        { "float",  ::fwTools::makeDynamicType<std::string>("float")          },
+        { "double", ::fwTools::makeDynamicType<std::string>("double")         },
 
 //special case for dynamic type : 64bits integers was not managed by dynamic type.
 #if ( INT_MAX < LONG_MAX )
-                                               ("uint64", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
-                                                   ("int64",
-                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
+        {"uint64",  ::fwTools::makeDynamicType<std::string>("unsigned long")  },
+        {"int64",   ::fwTools::makeDynamicType<std::string>("signed long")    },
 #else
-                                               ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
-                                                   ("int32",
-                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
-                                                   ("uint64", ::fwTools::DynamicType() )
-                                                   ("int64",  ::fwTools::DynamicType() )
+        {"uint32",  ::fwTools::makeDynamicType<std::string>("unsigned long")  },
+        {"int32",   ::fwTools::makeDynamicType<std::string>("signed long")    },
+        {"uint64",  ::fwTools::DynamicType() },
+        {"int64",   ::fwTools::DynamicType() },
 #endif
-    ;
+    };
 
     ::fwTools::DynamicType dtype = dynamicTypeMap[getType().string()];
     return dtype;

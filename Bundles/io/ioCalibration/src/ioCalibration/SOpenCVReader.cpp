@@ -77,7 +77,7 @@ bool SOpenCVReader::defineLocationGUI()
     bool ok = false;
 
     // Ask user for the file path
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);

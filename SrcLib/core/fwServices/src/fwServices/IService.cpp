@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,9 +38,8 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <boost/regex.hpp>
-
 #include <functional>
+#include <regex>
 
 namespace fwServices
 {
@@ -805,9 +804,9 @@ void IService::autoConnect()
                 else
                 {
                     // Special case if we have a key from a group we check with the name of the group
-                    ::boost::smatch match;
-                    static const ::boost::regex reg("(.*)#[0-9]+");
-                    if( ::boost::regex_match(objectCfg.m_key, match, reg ) && match.size() == 2)
+                    std::smatch match;
+                    static const std::regex reg("(.*)#[0-9]+");
+                    if( std::regex_match(objectCfg.m_key, match, reg ) && match.size() == 2)
                     {
                         const std::string group = match[1].str();
                         auto itConnection       = connectionMap.find(group);

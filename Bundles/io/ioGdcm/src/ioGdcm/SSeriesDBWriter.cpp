@@ -69,7 +69,7 @@ SSeriesDBWriter::~SSeriesDBWriter() noexcept
 
 void SSeriesDBWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
@@ -116,8 +116,8 @@ void SSeriesDBWriter::updating()
 {
     if( this->hasLocationDefined() )
     {
-        const ::boost::filesystem::path& folder = this->getFolder();
-        if(!::boost::filesystem::is_empty(folder))
+        const std::filesystem::path& folder = this->getFolder();
+        if(!std::filesystem::is_empty(folder))
         {
             ::fwGui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
@@ -165,7 +165,7 @@ void SSeriesDBWriter::updating()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::saveSeriesDB( const ::boost::filesystem::path folder, ::fwMedData::SeriesDB::sptr seriesDB )
+void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, ::fwMedData::SeriesDB::sptr seriesDB )
 {
     ::fwGdcmIO::writer::SeriesDB::sptr writer = ::fwGdcmIO::writer::SeriesDB::New();
     writer->setObject(seriesDB);

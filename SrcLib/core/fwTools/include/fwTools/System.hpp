@@ -24,8 +24,7 @@
 
 #include "fwTools/config.hpp"
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <string>
 
 namespace fwTools
@@ -42,10 +41,16 @@ public:
 
     /**
      * @brief   Returns the system's temporary folder.
-     * Returns the value returned by boost::filesystem::temp_directory_path, or
-     * if boost returns no valid dir, c:\\ on windows, /tmp on other systems
+     * Returns the value returned by std::filesystem::temp_directory_path, or
+     * if std returns no valid dir, c:\\ on windows, /tmp on other systems
      */
-    FWTOOLS_API static const ::boost::filesystem::path& getTempPath() noexcept;
+    FWTOOLS_API static const std::filesystem::path& getTempPath() noexcept;
+
+    /**
+     * @brief   Generate a random filename.
+     * @param   length: the length of the generated filename.
+     */
+    FWTOOLS_API static const std::string genTempFileName(size_t _length = 64);
 
     /**
      * @brief   Returns a unique per-process temporary folder.
@@ -55,7 +60,7 @@ public:
      * by a dash.
      * @return  created folder
      */
-    FWTOOLS_API static const ::boost::filesystem::path getTemporaryFolder(
+    FWTOOLS_API static const std::filesystem::path getTemporaryFolder(
         const std::string& subFolderPrefix = "" ) noexcept;
 
     /**
@@ -64,12 +69,12 @@ public:
      * the file name is a integer, this method will return this number.
      * Otherwise, zero will be returned
      */
-    FWTOOLS_API static int tempFolderPID(const ::boost::filesystem::path& dir) noexcept;
+    FWTOOLS_API static int tempFolderPID(const std::filesystem::path& dir) noexcept;
 
     /**
      * @brief   Clean the zombie folders of old processes in given directory
      */
-    FWTOOLS_API static void cleanAllTempFolders(const ::boost::filesystem::path& dir) noexcept;
+    FWTOOLS_API static void cleanAllTempFolders(const std::filesystem::path& dir) noexcept;
 
     /**
      *  @brief  Returns the pid of the current process

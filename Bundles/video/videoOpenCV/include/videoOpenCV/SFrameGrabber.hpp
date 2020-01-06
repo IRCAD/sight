@@ -35,7 +35,7 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <opencv2/videoio.hpp>
 
@@ -158,11 +158,11 @@ protected:
 
 private:
 
-    typedef std::vector< ::boost::filesystem::path > ImageFilesType;
+    typedef std::vector< std::filesystem::path > ImageFilesType;
     typedef std::vector< double > ImageTimestampsType;
 
     /// Initializes the video reader, start the timer.
-    void readVideo(const ::boost::filesystem::path& file);
+    void readVideo(const std::filesystem::path& file);
 
     /// Initializes the usb device reader, start the timer.
     void readDevice(const CSPTR(::arData::Camera)_cam);
@@ -171,7 +171,7 @@ private:
     void readStream(const CSPTR(::arData::Camera)_cam);
 
     /// Initializes the image reader, start the timer.
-    void readImages(const ::boost::filesystem::path& folder, const std::string& extension);
+    void readImages(const std::filesystem::path& folder, const std::string& extension);
 
     /// Reads the next video frame.
     void grabVideo();

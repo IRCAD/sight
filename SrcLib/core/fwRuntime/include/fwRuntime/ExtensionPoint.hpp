@@ -29,7 +29,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <algorithm>
 #include <iostream>
@@ -160,14 +160,14 @@ struct FWRUNTIME_CLASS_API ExtensionPoint : public BundleElement
         ExtensionPoint(
             const std::shared_ptr<Bundle>       bundle,
             const std::string&              id,
-            const boost::filesystem::path&  schema);
+            const std::filesystem::path&  schema);
 
     private:
 
         const std::string m_id;                                     ///< a string containing the extension point
                                                                     // identifier
-        const ::boost::filesystem::path m_schema;                   ///< a path to the XML schema used to validate
-                                                                    // contributed extensions
+        const std::filesystem::path m_schema;                   ///< a path to the XML schema used to validate
+        // contributed extensions
         mutable std::shared_ptr< io::Validator >    m_validator;///< a shared pointer to the extension validator
 
         /**

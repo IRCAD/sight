@@ -34,7 +34,7 @@
 
 #include <fwTools/Object.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <cstdint>
 

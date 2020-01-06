@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,10 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/iostreams/categories.hpp>  // source_tag
 #include <boost/iostreams/stream.hpp>
+
+#include <filesystem>
 
 #include <iosfwd>    // streamsize
 
@@ -40,11 +40,11 @@ namespace fwZip
 
 //------------------------------------------------------------------------------
 
-void* openReadZipArchive( const ::boost::filesystem::path& archive )
+void* openReadZipArchive( const std::filesystem::path& archive )
 {
     FW_RAISE_EXCEPTION_IF(
         ::fwZip::exception::Read("Archive '" + archive.string() + "' doesn't exist."),
-        !::boost::filesystem::exists(archive));
+        !std::filesystem::exists(archive));
 
     void* zip = unzOpen(archive.string().c_str());
 
@@ -63,14 +63,14 @@ public:
     typedef char char_type;
     typedef ::boost::iostreams::source_tag category;
 
-    ZipSource( const ::boost::filesystem::path& archive) :
+    ZipSource( const std::filesystem::path& archive) :
         m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
         m_archive(archive)
     {
 
     }
 
-    ZipSource( const ::boost::filesystem::path& archive, const ::boost::filesystem::path& path ) :
+    ZipSource( const std::filesystem::path& archive, const std::filesystem::path& path ) :
         m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
         m_archive(archive),
         m_path(path)
@@ -132,20 +132,20 @@ public:
 
 protected:
     SPTR(void) m_zipDescriptor;
-    ::boost::filesystem::path m_archive;
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_archive;
+    std::filesystem::path m_path;
 };
 
 //-----------------------------------------------------------------------------
 
-ReadZipArchive::ReadZipArchive( const ::boost::filesystem::path& archive ) :
+ReadZipArchive::ReadZipArchive( const std::filesystem::path& archive ) :
     m_archive(archive)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) ReadZipArchive::getFile(const ::boost::filesystem::path& path)
+SPTR(std::istream) ReadZipArchive::getFile(const std::filesystem::path& path)
 {
     SPTR(::boost::iostreams::stream<ZipSource>) is
         = std::make_shared< ::boost::iostreams::stream<ZipSource> >(m_archive, path);
@@ -164,7 +164,7 @@ std::string ReadZipArchive::getComment()
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path ReadZipArchive::getArchivePath() const
+const std::filesystem::path ReadZipArchive::getArchivePath() const
 {
     return m_archive;
 }

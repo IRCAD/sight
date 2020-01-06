@@ -31,8 +31,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -177,7 +175,7 @@ void SVideo::updating()
             if(tf)
             {
                 // TF texture initialization
-                m_gpuTF = ::boost::make_unique< ::fwRenderOgre::TransferFunction>();
+                m_gpuTF = std::make_unique< ::fwRenderOgre::TransferFunction>();
                 m_gpuTF->createTexture(this->getID());
 
                 this->updateTF();

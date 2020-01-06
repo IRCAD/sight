@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -84,8 +84,8 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     const auto future = m_job->run();
 
     // Create destination directory
-    const ::boost::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("AnonymizedSeries");
-    ::boost::filesystem::create_directories( destPath );
+    const std::filesystem::path destPath = ::fwTools::System::getTemporaryFolder("AnonymizedSeries");
+    std::filesystem::create_directories( destPath );
 
     // Write DicomSeries (Copy files)
     m_writer->setObject(source);

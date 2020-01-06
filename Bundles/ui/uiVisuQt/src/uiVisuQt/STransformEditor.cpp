@@ -34,8 +34,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/regex.hpp>
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
@@ -46,6 +44,8 @@
 #include <QSlider>
 #include <QString>
 #include <QVBoxLayout>
+
+#include <regex>
 
 namespace uiVisuQt
 {
@@ -79,7 +79,7 @@ STransformEditor::~STransformEditor() noexcept
 
 void STransformEditor::configuring()
 {
-    static const ::boost::regex s_REGEX("[xyz][xyz]?[xyz]?");
+    static const std::regex s_REGEX("[xyz][xyz]?[xyz]?");
 
     this->initialize();
 
@@ -95,7 +95,7 @@ void STransformEditor::configuring()
     {
         m_rotation = "xyz";
     }
-    else if( ::boost::regex_match(rotation, s_REGEX) )
+    else if( std::regex_match(rotation, s_REGEX) )
     {
         m_rotation = rotation;
     }
@@ -117,7 +117,7 @@ void STransformEditor::configuring()
     {
         m_translation = "xyz";
     }
-    else if( ::boost::regex_match(translation, s_REGEX) )
+    else if( std::regex_match(translation, s_REGEX) )
     {
         m_translation = translation;
     }

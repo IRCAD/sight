@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@
 
 #include <fwVtkIO/MeshReader.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 namespace ioVTK
 {
@@ -71,7 +71,7 @@ void SMeshReader::configureWithIHM()
 {
     SLM_TRACE_FUNC();
 
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
@@ -125,7 +125,7 @@ void SMeshReader::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
+void SMeshReader::loadMesh( const std::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
 

@@ -25,7 +25,7 @@
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <vector>
 

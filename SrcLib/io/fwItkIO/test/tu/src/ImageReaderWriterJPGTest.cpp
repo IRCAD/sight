@@ -70,8 +70,8 @@ void ImageReaderWriterJPGTest::testImageWriter()
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // save image in inr
-    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
-    ::boost::filesystem::create_directories( PATH );
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
+    std::filesystem::create_directories( PATH );
     ::fwItkIO::JpgImageWriter::sptr myWriter = ::fwItkIO::JpgImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFolder(PATH);
@@ -83,10 +83,10 @@ void ImageReaderWriterJPGTest::testImageWriter()
 void ImageReaderWriterJPGTest::testImageWriter2()
 {
     // create Image
-    ::boost::filesystem::path pathInr = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
+    std::filesystem::path pathInr = ::fwTest::Data::dir() / "sight/image/inr/image.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + pathInr.string() + "' does not exist",
-                           ::boost::filesystem::exists(pathInr));
+                           std::filesystem::exists(pathInr));
 
     ::fwData::Image::sptr image           = ::fwData::Image::New();
     ::fwItkIO::ImageReader::sptr myReader = ::fwItkIO::ImageReader::New();
@@ -95,8 +95,8 @@ void ImageReaderWriterJPGTest::testImageWriter2()
     myReader->read();
 
     // save image in inr
-    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
-    ::boost::filesystem::create_directories( PATH );
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageJPG";
+    std::filesystem::create_directories( PATH );
     ::fwItkIO::JpgImageWriter::sptr myWriter = ::fwItkIO::JpgImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFolder(PATH);

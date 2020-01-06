@@ -35,7 +35,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <opencv2/opencv.hpp>
 
@@ -68,7 +68,7 @@ SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept
 
 void SCalibrationImagesWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path s_defaultPath;
+    static std::filesystem::path s_defaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
@@ -125,8 +125,8 @@ void SCalibrationImagesWriter::updating()
             std::ostringstream imageNumber;
             imageNumber << std::setw(4) << std::setfill('0') << count++;
 
-            const std::string filename           = "img_" + imageNumber.str() + m_fileExtension;
-            const ::boost::filesystem::path path = this->getFolder() / filename;
+            const std::string filename       = "img_" + imageNumber.str() + m_fileExtension;
+            const std::filesystem::path path = this->getFolder() / filename;
 
             ::cv::Mat cvImg = ::cvIO::Image::copyToCv(calibImg);
 

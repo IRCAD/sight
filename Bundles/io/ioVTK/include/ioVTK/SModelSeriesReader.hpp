@@ -28,7 +28,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -132,7 +132,7 @@ protected:
 
 private:
 
-    IOVTK_API void loadMesh( const ::boost::filesystem::path file, ::fwData::Mesh::sptr mesh );
+    IOVTK_API void loadMesh( const std::filesystem::path file, ::fwData::Mesh::sptr mesh );
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 
