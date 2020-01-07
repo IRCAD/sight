@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
 /**
  * @brief Lets the user move an orthographic camera to visualize medical images in 2D.
  *
- * The camera can moved along its screen plane and zoomed on a precise scene location.
+ * The camera can be moved along its screen plane and zoom on a precise scene location.
  * For more convenience this adaptor can make use of an optional input image to reset the camera's orientation
  * when the image's slice type changes.
  * Although this service was designed with negato visualization in mind, it could be used to render regular scenes
@@ -87,7 +87,7 @@ private:
     /// Configures the layer, interaction priority and camera orientation.
     virtual void configuring() final;
 
-    /// Adds negato camera interactions interactions to the layer.
+    /// Adds negato camera interactions to the layer.
     virtual void starting() final;
 
     /// Updates the service. Unused here.
@@ -96,7 +96,7 @@ private:
     /// Removes negato camera interactions from the layer.
     virtual void stopping() final;
 
-    /// Retuns proposals to connect the images signals to camera actions:
+    /// Returns proposals to connect the images signals to camera actions:
     /// - change the camera's orientation when the image's slice type changes
     /// - reset the camera's position when the image is modified.
     virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
