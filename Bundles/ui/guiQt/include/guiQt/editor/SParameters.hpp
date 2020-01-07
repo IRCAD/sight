@@ -183,10 +183,10 @@ private Q_SLOTS:
      * widget.
      * @param _comboBox Dependency wigdet.
      * @param _widget Child widget.
-     * @param value Value of the combo box.
+     * @param _value Value of the combo box.
      * @param _reverse Reverse the state check.
      */
-    void onDependsChanged(QComboBox* _comboBox, QWidget* _widget, const std::string& value, bool _reverse);
+    void onDependsChanged(QComboBox* _comboBox, QWidget* _widget, const std::string& _value, bool _reverse);
 
     /// This method is called when a boolean value changes
     void onChangeBoolean(int value);
