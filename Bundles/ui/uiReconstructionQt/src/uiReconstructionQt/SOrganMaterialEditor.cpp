@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -179,7 +179,7 @@ void SOrganMaterialEditor::onDiffuseColorButton()
     }
 }
 
-//------------------------------------------------------const ------------------------
+//------------------------------------------------------------------------------
 
 void SOrganMaterialEditor::onAmbientColorButton()
 {
@@ -187,9 +187,9 @@ void SOrganMaterialEditor::onAmbientColorButton()
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
-    int red   = static_cast<int>(material->ambient()->red()*255.f);
-    int green = static_cast<int>(material->ambient()->green()*255.f);
-    int blue  = static_cast<int>(material->ambient()->blue()*255.f);
+    const int red   = static_cast<int>(material->ambient()->red()*255.f);
+    const int green = static_cast<int>(material->ambient()->green()*255.f);
+    const int blue  = static_cast<int>(material->ambient()->blue()*255.f);
 
     // Create Color choice dialog.
     ::fwGuiQt::container::QtContainer::sptr qtContainer
