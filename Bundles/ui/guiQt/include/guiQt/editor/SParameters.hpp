@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -170,7 +170,7 @@ public:
 private Q_SLOTS:
 
     /**
-     * @brief Called when a dependency widget state (enable or disable) as changed to change the state of the child
+     * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
      * widget.
      * @param _checkBox Dependency wigdet.
      * @param _widget Child widget.
@@ -179,7 +179,7 @@ private Q_SLOTS:
     void onDependsChanged(QCheckBox* _checkBox, QWidget* _widget, bool _reverse);
 
     /**
-     * @brief Called when a dependency widget state (enable or disable) as changed to change the state of the child
+     * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
      * widget.
      * @param _comboBox Dependency wigdet.
      * @param _widget Child widget.
