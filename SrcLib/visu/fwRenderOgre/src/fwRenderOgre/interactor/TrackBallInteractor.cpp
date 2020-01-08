@@ -63,113 +63,149 @@ TrackballInteractor::~TrackballInteractor()
 
 void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier, int, int, int dx, int dy)
 {
-    if(button == LEFT)
+    if(m_mouseMove)
     {
-        cameraRotate(dx, dy);
-    }
-    else if(button == MIDDLE)
-    {
-        cameraTranslate(dx, dy);
-    }
-    else if(button == RIGHT)
-    {
-        ::Ogre::Camera* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-        const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
+        if(button == LEFT)
+        {
+            cameraRotate(dx, dy);
+        }
+        else if(button == MIDDLE)
+        {
+            cameraTranslate(dx, dy);
+        }
+        else if(button == RIGHT)
+        {
+            ::Ogre::Camera* const camera = m_layer.lock()->getDefaultCamera();
+            const ::Ogre::Vector3 transVec(0.f, 0.f, static_cast<float>(dy));
 
-        camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::wheelEvent(Modifier, int delta, int /*x*/, int /*y*/)
-{
-    // The zoom factor is reduced when coming closer and increased when going away
-    const float fNewZoom = (delta > 0) ? m_zoom * 0.85f : m_zoom / 0.85f;
-
-    // Moreover we cannot pass through the center of the trackball
-    const float z = (m_zoom - fNewZoom) * 200.f / (m_mouseScale );
-
-    // Update the center of interest for future rotations
-    m_lookAtZ -= z;
-
-    this->updateCameraFocalLength();
-
-    m_zoom = fNewZoom;
-
-    // Translate the camera.
-    ::Ogre::Camera* const camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-    ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
-    camNode->translate( ::Ogre::Vector3(0, 0, -1)*z, ::Ogre::Node::TS_LOCAL );
-
-    if(auto layer = m_layer.lock())
-    {
-        layer->resetCameraClippingRange();
+            camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
+        }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::resizeEvent(int x, int y)
-{
-    m_width  = x;
-    m_height = y;
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::keyPressEvent(int key, Modifier)
+void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton, Modifier, int _x, int _y)
 {
     if(auto layer = m_layer.lock())
     {
-        if(key == 'R' || key == 'r')
+        m_mouseMove = isInLayer(_x, _y, layer);
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int, int)
+{
+    m_mouseMove = false;
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::wheelEvent(Modifier, int delta, int x, int y)
+{
+    if(auto layer = m_layer.lock())
+    {
+        if(isInLayer(x, y, layer))
         {
-            layer->resetCameraCoordinates();
+            constexpr float mouseScale = 0.01f;
+
+            // The zoom factor is reduced when coming closer and increased when going away
+            const float newZoom = m_zoom * std::pow(0.85f, static_cast<float>(delta) * mouseScale);
+
+            // Moreover we cannot pass through the center of the trackball
+            const float z = (m_zoom - newZoom) * 200.f / (m_mouseScale );
+
+            // Update the center of interest for future rotations
+            m_lookAtZ -= z;
+
+            this->updateCameraFocalLength();
+
+            m_zoom = newZoom;
+
+            // Translate the camera.
+            ::Ogre::Camera* const camera     = layer->getDefaultCamera();
+            ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
+            camNode->translate( ::Ogre::Vector3(0, 0, -1)*z, ::Ogre::Node::TS_LOCAL );
+
+            layer->resetCameraClippingRange();
         }
+    }
+}
 
-        if(key == 'A' || key == 'a')
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mouseY)
+{
+    if(auto layer = m_layer.lock())
+    {
+        if(isInLayer(_mouseX, _mouseY, layer))
         {
-            m_animate = !m_animate;
-
-            if(!m_animate && m_timer)
+            if(key == 'R' || key == 'r')
             {
-                m_timer->stop();
-                m_timer.reset();
+                layer->resetCameraCoordinates();
             }
 
-            if(m_animate)
+            if(key == 'A' || key == 'a')
             {
-                // We use a timer on the main thread instead of a separate thread.
-                // OpenGL commands need to be sent from the same thread as the one on which the context is created.
-                const auto worker = ::fwServices::registry::ActiveWorkers::getDefault()->getDefaultWorker();
-                m_timer = worker->createTimer();
+                m_animate = !m_animate;
 
-                m_timer->setFunction([this, layer]()
-                        {
-                            this->cameraRotate(10, 0);
-                            layer->requestRender();
-                        } );
-                m_timer->setDuration(std::chrono::milliseconds(33));
-                m_timer->start();
+                if(!m_animate && m_timer)
+                {
+                    m_timer->stop();
+                    m_timer.reset();
+                }
+
+                if(m_animate)
+                {
+                    // We use a timer on the main thread instead of a separate thread.
+                    // OpenGL commands need to be sent from the same thread as the one on which the context is created.
+                    const auto worker = ::fwServices::registry::ActiveWorkers::getDefault()->getDefaultWorker();
+                    m_timer = worker->createTimer();
+
+                    m_timer->setFunction([this, layer]()
+                            {
+                                this->cameraRotate(10, 0);
+                                layer->requestRender();
+                            } );
+                    m_timer->setDuration(std::chrono::milliseconds(33));
+                    m_timer->start();
+                }
             }
         }
     }
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::resizeEvent(int, int)
+{
+    ::Ogre::Camera* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    const float width    = static_cast< float >(camera->getViewport()->getActualWidth());
+    const float height   = static_cast <float >(camera->getViewport()->getActualHeight());
+
+    const float aspectRatio = width / height;
+    camera->setAspectRatio(aspectRatio);
 }
 
 // ----------------------------------------------------------------------------
 
 void TrackballInteractor::cameraRotate(int dx, int dy)
 {
-    ::Ogre::Real dx_float = static_cast< ::Ogre::Real>(dx);
-    ::Ogre::Real dy_float = static_cast< ::Ogre::Real>(dy);
+    ::Ogre::Real wDelta = static_cast< ::Ogre::Real>(dx);
+    ::Ogre::Real hDelta = static_cast< ::Ogre::Real>(dy);
 
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
+    ::Ogre::Camera* const camera     = m_layer.lock()->getDefaultCamera();
+    ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
+    const ::Ogre::Viewport* const vp = camera->getViewport();
+
+    const float height = static_cast<float>(vp->getActualHeight());
+    const float width  = static_cast<float>(vp->getActualWidth());
 
     // Current orientation of the camera
-    ::Ogre::Quaternion orientation = camNode->getOrientation();
-    ::Ogre::Vector3 viewRight      = orientation.xAxis();
-    ::Ogre::Vector3 viewUp         = orientation.yAxis();
+    const ::Ogre::Quaternion orientation = camNode->getOrientation();
+    const ::Ogre::Vector3 viewRight      = orientation.xAxis();
+    const ::Ogre::Vector3 viewUp         = orientation.yAxis();
 
     // Rotate around the right vector according to the dy of the mouse
     {
@@ -179,18 +215,18 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        ::Ogre::Vector3 vecX(std::abs(dy_float), 0.f, 0.f);
+        ::Ogre::Vector3 vecX(std::abs(hDelta), 0.f, 0.f);
         ::Ogre::Vector3 rotateX = vecX * viewRight;
         rotateX.normalise();
 
         // 3 - Now determine the rotation direction
         if(rotateX.dotProduct(::Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
         {
-            dy_float *= -1;
+            hDelta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        float angle = (dy_float * ::Ogre::Math::PI / static_cast< float>(m_height));
+        const float angle = (hDelta * ::Ogre::Math::PI / height);
 
         // 5 - Apply the rotation on the scene node
         ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateX);
@@ -208,18 +244,18 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
         // Otherwise we would get a weird inversion
-        ::Ogre::Vector3 vecY(0.f, std::abs(dx_float), 0.f);
+        ::Ogre::Vector3 vecY(0.f, std::abs(wDelta), 0.f);
         ::Ogre::Vector3 rotateY = vecY * viewUp;
         rotateY.normalise();
 
         // 3 - Now determine the rotation direction
         if(rotateY.dotProduct(::Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
         {
-            dx_float *= -1;
+            wDelta *= -1;
         }
 
         // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        float angle = (dx_float * ::Ogre::Math::PI / static_cast< float>(m_width));
+        const float angle = (wDelta * ::Ogre::Math::PI / width);
 
         // 5 - Apply the rotation on the scene node
         ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateY);

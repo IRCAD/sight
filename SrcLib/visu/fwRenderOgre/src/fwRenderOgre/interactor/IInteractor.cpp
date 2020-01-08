@@ -96,13 +96,13 @@ void IInteractor::buttonPressEvent(MouseButton, Modifier, int, int)
 
 //------------------------------------------------------------------------------
 
-void IInteractor::keyPressEvent(int, Modifier)
+void IInteractor::keyPressEvent(int, Modifier, int, int)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void IInteractor::keyReleaseEvent(int, Modifier)
+void IInteractor::keyReleaseEvent(int, Modifier, int, int)
 {
 }
 
