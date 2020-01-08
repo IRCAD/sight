@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ private:
     virtual void stopping() final;
 
     /// Determines the execution order of the picking interactor.
-    int m_pickingPriority { 0 };
+    int m_pickingPriority { 2 };
 
     /// Mask used to filter out entities when picking.
     std::uint32_t m_queryMask { 0xffffffff };

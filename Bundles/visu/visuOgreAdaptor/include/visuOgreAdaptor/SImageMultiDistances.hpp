@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -244,7 +244,7 @@ private:
     bool m_interactive {true};
 
     /// Priority of the interactor
-    int m_priority {3};
+    int m_priority {2};
 
     /// Current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
     PickedData m_pickedData {nullptr, true};
