@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
+#include <QCheckBox>
+#include <QComboBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QObject>
@@ -87,9 +89,13 @@ namespace editor
        <service uid="..." type="::guiQt::editor::SParameters" >
         <parameters>
             <param type="bool" name="boolean parameter" key="boolParam" defaultValue="false" />
-            <param type="double" name="real parameter" key="doubleParam" defaultValue="" min="1.5" max="42.42" />
-            <param type="int" name="integer parameter" key="intParam" defaultValue="1" min="0" max="255" />
+            <param type="double" name="real parameter" key="doubleParam" defaultValue="" min="1.5" max="42.42"
+                depends="boolParam" />
+            <param type="int" name="integer parameter" key="intParam" defaultValue="1" min="0" max="255"
+                depends="boolParam" dependsReverse="true" />
             <param type="enum" name="enum parameters" key="enumParam" defaultValue="p1" values="p1,p2,p3" />
+            <param type="int" name="integer parameter" key="intParam2" defaultValue="1" min="0" max="255"
+                depends="enumParam" dependsValue="p2" />
         </parameters>
         <config sendAtStart="true" />
        </service>
@@ -110,6 +116,9 @@ namespace editor
  * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
  * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKBOARD
  * and will send 'imageBlend' or 'imageCheckerboard'.
+ * depends (optional, string): key of the dependency.
+ * dependsValue (optional, string): value of the dependency in case of enum.
+ * dependsReverse (optional, bool, default=false): reverse the dependency status checking.
  * - \b sendAtStart (optional, default=true): whether or not to trigger parameter update signals when the service
  * starts.
  */
@@ -118,7 +127,7 @@ class GUIQT_CLASS_API SParameters : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SParameters, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SParameters, ::fwGui::editor::IEditor)
 
     /// Boolean changed signal type
     typedef ::fwCom::Signal< void (bool, std::string) > BooleanChangedSignalType;
@@ -159,6 +168,25 @@ public:
     GUIQT_API void updating() override;
 
 private Q_SLOTS:
+
+    /**
+     * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
+     * widget.
+     * @param _checkBox Dependency wigdet.
+     * @param _widget Child widget.
+     * @param _reverse Reverse the state check.
+     */
+    void onDependsChanged(QCheckBox* _checkBox, QWidget* _widget, bool _reverse);
+
+    /**
+     * @brief Called when a dependency widget state (enable or disable) has changed to modify the state of the child
+     * widget.
+     * @param _comboBox Dependency wigdet.
+     * @param _widget Child widget.
+     * @param _value Value of the combo box.
+     * @param _reverse Reverse the state check.
+     */
+    void onDependsChanged(QComboBox* _comboBox, QWidget* _widget, const std::string& _value, bool _reverse);
 
     /// This method is called when a boolean value changes
     void onChangeBoolean(int value);
@@ -203,6 +231,14 @@ private Q_SLOTS:
     void onDoubleSliderRangeMapped(QLabel* minLabel, QLabel* maxLabel, QSlider* slider);
 
 private:
+
+    /**
+     * @brief Called on all dependent widget to update it.
+     * @param _watched Widget to update.
+     * @param _event Event type, only care about ::QEvent::EnabledChange
+     * @return False.
+     */
+    virtual bool eventFilter(QObject* _watched, QEvent* _event) override;
 
     /// Snippet to create the reset button
     QPushButton* createResetButton();

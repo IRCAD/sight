@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,9 +36,8 @@
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 
-#include <QCheckBox>
 #include <QColorDialog>
-#include <QComboBox>
+#include <QEvent>
 #include <QFormLayout>
 #include <QSpinBox>
 #include <QString>
@@ -51,8 +50,6 @@ namespace editor
 {
 
 //-----------------------------------------------------------------------------
-
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SParameters );
 
 static const ::fwCom::Signals::SignalKeyType BOOLEAN_CHANGED_SIG    = "boolChanged";
 static const ::fwCom::Signals::SignalKeyType COLOR_CHANGED_SIG      = "colorChanged";
@@ -79,6 +76,8 @@ static const ::fwCom::Slots::SlotKeyType s_SET_INT_MIN_PARAMETER_SLOT    = "setI
 static const ::fwCom::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "setIntMaxParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "setDoubleMaxParameter";
+
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SParameters )
 
 //-----------------------------------------------------------------------------
 
@@ -268,6 +267,71 @@ void SParameters::starting()
         ++row;
     }
 
+    BOOST_FOREACH( const auto& param, parametersCfg.equal_range("param") )
+    {
+        const ::fwServices::IService::ConfigType& cfg = param.second;
+
+        const std::string key          = cfg.get< std::string >("<xmlattr>.key");
+        const std::string depends      = cfg.get< std::string >("<xmlattr>.depends", "");
+        const std::string dependsValue = cfg.get< std::string >("<xmlattr>.dependsValue", "");
+        const bool dependsreverse      = cfg.get< bool >("<xmlattr>.dependsReverse", false);
+
+        if(!depends.empty())
+        {
+            QWidget* widget = nullptr;
+            for(int i = 0; i < layout->count(); ++i)
+            {
+                widget = layout->itemAt(i)->widget();
+                if(widget != nullptr)
+                {
+                    QString foundedKey = widget->property("key").toString();
+                    if(key.compare(foundedKey.toStdString()) == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            QWidget* dependsWidget = nullptr;
+            for(int i = 0; i < layout->count(); ++i)
+            {
+                dependsWidget = layout->itemAt(i)->widget();
+                if(dependsWidget != nullptr)
+                {
+                    QString foundedKey = dependsWidget->property("key").toString();
+                    if(depends.compare(foundedKey.toStdString()) == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            widget->installEventFilter(this);
+            QCheckBox* checkBox = qobject_cast<QCheckBox*>(dependsWidget);
+            if(checkBox != nullptr)
+            {
+                QObject::connect(checkBox, &QCheckBox::stateChanged, this, [ = ]
+                        {
+                            onDependsChanged(checkBox, widget, dependsreverse);
+                        });
+                onDependsChanged(checkBox, widget, dependsreverse);
+            }
+            else
+            {
+                QComboBox* comboBox = qobject_cast<QComboBox*>(dependsWidget);
+                if(comboBox != nullptr)
+                {
+                    QObject::connect(comboBox, static_cast<void (QComboBox::*)(
+                                                               int)>(&QComboBox::currentIndexChanged), this, [ = ]
+                            {
+                                onDependsChanged(comboBox, widget, dependsValue, dependsreverse);
+                            });
+                    onDependsChanged(comboBox, widget, dependsValue, dependsreverse);
+                }
+            }
+        }
+    }
+
     qtContainer->setLayout(layout);
 
     this->blockSignals(false);
@@ -354,6 +418,66 @@ void SParameters::updating()
 void SParameters::stopping()
 {
     this->destroy();
+}
+
+//-----------------------------------------------------------------------------
+
+bool SParameters::eventFilter(QObject* _watched, QEvent* _event)
+{
+    if(_event->type() == ::QEvent::EnabledChange)
+    {
+        QCheckBox* checkBox = qobject_cast<QCheckBox*>(_watched);
+        if(checkBox != nullptr)
+        {
+            checkBox->stateChanged(checkBox->isChecked() ? Qt::Checked : Qt::Unchecked);
+        }
+        else
+        {
+            QComboBox* comboBox = qobject_cast<QComboBox*>(_watched);
+            if(comboBox != nullptr)
+            {
+                comboBox->currentIndexChanged(comboBox->currentIndex());
+            }
+        }
+
+    }
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+
+void SParameters::onDependsChanged(QCheckBox* _checkBox, QWidget* _widget, bool _reverse)
+{
+    if(!_checkBox->isEnabled())
+    {
+        _widget->setDisabled(true);
+    }
+    else if(_reverse)
+    {
+        _widget->setDisabled(_checkBox->checkState());
+    }
+    else
+    {
+        _widget->setEnabled(_checkBox->checkState());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SParameters::onDependsChanged(QComboBox* _comboBox, QWidget* _widget, const std::string& _value, bool _reverse)
+{
+    if(!_comboBox->isEnabled())
+    {
+        _widget->setDisabled(true);
+    }
+    else if(_reverse)
+    {
+        _widget->setDisabled(_comboBox->currentText().toStdString().compare(_value) == 0);
+    }
+    else
+    {
+        _widget->setEnabled(_comboBox->currentText().toStdString().compare(_value) == 0);
+    }
 }
 
 //-----------------------------------------------------------------------------
