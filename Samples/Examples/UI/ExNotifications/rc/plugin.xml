@@ -1,0 +1,85 @@
+<!--
+This example shows 
+-->
+<plugin id="ExNotifications" version="@PROJECT_VERSION@">
+
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExNotificationsConfig</id>
+        <config>
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>Example of Notifications popup @PROJECT_VERSION@</name>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="mainview" start="yes" />
+                </registry>
+            </service>
+            
+           <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <editor/>
+                        <editor/>
+                        <separator/>
+                        <menuItem name="NOTIFY !"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="type" start="yes" />
+                    <editor sid="position" start="yes" />
+                    <menuItem sid="notify" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainview" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                    </layout>
+                </gui>
+                <registry>
+                </registry>
+            </service>
+            
+            <service uid="notify" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>notifier/update</slot>
+                </slots>
+            </service>
+
+            <service uid="position" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="enum" name="Position" key="position" defaultValue="ALL" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
+                </parameters>
+            </service>
+            
+            <service uid="type" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="enum" name="Type" key="type" defaultValue="INFO" values="INFO,SUCCESS,FAILURE" />
+                </parameters>
+            </service>
+
+            <service uid="notifier" type="::uiGenericQt::action::SDisplayTestNotifications" />
+
+            <connect>
+                <signal>position/enumChanged</signal>
+                <signal>type/enumChanged</signal>
+                <slot>notifier/setEnumParameter</slot>
+            </connect>
+
+            <start uid="mainFrame" />
+            <start uid="notifier" />
+
+        </config>
+    </extension>
+
+
+</plugin>

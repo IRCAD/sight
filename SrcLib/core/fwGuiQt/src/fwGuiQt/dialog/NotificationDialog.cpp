@@ -55,7 +55,7 @@ void NotificationDialog::show()
     // Fade in effect.
     QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
     QPropertyAnimation* a          = new QPropertyAnimation(effect, "opacity");
-    a->setDuration(1000);  // in miliseconds
+    a->setDuration(500);  // in miliseconds
     a->setStartValue(0);
     a->setEndValue(0.9);
     a->setEasingCurve(QEasingCurve::InBack);
@@ -105,7 +105,7 @@ void NotificationDialog::show()
                        QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
                        msgbox->setGraphicsEffect(effect);
                        QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
-                       a->setDuration(1000); // it will took 1000ms to face out
+                       a->setDuration(500); // it will took 1000ms to face out
                        a->setStartValue(0.9);
                        a->setEndValue(0);
                        a->setEasingCurve(QEasingCurve::OutBack);
