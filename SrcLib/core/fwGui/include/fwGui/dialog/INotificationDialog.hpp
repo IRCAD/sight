@@ -25,6 +25,7 @@
 #include "fwGui/config.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
+#include <array>
 #include <string>
 
 namespace fwGui

@@ -84,7 +84,7 @@ void NotificationDialog::show()
     }
     else
     {
-        // Default style.
+        //TODO: Default style.
     }
 
     // fade in effect.
@@ -105,7 +105,7 @@ void NotificationDialog::show()
                        QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
                        msgbox->setGraphicsEffect(effect);
                        QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
-                       a->setDuration(500); // it will took 1000ms to face out
+                       a->setDuration(500); // it will took 500 to fade out
                        a->setStartValue(0.9);
                        a->setEndValue(0);
                        a->setEasingCurve(QEasingCurve::OutBack);

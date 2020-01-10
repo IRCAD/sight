@@ -81,14 +81,21 @@ public:
     fwCoreClassMacro(NotificationDialog, ::fwGui::dialog::INotificationDialog,
                      ::fwGui::factory::New< NotificationDialog > )
 
+    /// Constructor, does nothing.
     FWGUIQT_API NotificationDialog(::fwGui::GuiBaseObject::Key key);
 
+    /// Destructor, does nothing.
     FWGUIQT_API virtual ~NotificationDialog() override final;
 
+    /// Show the notification relative to the active window.
     FWGUIQT_API void show() override;
 
 private:
 
+    /**
+     * @brief Computes the position using the active window boundings.
+     * @return the position in pixel as QPoint.
+     */
     QPoint computePosition();
 
 };
