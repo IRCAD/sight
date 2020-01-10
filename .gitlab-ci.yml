@@ -79,10 +79,7 @@ build:debug-linux:
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
-    - >
-     curl --retry 3 --location --insecure --location-trusted
-     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
-     tar xfz - > /dev/null
+    - git clone https://git.ircad.fr/Sight/sight-data-lfs.git -b dev sight-data-dev
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - ctest --timeout 240 --output-on-failure -O ctest.log -j4
   artifacts:
@@ -109,10 +106,7 @@ build:release-linux:
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
-    - >
-     curl --retry 3 --location --insecure --location-trusted
-     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.tar.gz |
-     tar xfz - > /dev/null
+    - git clone https://git.ircad.fr/Sight/sight-data-lfs.git -b dev sight-data-dev
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
@@ -136,10 +130,7 @@ build:debug-windows:
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
     - ninja
-    - >
-     curl --retry 3 --location --insecure --location-trusted
-     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
-     --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
+    - git clone https://git.ircad.fr/Sight/sight-data-lfs.git -b dev sight-data-dev
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
     - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
@@ -163,10 +154,7 @@ build:release-windows:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
     - ninja
-    - >
-     curl --retry 3 --location --insecure --location-trusted
-     -s https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data/-/archive/dev/sight-data-dev.zip
-     --output sight-data-dev.zip && unzip -qq sight-data-dev.zip
+    - git clone https://git.ircad.fr/Sight/sight-data-lfs.git -b dev sight-data-dev
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
     - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
