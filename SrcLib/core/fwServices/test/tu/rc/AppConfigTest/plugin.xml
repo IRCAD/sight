@@ -293,14 +293,17 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>parameterReplaceTest</id>
+        <parameters>
+            <param name="data1" default="data1Id" />
+        </parameters>
         <desc>Test configuration for parameter replace</desc>
         <config>
 
-            <object uid="data1Id" type="::fwData::String" />
+            <object uid="${data1}" type="::fwData::String"  />
             <object uid="data2Id" type="::fwData::Boolean" />
 
             <service uid="TestService1Uid" type="::fwServices::ut::TestServiceImplementation">
-                <in key="data1" uid="data1Id" autoConnect="yes" />
+                <in key="data1" uid="${data1}" autoConnect="yes" />
                 <in key="data2" uid="data2Id" autoConnect="yes" />
                 <view wid="view1" />
             </service>
@@ -313,7 +316,7 @@
             </service>
 
             <connect channel="disneyChannel">
-                <signal>data1Id/modified</signal>
+                <signal>${data1}/modified</signal>
                 <slot>TestService2Uid/update</slot>
             </connect>
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,8 +41,9 @@
 
 #include <fwTest/helper/wait.hpp>
 
-#include <filesystem>
 #include <TestService.hpp>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::AppConfigTest );
@@ -1273,6 +1274,15 @@ void AppConfigTest::parameterReplaceTest()
 
     replaceBy = paramsCfg[3]->getAttributeValue("by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replaceBy);
+
+    CPPUNIT_ASSERT(!srv1->getIsUpdated());
+    auto data1 = std::dynamic_pointer_cast< ::fwData::Object >(::fwTools::fwID::getObject("data1Id"));
+    CPPUNIT_ASSERT(data1 != nullptr);
+    auto sig = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
+
+    fwTestWaitMacro(srv1->getIsUpdated());
+    CPPUNIT_ASSERT(srv1->getIsUpdated());
 }
 
 //------------------------------------------------------------------------------
