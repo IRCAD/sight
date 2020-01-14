@@ -303,21 +303,23 @@
             <object uid="data2Id" type="::fwData::Boolean" />
 
             <service uid="TestService1Uid" type="::fwServices::ut::TestServiceImplementation">
-                <in key="data1" uid="${data1}" autoConnect="yes" />
-                <in key="data2" uid="data2Id" autoConnect="yes" />
+                <in key="data1" uid="${data1}" />
+                <in key="data2" uid="data2Id" />
                 <view wid="view1" />
             </service>
 
-            <service uid="TestService2Uid" type="::fwServices::ut::TestServiceImplementation" >
-                <parameter replace="data2" by="data2Id" />
+            <service uid="TestService2Uid" type="::fwServices::SConfigController" >
+                <appConfig id="parameterReplaceTestSubConfig" />
+                <inout key="data1" uid="${data1}" />
+                <inout key="data2" uid="data2Id" />
                 <parameter replace="patient" by="name" />
                 <parameter replace="channel1" by="Channel No5" />
+                <parameter replace="channel2" by="disneyChannel" />
                 <parameter replace="WID_PARENT" by="view1" />
             </service>
 
             <connect channel="disneyChannel">
-                <signal>${data1}/modified</signal>
-                <slot>TestService2Uid/update</slot>
+                <slot>TestService1Uid/update</slot>
             </connect>
 
             <connect channel="Channel No5">
@@ -330,5 +332,41 @@
 
         </config>
     </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>parameterReplaceTestSubConfig</id>
+        <parameters>
+            <param name="data1" />
+            <param name="data2" />
+            <param name="patient" />
+            <param name="channel1" />
+            <param name="channel2" />
+            <param name="WID_PARENT" />
+        </parameters>
+        <desc>Test configuration for parameter replace</desc>
+        <config>
+
+            <object uid="${data1}" type="::fwData::String" src="ref" />
+            <object uid="${data2}" type="::fwData::Boolean" src="ref"  />
+
+            <service uid="TestServiceUid" type="::fwServices::ut::TestServiceImplementation">
+                <in key="data1" uid="${data1}" />
+                <in key="data2" uid="${data2}" />
+                <view wid="${WID_PARENT}" />
+            </service>
+
+            <connect channel="${channel1}">
+                <slot>TestServiceUid/update</slot>
+            </connect>
+
+            <connect channel="${channel2}">
+                <signal>${data1}/modified</signal>
+            </connect>
+
+            <start uid="TestServiceUid" />
+
+        </config>
+    </extension>
+
 
 </plugin>
