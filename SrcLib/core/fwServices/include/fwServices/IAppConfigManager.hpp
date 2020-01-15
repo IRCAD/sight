@@ -32,7 +32,8 @@
 namespace fwServices
 {
 /**
- * @brief   This class provides an interface to manage configurations template.
+ * @brief This class provides an interface to manage configurations template.
+ * @deprecated This class is no longer supported, use ::fwServices::AppConfigManager.
  */
 class FWSERVICES_CLASS_API IAppConfigManager : public ::fwTools::Object
 {

@@ -58,13 +58,13 @@ ConfigLauncher::~ConfigLauncher()
 
 //------------------------------------------------------------------------------
 
-void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& config,
-                                 const ::fwServices::IService::sptr& service)
+void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& _config,
+                                 const ::fwServices::IService::sptr& _service)
 {
     ::fwServices::IService::ConfigType srvCfg;
-    const ::fwServices::IService::ConfigType* curConfig = &config;
+    const ::fwServices::IService::ConfigType* curConfig = &_config;
 
-    const ::fwServices::IService::ConfigType& oldConfig = config;
+    const ::fwServices::IService::ConfigType& oldConfig = _config;
     SLM_ASSERT("There must be only one <appConfig/> element.", oldConfig.count("appConfig") == 1 );
 
     const ::fwServices::IService::ConfigType& appConfig = oldConfig.get_child("appConfig");
@@ -90,7 +90,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
         const std::string strOptional = itCfg->second.get<std::string>("<xmlattr>.optional", "no");
         const bool optional           = strOptional == "yes" ? true : false;
 
-        auto obj = service->getInOut< ::fwData::Object>(key);
+        auto obj = _service->getInOut< ::fwData::Object>(key);
         if(optional)
         {
             m_optionalInputs[key] = uid;
@@ -144,14 +144,14 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 
 //------------------------------------------------------------------------------
 
-void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
-                                 const FieldAdaptorType& optReplaceMap )
+void ConfigLauncher::startConfig(::fwServices::IService::sptr _srv,
+                                 const FieldAdaptorType& _optReplaceMap )
 {
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
-    FieldAdaptorType replaceMap(optReplaceMap);
+    FieldAdaptorType replaceMap(_optReplaceMap);
 
     // Generate generic UID
-    const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( srv->getID() );
+    const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( _srv->getID() );
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
     for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
@@ -168,7 +168,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
     // Whitout that, the data is considered as null.
     for(const auto& [key, uid] : m_optionalInputs)
     {
-        auto obj = srv->getInOut< ::fwData::Object >(key);
+        auto obj = _srv->getInOut< ::fwData::Object >(key);
         if(obj)
         {
             m_appConfigManager->addExistingDeferredObject(obj, uid);
