@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -138,23 +138,23 @@ private:
         VR_SHADOWS
     } VREffectType;
 
-    /// Starts the service initializes scene objects.
-    virtual void starting() override;
-
-    /// Cleans up memory.
-    virtual void stopping() override;
-
-    /// Does nothing.
-    virtual void updating() override;
+    /// Returns proposals to connect service slots to associated object signals.
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Configures the service.
     virtual void configuring() override;
 
+    /// Starts the service initializes scene objects.
+    virtual void starting() override;
+
+    /// Does nothing.
+    virtual void updating() override;
+
     /// Retrieves the current transfer function.
     virtual void swapping(const KeyType& key) override;
 
-    /// Returns proposals to connect service slots to associated object signals.
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    /// Cleans up memory.
+    virtual void stopping() override;
 
     /// Updates the transfer function applied to the volume.
     void updateVolumeTF();

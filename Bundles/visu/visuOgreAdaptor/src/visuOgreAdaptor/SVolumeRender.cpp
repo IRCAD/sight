@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -97,6 +97,20 @@ SVolumeRender::~SVolumeRender() noexcept
 
 //-----------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );
+    connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG,
+                      s_UPDATE_CLIPPING_BOX_SLOT );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::configuring()
 {
     this->configureParams();
@@ -124,49 +138,6 @@ void SVolumeRender::configuring()
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::updateVolumeTF()
-{
-    this->getRenderService()->makeCurrent();
-    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
-
-    ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
-    {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
-
-        m_gpuVolumeTF->updateTexture(tf);
-
-        if(m_preIntegratedRendering)
-        {
-            m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
-        }
-
-        m_volumeRenderer->updateVolumeTF();
-
-        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-        {
-            this->updateVolumeIllumination();
-        }
-    }
-
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );
-    connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG,
-                      s_UPDATE_CLIPPING_BOX_SLOT );
-
-    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -244,6 +215,30 @@ void SVolumeRender::starting()
 
 //-----------------------------------------------------------------------------
 
+void SVolumeRender::updating()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SVolumeRender::swapping(const KeyType& key)
+{
+    this->getRenderService()->makeCurrent();
+
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
+    if (key == s_VOLUME_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+        m_helperVolumeTF.setOrCreateTF(tf, image);
+
+        this->updateVolumeTF();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::stopping()
 {
     this->getRenderService()->makeCurrent();
@@ -285,26 +280,31 @@ void SVolumeRender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updating()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SVolumeRender::swapping(const KeyType& key)
+void SVolumeRender::updateVolumeTF()
 {
     this->getRenderService()->makeCurrent();
+    std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    if (key == s_VOLUME_TF_INOUT)
+    ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
     {
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
-        m_helperVolumeTF.setOrCreateTF(tf, image);
+        ::fwData::mt::ObjectReadLock tfLock(tf);
 
-        this->updateVolumeTF();
+        m_gpuVolumeTF->updateTexture(tf);
+
+        if(m_preIntegratedRendering)
+        {
+            m_preIntegrationTable.tfUpdate(tf, m_volumeRenderer->getSamplingRate());
+        }
+
+        m_volumeRenderer->updateVolumeTF();
+
+        if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+        {
+            this->updateVolumeIllumination();
+        }
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
