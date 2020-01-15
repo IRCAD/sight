@@ -202,8 +202,10 @@ void SVolumeRender::starting()
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
+    ::fwData::mt::ObjectReadLock imageLock(image);
     const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
-    if (isValid)
+    imageLock.unlock();
+    if(isValid)
     {
         this->newImage();
     }
@@ -221,15 +223,15 @@ void SVolumeRender::updating()
 
 //------------------------------------------------------------------------------
 
-void SVolumeRender::swapping(const KeyType& key)
+void SVolumeRender::swapping(const KeyType& _key)
 {
-    this->getRenderService()->makeCurrent();
-
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    if (key == s_VOLUME_TF_INOUT)
+    if(_key == s_VOLUME_TF_INOUT)
     {
+        this->getRenderService()->makeCurrent();
+
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
         m_helperVolumeTF.setOrCreateTF(tf, image);
 
@@ -248,7 +250,6 @@ void SVolumeRender::stopping()
 
     m_helperVolumeTF.removeTFConnections();
 
-    m_volumeConnection.disconnect();
     delete m_volumeRenderer;
     m_volumeRenderer = nullptr;
 
@@ -311,12 +312,6 @@ void SVolumeRender::updateVolumeTF()
 
 void SVolumeRender::newImage()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-
-    ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
-    SLM_ASSERT("inout '" + s_VOLUME_TF_INOUT + "' is missing", volumeTF);
-
     auto renderService = this->getRenderService();
     {
         if(m_dynamic)
@@ -328,15 +323,15 @@ void SVolumeRender::newImage()
             m_bufferingWorker = std::unique_ptr< ::fwRenderOgre::IGraphicsWorker >(newWorker);
         }
 
-        ::fwData::mt::ObjectReadLock lock(image);
-
         renderService->makeCurrent();
 
-        m_helperVolumeTF.setOrCreateTF(volumeTF, image);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
-        m_gpuVolumeTF->updateTexture(volumeTF);
-
+        ::fwData::mt::ObjectReadLock lock(image);
         ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+
+        this->updateVolumeTF();
     }
 
     this->updateImage();
@@ -346,7 +341,7 @@ void SVolumeRender::newImage()
 
 void SVolumeRender::resetCameraPosition(const ::fwData::Image::csptr& image)
 {
-    if (m_autoResetCamera || image->getField("resetCamera"))
+    if(m_autoResetCamera || image->getField("resetCamera"))
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }

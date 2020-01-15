@@ -151,7 +151,7 @@ private:
     virtual void updating() override;
 
     /// Retrieves the current transfer function.
-    virtual void swapping(const KeyType& key) override;
+    virtual void swapping(const KeyType& _key) override;
 
     /// Cleans up memory.
     virtual void stopping() override;
@@ -331,9 +331,6 @@ private:
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };
-
-    /// Handle connections between the layer and the volume renderer.
-    ::fwCom::helper::SigSlotConnection m_volumeConnection;
 
 };
 
