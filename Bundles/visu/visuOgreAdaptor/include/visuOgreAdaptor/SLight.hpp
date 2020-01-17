@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -157,7 +157,7 @@ public:
     VISUOGREADAPTOR_API virtual void switchOn(bool _on) override final;
 
     /**
-     * @brief Get the theta offset of the light (used for directional light).
+     * @brief Gets the theta offset of the light (used for directional light).
      * @return The theta offset of the light.
      */
     VISUOGREADAPTOR_API virtual float getThetaOffset() const override final;
@@ -169,7 +169,7 @@ public:
     VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override final;
 
     /**
-     * @brief Get the phi offset of the light (used for directional light).
+     * @brief Gets the phi offset of the light (used for directional light).
      * @return The phi offset of the light.
      */
     VISUOGREADAPTOR_API virtual float getPhiOffset() const override final;
