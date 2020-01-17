@@ -26,7 +26,7 @@
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <set>
 #include <vector>
@@ -81,14 +81,14 @@ struct FWRUNTIME_CLASS_API Runtime
      *
      * @param[in]   workingPath a boost path.
      */
-    FWRUNTIME_API void setWorkingPath(const ::boost::filesystem::path& workingPath);
+    FWRUNTIME_API void setWorkingPath(const std::filesystem::path& workingPath);
 
     /**
      * @brief       Get the path where Bundles and share folder are located.
      *
      * @return      a boost path.
      */
-    FWRUNTIME_API ::boost::filesystem::path getWorkingPath() const;
+    FWRUNTIME_API std::filesystem::path getWorkingPath() const;
 
     /**
      * @name    Bundles
@@ -116,7 +116,7 @@ struct FWRUNTIME_CLASS_API Runtime
      *
      * @param[in]   repository  a path that may containing bundles
      */
-    FWRUNTIME_API void addBundles( const ::boost::filesystem::path& repository );
+    FWRUNTIME_API void addBundles( const std::filesystem::path& repository );
 
     /**
      * @brief       Adds all bundle found at the default location.
@@ -327,7 +327,7 @@ struct FWRUNTIME_CLASS_API Runtime
         BundleContainer m_bundles;                        ///< Contains all bundles.
         PluginContainer m_plugins;                        ///< Contains all plugins.
 
-        ::boost::filesystem::path m_workingPath; ///< Path where Bundles and share folder are located.
+        std::filesystem::path m_workingPath; ///< Path where Bundles and share folder are located.
 
         /**
          * @brief   Constructor.

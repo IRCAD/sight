@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,6 @@
 
 #include "fwVideoQt/config.hpp"
 
-#include <boost/filesystem/path.hpp>
-
 #include <QAbstractVideoSurface>
 #include <QCamera>
 #include <QMediaPlayer>
@@ -33,6 +31,8 @@
 #include <QObject>
 #include <QPointer>
 #include <QVideoFrame>
+
+#include <filesystem>
 
 namespace fwVideoQt
 {
@@ -61,7 +61,7 @@ public:
     /// set the new position in the video.
     FWVIDEOQT_API void setPosition(const int64_t position);
 
-    FWVIDEOQT_API void initCameraFile(const ::boost::filesystem::path& videoPath);
+    FWVIDEOQT_API void initCameraFile(const std::filesystem::path& videoPath);
 
     FWVIDEOQT_API void initCameraStream(const std::string& strVideoUrl);
 

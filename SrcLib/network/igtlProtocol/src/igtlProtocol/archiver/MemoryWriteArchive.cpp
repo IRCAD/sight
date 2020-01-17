@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,9 +27,10 @@
 #include <archive_entry.h>
 
 #include <boost/date_time.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/iostreams/stream.hpp>
+
+#include <filesystem>
 
 namespace igtlProtocol
 {
@@ -37,7 +38,7 @@ namespace archiver
 {
 
 MemoryArchiveSink::MemoryArchiveSink(struct archive* archive,
-                                     const ::boost::filesystem::path& path) :
+                                     const std::filesystem::path& path) :
     m_archive(archive),
     m_path(path)
 {
@@ -167,14 +168,14 @@ void MemoryWriteArchive::writeArchive()
 
 //-----------------------------------------------------------------------------
 
-bool MemoryWriteArchive::createDir(const ::boost::filesystem::path& path)
+bool MemoryWriteArchive::createDir(const std::filesystem::path& path)
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::ostream) MemoryWriteArchive::createFile(const ::boost::filesystem::path &path)
+SPTR(std::ostream) MemoryWriteArchive::createFile(const std::filesystem::path& path)
 {
     SPTR(::boost::iostreams::stream<MemoryArchiveSink>) os;
 
@@ -185,8 +186,8 @@ SPTR(std::ostream) MemoryWriteArchive::createFile(const ::boost::filesystem::pat
 
 //-----------------------------------------------------------------------------
 
-void MemoryWriteArchive::putFile(const ::boost::filesystem::path& sourceFile,
-                                 const ::boost::filesystem::path& archiveFile)
+void MemoryWriteArchive::putFile(const std::filesystem::path& sourceFile,
+                                 const std::filesystem::path& archiveFile)
 {
     SPTR(std::ostream)  os;
     std::ifstream is(sourceFile.string().c_str(), std::ios::binary);
@@ -205,7 +206,7 @@ void MemoryWriteArchive::putFile(const ::boost::filesystem::path& sourceFile,
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path MemoryWriteArchive::getArchivePath() const
+const std::filesystem::path MemoryWriteArchive::getArchivePath() const
 {
     return m_archivePath;
 }

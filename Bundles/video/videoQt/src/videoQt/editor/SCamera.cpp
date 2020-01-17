@@ -213,9 +213,9 @@ void SCamera::onChooseFile()
     std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
 
     // Check preferences
-    const ::boost::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
+    const std::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
 
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
@@ -229,14 +229,14 @@ void SCamera::onChooseFile()
     size_t count = 0;
     for(auto& camera : cameras)
     {
-        ::boost::filesystem::path videoPath;
+        std::filesystem::path videoPath;
 
         if(count == 1 && cameras.size() == 2)
         {
             // Try to guess the second stream path for RGBD cameras
             auto file = cameras[0]->getVideoFile();
 
-            if(::boost::filesystem::is_directory(videoDirPreferencePath))
+            if(std::filesystem::is_directory(videoDirPreferencePath))
             {
                 file = videoDirPreferencePath / file;
                 file = file.lexically_normal();
@@ -246,7 +246,7 @@ void SCamera::onChooseFile()
             if(!dir.empty())
             {
                 const auto parentDir = dir.parent_path();
-                const auto curDir    = *(dir.rbegin());
+                const auto curDir    = *(--dir.end());
 
                 const auto findValidImagePath = [&](std::set<std::string> _folders)
                                                 {
@@ -254,13 +254,13 @@ void SCamera::onChooseFile()
                                                     {
                                                         const auto dir = parentDir / leafDir;
 
-                                                        if(::boost::filesystem::exists(dir))
+                                                        if(std::filesystem::exists(dir))
                                                         {
-                                                            ::boost::filesystem::directory_iterator currentEntry(dir);
-                                                            ::boost::filesystem::directory_iterator endEntry;
+                                                            std::filesystem::directory_iterator currentEntry(dir);
+                                                            std::filesystem::directory_iterator endEntry;
                                                             while(currentEntry != endEntry)
                                                             {
-                                                                ::boost::filesystem::path entryPath = *currentEntry;
+                                                                std::filesystem::path entryPath = *currentEntry;
                                                                 if (entryPath.has_stem())
                                                                 {
                                                                     return entryPath;
@@ -273,7 +273,7 @@ void SCamera::onChooseFile()
                                                         }
                                                     }
 
-                                                    return ::boost::filesystem::path();
+                                                    return std::filesystem::path();
                                                 };
 
                 static const std::set<std::string> s_DEPTH_FOLDERS = {{ "d", "D", "depth", "Depth", "DEPTH"}};
@@ -306,13 +306,13 @@ void SCamera::onChooseFile()
 
         if(!videoPath.empty())
         {
-            if(::boost::filesystem::is_directory(videoDirPreferencePath))
+            if(std::filesystem::is_directory(videoDirPreferencePath))
             {
-                const ::boost::filesystem::path videoRelativePath
+                const std::filesystem::path videoRelativePath
                     = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
 
-                const ::boost::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
-                if(::boost::filesystem::exists(concatenatedPath))
+                const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
+                if(std::filesystem::exists(concatenatedPath))
                 {
                     videoPath = videoRelativePath;
                 }

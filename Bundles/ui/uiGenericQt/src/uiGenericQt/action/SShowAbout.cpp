@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwRuntime/operations.hpp>
@@ -89,7 +89,7 @@ void SShowAbout::configuring()
         // Convert the path from a bundle location
         m_fsAboutPath = ::fwRuntime::getBundleResourceFilePath(filename);
 
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAboutPath);
+        m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
         SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
         SLM_TRACE("Filename found '" + filename + "'");
     }
@@ -126,7 +126,7 @@ void SShowAbout::updating( )
     QWebView* htmlView = new QWebView(dialog);
     htmlView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     htmlView->load( url );
-    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl &)), this, SLOT(onUrlClicked(const QUrl &)));
+    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl&)), this, SLOT(onUrlClicked(const QUrl&)));
 #else
     QTextBrowser* htmlView = new QTextBrowser(dialog);
     htmlView->setSource(url);

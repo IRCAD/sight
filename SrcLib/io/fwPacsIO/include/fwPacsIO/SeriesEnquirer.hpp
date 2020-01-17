@@ -31,10 +31,10 @@
 
 #include <fwMemory/BufferObject.hpp>
 
-#include <boost/filesystem/path.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
+
+#include <filesystem>
 
 namespace fwPacsIO
 {
@@ -55,7 +55,7 @@ public:
 
     typedef std::vector< std::string > InstanceUIDContainer;
 
-    typedef std::vector< ::boost::filesystem::path > InstancePathContainer;
+    typedef std::vector< std::filesystem::path > InstancePathContainer;
 
     typedef std::vector< CSPTR(DcmDataset) > DatasetContainer;
 
@@ -191,7 +191,7 @@ protected:
      * @param[in] path File path
      * @return OFTrue on success
      */
-    FWPACSIO_API OFCondition sendStoreRequest(const ::boost::filesystem::path& path);
+    FWPACSIO_API OFCondition sendStoreRequest(const std::filesystem::path& path);
 
     /**
      * @brief Send Store Request
@@ -219,7 +219,7 @@ protected:
     std::string m_moveApplicationTitle;
 
     /// Path where the files must be saved
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 
     /// Progress callback slot
     ProgressCallbackSlotType::sptr m_progressCallback;

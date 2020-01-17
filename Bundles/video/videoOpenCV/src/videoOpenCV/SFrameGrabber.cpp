@@ -41,7 +41,7 @@
 
 #include <fwTools/Type.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -138,19 +138,19 @@ void SFrameGrabber::startCamera()
 
     if (camera->getCameraSource() == ::arData::Camera::FILE)
     {
-        ::boost::filesystem::path file = camera->getVideoFile();
+        std::filesystem::path file = camera->getVideoFile();
 
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
         {
-            const ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
+            const std::filesystem::path videoDir(::arPreferences::getVideoDir());
             file = videoDir / file;
         }
         file = file.lexically_normal();
 
         m_isPaused = false;
 
-        const ::boost::filesystem::path ext = file.extension();
+        const std::filesystem::path ext = file.extension();
 
         if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" || ext.string() == ".bmp" )
         {
@@ -234,7 +234,7 @@ void SFrameGrabber::stopCamera()
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
+void SFrameGrabber::readVideo(const std::filesystem::path& file)
 {
     ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
@@ -402,17 +402,17 @@ void SFrameGrabber::readStream( const ::arData::Camera::csptr _camera)
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const std::string& extension)
+void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
     ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
-    ::boost::filesystem::directory_iterator currentEntry(folder);
-    ::boost::filesystem::directory_iterator endEntry;
+    std::filesystem::directory_iterator currentEntry(folder);
+    std::filesystem::directory_iterator endEntry;
     for(; currentEntry != endEntry; ++currentEntry)
     {
-        ::boost::filesystem::path entryPath = *currentEntry;
+        std::filesystem::path entryPath = *currentEntry;
 
         if (entryPath.extension() == extension)
         {
@@ -427,7 +427,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
     {
         // Find the timestamps of all the images
         double stubTimestamp = 0.;
-        for (const ::boost::filesystem::path& imagePath : m_imageToRead)
+        for (const std::filesystem::path& imagePath : m_imageToRead)
         {
             const std::string imageName = imagePath.filename().string();
             static const std::regex s_TIMESTAMP("[^0-9]*([0-9]{5,})[^0-9]*");
@@ -661,7 +661,7 @@ void SFrameGrabber::grabImage()
     {
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-        const ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
+        const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
         const ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
         ::fwCore::HiResClock::HiResClockType timestamp;

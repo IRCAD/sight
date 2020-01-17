@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -140,7 +140,7 @@ private:
     /**
      * @brief Image path.
      */
-    ::boost::filesystem::path m_fsImgPath;
+    std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

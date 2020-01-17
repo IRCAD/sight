@@ -29,7 +29,7 @@
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwJobs
 {

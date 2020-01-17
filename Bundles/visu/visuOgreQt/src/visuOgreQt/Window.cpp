@@ -53,6 +53,22 @@ static inline ::fwRenderOgre::interactor::IInteractor::Modifier convertModifiers
 
 // ----------------------------------------------------------------------------
 
+static inline std::optional<QPoint> getCursorPosition(const QWindow* const _w)
+{
+    const auto globalCursorPosition = QCursor::pos();
+    const auto widgetCursorPosition = _w->mapFromGlobal(globalCursorPosition);
+
+    std::optional<QPoint> res;
+    if(_w->geometry().contains(widgetCursorPosition))
+    {
+        res = widgetCursorPosition;
+    }
+
+    return res;
+}
+
+// ----------------------------------------------------------------------------
+
 int Window::m_counter = 0;
 
 // ----------------------------------------------------------------------------
@@ -318,6 +334,10 @@ void Window::keyPressEvent(QKeyEvent* e)
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = e->key();
 
+    auto cursorPos = getCursorPosition(this);
+    info.x = cursorPos ? cursorPos.value().x() : 0;
+    info.y = cursorPos ? cursorPos.value().y() : 0;
+
     Q_EMIT interacted(info);
 }
 
@@ -329,6 +349,10 @@ void Window::keyReleaseEvent(QKeyEvent* e)
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = e->key();
+
+    auto cursorPos = getCursorPosition(this);
+    info.x = cursorPos ? cursorPos.value().x() : 0;
+    info.y = cursorPos ? cursorPos.value().y() : 0;
 
     Q_EMIT interacted(info);
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,8 +30,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
+#include <filesystem>
 #include <QAbstractVideoSurface>
 #include <QCameraViewfinderSettings>
 #include <QVideoSurfaceFormat>
@@ -53,9 +52,9 @@ Player::~Player()
 
 //-----------------------------------------------------------------------------
 
-void Player::initCameraFile(const ::boost::filesystem::path& videoPath)
+void Player::initCameraFile(const std::filesystem::path& videoPath)
 {
-    FW_RAISE_IF("Invalid video path '"+videoPath.string()+"'", !::boost::filesystem::exists(videoPath));
+    FW_RAISE_IF("Invalid video path '"+videoPath.string()+"'", !std::filesystem::exists(videoPath));
 
     m_mediaPlayer = new QMediaPlayer(0, QMediaPlayer::VideoSurface);
 

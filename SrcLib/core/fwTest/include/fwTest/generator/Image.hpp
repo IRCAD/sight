@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,11 +60,11 @@ public:
      * @param origin    vector of image origin
      * @param type      image type
      */
-    FWTEST_API static void generateImage(::fwData::Image::sptr image,
-                                         ::fwData::Image::SizeType size,
-                                         std::vector<double> spacing,
-                                         std::vector<double> origin,
-                                         ::fwTools::Type type);
+    [[deprecated("It will be removed in sight 22.0")]] FWTEST_API static void generateImage(::fwData::Image::sptr image,
+                                                                                            ::fwData::Image::SizeType size,
+                                                                                            std::vector<double> spacing,
+                                                                                            std::vector<double> origin,
+                                                                                            ::fwTools::Type type);
 
     /**
      * @brief Generate an image with the given informations. Buffer is filled with 0.

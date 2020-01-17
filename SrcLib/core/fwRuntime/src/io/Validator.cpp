@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 //#include <ios_base.h> not necessary on win32
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 #include <libxml/xmlversion.h>
 #ifndef LIBXML_SCHEMAS_ENABLED
     #warning "Error libxml schemas disabled"
@@ -44,7 +44,7 @@ namespace io
 
 //------------------------------------------------------------------------------
 
-Validator::Validator( const Validator &validator )
+Validator::Validator( const Validator& validator )
 {
     m_xsd_content         = validator.m_xsd_content;
     m_schemaParserContext = validator.m_schemaParserContext;
@@ -53,18 +53,18 @@ Validator::Validator( const Validator &validator )
 
 //------------------------------------------------------------------------------
 
-Validator::Validator( const std::string & buffer )
+Validator::Validator( const std::string& buffer )
 {
     m_xsd_content = buffer;
 }
 
 //------------------------------------------------------------------------------
 
-Validator::Validator( const boost::filesystem::path & path )
+Validator::Validator( const std::filesystem::path& path )
 {
     std::string strPath( path.string() );
     // Checks the path validity.
-    if( ::boost::filesystem::exists(path) == false || ::boost::filesystem::is_directory(path) )
+    if( std::filesystem::exists(path) == false || std::filesystem::is_directory(path) )
     {
         throw RuntimeException( strPath + ": is not a valid path to an xml schema file." );
     }
@@ -102,7 +102,7 @@ void Validator::initializeContext()
 
     if ( !m_schemaParserContext )
     {
-        if (!(m_schemaParserContext = SchemaParserCtxtSptr (
+        if (!(m_schemaParserContext = SchemaParserCtxtSptr(
                   xmlSchemaNewParserCtxt(m_xsd_content.c_str()),
                   xmlSchemaFreeParserCtxt)
               ) )
@@ -116,7 +116,7 @@ void Validator::initializeContext()
     // Load XML schema content
     if (!m_schema)
     {
-        m_schema = SchemaSptr ( xmlSchemaParse(m_schemaParserContext.get()), xmlSchemaFree );
+        m_schema = SchemaSptr( xmlSchemaParse(m_schemaParserContext.get()), xmlSchemaFree );
     }
     if (!m_schema)
     {
@@ -133,22 +133,22 @@ void Validator::initializeContext()
 
 //------------------------------------------------------------------------------
 
-bool Validator::validate( const boost::filesystem::path & xmlFile )
+bool Validator::validate( const std::filesystem::path& xmlFile )
 {
     int result;
 
     initializeContext();
 
-    xmlDocPtr xmlDoc = xmlParseFile ( xmlFile.string().c_str () );
+    xmlDocPtr xmlDoc = xmlParseFile( xmlFile.string().c_str() );
     if (xmlDoc == NULL)
     {
         throw std::ios_base::failure("Unable to parse the XML file " + xmlFile.string() );
     }
-    xmlNodePtr xmlRoot = xmlDocGetRootElement (xmlDoc);
-    if (xmlXIncludeProcessTreeFlags (xmlRoot,XML_PARSE_NOBASEFIX) == -1)
+    xmlNodePtr xmlRoot = xmlDocGetRootElement(xmlDoc);
+    if (xmlXIncludeProcessTreeFlags(xmlRoot, XML_PARSE_NOBASEFIX) == -1)
     {
         xmlFreeDoc(xmlDoc);
-        throw std::ios_base::failure(std::string ("Unable to manage xinclude !"));
+        throw std::ios_base::failure(std::string("Unable to manage xinclude !"));
     }
 
     if(!m_schemaValidContext)
@@ -160,7 +160,7 @@ bool Validator::validate( const boost::filesystem::path & xmlFile )
 
     xmlFreeDoc(xmlDoc);
 
-    if ( result !=0 )
+    if ( result != 0 )
     {
         OSLM_WARN("Validator::validation NOK, xml = " << xmlFile.string() );
         OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() );
@@ -185,7 +185,7 @@ bool Validator::validate( xmlNodePtr node )
 
     result = xmlSchemaValidateOneElement( m_schemaValidContext.get(), node );
 
-    if ( result !=0 )
+    if ( result != 0 )
     {
         xmlBufferPtr buffer = xmlBufferCreate();
         xmlNodeDump( buffer, node->doc, node, 1, 1 );
@@ -200,9 +200,9 @@ bool Validator::validate( xmlNodePtr node )
 
 //------------------------------------------------------------------------------
 
-void Validator::ErrorHandler( void * userData, xmlErrorPtr error )
+void Validator::ErrorHandler( void* userData, xmlErrorPtr error )
 {
-    Validator   * validator = (Validator*) userData;
+    Validator* validator = (Validator*) userData;
 
     validator->m_errorLog << "At line " << error->line << ": " << error->message;
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,10 +36,6 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <boost/assign/std/vector.hpp>
-
-using namespace ::boost::assign;
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::SeriesDBTest );
 
@@ -48,6 +44,8 @@ namespace fwMedDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void SeriesDBTest::setUp()
 {
     // Set up context before running a test.
@@ -55,6 +53,8 @@ void SeriesDBTest::setUp()
     const int version = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
     FwCoreNotUsedMacro(version);
 }
+
+//------------------------------------------------------------------------------
 
 void SeriesDBTest::tearDown()
 {
@@ -65,8 +65,7 @@ void SeriesDBTest::tearDown()
 
 void SeriesDBTest::propertiesTest()
 {
-    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                    ("values");
+    const ::DataCampHelper::PropertiesNameType dataProperties = { "fields", "values" };
 
     ::fwMedData::SeriesDB::sptr obj = ::fwMedData::SeriesDB::New();
     ::fwMedData::SeriesDB::ContainerType vectSeries;

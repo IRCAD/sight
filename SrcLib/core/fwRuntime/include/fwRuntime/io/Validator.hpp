@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_IO_VALIDATOR_HPP__
-#define __FWRUNTIME_IO_VALIDATOR_HPP__
+#pragma once
 
-#include <string>
-#include <sstream>
+#include "fwRuntime/config.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
+
 #include <libxml/tree.h>
 #include <libxml/xmlschemastypes.h>
 
-#include "fwRuntime/config.hpp"
+#include <sstream>
+#include <string>
 
 namespace fwRuntime
 {
@@ -38,17 +38,14 @@ namespace fwRuntime
 namespace io
 {
 
-
-
 /**
  * @brief   Implements an XML validator.
- * @struct  Validator
  *
- * @warning Potential Bug : class Validator can generate bug (infinite loop) when used with other Validator class instance.
- * It seems that this class use a static ivar to save schemaValidationContext. If your call a instance of an visitor this ivar should not be
+ * @warning Potential Bug : class Validator can generate bug (infinite loop) when used with other Validator class
+ * instance.
+ * It seems that this class use a static ivar to save schemaValidationContext. If your call a instance of an visitor
+ * this ivar should not be
  * directly well positionned. So the recommandation is to construct Validator-Use it-destry it and never store him
- * @date    2007-2009
- *
  */
 struct Validator
 {
@@ -60,7 +57,7 @@ struct Validator
      *
      * @param   validator to be copied
      */
-    FWRUNTIME_API Validator( const Validator &validator );
+    FWRUNTIME_API Validator( const Validator& validator );
 
     /**
      * @brief   Constructor
@@ -69,7 +66,7 @@ struct Validator
      *
      * @param   schema  a string containing the XML schema
      */
-    FWRUNTIME_API Validator( const std::string & schema );
+    FWRUNTIME_API Validator( const std::string& schema );
 
     /**
      * @brief   Constructor
@@ -78,7 +75,7 @@ struct Validator
      *
      * @param   path    a path to the xml schema file to load
      */
-    FWRUNTIME_API Validator( const boost::filesystem::path & path );
+    FWRUNTIME_API Validator( const std::filesystem::path& path );
 
     /**
      * @brief   Destructor
@@ -104,7 +101,7 @@ struct Validator
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    FWRUNTIME_API bool validate( const boost::filesystem::path & xmlFile );
+    FWRUNTIME_API bool validate( const std::filesystem::path& xmlFile );
 
     /**
      * @brief   Validates the given xml node.
@@ -122,7 +119,6 @@ struct Validator
      */
     FWRUNTIME_API std::string getXsdContent();
 
-
     private:
 
         void initializeContext();
@@ -138,16 +134,10 @@ struct Validator
         SchemaSptr m_schema;
         SchemaValidCtxtSptr m_schemaValidContext;
 
-        static void ErrorHandler( void * userData, xmlErrorPtr error );
+        static void ErrorHandler( void* userData, xmlErrorPtr error );
 
 };
-
-
 
 } // namespace io
 
 } // namespace fwRuntime
-
-
-
-#endif /*__FWRUNTIME_IO_VALIDATOR_HPP__*/

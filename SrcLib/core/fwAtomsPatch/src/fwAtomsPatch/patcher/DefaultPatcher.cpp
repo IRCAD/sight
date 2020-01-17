@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
+#include "fwAtomsPatch/patcher/DefaultPatcher.hpp"
 
 #include "fwAtomsPatch/helper/functions.hpp"
 #include "fwAtomsPatch/infos/log.hpp"
 #include "fwAtomsPatch/IPatch.hpp"
 #include "fwAtomsPatch/ISemanticPatch.hpp"
 #include "fwAtomsPatch/IStructuralPatch.hpp"
-#include "fwAtomsPatch/patcher/DefaultPatcher.hpp"
 #include "fwAtomsPatch/patcher/registry/macros.hpp"
 #include "fwAtomsPatch/SemanticPatchDB.hpp"
 #include "fwAtomsPatch/StructuralPatchDB.hpp"
@@ -36,7 +36,6 @@
 
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
-
 
 namespace fwAtomsPatch
 {
@@ -59,9 +58,9 @@ DefaultPatcher::~DefaultPatcher()
 //----------------------------------------------------------------------------
 
 ::fwAtoms::Object::sptr DefaultPatcher::transformObject(::fwAtoms::Object::sptr object,
-                                                        const std::string &context,
-                                                        const std::string &currentVersion,
-                                                        const std::string &targetVersion)
+                                                        const std::string& context,
+                                                        const std::string& currentVersion,
+                                                        const std::string& targetVersion)
 {
     m_object         = object;
     m_context        = context;
@@ -91,7 +90,6 @@ DefaultPatcher::~DefaultPatcher()
 
     return obj;
 }
-
 
 //----------------------------------------------------------------------------
 
@@ -223,7 +221,6 @@ DefaultPatcher::~DefaultPatcher()
         newBase                    = ::fwAtoms::Blob::New(blob->getBufferObject());
     }
 
-
     return newBase;
 }
 
@@ -279,12 +276,10 @@ DefaultPatcher::~DefaultPatcher()
     if(previous)
     {
         // Get new version of the object.
-        fwAtomsPatch::LinkDescriptor::VersionIDType currentInfos;
-        bool success;
         const std::string& classname = ::fwAtomsPatch::helper::getClassname(current);
         const std::string& version   = ::fwAtomsPatch::helper::getVersion(current);
 
-        ::boost::tie(currentInfos,success) = m_versionsGraph->getLinkedVersion(
+        auto [currentInfos, success] = m_versionsGraph->getLinkedVersion(
             m_currentVersion, m_targetVersion,
             std::make_pair(classname, version) );
 
@@ -387,4 +382,3 @@ bool DefaultPatcher::isKnown(const ::fwAtoms::Base::sptr& base)
 } //  namespace patcher
 
 } //  namespace fwAtomsPatch
-

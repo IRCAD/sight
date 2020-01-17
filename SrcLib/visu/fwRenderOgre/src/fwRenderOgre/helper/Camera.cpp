@@ -123,14 +123,25 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(const ::arData::Camera& _calibrati
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, const float _pixelPoint[3])
+::Ogre::Vector2 Camera::convertFromWindowToViewportSpace(const ::Ogre::Camera& _camera,
+                                                         int _renderWindowX, int _renderWindowY)
 {
-    const ::Ogre::Viewport* viewport = _camera.getViewport();
+    const auto* const vp = _camera.getViewport();
+    const int height     = vp->getActualHeight();
+    const int width      = vp->getActualWidth();
+    const int left       = vp->getActualLeft();
+    const int top        = vp->getActualTop();
 
-    const float x = _pixelPoint[0]/static_cast<float>(viewport->getActualWidth()) * 2.f - 1.f;
-    const float y = -(_pixelPoint[1]/static_cast<float>(viewport->getActualHeight()) * 2.f - 1.f);
-    const float z = _pixelPoint[2] * 2.f - 1.f;
-    const ::Ogre::Vector3 ndcCoordinates(x, y, z);
+    return ::Ogre::Vector2(static_cast<float>(_renderWindowX - left) / static_cast<float>(width),
+                           static_cast<float>(_renderWindowY - top) / static_cast<float>(height));
+}
+
+//-----------------------------------------------------------------------------
+
+::Ogre::Vector3 Camera::convertFromScreenToViewSpace(const ::Ogre::Camera& _camera, const ::Ogre::Vector3& _viewportPos)
+{
+    ::Ogre::Vector3 ndcCoordinates = _viewportPos * 2.f - 1.f;
+    ndcCoordinates.y              *= -1.f;
 
     ::Ogre::Vector4 clippingCoordinatePixel;
     if(_camera.getProjectionType() == ::Ogre::ProjectionType::PT_PERSPECTIVE)
@@ -156,6 +167,32 @@ Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, con
     const ::Ogre::Vector4 result = inversedCombinedMat * clippingCoordinatePixel;
 
     return result.xyz();
+}
+
+//-----------------------------------------------------------------------------
+
+::Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, int _screenX, int _screenY)
+{
+    const ::Ogre::Vector2 vpPt = convertFromWindowToViewportSpace(_camera, _screenX, _screenY);
+    return convertFromScreenToViewSpace(_camera, ::Ogre::Vector3(vpPt.x, vpPt.y, 0.f));
+}
+
+//-----------------------------------------------------------------------------
+
+::Ogre::Vector3 Camera::convertPixelToViewSpace(const ::Ogre::Camera& _camera, const float _pixelPoint[3])
+{
+    ::Ogre::Vector3 pixelPt(_pixelPoint);
+
+    const ::Ogre::Viewport* viewport = _camera.getViewport();
+
+    const ::Ogre::Vector3 vpSize(static_cast<float>(viewport->getActualWidth()),
+                                 static_cast<float>(viewport->getActualHeight()), 1.f);
+    const ::Ogre::Vector3 vpPosition(static_cast<float>(viewport->getActualLeft()),
+                                     static_cast<float>(viewport->getActualTop()), 0.f);
+
+    pixelPt = (pixelPt - vpPosition) / vpSize;
+
+    return convertFromScreenToViewSpace(_camera, pixelPt);
 }
 
 } // namespace helper

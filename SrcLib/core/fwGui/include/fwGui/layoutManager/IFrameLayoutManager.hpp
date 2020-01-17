@@ -30,7 +30,7 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <functional>
 #include <list>
@@ -95,7 +95,7 @@ public:
         /// Frame name.
         std::string m_name;
         /// Frame icon.
-        ::boost::filesystem::path m_iconPath;
+        std::filesystem::path m_iconPath;
         /// Frame minimum size (min width and min height)
         std::pair< int, int >            m_minSize;
         /// Frame style

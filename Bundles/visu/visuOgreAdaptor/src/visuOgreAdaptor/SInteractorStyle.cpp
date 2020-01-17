@@ -56,6 +56,9 @@ SInteractorStyle::SInteractorStyle() noexcept
     newSlot( s_PICK_SLOT, &::visuOgreAdaptor::SInteractorStyle::picked, this );
 
     m_sigPicked = newSignal< PointClickedSigType >( s_PICKED_SIG );
+
+    FW_DEPRECATED_MSG("SInteractorStyle will be removed in sight 21.0. Look at the service's"
+                      " documentation to know which adaptor can replace it.", "21.0");
 }
 
 //------------------------------------------------------------------------------
@@ -176,6 +179,7 @@ void SInteractorStyle::setInteractorStyle()
         }
         else if(m_movementStyle == "Negato2D")
         {
+            FW_DEPRECATED_MSG("::visuOgreAdaptor::SNegato2DCamera should be used instead SInteractorStyle.", "21.0");
             m_moveInteractor = std::make_shared< ::fwRenderOgre::interactor::Negato2DInteractor >();
             layer->addInteractor(m_moveInteractor);
             m_moveInteractor->setSceneID(this->getSceneManager()->getName());

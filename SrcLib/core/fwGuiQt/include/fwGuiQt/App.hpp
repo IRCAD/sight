@@ -41,7 +41,7 @@ class FWGUIQT_CLASS_API App : public QApplication
 Q_OBJECT
 
 public:
-    FWGUIQT_API App(int & argc, char ** argv, bool guiEnabled);
+    FWGUIQT_API App(int& argc, char** argv, bool guiEnabled);
 
 public Q_SLOTS:
     void aboutToQuit();

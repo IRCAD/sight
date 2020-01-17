@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,15 +26,15 @@
 #include <fwCore/spyLog.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/regex.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/regex.h>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcdicdir.h>
 #include <dcmtk/dcmnet/diutil.h>
+
+#include <filesystem>
+#include <regex>
 
 namespace fwDcmtkIO
 {
@@ -43,19 +43,20 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-bool DicomDir::readDicomDir(const ::boost::filesystem::path& root, std::vector<std::string>& dicomFiles)
+bool DicomDir::readDicomDir(const std::filesystem::path& root, std::vector<std::string>& dicomFiles)
 {
-    SLM_ASSERT("You must specify a valid directory.", ::boost::filesystem::is_directory(root));
+    SLM_ASSERT("You must specify a valid directory.", std::filesystem::is_directory(root));
 
     bool result = false;
 
-    ::boost::filesystem::path dicomDirPath = root / "dicomdir";
-    bool dicomdirExists = ::boost::filesystem::exists(dicomDirPath) && !::boost::filesystem::is_directory(dicomDirPath);
+    std::filesystem::path dicomDirPath = root / "dicomdir";
+    bool dicomdirExists                = std::filesystem::exists(dicomDirPath) && !std::filesystem::is_directory(
+        dicomDirPath);
 
     if(!dicomdirExists)
     {
         dicomDirPath   = root / "DICOMDIR";
-        dicomdirExists = ::boost::filesystem::exists(dicomDirPath) && !::boost::filesystem::is_directory(dicomDirPath);
+        dicomdirExists = std::filesystem::exists(dicomDirPath) && !std::filesystem::is_directory(dicomDirPath);
     }
 
     if(dicomdirExists)
@@ -89,8 +90,8 @@ bool DicomDir::readDicomDir(const ::boost::filesystem::path& root, std::vector<s
                             {
                                 if (fileRecord->findAndGetOFStringArray(DCM_ReferencedFileID, tmpString).good())
                                 {
-                                    ::boost::filesystem::path realPath = DicomDir::getRealFilename(root,
-                                                                                                   tmpString.c_str());
+                                    std::filesystem::path realPath = DicomDir::getRealFilename(root,
+                                                                                               tmpString.c_str());
                                     dicomFiles.push_back(realPath.string());
                                 }
                                 else
@@ -153,10 +154,10 @@ std::string DicomDir::createRegex(std::string filename)
 
 // ----------------------------------------------------------------------------
 
-::boost::filesystem::path DicomDir::getRealFilename(
-    const ::boost::filesystem::path& root, const std::string& filename)
+std::filesystem::path DicomDir::getRealFilename(
+    const std::filesystem::path& root, const std::string& filename)
 {
-    ::boost::filesystem::path result = root;
+    std::filesystem::path result = root;
     std::vector<std::string> elements;
     ::boost::split(elements, filename, ::boost::is_any_of("/\\"));
 
@@ -164,9 +165,9 @@ std::string DicomDir::createRegex(std::string filename)
     for(std::vector<std::string>::iterator it = elements.begin(); it != elements.end(); ++it)
     {
         std::string current = *it;
-        ::boost::regex regex(DicomDir::createRegex(current));
+        std::regex regex(DicomDir::createRegex(current));
 
-        ::boost::filesystem::directory_iterator dirIt(result), dirItEnd;
+        std::filesystem::directory_iterator dirIt(result), dirItEnd;
         std::string child;
         bool matchFound = false;
 
@@ -174,7 +175,7 @@ std::string DicomDir::createRegex(std::string filename)
         for (; dirIt != dirItEnd; ++dirIt)
         {
             child = dirIt->path().filename().string();
-            if (::boost::regex_match(child, regex))
+            if (std::regex_match(child, regex))
             {
                 FW_RAISE_IF("There is more than one file matching the uppercase filename stored "
                             "in the dicom instance: \""+filename+"\"", matchFound);

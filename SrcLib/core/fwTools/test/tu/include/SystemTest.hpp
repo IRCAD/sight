@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,43 +20,28 @@
  *
  ***********************************************************************/
 
-#include <string>
+#pragma once
 
-#include "fwMedDataTools/functions.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include "FunctionsTest.hpp"
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataTools::ut::FunctionsTest );
-
-namespace fwMedDataTools
+namespace fwTools
 {
-
 namespace ut
 {
 
-void FunctionsTest::setUp()
+class SystemTest : public CPPUNIT_NS::TestFixture
 {
-}
+CPPUNIT_TEST_SUITE( SystemTest );
+CPPUNIT_TEST( genTempFilenameTest );
+CPPUNIT_TEST_SUITE_END();
 
-void FunctionsTest::tearDown()
-{
-}
+public:
+    // interface
+    void setUp();
+    void tearDown();
 
-void FunctionsTest::generatePatientIdTest()
-{
-    const std::string id = ::fwMedDataTools::generatePatientId();
-    CPPUNIT_ASSERT(64 >= id.length());
-    CPPUNIT_ASSERT(0 < id.length());
-}
-
-void FunctionsTest::generateStudyInstanceUidTest()
-{
-    const std::string id = ::fwMedDataTools::generateStudyInstanceUid();
-    CPPUNIT_ASSERT(16 == id.length());
-}
+    void genTempFilenameTest();
+};
 
 } // namespace ut
-
-} // namespace fwMedDataTools
-
+} // namespace fwTools

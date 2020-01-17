@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -52,7 +52,7 @@ namespace ioVtkGdcm
  * connected to a SJobBar).
  *
  * @section Slots Slots
- * - \b readFolder(::boost::filesystem::path) : read the given file
+ * - \b readFolder(std::filesystem::path) : read the given file
  *
  * @section XML XML Configuration
  *
@@ -76,7 +76,7 @@ public:
     typedef std::vector< ExtensionType > ExtensionsType;
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
-    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
     /**
      * @brief   constructor
      *
@@ -121,7 +121,7 @@ private:
 
     void notificationOfDBUpdate();
 
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
+    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& dicomDir);
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

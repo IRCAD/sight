@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,8 @@
 #include <fwCore/base.hpp>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
+
+#include <regex>
 
 namespace fwTools
 {
@@ -39,7 +40,7 @@ namespace fwTools
     {
         OSLM_WARN(
             "The string length is too short (<8) : " << dateStr <<
-            ". The string is initialized with \"19000101\".");
+                ". The string is initialized with \"19000101\".");
     }
     else if ( dateStr.size() > 8 )
     {
@@ -48,9 +49,9 @@ namespace fwTools
     }
     else
     {
-        ::boost::regex isNumber("[0-9]+");
+        std::regex isNumber("[0-9]+");
 
-        if( ::boost::regex_match(dateStr, isNumber) )
+        if( std::regex_match(dateStr, isNumber) )
         {
             resDate = ::boost::gregorian::date( ::boost::gregorian::from_undelimited_string( dateStr ) );
         }
@@ -58,7 +59,7 @@ namespace fwTools
         {
             OSLM_WARN(
                 "The string not contains 8 numbers : " << dateStr <<
-                ". The string is initialized with \"19000101\".");
+                    ". The string is initialized with \"19000101\".");
         }
     }
     return resDate;
@@ -87,8 +88,8 @@ namespace fwTools
     }
     else
     {
-        ::boost::regex isNumber("[0-9]+");
-        if( ::boost::regex_match(timeStr, isNumber) )
+        std::regex isNumber("[0-9]+");
+        if( std::regex_match(timeStr, isNumber) )
         {
             std::uint16_t h = ::boost::lexical_cast< std::uint16_t > ( timeStr.substr(0, 2) );
             std::uint16_t m = ::boost::lexical_cast< std::uint16_t > ( timeStr.substr(2, 2) );

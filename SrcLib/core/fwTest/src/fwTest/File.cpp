@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,18 @@
  *
  ***********************************************************************/
 
-
 #include "fwTest/File.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
+
 #include <fstream>
 
 namespace fwTest
 {
 
-bool File::contentEquals(const ::boost::filesystem::path &lfile, const ::boost::filesystem::path &rfile)
+//------------------------------------------------------------------------------
+
+bool File::contentEquals(const std::filesystem::path& lfile, const std::filesystem::path& rfile)
 {
     using namespace std;
     const streambuf::int_type eof = streambuf::traits_type::eof();
@@ -37,8 +39,8 @@ bool File::contentEquals(const ::boost::filesystem::path &lfile, const ::boost::
     std::ifstream lstream(lfile.c_str());
     std::ifstream rstream(rfile.c_str());
 
-    streambuf * lbuf = lstream.rdbuf();
-    streambuf * rbuf = rstream.rdbuf();
+    streambuf* lbuf = lstream.rdbuf();
+    streambuf* rbuf = rstream.rdbuf();
 
     char lchar, rchar;
     while (true)
@@ -61,4 +63,3 @@ bool File::contentEquals(const ::boost::filesystem::path &lfile, const ::boost::
 }
 
 }  //namespace fwTest
-

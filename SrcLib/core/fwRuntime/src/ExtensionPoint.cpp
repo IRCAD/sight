@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@ namespace fwRuntime
 //------------------------------------------------------------------------------
 
 ExtensionPoint::ExtensionPoint( const std::shared_ptr< Bundle > bundle, const std::string& id,
-                                const ::boost::filesystem::path& schema ) :
+                                const std::filesystem::path& schema ) :
     BundleElement( bundle ),
     m_id( id ),
     m_schema( schema )
@@ -54,7 +54,7 @@ std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
     {
         try
         {
-            const ::boost::filesystem::path schemaPath = getBundle()->getResourcesLocation() / m_schema;
+            const std::filesystem::path schemaPath = getBundle()->getResourcesLocation() / m_schema;
             OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
             m_validator = std::shared_ptr< io::Validator >( new io::Validator(schemaPath) );
         }

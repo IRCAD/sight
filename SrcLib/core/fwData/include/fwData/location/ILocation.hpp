@@ -25,7 +25,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwData
 {
@@ -45,7 +45,7 @@ class FWDATA_CLASS_API ILocation : public ::fwData::Object
 public:
     fwCoreClassMacro(ILocation, ::fwData::Object);
 
-    typedef ::boost::filesystem::path PathType;
+    typedef std::filesystem::path PathType;
     typedef std::vector<PathType> VectPathType;
 
 protected:

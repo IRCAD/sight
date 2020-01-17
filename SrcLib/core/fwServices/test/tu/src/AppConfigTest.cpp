@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,10 +41,9 @@
 
 #include <fwTest/helper/wait.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
 #include <TestService.hpp>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::AppConfigTest );
@@ -73,8 +72,8 @@ void AppConfigTest::setUp()
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultBundles();
 
-    ::boost::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
-    CPPUNIT_ASSERT(::boost::filesystem::exists(location));
+    std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
+    CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     runtime->addBundles(location);
     CPPUNIT_ASSERT(runtime->bundlesBegin() != runtime->bundlesEnd());
@@ -1245,36 +1244,82 @@ void AppConfigTest::parameterReplaceTest()
 {
     m_appConfigMgr = this->launchAppConfigMgr("parameterReplaceTest", true);
 
-    unsigned int i = 0;
-    fwTools::Object::sptr gnsrv1;
+    unsigned int i = 0, j = 0;
+    ::fwTools::Object::sptr gnsrv1, gnsrv2;
 
     // Not really elegant, but we have to "guess" how it is replaced
     while (gnsrv1 == nullptr && i++ < 200)
     {
-        gnsrv1 = ::fwTools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService2Uid");
+        gnsrv1 = ::fwTools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService1Uid");
     }
 
     auto srv1 = ::fwServices::ut::TestService::dynamicCast(gnsrv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
 
-    auto adaptedConfig = srv1->getConfiguration();
+    gnsrv2 = ::fwTools::fwID::getObject("parameterReplaceTest_" + std::to_string(i) + "_TestService2Uid");
+    auto srv2          = ::fwServices::IService::dynamicCast(gnsrv2);
+    auto adaptedConfig = srv2->getConfiguration();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
     const std::vector< ConfigType > paramsCfg = adaptedConfig->find("parameter");
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), paramsCfg.size());
 
     std::string replaceBy;
 
-    replaceBy = paramsCfg[0]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_data2Id"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("patient"), paramsCfg[0]->getAttributeValue("replace"));
+    CPPUNIT_ASSERT_EQUAL(std::string("name"), paramsCfg[0]->getAttributeValue("by"));
 
     replaceBy = paramsCfg[1]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("name"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replaceBy);
 
     replaceBy = paramsCfg[2]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_disneyChannel"), replaceBy);
 
     replaceBy = paramsCfg[3]->getAttributeValue("by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replaceBy);
+
+    ::fwTools::Object::sptr gnsubsrv;
+    // Not really elegant, but we have to "guess" how it is replaced
+    while (gnsubsrv == nullptr && j++ < 200)
+    {
+        gnsubsrv = ::fwTools::fwID::getObject( "parameterReplaceTestSubConfig_"  + std::to_string(j) +
+                                               "_TestServiceUid");
+    }
+
+    auto srvInSubConfig = ::fwServices::ut::TestService::dynamicCast(gnsubsrv);
+    CPPUNIT_ASSERT(srvInSubConfig != nullptr);
+
+    CPPUNIT_ASSERT(srvInSubConfig->isStarted());
+
+    auto data1 = srv1->getInput< ::fwData::Object >("data1");
+    CPPUNIT_ASSERT(data1 != nullptr);
+    CPPUNIT_ASSERT_EQUAL(std::string("data1Id"), data1->getID());
+
+    auto data2 = srv1->getInput< ::fwData::Object >("data2");
+    CPPUNIT_ASSERT(data2 != nullptr);
+
+    auto data1SubSrv = srvInSubConfig->getInput< ::fwData::Object >("data1");
+    CPPUNIT_ASSERT(data1 == data1SubSrv);
+
+    auto data2SubSrv = srvInSubConfig->getInput< ::fwData::Object >("data2");
+    CPPUNIT_ASSERT(data2 == data2SubSrv);
+
+    // check connections through the subconfig channel
+    CPPUNIT_ASSERT(!srv1->getIsUpdated());
+
+    auto sig1 = data1SubSrv->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+    sig1->asyncEmit();
+
+    fwTestWaitMacro(srv1->getIsUpdated());
+    CPPUNIT_ASSERT(srv1->getIsUpdated());
+
+    CPPUNIT_ASSERT(!srvInSubConfig->getIsUpdated());
+
+    auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+    sig2->asyncEmit();
+
+    fwTestWaitMacro(srvInSubConfig->getIsUpdated());
+    CPPUNIT_ASSERT(srvInSubConfig->getIsUpdated());
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,30 +24,31 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/split.hpp>
 
+#include <gdcmAttribute.h>
+#include <gdcmDirectory.h>
+#include <gdcmFile.h>
+#include <gdcmFilename.h>
+#include <gdcmFilenameGenerator.h>
 #include <gdcmImageHelper.h>
 #include <gdcmIPPSorter.h>
-#include <gdcmFilename.h>
-#include <gdcmTesting.h>
-#include <gdcmSystem.h>
-#include <gdcmTrace.h>
-#include <gdcmDirectory.h>
-#include <gdcmScanner.h>
 #include <gdcmReader.h>
-#include <gdcmIPPSorter.h>
-#include <gdcmFilenameGenerator.h>
-#include <gdcmAttribute.h>
-#include <gdcmFile.h>
+#include <gdcmScanner.h>
+#include <gdcmSystem.h>
+#include <gdcmTesting.h>
+#include <gdcmTrace.h>
 
 namespace vtkGdcmIO
 {
 namespace helper
 {
 
-void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPath, std::vector<std::string>& dicomFiles)
+//------------------------------------------------------------------------------
+
+void DicomSearch::searchRecursivelyFiles(const std::filesystem::path& dirPath, std::vector<std::string>& dicomFiles)
 {
     std::vector<std::string> vecStr;
     std::string strIgnoreFile = ".zip|.txt|.htm|.html|.xml|.exe|.gz|.dir|.gif|.jpeg|.jpg|dicomdir|.DS_Store";
@@ -56,13 +57,13 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
 
     std::string lowerFilename;
     std::string filename;
-    for( ::boost::filesystem::recursive_directory_iterator it(dirPath);
-         it != ::boost::filesystem::recursive_directory_iterator(); ++it)
+    for( std::filesystem::recursive_directory_iterator it(dirPath);
+         it != std::filesystem::recursive_directory_iterator(); ++it)
     {
-        if(!::boost::filesystem::is_directory(*it))
+        if(!std::filesystem::is_directory(*it))
         {
             lowerFilename = filename = it->path().string();
-            std::transform ( lowerFilename.begin(), lowerFilename.end(), lowerFilename.begin(), tolower );
+            std::transform( lowerFilename.begin(), lowerFilename.end(), lowerFilename.begin(), tolower );
             if(DicomSearch::compare( lowerFilename, &vecStr) )
             {
                 try
@@ -80,7 +81,7 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
                 }
                 catch (std::exception& e)
                 {
-                    OSLM_ERROR ( "Try with another reader for this file : " << filename.c_str());
+                    OSLM_ERROR( "Try with another reader for this file : " << filename.c_str());
                 }
             }
         }
@@ -89,7 +90,7 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
 
 //------------------------------------------------------------------------------
 
-bool DicomSearch::compare(std::string & _strOrgin, std::vector<std::string> * vecStr)
+bool DicomSearch::compare(std::string& _strOrgin, std::vector<std::string>* vecStr)
 {
     bool res = true;
     for (size_t i = 0; i < vecStr->size() && res; ++i)
@@ -103,5 +104,3 @@ bool DicomSearch::compare(std::string & _strOrgin, std::vector<std::string> * ve
 
 } //namespace helper
 } //namespace vtkGdcmIO
-
-

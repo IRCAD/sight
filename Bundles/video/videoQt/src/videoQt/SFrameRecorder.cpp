@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,7 @@
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem.hpp>
-
+#include <filesystem>
 #include <QImage>
 #include <QString>
 
@@ -82,7 +81,7 @@ SFrameRecorder::~SFrameRecorder() noexcept
 
 void SFrameRecorder::starting()
 {
-    ::boost::filesystem::create_directories(m_path);
+    std::filesystem::create_directories(m_path);
 }
 
 //-----------------------------------------------------------------------------

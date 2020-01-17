@@ -32,7 +32,7 @@
 
 #include <fwServices/IController.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace ioPacs
 {

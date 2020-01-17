@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,8 +29,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwZip::ut::ZipTest );
@@ -60,14 +59,14 @@ void ZipTest::commentTest()
 {
     const std::string writerComment = "Example of comment";
 
-    const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
-    ::boost::filesystem::create_directories( dirPath );
-    const ::boost::filesystem::path path        = dirPath / "jambon.zip";
-    const ::boost::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
-    const ::boost::filesystem::path archiveFile = "makao.jpg";
+    const std::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
+    std::filesystem::create_directories( dirPath );
+    const std::filesystem::path path        = dirPath / "jambon.zip";
+    const std::filesystem::path sourceFile  = ::fwTest::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path archiveFile = "makao.jpg";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + sourceFile.string() + "' does not exist",
-                           ::boost::filesystem::exists(sourceFile));
+                           std::filesystem::exists(sourceFile));
 
     SPTR(WriteZipArchive) writer = std::make_shared<WriteZipArchive>(path, writerComment);
     writer->putFile(sourceFile, archiveFile);
@@ -75,7 +74,7 @@ void ZipTest::commentTest()
     SPTR(ReadZipArchive) reader = std::make_shared<ReadZipArchive>(path);
     std::string readerComment = reader->getComment();
 
-    ::boost::filesystem::remove_all( path );
+    std::filesystem::remove_all( path );
 
     CPPUNIT_ASSERT_EQUAL(writerComment, readerComment);
 

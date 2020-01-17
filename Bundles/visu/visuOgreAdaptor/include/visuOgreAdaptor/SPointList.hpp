@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,8 @@ namespace visuOgreAdaptor
  * one of the two.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the points has to be seen or not.
+ * - \b updateVisibility(bool): Sets whether the points are visible or not.
+ * - \b toggleVisibility(): Toggle whether the points are visible or not.
  * - \b update(): Called when the point list is modified.
  *
  * @section XML XML Configuration
@@ -146,6 +147,9 @@ public:
      * @param _isVisible Set to true to show the point list.
      */
     VISUOGREADAPTOR_API void updateVisibility(bool _isVisible);
+
+    /// Toggle the visibility of the point list.
+    VISUOGREADAPTOR_API void toggleVisibility();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals.

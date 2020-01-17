@@ -29,7 +29,7 @@
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
 
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace fwServices
 {

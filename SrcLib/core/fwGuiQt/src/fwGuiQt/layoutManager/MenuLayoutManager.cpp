@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,9 +27,6 @@
 #include "fwGuiQt/container/QtMenuItemContainer.hpp"
 
 #include <fwGui/registry/macros.hpp>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/lambda/lambda.hpp>
 
 #include <QAction>
 #include <QActionGroup>
@@ -187,4 +184,3 @@ void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr 
 
 } // namespace layoutManager
 } // namespace fwGui
-

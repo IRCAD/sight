@@ -22,9 +22,10 @@
 
 #include "fwRenderOgre/picker/IPicker.hpp"
 
-#include <fwRenderOgre/collisionTools/CollisionTools.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/Utils.hpp>
+#include "fwRenderOgre/collisionTools/CollisionTools.hpp"
+#include "fwRenderOgre/helper/Camera.hpp"
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
@@ -67,16 +68,8 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, int, int, std::uint32_t _quer
 bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 {
     const auto* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-    const auto* const vp     = camera->getViewport();
-
-    // Screen to viewport space conversion.
-    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-    const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
-
-    ::Ogre::Ray r = camera->getCameraToViewportRay(vpX, vpY);
-
-    float distance;
-    bool entityFound;
+    const auto vpPos         = helper::Camera::convertFromWindowToViewportSpace(*camera, _x, _y);
+    const ::Ogre::Ray vpRay  = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
 #ifdef SHOW_BOUNDS
     if (m_selectedObject)
@@ -87,8 +80,9 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 
     ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager, _queryMask);
 
-    std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) =
-        tool.raycast(r, _queryMask);
+    float distance(-1.f);
+    bool entityFound(false);
+    std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) = tool.raycast(vpRay, _queryMask);
 
     if (entityFound)
     {

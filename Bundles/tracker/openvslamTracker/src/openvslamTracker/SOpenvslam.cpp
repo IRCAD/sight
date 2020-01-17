@@ -45,8 +45,6 @@
 
 #include <openvslamIO/Helper.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
@@ -489,7 +487,7 @@ void SOpenvslam::setEnumParameter(std::string _val, std::string _key)
 
 void SOpenvslam::loadMap()
 {
-    static ::boost::filesystem::path sDefaultPath("");
+    static std::filesystem::path sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select openvslam map file");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(sDefaultPath) );
@@ -514,7 +512,7 @@ void SOpenvslam::loadMap()
 
 void SOpenvslam::saveMap()
 {
-    static ::boost::filesystem::path sDefaultPath("");
+    static std::filesystem::path sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to save Openvslam map");
@@ -564,7 +562,7 @@ void SOpenvslam::saveMap()
 
 void SOpenvslam::saveTrajectories()
 {
-    static ::boost::filesystem::path sDefaultPath("");
+    static std::filesystem::path sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFolder;
     dialogFolder.setTitle("Choose a folder & name to save trajectories files.");

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,6 @@
 
 #include <fwMedData/Study.hpp>
 
-#include <boost/assign/std/vector.hpp>
-
-using namespace ::boost::assign;
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::StudyTest );
 
@@ -40,6 +36,8 @@ namespace fwMedDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void StudyTest::setUp()
 {
     // Set up context before running a test.
@@ -47,6 +45,8 @@ void StudyTest::setUp()
     const int version = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
     FwCoreNotUsedMacro(version);
 }
+
+//------------------------------------------------------------------------------
 
 void StudyTest::tearDown()
 {
@@ -63,13 +63,13 @@ void StudyTest::propertiesTest()
     const std::string referring_physician_name                = "John Doe";
     const std::string description                             = "description";
     const std::string patient_age                             = "42";
-    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                    ("instance_uid")
-                                                                    ("date")
-                                                                    ("time")
-                                                                    ("referring_physician_name")
-                                                                    ("description")
-                                                                    ("patient_age");
+    const ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
+                                                                  { "instance_uid" },
+                                                                  { "date" },
+                                                                  { "time" },
+                                                                  { "referring_physician_name" },
+                                                                  { "description" },
+                                                                  { "patient_age" } };
 
     ::fwMedData::Study::sptr obj = ::fwMedData::Study::New();
     obj->setInstanceUID(instance_uid);
@@ -89,7 +89,6 @@ void StudyTest::propertiesTest()
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace ut
 } //namespace fwMedDataCamp

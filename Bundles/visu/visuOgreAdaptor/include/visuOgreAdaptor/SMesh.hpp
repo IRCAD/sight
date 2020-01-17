@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,7 +74,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SMesh" >
         <inout key="mesh" uid="..." />
-        <config layer="..." transform="..." materialName="..." shadingMode="gouraud" textureName="..."
+        <config layer="..." transform="..." visible="true" materialName="..." shadingMode="gouraud" textureName="..."
         queryFlags="0x40000000" />
     </service>
    @endcode
@@ -86,6 +86,7 @@ namespace visuOgreAdaptor
  *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
  *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor.
+ *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
  * Either of the following (whether a material is configured in the XML scene or not) :
  *  - \b materialName (optional) : name of the Ogre material, as defined in the ::visuOgreAdaptor::SMaterial you want
  * to be bound to.

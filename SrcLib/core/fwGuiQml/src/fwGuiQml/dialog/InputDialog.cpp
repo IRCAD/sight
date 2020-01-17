@@ -28,8 +28,6 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <QGuiApplication>
 #include <QObject>
 

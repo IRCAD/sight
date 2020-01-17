@@ -24,10 +24,6 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
-#include <boost/assign/list_of.hpp>
-
-using namespace boost::assign;
-
 namespace fwDataTools
 {
 

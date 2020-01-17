@@ -29,9 +29,9 @@
 #include <fwGui/dialog/ILocationDialog.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <filesystem>
 #include <QApplication>
 #include <QFileDialog>
 #include <QString>
@@ -57,11 +57,11 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    QWidget* parent                             = qApp->activeWindow();
-    QString caption                             = QString::fromStdString(this->getTitle());
-    const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
-    QString path                                = QString::fromStdString(defaultPath.string());
-    QString filter                              = this->fileFilters();
+    QWidget* parent                         = qApp->activeWindow();
+    QString caption                         = QString::fromStdString(this->getTitle());
+    const std::filesystem::path defaultPath = this->getDefaultLocation();
+    QString path                            = QString::fromStdString(defaultPath.string());
+    QString filter                          = this->fileFilters();
     ::fwData::location::ILocation::sptr location;
 
     QFileDialog dialog;
@@ -94,10 +94,10 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         if(!files.isEmpty())
         {
             ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
-            std::vector< ::boost::filesystem::path > paths;
+            std::vector< std::filesystem::path > paths;
             for (QString filename : files)
             {
-                ::boost::filesystem::path bpath( filename.toStdString() );
+                std::filesystem::path bpath( filename.toStdString() );
                 paths.push_back(bpath);
             }
             multifiles->setPaths(paths);
@@ -128,7 +128,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         }
         if(!fileName.isNull())
         {
-            ::boost::filesystem::path bpath( fileName.toStdString());
+            std::filesystem::path bpath( fileName.toStdString());
             location = ::fwData::location::SingleFile::New(bpath);
         }
     }
@@ -146,7 +146,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
 
         if(!dir.isNull())
         {
-            ::boost::filesystem::path bpath( dir.toStdString()  );
+            std::filesystem::path bpath( dir.toStdString()  );
             location = ::fwData::location::Folder::New(bpath);
         }
     }

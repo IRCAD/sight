@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,10 @@
  *
  ***********************************************************************/
 
-#include "fwVtkIO/vtk.hpp"
 #include "fwVtkIO/VtiImageReader.hpp"
+
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
+#include "fwVtkIO/vtk.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -32,18 +33,17 @@
 #include <fwJobs/Observer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
+#include <vtkImageData.h>
 #include <vtkSmartPointer.h>
 #include <vtkXMLImageDataReader.h>
-#include <vtkImageData.h>
 
 fwDataIOReaderRegisterMacro( ::fwVtkIO::VtiImageReader );
-
 
 namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-VtiImageReader::VtiImageReader(::fwDataIO::reader::IObjectReader::Key key) :
+VtiImageReader::VtiImageReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Vti image reader"))
 {
@@ -77,7 +77,7 @@ void VtiImageReader::read()
         [&](vtkObject* caller, long unsigned int, void*)
         {
             auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
-            m_job->doneWork(filter->GetProgress() * 100);
+            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
@@ -88,7 +88,7 @@ void VtiImageReader::read()
     reader->UpdateInformation();
     reader->PropagateUpdateExtent();
 
-    vtkDataObject *obj = reader->GetOutput();
+    vtkDataObject* obj = reader->GetOutput();
     vtkImageData* img  = vtkImageData::SafeDownCast(obj);
 
     m_job->finish();
@@ -98,7 +98,7 @@ void VtiImageReader::read()
     {
         ::fwVtkIO::fromVTKImage( img, pImage);
     }
-    catch( std::exception &e)
+    catch( std::exception& e)
     {
         FW_RAISE("VTIImage to fwData::Image failed "<<e.what());
     }

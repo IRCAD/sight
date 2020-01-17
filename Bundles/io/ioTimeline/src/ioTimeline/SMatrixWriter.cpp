@@ -35,8 +35,8 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
+#include <filesystem>
+#include <fstream>
 #include <iomanip>
 
 namespace ioTimeline
@@ -95,7 +95,7 @@ void SMatrixWriter::starting()
 
 void SMatrixWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );

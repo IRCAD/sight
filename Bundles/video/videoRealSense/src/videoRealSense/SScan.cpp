@@ -50,11 +50,10 @@
 
 #include <fwTools/Type.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <librealsense2/rs_advanced_mode.hpp>
 
 #include <algorithm>
+#include <fstream>
 
 namespace fwClock = ::fwCore::HiResClock;
 
@@ -466,7 +465,7 @@ void SScan::startCamera()
 
     ::rs2::config cfg;
 
-    m_pipe = ::boost::make_unique< ::rs2::pipeline>();
+    m_pipe = std::make_unique< ::rs2::pipeline>();
 
     ::rs2::pipeline_profile profile;
     try
@@ -675,7 +674,7 @@ void SScan::record()
     bool erase = true;
 
     // If file already exists, should we erase it ?
-    if(::boost::filesystem::exists(m_recordingFileName))
+    if(std::filesystem::exists(m_recordingFileName))
     {
         ::fwGui::dialog::MessageDialog warnDial;
         warnDial.setIcon(::fwGui::dialog::IMessageDialog::WARNING);

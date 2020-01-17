@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,9 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/numeric/conversion/cast.hpp>
+
+#include <filesystem>
 
 #include <fstream>
 
@@ -77,10 +78,10 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-PrivateTagVecType loadPrivateTags(const ::boost::filesystem::path& tagsPath)
+PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
 {
     SLM_ASSERT("File '" + tagsPath.string() + "' must exists",
-               ::boost::filesystem::exists(tagsPath) && ::boost::filesystem::is_regular_file(tagsPath));
+               std::filesystem::exists(tagsPath) && std::filesystem::is_regular_file(tagsPath));
 
     PrivateTagVecType privateTags;
     auto csvStream = std::ifstream(tagsPath.string());
@@ -104,4 +105,3 @@ PrivateTagVecType loadPrivateTags(const ::boost::filesystem::path& tagsPath)
 
 } // namespace helper
 } // namespace fwGdcmIO
-

@@ -38,7 +38,7 @@
 
 #include <fwTools/Type.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace videoVLC
 {
@@ -297,8 +297,8 @@ void SFrameGrabber::startCamera()
         case ::arData::Camera::FILE:
         {
             // Path of the video file stored in the camera description
-            ::boost::filesystem::path videoPath(camera->getVideoFile());
-            ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
+            std::filesystem::path videoPath(camera->getVideoFile());
+            std::filesystem::path videoDir(::arPreferences::getVideoDir());
 
             // For compatibility with old calibration with absolute path
             if (!videoPath.is_absolute())
@@ -325,7 +325,7 @@ void SFrameGrabber::startCamera()
         case ::arData::Camera::STREAM:
         {
             // Path of the video file stored in the camera description
-            ::boost::filesystem::path videoPath(camera->getStreamUrl());
+            std::filesystem::path videoPath(camera->getStreamUrl());
 
             // Create a new Media
             m_vlcMedia = libvlc_media_new_location(m_vlcInstance, videoPath.string().c_str());

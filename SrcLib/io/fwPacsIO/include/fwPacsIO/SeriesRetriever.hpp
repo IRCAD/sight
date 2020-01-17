@@ -29,10 +29,10 @@
 
 #include <fwTools/ProgressAdviser.hpp>
 
-#include <boost/filesystem/path.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scp.h>
+
+#include <filesystem>
 
 namespace fwPacsIO
 {
@@ -85,7 +85,7 @@ protected:
     virtual OFCondition handleSTORERequest(T_DIMSE_Message* incomingMsg, T_ASC_PresentationContextID presID);
 
     /// Path where the files must be saved
-    ::boost::filesystem::path m_path;
+    std::filesystem::path m_path;
 
     /// Progress callback slot
     ProgressCallbackSlotType::sptr m_progressCallback;

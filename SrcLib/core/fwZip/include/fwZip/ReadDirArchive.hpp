@@ -27,8 +27,7 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <fstream>
 
 namespace fwZip
@@ -45,13 +44,13 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const ::boost::filesystem::path& archive)
+    static sptr New(const std::filesystem::path& archive)
     {
         return std::make_shared< ReadDirArchive >(archive);
     }
 
     /// Constructors. Initializes archive path.
-    FWZIP_API ReadDirArchive( const ::boost::filesystem::path& archive );
+    FWZIP_API ReadDirArchive( const std::filesystem::path& archive );
 
     /// Destructor. Close automatically last input file stream.
     FWZIP_API ~ReadDirArchive();
@@ -63,12 +62,12 @@ public:
      *
      * @throw ::fwZip::exception::Read if file doesn't exist in archive.
      */
-    FWZIP_API SPTR(std::istream) getFile(const ::boost::filesystem::path& path) override;
+    FWZIP_API SPTR(std::istream) getFile(const std::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
      */
-    FWZIP_API const ::boost::filesystem::path getArchivePath() const override;
+    FWZIP_API const std::filesystem::path getArchivePath() const override;
 
     //------------------------------------------------------------------------------
 
@@ -79,7 +78,7 @@ public:
 
 protected:
 
-    ::boost::filesystem::path m_archive;
+    std::filesystem::path m_archive;
 };
 
 }

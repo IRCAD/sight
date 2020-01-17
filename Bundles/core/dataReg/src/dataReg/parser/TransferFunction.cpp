@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::TransferFunction, ::fwData::TransferFunction );
 
 namespace dataReg
@@ -93,4 +92,3 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
 
 } // namespace parser
 } // namespace dataReg
-

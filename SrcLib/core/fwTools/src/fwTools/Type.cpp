@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -249,7 +249,7 @@ Type::ToolBase::ToolBase(const std::type_info& typeinfo) :
 
 //-----------------------------------------------------------------------------
 
-std::string Type::ToolBase::toString(::boost::any value) const
+std::string Type::ToolBase::toString(std::any value) const
 {
     FwCoreNotUsedMacro(value);
     SLM_ASSERT("unable to convert an unspecified type value", 0);

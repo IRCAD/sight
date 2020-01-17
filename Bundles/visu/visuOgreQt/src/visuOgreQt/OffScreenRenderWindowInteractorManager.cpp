@@ -35,8 +35,6 @@
 #include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreTextureManager.h>
 
-#include <boost/make_unique.hpp>
-
 //-----------------------------------------------------------------------------
 
 fwRenderOgreRegisterOffscreenMgrMacro(::visuOgreQt::OffScreenRenderWindowInteractorManager,
@@ -92,7 +90,7 @@ void OffScreenRenderWindowInteractorManager::createContainer( ::fwGui::container
 
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
-    m_offscreenSurface = ::boost::make_unique<QOffscreenSurface>();
+    m_offscreenSurface = std::make_unique<QOffscreenSurface>();
     m_glContext        = OpenGLContext::getGlobalOgreOpenGLContext();
     this->makeCurrent();
 

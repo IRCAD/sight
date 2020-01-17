@@ -35,6 +35,8 @@ namespace interactor
 
 /**
  * @brief Manages the camera movements (zoom/displacement) over a 2D negato
+ *
+ * @deprecated Use @ref ::visuOgreAdaptor::SNegato2DCamera for negato interactions. Removed in sight 21.0
  */
 class FWRENDEROGRE_CLASS_API Negato2DInteractor :
     public ::fwRenderOgre::interactor::IMovementInteractor
@@ -43,6 +45,7 @@ class FWRENDEROGRE_CLASS_API Negato2DInteractor :
 public:
 
     /// Constructor
+    [[deprecated("Removed in sight 21.0")]]
     FWRENDEROGRE_API Negato2DInteractor();
 
     /// Behaviour on mouseMoveEvent

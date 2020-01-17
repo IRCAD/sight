@@ -28,7 +28,7 @@
 
 #include <fwCamp/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <istream>
 #include <type_traits>
@@ -311,7 +311,7 @@ public:
      */
     FWMEMORY_API void setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& factory,
                                         SizeType size,
-                                        const ::boost::filesystem::path& sourceFile            = "",
+                                        const std::filesystem::path& sourceFile                = "",
                                         ::fwMemory::FileFormatType format                      = ::fwMemory::OTHER,
                                         const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New()
                                         );

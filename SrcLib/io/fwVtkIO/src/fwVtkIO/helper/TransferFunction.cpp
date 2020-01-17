@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ void TransferFunction::toBWVtkLookupTable(
     SLM_TRACE_FUNC();
 
     // Configures basic parameters
-    lt->Allocate( size, size );
+    lt->Allocate( static_cast<int>(size), static_cast<int>(size) );
     lt->SetScaleToLinear();
 
     lt->SetRampToLinear();

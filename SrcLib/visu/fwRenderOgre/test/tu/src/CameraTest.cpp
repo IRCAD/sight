@@ -202,8 +202,8 @@ void CameraTest::convertPixelToWorldSpace()
                                                         nullptr);
     renderWindow->setVisible(false);
     renderWindow->setAutoUpdated(false);
-    auto* const camera   = sceneManager->createCamera("TestCamera");
-    auto* const viewport = renderWindow->addViewport(camera);
+    auto* const camera = sceneManager->createCamera("TestCamera");
+    renderWindow->addViewport(camera);
 
     camera->setNearClipDistance(1);
     camera->setFarClipDistance(10);
@@ -218,16 +218,15 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f * static_cast<float>(viewport->getActualWidth());
-        const ::Ogre::Real fY = static_cast<float>(viewport->getActualHeight()) - (ndcPoint.y+1.f) * 0.5f *
-                                static_cast<float>(viewport->getActualHeight());
+        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f;
+        const ::Ogre::Real fY = 1.f - (ndcPoint.y+1.f) * 0.5f;
         const ::Ogre::Real fZ = (ndcPoint.z+1.f) * 0.5f;
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
+        const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
         const ::Ogre::Vector3 unprojectedPoint =
-            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, point);
+            ::fwRenderOgre::helper::Camera::convertFromScreenToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);
     }
@@ -239,16 +238,15 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
         // /!\ in openGl, y coordinate begin from the upper left corner, we need to set him from the lower left corner.
-        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f * static_cast<float>(viewport->getActualWidth());
-        const ::Ogre::Real fY = static_cast<float>(viewport->getActualHeight()) - (ndcPoint.y+1.f) * 0.5f *
-                                static_cast<float>(viewport->getActualHeight());
+        const ::Ogre::Real fX = (ndcPoint.x+1.f) * 0.5f;
+        const ::Ogre::Real fY = 1.f - (ndcPoint.y+1.f) * 0.5f;
         const ::Ogre::Real fZ = (ndcPoint.z+1.f) * 0.5f;
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const float point[3]                   = {viewportPoint[0], viewportPoint[1], viewportPoint[2]};
+        const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
         const ::Ogre::Vector3 unprojectedPoint =
-            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, point);
+            ::fwRenderOgre::helper::Camera::convertFromScreenToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);
     }

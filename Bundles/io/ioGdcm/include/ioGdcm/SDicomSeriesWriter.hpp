@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -100,7 +100,7 @@ protected:
 
 private:
     /// Save the selected Dicom series
-    void saveDicomSeries( const ::boost::filesystem::path folder,
+    void saveDicomSeries( const std::filesystem::path folder,
                           const CSPTR(::fwMedData::DicomSeries)& series ) const;
 
     /// Signal emitted when a job is created

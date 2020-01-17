@@ -51,11 +51,32 @@ public:
                                                                   float _far);
 
     /**
-     * @brief Convert pixel coordinates to view space coordinates. This ignores the z coordinate as we have no usefull
-     * information on it
-     * @param _camera[in] camera of the layer where the pixel is picked
-     * @param _pixelPoint[in] point in pixel coordinates to convert
+     * @brief Returns a render window's position relatively to the camera's viewport.
+     * @param[in] _camera viewport in which the coordinates are transformed.
+     * @param[in] _renderWindowX width position in the render window.
+     * @param[in] _renderWindowY height position in the render window.
+     *
+     * @return screen position relatively to the viewport.
      */
+    static FWRENDEROGRE_API ::Ogre::Vector2 convertFromWindowToViewportSpace(const ::Ogre::Camera& _camera,
+                                                                             int _renderWindowX, int _renderWindowY);
+
+    /**
+     * @brief Converts relative viewport coordinates to view space coordinates.
+     * @param[in] _camera defines the view in which the coordinates are transformed.
+     * @param[in] _viewportPos viewport point.
+     */
+    static FWRENDEROGRE_API ::Ogre::Vector3 convertFromScreenToViewSpace(const ::Ogre::Camera& _camera,
+                                                                         const ::Ogre::Vector3& _viewportPos);
+
+    /// Convenience function, casts the inputs and
+    /// calls @ref convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&)
+    static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
+                                                                    int _screenX, int _screenY);
+
+    /// @deprecated, call @ref convertFromScreenToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.
+    /// Removed in sight 21.0
+    [[deprecated("Use convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
     static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
                                                                     const float _pixelPoint[3]);
 

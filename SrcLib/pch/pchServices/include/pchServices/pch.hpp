@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __PCHSERVICES_PCH_HPP__
-#define __PCHSERVICES_PCH_HPP__
-
 // Cause an internal compiler error on windows...
+#pragma once
+
 #ifndef _WIN32
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
@@ -36,8 +35,6 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
-
-#endif // __PCHSERVICES_PCH_HPP__

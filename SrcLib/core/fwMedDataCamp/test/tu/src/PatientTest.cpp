@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,6 @@
 
 #include <fwMedData/Patient.hpp>
 
-#include <boost/assign/std/vector.hpp>
-
-using namespace ::boost::assign;
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::PatientTest );
 
@@ -40,6 +36,8 @@ namespace fwMedDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void PatientTest::setUp()
 {
     // Set up context before running a test.
@@ -47,6 +45,8 @@ void PatientTest::setUp()
     const int version = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
     FwCoreNotUsedMacro(version);
 }
+
+//------------------------------------------------------------------------------
 
 void PatientTest::tearDown()
 {
@@ -61,11 +61,7 @@ void PatientTest::propertiesTest()
     const std::string patient_id                              = "42";
     const std::string birth_date                              = "19830214";
     const std::string sex                                     = "M";
-    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                    ("name")
-                                                                    ("patient_id")
-                                                                    ("birth_date")
-                                                                    ("sex");
+    const ::DataCampHelper::PropertiesNameType dataProperties = { "fields", "name", "patient_id", "birth_date", "sex" };
 
     ::fwMedData::Patient::sptr obj = ::fwMedData::Patient::New();
     obj->setName(name);

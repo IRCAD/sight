@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_UT_DICOMANONYMIZERTEST_HPP__
-#define __FWGDCMIO_UT_DICOMANONYMIZERTEST_HPP__
+#pragma once
 
 #include <fwServices/macros.hpp>
 
-#include <gdcmTag.h>
-#include <gdcmDataSet.h>
-
 #include <cppunit/extensions/HelperMacros.h>
+
+#include <gdcmDataSet.h>
+#include <gdcmTag.h>
 
 namespace fwGdcmIO
 {
@@ -55,8 +54,8 @@ public:
     void anonymizeDICOMTest();
 
 private:
-    void testDICOMFolder(const ::boost::filesystem::path& srcPath);
-    void testAnonymizedFile(const ::boost::filesystem::path& filename);
+    void testDICOMFolder(const std::filesystem::path& srcPath);
+    void testAnonymizedFile(const std::filesystem::path& filename);
 
     std::set< std::string > m_uidContainer;
 
@@ -64,5 +63,3 @@ private:
 
 } // namespace ut
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_UT_DICOMANONYMIZERTEST_HPP__

@@ -47,8 +47,6 @@
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <sstream>
 #include <string>
 

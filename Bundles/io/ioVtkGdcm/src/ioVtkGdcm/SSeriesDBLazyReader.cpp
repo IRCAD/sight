@@ -68,7 +68,7 @@ SSeriesDBLazyReader::~SSeriesDBLazyReader() noexcept
 
 void SSeriesDBLazyReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
@@ -131,7 +131,7 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SSeriesDBLazyReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SSeriesDBLazyReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
     SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBLazyReader::sptr myLoader = ::vtkGdcmIO::SeriesDBLazyReader::New();

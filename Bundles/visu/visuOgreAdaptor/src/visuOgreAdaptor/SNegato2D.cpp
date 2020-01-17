@@ -22,8 +22,7 @@
 
 #include "visuOgreAdaptor/SNegato2D.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
+#include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
@@ -37,7 +36,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <OgreCamera.h>
 #include <OgreSceneNode.h>
 #include <OgreTextureManager.h>
 
@@ -45,6 +43,8 @@
 
 namespace visuOgreAdaptor
 {
+
+static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 
 const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
@@ -63,9 +63,11 @@ SNegato2D::SNegato2D() noexcept :
 {
     m_currentSliceIndex = {0.f, 0.f, 0.f};
 
-    newSlot(s_NEWIMAGE_SLOT, &SNegato2D::newImage, this);
+    newSlot(s_NEWIMAGE_SLOT, &SNegato2D::newImageDeprecatedSlot, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
+
+    m_sliceIndexChangedSig = this->newSignal<SliceIndexChangedSignalType>(s_SLICE_INDEX_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -155,10 +157,6 @@ void SNegato2D::starting()
     m_plane = std::make_unique< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
                                                         m_orientation, m_3DOgreTexture, m_filtering);
 
-    ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
-    m_cameraNode              = cam->getParentSceneNode();
-    cam->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
-
     this->newImage();
 }
 
@@ -187,6 +185,7 @@ void SNegato2D::stopping()
 
 void SNegato2D::updating()
 {
+    this->newImage();
     this->requestRender();
 }
 
@@ -226,9 +225,9 @@ void SNegato2D::newImage()
         // Retrieves or creates the slice index fields
         ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-        const auto [spacing, _] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
-        this->createPlane( spacing );
-        this->updateCamera();
+        const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
+        this->createPlane(spacing);
+        m_plane->setOriginPosition(origin);
 
         // Update Slice
         const auto axialIndex =
@@ -243,7 +242,6 @@ void SNegato2D::newImage()
             static_cast<int>(frontalIndex),
             static_cast<int>(sagittalIndex)
             );
-        this->changeSliceType(0, m_orientation);
 
         // Update tranfer function in Gpu programs
         this->updateTF();
@@ -254,30 +252,43 @@ void SNegato2D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::changeSliceType(int /*_from*/, int _to)
+void SNegato2D::newImageDeprecatedSlot()
+{
+    FW_DEPRECATED_MSG("The 'newImage' slot will be removed in sight 21.0. Call 'update' instead.", "21.0");
+    this->newImage();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::changeSliceType(int _from, int _to)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
-    this->getRenderService()->makeCurrent();
+    const auto toOrientation   = static_cast<OrientationMode>(_to);
+    const auto fromOrientation = static_cast<OrientationMode>(_from);
 
-    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
-    m_plane->setOriginPosition(imgOrigin);
+    const auto planeOrientation = m_plane->getOrientationMode();
+    const auto newOrientation   = planeOrientation == toOrientation ? fromOrientation :
+                                  planeOrientation == fromOrientation ? toOrientation : planeOrientation;
 
-    OrientationMode newOrientationMode = static_cast<OrientationMode>(_to);
+    if(planeOrientation != newOrientation)
+    {
+        this->getRenderService()->makeCurrent();
 
-    // The orientation update setter will change the fragment shader
-    m_plane->setOrientationMode(newOrientationMode);
-    m_orientation = newOrientationMode;
-    this->updateCamera();
+        m_plane->setOrientationMode(newOrientation);
 
-    // Update threshold if necessary
-    this->updateTF();
+        const auto origin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
+        m_plane->setOriginPosition(origin);
 
-    this->updateShaderSliceIndexParameter();
+        // Update threshold if necessary
+        this->updateTF();
 
-    this->requestRender();
+        this->updateShaderSliceIndexParameter();
+
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -299,6 +310,8 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     };
 
     this->updateShaderSliceIndexParameter();
+
+    m_sliceIndexChangedSig->emit();
 }
 
 //------------------------------------------------------------------------------
@@ -336,8 +349,8 @@ void SNegato2D::updateTF()
 ::fwServices::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
 
@@ -353,65 +366,6 @@ void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
     m_plane->setVoxelSpacing(_spacing);
     m_plane->initializePlane();
     m_plane->enableAlpha(m_enableAlpha);
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::updateCamera()
-{
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-    const ::fwData::mt::ObjectReadLock imglock(image);
-
-    this->getRenderService()->makeCurrent();
-
-    ::Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
-    SLM_ASSERT("No default camera found", cam);
-
-    const int renderWindowWidth          = cam->getViewport()->getActualWidth();
-    const int renderWindowHeight         = cam->getViewport()->getActualHeight();
-    const ::Ogre::Real renderWindowRatio = static_cast< ::Ogre::Real >(renderWindowWidth) /
-                                           static_cast< ::Ogre::Real >(renderWindowHeight);
-
-    if( renderWindowWidth == renderWindowHeight )
-    {
-        cam->setOrthoWindow(m_plane->getWidth(), m_plane->getHeight());
-    }
-    else if( renderWindowWidth > renderWindowHeight)
-    {
-        cam->setOrthoWindowHeight(m_plane->getHeight());
-    }
-    else
-    {
-        cam->setOrthoWindowWidth(m_plane->getWidth());
-    }
-    cam->setAspectRatio( renderWindowRatio );
-
-    m_cameraNode->setPosition(::Ogre::Vector3(0, 0, 0));
-    m_cameraNode->resetOrientation();
-
-    const ::Ogre::Vector3 imgOrigin = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image).second;
-    m_cameraNode->translate(imgOrigin);
-
-    switch(m_orientation)
-    {
-        case OrientationMode::X_AXIS:
-            m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(-90.f));
-            m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(-90.f));
-            m_cameraNode->translate(::Ogre::Vector3(-1, m_plane->getHeight()/2, m_plane->getWidth()/2));
-            break;
-        case OrientationMode::Y_AXIS:
-            m_cameraNode->rotate(::Ogre::Vector3(1, 0, 0), ::Ogre::Degree(90.f));
-            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, -1, m_plane->getHeight()/2));
-            break;
-        case OrientationMode::Z_AXIS:
-            m_cameraNode->rotate(::Ogre::Vector3(0, 0, 1), ::Ogre::Degree(180.f));
-            m_cameraNode->rotate(::Ogre::Vector3(0, 1, 0), ::Ogre::Degree(180.f));
-            m_cameraNode->translate(::Ogre::Vector3(m_plane->getWidth()/2, m_plane->getHeight()/2, -1));
-            break;
-    }
-
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

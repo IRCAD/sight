@@ -35,7 +35,7 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwGui
 {
@@ -82,7 +82,7 @@ public:
 
         std::string m_name;
         std::string m_shortcut;
-        ::boost::filesystem::path m_icon;
+        std::filesystem::path m_icon;
         bool m_isCheckable;
         bool m_isRadio;
         ActionType m_type;

@@ -30,11 +30,11 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <librealsense2/rs.hpp>
 
-namespace fs = ::boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace videoRealSense
 {
@@ -352,7 +352,7 @@ private:
      * @brief loadPresets scans "presets" folder and generate the map
      * @param[in] _path: preset path (videoRealSense/rc/presets)
      */
-    void loadPresets(const ::boost::filesystem::path& _path);
+    void loadPresets(const std::filesystem::path& _path);
 
     /**
      * @brief updateAlignment changes the reference frame where all frames will be aligned.

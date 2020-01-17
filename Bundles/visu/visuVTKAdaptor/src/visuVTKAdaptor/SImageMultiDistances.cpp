@@ -46,8 +46,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <boost/assign/std/vector.hpp>
-
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
 #include <vtkAssemblyPath.h>

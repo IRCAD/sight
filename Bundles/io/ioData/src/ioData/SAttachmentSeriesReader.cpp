@@ -44,7 +44,8 @@
 #include <fwTools/UUID.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/filesystem/operations.hpp>
+
+#include <filesystem>
 
 fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::SAttachmentSeriesReader, ::fwMedData::SeriesDB );
 
@@ -53,7 +54,7 @@ namespace ioData
 
 //------------------------------------------------------------------------------
 
-std::string getMediaType(const ::boost::filesystem::path& media)
+std::string getMediaType(const std::filesystem::path& media)
 {
     std::string mediaType;
     std::map<std::string, std::string> mimeMap =
@@ -150,7 +151,7 @@ void SAttachmentSeriesReader::configuring()
 
 void SAttachmentSeriesReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a attachment file" : m_windowTitle);

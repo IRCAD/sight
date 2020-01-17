@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,7 @@
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/Runtime.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwRuntime::ut::RuntimeTest );
@@ -96,7 +95,7 @@ void RuntimeTest::testOperations()
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1", path);
 
     path = ::fwRuntime::getBundleResourcePath("notExistingBundle");
-    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+    CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     // Full path prototype
     path = ::fwRuntime::getBundleResourceFilePath("servicesReg-0.1/plugin.xml");
@@ -106,10 +105,10 @@ void RuntimeTest::testOperations()
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
 
     path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+    CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     path = ::fwRuntime::getBundleResourceFilePath("wrong_version_format-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+    CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     path = ::fwRuntime::getLibraryResourceFilePath("fwLibrary-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
@@ -128,11 +127,10 @@ void RuntimeTest::testOperations()
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
 
     path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle", "plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+    CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwTools
-

@@ -156,15 +156,19 @@ public:
      * @brief Listens to keyboard keys being pressed.
      * @param _key pressed key.
      * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse at the time of the event.
+     * @param _y height coordinate of the mouse at the time of the event.
      */
-    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier _mods);
+    FWRENDEROGRE_API virtual void keyPressEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
 
     /**
      * @brief Listens to keyboard keys being released.
      * @param _key pressed key.
      * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse at the time of the event.
+     * @param _y height coordinate of the mouse at the time of the event.
      */
-    FWRENDEROGRE_API virtual void keyReleaseEvent(int _key, Modifier _mods);
+    FWRENDEROGRE_API virtual void keyReleaseEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
 
     /**
      * @brief Checks if the cursor is inside a layer's viewport.
@@ -172,7 +176,14 @@ public:
      * @param mouseY height coordinate of the mouse in pixels.
      * @param _layer layer on which to check the cursor's belonging.
      */
-    static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer);
+    FWRENDEROGRE_API static bool isInLayer(int _mouseX, int _mouseY, SPTR(Layer) _layer);
+
+    /**
+     * @brief Listen to render window resize events.
+     * @param _width the render window's new width.
+     * @param _height the render window's new height.
+     */
+    FWRENDEROGRE_API virtual void resizeEvent(int _width, int _height);
 
     /** @brief Legacy API, use the equivalent with keyboard modifiers.
      *
@@ -183,8 +194,6 @@ public:
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, int, int, int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void wheelEvent(int, int, int);
-    [[deprecated("Get the viewport dimensions from the layer instead.")]]
-    FWRENDEROGRE_API virtual void resizeEvent(int, int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]
     FWRENDEROGRE_API virtual void keyPressEvent(int);
     [[deprecated("Use the equivalent method with keyboard modifiers.")]]

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include <vector>
-#include <boost/assign/std/vector.hpp>
-
-#include <fwData/GenericFieldBase.hpp>
-#include <cppunit/extensions/HelperMacros.h>
+#include "DataCampHelper.hpp"
 
 #include <fwDataCamp/getObject.hpp>
 
-#include "DataCampHelper.hpp"
+#include <fwData/GenericFieldBase.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include <vector>
 
 namespace DataCampHelper
 {
@@ -73,4 +73,3 @@ void compareObjectPropertyValue(::fwData::Object::sptr obj,
 //------------------------------------------------------------------------------
 
 } // end namespace DataCampHelper
-

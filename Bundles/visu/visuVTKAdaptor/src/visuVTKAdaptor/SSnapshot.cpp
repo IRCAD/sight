@@ -33,8 +33,6 @@
 
 #include <fwVtkIO/vtk.hpp>
 
-#include <boost/filesystem/path.hpp>
-
 #include <vtkActor.h>
 #include <vtkBMPWriter.h>
 #include <vtkImageData.h>
@@ -45,6 +43,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
+
+#include <filesystem>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSnapshot)
 
@@ -123,7 +123,7 @@ void SSnapshot::snapToImage()
 void SSnapshot::snap(std::string filePath)
 {
     SLM_ASSERT("filePath is empty", !filePath.empty());
-    namespace fs = ::boost::filesystem;
+    namespace fs = std::filesystem;
     fs::path pathImageSnap(filePath);
 
     std::string ext = ".jpg";

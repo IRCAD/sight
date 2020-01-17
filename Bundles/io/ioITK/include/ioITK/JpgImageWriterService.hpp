@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -59,14 +59,14 @@ class IOITK_CLASS_API JpgImageWriterService : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceMacro(JpgImageWriterService,  ::fwIO::IWriter);
+    fwCoreServiceMacro(JpgImageWriterService,  ::fwIO::IWriter)
 
     IOITK_API JpgImageWriterService() noexcept;
 
     IOITK_API virtual ~JpgImageWriterService() noexcept;
 
     IOITK_API static void saveImage(
-        const ::boost::filesystem::path& imgPath,
+        const std::filesystem::path& imgPath,
         const CSPTR(::fwData::Image)& img);
 
 protected:

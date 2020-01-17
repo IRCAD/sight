@@ -161,10 +161,8 @@ VersionsGraph::NodeIDType VersionsGraph::getNode(const std::string& name) const
 
 VersionsGraph::EdgeType VersionsGraph::getEdge(const NodeIDType& origin, const NodeIDType& target)
 {
-    EdgeIDType edgeID;
-    bool success = false;
     ::fwCore::mt::ReadLock lock(m_graphMutex);
-    ::boost::tie(edgeID, success) = ::boost::edge(origin, target, m_graph);
+    auto [edgeID, success] = ::boost::edge(origin, target, m_graph);
     OSLM_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
                                              << m_graph[target].getVersionName() << "'.", success);
     return m_graph[edgeID];
@@ -236,10 +234,8 @@ VersionsGraph::EdgeIDType VersionsGraph::createEdge(const EdgeType& edge)
     NodeIDType origin = this->getNode(edge.getOriginVersion());
     NodeIDType target = this->getNode(edge.getTargetVersion());
 
-    EdgeIDType newEdge;
-    bool success = false;
     ::fwCore::mt::ReadLock lock(m_graphMutex);
-    ::boost::tie(newEdge, success) = ::boost::add_edge(origin, target, edge, m_graph);
+    auto [newEdge, success] = ::boost::add_edge(origin, target, edge, m_graph);
 
     OSLM_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
                 "and '" << edge.getTargetVersion() << "'", success);

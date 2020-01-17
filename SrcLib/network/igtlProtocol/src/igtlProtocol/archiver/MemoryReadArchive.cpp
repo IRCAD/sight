@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -153,7 +153,7 @@ MemoryReadArchive::~MemoryReadArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) MemoryReadArchive::getFile(const ::boost::filesystem::path &path)
+SPTR(std::istream) MemoryReadArchive::getFile(const std::filesystem::path& path)
 {
     if (m_streams.find(path.string()) != m_streams.end())
     {
@@ -164,9 +164,9 @@ SPTR(std::istream) MemoryReadArchive::getFile(const ::boost::filesystem::path &p
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path MemoryReadArchive::getArchivePath() const
+const std::filesystem::path MemoryReadArchive::getArchivePath() const
 {
-    return ::boost::filesystem::path("./");
+    return std::filesystem::path("./");
 }
 
 } // namespace archiver

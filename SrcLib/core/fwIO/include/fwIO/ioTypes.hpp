@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,7 @@
 
 #include "fwIO/config.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 #include <vector>
@@ -41,7 +41,7 @@ typedef enum
 } IOPathType;
 
 /// List of paths managed by io services
-typedef std::vector< ::boost::filesystem::path > LocationsType;
+typedef std::vector< std::filesystem::path > LocationsType;
 
 FWIO_API extern const std::string s_DATA_KEY;
 

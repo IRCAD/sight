@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     FWGDCMIO_API ComprehensiveSRIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                    const ::boost::filesystem::path& destinationPath,
+                                    const std::filesystem::path& destinationPath,
                                     bool use3DSR                        = false,
                                     const ::fwLog::Logger::sptr& logger = nullptr,
                                     ProgressCallback progress           = nullptr,

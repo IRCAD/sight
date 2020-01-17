@@ -48,8 +48,7 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arPatchMedicalData::ut::PatchTest );
@@ -132,10 +131,10 @@ std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::Seri
 
 void PatchTest::arPatchMedicalDataTest()
 {
-    const ::boost::filesystem::path file = ::fwTest::Data::dir() /"sight/patch/md_1.jsonz";
+    const std::filesystem::path file = ::fwTest::Data::dir() /"sight/patch/md_1.jsonz";
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
-                           ::boost::filesystem::exists(file));
+                           std::filesystem::exists(file));
 
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSBOOSTIO_READER_HPP__
-#define __FWATOMSBOOSTIO_READER_HPP__
+#pragma once
 
-#include <boost/filesystem/path.hpp>
+#include "fwAtomsBoostIO/config.hpp"
+#include "fwAtomsBoostIO/types.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include "fwAtomsBoostIO/types.hpp"
-#include "fwAtomsBoostIO/config.hpp"
+#include <filesystem>
 
 namespace fwAtoms
 {
@@ -48,8 +47,8 @@ class FWATOMSBOOSTIO_CLASS_API Reader
 public:
 
     FWATOMSBOOSTIO_API SPTR(::fwAtoms::Base) read( const SPTR(::fwZip::IReadArchive)& archive,
-                                                   const ::boost::filesystem::path& rootFilename = "root.json",
-                                                   FormatType format = JSON ) const;
+                                                   const std::filesystem::path& rootFilename = "root.json",
+                                                   FormatType format                         = JSON ) const;
 
 protected:
 
@@ -58,6 +57,3 @@ protected:
 };
 
 }
-
-#endif /* __FWATOMSBOOSTIO_READER_HPP__ */
-

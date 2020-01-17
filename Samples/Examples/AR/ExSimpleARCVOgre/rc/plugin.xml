@@ -181,7 +181,7 @@
             </service>
 
             <service uid="actionUpdatePlaneVisibility" type="::gui::action::SBooleanSlotCaller" >
-                <state active="true" />
+                <state active="false" />
                 <slots>
                     <slot>meshPlaneAdpt/updateVisibility</slot>
                     <slot>meshPlaneAdpt2/updateVisibility</slot>
@@ -253,7 +253,7 @@
 
             <service uid="meshPlaneAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="plane" />
-                <config layer="default" color="#ffffffda" />
+                <config layer="default" visible="false" color="#ffffffda" />
             </service>
 
             <service uid="layerTransparencyCompositor" type="::visuOgreAdaptor::SCompositorParameter">
@@ -277,7 +277,12 @@
                     <adaptor uid="meshPlaneAdpt2" />
                     <adaptor uid="frustumAdpt" />
                     <adaptor uid="frustumListAdpt" />
+                    <adaptor uid="defaultInteractorAdp" />
                 </scene>
+            </service>
+
+            <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
+                <config layer="default" />
             </service>
 
             <service uid="axis2" type="::visuOgreAdaptor::SAxis">
@@ -296,7 +301,7 @@
 
             <service uid="meshPlaneAdpt2" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="plane" />
-                <config layer="default" color="#ffffffda" />
+                <config layer="default" visible="false" color="#ffffffda" />
             </service>
 
             <service uid="frustumAdpt" type="::visuOgreAdaptor::SFrustum" autoConnect="yes">
@@ -537,6 +542,7 @@
             <start uid="meshPlaneAdpt2" />
             <start uid="frustumAdpt" />
             <start uid="frustumListAdpt" />
+            <start uid="defaultInteractorAdp" />
 
             <update uid="meshReader" />
             <update uid="meshPlaneReader" />
