@@ -26,6 +26,8 @@
 
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -157,6 +159,8 @@ void SOrganMaterialEditor::onDiffuseColorButton()
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
+    ::fwData::mt::ObjectWriteLock lock(material);
+
     int red   = static_cast<int>(material->diffuse()->red()*255);
     int green = static_cast<int>(material->diffuse()->green()*255);
     int blue  = static_cast<int>(material->diffuse()->blue()*255);
@@ -175,6 +179,7 @@ void SOrganMaterialEditor::onDiffuseColorButton()
         material->diffuse()->green() = static_cast<float>(color.greenF());
         material->diffuse()->blue()  = static_cast<float>(color.blueF());
         this->materialNotification();
+        lock.unlock();
         refreshMaterial();
     }
 }
@@ -187,6 +192,8 @@ void SOrganMaterialEditor::onAmbientColorButton()
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
+    ::fwData::mt::ObjectWriteLock lock(material);
+
     const int red   = static_cast<int>(material->ambient()->red()*255.f);
     const int green = static_cast<int>(material->ambient()->green()*255.f);
     const int blue  = static_cast<int>(material->ambient()->blue()*255.f);
@@ -205,6 +212,7 @@ void SOrganMaterialEditor::onAmbientColorButton()
         material->ambient()->green() = static_cast<float>(color.greenF());
         material->ambient()->blue()  = static_cast<float>(color.blueF());
         this->materialNotification();
+        lock.unlock();
         refreshMaterial();
     }
 }
@@ -217,7 +225,9 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
     SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->alpha()      = static_cast<float>(_value)/100.f;
+    ::fwData::mt::ObjectWriteLock lock(material);
+
+    material->diffuse()->alpha() = static_cast<float>(_value)/100.f;
     std::stringstream ss;
     ss << _value << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -240,6 +250,7 @@ void SOrganMaterialEditor::refreshMaterial()
     container->setEnabled(!reconstruction->getOrganName().empty());
 
     ::fwData::Material::csptr material = reconstruction->getMaterial();
+    ::fwData::mt::ObjectReadLock lock(material);
 
     {
         const QColor materialDiffuseColor = QColor(
@@ -270,6 +281,7 @@ void SOrganMaterialEditor::refreshMaterial()
     }
 
     const int a = static_cast<int>(material->diffuse()->alpha()*100.f);
+    lock.unlock();
     m_opacitySlider->setValue( a );
     std::stringstream ss;
     ss << a << "%";
