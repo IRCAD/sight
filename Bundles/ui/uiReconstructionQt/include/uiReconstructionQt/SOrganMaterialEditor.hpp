@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -85,7 +85,7 @@ private:
     /// Sets the connections and the UI elements.
     virtual void starting() override final;
 
-    /// Update the UI according to the material (color and transparency widgets).
+    /// Updates the UI according to the material (color and transparency widgets).
     virtual void updating() override final;
 
     /// Destroys the connections and cleans the container.
@@ -94,7 +94,7 @@ private:
     /// Updates the UI according to the material (color and transparency widgets)
     void refreshMaterial( );
 
-    /// Notify the material changes.
+    /// Notifies the material changes.
     void materialNotification( );
 
     QPointer<QPushButton> m_diffuseColourButton;
