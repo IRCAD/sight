@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -130,8 +130,11 @@ void SLightEditor::starting()
     m_zLabel->setMaximumWidth(70);
 
     m_xReset = new QPushButton("Reset");
+    m_xReset->setEnabled(false);
     m_yReset = new QPushButton("Reset");
+    m_yReset->setEnabled(false);
     m_zReset = new QPushButton("Reset");
+    m_zReset->setEnabled(false);
 
     // Name of the selected light and its type
     QVBoxLayout* layout = new QVBoxLayout();
@@ -271,6 +274,9 @@ void SLightEditor::onEditType(const QString& _type)
             m_xTranslation->setEnabled(true);
             m_yTranslation->setEnabled(true);
             m_zTranslation->setEnabled(true);
+            m_xReset->setEnabled(true);
+            m_yReset->setEnabled(true);
+            m_zReset->setEnabled(true);
         }
     }
     else if(_type == ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str())
@@ -284,6 +290,9 @@ void SLightEditor::onEditType(const QString& _type)
         m_xTranslation->setEnabled(false);
         m_yTranslation->setEnabled(false);
         m_zTranslation->setEnabled(false);
+        m_xReset->setEnabled(false);
+        m_yReset->setEnabled(false);
+        m_zReset->setEnabled(false);
     }
     else
     {
@@ -404,6 +413,9 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
                 m_xTranslation->setEnabled(true);
                 m_yTranslation->setEnabled(true);
                 m_zTranslation->setEnabled(true);
+                m_xReset->setEnabled(true);
+                m_yReset->setEnabled(true);
+                m_zReset->setEnabled(true);
             }
             else
             {
@@ -417,6 +429,9 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
             m_xTranslation->setEnabled(false);
             m_yTranslation->setEnabled(false);
             m_zTranslation->setEnabled(false);
+            m_xReset->setEnabled(false);
+            m_yReset->setEnabled(false);
+            m_zReset->setEnabled(false);
         }
 
         m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
