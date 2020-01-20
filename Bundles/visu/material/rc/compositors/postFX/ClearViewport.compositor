@@ -1,0 +1,14 @@
+compositor ClearViewport
+{
+    technique
+    {
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                colour_value 0 0 0 1
+            }
+        }
+    }
+}

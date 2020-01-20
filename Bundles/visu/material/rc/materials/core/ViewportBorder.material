@@ -1,0 +1,32 @@
+
+fragment_program ViewportBorder_FP glsl
+{
+    source ViewportBorder_FP.glsl
+    default_params
+    {
+        param_named_auto u_viewportSize_Ss viewport_size
+        param_named u_borderColor float4 0.1 0.1 0.1 1.0
+        param_named u_borderSize_Ss float 1.0
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+material ViewportBorder
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref ViewportBorder_FP
+            {
+            }
+        }
+    }
+}
