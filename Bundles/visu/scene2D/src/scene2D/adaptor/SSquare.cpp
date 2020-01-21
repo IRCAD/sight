@@ -85,7 +85,7 @@ void SSquare::configuring()
         m_interaction = config.get<bool>("interaction");
     }
 }
-sj
+
 //-----------------------------------------------------------------------------
 
 void SSquare::starting()
