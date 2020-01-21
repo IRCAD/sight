@@ -43,7 +43,7 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="square" type="::scene2D::adaptor::SSquare">
-      <config x="20" y="20" size="30" color="blue" zValue="3" autoRefresh="true" interaction="false" />
+      <config x="20" y="20" size="30" color="blue" zValue="3" autoRefresh="false" interaction="false" />
    </service>
    @endcode
  *
@@ -54,8 +54,8 @@ namespace adaptor
  *    - \b size (mandatory): specify size of the square
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b color (optional, default=black): color of the square
- *    - \b autoRefresh (optional, default=false): specify if pose is automatically refreshed or not
- *    - \b interaction (optional, default=true): ability to enable or disable interactivity with the square(s)
+ *    - \b autoRefresh (optional, default=true): specify if pose is automatically refreshed or not
+ *    - \b interaction (optional, default=true): enable or disable interactivity with the square
  *
  * @section Slots Slots
  * -\b setDoubleParameter(double, std::string): set the double parameters 'x' and 'y'

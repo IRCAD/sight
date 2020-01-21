@@ -205,11 +205,7 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     }
     if(m_autoRefresh)
     {
-        m_rec->setPos(m_coord.getX(), m_coord.getY());
-    }
-    else
-    {
-        SLM_INFO("Position will be refreshed by calling `update` slot.")
+        this->updating();
     }
 }
 } // namespace adaptor
