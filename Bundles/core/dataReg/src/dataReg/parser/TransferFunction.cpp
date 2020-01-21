@@ -81,6 +81,12 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
 
             const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
             tf->setIsClamped(isClamped);
+
+            const std::string name = config.get<std::string>("name", "");
+            if(!name.empty())
+            {
+                tf->setName(name);
+            }
         }
     }
 }

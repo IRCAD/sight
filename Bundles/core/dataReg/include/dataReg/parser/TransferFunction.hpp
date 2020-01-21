@@ -55,6 +55,7 @@ public:
     /**
      * @code{.xml}
        <object type="::fwData::TransferFunction">
+           <name>Bones</name>
            <colors isClamped="true">
                <step color="#ffffff" value="0" />
                <step color="#0000ff" value="1000" />
@@ -66,6 +67,7 @@ public:
        </object>
        @endcode
        With:
+     * - \b name (optional, default: '') : the name of the TF.
      * - \b step : defines a step in the legend given with the arguments color in hex-code and the max value.
      * - \b isClamped(optional, default: true) : defines interpolation mode on extremities, if yes then after extremity
      *       point, the returned TF color is TFColor(0,0,0,0), else it is the color value of the extremity.
