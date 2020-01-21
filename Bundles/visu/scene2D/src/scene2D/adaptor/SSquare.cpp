@@ -42,7 +42,7 @@ SSquare::SSquare() noexcept :
     m_layer(nullptr),
     m_rec(nullptr),
     m_pointIsCaptured(false),
-    m_autoRefresh(false),
+    m_autoRefresh(true),
     m_interaction(true)
 {
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SSquare::setDoubleParameter, this);
