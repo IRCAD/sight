@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ class DATAREG_CLASS_API TransferFunction : public ::fwServices::IXMLParser
 
 public:
 
-    fwCoreServiceMacro(TransferFunction, ::fwServices::IXMLParser);
+    fwCoreServiceMacro(TransferFunction, ::fwServices::IXMLParser)
 
     /// Constructor : does nothing.
     TransferFunction()
@@ -67,7 +67,7 @@ public:
        @endcode
        With:
      * - \b step : defines a step in the legend given with the arguments color in hex-code and the max value.
-     * - \b isClamped(optional, default: yes) : defines interpolation mode on extremities, if yes then after extremity
+     * - \b isClamped(optional, default: true) : defines interpolation mode on extremities, if yes then after extremity
      *       point, the returned TF color is TFColor(0,0,0,0), else it is the color value of the extremity.
      *
      * You can also define a default TF this way:
