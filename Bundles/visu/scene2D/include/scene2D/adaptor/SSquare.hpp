@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="square" type="::scene2D::adaptor::SSquare">
-      <config x="20" y="20" size="30" color="blue" zValue="3" />
+      <config x="20" y="20" size="30" color="blue" zValue="3" autoRefresh="true" interaction="false" />
    </service>
    @endcode
  *
@@ -53,7 +53,9 @@ namespace adaptor
  *    - \b y (mandatory): specify y square coordinate
  *    - \b size (mandatory): specify size of the square
  *    - \b zValue (optional, default=0): z value of the layer
- *    - \b color (optional, default black): color of the square
+ *    - \b color (optional, default=black): color of the square
+ *    - \b autoRefresh (optional, default=false): specify if pose is automatically refreshed or not
+ *    - \b interaction (optional, default=true): ability to enable or disable interactivity with the square(s)
  *
  * @section Slots Slots
  * -\b setDoubleParameter(double, std::string): set the double parameters 'x' and 'y'
@@ -92,6 +94,8 @@ private:
     ::fwRenderQt::data::Coord m_oldCoord;
 
     bool m_pointIsCaptured;
+    bool m_autoRefresh;
+    bool m_interaction;
     static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     void setDoubleParameter(const double val, std::string key);
 };
