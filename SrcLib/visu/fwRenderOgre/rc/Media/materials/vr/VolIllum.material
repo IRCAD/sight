@@ -2,7 +2,7 @@
 
 fragment_program VolIllum_FP glsl
 {
-    source SAT_AmbientOcclusion_FP.glsl
+    source IllumAmbientOcclusionSAT_FP.glsl
 
     default_params
     {
@@ -20,7 +20,7 @@ fragment_program VolIllum_FP glsl
 
 fragment_program VolIllum_AO_FP glsl
 {
-    source SAT_AmbientOcclusion_FP.glsl
+    source IllumAmbientOcclusionSAT_FP.glsl
     preprocessor_defines AO=1
     default_params
     {
@@ -38,7 +38,7 @@ fragment_program VolIllum_AO_FP glsl
 
 fragment_program VolIllum_Shadows_FP glsl
 {
-    source SAT_AmbientOcclusion_FP.glsl
+    source IllumAmbientOcclusionSAT_FP.glsl
     preprocessor_defines SHADOWS=1
     default_params
     {
@@ -56,7 +56,7 @@ fragment_program VolIllum_Shadows_FP glsl
 
 fragment_program VolIllum_AO_Shadows_FP glsl
 {
-    source SAT_AmbientOcclusion_FP.glsl
+    source IllumAmbientOcclusionSAT_FP.glsl
     preprocessor_defines AO=1,SHADOWS=1
     default_params
     {

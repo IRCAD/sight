@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -590,6 +590,12 @@ void SNegato3D::pickIntensity(int _x, int _y)
             const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
             const ::fwData::mt::ObjectReadLock imgLock(image);
+
+            if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+            {
+                return;
+            }
+
             const auto imageBufferLock = image->lock();
 
             const auto [spacing, origin] = ::fwRenderOgre::Utils::convertSpacingAndOrigin(image);
@@ -629,7 +635,8 @@ std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 
     const auto isPicked = [&picker](const ::fwRenderOgre::Plane::sptr& _p)
                           {
-                              return _p->getMovableObject() == picker.getSelectedObject();
+                              return (_p->getMovableObject() != nullptr) &&
+                                     (_p->getMovableObject() == picker.getSelectedObject());
                           };
 
     auto it = std::find_if(m_planes.cbegin(), m_planes.cend(), isPicked);

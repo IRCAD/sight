@@ -278,7 +278,7 @@ void SVolumeRender::stopping()
 
     m_preIntegrationTable.removeTexture();
 
-    m_illum.reset();
+    m_ambientOcclusionSAT.reset();
 
     this->destroyWidget();
 }
@@ -421,15 +421,17 @@ void SVolumeRender::updateImage()
 
         if(m_ambientOcclusion || m_colorBleeding || m_shadows)
         {
-            if(m_illum == nullptr)
+            if(m_ambientOcclusionSAT == nullptr)
             {
-                m_illum = std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
-                                                                                       m_satSizeRatio,
-                                                                                       (m_ambientOcclusion ||
-                                                                                        m_colorBleeding), m_shadows,
-                                                                                       m_satShells, m_satShellRadius,
-                                                                                       m_satConeAngle,
-                                                                                       m_satConeSamples);
+                m_ambientOcclusionSAT = std::make_shared< ::fwRenderOgre::vr::IllumAmbientOcclusionSAT>(
+                    this->getID(), m_sceneManager,
+                    m_satSizeRatio,
+                    (
+                        m_ambientOcclusion ||
+                        m_colorBleeding), m_shadows,
+                    m_satShells, m_satShellRadius,
+                    m_satConeAngle,
+                    m_satConeSamples);
             }
             this->updateVolumeIllumination();
         }
@@ -516,7 +518,7 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
         float scaleCoef(.25f);
         m_satSizeRatio = static_cast<float>(sizeRatio) * scaleCoef;
-        m_illum->updateSatFromRatio(m_satSizeRatio);
+        m_ambientOcclusionSAT->updateSatFromRatio(m_satSizeRatio);
 
         this->updateVolumeIllumination();
 
@@ -816,9 +818,9 @@ void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
 
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
+    m_ambientOcclusionSAT->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
 
-    m_volumeRenderer->setIlluminationVolume(m_illum);
+    m_volumeRenderer->setAmbientOcclusionSAT(m_ambientOcclusionSAT);
 }
 
 //-----------------------------------------------------------------------------
@@ -833,25 +835,28 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
     // Volume illumination is only implemented for raycasting rendering
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
+        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_ambientOcclusionSAT)
         {
-            m_illum = ::std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
-                                                                                     m_satSizeRatio,
-                                                                                     (m_ambientOcclusion ||
-                                                                                      m_colorBleeding), m_shadows,
-                                                                                     m_satShells, m_satShellRadius);
+            m_ambientOcclusionSAT = ::std::make_shared< ::fwRenderOgre::vr::IllumAmbientOcclusionSAT>(
+                this->getID(), m_sceneManager,
+                m_satSizeRatio,
+                (
+                    m_ambientOcclusion ||
+                    m_colorBleeding), m_shadows,
+                m_satShells,
+                m_satShellRadius);
             this->updateVolumeIllumination();
         }
-        else if(m_illum)
+        else if(m_ambientOcclusionSAT)
         {
             switch(vrEffect)
             {
                 case ::visuOgreAdaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
                 case ::visuOgreAdaptor::SVolumeRender::VR_COLOR_BLEEDING:
-                    m_illum->setAO(m_ambientOcclusion || m_colorBleeding);
+                    m_ambientOcclusionSAT->setAO(m_ambientOcclusion || m_colorBleeding);
                     break;
                 case ::visuOgreAdaptor::SVolumeRender::VR_SHADOWS:
-                    m_illum->setShadows(m_shadows);
+                    m_ambientOcclusionSAT->setShadows(m_shadows);
                     break;
             }
 

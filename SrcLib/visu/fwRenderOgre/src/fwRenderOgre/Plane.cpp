@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -488,7 +488,11 @@ void Plane::changeSlice(float sliceIndex)
 
 const ::Ogre::MovableObject* Plane::getMovableObject() const
 {
-    return m_sceneManager->getEntity(m_entityName);
+    if(m_sceneManager->hasEntity(m_entityName))
+    {
+        return m_sceneManager->getEntity(m_entityName);
+    }
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

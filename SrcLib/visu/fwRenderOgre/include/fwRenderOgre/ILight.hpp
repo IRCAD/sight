@@ -25,6 +25,7 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/factory/new.hpp"
 #include "fwRenderOgre/IAdaptor.hpp"
+#include "fwRenderOgre/ITransformable.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
 #include "fwRenderOgre/SRender.hpp"
 
@@ -46,7 +47,8 @@ namespace fwRenderOgre
  * @brief Defines the service interface managing the light adaptor.
  *
  */
-class FWRENDEROGRE_CLASS_API ILight : public ::fwRenderOgre::IAdaptor
+class FWRENDEROGRE_CLASS_API ILight : public ::fwRenderOgre::IAdaptor,
+                                      public ::fwRenderOgre::ITransformable
 {
 
 public:
@@ -69,7 +71,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(ILight, ::fwRenderOgre::IAdaptor);
+    fwCoreClassMacro(ILight, ::fwRenderOgre::IAdaptor)
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -82,8 +84,13 @@ public:
     FWRENDEROGRE_API static const int s_OFFSET_RANGE;
 
     /// ILight factory method.
-    FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::TransformationMatrix3D::sptr _transform,
+    [[deprecated("Deprecated constructor. Removed in sight 21.0")]]
+    FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::TransformationMatrix3D::sptr,
                                                             ::fwData::Color::sptr _diffuse,
+                                                            ::fwData::Color::sptr _specular);
+
+    /// ILight factory method.
+    FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
 
     /// ILight stopping and unregistrating method.
@@ -97,40 +104,53 @@ public:
 
     /// Light name getter.
     FWRENDEROGRE_API virtual const std::string& getName() const = 0;
+
     /// Light name setter.
-    FWRENDEROGRE_API virtual void setName(const std::string& _name)
-        = 0;
+    FWRENDEROGRE_API virtual void setName(const std::string& _name) = 0;
+
     /// Light type getter.
     FWRENDEROGRE_API virtual ::Ogre::Light::LightTypes getType() const = 0;
+
     /// Light type setter.
-    FWRENDEROGRE_API virtual void setType(::Ogre::Light::LightTypes _type)
-        = 0;
+    FWRENDEROGRE_API virtual void setType(::Ogre::Light::LightTypes _type) = 0;
+
     /// Diffuse color getter.
     FWRENDEROGRE_API virtual ::Ogre::ColourValue getDiffuseColor() const = 0;
+
     /// Diffuse color setter using Ogre::ColourValue.
-    FWRENDEROGRE_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor)
-        = 0;
+    FWRENDEROGRE_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) = 0;
+
     /// Specular color getter.
     FWRENDEROGRE_API virtual ::Ogre::ColourValue getSpecularColor() const = 0;
+
     /// Specular color setter using Ogre::ColourValue.
-    FWRENDEROGRE_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor)
-        = 0;
+    FWRENDEROGRE_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) = 0;
+
     /// Parent tranform id setter.
+    [[deprecated("Deprecated method. Removed in sight 21.0")]]
     FWRENDEROGRE_API virtual void setParentTransformName(
         const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) = 0;
+
     /// Light activation flag getter.
     FWRENDEROGRE_API virtual bool isSwitchedOn() const = 0;
+
     /// Light activation flag setter.
     FWRENDEROGRE_API virtual void switchOn(bool _on) = 0;
+
     /// Theta offset getter.
     FWRENDEROGRE_API virtual float getThetaOffset() const = 0;
+
     /// Theta offset setter.
     FWRENDEROGRE_API virtual void setThetaOffset(float _theta) = 0;
+
     /// Phi offset getter.
     FWRENDEROGRE_API virtual float getPhiOffset() const = 0;
+
     /// Phi offset setter.
     FWRENDEROGRE_API virtual void setPhiOffset(float _phi) = 0;
+
     /// Indicates if the light is attached to a parent node or not.
+    [[deprecated("Deprecated method. Removed in sight 21.0")]]
     FWRENDEROGRE_API virtual bool isOrphanNode() const = 0;
 };
 

@@ -414,8 +414,6 @@ private:
     /// Abstract light used to set the default light.
     SPTR(::fwRenderOgre::ILight) m_lightAdaptor;
 
-    SPTR(::fwData::TransformationMatrix3D) m_defaultLightTransform;
-
     /// Diffuse color of the default light.
     SPTR(::fwData::Color) m_defaultLightDiffuseColor;
 

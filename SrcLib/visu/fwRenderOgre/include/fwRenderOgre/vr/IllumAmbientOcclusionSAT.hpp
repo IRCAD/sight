@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,19 +34,19 @@ namespace vr
 /**
  * @brief Computes the illumination volume for extinction based shading.
  */
-class FWRENDEROGRE_CLASS_API SATVolumeIllumination
+class FWRENDEROGRE_CLASS_API IllumAmbientOcclusionSAT
 {
 public:
-    typedef std::shared_ptr<SATVolumeIllumination> sptr;
+    typedef std::shared_ptr<IllumAmbientOcclusionSAT> sptr;
 
     /// Initializes the illumination volume with the give dimensions.
-    FWRENDEROGRE_API SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
-                                           float satSizeRatio = 0.25f, bool ao = false, bool shadows = false,
-                                           int nbShells = 3, int shellRadius = 3, float coneAngle = 0.1f,
-                                           int samplesAlongCone = 50);
+    FWRENDEROGRE_API IllumAmbientOcclusionSAT(std::string parentId, ::Ogre::SceneManager* sceneManager,
+                                              float satSizeRatio = 0.25f, bool ao = false, bool shadows = false,
+                                              int nbShells = 3, int shellRadius = 3, float coneAngle = 0.1f,
+                                              int samplesAlongCone = 50);
 
     /// Destructor, does nothing.
-    FWRENDEROGRE_API ~SATVolumeIllumination();
+    FWRENDEROGRE_API ~IllumAmbientOcclusionSAT();
 
     /// Computes a new SAT with a different resolution given by the size ratio.
     FWRENDEROGRE_API void updateSatFromRatio(float _satSizeRatio);
@@ -127,49 +127,49 @@ private:
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline ::Ogre::TexturePtr SATVolumeIllumination::getIlluminationVolume()
+inline ::Ogre::TexturePtr IllumAmbientOcclusionSAT::getIlluminationVolume()
 {
     return m_illuminationVolume;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void SATVolumeIllumination::setAO(bool _ao)
+inline void IllumAmbientOcclusionSAT::setAO(bool _ao)
 {
     m_ao = _ao;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void SATVolumeIllumination::setShadows(bool _shadows)
+inline void IllumAmbientOcclusionSAT::setShadows(bool _shadows)
 {
     m_shadows = _shadows;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void SATVolumeIllumination::setNbShells(int _nbShells)
+inline void IllumAmbientOcclusionSAT::setNbShells(int _nbShells)
 {
     m_nbShells = _nbShells;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void SATVolumeIllumination::setShellRadius(int _shellRadius)
+inline void IllumAmbientOcclusionSAT::setShellRadius(int _shellRadius)
 {
     m_shellRadius = _shellRadius;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void SATVolumeIllumination::setConeAngle(float _coneAngle)
+inline void IllumAmbientOcclusionSAT::setConeAngle(float _coneAngle)
 {
     m_coneAngle = _coneAngle;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void SATVolumeIllumination::setSamplesAlongCone(int _samplesAlongCone)
+inline void IllumAmbientOcclusionSAT::setSamplesAlongCone(int _samplesAlongCone)
 {
     m_samplesAlongCone = _samplesAlongCone;
 }

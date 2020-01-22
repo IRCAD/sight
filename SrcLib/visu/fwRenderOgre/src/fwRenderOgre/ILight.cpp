@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,15 +41,31 @@ const int ::fwRenderOgre::ILight::s_OFFSET_RANGE = 180;
 
 //-----------------------------------------------------------------------------
 
-::fwRenderOgre::ILight::sptr ILight::createLightAdaptor(::fwData::TransformationMatrix3D::sptr _transform,
+::fwRenderOgre::ILight::sptr ILight::createLightAdaptor(::fwData::TransformationMatrix3D::sptr,
                                                         ::fwData::Color::sptr _diffuse,
+                                                        ::fwData::Color::sptr _specular)
+{
+    FW_DEPRECATED_MSG("This function is no longer supported", "21.0");
+
+    ::fwRenderOgre::ILight::sptr light = ::fwRenderOgre::lightFactory::New(::fwRenderOgre::ILight::REGISTRY_KEY );
+    SLM_ASSERT("The factory process to create an ILight failed.", light);
+    SLM_ASSERT("The light adaptor must be registered with existing data objects.", _diffuse && _specular);
+
+    light->registerInOut(_diffuse, "diffuseColor", true);
+    light->registerInOut(_specular, "specularColor", true);
+
+    return light;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwRenderOgre::ILight::sptr ILight::createLightAdaptor(::fwData::Color::sptr _diffuse,
                                                         ::fwData::Color::sptr _specular)
 {
     ::fwRenderOgre::ILight::sptr light = ::fwRenderOgre::lightFactory::New(::fwRenderOgre::ILight::REGISTRY_KEY );
     SLM_ASSERT("The factory process to create an ILight failed.", light);
-    SLM_ASSERT("The light adaptor must be registered with existing data objects.", _transform && _diffuse && _specular);
+    SLM_ASSERT("The light adaptor must be registered with existing data objects.", _diffuse && _specular);
 
-    light->registerInOut(_transform, "transform", true);
     light->registerInOut(_diffuse, "diffuseColor", true);
     light->registerInOut(_specular, "specularColor", true);
 
@@ -82,4 +98,3 @@ void ILight::destroyLightAdaptor(ILight::sptr _lightAdaptor)
 //-----------------------------------------------------------------------------
 
 } // namespace fwRenderOgre
-

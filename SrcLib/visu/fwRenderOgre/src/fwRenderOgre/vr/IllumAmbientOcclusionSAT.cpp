@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
+#include "fwRenderOgre/vr/IllumAmbientOcclusionSAT.hpp"
 
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
@@ -98,9 +98,10 @@ private:
 
 //-----------------------------------------------------------------------------
 
-SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
-                                             float satSizeRatio, bool ao, bool shadows, int nbShells, int shellRadius,
-                                             float coneAngle, int samplesAlongCone) :
+IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(std::string parentId, ::Ogre::SceneManager* sceneManager,
+                                                   float satSizeRatio, bool ao, bool shadows, int nbShells,
+                                                   int shellRadius,
+                                                   float coneAngle, int samplesAlongCone) :
     m_sat(parentId, sceneManager, satSizeRatio),
     m_ao(ao),
     m_shadows(shadows),
@@ -117,13 +118,13 @@ SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::Scene
 
 //-----------------------------------------------------------------------------
 
-SATVolumeIllumination::~SATVolumeIllumination()
+IllumAmbientOcclusionSAT::~IllumAmbientOcclusionSAT()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::updateSatFromRatio(float _satSizeRatio)
+void IllumAmbientOcclusionSAT::updateSatFromRatio(float _satSizeRatio)
 {
     m_sat.updateSatFromRatio(_satSizeRatio);
     updateTexture();
@@ -131,8 +132,8 @@ void SATVolumeIllumination::updateSatFromRatio(float _satSizeRatio)
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::SATUpdate(::Ogre::TexturePtr _img, const ::fwRenderOgre::TransferFunction::sptr& _tf,
-                                      float _sampleDistance)
+void IllumAmbientOcclusionSAT::SATUpdate(::Ogre::TexturePtr _img, const ::fwRenderOgre::TransferFunction::sptr& _tf,
+                                         float _sampleDistance)
 {
     m_sat.computeParallel(_img, _tf, _sampleDistance);
     this->updateVolIllum();
@@ -140,7 +141,7 @@ void SATVolumeIllumination::SATUpdate(::Ogre::TexturePtr _img, const ::fwRenderO
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::updateVolIllum()
+void IllumAmbientOcclusionSAT::updateVolIllum()
 {
     // Do this for now but at the end we should use our own texture
     m_illuminationVolume = m_sat.getSpareTexture();
@@ -199,7 +200,7 @@ void SATVolumeIllumination::updateVolIllum()
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::updateTexture()
+void IllumAmbientOcclusionSAT::updateTexture()
 {
     ::Ogre::TexturePtr satTexture = m_sat.getSpareTexture();
 

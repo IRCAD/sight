@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,12 +51,14 @@ namespace uiReconstructionQt
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor,
-                         ::fwData::Reconstruction );
+                         ::fwData::Reconstruction )
 
 static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 OrganMaterialEditor::OrganMaterialEditor() noexcept
 {
+    FW_DEPRECATED("::uiReconstructionQt::OrganMaterialEditor", "::uiReconstructionQt::SOrganMaterialEditor", "21.0");
+
     this->registerObject(s_RECONSTRUCTION_INOUT, ::fwServices::IService::AccessType::INOUT, true);
 }
 

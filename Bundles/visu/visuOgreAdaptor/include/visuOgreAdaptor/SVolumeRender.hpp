@@ -33,9 +33,9 @@
 #include <fwRenderOgre/IGraphicsWorker.hpp>
 #include <fwRenderOgre/interactor/ClippingBoxInteractor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/vr/IllumAmbientOcclusionSAT.hpp>
 #include <fwRenderOgre/vr/PreIntegrationTable.hpp>
 #include <fwRenderOgre/vr/RayTracingVolumeRenderer.hpp>
-#include <fwRenderOgre/vr/SATVolumeIllumination.hpp>
 
 #include <OGRE/OgreTexture.h>
 
@@ -306,7 +306,7 @@ private:
     bool m_widgetVisibilty { true };
 
     /// Illumination volume used to render shadows and ambient occlusion.
-    std::shared_ptr< ::fwRenderOgre::vr::SATVolumeIllumination> m_illum;
+    std::shared_ptr< ::fwRenderOgre::vr::IllumAmbientOcclusionSAT> m_ambientOcclusionSAT;
 
     /// Ratio used to determine the size of the SAT regarding of the associated image size.
     float m_satSizeRatio {0.25f };

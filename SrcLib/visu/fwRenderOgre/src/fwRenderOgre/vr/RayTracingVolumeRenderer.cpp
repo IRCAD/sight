@@ -79,8 +79,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
             const int frameId = layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
             {
-                auto illuVolume = m_renderer->m_illumVolume.lock();
-                if(illuVolume && m_renderer->m_shadows)
+                auto ambientOcclusionSAT = m_renderer->m_ambientOcclusionSAT.lock();
+                if(ambientOcclusionSAT && m_renderer->m_shadows)
                 {
                     // Set light directions in shader.
                     const ::Ogre::LightList closestLights =
@@ -98,7 +98,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
                         satIllumParams->setNamedConstant("u_lightDir", lightDir);
 
-                        illuVolume->updateVolIllum();
+                        ambientOcclusionSAT->updateVolIllum();
                     }
                 }
 
@@ -385,9 +385,17 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination::sptr illuminationVolume)
+void RayTracingVolumeRenderer::setIlluminationVolume(IllumAmbientOcclusionSAT::sptr illuminationVolume)
 {
-    m_illumVolume = illuminationVolume;
+    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
+    this->setAmbientOcclusionSAT(illuminationVolume);
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setAmbientOcclusionSAT(IllumAmbientOcclusionSAT::sptr _ambientOcclusionSAT)
+{
+    m_ambientOcclusionSAT = _ambientOcclusionSAT;
 
     this->createRayTracingMaterial();
 }
@@ -515,7 +523,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         texUnitState = _rayCastingPass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-        texUnitState->setTexture(m_illumVolume.lock()->getIlluminationVolume());
+        texUnitState->setTexture(m_ambientOcclusionSAT.lock()->getIlluminationVolume());
 
         fpParams->setNamedConstant("u_s3IlluminationVolume", numTexUnit++);
         // Update the shader parameter
@@ -639,16 +647,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
         fpParams->setNamedAutoConstant("u_fShininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
         fpParams->setNamedAutoConstant("u_fNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
-        for(size_t i = 0; i < 10; ++i)
-        {
-            auto number = "[" + std::to_string(i) + "]";
-            fpParams->setNamedAutoConstant("u_f3LightDir" + number,
-                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_DIRECTION_OBJECT_SPACE, i);
-            fpParams->setNamedAutoConstant("u_f3LightDiffuseCol" + number,
-                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
-            fpParams->setNamedAutoConstant("u_f3LightSpecularCol" + number,
-                                           ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
-        }
+        fpParams->setNamedAutoConstant("u_f4LightPos",
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 10);
+        fpParams->setNamedAutoConstant("u_f3LightDiffuseCol",
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 10);
+        fpParams->setNamedAutoConstant("u_f3LightSpecularCol",
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR_ARRAY, 10);
         fpParams->setNamedAutoConstant("u_invWorldViewProj",
                                        ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
         fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
