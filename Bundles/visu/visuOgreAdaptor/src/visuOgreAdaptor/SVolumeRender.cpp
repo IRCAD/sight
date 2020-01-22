@@ -151,10 +151,10 @@ void SVolumeRender::starting()
 
     m_gpuVolumeTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' does not exist..", image);
 
-    ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+    const ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
     m_helperVolumeTF.setOrCreateTF(volumeTF, image);
 
     m_sceneManager = this->getSceneManager();
@@ -229,10 +229,10 @@ void SVolumeRender::swapping(const KeyType& _key)
     {
         this->getRenderService()->makeCurrent();
 
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+        const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
         m_helperVolumeTF.setOrCreateTF(tf, image);
 
         this->updateVolumeTF();
@@ -286,9 +286,9 @@ void SVolumeRender::updateVolumeTF()
     this->getRenderService()->makeCurrent();
     std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
-    ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
+    const ::fwData::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
     {
-        ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
 
         m_gpuVolumeTF->updateTexture(tf);
 
@@ -325,10 +325,14 @@ void SVolumeRender::newImage()
 
         renderService->makeCurrent();
 
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
-        ::fwData::mt::ObjectReadLock lock(image);
+        const ::fwData::TransferFunction::sptr volumeTF =
+            this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
+        m_helperVolumeTF.setOrCreateTF(volumeTF, image);
+
+        const ::fwData::mt::ObjectReadLock lock(image);
         ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
         this->updateVolumeTF();
@@ -359,10 +363,10 @@ void SVolumeRender::bufferImage()
     {
         auto bufferingFn = [this]()
                            {
-                               ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-                               SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+                               const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+                               SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
-                               ::fwData::mt::ObjectReadLock imageLock(image);
+                               const ::fwData::mt::ObjectReadLock imageLock(image);
                                ::fwRenderOgre::Utils::convertImageForNegato(m_bufferingTexture.get(), image);
 
                                // Swap texture pointers.
@@ -380,12 +384,12 @@ void SVolumeRender::bufferImage()
     }
     else
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
         this->getRenderService()->makeCurrent();
 
-        ::fwData::mt::ObjectReadLock imageLock(image);
+        const ::fwData::mt::ObjectReadLock imageLock(image);
         ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
         this->updateImage();
@@ -396,16 +400,16 @@ void SVolumeRender::bufferImage()
 
 void SVolumeRender::updateImage()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-    ::fwData::mt::ObjectReadLock imageLock(image);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+    const ::fwData::mt::ObjectReadLock imageLock(image);
 
     this->getRenderService()->makeCurrent();
 
     std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
     m_volumeRenderer->set3DTexture(m_3DOgreTexture);
 
-    ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+    const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
         ::fwData::mt::ObjectReadLock tfLock(volumeTF);
 
@@ -459,8 +463,8 @@ void SVolumeRender::updateSampling(int nbSamples)
 
     if(m_preIntegratedRendering)
     {
-        ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        ::fwData::mt::ObjectReadLock tfLock(volumeTF);
+        const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+        const ::fwData::mt::ObjectReadLock tfLock(volumeTF);
         m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
 
@@ -519,12 +523,12 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
         if(m_preIntegratedRendering)
         {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-            ::fwData::mt::ObjectReadLock lock(image);
+            const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+            const ::fwData::mt::ObjectReadLock lock(image);
 
-            ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            ::fwData::mt::ObjectReadLock tfLock(volumeTF);
+            const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+            const ::fwData::mt::ObjectReadLock tfLock(volumeTF);
             m_volumeRenderer->imageUpdate(image, volumeTF);
         }
 
@@ -616,12 +620,12 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
     if(m_preIntegratedRendering)
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
-        ::fwData::mt::ObjectReadLock lock(image);
+        const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+        const ::fwData::mt::ObjectReadLock lock(image);
 
-        ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        ::fwData::mt::ObjectReadLock tfLock(volumeTF);
+        const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+        const ::fwData::mt::ObjectReadLock tfLock(volumeTF);
         m_volumeRenderer->imageUpdate(image, volumeTF);
         m_preIntegrationTable.tfUpdate(volumeTF, m_volumeRenderer->getSamplingRate());
     }
@@ -769,7 +773,7 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
 
 void SVolumeRender::createWidget()
 {
-    auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
     auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
 
@@ -824,8 +828,8 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 {
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     // Volume illumination is only implemented for raycasting rendering
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
@@ -879,8 +883,8 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         if(m_preIntegratedRendering)
         {
-            ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            ::fwData::mt::ObjectReadLock tfLock(volumeTF);
+            const ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
+            const ::fwData::mt::ObjectReadLock tfLock(volumeTF);
             m_volumeRenderer->imageUpdate(image, volumeTF);
         }
 
@@ -896,7 +900,7 @@ void SVolumeRender::updateClippingBox()
     {
         this->getRenderService()->makeCurrent();
 
-        auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+        const auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
         SLM_ASSERT("Can't update the 'clippingMatrix' if it doesn't exist.", clippingMatrix);
 
         const ::Ogre::Matrix4 clippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
@@ -909,13 +913,14 @@ void SVolumeRender::updateClippingBox()
 
 void SVolumeRender::updateClippingTM3D()
 {
-    auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
     if(clippingMatrix)
     {
         ::fwRenderOgre::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix);
 
-        auto sig = clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        const auto sig =
+            clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
 
         ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
 
