@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -93,6 +93,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
         auto obj = service->getInOut< ::fwData::Object>(key);
         if(optional)
         {
+            m_optionalInputs[key] = uid;
             parameterCfg.add("<xmlattr>.uid", uid);
         }
         else
@@ -118,6 +119,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 
         if(itCfg->second.get_child("<xmlattr>").count("uid") == 1)
         {
+            FW_DEPRECATED_MSG("'uid' is deprecated for parameters of ConfigLauncher, use 'by' instead", "22.0");
             const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
             parameterCfg.add("<xmlattr>.uid", uid);
         }
@@ -158,8 +160,20 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
     }
 
     // Init manager
-    m_appConfigManager = ::fwServices::IAppConfigManager::New();
+    m_appConfigManager = ::fwServices::AppConfigManager::New();
     m_appConfigManager->setConfig( m_appConfig.id, replaceMap );
+
+    // When a configuration is launched, deferred objects may already exist.
+    // This loop allow to notify the app config manager that this data exist and can be used by services.
+    // Whitout that, the data is considered as null.
+    for(const auto& [key, uid] : m_optionalInputs)
+    {
+        auto obj = srv->getInOut< ::fwData::Object >(key);
+        if(obj)
+        {
+            m_appConfigManager->addExistingDeferredObject(obj, uid);
+        }
+    }
 
     // Launch config
     m_appConfigManager->launch();

@@ -111,6 +111,9 @@ private:
     /// Defines a special key to defines the generated uid
     static const std::string s_GENERIC_UID_KEY;
 
+    /// Stores key and uid of optional inputs.
+    std::map<std::string, std::string> m_optionalInputs;
+
 };
 
 } // helper

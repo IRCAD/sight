@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2019 IRCAD France
- * Copyright (C) 2015-2019 IHU Strasbourg
+ * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -89,6 +89,20 @@ public:
 
     /// Set it to true if we are testing the class
     FWSERVICES_API void setIsUnitTest(bool isUnitTest);
+
+    /**
+     * @brief Add an existing deferred object to the deferred objects map.
+     *
+     * @pre The manager musn't be started.
+     *
+     * When a configuration is launched, deferred objects may already exist.
+     * This loop allow to notify the app config manager that this data exist and can be used by services.
+     * Whitout that, the data is considered as null.
+     *
+     * @param _obj The object to add.
+     * @param _uid The uid of this object.
+     */
+    FWSERVICES_API void addExistingDeferredObject(const ::fwData::Object::sptr& _obj, const std::string& _uid);
 
 private:
 

@@ -51,7 +51,6 @@ namespace fwServices
 // ------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 // ------------------------------------------------------------------------
@@ -227,6 +226,16 @@ void AppConfigManager::destroy()
 void AppConfigManager::setIsUnitTest(bool isUnitTest)
 {
     m_isUnitTest = isUnitTest;
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::addExistingDeferredObject(const ::fwData::Object::sptr& _obj, const std::string& _uid)
+{
+    SLM_ASSERT("Existing deferred objects must be added before starting the configuration, it's useless to do it later", m_state == STATE_DESTROYED);
+    DeferredObjectType deferredObject;
+    deferredObject.m_object = _obj;
+    m_deferredObjects.insert(std::make_pair(_uid, deferredObject));
 }
 
 // ------------------------------------------------------------------------
@@ -510,7 +519,7 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
 #ifndef _DEBUG
                 FwCoreNotUsedMacro(ret);
 #endif
-                SLM_ASSERT(this->msgHead() + "Object '" + id.first + "' already exists in this config.", ret.second);
+                SLM_INFO_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.", !ret.second);
             }
             else
             {
@@ -1084,7 +1093,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
 
                     SLM_INFO( this->msgHead() + "Service '" + srvCfg.m_uid +
                               "' has been stopped because the object " +
-                              id + " is no longer available.");
+                              _id + " is no longer available.");
                 }
                 else
                 {
