@@ -54,7 +54,8 @@ namespace adaptor
  *    - \b size (mandatory): specify size of the square
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b color (optional, default=black): color of the square
- *    - \b autoRefresh (optional, default=true): specify if the position is updated as soon as a new position is received
+ *    - \b autoRefresh (optional, default=true): specify if the position is updated as soon as a new position is
+ *received
  *    - \b interaction (optional, default=true): enable or disable mouse interaction with the square
  *
  * @section Slots Slots
