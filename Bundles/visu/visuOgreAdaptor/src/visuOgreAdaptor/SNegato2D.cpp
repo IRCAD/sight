@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,13 +56,8 @@ static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
-    m_plane(nullptr),
-    m_negatoSceneNode(nullptr),
-    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE ),
     m_helperTF(std::bind(&SNegato2D::updateTF, this))
 {
-    m_currentSliceIndex = {0.f, 0.f, 0.f};
-
     newSlot(s_NEWIMAGE_SLOT, &SNegato2D::newImageDeprecatedSlot, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
@@ -168,11 +163,6 @@ void SNegato2D::stopping()
 
     m_helperTF.removeTFConnections();
 
-    if (!m_connection.expired())
-    {
-        m_connection.disconnect();
-    }
-
     m_plane.reset();
 
     m_3DOgreTexture.reset();
@@ -191,12 +181,12 @@ void SNegato2D::updating()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::swapping(const KeyType& key)
+void SNegato2D::swapping(const KeyType& _key)
 {
-    if (key == s_TF_INOUT)
+    if (_key == s_TF_INOUT)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Missing image", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -217,7 +207,7 @@ void SNegato2D::newImage()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
@@ -263,7 +253,7 @@ void SNegato2D::newImageDeprecatedSlot()
 void SNegato2D::changeSliceType(int _from, int _to)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     const auto toOrientation   = static_cast<OrientationMode>(_to);
@@ -296,7 +286,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     this->getRenderService()->makeCurrent();

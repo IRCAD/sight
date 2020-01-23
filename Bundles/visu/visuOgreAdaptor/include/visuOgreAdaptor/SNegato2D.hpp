@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ namespace visuOgreAdaptor
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
  * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
  */
-class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SNegato2D final : public ::fwRenderOgre::IAdaptor
 {
 public:
 
@@ -74,79 +74,95 @@ public:
 
     fwCoreServiceMacro(SNegato2D, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor.
+    /// Creates the service and initializes slots.
     VISUOGREADAPTOR_API SNegato2D() noexcept;
-    /// Destructor.
+
+    /// Destroyes the service.
     VISUOGREADAPTOR_API virtual ~SNegato2D() noexcept;
-    /// Sets the filtering type
+
+    /// Sets the filtering type.
     VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
 
-protected:
-
-    /// Configures the service
-    VISUOGREADAPTOR_API virtual void configuring() override;
-    /// Instanciates the texture, material, pass and texture unit state
-    /// Sets the connection between attached data and the receive slot
-    VISUOGREADAPTOR_API virtual void starting() override;
-    /// Disconnects the attached data from the receive slot
-    VISUOGREADAPTOR_API virtual void stopping() override;
-    /// Uploads the input image into the texture buffer and recomputes the negato geometry.
-    VISUOGREADAPTOR_API virtual void updating() override;
-    /// Select the current tf
-    VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
-
-    /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTF();
-
 private:
+
+    /// Configures the service.
+    virtual void configuring() override;
+
+    /// Instanciates the texture, material, pass and texture unit state.
+    /// Sets the connection between attached data and the receive slot.
+    virtual void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::STransform::s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::STransform::s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to
+     * ::visuOgreAdaptor::STransform::s_SLICETYPE_SLOT
+     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to
+     * ::visuOgreAdaptor::STransform::s_SLICEINDEX_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Uploads the input image into the texture buffer and recomputes the negato geometry.
+    virtual void updating() override;
+
+    /**
+     * @brief Retrieves the current transfer function.
+     * @param _key Key of the swapped data.
+     */
+    virtual void swapping(const KeyType& _key) override;
+
+    /// Disconnects the attached data from the receive slot.
+    virtual void stopping() override;
+
+    /// Updates the displayed transfer function.
+    virtual void updateTF();
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     void newImage();
 
-    /// Slot: updates the image buffer, @deprecated call 'update' instead.
+    /// Updates the image buffer, @deprecated call 'update' instead.
     void newImageDeprecatedSlot();
 
-    /// Slot: update image slice type
+    /// Updates image slice type.
     void changeSliceType(int _from, int _to);
 
-    /// Slot: update image slice index
+    /// Updates image slice index.
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
 
-    /// updates image slice index for the current fragment program.
+    /// Updates image slice index for the current fragment program.
     void updateShaderSliceIndexParameter();
 
     /// Initializes the planar mesh on which the negato is displayed.
     void createPlane(const ::Ogre::Vector3& _spacing);
 
-    /// Ogre texture which will be displayed on the negato
+    /// Contains the Ogre texture which will be displayed on the negato.
     ::Ogre::TexturePtr m_3DOgreTexture;
 
-    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
+    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
-    /// The plane on which we will apply our texture
-    std::unique_ptr< ::fwRenderOgre::Plane > m_plane;
+    /// Contains the plane on which we will apply our texture.
+    std::unique_ptr< ::fwRenderOgre::Plane > m_plane { nullptr };
 
-    bool m_enableAlpha {false};
+    /// Defines the usage of the transfer function alpha channel.
+    bool m_enableAlpha { false };
 
-    /// The scene node allowing to move the entire negato
+    /// Contains the scene node allowing to move the entire negato.
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
-    /// Defines the filtering type for this negato
-    ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
+    /// Defines the filtering type for this negato.
+    ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
-    /// Stores the current slice index for each axis.
-    std::vector<float> m_currentSliceIndex;
+    /// Contains the current slice index for each axis.
+    std::vector<float> m_currentSliceIndex { 0.f, 0.f, 0.f };
 
-    /// Connections.
-    ::fwCom::Connection m_connection;
-
-    /// Image orientation
+    /// Contains the image orientation.
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
+    /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
 
     using SliceIndexChangedSignalType = ::fwCom::Signal<void()>;
