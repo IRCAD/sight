@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -133,21 +133,21 @@ void SNegato2DCamera::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
+void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
 {
     const auto layer = this->getLayer();
 
-    if(IInteractor::isInLayer(mouseX, mouseY, layer))
+    if(IInteractor::isInLayer(_x, _y, layer))
     {
         const auto* const viewport = layer->getViewport();
         auto* const camera         = layer->getDefaultCamera();
         auto* const camNode        = camera->getParentNode();
 
         constexpr float mouseWheelScale = 0.05f;
-        const float zoomAmount          = static_cast<float>(-delta) * mouseWheelScale;
+        const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
 
         // Compute the mouse's position in the camera's view.
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
+        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
 
         // Zoom in.
         const float orthoHeight    = camera->getOrthoWindowHeight();
@@ -161,7 +161,7 @@ void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
         camera->setOrthoWindowHeight(clampedHeight);
 
         // Compute the mouse's position in the zoomed view.
-        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
+        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
 
         // Translate the camera back to the cursor's previous position.
         camNode->translate(mousePosView - newMousePosView);
@@ -170,9 +170,9 @@ void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
 
 // ----------------------------------------------------------------------------
 
-void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, int x, int y, int dx, int dy)
+void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy)
 {
-    if(m_moveCamera && button == MIDDLE)
+    if(m_moveCamera && _button == MIDDLE)
     {
         const auto layer = this->getLayer();
 
@@ -180,8 +180,8 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, 
         auto* const camNode = camera->getParentNode();
 
         const auto previousMousePosView =
-            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, x - dx, y - dy);
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, x, y);
+            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x - _dx, _y - _dy);
+        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
 
         camNode->translate(mousePosView - previousMousePosView);
     }
@@ -189,10 +189,10 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, 
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton button, Modifier, int x, int y)
+void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y)
 {
     const auto layer = this->getLayer();
-    m_moveCamera = button == MIDDLE && IInteractor::isInLayer(x, y, layer);
+    m_moveCamera = _button == MIDDLE && IInteractor::isInLayer(_x, _y, layer);
 }
 
 //-----------------------------------------------------------------------------
@@ -204,10 +204,10 @@ void SNegato2DCamera::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::keyPressEvent(int key, Modifier, int mouseX, int mouseY)
+void SNegato2DCamera::keyPressEvent(int _key, Modifier, int _x, int _y)
 {
     const auto layer = this->getLayer();
-    if(IInteractor::isInLayer(mouseX, mouseY, layer) && (key == 'R' || key == 'r'))
+    if(IInteractor::isInLayer(_x, _y, layer) && (_key == 'R' || _key == 'r'))
     {
         this->resetCamera();
     }
