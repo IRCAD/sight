@@ -90,13 +90,13 @@ private:
     ::fwRenderQt::data::Coord m_coord;
     std::uint32_t m_size = 0;
     QColor m_color;
-    QGraphicsItemGroup* m_layer = nullptr;
-    QGraphicsRectItem* m_rec    = nullptr;
+    QGraphicsItemGroup* m_layer{nullptr};
+    QGraphicsRectItem* m_rec{nullptr};
     ::fwRenderQt::data::Coord m_oldCoord;
 
-    bool m_pointIsCaptured = false;
-    bool m_autoRefresh     = true;
-    bool m_interaction     = true;
+    bool m_pointIsCaptured{false};
+    bool m_autoRefresh{true};
+    bool m_interaction{true};
     static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     void setDoubleParameter(const double val, std::string key);
 };
