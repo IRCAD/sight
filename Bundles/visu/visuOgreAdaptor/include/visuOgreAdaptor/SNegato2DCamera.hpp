@@ -25,6 +25,7 @@
 #include "visuOgreAdaptor/config.hpp"
 
 #include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwDataTools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/interactor/TrackballInteractor.hpp>
@@ -58,9 +59,11 @@ namespace visuOgreAdaptor
        </service>
    @endcode
  *
- * @subsection Inputs Inputs
- * - \b image [::fwData::Image](optional): image viewed in negato mode, used for auto connections only.
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image](mandatory): image viewed in negato mode, used for auto connections only.
  * Modification signals can be used to reset the camera's position and orientation. Useless without autoConnect="yes".
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel).
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): layer on which the negato camera interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -105,6 +108,12 @@ private:
     /// Does nothing.
     virtual void updating() noexcept final;
 
+    /**
+     * @brief Retrieves the current transfer function.
+     * @param _key Key of the swapped data.
+     */
+    virtual void swapping(const KeyType& _key) override;
+
     /// Removes negato camera interactions from the layer.
     virtual void stopping() final;
 
@@ -117,7 +126,11 @@ private:
     virtual void wheelEvent(Modifier, int _delta, int _x, int _y) final;
 
     /**
-     * @brief Moves the camera along the projection plane.
+     * @brief Interacts with the negato if it was picked by pressing any mouse button.
+     * Interactions will take place while holding down the button. The following actions are available:
+     * - Middle mouse click: moves the camera along the projection plane.
+     * - Right mouse click: adjust the transfer function level and window by moving
+     *                      the mouse up/down and left/right respectively.
      * @param _button Mousse modifier.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
@@ -152,20 +165,39 @@ private:
     /// Resets the camera's zoom.
     void resetCamera();
 
-    /// Sets the camera's orientation to one of the image's axes.
-    void changeOrientation(int, int _to);
+    /**
+     * @brief Sets the camera's orientation to one of the image's axes.
+     * @param _from Origin of the orientation.
+     * @param _to Destination of the orientation.
+     */
+    void changeOrientation(int _from, int _to);
 
     /// Moves the camera backwards outside the scene's bounding box.
     void moveBack();
 
     /// Contains the current interaction status.
-    bool m_moveCamera { false };
+    bool m_isInteracting { false };
+
+    /// Updates the transfer function window and level by adding the input values.
+    void updateWindowing(double _windowDelta, double _levelDelta);
 
     /// Current image orientation.
     Orientation m_currentNegatoOrientation {  ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS };
 
     /// Interaction priority.
     int m_priority { 0 };
+
+    /// Helps interfacing with the transfer function input.
+    ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    /// Stores the transfer function window value at the time the interaction started.
+    double m_initialWindow { 0.f };
+
+    /// Stores the transfer function level value at the time the interaction started.
+    double m_initialLevel { 0.f };
+
+    /// Stores the mouse position at the time the windowing interaction started.
+    ::Ogre::Vector2i m_initialPos { -1, -1 };
 
 };
 
