@@ -88,7 +88,7 @@ protected:
 private:
 
     ::fwRenderQt::data::Coord m_coord;
-    std::uint32_t m_size = 0;
+    std::uint32_t m_size{0};
     QColor m_color;
     QGraphicsItemGroup* m_layer{nullptr};
     QGraphicsRectItem* m_rec{nullptr};
