@@ -37,13 +37,7 @@ namespace adaptor
 const ::fwCom::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 //-----------------------------------------------------------------------------
 
-SSquare::SSquare() noexcept :
-    m_size(0),
-    m_layer(nullptr),
-    m_rec(nullptr),
-    m_pointIsCaptured(false),
-    m_autoRefresh(true),
-    m_interaction(true)
+SSquare::SSquare() noexcept
 {
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SSquare::setDoubleParameter, this);
 }
@@ -68,21 +62,13 @@ void SSquare::configuring()
 
     m_coord.setX( config.get<double>("x") );
     m_coord.setY( config.get<double>("y") );
-    m_size = config.get<std::uint32_t>("size");
+    m_size        = config.get<std::uint32_t>("size");
+    m_autoRefresh = config.get<bool>("autoRefresh", m_autoRefresh);
+    m_interaction = config.get<bool>("interaction", m_interaction);
 
     if ( config.count("color") )
     {
         this->setColor(config.get<std::string>("color"));
-    }
-
-    if (config.count("autoRefresh"))
-    {
-        m_autoRefresh = config.get<bool>("autoRefresh");
-    }
-
-    if (config.count("interaction"))
-    {
-        m_interaction = config.get<bool>("interaction");
     }
 }
 
