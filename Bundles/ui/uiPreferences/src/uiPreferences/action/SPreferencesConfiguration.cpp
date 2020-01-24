@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -335,12 +335,12 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 
 void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select File");
     dialogFile.setDefaultLocation( ::fwData::location::SingleFile::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
 
     const auto result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
