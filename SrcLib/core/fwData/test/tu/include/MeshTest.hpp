@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_UT_MESHTEST_HPP__
-#define __FWDATA_UT_MESHTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -34,12 +33,15 @@ class MeshTest : public CPPUNIT_NS::TestFixture
 {
 private:
     CPPUNIT_TEST_SUITE( MeshTest );
-    CPPUNIT_TEST( allocation );
-    CPPUNIT_TEST( insertion );
+    CPPUNIT_TEST( deprecatedAllocation );
+    CPPUNIT_TEST( deprecatedInsertion );
     CPPUNIT_TEST( colorsNormals );
     CPPUNIT_TEST( texCoords );
     CPPUNIT_TEST( addingArray );
     CPPUNIT_TEST( copy );
+    CPPUNIT_TEST( allocationTest );
+    CPPUNIT_TEST( insertion );
+    CPPUNIT_TEST( iteratorTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,13 +49,15 @@ public:
     void setUp();
     void tearDown();
 
-    void allocation();
-    void insertion();
+    void deprecatedAllocation();
+    void deprecatedInsertion();
     void colorsNormals();
     void texCoords();
     void addingArray();
     void copy();
+    void allocationTest();
+    void insertion();
+    void iteratorTest();
 };
 } //namespace ut
 } //namespace fwData
-#endif // __FWDATA_UT_MESHTEST_HPP__

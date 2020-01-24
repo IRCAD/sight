@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("Mesh writer"))
 {
@@ -81,7 +81,7 @@ void MeshWriter::write()
         [&](vtkObject* caller, long unsigned int, void* )
         {
             auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
-            m_job->doneWork( filter->GetProgress()*100 );
+            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,12 +56,26 @@ public:
             value = val;
             return *this;
         }
+
         //------------------------------------------------------------------------------
 
         type& operator*()
         {
             return value;
         }
+
+        //------------------------------------------------------------------------------
+
+        type operator*() const
+        {
+            return value;
+        }
+
+        operator value_type() const
+        {
+            return value;
+        }
+
         type value;
         static constexpr size_t elementSize{1};
     };
@@ -79,6 +93,11 @@ public:
             g = val[1];
             b = val[2];
             return *this;
+        }
+
+        operator value_type() const
+        {
+            return value_type({r, g, b});
         }
 
         type r;
@@ -101,6 +120,12 @@ public:
             a = val[3];
             return *this;
         }
+
+        operator value_type() const
+        {
+            return value_type({r, g, b, a});
+        }
+
         type r;
         type g;
         type b;
@@ -121,6 +146,12 @@ public:
             r = val[2];
             return *this;
         }
+
+        operator value_type() const
+        {
+            return value_type({b, g, r});
+        }
+
         type b;
         type g;
         type r;
@@ -141,6 +172,12 @@ public:
             a = val[3];
             return *this;
         }
+
+        operator value_type() const
+        {
+            return value_type({b, g, r, a});
+        }
+
         type b;
         type g;
         type r;
@@ -218,6 +255,8 @@ public:
     ImageIteratorBase(ImageType image);
     /// Copy constructor
     ImageIteratorBase(const ImageIteratorBase<FORMAT, false>& other);
+    /// Copy constructor
+    ImageIteratorBase(const ImageIteratorBase<FORMAT, true>& other);
     /// Destructor
     ~ImageIteratorBase();
 
@@ -230,11 +269,11 @@ public:
     /// Increment/Decrement operators
     ImageIteratorBase& operator++();
     ImageIteratorBase operator++(int);
-    ImageIteratorBase& operator+(difference_type index);
+    ImageIteratorBase operator+(difference_type index);
     ImageIteratorBase& operator+=(difference_type index);
     ImageIteratorBase& operator--();
     ImageIteratorBase operator--(int);
-    ImageIteratorBase& operator-(difference_type index);
+    ImageIteratorBase operator-(difference_type index);
     ImageIteratorBase& operator-=(difference_type index);
 
     difference_type operator+(const ImageIteratorBase& other) const;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="square" type="::scene2D::adaptor::SSquare">
-      <config x="20" y="20" size="30" color="blue" zValue="3" />
+      <config x="20" y="20" size="30" color="blue" zValue="3" autoRefresh="false" interaction="false" />
    </service>
    @endcode
  *
@@ -53,7 +53,10 @@ namespace adaptor
  *    - \b y (mandatory): specify y square coordinate
  *    - \b size (mandatory): specify size of the square
  *    - \b zValue (optional, default=0): z value of the layer
- *    - \b color (optional, default black): color of the square
+ *    - \b color (optional, default=black): color of the square
+ *    - \b autoRefresh (optional, default=true): specify if the position is updated as soon as a new position is
+ * received
+ *    - \b interaction (optional, default=true): enable or disable mouse interaction with the square
  *
  * @section Slots Slots
  * -\b setDoubleParameter(double, std::string): set the double parameters 'x' and 'y'
@@ -63,7 +66,7 @@ class SCENE2D_CLASS_API SSquare : public ::fwRenderQt::IAdaptor
 
 public:
 
-    fwCoreServiceMacro(SSquare, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SSquare, ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SSquare() noexcept;
     SCENE2D_API virtual ~SSquare() noexcept;
@@ -85,13 +88,15 @@ protected:
 private:
 
     ::fwRenderQt::data::Coord m_coord;
-    std::uint32_t m_size;
+    std::uint32_t m_size{0};
     QColor m_color;
-    QGraphicsItemGroup* m_layer;
-    QGraphicsRectItem* m_rec;
+    QGraphicsItemGroup* m_layer{nullptr};
+    QGraphicsRectItem* m_rec{nullptr};
     ::fwRenderQt::data::Coord m_oldCoord;
 
-    bool m_pointIsCaptured;
+    bool m_pointIsCaptured{false};
+    bool m_autoRefresh{true};
+    bool m_interaction{true};
     static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     void setDoubleParameter(const double val, std::string key);
 };

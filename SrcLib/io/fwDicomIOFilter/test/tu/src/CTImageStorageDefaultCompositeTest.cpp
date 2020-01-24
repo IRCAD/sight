@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@
 
 #include <fwTest/Data.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomIOFilter::ut::CTImageStorageDefaultCompositeTest );
@@ -60,11 +60,11 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    const std::string filename           = "08-CT-PACS";
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::string filename       = "08-CT-PACS";
+    const std::filesystem::path path = ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           ::boost::filesystem::exists(path));
+                           std::filesystem::exists(path));
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

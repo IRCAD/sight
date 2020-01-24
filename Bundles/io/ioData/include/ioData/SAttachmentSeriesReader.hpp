@@ -26,7 +26,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace ioData
 {

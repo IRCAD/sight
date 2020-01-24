@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,18 +26,16 @@
 
 #include <fwCore/base.hpp>
 
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
+
+#include <fcntl.h>
+#include <filesystem>
 
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/types.h>
+
+#include <unistd.h>
 
 #include <cctype>
 #include <cerrno>
@@ -46,6 +44,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <string>
 
@@ -231,41 +230,48 @@ void PosixMemoryMonitorTools::get_memory_stats( MemInfo& meminfo )
 
 void PosixMemoryMonitorTools::analyseMemInfo( std::string& line, MemInfo& meminfo )
 {
-    ::boost::regex e("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
+    std::regex e("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
     std::string machine_format = "\\3";
     if ( line.find("MemTotal") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         meminfo.total = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("MemFree") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         meminfo.free = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("Buffers") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         meminfo.buffered = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("SwapCached") != std::string::npos ) // Test before => line.find("Cached")
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         meminfo.swapcached = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("Cached") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         meminfo.cached = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("SwapTotal") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         meminfo.swaptotal = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("SwapFree") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         meminfo.swapfree = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
 }
@@ -293,56 +299,66 @@ void PosixMemoryMonitorTools::printStatus( Status& stat )
 
 void PosixMemoryMonitorTools::analyseStatusLine( std::string& line, Status& stat )
 {
-    ::boost::regex e("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
+    std::regex e("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
     std::string machine_format = "\\3";
     if ( line.find("VmPeak") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmPeak = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmSize") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmSize = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmLck") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmLck = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmHWM") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmHWM = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmRSS") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmRSS = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmData") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmData = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmStk") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmStk = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmExe") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmExe = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmLib") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmLib = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmPTE") != std::string::npos )
     {
-        std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
+        std::string size = regex_replace(line, e, machine_format,
+                                         std::regex_constants::match_default | std::regex_constants::format_sed);
         stat.VmPTE = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
 }
@@ -371,8 +387,8 @@ void PosixMemoryMonitorTools::getStatusOfPid( int pid, Status& stat)
 
 void PosixMemoryMonitorTools::getAllStatus( Status& allStat )
 {
-    ::boost::filesystem::path path("/proc");
-    ::boost::regex e("[0-9]+");
+    std::filesystem::path path("/proc");
+    std::regex e("[0-9]+");
 
     allStat.VmPeak = 0;
     allStat.VmSize = 0;
@@ -385,15 +401,15 @@ void PosixMemoryMonitorTools::getAllStatus( Status& allStat )
     allStat.VmLib  = 0;
     allStat.VmPTE  = 0;
 
-    for(    ::boost::filesystem::directory_iterator it(path);
-            it != ::boost::filesystem::directory_iterator();
+    for(    std::filesystem::directory_iterator it(path);
+            it != std::filesystem::directory_iterator();
             ++it )
     {
 
-        if( ::boost::filesystem::is_directory(*it) )
+        if( std::filesystem::is_directory(*it) )
         {
-            ::boost::filesystem::path tmpPath = (*it);
-            std::string dirName = tmpPath.filename().string();
+            std::filesystem::path tmpPath = (*it);
+            std::string dirName           = tmpPath.filename().string();
             if ( regex_match(dirName, e) )
             {
                 int pid = strtoul(dirName.c_str(), NULL, 0);
@@ -418,8 +434,8 @@ void PosixMemoryMonitorTools::getAllStatus( Status& allStat )
 
 void PosixMemoryMonitorTools::printAllStatus()
 {
-    ::boost::filesystem::path path("/proc");
-    ::boost::regex e("[0-9]+");
+    std::filesystem::path path("/proc");
+    std::regex e("[0-9]+");
     int oToMo = 1024 * 1024;
 
     std::uint64_t totalVmPeak = 0;
@@ -433,15 +449,15 @@ void PosixMemoryMonitorTools::printAllStatus()
     std::uint64_t totalVmLib  = 0;
     std::uint64_t totalVmPTE  = 0;
 
-    for(    ::boost::filesystem::directory_iterator it(path);
-            it != ::boost::filesystem::directory_iterator();
+    for(    std::filesystem::directory_iterator it(path);
+            it != std::filesystem::directory_iterator();
             ++it )
     {
 
-        if( ::boost::filesystem::is_directory(*it) )
+        if( std::filesystem::is_directory(*it) )
         {
-            ::boost::filesystem::path tmpPath = (*it);
-            std::string dirName = tmpPath.filename().string();
+            std::filesystem::path tmpPath = (*it);
+            std::string dirName           = tmpPath.filename().string();
             if ( regex_match(dirName, e) )
             {
                 int pid = strtoul(dirName.c_str(), NULL, 0);

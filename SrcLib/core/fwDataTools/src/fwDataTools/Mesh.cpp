@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
 #include "fwDataTools/helper/MeshGetter.hpp"
 #include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/TransformationMatrix3D.hpp"
+
+#include <fwMath/MeshFunctions.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
 
@@ -62,13 +64,15 @@ void Mesh::initRand()
 
 bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell)
 {
-    bool res = true;
-    ::fwDataTools::helper::MeshGetter meshHelper(mesh);
-    ::fwData::Mesh::ConstCellTypesMultiArrayType cellTypes = meshHelper.getCellTypes();
+    bool res            = true;
+    const auto dumpLock = mesh->lock();
 
-    for(::fwData::Mesh::CellTypes type : cellTypes)
+    auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+
+    for(; itr != itrEnd; ++itr)
     {
-        if(type != cell)
+        if(*itr->type != cell)
         {
             return false;
         }
@@ -445,37 +449,46 @@ void Mesh::shakeCellNormals(::fwData::Mesh::sptr mesh)
 
 void Mesh::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 {
-    mesh->allocatePointColors(::fwData::Mesh::RGB);
-
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-
-    ::fwData::Mesh::ColorValueType color[4];
-    size_t numberOfPoints = mesh->getNumberOfPoints();
-    for(size_t i = 0; i < numberOfPoints; ++i)
+    if (!mesh->hasPointColors())
     {
-        color[0] = rand()%256;
-        color[1] = rand()%256;
-        color[2] = rand()%256;
-        meshHelper.setPointColor(i, color);
+        mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
+                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::POINT_COLORS);
+    }
+
+    const auto dumpLock = mesh->lock();
+
+    auto itr          = mesh->begin< ::fwData::iterator::PointIterator >();
+    const auto itrEnd = mesh->end< ::fwData::iterator::PointIterator >();
+
+    for (; itr != itrEnd; ++itr)
+    {
+        itr->rgba->r = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->g = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->b = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->a = static_cast<std::uint8_t>(rand()%256);
     }
 }
 //------------------------------------------------------------------------------
 
 void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 {
-    mesh->allocateCellColors(::fwData::Mesh::RGBA);
-
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-
-    ::fwData::Mesh::ColorValueType color[4];
-    size_t numberOfCells = mesh->getNumberOfCells();
-    for(size_t i = 0; i < numberOfCells; ++i)
+    if (!mesh->hasCellColors())
     {
-        color[0] = rand()%256;
-        color[1] = rand()%256;
-        color[2] = rand()%256;
-        color[3] = rand()%256;
-        meshHelper.setCellColor(i, color);
+        mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
+                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
+    }
+
+    const auto dumpLock = mesh->lock();
+
+    auto itr          = mesh->begin< ::fwData::iterator::CellIterator >();
+    const auto itrEnd = mesh->end< ::fwData::iterator::CellIterator >();
+
+    for (; itr != itrEnd; ++itr)
+    {
+        itr->rgba->r = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->g = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->b = static_cast<std::uint8_t>(rand()%256);
+        itr->rgba->a = static_cast<std::uint8_t>(rand()%256);
     }
 }
 
@@ -483,16 +496,18 @@ void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 
 void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
 {
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-
-    size_t nbPts = mesh->getNumberOfPoints();
-    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     RandFloat randFloat;
-    for(size_t i = 0; i < nbPts; ++i )
+
+    const auto dumpLock = mesh->lock();
+
+    auto itr          = mesh->begin< ::fwData::iterator::PointIterator >();
+    const auto itrEnd = mesh->end< ::fwData::iterator::PointIterator >();
+
+    for (; itr != itrEnd; ++itr)
     {
-        points[i][0] += randFloat()*5;
-        points[i][1] += randFloat()*5;
-        points[i][2] += randFloat()*5;
+        itr->point->x += randFloat()*5;
+        itr->point->y += randFloat()*5;
+        itr->point->z += randFloat()*5;
     }
 }
 
@@ -501,74 +516,60 @@ void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
 void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh,
                       ::fwData::TransformationMatrix3D::csptr t )
 {
-    ::fwDataTools::helper::ArrayGetter arrayHelper(inMesh->getPointsArray());
-    const ::fwData::Mesh::PointValueType* inPoints = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+    const auto inDumpLock  = inMesh->lock();
+    const auto outDumpLock = outMesh->lock();
 
-    ::fwDataTools::helper::Array outArrayHelper(outMesh->getPointsArray());
-    ::fwData::Mesh::PointValueType* outPoints = outArrayHelper.begin< ::fwData::Mesh::PointValueType >();
+    auto inItr = inMesh->begin< ::fwData::iterator::ConstPointIterator >();
+
+    auto itr          = outMesh->begin< ::fwData::iterator::PointIterator >();
+    const auto itrEnd = outMesh->end< ::fwData::iterator::PointIterator >();
 
     const ::glm::dmat4x4 matrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(t);
 
     const size_t numPts = inMesh->getNumberOfPoints();
     SLM_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
 
-    for(size_t i = 0; i < numPts; ++i )
+    SLM_ASSERT("in and out meshes must have the same point normals attribute",
+               (inMesh->hasPointNormals() && outMesh->hasPointNormals()) ||
+               (!inMesh->hasPointNormals() && !outMesh->hasPointNormals()));
+
+    for (; itr != itrEnd; ++itr, ++inItr)
     {
-        const ::glm::vec4 pt(inPoints[i*3], inPoints[i*3 + 1], inPoints[i*3 + 2], 1.);
+        const ::glm::vec4 pt(inItr->point->x, inItr->point->y, inItr->point->z, 1.);
         const ::glm::vec4 transformedPt = matrix * pt;
 
-        outPoints[i*3]     = transformedPt.x;
-        outPoints[i*3 + 1] = transformedPt.y;
-        outPoints[i*3 + 2] = transformedPt.z;
-    }
+        itr->point->x = transformedPt.x;
+        itr->point->y = transformedPt.y;
+        itr->point->z = transformedPt.z;
 
-    auto pointNormalsArray = inMesh->getPointNormalsArray();
-    if(pointNormalsArray != nullptr)
-    {
-        SLM_ASSERT("in and out meshes should have the same number of points normals",
-                   inMesh->getPointNormalsArray()->getSize() == outMesh->getPointNormalsArray()->getSize());
-
-        ::fwDataTools::helper::ArrayGetter pointNormalsArrayHelper(inMesh->getPointNormalsArray());
-        const ::fwData::Mesh::NormalValueType* normals =
-            pointNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
-
-        ::fwDataTools::helper::Array outPointNormalsArrayHelper(outMesh->getPointNormalsArray());
-        ::fwData::Mesh::NormalValueType* outNormals =
-            outPointNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
-
-        for(size_t i = 0; i < numPts; ++i )
+        if (inMesh->hasPointNormals())
         {
-            const ::glm::vec4 normal(normals[i*3], normals[i*3 + 1], normals[i*3 + 2], 0.);
+            const ::glm::vec4 normal(inItr->normal->nx, inItr->normal->ny, inItr->normal->nz, 0.);
             const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * normal);
 
-            outNormals[i*3]     = transformedNormal.x;
-            outNormals[i*3 + 1] = transformedNormal.y;
-            outNormals[i*3 + 2] = transformedNormal.z;
+            itr->normal->nx = transformedNormal.x;
+            itr->normal->ny = transformedNormal.y;
+            itr->normal->nz = transformedNormal.z;
         }
     }
 
-    auto cellNormalsArray = inMesh->getCellNormalsArray();
-    if(cellNormalsArray != nullptr)
+    if(inMesh->hasCellNormals())
     {
-        SLM_ASSERT("in and out meshes should have the same number of cells normals",
-                   inMesh->getPointNormalsArray()->getSize() == outMesh->getPointNormalsArray()->getSize());
+        SLM_ASSERT("out mesh must have normals", outMesh->hasCellNormals());
 
-        ::fwDataTools::helper::ArrayGetter cellNormalsArrayHelper(inMesh->getCellNormalsArray());
-        const ::fwData::Mesh::NormalValueType* normals =
-            cellNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+        auto inCellItr = inMesh->begin< ::fwData::iterator::ConstCellIterator >();
 
-        ::fwDataTools::helper::Array outCellNormalsArrayHelper(outMesh->getCellNormalsArray());
-        ::fwData::Mesh::NormalValueType* outNormals =
-            outCellNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+        auto itrCell          = outMesh->begin< ::fwData::iterator::CellIterator >();
+        const auto itrCellEnd = outMesh->end< ::fwData::iterator::CellIterator >();
 
-        for(size_t i = 0; i < numPts; ++i )
+        for (; itrCell != itrCellEnd; ++itrCell, ++inCellItr)
         {
-            const ::glm::vec4 normal(normals[i*3], normals[i*3 + 1], normals[i*3 + 2], 0.);
+            const ::glm::vec4 normal(inCellItr->normal->nx, inCellItr->normal->ny, inCellItr->normal->nz, 0.);
             const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * normal);
 
-            outNormals[i*3]     = transformedNormal.x;
-            outNormals[i*3 + 1] = transformedNormal.y;
-            outNormals[i*3 + 2] = transformedNormal.z;
+            itrCell->normal->nx = transformedNormal.x;
+            itrCell->normal->ny = transformedNormal.y;
+            itrCell->normal->nz = transformedNormal.z;
         }
     }
 }
@@ -585,34 +586,22 @@ void Mesh::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3
 void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& mesh, const std::uint8_t colorR, const std::uint8_t colorG,
                                const std::uint8_t colorB, const std::uint8_t colorA)
 {
-    ::fwData::Array::sptr itemColors = mesh->getPointColorsArray();
-    SLM_ASSERT("color array must be allocated", itemColors);
+    const auto dumpLock = mesh->lock();
 
-    if ( itemColors && itemColors->getBufferObject() )
+    SLM_ASSERT("color array must be allocated", mesh->hasPointColors());
+
+    auto itr          = mesh->begin< ::fwData::iterator::PointIterator >();
+    const auto itrEnd = mesh->end< ::fwData::iterator::PointIterator >();
+
+    for (; itr != itrEnd; ++itr)
     {
-        ::fwDataTools::helper::Array hArray( itemColors );
-
-        ::fwData::Mesh::ColorValueType* itemColorsBuffer = hArray.begin< ::fwData::Mesh::ColorValueType >();
-
-        fwData::Array::SizeType arraySize = itemColors->getSize();
-
-        const size_t nbrVertex = arraySize[0];
-
-        const size_t nbComponents = itemColors->getNumberOfComponents();
-
-        for (size_t numVertex = 0; numVertex < nbrVertex; ++numVertex)
-        {
-            itemColorsBuffer[numVertex * nbComponents + 0] = colorR;
-            itemColorsBuffer[numVertex * nbComponents + 1] = colorG;
-            itemColorsBuffer[numVertex * nbComponents + 2] = colorB;
-            if (nbComponents == 4)
-            {
-                itemColorsBuffer[numVertex * nbComponents + 3] = colorA;
-            }
-        }
+        itr->rgba->r = colorR;
+        itr->rgba->g = colorG;
+        itr->rgba->b = colorB;
+        itr->rgba->a = colorA;
     }
-    ::fwData::Mesh::PointColorsModifiedSignalType::sptr sig;
-    sig = mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
+
+    auto sig = mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
         ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
@@ -623,47 +612,40 @@ void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& _mesh, const std::vec
                                const std::uint8_t _colorR, const std::uint8_t _colorG, const std::uint8_t _colorB,
                                const std::uint8_t _colorA)
 {
-    ::fwDataTools::helper::ArrayGetter helperCells(_mesh->getCellDataArray());
-    const ::fwData::Mesh::CellValueType* cellsMesh = helperCells.begin< ::fwData::Mesh::CellValueType >();
+    const auto dumpLock = _mesh->lock();
 
-    ::fwData::Array::sptr itemColors = _mesh->getPointColorsArray();
-    SLM_ASSERT("color array must be allocated", itemColors);
+    auto itrCell          = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto itrCellEnd = _mesh->end< ::fwData::iterator::ConstCellIterator >();
 
-    ::fwDataTools::helper::Array hArray( itemColors );
+    auto itrPoint = _mesh->begin< ::fwData::iterator::PointIterator >();
 
-    ::fwData::Mesh::ColorValueType* itemColorsBuffer =
-        static_cast< ::fwData::Mesh::ColorValueType* >( hArray.getBuffer() );
-
-    const size_t nbrTriangle  = _vectorNumTriangle.size();
-    const size_t nbComponents = itemColors->getNumberOfComponents();
-
-    for (size_t numTriangle = 0; numTriangle < nbrTriangle; ++numTriangle)
+    for (size_t index : _vectorNumTriangle)
     {
-        const size_t indiceTriangle = _vectorNumTriangle[numTriangle];
+        auto cell                        = itrCell + static_cast<std::ptrdiff_t>(index);
+        const std::ptrdiff_t indexPoint0 = static_cast< std::ptrdiff_t>(cell->pointIdx[0]);
+        const std::ptrdiff_t indexPoint1 = static_cast< std::ptrdiff_t>(cell->pointIdx[1]);
+        const std::ptrdiff_t indexPoint2 = static_cast< std::ptrdiff_t>(cell->pointIdx[2]);
 
-        const size_t indexPoint0 = cellsMesh[indiceTriangle * 3 + 0];
-        const size_t indexPoint1 = cellsMesh[indiceTriangle * 3 + 1];
-        const size_t indexPoint2 = cellsMesh[indiceTriangle * 3 + 2];
+        auto point1 = itrPoint + indexPoint0;
+        auto point2 = itrPoint + indexPoint1;
+        auto point3 = itrPoint + indexPoint2;
 
-        itemColorsBuffer[indexPoint0 * nbComponents + 0] = _colorR;
-        itemColorsBuffer[indexPoint0 * nbComponents + 1] = _colorG;
-        itemColorsBuffer[indexPoint0 * nbComponents + 2] = _colorB;
+        point1->rgba->r = _colorR;
+        point1->rgba->g = _colorG;
+        point1->rgba->b = _colorB;
+        point1->rgba->a = _colorA;
 
-        itemColorsBuffer[indexPoint1 * nbComponents + 0] = _colorR;
-        itemColorsBuffer[indexPoint1 * nbComponents + 1] = _colorG;
-        itemColorsBuffer[indexPoint1 * nbComponents + 2] = _colorB;
+        point2->rgba->r = _colorR;
+        point2->rgba->g = _colorG;
+        point2->rgba->b = _colorB;
+        point2->rgba->a = _colorA;
 
-        itemColorsBuffer[indexPoint2 * nbComponents + 0] = _colorR;
-        itemColorsBuffer[indexPoint2 * nbComponents + 1] = _colorG;
-        itemColorsBuffer[indexPoint2 * nbComponents + 2] = _colorB;
-
-        if (nbComponents == 4)
-        {
-            itemColorsBuffer[indexPoint0 * nbComponents + 3] = _colorA;
-            itemColorsBuffer[indexPoint1 * nbComponents + 3] = _colorA;
-            itemColorsBuffer[indexPoint2 * nbComponents + 3] = _colorA;
-        }
+        point3->rgba->r = _colorR;
+        point3->rgba->g = _colorG;
+        point3->rgba->b = _colorB;
+        point3->rgba->a = _colorA;
     }
+
     ::fwData::Mesh::PointColorsModifiedSignalType::sptr sig;
     sig = _mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
         ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
@@ -679,30 +661,22 @@ void Mesh::colorizeMeshCells(
     const std::uint8_t colorB,
     const std::uint8_t colorA)
 {
-    ::fwData::Array::sptr itemColors = mesh->getCellColorsArray();
-    SLM_ASSERT("color array must be allocated", itemColors);
+    const auto dumpLock = mesh->lock();
 
-    ::fwDataTools::helper::Array hArray( itemColors );
+    SLM_ASSERT("color array must be allocated", mesh->hasCellColors());
 
-    ::fwData::Mesh::ColorValueType* itemColorsBuffer =
-        static_cast< ::fwData::Mesh::ColorValueType* >( hArray.getBuffer() );
+    auto itr          = mesh->begin< ::fwData::iterator::CellIterator >();
+    const auto itrEnd = mesh->end< ::fwData::iterator::CellIterator >();
 
-    size_t triangleNbr        = mesh->getNumberOfCells();
-    const size_t nbComponents = itemColors->getNumberOfComponents();
-
-    for (size_t triangleNum = 0; triangleNum < triangleNbr; ++triangleNum)
+    for (; itr != itrEnd; ++itr)
     {
-        itemColorsBuffer[triangleNum * nbComponents + 0] = colorR;
-        itemColorsBuffer[triangleNum * nbComponents + 1] = colorG;
-        itemColorsBuffer[triangleNum * nbComponents + 2] = colorB;
-        if (nbComponents == 4)
-        {
-            itemColorsBuffer[triangleNum * nbComponents + 3] = colorA;
-        }
+        itr->rgba->r = colorR;
+        itr->rgba->g = colorG;
+        itr->rgba->b = colorB;
+        itr->rgba->a = colorA;
     }
 
-    ::fwData::Mesh::CellColorsModifiedSignalType::sptr sig;
-    sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
+    auto sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
         ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
@@ -717,34 +691,86 @@ void Mesh::colorizeMeshCells(
     const std::uint8_t colorB,
     const std::uint8_t colorA)
 {
-    ::fwData::Array::sptr itemColors = mesh->getCellColorsArray();
-    SLM_ASSERT("color array must be allocated", itemColors);
+    const auto dumpLock = mesh->lock();
 
-    ::fwDataTools::helper::Array hArray( itemColors );
+    auto itrCell          = mesh->begin< ::fwData::iterator::CellIterator >();
+    const auto itrCellEnd = mesh->end< ::fwData::iterator::CellIterator >();
 
-    ::fwData::Mesh::ColorValueType* itemColorsBuffer =
-        static_cast< ::fwData::Mesh::ColorValueType* >( hArray.getBuffer() );
-
-    const size_t triangleNbr  = triangleIndexVector.size();
-    const size_t nbComponents = itemColors->getNumberOfComponents();
-
-    for (size_t triangleNum = 0; triangleNum < triangleNbr; ++triangleNum)
+    for (size_t index : triangleIndexVector)
     {
-        const size_t triangleIndex = triangleIndexVector[triangleNum];
-        itemColorsBuffer[triangleIndex * nbComponents + 0] = colorR;
-        itemColorsBuffer[triangleIndex * nbComponents + 1] = colorG;
-        itemColorsBuffer[triangleIndex * nbComponents + 2] = colorB;
-        if (nbComponents == 4)
-        {
-            itemColorsBuffer[triangleIndex * nbComponents + 3] = colorA;
-        }
+        auto cell = itrCell + static_cast<std::ptrdiff_t>(index);
+
+        cell->rgba->r = colorR;
+        cell->rgba->g = colorG;
+        cell->rgba->b = colorB;
+        cell->rgba->a = colorA;
     }
 
-    ::fwData::Mesh::CellColorsModifiedSignalType::sptr sig;
-    sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
+    auto sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
         ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
     sig->asyncEmit();
 }
+
+//------------------------------------------------------------------------------
+
+bool Mesh::isClosed(const ::fwData::Mesh::csptr& mesh)
+{
+    bool isClosed = true;
+
+    typedef std::pair< ::fwData::Mesh::Id, ::fwData::Mesh::Id >  Edge;
+    typedef std::map< Edge, int >  EdgeHistogram;
+    EdgeHistogram edgesHistogram;
+
+    const auto dumpLock = mesh->lock();
+
+    auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto itrEnd = mesh->end < ::fwData::iterator::ConstCellIterator >();
+
+    size_t count = 0;
+    for (; itr != itrEnd; ++itr)
+    {
+        ++count;
+        const auto nbPoints = itr->nbPoints;
+        for (size_t i = 0; i < nbPoints-1; ++i)
+        {
+            const auto edge1 = ::fwMath::makeOrderedPair(itr->pointIdx[i], itr->pointIdx[i+1]);
+
+            if (edgesHistogram.find(edge1) == edgesHistogram.end())
+            {
+                edgesHistogram[edge1] = 1;
+            }
+            else
+            {
+                ++edgesHistogram[edge1];
+            }
+        }
+        if (nbPoints > 2)
+        {
+            const auto edge2 = ::fwMath::makeOrderedPair(itr->pointIdx[0], itr->pointIdx[nbPoints-1]);
+
+            if (edgesHistogram.find(edge2) == edgesHistogram.end())
+            {
+                edgesHistogram[edge2] = 1;
+            }
+            else
+            {
+                ++edgesHistogram[edge2];
+            }
+        }
+    }
+
+    for(const EdgeHistogram::value_type& histo : edgesHistogram)
+    {
+        if (histo.second != 2)
+        {
+            isClosed = false;
+            break;
+        }
+    }
+
+    return isClosed;
+}
+
 //------------------------------------------------------------------------------
 
 } // namespace fwDataTools

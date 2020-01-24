@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,6 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/filesystem/path.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDataSet.h>
@@ -65,6 +64,7 @@
 #include <vtkStringArray.h>
 
 #include <exception>
+#include <filesystem>
 
 fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBReader );
 
@@ -73,7 +73,7 @@ namespace vtkGdcmIO
 
 //------------------------------------------------------------------------------
 
-SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_job(::fwJobs::Observer::New("SeriesDB reader"))
@@ -90,7 +90,7 @@ SeriesDBReader::~SeriesDBReader()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB( const ::boost::filesystem::path& dicomDir )
+::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir )
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
@@ -295,7 +295,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
                                 zspacing = vOrigin2[2] - vOrigin1[2];
                                 OSLM_TRACE(
                                     "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " <<
-                                    vOrigin1[2]);
+                                        vOrigin1[2]);
                             }
                             SLM_ERROR_IF("Cannot read: '" + f1 + "' or: '" + f2 +"'", !canRead);
                         }
@@ -483,7 +483,7 @@ void SeriesDBReader::read()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        for(::boost::filesystem::path file :  this->getFiles())
+        for(std::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }
@@ -499,4 +499,3 @@ void SeriesDBReader::read()
 }
 
 } //namespace vtkGdcmIO
-

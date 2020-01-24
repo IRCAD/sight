@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace helper
 void ManualObject::createCylinder(::Ogre::ManualObject* _object,
                                   const std::string& _material,
                                   const ::Ogre::ColourValue& _color,
-                                  float _thickness,
+                                  float _radius,
                                   float _length,
                                   unsigned int _sample)
 {
@@ -44,8 +44,8 @@ void ManualObject::createCylinder(::Ogre::ManualObject* _object,
     const ::Ogre::Quaternion rot( delta, ::Ogre::Vector3::UNIT_X );
     ::Ogre::Vector3 normal = ::Ogre::Quaternion( delta/2.f, ::Ogre::Vector3::UNIT_X ) * ::Ogre::Vector3::UNIT_Y;
 
-    ::Ogre::Vector3 p0(0.f, _thickness, 0.f);
-    ::Ogre::Vector3 p1(_length, _thickness, 0.f);
+    ::Ogre::Vector3 p0(0.f, _radius, 0.f);
+    ::Ogre::Vector3 p1(_length, _radius, 0.f);
     ::Ogre::Vector3 p2 = rot * p0;
     ::Ogre::Vector3 p3 = rot * p1;
 
@@ -101,6 +101,10 @@ void ManualObject::createCylinder(::Ogre::ManualObject* _object,
         normal = rot * normal;
     }
     _object->end();
+
+    _object->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -_radius, -_radius),
+                                                   ::Ogre::Vector3(_length, _radius, _radius)));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +112,7 @@ void ManualObject::createCylinder(::Ogre::ManualObject* _object,
 void ManualObject::createCone(::Ogre::ManualObject* _object,
                               const std::string& _material,
                               const ::Ogre::ColourValue& _color,
-                              float _thickness,
+                              float _radius,
                               float _length,
                               unsigned int _sample)
 {
@@ -117,12 +121,12 @@ void ManualObject::createCone(::Ogre::ManualObject* _object,
     const ::Ogre::Quaternion rot( delta, ::Ogre::Vector3::UNIT_X );
     ::Ogre::Vector3 normal = ::Ogre::Quaternion( delta/2.f, ::Ogre::Vector3::UNIT_X ) * ::Ogre::Vector3::UNIT_Y;
 
-    ::Ogre::Vector3 p0(0.f, _thickness, 0.f);
+    ::Ogre::Vector3 p0(0.f, _radius, 0.f);
     ::Ogre::Vector3 p1(_length, 0, 0.f);
     ::Ogre::Vector3 p2 = rot * p0;
 
     // Compute real normal
-    const ::Ogre::Radian angle(std::atan(_thickness/ _length));
+    const ::Ogre::Radian angle(std::atan(_radius/ _length));
     normal = ::Ogre::Quaternion(angle, ::Ogre::Vector3::UNIT_Z) * normal;
 
     // Create cone
@@ -162,6 +166,9 @@ void ManualObject::createCone(::Ogre::ManualObject* _object,
         normal = rot * normal;
     }
     _object->end();
+
+    _object->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -_radius, -_radius),
+                                                   ::Ogre::Vector3(_length, _radius, _radius)));
 }
 
 //------------------------------------------------------------------------------
@@ -249,6 +256,11 @@ void ManualObject::createCube(::Ogre::ManualObject* _object,
     _object->triangle(22, 23, 20);
 
     _object->end();
+
+    _object->setBoundingBox(::Ogre::AxisAlignedBox(
+                                {-length, -length, -length},
+                                {length, length, length}
+                                ));
 }
 
 //------------------------------------------------------------------------------
@@ -292,6 +304,11 @@ void ManualObject::createSphere(::Ogre::ManualObject* _object,
         }
     }
     _object->end();
+
+    _object->setBoundingBox(::Ogre::AxisAlignedBox(
+                                {-_radius, -_radius, -_radius},
+                                {_radius, _radius, _radius}
+                                ));
 }
 
 } // namespace helper

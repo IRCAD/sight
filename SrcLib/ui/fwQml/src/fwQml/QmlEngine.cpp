@@ -24,12 +24,15 @@
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
+#include <fwRuntime/Runtime.hpp>
+
 #include <QDir>
 #include <QQmlComponent>
 #include <QQuickWindow>
 #include <QString>
 #include <QUrl>
 
+#include <filesystem>
 #include <iostream>
 
 namespace fwQml
@@ -42,10 +45,11 @@ QmlEngine::QmlEngine()
     m_engine = new QQmlApplicationEngine();
 
     // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
-    QDir path("./qml");
-    if (path.exists())
+    const auto runtimePath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+    const auto qmlDir      = runtimePath / "qml";
+    if (std::filesystem::exists(qmlDir))
     {
-        m_engine->addImportPath("./qml");
+        m_engine->addImportPath(QString::fromStdString(qmlDir.string()));
     }
     else
     {
@@ -70,14 +74,14 @@ SPTR(QmlEngine) QmlEngine::getDefault()
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::loadMainComponent(const ::boost::filesystem::path& file)
+void QmlEngine::loadMainComponent(const std::filesystem::path& file)
 {
     m_engine->load(QUrl::fromLocalFile(QString::fromStdString(file.string())));
 }
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QSharedPointer<QQmlContext>& context)
+QObject* QmlEngine::createComponent(const std::filesystem::path& file, QSharedPointer<QQmlContext>& context)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
     return component.create(context.get());
@@ -85,7 +89,7 @@ QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file, QShar
 
 //-----------------------------------------------------------------------------
 
-QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
+QObject* QmlEngine::createComponent(const std::filesystem::path& file)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
     return component.create(m_engine->rootContext());
@@ -93,7 +97,7 @@ QObject* QmlEngine::createComponent(const ::boost::filesystem::path& file)
 
 //-----------------------------------------------------------------------------
 
-void QmlEngine::importModulePath(const ::boost::filesystem::path& path)
+void QmlEngine::importModulePath(const std::filesystem::path& path)
 {
     m_engine->addImportPath(QString::fromStdString(path.string()));
 }

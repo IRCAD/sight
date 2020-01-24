@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -99,68 +99,63 @@ void DataConverterTest::meshConverterTest()
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), mesh2->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), mesh2->getDataSizeInBytes());
 
-    CPPUNIT_ASSERT(mesh->getPointsArray()->getSize() == mesh2->getPointsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellTypesArray()->getSize() == mesh2->getCellTypesArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellDataOffsetsArray()->getSize() == mesh2->getCellDataOffsetsArray()->getSize());
+    CPPUNIT_ASSERT_EQUAL(mesh->hasPointColors(), mesh2->hasPointColors());
+    CPPUNIT_ASSERT_EQUAL(mesh->hasCellColors(), mesh2->hasCellColors());
+    CPPUNIT_ASSERT_EQUAL(mesh->hasPointNormals(), mesh2->hasPointNormals());
+    CPPUNIT_ASSERT_EQUAL(mesh->hasCellNormals(), mesh2->hasCellNormals());
+    CPPUNIT_ASSERT_EQUAL(mesh->hasPointTexCoords(), mesh2->hasPointTexCoords());
+    CPPUNIT_ASSERT_EQUAL(mesh->hasCellTexCoords(), mesh2->hasCellTexCoords());
 
-    CPPUNIT_ASSERT(mesh->getCellDataArray()->getSize() == mesh2->getCellDataArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getPointColorsArray()->getSize() == mesh2->getPointColorsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellColorsArray()->getSize() == mesh2->getCellColorsArray()->getSize());
+    const auto dumpLock = mesh->lock();
 
-    CPPUNIT_ASSERT(mesh->getPointNormalsArray()->getSize() == mesh2->getPointNormalsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellNormalsArray()->getSize() == mesh2->getCellNormalsArray()->getSize());
-
-    CPPUNIT_ASSERT_EQUAL(mesh->getPointNormalsArray()->getNumberOfComponents(),
-                         mesh2->getPointNormalsArray()->getNumberOfComponents());
-
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellNormalsArray()->getNumberOfComponents(),
-                         mesh2->getCellNormalsArray()->getNumberOfComponents());
-
-    // We added an alpha channel in the conversion, there is no way to avoid that currently,
-    // since OpenIGTLink only supports RGBA
-    CPPUNIT_ASSERT_EQUAL(size_t(3), mesh->getPointColorsArray()->getNumberOfComponents());
-    CPPUNIT_ASSERT_EQUAL(size_t(4), mesh2->getPointColorsArray()->getNumberOfComponents());
-
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellColorsArray()->getNumberOfComponents(),
-                         mesh2->getCellColorsArray()->getNumberOfComponents());
-
-    ::fwData::Mesh::PointsMultiArrayType meshPointArray  = meshHelper.getPoints();
-    ::fwData::Mesh::PointsMultiArrayType mesh2PointArray = mesh2Helper.getPoints();
-
-    ::fwData::Mesh::CellTypesMultiArrayType meshCellArray  = meshHelper.getCellTypes();
-    ::fwData::Mesh::CellTypesMultiArrayType mesh2CellArray = mesh2Helper.getCellTypes();
-
-    ::fwData::Mesh::PointColorsMultiArrayType meshPointColorArray  = meshHelper.getPointColors();
-    ::fwData::Mesh::PointColorsMultiArrayType mesh2PointColorArray = mesh2Helper.getPointColors();
-
-    ::fwData::Mesh::PointNormalsMultiArrayType meshPointNormalsArray  = meshHelper.getPointNormals();
-    ::fwData::Mesh::PointNormalsMultiArrayType mesh2PointNormalsArray = mesh2Helper.getPointNormals();
-
-    ::fwData::Mesh::CellColorsMultiArrayType meshCellColorArray  = meshHelper.getCellColors();
-    ::fwData::Mesh::CellColorsMultiArrayType mesh2CellColorArray = mesh2Helper.getCellColors();
-
-    ::fwData::Mesh::CellNormalsMultiArrayType meshCellNormalsArray  = meshHelper.getCellNormals();
-    ::fwData::Mesh::CellNormalsMultiArrayType mesh2CellNormalsArray = mesh2Helper.getCellNormals();
+    auto itrPt  = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    auto itrPt2 = mesh2->begin< ::fwData::iterator::ConstPointIterator >();
 
     for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
     {
-        for (unsigned int j = 0; j < 3; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL(meshPointArray[i][j], mesh2PointArray[i][j]);
-            CPPUNIT_ASSERT_EQUAL(meshPointNormalsArray[i][j], mesh2PointNormalsArray[i][j]);
-            CPPUNIT_ASSERT_EQUAL(meshPointColorArray[i][j], mesh2PointColorArray[i][j]);
-        }
+        CPPUNIT_ASSERT_EQUAL(itrPt->point->x, itrPt2->point->x);
+        CPPUNIT_ASSERT_EQUAL(itrPt->point->y, itrPt2->point->y);
+        CPPUNIT_ASSERT_EQUAL(itrPt->point->z, itrPt2->point->z);
+
+        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->r, itrPt2->rgba->r);
+        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->g, itrPt2->rgba->g);
+        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->b, itrPt2->rgba->b);
+        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->a, itrPt2->rgba->a);
+
+        CPPUNIT_ASSERT_EQUAL(itrPt->normal->nx, itrPt2->normal->nx);
+        CPPUNIT_ASSERT_EQUAL(itrPt->normal->ny, itrPt2->normal->ny);
+        CPPUNIT_ASSERT_EQUAL(itrPt->normal->nz, itrPt2->normal->nz);
+
+        ++itrPt;
+        ++itrPt2;
     }
+
+    auto itrCell  = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    auto itrCell2 = mesh2->begin< ::fwData::iterator::ConstCellIterator >();
 
     for (unsigned int i = 0; i < mesh->getNumberOfCells(); ++i)
     {
-        CPPUNIT_ASSERT_EQUAL(meshCellArray[i], mesh2CellArray[i]);
-        for (unsigned int j = 0; j < 3; j++)
+        CPPUNIT_ASSERT_EQUAL(itrCell->nbPoints, itrCell2->nbPoints);
+        CPPUNIT_ASSERT_EQUAL(*itrCell->type, *itrCell2->type);
+        CPPUNIT_ASSERT_EQUAL(*itrCell->offset, *itrCell2->offset);
+
+        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->r, itrCell2->rgba->r);
+        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->g, itrCell2->rgba->g);
+        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->b, itrCell2->rgba->b);
+        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->a, itrCell2->rgba->a);
+
+        CPPUNIT_ASSERT_EQUAL(itrCell->normal->nx, itrCell2->normal->nx);
+        CPPUNIT_ASSERT_EQUAL(itrCell->normal->ny, itrCell2->normal->ny);
+        CPPUNIT_ASSERT_EQUAL(itrCell->normal->nz, itrCell2->normal->nz);
+
+        for (unsigned int j = 0; j < itrCell->nbPoints; j++)
         {
-            CPPUNIT_ASSERT_EQUAL(meshCellColorArray[i][j], mesh2CellColorArray[i][j]);
-            CPPUNIT_ASSERT_EQUAL(meshCellNormalsArray[i][j], mesh2CellNormalsArray[i][j]);
+            CPPUNIT_ASSERT_EQUAL(itrCell->pointIdx[j], itrCell2->pointIdx[j]);
         }
+        ++itrCell;
+        ++itrCell2;
     }
 }
 
@@ -196,13 +191,13 @@ void DataConverterTest::imageConverterTest()
     exclude.insert("spacing.2");
     exclude.insert("origin.2");
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[0], image2->getSpacing()[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[1], image2->getSpacing()[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2], image2->getSpacing()[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[0], image2->getSpacing2()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[1], image2->getSpacing2()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[2], image2->getSpacing2()[2], epsilon);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[0], image2->getOrigin()[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[1], image2->getOrigin()[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[2], image2->getOrigin()[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[0], image2->getOrigin2()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[1], image2->getOrigin2()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[2], image2->getOrigin2()[2], epsilon);
 
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 

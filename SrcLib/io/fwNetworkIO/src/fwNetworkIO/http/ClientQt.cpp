@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,7 @@
 #include <fwTools/System.hpp>
 #include <fwTools/UUID.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
+#include <filesystem>
 #include <QList>
 #include <QtNetwork>
 
@@ -85,8 +84,8 @@ std::string ClientQt::getFile(Request::sptr request)
     QObject::connect(reply, QOverload<QNetworkReply::NetworkError>::of(
                          &QNetworkReply::error), this, &ClientQt::processError);
 
-    ::boost::filesystem::path folderPath = ::fwTools::System::getTemporaryFolder();
-    ::boost::filesystem::path filePath   = folderPath / ::fwTools::UUID::generateUUID();
+    std::filesystem::path folderPath = ::fwTools::System::getTemporaryFolder();
+    std::filesystem::path filePath   = folderPath / ::fwTools::UUID::generateUUID();
 
     QFile file(filePath.string().c_str());
 

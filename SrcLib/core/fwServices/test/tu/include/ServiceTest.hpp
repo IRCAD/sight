@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,6 @@ namespace ut
 class ServiceTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ServiceTest );
-CPPUNIT_TEST( testServiceCreation );
 CPPUNIT_TEST( testServiceConfiguration );
 CPPUNIT_TEST( testServiceCreationWithMultipleData );
 CPPUNIT_TEST( testServiceCreationWithTemplateMethods );
@@ -57,9 +56,6 @@ public:
     void tearDown();
 
     // fonctions de tests
-
-    /// Test add and remove service
-    void testServiceCreation();
 
     /// Test to configure a service
     void testServiceConfiguration();

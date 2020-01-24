@@ -28,8 +28,7 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QPointer>
 #include <QPushButton>
 
@@ -83,7 +82,7 @@ class GUIQT_CLASS_API SSignalButton : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SSignalButton, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SSignalButton, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     GUIQT_API SSignalButton() noexcept;
@@ -156,8 +155,8 @@ private:
 
     std::string m_text; /// Button's text
     std::string m_text2; /// Button's text when it is checked
-    ::boost::filesystem::path m_icon; /// Path of the button's icon
-    ::boost::filesystem::path m_icon2; /// Path of the button's icon displayed when it is checked
+    std::filesystem::path m_icon; /// Path of the button's icon
+    std::filesystem::path m_icon2; /// Path of the button's icon displayed when it is checked
     bool m_checkable; /// If true, the button is checkable
     bool m_checkAtStart; /// If true, the button is checked at start
     unsigned int m_iconWidth; /// icon width

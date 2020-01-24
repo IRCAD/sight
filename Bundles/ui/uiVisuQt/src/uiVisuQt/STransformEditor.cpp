@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,8 @@
 
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -31,8 +33,6 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <boost/regex.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -45,10 +45,12 @@
 #include <QString>
 #include <QVBoxLayout>
 
+#include <regex>
+
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +79,7 @@ STransformEditor::~STransformEditor() noexcept
 
 void STransformEditor::configuring()
 {
-    static const ::boost::regex s_REGEX("[xyz][xyz]?[xyz]?");
+    static const std::regex s_REGEX("[xyz][xyz]?[xyz]?");
 
     this->initialize();
 
@@ -93,7 +95,7 @@ void STransformEditor::configuring()
     {
         m_rotation = "xyz";
     }
-    else if( ::boost::regex_match(rotation, s_REGEX) )
+    else if( std::regex_match(rotation, s_REGEX) )
     {
         m_rotation = rotation;
     }
@@ -115,7 +117,7 @@ void STransformEditor::configuring()
     {
         m_translation = "xyz";
     }
-    else if( ::boost::regex_match(translation, s_REGEX) )
+    else if( std::regex_match(translation, s_REGEX) )
     {
         m_translation = translation;
     }
@@ -240,7 +242,7 @@ void STransformEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void STransformEditor::onSliderChanged(int value)
+void STransformEditor::onSliderChanged(int)
 {
     ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
@@ -257,6 +259,7 @@ void STransformEditor::onSliderChanged(int value)
 
     mat[3] = ::glm::dvec4(tx, ty, tz, 1.);
 
+    ::fwData::mt::ObjectWriteLock lock(matrix);
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
 
     for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
@@ -289,6 +292,8 @@ void STransformEditor::updateFromMatrix()
     ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
     SLM_ASSERT("Unable to get matrix", matrix);
+
+    ::fwData::mt::ObjectReadLock lock(matrix);
     const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
 
     const ::glm::dquat quat(mat);

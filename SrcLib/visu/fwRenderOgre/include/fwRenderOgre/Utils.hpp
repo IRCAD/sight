@@ -70,7 +70,7 @@ public:
      *        In this case, you can call this method in the Plugin.cpp file of this Bundle
      * @param path Relative path to the ressource.cfg file from a specific Bundle
      */
-    FWRENDEROGRE_API static void addResourcesPath(const ::boost::filesystem::path& path);
+    FWRENDEROGRE_API static void addResourcesPath(const std::filesystem::path& path);
 
     /**
      * @brief getOgreRoot
@@ -160,6 +160,10 @@ public:
     /// Copies an ogre matrix to a Sight matrix.
     FWRENDEROGRE_API static void copyOgreMxToTM3D(const ::Ogre::Matrix4& _mx,
                                                   const ::fwData::TransformationMatrix3D::sptr& _tm3d);
+
+    /// Copies the image's spacing and origin into Ogre vectors.
+    FWRENDEROGRE_API static std::pair< ::Ogre::Vector3, ::Ogre::Vector3 >
+    convertSpacingAndOrigin(const ::fwData::Image::csptr& _img);
 
 private:
 

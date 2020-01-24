@@ -56,8 +56,8 @@
 #include <fwZip/ReadZipArchive.hpp>
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/path.hpp>
+
+#include <filesystem>
 
 namespace ioAtoms
 {
@@ -66,11 +66,10 @@ fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::fwData::Object )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
-const SReader::FileExtension2NameType SReader::s_EXTENSIONS
-    = ::boost::assign::map_list_of(".xml", "XML")
-          (".xmlz", "Zipped XML")
-          (".json", "JSON")
-          (".jsonz", "Zipped JSON");
+const SReader::FileExtension2NameType SReader::s_EXTENSIONS = { {".xml", "XML"},
+                                                                { ".xmlz", "Zipped XML"},
+                                                                { ".json", "JSON"},
+                                                                { ".jsonz", "Zipped JSON"} };
 
 //-----------------------------------------------------------------------------
 
@@ -220,10 +219,10 @@ void SReader::updating()
 
         try
         {
-            const ::boost::filesystem::path& filePath  = this->getFile();
-            const ::boost::filesystem::path folderPath = filePath.parent_path();
-            const ::boost::filesystem::path filename   = filePath.filename();
-            std::string extension                      = ::boost::filesystem::extension(filePath);
+            const std::filesystem::path& filePath  = this->getFile();
+            const std::filesystem::path folderPath = filePath.parent_path();
+            const std::filesystem::path filename   = filePath.filename();
+            std::string extension                  = filePath.extension().string();
 
             FW_RAISE_IF( "Unable to guess file format (missing extension)", extension.empty() );
 
@@ -244,7 +243,7 @@ void SReader::updating()
 
                     // Read atom
                     ::fwZip::IReadArchive::sptr readArchive;
-                    ::boost::filesystem::path archiveRootName;
+                    std::filesystem::path archiveRootName;
                     ::fwAtomsBoostIO::FormatType format = ::fwAtomsBoostIO::UNSPECIFIED;
 
                     if ( extension == ".json" )
@@ -444,7 +443,7 @@ void SReader::notificationOfUpdate()
 
 void SReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);

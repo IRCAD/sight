@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwCom/Slots.hpp>
 
 #include <fwRenderOgre/ILight.hpp>
-#include <fwRenderOgre/ITransformable.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -47,7 +46,6 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b setThetaOffset(float): Called when the theta offset is changed and moves the light accordingly.
  * - \b setPhiOffset(float): Called when the phi offset is changed and moves the light accordingly.
- * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -57,154 +55,196 @@ namespace visuOgreAdaptor
         <config name="sceneLight" transform="..." switchedOn="yes" thetaOffset="30.5" phiOffset="45" />
     </service>
  * @endcode
+ *
  * @subsection In-Out In-Out
  * - \b diffuseColor [::fwData::Color]: diffuse color of the light.
  * - \b specularColor [::fwData::Color]: specular color of the light.
+ *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the light's layer.
  * - \b name (mandatory): defines a name for the associated Ogre light.
- * - \b transform (optional): transform applied to the frustum's scene node
+ * - \b transform (optional): transform applied to the frustum's scene node.
  * - \b switchedOn (optional, bool, default="yes"): defines if the light is activated or not.
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
-class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight,
-                                         public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight
 {
 
 public:
 
-    fwCoreServiceMacro(SLight, ::fwRenderOgre::ILight);
+    fwCoreServiceMacro(SLight, ::fwRenderOgre::ILight)
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_X_OFFSET_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    /** @} */
-
-    /// Constructor.
+    /// Creates the service.
     VISUOGREADAPTOR_API SLight() noexcept;
 
-    /// Factory Constructor.
+    /// Creates the service.
     VISUOGREADAPTOR_API SLight(::fwRenderOgre::ILight::Key key);
 
-    /// Destructor. Does nothing
+    /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SLight() noexcept;
 
-    /// Connect ::fwData::Object::s_MODIFIED_SIG of all data to s_UPDATE_SLOT
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    /**
+     * @brief Gets the name of the light.
+     * @return The name of the light.
+     */
+    VISUOGREADAPTOR_API virtual const std::string& getName() const override final;
 
-protected:
-    /// Starting method. Do nothing
-    VISUOGREADAPTOR_API void starting() override;
+    /**
+     * @brief Sets the name of the light.
+     * @param _name The new light name.
+     */
+    VISUOGREADAPTOR_API virtual void setName(const std::string& _name) override final;
 
-    /// Stopping method
-    VISUOGREADAPTOR_API void stopping() override;
+    /**
+     * @brief Gets the type of the light.
+     * @return The light type.
+     */
+    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const override final;
 
-    /// Configures the service.
-    VISUOGREADAPTOR_API void configuring() override;
+    /**
+     * @brief Sets the type of the light.
+     * @param _type The new light type.
+     */
+    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type) override final;
 
-    /// Updates the light position and orientation
-    VISUOGREADAPTOR_API void updating() override;
+    /**
+     * @brief Gets the diffuse color of the light.
+     * @return The light diffuse color.
+     */
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const override final;
 
-    /// Light name getter.
-    VISUOGREADAPTOR_API virtual const std::string& getName() const override;
-
-    /// Light name setter.
-    VISUOGREADAPTOR_API virtual void setName(const std::string& _name) override;
-
-    /// Light type getter.
-    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const override;
-
-    /// Light type setter.
-    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type) override;
-
-    /// Diffuse color setter using fwData::Color.
+    /**
+     * @brief Sets the diffuse color of the light.
+     * @param _diffuseColor The new light diffuse color.
+     */
     VISUOGREADAPTOR_API void setDiffuseColor(::fwData::Color::sptr _diffuseColor);
 
-    /// Diffuse color getter.
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const override;
+    /**
+     * @brief Sets the diffuse color of the light.
+     * @param _diffuseColor The new light diffuse color.
+     */
+    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override final;
 
-    /// Diffuse color setter using Ogre::ColourValue.
-    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override;
+    /**
+     * @brief Gets the specular color of the light.
+     * @return The light specular color.
+     */
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const override final;
 
-    /// Specular color setter using fwData::Color.
+    /**
+     * @brief Sets the specular color of the light.
+     * @param _specularColor The new light specular color.
+     */
     VISUOGREADAPTOR_API void setSpecularColor(::fwData::Color::sptr _specularColor);
 
-    /// Specular color getter.
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const override;
+    /**
+     * @brief Sets the specular color of the light.
+     * @param _specularColor The new light specular color.
+     */
+    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override final;
 
-    /// Specular color setter using Ogre::ColourValue.
-    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override;
+    /**
+     * @brief Gets the light activation state.
+     * @return The light activation state.
+     */
+    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const override final;
+
+    /**
+     * @brief Sets the light activation state.
+     * @param _on The light new activation state.
+     */
+    VISUOGREADAPTOR_API virtual void switchOn(bool _on) override final;
+
+    /**
+     * @brief Gets the theta offset of the light (used for directional light).
+     * @return The theta offset of the light.
+     */
+    VISUOGREADAPTOR_API virtual float getThetaOffset() const override final;
+
+    /**
+     * @brief Sets the theta offset of the light (used for directional light).
+     * @param _thetaOffset The new theta offset of the light.
+     */
+    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override final;
+
+    /**
+     * @brief Gets the phi offset of the light (used for directional light).
+     * @return The phi offset of the light.
+     */
+    VISUOGREADAPTOR_API virtual float getPhiOffset() const override final;
+
+    /**
+     * @brief Sets the phi offset of the light (used for directional light).
+     * @param _phiOffset The new phi offset of the light.
+     */
+    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override final;
+
+    /**
+     * @brief Indicates if the light is attached to a parent node or not.
+     * @return True if the light is attached.
+     */
+    [[deprecated("Deprecated method. Removed in sight 21.0")]]
+    VISUOGREADAPTOR_API virtual bool isOrphanNode() const override final;
 
     /// Parent tranform id setter.
+    [[deprecated("Deprecated method. Removed in sight 21.0")]]
     VISUOGREADAPTOR_API virtual void setParentTransformName(
-        const fwRenderOgre::SRender::OgreObjectIdType&) override;
-
-    /// Light activation flag getter.
-    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const override;
-
-    /// Light activation flag setter.
-    VISUOGREADAPTOR_API virtual void switchOn(bool _on) override;
-
-    /// Theta offset getter.
-    VISUOGREADAPTOR_API virtual float getThetaOffset() const override;
-
-    /// Theta offset setter.
-    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override;
-
-    /// Phi offset getter.
-    VISUOGREADAPTOR_API virtual float getPhiOffset() const override;
-
-    /// Phi offset setter.
-    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override;
-
-    /// Indicates if the light is attached to a parent node or not.
-    VISUOGREADAPTOR_API virtual bool isOrphanNode() const override;
+        const fwRenderOgre::SRender::OgreObjectIdType&) override final;
 
 private:
 
-    void setDoubleParameter(double _val, std::string _key);
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to ::visuOgreAdaptor::SLight::s_UPDATE_SLOT
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to ::visuOgreAdaptor::SLight::s_UPDATE_SLOT
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to ::visuOgreAdaptor::SLight::s_UPDATE_SLOT
+     */
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
 
-    /// Creates a transform Service, and attaches it to a corresponding scene node in the scene.
-    void createTransformService();
+    /// Configures the service.
+    virtual void configuring() override final;
+
+    /// Adds a new light to the scene manager.
+    virtual void starting() override final;
+
+    /// Updates the light position and orientation.
+    virtual void updating() override final;
+
+    /// Removes the light from the scene manager.
+    virtual void stopping() override final;
 
     /// Ogre light managed by this adaptor.
-    ::Ogre::Light* m_light;
+    ::Ogre::Light* m_light {nullptr};
 
     /// Name of the associated Ogre light.
     std::string m_lightName;
 
     /// Type of the associated Ogre light.
-    ::Ogre::Light::LightTypes m_lightType;
+    ::Ogre::Light::LightTypes m_lightType {::Ogre::Light::LT_DIRECTIONAL};
 
     /// Diffuse color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightDiffuseColor;
+    ::fwData::Color::sptr m_lightDiffuseColor {nullptr};
 
     /// Specular color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightSpecularColor;
-
-    /// If we can't retrieve the parent transform adaptor, we will use a scene node without any parent.
-    bool m_useOrphanNode;
+    ::fwData::Color::sptr m_lightSpecularColor {nullptr};
 
     /// Light activation flag.
-    bool m_switchedOn;
+    bool m_switchedOn {true};
 
     /// Angle in degrees defining the rotation of the light around x axis.
-    float m_thetaOffset;
+    float m_thetaOffset {0.f};
 
     /// Angle in degrees defining the rotation of the light around y axis.
-    float m_phiOffset;
+    float m_phiOffset {0.f};
 
     /// Node used to attach the light
     ::Ogre::SceneNode* m_lightNode {nullptr};
 };
 
 //------------------------------------------------------------------------------
-// Inline method(s)
 
 inline const std::string& SLight::getName() const
 {
@@ -264,8 +304,8 @@ inline void SLight::setSpecularColor(::fwData::Color::sptr _specularColor)
 
 inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _id)
 {
+    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
     this->setTransformId(_id);
-    m_useOrphanNode = false;
 }
 
 //------------------------------------------------------------------------------
@@ -293,7 +333,8 @@ inline float SLight::getPhiOffset() const
 
 inline bool SLight::isOrphanNode() const
 {
-    return m_useOrphanNode;
+    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
+    return false;
 }
 
 //------------------------------------------------------------------------------

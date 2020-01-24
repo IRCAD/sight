@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_IO_BUNDLEDESCRIPTORREADER_HPP__
-#define __FWRUNTIME_IO_BUNDLEDESCRIPTORREADER_HPP__
+#pragma once
 
 #if defined(__GNUC__)
 #pragma GCC visibility push(default)
 #endif
 #include <string>
 #include <vector>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <libxml/parser.h>
 #if defined(__GNUC__)
 #pragma GCC visibility pop
@@ -66,7 +65,7 @@ struct BundleDescriptorReader
      *
      * @return      a shared pointer to the created bundle
      */
-    FWRUNTIME_API static std::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location);
+    FWRUNTIME_API static std::shared_ptr<Bundle> createBundle(const std::filesystem::path& location);
 
     /**
      * @brief       Creates all bundles that are found at the given location.
@@ -75,7 +74,7 @@ struct BundleDescriptorReader
      *
      * @return      a container with all created bundles
      */
-    FWRUNTIME_API static const BundleContainer createBundles(const boost::filesystem::path& location);
+    FWRUNTIME_API static const BundleContainer createBundles(const std::filesystem::path& location);
 
     /**
      * @brief   Processes a configuration element XML node.
@@ -154,7 +153,7 @@ struct BundleDescriptorReader
          * @return  a pointer to the created bundle
          */
         static std::shared_ptr<Bundle> processPlugin(xmlNodePtr node,
-                                                     const boost::filesystem::path& location);
+                                                     const std::filesystem::path& location);
 
         /**
          * Processes a node that is a requirement
@@ -169,5 +168,3 @@ struct BundleDescriptorReader
 } // namespace io
 
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_IO_BUNDLEDESCRIPTORREADER_HPP__

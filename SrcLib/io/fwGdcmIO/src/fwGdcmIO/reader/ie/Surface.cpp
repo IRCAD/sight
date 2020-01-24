@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,8 +38,6 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <boost/algorithm/clamp.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 // Removes RGB macro defined in windows.h
 // to avoid conflicts in gdcmSurfaceHelper.h
@@ -77,7 +75,7 @@ Surface::~Surface()
 
 //------------------------------------------------------------------------------
 
-bool Surface::loadSegmentedPropertyRegistry(const ::boost::filesystem::path& filepath)
+bool Surface::loadSegmentedPropertyRegistry(const std::filesystem::path& filepath)
 {
     return m_segmentedPropertyRegistry.readSegmentedPropertyRegistryFile(filepath, true, m_logger);
 }

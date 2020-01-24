@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,13 +38,15 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/tokenizer.hpp>
+
+#include <filesystem>
+#include <fstream>
 
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL);
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL)
 
 static const ::fwServices::IService::KeyType s_MATRIXTL = "matrixTL";
 
@@ -131,7 +133,7 @@ void SMatricesReader::starting()
 
 void SMatricesReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a csv file to read" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
@@ -143,9 +145,9 @@ void SMatricesReader::configureWithIHM()
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        this->setFile(_sDefaultPath);
+        this->setFile(result->getPath());
 
         if(nullptr != m_filestream)
         {

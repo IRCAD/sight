@@ -30,8 +30,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 namespace fwGui
 {
 
@@ -69,7 +67,30 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("border") )
             {
                 std::string border = view->getExistingAttributeValue("border");
-                vi.m_border = ::boost::lexical_cast< int >(border);
+                vi.m_border = std::stoi(border);
+            }
+            else
+            {
+                if( view->hasAttribute("leftBorder") )
+                {
+                    const std::string border = view->getExistingAttributeValue("leftBorder");
+                    vi.m_leftBorder = std::stoi(border);
+                }
+                if( view->hasAttribute("topBorder") )
+                {
+                    const std::string border = view->getExistingAttributeValue("topBorder");
+                    vi.m_topBorder = std::stoi(border);
+                }
+                if( view->hasAttribute("rightBorder") )
+                {
+                    const std::string border = view->getExistingAttributeValue("rightBorder");
+                    vi.m_rightBorder = std::stoi(border);
+                }
+                if( view->hasAttribute("bottomBorder") )
+                {
+                    const std::string border = view->getExistingAttributeValue("bottomBorder");
+                    vi.m_bottomBorder = std::stoi(border);
+                }
             }
             if( view->hasAttribute("caption") )
             {
@@ -78,12 +99,12 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("minWidth") )
             {
                 std::string width = view->getExistingAttributeValue("minWidth");
-                vi.m_minSize.first = ::boost::lexical_cast< int >(width);
+                vi.m_minSize.first = std::stoi(width);
             }
             if( view->hasAttribute("minHeight") )
             {
                 std::string height = view->getExistingAttributeValue("minHeight");
-                vi.m_minSize.second = ::boost::lexical_cast< int >(height);
+                vi.m_minSize.second = std::stoi(height);
             }
             if( view->hasAttribute("visible") )
             {
@@ -111,7 +132,7 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("backgroundColor") )
             {
                 const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
-                if(hexaColor != "default")
+                if(!hexaColor.empty())
                 {
                     OSLM_ASSERT(
                         "Color string should start with '#' and followed by 6 ou 8 "

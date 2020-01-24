@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,7 @@
 #include "fwServices/registry/Proxy.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
@@ -652,15 +653,6 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
             srv->registerObject(obj, objectCfg.m_key, objectCfg.m_access, objectCfg.m_autoConnect,
                                 objectCfg.m_optional);
         }
-    }
-
-    // Ok for now we assume we always need the root composite
-    // This is only true for services that will need to perform some stuff like adding new objects, etc...
-    // We will see in the future if this should be replaced or not
-    {
-        srv->registerObject(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
-                            ::fwServices::IService::AccessType::INOUT);
-        srv->setObjectId(::fwServices::IService::s_DEFAULT_OBJECT, "defaultObjectId");
     }
 
     // Set the size of the key groups

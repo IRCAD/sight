@@ -7,9 +7,12 @@ include(@FWCMAKE_INSTALL_FILES_DIR@/helper.cmake)
 # Run the script when installing but not a second time when running CPack
 if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
 
-    #Find all /*/.so* in /Bundles /plugins
+    #Find all /*/.so* in /Bundles /plugins and /vlc/plugins
     file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@FWBUNDLE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
-    file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+    file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS
+        "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*"
+        "@CMAKE_INSTALL_PREFIX@/vlc/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*"
+    )
 
     include(BundleUtilities)
     set(LIBS "")

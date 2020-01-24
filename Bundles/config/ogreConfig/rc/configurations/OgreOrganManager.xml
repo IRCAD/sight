@@ -36,7 +36,7 @@
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="::uiReconstructionQt::OrganMaterialEditor" >
+        <service uid="organMaterialEditor" type="::uiReconstructionQt::SOrganMaterialEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
         <service uid="representationEditor" type="::uiReconstructionQt::RepresentationEditor" >

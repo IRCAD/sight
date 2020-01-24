@@ -66,10 +66,6 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, ::fwMedData::SeriesDB );
-
-//------------------------------------------------------------------------------
-
 const ::fwCom::Slots::SlotKeyType SActivityWizard::s_CREATE_ACTIVITY_SLOT        = "createActivity";
 const ::fwCom::Slots::SlotKeyType SActivityWizard::s_UPDATE_ACTIVITY_SLOT        = "updateActivity";
 const ::fwCom::Slots::SlotKeyType SActivityWizard::s_UPDATE_ACTIVITY_SERIES_SLOT = "updateActivitySeries";
@@ -78,6 +74,10 @@ const ::fwCom::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_UPDATED_SIG   
 const ::fwCom::Signals::SignalKeyType SActivityWizard::s_CANCELED_SIG            = "canceled";
 
 static const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+
+//------------------------------------------------------------------------------
+
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, ::fwMedData::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -149,16 +149,25 @@ void SActivityWizard::starting()
     QWidget* const container = qtContainer->getQtContainer();
 
     QVBoxLayout* layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
 
     m_title = new QLabel("");
-    m_title->setStyleSheet("QLabel { font: bold; color: blue; }");
+    m_title->setObjectName("SActivityWizard_title");
     m_title->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_title);
 
     m_description = new QLabel("");
-    m_description->setStyleSheet("QLabel { font: italic; border: solid 1px;}");
+    m_description->setObjectName("SActivityWizard_description");
     m_description->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_description);
+
+    // If the style sheet is empty, we are using the default theme.
+    // If a style sheet is set, the style must be set in the style sheet.
+    if(qApp->styleSheet().isEmpty())
+    {
+        m_title->setStyleSheet("QLabel { font: bold; color: blue; }");
+        m_description->setStyleSheet("QLabel { font: italic; border: solid 1px;}");
+    }
 
     m_activityDataView = new widget::ActivityDataView();
     m_activityDataView->setIOSelectorConfig(m_ioSelectorConfig);
@@ -174,7 +183,7 @@ void SActivityWizard::starting()
     if (m_isCancelable)
     {
         m_cancelButton = new QPushButton("Cancel");
-        m_cancelButton->setToolTip("Cacnel the activity creation");
+        m_cancelButton->setToolTip("Cancel the activity creation");
         buttonLayout->addWidget(m_cancelButton);
     }
 

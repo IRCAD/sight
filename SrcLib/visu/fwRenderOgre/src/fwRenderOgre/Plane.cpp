@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,25 +34,17 @@
 
 namespace fwRenderOgre
 {
-unsigned int Plane::s_id = 0;
 
 //-----------------------------------------------------------------------------
 
 Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
-              ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
-              ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _entityOpacity) :
-    m_is3D( _is3D ),
-    m_threshold(false),
+              ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
+              FilteringEnumType _filtering, float _entityOpacity) :
     m_filtering( _filtering ),
     m_orientation( _orientation ),
-    m_originPosition(0.f, 0.f, 0.f),
     m_texture( _tex ),
     m_sceneManager( _sceneManager ),
     m_parentSceneNode( _parentSceneNode ),
-    m_width(0.f),
-    m_height(0.f),
-    m_depth(0.f),
-    m_relativePosition(0.8f),
     m_entityOpacity( _entityOpacity )
 {
     // names definition
@@ -84,55 +76,56 @@ Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _pare
 
 Plane::~Plane()
 {
+    m_planeSceneNode->removeAndDestroyAllChildren();
     m_parentSceneNode->removeAndDestroyChild(m_planeSceneNode);
+
+    if(m_sceneManager->hasEntity(m_entityName))
+    {
+        m_sceneManager->destroyEntity(m_entityName);
+    }
+
+    if(m_slicePlane)
+    {
+        ::Ogre::MeshManager::getSingleton().remove(m_slicePlane);
+    }
+
+    if(m_texMaterial)
+    {
+        ::Ogre::MaterialManager::getSingleton().remove(m_texMaterial);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void Plane::initializeMaterial()
 {
-    ::Ogre::MaterialPtr defaultMat = ::Ogre::MaterialManager::getSingleton().getByName("Negato");
+    auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
+    ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato");
 
-    m_texMaterial = ::Ogre::MaterialManager::getSingleton().create(
-        "NegatoMat" + std::to_string(s_id),
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    s_id++;
-
-    defaultMat->copyDetailsTo(m_texMaterial);
-
-    ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
-    m_texMaterial->setDiffuse(diffuse);
-
-    int orientationIndex = 0;
-
-    switch (m_orientation)
+    if(m_texMaterial)
     {
-        case OrientationMode::X_AXIS:
-            orientationIndex = 0;
-            break;
-        case OrientationMode::Y_AXIS:
-            orientationIndex = 1;
-            break;
-        case OrientationMode::Z_AXIS:
-            orientationIndex = 2;
-            break;
+        materialMgr.remove(m_texMaterial);
+        m_texMaterial.reset();
     }
 
-    // This is necessary to load and compile the material, otherwise the following technique iterator
-    // is null when we call this method on the first time (from doStart() for instance)
-    m_texMaterial->touch();
+    m_texMaterial = defaultMat->clone(m_slicePlaneName + "_Material");
+
+    const ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    m_texMaterial->setDiffuse(diffuse);
+
+    const int orientationIndex = static_cast<int>(m_orientation);
 
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    for(const auto tech : techniques)
+    for(const auto* const tech : techniques)
     {
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            ::Ogre::Pass* const pass = tech->getPass(0);
 
-            ::Ogre::TextureUnitState* texState = pass->getTextureUnitState("image");
+            ::Ogre::TextureUnitState* const texState = pass->getTextureUnitState("image");
             SLM_ASSERT("'image' texture unit is not found", texState);
             texState->setTexture(m_texture);
 
@@ -161,26 +154,22 @@ void Plane::initializeMaterial()
 
 //-----------------------------------------------------------------------------
 
-void Plane::setDepthSpacing(std::vector<double> _spacing)
+void Plane::setVoxelSpacing(const ::Ogre::Vector3& _spacing)
 {
-    m_spacing.clear();
-
-    for (auto spacingValue : _spacing)
-    {
-        m_spacing.push_back(static_cast< ::Ogre::Real >(spacingValue));
-    }
+    m_spacing = _spacing;
 }
 
 //-----------------------------------------------------------------------------
 
 void Plane::initializePlane()
 {
-    ::Ogre::MeshManager* meshManager = ::Ogre::MeshManager::getSingletonPtr();
+    ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
 
     // First delete mesh if it already exists
-    if(meshManager->resourceExists(m_slicePlaneName))
+    if(meshManager.resourceExists(m_slicePlaneName))
     {
-        meshManager->remove(m_slicePlaneName);
+        meshManager.remove(m_slicePlaneName);
+        m_slicePlane.reset();
     }
 
     if( m_sceneManager->hasEntity(m_entityName))
@@ -189,17 +178,17 @@ void Plane::initializePlane()
         m_sceneManager->destroyEntity(m_entityName);
     }
 
-    ::Ogre::MovablePlane* plane = setDimensions();
+    ::Ogre::MovablePlane plane = this->setDimensions();
 
     // Mesh plane instanciation:
     // Y is the default upVector,
     // so if we want a plane which normal is the Y unit vector we have to create it differently
     if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
     {
-        m_slicePlane = ::Ogre::MeshManager::getSingletonPtr()->createPlane(
+        m_slicePlane = meshManager.createPlane(
             m_slicePlaneName,
             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-            *plane,
+            plane,
             m_width, m_height,
             1, 1,
             true,
@@ -208,10 +197,10 @@ void Plane::initializePlane()
     }
     else
     {
-        m_slicePlane = ::Ogre::MeshManager::getSingletonPtr()->createPlane(
+        m_slicePlane = meshManager.createPlane(
             m_slicePlaneName,
             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-            *plane,
+            plane,
             m_width, m_height);
     }
 
@@ -247,8 +236,6 @@ void Plane::initializePosition()
 
 void Plane::moveAlongAxis()
 {
-    SLM_ASSERT("2D Plane, cannot move along its normal.", m_is3D);
-
     this->initializePosition();
     ::Ogre::Real distance = m_relativePosition * m_depth;
 
@@ -358,10 +345,23 @@ double Plane::getSliceWorldPosition() const
 
 void Plane::setOrientationMode(OrientationMode _newMode)
 {
-    SLM_ASSERT("3D negato Plane, cannot change orientation", !m_is3D);
-
     m_orientation = _newMode;
-    this->initializeMaterial();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
+
+    for(const auto* const tech : techniques)
+    {
+        SLM_ASSERT("Technique is not set", tech);
+
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
+        {
+            const ::Ogre::Pass* const pass = tech->getPass(0);
+            SLM_ASSERT("Material '" + m_texMaterial->getName() + "' does not define any pass.", pass);
+
+            const int orientationIndex = static_cast<int>(_newMode);
+            pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+        }
+    }
     this->initializePlane();
 }
 
@@ -371,13 +371,13 @@ void Plane::enableAlpha(bool _enable)
 {
     const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    for(const auto tech : techniques)
+    for(const auto* const tech : techniques)
     {
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
-            ::Ogre::Pass* pass = tech->getPass(0);
+            ::Ogre::Pass* const pass = tech->getPass(0);
 
             SLM_ASSERT("Can't find Ogre pass", pass);
             pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable );
@@ -390,8 +390,6 @@ void Plane::enableAlpha(bool _enable)
 
 void Plane::setEntityOpacity(float _f)
 {
-    SLM_ASSERT("2D negato Plane, cannot change opacity", m_is3D);
-
     m_entityOpacity = _f;
 
     ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
@@ -438,22 +436,19 @@ void Plane::changeSlice(float sliceIndex)
         }
     }
 
-    if (m_is3D)
-    {
-        this->setRelativePosition( sliceIndex );
-        this->moveAlongAxis();
-    }
+    this->setRelativePosition( sliceIndex );
+    this->moveAlongAxis();
 }
 
 //-----------------------------------------------------------------------------
 
-::Ogre::MovablePlane* Plane::setDimensions()
+::Ogre::MovablePlane Plane::setDimensions()
 {
     ::Ogre::Real tex_width  = static_cast< ::Ogre::Real >( m_texture->getWidth() );
     ::Ogre::Real tex_height = static_cast< ::Ogre::Real >( m_texture->getHeight() );
     ::Ogre::Real tex_depth  = static_cast< ::Ogre::Real >( m_texture->getDepth() );
 
-    ::Ogre::MovablePlane* plane = nullptr;
+    ::Ogre::MovablePlane plane(::Ogre::Vector3::ZERO, 0);
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
@@ -476,17 +471,42 @@ void Plane::changeSlice(float sliceIndex)
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
-            plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_X, 0);
+            plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_X, 0);
             break;
         case OrientationMode::Y_AXIS:
-            plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Y, 0);
+            plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Y, 0);
             break;
         case OrientationMode::Z_AXIS:
-            plane = new ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Z, 0);
+            plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Z, 0);
             break;
     }
 
     return plane;
+}
+
+//-----------------------------------------------------------------------------
+
+const ::Ogre::MovableObject* Plane::getMovableObject() const
+{
+    if(m_sceneManager->hasEntity(m_entityName))
+    {
+        return m_sceneManager->getEntity(m_entityName);
+    }
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+void Plane::setQueryFlags(std::uint32_t _flags)
+{
+    m_sceneManager->getEntity(m_entityName)->setQueryFlags(_flags);
+}
+
+//-----------------------------------------------------------------------------
+
+void Plane::setRenderQueuerGroupAndPriority(std::uint8_t _groupId, std::uint16_t _priority)
+{
+    m_sceneManager->getEntity(m_entityName)->setRenderQueueGroupAndPriority(_groupId, _priority);
 }
 
 //-----------------------------------------------------------------------------

@@ -107,6 +107,7 @@ void SVolumeRender::configuring()
     m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
     m_dynamic                = config.get<bool>("dynamic", m_dynamic);
     m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
+    m_widgetPriority         = config.get<int>("widgetPriority", m_widgetPriority);
     m_nbSamples              = config.get<std::uint16_t>("samples", m_nbSamples);
 
     // Advanced illumination parameters.
@@ -277,7 +278,7 @@ void SVolumeRender::stopping()
 
     m_preIntegrationTable.removeTexture();
 
-    m_illum.reset();
+    m_ambientOcclusionSAT.reset();
 
     this->destroyWidget();
 }
@@ -412,7 +413,6 @@ void SVolumeRender::updateImage()
     ::fwData::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
         ::fwData::mt::ObjectReadLock tfLock(volumeTF);
-        m_gpuVolumeTF->getTexture();
 
         if(m_preIntegratedRendering)
         {
@@ -421,15 +421,17 @@ void SVolumeRender::updateImage()
 
         if(m_ambientOcclusion || m_colorBleeding || m_shadows)
         {
-            if(m_illum == nullptr)
+            if(m_ambientOcclusionSAT == nullptr)
             {
-                m_illum = std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
-                                                                                       m_satSizeRatio,
-                                                                                       (m_ambientOcclusion ||
-                                                                                        m_colorBleeding), m_shadows,
-                                                                                       m_satShells, m_satShellRadius,
-                                                                                       m_satConeAngle,
-                                                                                       m_satConeSamples);
+                m_ambientOcclusionSAT = std::make_shared< ::fwRenderOgre::vr::IllumAmbientOcclusionSAT>(
+                    this->getID(), m_sceneManager,
+                    m_satSizeRatio,
+                    (
+                        m_ambientOcclusion ||
+                        m_colorBleeding), m_shadows,
+                    m_satShells, m_satShellRadius,
+                    m_satConeAngle,
+                    m_satConeSamples);
             }
             this->updateVolumeIllumination();
         }
@@ -516,7 +518,7 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
         float scaleCoef(.25f);
         m_satSizeRatio = static_cast<float>(sizeRatio) * scaleCoef;
-        m_illum->updateSatFromRatio(m_satSizeRatio);
+        m_ambientOcclusionSAT->updateSatFromRatio(m_satSizeRatio);
 
         this->updateVolumeIllumination();
 
@@ -664,7 +666,7 @@ void SVolumeRender::toggleWidgets(bool visible)
 
     if(m_widget)
     {
-        m_widget->setVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
+        m_widget->setBoxVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
 
         this->requestRender();
     }
@@ -783,26 +785,19 @@ void SVolumeRender::createWidget()
         ogreClippingMx = ::fwRenderOgre::Utils::convertTM3DToOgreMx(clippingMatrix);
     }
 
+    const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+
     this->destroyWidget(); // Destroys the old widgets if they were created.
-    m_widget = std::make_shared< ::fwRenderOgre::ui::VRWidget>(this->getID(), m_volumeSceneNode,
-                                                               m_camera, m_sceneManager,
-                                                               ogreClippingMx, clippingMxUpdate,
-                                                               "BasicAmbient", "BasicPhong");
+    m_widget = std::make_shared< ::fwRenderOgre::interactor::ClippingBoxInteractor>(layer,
+                                                                                    this->getID(), m_volumeSceneNode,
+                                                                                    ogreClippingMx, clippingMxUpdate,
+                                                                                    "BasicAmbient", "BasicPhong");
 
-    ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
-    ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
-
-    auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
-
-    if(vrInteractor)
-    {
-        vrInteractor->initPicker();
-        vrInteractor->setWidget(m_widget);
-    }
+    layer->addInteractor(m_widget, m_widgetPriority);
 
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
-    m_widget->setVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
+    m_widget->setBoxVisibility(m_widgetVisibilty && m_volumeRenderer->isVisible());
 }
 
 //-----------------------------------------------------------------------------
@@ -811,20 +806,9 @@ void SVolumeRender::destroyWidget()
 {
     if(m_widget)
     {
-        ::fwRenderOgre::Layer::sptr layer                        = this->getLayer();
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getMoveInteractor();
-
-        auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
-
-        if(vrInteractor)
-        {
-            vrInteractor->setWidget(nullptr);
-        }
-
-        SLM_ASSERT("There should be only one remaining instance of 'm_widget' at this points.",
-                   m_widget.use_count() == 1);
-
-        m_widget = nullptr;
+        ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+        layer->removeInteractor(m_widget);
+        m_widget.reset();
     }
 }
 
@@ -834,9 +818,9 @@ void SVolumeRender::updateVolumeIllumination()
 {
     this->getRenderService()->makeCurrent();
 
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
+    m_ambientOcclusionSAT->SATUpdate(m_3DOgreTexture, m_gpuVolumeTF, m_volumeRenderer->getSamplingRate());
 
-    m_volumeRenderer->setIlluminationVolume(m_illum);
+    m_volumeRenderer->setAmbientOcclusionSAT(m_ambientOcclusionSAT);
 }
 
 //-----------------------------------------------------------------------------
@@ -851,25 +835,28 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
     // Volume illumination is only implemented for raycasting rendering
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
+        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_ambientOcclusionSAT)
         {
-            m_illum = ::std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
-                                                                                     m_satSizeRatio,
-                                                                                     (m_ambientOcclusion ||
-                                                                                      m_colorBleeding), m_shadows,
-                                                                                     m_satShells, m_satShellRadius);
+            m_ambientOcclusionSAT = ::std::make_shared< ::fwRenderOgre::vr::IllumAmbientOcclusionSAT>(
+                this->getID(), m_sceneManager,
+                m_satSizeRatio,
+                (
+                    m_ambientOcclusion ||
+                    m_colorBleeding), m_shadows,
+                m_satShells,
+                m_satShellRadius);
             this->updateVolumeIllumination();
         }
-        else if(m_illum)
+        else if(m_ambientOcclusionSAT)
         {
             switch(vrEffect)
             {
                 case ::visuOgreAdaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
                 case ::visuOgreAdaptor::SVolumeRender::VR_COLOR_BLEEDING:
-                    m_illum->setAO(m_ambientOcclusion || m_colorBleeding);
+                    m_ambientOcclusionSAT->setAO(m_ambientOcclusion || m_colorBleeding);
                     break;
                 case ::visuOgreAdaptor::SVolumeRender::VR_SHADOWS:
-                    m_illum->setShadows(m_shadows);
+                    m_ambientOcclusionSAT->setShadows(m_shadows);
                     break;
             }
 
@@ -956,7 +943,7 @@ void SVolumeRender::updateVisibility(bool visibility)
 
         if(m_widget)
         {
-            m_widget->setVisibility(visibility && m_widgetVisibilty);
+            m_widget->setBoxVisibility(visibility && m_widgetVisibilty);
         }
 
         this->requestRender();

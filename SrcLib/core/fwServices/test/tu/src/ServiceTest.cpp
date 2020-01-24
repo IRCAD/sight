@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -80,34 +80,6 @@ void ServiceTest::tearDown()
         }
         ::fwServices::OSR::unregisterService(srv);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void ServiceTest::testServiceCreation()
-{
-#ifndef REMOVE_DEPRECATED
-    FW_DEPRECATED_MSG("Deprecated test", "20.0");
-    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
-    ::fwServices::IService::sptr service;
-
-    // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
-                                                                                  "::fwServices::ut::TestService") );
-
-    // deprecated: Test adding service
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation");
-    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
-
-    // Test getting the service its object
-    service = ::fwServices::get(obj, "::fwServices::ut::TestService");
-    CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwData::Integer >());
-
-    // Test erasing service
-    ::fwServices::OSR::unregisterService(service);
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
-#endif
 }
 
 //------------------------------------------------------------------------------

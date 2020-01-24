@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2019 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -215,7 +215,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             QLabel* icon = new QLabel();
             icon->setAlignment(Qt::AlignHCenter);
             QPixmap pixmap(filename);
-            icon->setPixmap(pixmap.scaled(100, 100));
+            icon->setPixmap(pixmap.scaled(100, 100, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             typeLayout->addWidget(icon);
         }
         else

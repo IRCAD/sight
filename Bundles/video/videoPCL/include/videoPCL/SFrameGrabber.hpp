@@ -32,7 +32,7 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace arData
 {
@@ -81,7 +81,7 @@ class VIDEOPCL_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber);
+    fwCoreServiceMacro(SFrameGrabber, ::arServices::IGrabber)
 
     /// Constructor. Do nothing.
     VIDEOPCL_API SFrameGrabber() noexcept;
@@ -120,10 +120,10 @@ protected:
 
 private:
 
-    typedef std::vector< ::boost::filesystem::path > ImageFilesType;
+    typedef std::vector< std::filesystem::path > ImageFilesType;
 
     /// Initializes the image reader, start the timer
-    void readImages(const ::boost::filesystem::path& folder, const std::string& extension);
+    void readImages(const std::filesystem::path& folder, const std::string& extension);
 
     /// Reads the next image
     void grabImage();

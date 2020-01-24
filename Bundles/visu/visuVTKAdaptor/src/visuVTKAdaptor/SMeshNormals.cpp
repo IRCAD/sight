@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,6 @@
 
 #include <fwVtkIO/helper/Mesh.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
 #include <vtkCellCenters.h>
@@ -54,10 +52,9 @@ const ::fwServices::IService::KeyType SMeshNormals::s_MESH_INPUT = "mesh";
 //------------------------------------------------------------------------------
 
 std::map< std::string, SMeshNormals::NormalRepresentation >
-SMeshNormals::m_normalRepresentationConversion
-    = ::boost::assign::map_list_of(std::string("POINT"), POINT_NORMAL)
-          (std::string("CELL"), CELL_NORMAL)
-          (std::string("NONE"), NONE);
+SMeshNormals::m_normalRepresentationConversion = { { std::string("POINT"), POINT_NORMAL},
+                                                   { std::string("CELL"), CELL_NORMAL},
+                                                   { std::string("NONE"), NONE} };
 
 //------------------------------------------------------------------------------
 

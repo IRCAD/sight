@@ -46,8 +46,6 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/op/Get.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <string>
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material )
@@ -220,7 +218,7 @@ void SMaterial::starting()
         material->setShadingMode(shadingMode);
     }
 
-    m_materialFw = ::boost::make_unique< ::fwRenderOgre::Material>(m_materialName, m_materialTemplateName);
+    m_materialFw = std::make_unique< ::fwRenderOgre::Material>(m_materialName, m_materialTemplateName);
 
     ::fwData::String::sptr string = ::fwData::String::New();
     string->setValue(m_materialTemplateName);

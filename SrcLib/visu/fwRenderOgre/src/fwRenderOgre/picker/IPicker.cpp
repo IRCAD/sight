@@ -22,9 +22,10 @@
 
 #include "fwRenderOgre/picker/IPicker.hpp"
 
-#include <fwRenderOgre/collisionTools/CollisionTools.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/Utils.hpp>
+#include "fwRenderOgre/collisionTools/CollisionTools.hpp"
+#include "fwRenderOgre/helper/Camera.hpp"
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
@@ -57,14 +58,18 @@ IPicker::~IPicker()
 
 //------------------------------------------------------------------------------
 
-bool IPicker::executeRaySceneQuery(int _x, int _y, int _width, int _height, std::uint32_t _queryMask)
+bool IPicker::executeRaySceneQuery(int _x, int _y, int, int, std::uint32_t _queryMask)
 {
-    ::Ogre::Ray r = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getCameraToViewportRay(
-        static_cast< ::Ogre::Real>(_x) / static_cast< ::Ogre::Real>(_width),
-        static_cast< ::Ogre::Real>(_y) / static_cast< ::Ogre::Real>(_height));
+    return executeRaySceneQuery(_x, _y, _queryMask);
+}
 
-    float distance;
-    bool entityFound;
+//------------------------------------------------------------------------------
+
+bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
+{
+    const auto* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    const auto vpPos         = helper::Camera::convertFromWindowToViewportSpace(*camera, _x, _y);
+    const ::Ogre::Ray vpRay  = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
 #ifdef SHOW_BOUNDS
     if (m_selectedObject)
@@ -75,8 +80,9 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, int _width, int _height, std:
 
     ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager, _queryMask);
 
-    std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) =
-        tool.raycast(r, _queryMask);
+    float distance(-1.f);
+    bool entityFound(false);
+    std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) = tool.raycast(vpRay, _queryMask);
 
     if (entityFound)
     {

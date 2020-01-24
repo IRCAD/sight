@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,7 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <gdcmDataSet.h>
 #include <gdcmScanner.h>
 
@@ -66,7 +65,7 @@ class FWGDCMIO_CLASS_API DicomSeries
 {
 public:
 
-    typedef std::vector< ::boost::filesystem::path > FilenameContainerType;
+    typedef std::vector< std::filesystem::path > FilenameContainerType;
     typedef std::vector< SPTR(::fwMedData::DicomSeries) > DicomSeriesContainerType;
 
     /// Constructor
@@ -119,7 +118,7 @@ protected:
      */
     void createSeries(DicomSeriesContainerType& seriesDB,
                       const ::gdcm::Scanner& scanner,
-                      const ::boost::filesystem::path& filename);
+                      const std::filesystem::path& filename);
 
     /**
      * @brief Create a patient from the dataset and store it in the patient map

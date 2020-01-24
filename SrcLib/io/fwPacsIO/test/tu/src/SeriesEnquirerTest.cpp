@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -123,18 +123,18 @@ void SeriesEnquirerTest::pushSeries()
     m_seriesEnquirer->connect();
 
     // Retrieve DICOM instances
-    const ::boost::filesystem::path path =
+    const std::filesystem::path path =
         ::fwTest::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + path.string() + "' does not exist",
-                           ::boost::filesystem::exists(path));
+                           std::filesystem::exists(path));
 
     std::vector<std::string> filenames;
     ::fwDcmtkIO::helper::DicomSearch::searchRecursively(path, filenames);
     CPPUNIT_ASSERT_EQUAL( size_t( 129 ), filenames.size());
 
-    std::vector< ::boost::filesystem::path > paths;
+    std::vector< std::filesystem::path > paths;
     for(const std::string& path: filenames)
     {
         paths.push_back(path);

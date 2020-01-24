@@ -44,7 +44,7 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCamera, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCamera, ::fwData::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------
 
@@ -273,6 +273,14 @@ void SCamera::calibrate()
     else if (cameraCalibration)
     {
         this->calibrateMonoCamera(cameraCalibration);
+    }
+    else
+    {
+        const float width  = static_cast< float >(m_camera->getViewport()->getActualWidth());
+        const float height = static_cast <float >(m_camera->getViewport()->getActualHeight());
+
+        const float aspectRatio = width / height;
+        m_camera->setAspectRatio(aspectRatio);
     }
 }
 

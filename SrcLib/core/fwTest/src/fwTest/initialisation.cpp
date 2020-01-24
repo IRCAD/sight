@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,28 +22,27 @@
 
 # include <fwCore/log/SpyLogger.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
-#include <ostream>
 #include <cstdio>
+#include <ostream>
 
 namespace fwTest
 {
-
 
 struct LogInitialization
 {
     LogInitialization ()
     {
-        fwCore::log::SpyLogger &logger = fwCore::log::SpyLogger::getSpyLogger();
+        fwCore::log::SpyLogger& logger = fwCore::log::SpyLogger::getSpyLogger();
 
         std::string logFile = "fwTest.log";
 
-        FILE * pFile = fopen(logFile.c_str(), "w");
-        if (pFile==NULL)
+        FILE* pFile = fopen(logFile.c_str(), "w");
+        if (pFile == NULL)
         {
-            ::boost::system::error_code err;
-            ::boost::filesystem::path sysTmp = ::boost::filesystem::temp_directory_path(err);
+            std::error_code err;
+            std::filesystem::path sysTmp = std::filesystem::temp_directory_path(err);
             if(err.value() != 0)
             {
                 // replace log file appender by stream appender: default dir and temp dir unreachable
@@ -70,4 +69,3 @@ struct LogInitialization
 static LogInitialization init;
 
 }  //namespace fwTest
-

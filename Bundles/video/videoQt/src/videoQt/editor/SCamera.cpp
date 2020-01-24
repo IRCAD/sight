@@ -33,6 +33,8 @@
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Object.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
@@ -58,28 +60,32 @@ namespace videoQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::videoQt::editor::SCamera );
+static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
+static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_DEVICE_SIG  = "configuredDevice";
+static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_FILE_SIG    = "configuredFile";
+static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG  = "configuredStream";
 
-const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT = "configureDevice";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT   = "configureFile";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStream";
 
-const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_DEVICE_SIG = "configuredDevice";
-const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_FILE_SIG   = "configuredFile";
-const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_STREAM_SIG = "configuredStream";
+static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
+static const ::fwServices::IService::KeyType s_CAMERA_INOUT        = "camera";
 
-const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_DEVICE_SLOT = "configureDevice";
-const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_FILE_SLOT   = "configureFile";
-const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_STREAM_SLOT = "configureStream";
+static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
+static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
+static const std::string s_LABEL_CONFIG                = "label";
+
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::videoQt::editor::SCamera )
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() noexcept :
-    m_bVideoSupport(false),
-    m_numCreateCameras(0),
-    m_sigConfiguredCameras(newSignal<ConfiguredCamerasSignalType>(s_CONFIGURED_CAMERAS_SIG))
+SCamera::SCamera() :
+    m_sigConfiguredCameras(newSignal< ConfiguredSignalType >(s_CONFIGURED_CAMERAS_SIG))
 {
-    newSignal< SourceConfiguredSignal >(s_CONFIGURED_DEVICE_SIG);
-    newSignal< SourceConfiguredSignal >(s_CONFIGURED_FILE_SIG);
-    newSignal< SourceConfiguredSignal >(s_CONFIGURED_STREAM_SIG);
+    newSignal< ConfiguredSignalType >(s_CONFIGURED_DEVICE_SIG);
+    newSignal< ConfiguredSignalType >(s_CONFIGURED_FILE_SIG);
+    newSignal< ConfiguredSignalType >(s_CONFIGURED_STREAM_SIG);
 
     newSlot(s_CONFIGURE_DEVICE_SLOT, &SCamera::onChooseDevice, this );
     newSlot(s_CONFIGURE_FILE_SLOT, &SCamera::onChooseFile, this );
@@ -96,10 +102,11 @@ SCamera::~SCamera() noexcept
 
 void SCamera::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    m_bVideoSupport    = (config.get<std::string>("videoSupport", "no") == "yes");
-    m_numCreateCameras = config.get<size_t>("createCameraNumber", 0);
+    m_bVideoSupport    = (config.get<std::string>(s_VIDEO_SUPPORT_CONFIG, "no") == "yes");
+    m_numCreateCameras = config.get<size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
+    m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
 
     this->initialize();
 }
@@ -110,13 +117,18 @@ void SCamera::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
-    QPointer<QLabel> sourceLabel = new QLabel(QObject::tr("Video source: "));
+
+    if(!m_label.empty())
+    {
+        const QPointer<QLabel> sourceLabel = new QLabel(QString::fromStdString(m_label));
+        layout->addWidget(sourceLabel);
+    }
+
     m_devicesComboBox = new QComboBox();
-    layout->addWidget(sourceLabel);
     layout->addWidget(m_devicesComboBox);
 
     m_devicesComboBox->addItem("Device...", "device");
@@ -130,12 +142,14 @@ void SCamera::starting()
 
     qtContainer->setLayout(layout);
 
-    QObject::connect(m_devicesComboBox, SIGNAL(activated(int)), this, SLOT(onApply(int)));
+    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onApply);
 
     // Create camera data if necessary
-    auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+    auto cameraSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
+        const ::fwData::mt::ObjectWriteLock lock(cameraSeries);
+
         const size_t numCameras = cameraSeries->getNumberOfCameras();
         if(numCameras == 0)
         {
@@ -147,7 +161,7 @@ void SCamera::starting()
                 const size_t index = cameraSeries->getNumberOfCameras();
                 cameraSeries->addCamera(camera);
                 cameraSeries->setExtrinsicMatrix(index, ::fwData::TransformationMatrix3D::New());
-                auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
+                const auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
                     ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
                 sig->asyncEmit(camera);
             }
@@ -176,16 +190,9 @@ void SCamera::updating()
 
 //------------------------------------------------------------------------------
 
-void SCamera::swapping()
+void SCamera::onApply(int _index)
 {
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SCamera::onApply(int index)
-{
-    switch(index)
+    switch(_index)
     {
         case 0:
             this->onChooseDevice();
@@ -206,9 +213,9 @@ void SCamera::onChooseFile()
     std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
 
     // Check preferences
-    const ::boost::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
+    const std::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
 
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
@@ -222,14 +229,14 @@ void SCamera::onChooseFile()
     size_t count = 0;
     for(auto& camera : cameras)
     {
-        ::boost::filesystem::path videoPath;
+        std::filesystem::path videoPath;
 
         if(count == 1 && cameras.size() == 2)
         {
             // Try to guess the second stream path for RGBD cameras
             auto file = cameras[0]->getVideoFile();
 
-            if(::boost::filesystem::is_directory(videoDirPreferencePath))
+            if(std::filesystem::is_directory(videoDirPreferencePath))
             {
                 file = videoDirPreferencePath / file;
                 file = file.lexically_normal();
@@ -239,35 +246,35 @@ void SCamera::onChooseFile()
             if(!dir.empty())
             {
                 const auto parentDir = dir.parent_path();
-                const auto curDir    = *(dir.rbegin());
+                const auto curDir    = *(--dir.end());
 
-                auto findValidImagePath = [&](std::set<std::string> _folders)
-                                          {
-                                              for(const auto& leafDir : _folders)
-                                              {
-                                                  const auto dir = parentDir / leafDir;
+                const auto findValidImagePath = [&](std::set<std::string> _folders)
+                                                {
+                                                    for(const auto& leafDir : _folders)
+                                                    {
+                                                        const auto dir = parentDir / leafDir;
 
-                                                  if(::boost::filesystem::exists(dir))
-                                                  {
-                                                      ::boost::filesystem::directory_iterator currentEntry(dir);
-                                                      ::boost::filesystem::directory_iterator endEntry;
-                                                      while(currentEntry != endEntry)
-                                                      {
-                                                          ::boost::filesystem::path entryPath = *currentEntry;
-                                                          if (entryPath.has_stem())
-                                                          {
-                                                              return entryPath;
-                                                          }
-                                                          else
-                                                          {
-                                                              ++currentEntry;
-                                                          }
-                                                      }
-                                                  }
-                                              }
+                                                        if(std::filesystem::exists(dir))
+                                                        {
+                                                            std::filesystem::directory_iterator currentEntry(dir);
+                                                            std::filesystem::directory_iterator endEntry;
+                                                            while(currentEntry != endEntry)
+                                                            {
+                                                                std::filesystem::path entryPath = *currentEntry;
+                                                                if (entryPath.has_stem())
+                                                                {
+                                                                    return entryPath;
+                                                                }
+                                                                else
+                                                                {
+                                                                    ++currentEntry;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
 
-                                              return ::boost::filesystem::path();
-                                          };
+                                                    return std::filesystem::path();
+                                                };
 
                 static const std::set<std::string> s_DEPTH_FOLDERS = {{ "d", "D", "depth", "Depth", "DEPTH"}};
                 static const std::set<std::string> s_COLOR_FOLDERS = {{ "c", "C", "color", "Color", "COLOR", "RGB"}};
@@ -299,13 +306,13 @@ void SCamera::onChooseFile()
 
         if(!videoPath.empty())
         {
-            if(::boost::filesystem::is_directory(videoDirPreferencePath))
+            if(std::filesystem::is_directory(videoDirPreferencePath))
             {
-                ::boost::filesystem::path videoRelativePath;
-                videoRelativePath = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
+                const std::filesystem::path videoRelativePath
+                    = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
 
-                ::boost::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
-                if(::boost::filesystem::exists(concatenatedPath))
+                const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
+                if(std::filesystem::exists(concatenatedPath))
                 {
                     videoPath = videoRelativePath;
                 }
@@ -318,14 +325,17 @@ void SCamera::onChooseFile()
             {
                 SLM_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
             }
+
+            ::fwData::mt::ObjectWriteLock lock(camera);
             camera->setCameraSource(::arData::Camera::FILE);
             camera->setVideoFile(videoPath.string());
+            lock.unlock();
 
-            ::arData::Camera::ModifiedSignalType::sptr sig;
-            sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            const ::arData::Camera::ModifiedSignalType::sptr sig
+                = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
 
-            this->signal< SourceConfiguredSignal >(s_CONFIGURED_FILE_SIG)->asyncEmit();
+            this->signal< ConfiguredSignalType >(s_CONFIGURED_FILE_SIG)->asyncEmit();
         }
     }
     m_sigConfiguredCameras->asyncEmit();
@@ -341,21 +351,21 @@ void SCamera::onChooseStream()
     for(auto& camera : cameras)
     {
         ::fwGui::dialog::InputDialog inputDialog;
-        std::string streamSource;
-
         inputDialog.setTitle("Enter stream url for video source #" + std::to_string(count++));
 
-        streamSource = inputDialog.getInput();
+        const std::string streamSource = inputDialog.getInput();
         if(!streamSource.empty())
         {
+            ::fwData::mt::ObjectWriteLock lock(camera);
             camera->setCameraSource(::arData::Camera::STREAM);
             camera->setStreamUrl(streamSource);
+            lock.unlock();
 
-            ::arData::Camera::ModifiedSignalType::sptr sig;
-            sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            const ::arData::Camera::ModifiedSignalType::sptr sig
+                = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
 
-            this->signal< SourceConfiguredSignal >(s_CONFIGURED_STREAM_SIG)->asyncEmit();
+            this->signal< ConfiguredSignalType >(s_CONFIGURED_STREAM_SIG)->asyncEmit();
         }
     }
     m_sigConfiguredCameras->asyncEmit();
@@ -377,14 +387,18 @@ void SCamera::onChooseDevice()
         {
             return;
         }
-        bool isSelected = camDialog.getSelectedCamera(camera);
+
+        ::fwData::mt::ObjectWriteLock lock(camera);
+        const bool isSelected = camDialog.getSelectedCamera(camera);
+        lock.unlock();
+
         if(isSelected)
         {
-            ::arData::Camera::ModifiedSignalType::sptr sig;
-            sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            const ::arData::Camera::ModifiedSignalType::sptr sig
+                = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
             sig->asyncEmit();
 
-            this->signal< SourceConfiguredSignal >(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
+            this->signal< ConfiguredSignalType >(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
         }
     }
     m_sigConfiguredCameras->asyncEmit();
@@ -396,9 +410,10 @@ std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
 {
     std::vector< ::arData::Camera::sptr > cameras;
 
-    auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+    auto cameraSeries = this->getInOut< ::arData::CameraSeries >(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
+        const ::fwData::mt::ObjectReadLock lock(cameraSeries);
         const size_t numCameras = cameraSeries->getNumberOfCameras();
         for(size_t i = 0; i < numCameras; ++i)
         {
@@ -407,7 +422,9 @@ std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
     }
     else
     {
-        cameras.push_back(this->getInOut< ::arData::Camera >("camera"));
+        const auto camera = this->getInOut< ::arData::Camera >(s_CAMERA_INOUT);
+        SLM_ASSERT("'" + s_CAMERA_INOUT + "' does not exist.", camera);
+        cameras.push_back(camera);
     }
 
     return cameras;

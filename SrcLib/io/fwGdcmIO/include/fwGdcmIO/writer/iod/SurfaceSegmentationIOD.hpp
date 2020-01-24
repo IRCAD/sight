@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/writer/iod/InformationObjectDefinition.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwGdcmIO
 {
@@ -53,7 +53,7 @@ public:
      */
     FWGDCMIO_API SurfaceSegmentationIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                         const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
-                                        const ::boost::filesystem::path& destinationPath,
+                                        const std::filesystem::path& destinationPath,
                                         const ::fwLog::Logger::sptr& logger = ::fwLog::Logger::New(),
                                         ProgressCallback progress           = nullptr,
                                         CancelRequestedCallback cancel      = nullptr);

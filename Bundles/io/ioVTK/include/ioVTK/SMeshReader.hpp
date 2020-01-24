@@ -28,7 +28,7 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <string>
 
@@ -67,7 +67,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SMeshReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SMeshReader,  ::fwIO::IReader)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -127,13 +127,13 @@ private:
 
     /**
      * @brief Load a VTK mesh.
-     * @param[in] _vtkFile ::boost::filesystem::path.
+     * @param[in] _vtkFile std::filesystem::path.
      * @param[out] _pMesh std::shared_ptr< ::fwData::Mesh >.
      * @return bool.
      *
      * This method is used to load a mesh using the file path.
      */
-    void loadMesh( const ::boost::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
+    void loadMesh( const std::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
 
     /**
      * @brief Notification method.
@@ -152,7 +152,7 @@ private:
     /**
      * @brief Mesh path.
      */
-    ::boost::filesystem::path m_fsMeshPath;
+    std::filesystem::path m_fsMeshPath;
 
     /// Signal triggered when job created
     SPTR(JobCreatedSignalType) m_sigJobCreated;

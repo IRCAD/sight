@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEMORY_STREAM_IN_RAW_HPP__
-#define __FWMEMORY_STREAM_IN_RAW_HPP__
+#pragma once
 
-#include <boost/filesystem/path.hpp>
+#include "fwMemory/config.hpp"
+#include "fwMemory/FileHolder.hpp"
+#include "fwMemory/stream/in/IFactory.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include "fwMemory/stream/in/IFactory.hpp"
-#include "fwMemory/FileHolder.hpp"
-#include "fwMemory/config.hpp"
+#include <filesystem>
 
 namespace fwMemory
 {
@@ -41,12 +40,12 @@ namespace in
 class FWMEMORY_CLASS_API Raw : public IFactory
 {
 public:
-    Raw(const ::boost::filesystem::path &path) :
+    Raw(const std::filesystem::path& path) :
         m_path(path)
     {
     }
 
-    Raw(const ::fwMemory::FileHolder &path) :
+    Raw(const ::fwMemory::FileHolder& path) :
         m_path(path)
     {
     }
@@ -58,12 +57,6 @@ protected:
     ::fwMemory::FileHolder m_path;
 };
 
-
-
 } // namespace in
 } // namespace stream
 } // namespace fwMemory
-
-#endif // __FWMEMORY_STREAM_IN_RAW_HPP__
-
-

@@ -181,7 +181,7 @@
             </service>
 
             <service uid="actionUpdatePlaneVisibility" type="::gui::action::SBooleanSlotCaller" >
-                <state active="true" />
+                <state active="false" />
                 <slots>
                     <slot>meshPlaneAdpt/updateVisibility</slot>
                     <slot>meshPlaneAdpt2/updateVisibility</slot>
@@ -221,8 +221,6 @@
                     <layer id="video" depth="1" />
                     <layer id="default" depth="2" compositors="Remap;AlphaModulator" />
                     <adaptor uid="videoAdpt" />
-                    <adaptor uid="interactorStyle" />
-                    <adaptor uid="interactorStyle2" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
                     <adaptor uid="meshAdpt" />
@@ -236,14 +234,6 @@
                 <in key="image" uid="videoImage" />
                 <in key="camera" uid="camera" />
                 <config layer="video" />
-            </service>
-
-            <service uid="interactorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" movement="Fixed" />
-            </service>
-
-            <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="video" movement="Fixed" />
             </service>
 
             <service uid="axis" type="::visuOgreAdaptor::SAxis">
@@ -263,7 +253,7 @@
 
             <service uid="meshPlaneAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="plane" />
-                <config layer="default" color="#ffffffda" />
+                <config layer="default" visible="false" color="#ffffffda" />
             </service>
 
             <service uid="layerTransparencyCompositor" type="::visuOgreAdaptor::SCompositorParameter">
@@ -287,7 +277,12 @@
                     <adaptor uid="meshPlaneAdpt2" />
                     <adaptor uid="frustumAdpt" />
                     <adaptor uid="frustumListAdpt" />
+                    <adaptor uid="defaultInteractorAdp" />
                 </scene>
+            </service>
+
+            <service uid="defaultInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
+                <config layer="default" />
             </service>
 
             <service uid="axis2" type="::visuOgreAdaptor::SAxis">
@@ -306,7 +301,7 @@
 
             <service uid="meshPlaneAdpt2" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="plane" />
-                <config layer="default" color="#ffffffda" />
+                <config layer="default" visible="false" color="#ffffffda" />
             </service>
 
             <service uid="frustumAdpt" type="::visuOgreAdaptor::SFrustum" autoConnect="yes">
@@ -453,6 +448,7 @@
             <connect>
                 <signal>reprojectionParams/doubleChanged</signal>
                 <slot>layerTransparencyCompositor/setDoubleParameter</slot>
+                <slot>genericScene/requestRender</slot>
             </connect>
 
             <connect>
@@ -494,10 +490,24 @@
                 <signal>cameraAdpt/updated</signal>
                 <slot>videoAdpt/update</slot>
             </connect>
+
             <connect>
                 <signal>videoAdpt/updated</signal>
+                <signal>actionUpdateCubeVisibility/updated</signal>
+                <signal>actionUpdateAxesVisibility/updated</signal>
+                <signal>actionUpdatePlaneVisibility/updated</signal>
                 <slot>genericScene/requestRender</slot>
                 <slot>synchronizer/synchronize</slot>
+            </connect>
+
+            <connect>
+                <signal>meshAdpt2/started</signal>
+                <slot>actionUpdateCubeVisibility/update</slot>
+            </connect>
+
+            <connect>
+                <signal>axis2/started</signal>
+                <slot>actionUpdateAxesVisibility/update</slot>
             </connect>
 
             <!-- start services -->
@@ -518,8 +528,6 @@
 
             <!-- Ogre scene 'genericScene' -->
             <start uid="videoAdpt" />
-            <start uid="interactorStyle" />
-            <start uid="interactorStyle2" />
             <start uid="axis" />
             <start uid="cameraAdpt" />
             <start uid="meshAdpt" />
@@ -534,13 +542,12 @@
             <start uid="meshPlaneAdpt2" />
             <start uid="frustumAdpt" />
             <start uid="frustumListAdpt" />
-
-            <update uid="actionShowParameters" />
-            <update uid="actionUpdateAxesVisibility" />
-            <update uid="actionUpdateCubeVisibility" />
+            <start uid="defaultInteractorAdp" />
 
             <update uid="meshReader" />
             <update uid="meshPlaneReader" />
+
+            <update uid="actionShowParameters" />
 
         </config>
     </extension>

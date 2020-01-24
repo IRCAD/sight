@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/make_unique.hpp>
 #include <boost/tokenizer.hpp>
 
 namespace colourSegmentation
@@ -138,8 +137,8 @@ void SColourImageMasking::configuring()
 
 void SColourImageMasking::starting()
 {
-    m_masker = ::boost::make_unique< ::colourImageMasking::Masker >(::colourImageMasking::HSv,
-                                                                    ::colourImageMasking::LLRatio);
+    m_masker = std::make_unique< ::colourImageMasking::Masker >(::colourImageMasking::HSv,
+                                                                ::colourImageMasking::LLRatio);
     m_masker->setThreshold(1.);
 
     m_lastVideoTimestamp = 0.;

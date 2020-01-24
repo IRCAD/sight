@@ -83,9 +83,9 @@ std::string getPreference(const std::string& preferenceKey)
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path getPreferencesFile()
+std::filesystem::path getPreferencesFile()
 {
-    namespace bfile = ::boost::filesystem;
+    namespace bfile = std::filesystem;
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     FW_RAISE_IF("No current profile set.", !profile);

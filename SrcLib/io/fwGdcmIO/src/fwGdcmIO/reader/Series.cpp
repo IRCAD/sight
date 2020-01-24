@@ -39,7 +39,6 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/make_shared.hpp>
 
 #include <gdcmImageReader.h>
 #include <gdcmScanner.h>
@@ -241,8 +240,8 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
     ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader =
-        ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    std::shared_ptr< ::gdcm::Reader > reader =
+        std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
     const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
     const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;
@@ -301,8 +300,8 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
     ::fwMedData::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader =
-        ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    std::shared_ptr< ::gdcm::Reader > reader =
+        std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
     const ::fwMemory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
     const ::fwMemory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     SPTR(std::istream) is = streamInfo.stream;

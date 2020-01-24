@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2019 IRCAD France
+ * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,8 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _size)
+Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _size,
+                            const std::uint32_t _trueTypeResolution)
 {
     // Search for ttf extension in the file name.
     const size_t extPos = _trueTypeFileName.rfind(".ttf");
@@ -49,7 +50,9 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
 
     ::Ogre::FontManager& fontManager = ::Ogre::FontManager::getSingleton();
 
-    const std::string fontName = _trueTypeFileName.substr(0, extPos) + std::to_string(_size);
+    const std::string fontName = _trueTypeFileName.substr(0, extPos) + std::to_string(_size) +
+                                 "_dpi" + std::to_string(_trueTypeResolution);
+
     ::Ogre::FontPtr font = fontManager.getByName(fontName);
 
     if(!font)
@@ -57,8 +60,7 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
         font = fontManager.create(fontName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         font->setType(::Ogre::FontType::FT_TRUETYPE);
         font->setTrueTypeSize(static_cast< ::Ogre::Real >(_size));
-        // TODO: set this according to the screen's DPI.
-        font->setTrueTypeResolution(220);
+        font->setTrueTypeResolution(_trueTypeResolution);
         font->setAntialiasColour(false);
         font->setSource(_trueTypeFileName);
         font->load(false);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -150,7 +150,6 @@ void SReconstruction::updating()
         {
             // Updates the mesh adaptor according to the reconstruction
             meshAdaptor->setMaterial(reconstruction->getMaterial());
-            meshAdaptor->swap(reconstruction->getMesh());
             meshAdaptor->updateVisibility(reconstruction->getIsVisible());
         }
     }

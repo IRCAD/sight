@@ -26,6 +26,8 @@
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
 
+#include <fwDataTools/Color.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QHBoxLayout>
@@ -63,11 +65,17 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
     toolBar->setFloatable(false);
 
-    if(m_backgroundColor != "default")
+    if(!m_backgroundColor.empty())
     {
-        const QString style = qApp->styleSheet() + QString::fromStdString(
-            "QWidget, QToolButton:disabled { background-color: " + m_backgroundColor + "; } ");
-        toolBar->setStyleSheet(style);
+        std::uint8_t rgba[4];
+        ::fwDataTools::Color::hexaStringToRGBA(m_backgroundColor, rgba);
+        std::stringstream ss;
+        ss << "QToolBar { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+           << static_cast< short >(rgba[1]) << ','
+           << static_cast< short >(rgba[2]) << ','
+           << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+        const QString style = QString::fromStdString(ss.str());
+        toolBar->setStyleSheet(qApp->styleSheet() + style);
     }
 
     ::fwGuiQt::container::QtToolBarContainer::sptr toolBarContainer = ::fwGuiQt::container::QtToolBarContainer::New();

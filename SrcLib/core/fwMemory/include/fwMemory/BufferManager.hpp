@@ -32,7 +32,7 @@
 #include <fwCore/BaseObject.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include <future>
 
@@ -227,9 +227,9 @@ public:
      * @return true on success
      * @{ */
     FWMEMORY_API std::shared_future<bool> writeBuffer(ConstBufferType buffer, SizeType size,
-                                                      ::boost::filesystem::path& path);
+                                                      std::filesystem::path& path);
     FWMEMORY_API std::shared_future<bool> readBuffer(BufferType buffer, SizeType size,
-                                                     ::boost::filesystem::path& path);
+                                                     std::filesystem::path& path);
     /**  @} */
 
     /**
@@ -311,8 +311,8 @@ protected:
     virtual std::string toStringImpl() const;
     bool dumpBufferImpl(ConstBufferPtrType buffer);
     bool restoreBufferImpl(ConstBufferPtrType buffer);
-    bool writeBufferImpl(ConstBufferType buffer, SizeType size, ::boost::filesystem::path& path);
-    bool readBufferImpl(BufferType buffer, SizeType size, ::boost::filesystem::path& path);
+    bool writeBufferImpl(ConstBufferType buffer, SizeType size, std::filesystem::path& path);
+    bool readBufferImpl(BufferType buffer, SizeType size, std::filesystem::path& path);
     BufferInfoMapType getBufferInfosImpl() const;
     StreamInfo getStreamInfoImpl(const ConstBufferPtrType bufferPtr) const;
     void setIStreamFactoryImpl(BufferPtrType bufferPtr,

@@ -46,7 +46,7 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddDistance, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddDistance, ::fwData::Image )
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -54,6 +54,7 @@ static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 AddDistance::AddDistance( ) noexcept
 {
+    FW_DEPRECATED("::uiMeasurement::action::AddDistance", "::uiMeasurement::action::SAddDistance", "21.0");
 }
 
 //------------------------------------------------------------------------------
@@ -98,7 +99,7 @@ void AddDistance::updating()
     vectDist->getContainer().push_back(pl);
 
     // force distance to be shown
-    image->setField("ShowDistances",  ::fwData::Boolean::New(true));
+    image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility,  ::fwData::Boolean::New(true));
 
     auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
     sig->asyncEmit(pl);

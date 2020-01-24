@@ -47,7 +47,7 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::fwData::Image )
 
 static const ::fwCom::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
@@ -87,11 +87,12 @@ void ShowDistance::updating()
     else
     {
         ::fwData::Boolean::sptr showDistances =
-            image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+            image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
+                                                     true));
         bool isShown = showDistances->value();
 
         bool toShow = !isShown;
-        image->setField("ShowDistances", ::fwData::Boolean::New(toShow));
+        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(toShow));
 
         // auto manage hide/show : use Field Information instead let gui manage checking
         this->::fwGui::IActionSrv::setIsActive(!toShow);
@@ -113,7 +114,8 @@ void ShowDistance::showDistance(bool)
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     ::fwData::Boolean::sptr showDistances =
-        image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+        image->getField< ::fwData::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
+                                                 true));
 
     this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
 }

@@ -27,7 +27,7 @@
 
 #include <fwServices/IService.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace fwIO
 {
@@ -36,7 +36,7 @@ namespace fwIO
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
  * @section Slots Slots
- * - \b setFileFolder(const ::boost::filesystem::path&): Sets the folder when a path is configured in FILE or
+ * - \b setFileFolder(const std::filesystem::path&): Sets the folder when a path is configured in FILE or
  * FILES mode
  * - \b setTimestampPrefix(::fwCore::HiResClock::HiResClockType): When connected to a timestamp-emitting signal,
  * this slot will concatenate the current timestamp as a prefix of the output file (file-mode only).
@@ -85,13 +85,13 @@ public:
      * @pre exception if a file path is not defined  ( m_locations.empty() )
      * @pre exception if service does not support FILE mode
      */
-    FWIO_API const ::boost::filesystem::path& getFile() const;
+    FWIO_API const std::filesystem::path& getFile() const;
 
     /**
      * @brief Sets file path
      * @pre exception if service does not support FILE mode
      */
-    FWIO_API void setFile(const ::boost::filesystem::path& file);
+    FWIO_API void setFile(const std::filesystem::path& file);
 
     /**
      * @brief Returns file paths set by the user or set during service configuration
@@ -111,7 +111,7 @@ public:
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FOLDER mode
      */
-    FWIO_API const ::boost::filesystem::path& getFolder() const;
+    FWIO_API const std::filesystem::path& getFolder() const;
 
     /**
      * @brief Clear any location set by the setFile/setFiles/setFolder setter
@@ -128,7 +128,7 @@ public:
      * @brief Sets folder path
      * @pre exception if service does not support FOLDER mode
      */
-    FWIO_API void setFolder(const ::boost::filesystem::path& folder);
+    FWIO_API void setFolder(const std::filesystem::path& folder);
 
     /**
      * @brief Slot: Sets the folder when a path is configured in FILE or FILES mode
@@ -136,7 +136,7 @@ public:
      *
      * @pre exception if service does not support FILE or FILES mode
      */
-    FWIO_API void setFileFolder(::boost::filesystem::path folder);
+    FWIO_API void setFileFolder(std::filesystem::path folder);
 
     /**
      * @brief Slot: Sets a timestamp prefix on the output file name
@@ -213,7 +213,7 @@ private:
     ::fwCore::HiResClock::HiResClockType m_currentTimestamp;
 
     /// Value acting as a temporary location for timestamped path
-    mutable ::boost::filesystem::path m_currentLocation;
+    mutable std::filesystem::path m_currentLocation;
 };
 
 } //namespace fwIO

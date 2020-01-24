@@ -24,6 +24,8 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
+#include <fwCom/Signal.hpp>
+
 #include <fwDataTools/helper/MedicalImage.hpp>
 #include <fwDataTools/helper/TransferFunction.hpp>
 
@@ -36,9 +38,12 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor to display a 2D negato.
- * *
+ *
+ * @section Signals Signals
+ * - \b sliceIndexChanged(): emitted when the slice index changed.
+ *
  * @section Slots Slots
- * - \b newImage() : update the image display to show the new content.
+ * - \b newImage() : update the image display to show the new content. @deprecated call \b update() instead.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
  *
@@ -67,7 +72,7 @@ public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
-    fwCoreServiceMacro(SNegato2D, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SNegato2D, ::fwRenderOgre::IAdaptor)
 
     /// Constructor.
     VISUOGREADAPTOR_API SNegato2D() noexcept;
@@ -85,7 +90,7 @@ protected:
     VISUOGREADAPTOR_API virtual void starting() override;
     /// Disconnects the attached data from the receive slot
     VISUOGREADAPTOR_API virtual void stopping() override;
-    /// Requests a rendering of the scene.
+    /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     VISUOGREADAPTOR_API virtual void updating() override;
     /// Select the current tf
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
@@ -98,8 +103,11 @@ protected:
 
 private:
 
-    /// Slot: update image buffer
+    /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     void newImage();
+
+    /// Slot: updates the image buffer, @deprecated call 'update' instead.
+    void newImageDeprecatedSlot();
 
     /// Slot: update image slice type
     void changeSliceType(int _from, int _to);
@@ -110,11 +118,8 @@ private:
     /// updates image slice index for the current fragment program.
     void updateShaderSliceIndexParameter();
 
-    /// Makes the plane processes his mesh
-    void createPlane(const ::fwData::Image::SpacingType& _spacing);
-
-    /// Adapts the camera to the width and height of the displayed plane.
-    void updateCamera();
+    /// Initializes the planar mesh on which the negato is displayed.
+    void createPlane(const ::Ogre::Vector3& _spacing);
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
@@ -123,15 +128,12 @@ private:
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// The plane on which we will apply our texture
-    ::fwRenderOgre::Plane* m_plane { nullptr };
+    std::unique_ptr< ::fwRenderOgre::Plane > m_plane;
 
     bool m_enableAlpha {false};
 
     /// The scene node allowing to move the entire negato
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
-
-    /// The scene node allowing to move the camera
-    ::Ogre::SceneNode* m_cameraNode { nullptr };
 
     /// Defines the filtering type for this negato
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
@@ -146,6 +148,9 @@ private:
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    using SliceIndexChangedSignalType = ::fwCom::Signal<void()>;
+    SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 };
 
 //------------------------------------------------------------------------------

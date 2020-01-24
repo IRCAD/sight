@@ -29,8 +29,7 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>

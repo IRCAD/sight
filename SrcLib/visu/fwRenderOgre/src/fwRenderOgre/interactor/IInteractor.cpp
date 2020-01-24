@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,10 @@
  *
  ***********************************************************************/
 
-#include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/Utils.hpp>
+#include "fwRenderOgre/interactor/IInteractor.hpp"
+
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -38,10 +40,15 @@ const ::fwCom::Signals::SignalKeyType fwRenderOgre::interactor::IInteractor::s_R
 
 // ----------------------------------------------------------------------------
 
-IInteractor::IInteractor()  :
-    m_sceneManager(nullptr)
+IInteractor::IInteractor(Layer::sptr _layer)  :
+    m_layer(_layer)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
+
+    if(_layer)
+    {
+        m_sceneManager = _layer->getSceneManager();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -58,6 +65,143 @@ void IInteractor::setSceneID(const std::string& sceneID)
 }
 
 // ----------------------------------------------------------------------------
+
+void IInteractor::setSceneLength(float)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::mouseMoveEvent(MouseButton, Modifier, int, int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::wheelEvent(Modifier, int, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonReleaseEvent(MouseButton, Modifier, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonPressEvent(MouseButton, Modifier, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyPressEvent(int, Modifier, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyReleaseEvent(int, Modifier, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::mouseMoveEvent(MouseButton, int, int, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::wheelEvent(int, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::resizeEvent(int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyPressEvent(int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::keyReleaseEvent(int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonReleaseEvent(MouseButton, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonPressEvent(MouseButton, int, int)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::focusInEvent()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::focusOutEvent()
+{
+
+}
+
+// ----------------------------------------------------------------------------
+
+bool IInteractor::isInLayer(int _mouseX, int _mouseY, Layer::sptr _layer)
+{
+    const auto* const layerVp = _layer->getViewport();
+    bool isInLayer            = isInViewport(_mouseX, _mouseY, layerVp);
+
+    // Check if there's no layer above.
+    auto* const renderWindow       = layerVp->getTarget();
+    const unsigned short numLayers = renderWindow->getNumViewports();
+    for(unsigned short i = 0; i < numLayers && isInLayer; ++i)
+    {
+        const auto* const vp = renderWindow->getViewport(i);
+        if(vp->getZOrder() > layerVp->getZOrder())
+        {
+            isInLayer = !isInViewport(_mouseX, _mouseY, vp);
+        }
+    }
+
+    return isInLayer;
+}
+
+// ----------------------------------------------------------------------------
+
+bool IInteractor::isInViewport(int _mouseX, int _mouseY, const ::Ogre::Viewport* const _vp)
+{
+    const int top    = _vp->getActualTop();
+    const int left   = _vp->getActualLeft();
+    const int bottom = top + _vp->getActualHeight();
+    const int right  = left + _vp->getActualWidth();
+
+    return _mouseX >= left && _mouseX <= right && _mouseY >= top && _mouseY <= bottom;
+}
 
 } // namespace interactor
 } // namespace fwRenderOgre

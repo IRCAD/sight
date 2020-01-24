@@ -41,10 +41,9 @@
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight)
 
-fwRenderOgreRegisterLightMacro( ::visuOgreAdaptor::SLight,
-                                ::fwRenderOgre::ILight::REGISTRY_KEY );
+fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY);
 
 //------------------------------------------------------------------------------
 
@@ -53,9 +52,8 @@ namespace visuOgreAdaptor
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SLight::s_SET_X_OFFSET_SLOT         = "setXOffset";
-const ::fwCom::Slots::SlotKeyType SLight::s_SET_Y_OFFSET_SLOT         = "setYOffset";
-const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
+static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform";
 static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
@@ -63,14 +61,7 @@ static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularC
 
 //------------------------------------------------------------------------------
 
-SLight::SLight() noexcept :
-    m_light(nullptr),
-    m_lightName(""),
-    m_lightType(::Ogre::Light::LT_DIRECTIONAL),
-    m_useOrphanNode(true),
-    m_switchedOn(true),
-    m_thetaOffset(0.f),
-    m_phiOffset(0.f)
+SLight::SLight() noexcept
 {
     newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
     newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
@@ -81,7 +72,6 @@ SLight::SLight() noexcept :
 SLight::SLight(::fwRenderOgre::ILight::Key /*key*/) :
     m_light(nullptr),
     m_lightName(""),
-    m_useOrphanNode(true),
     m_switchedOn(true),
     m_thetaOffset(0.f),
     m_phiOffset(0.f)
@@ -121,8 +111,6 @@ void SLight::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_useOrphanNode = false;
-
     if(config.count("switchedOn"))
     {
         m_switchedOn = config.get<std::string>("switchedOn") == "yes";
@@ -150,13 +138,11 @@ void SLight::starting()
     m_lightDiffuseColor  = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
     m_lightSpecularColor = this->getInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
 
-    m_lightName = this->getID() + "_" + m_lightName;
-    m_light     = this->getSceneManager()->createLight(m_lightName);
+    m_light = this->getSceneManager()->createLight(this->getID() + "_" + m_lightName);
 
     // Set the default light direction to the camera's view direction,
-    // Z used to be the default until ogre 1.10 but was replaced with -Z in 1.11
-    m_light->setDirection(::Ogre::Vector3::UNIT_Z);
-    m_light->setType(m_lightType ? m_lightType : ::Ogre::Light::LT_DIRECTIONAL);
+    m_light->setDirection(::Ogre::Vector3::NEGATIVE_UNIT_Z);
+    m_light->setType(m_lightType);
     m_light->setVisible(m_switchedOn);
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
@@ -192,8 +178,22 @@ void SLight::updating()
 
     m_light->setDiffuseColour(diffuseColor);
     m_light->setSpecularColour(specularColor);
+    m_light->setType(m_lightType);
 
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SLight::stopping()
+{
+    this->getRenderService()->makeCurrent();
+
+    this->unregisterServices();
+
+    m_light->detachFromParent();
+    this->getSceneManager()->destroyLight(m_light);
+    this->getSceneManager()->destroySceneNode(m_lightNode);
 }
 
 //------------------------------------------------------------------------------
@@ -235,8 +235,6 @@ void SLight::switchOn(bool _on)
 
 void SLight::setThetaOffset(float _thetaOffset)
 {
-    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
-
     this->getRenderService()->makeCurrent();
 
     const float thetaDelta = _thetaOffset - m_thetaOffset;
@@ -253,8 +251,6 @@ void SLight::setThetaOffset(float _thetaOffset)
 
 void SLight::setPhiOffset(float _phiOffset)
 {
-    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
-
     this->getRenderService()->makeCurrent();
 
     const float phiDelta = _phiOffset - m_phiOffset;
@@ -265,35 +261,6 @@ void SLight::setPhiOffset(float _phiOffset)
 
     m_lightNode->rotate(xAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SLight::setDoubleParameter(double _val, std::string _key)
-{
-    this->getRenderService()->makeCurrent();
-
-    if(_key == "thetaOffset")
-    {
-        this->setThetaOffset(static_cast<float>(_val));
-    }
-    else if(_key == "phiOffset")
-    {
-        this->setPhiOffset(static_cast<float>(_val));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SLight::stopping()
-{
-    this->getRenderService()->makeCurrent();
-
-    this->unregisterServices();
-
-    m_light->detachFromParent();
-    this->getSceneManager()->destroyLight(m_light);
-    this->getSceneManager()->destroySceneNode(m_lightNode);
 }
 
 //------------------------------------------------------------------------------

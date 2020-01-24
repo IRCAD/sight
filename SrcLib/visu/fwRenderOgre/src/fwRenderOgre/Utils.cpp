@@ -34,8 +34,7 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/numeric/conversion/cast.hpp>
+#include <fwTools/System.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -45,6 +44,7 @@
 
 #include <algorithm>
 #include <cctype> // Needed for isspace()
+#include <filesystem>
 
 #ifdef __APPLE__
 #define PLUGIN_PATH "plugins_osx.cfg"
@@ -77,15 +77,15 @@ void Utils::loadResources()
         try
         {
             // Check file existence
-            if(!::boost::filesystem::exists(path))
+            if(!std::filesystem::exists(path))
             {
                 OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
-            const auto tmpPath = ::boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
+            const auto tmpPath = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
             std::ofstream newResourceFile(tmpPath.string());
 
-            if(!::boost::filesystem::exists(tmpPath))
+            if(!std::filesystem::exists(tmpPath))
             {
                 OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
             }
@@ -98,7 +98,7 @@ void Utils::loadResources()
             resourceFile.close();
             newResourceFile.close();
             cf.load(tmpPath.string());
-            ::boost::filesystem::remove(tmpPath);
+            std::filesystem::remove(tmpPath);
 
             const ::Ogre::ConfigFile::SettingsBySection_ secis = cf.getSettingsBySection();
 
@@ -129,7 +129,7 @@ void Utils::loadResources()
 
 //------------------------------------------------------------------------------
 
-void Utils::addResourcesPath(const ::boost::filesystem::path& path)
+void Utils::addResourcesPath(const std::filesystem::path& path)
 {
     SLM_ASSERT("Empty resource path", !path.empty());
     s_resourcesPath.insert(path.string());
@@ -153,18 +153,18 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
         const auto& confPath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH);
 
         // Check file existence
-        if(!::boost::filesystem::exists(confPath))
+        if(!std::filesystem::exists(confPath))
         {
             OSLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
         }
 
-        const auto tmpPluginCfg = ::boost::filesystem::temp_directory_path() / ::boost::filesystem::unique_path();
+        const auto tmpPluginCfg = std::filesystem::temp_directory_path() / ::fwTools::System::genTempFileName();
 
         // Set the actual plugin path in the plugin config file.
         std::ifstream pluginCfg(confPath.string());
         std::ofstream newPlugin(tmpPluginCfg.string());
 
-        if(!::boost::filesystem::exists(tmpPluginCfg))
+        if(!std::filesystem::exists(tmpPluginCfg))
         {
             OSLM_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
@@ -178,7 +178,7 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
         root = new ::Ogre::Root(tmpPluginCfg.string().c_str());
 
-        ::boost::filesystem::remove(tmpPluginCfg);
+        std::filesystem::remove(tmpPluginCfg);
 
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
@@ -749,6 +749,23 @@ void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const fwData::Transformat
 
 //------------------------------------------------------------------------------
 
+std::pair< ::Ogre::Vector3, ::Ogre::Vector3 > Utils::convertSpacingAndOrigin(const ::fwData::Image::csptr& _img)
+{
+    const auto& imgOrigin = _img->getOrigin2();
+    const ::Ogre::Vector3 origin(static_cast< float >(imgOrigin[0]),
+                                 static_cast< float >(imgOrigin[1]),
+                                 static_cast< float >(imgOrigin[2]));
+
+    const auto& imgSpacing = _img->getSpacing2();
+    const ::Ogre::Vector3 spacing(static_cast< float >(imgSpacing[0]),
+                                  static_cast< float >(imgSpacing[1]),
+                                  static_cast< float >(imgSpacing[2]));
+
+    return std::make_pair(spacing, origin);
+}
+
+//------------------------------------------------------------------------------
+
 bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output)
 {
     bool keyFound = false;
@@ -767,7 +784,7 @@ bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::
             {
                 SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", line.size() < keySize + 1 );
 
-                const auto currentPath = ::boost::filesystem::path(line.substr(keySize + 1));
+                const auto currentPath = std::filesystem::path(line.substr(keySize + 1));
 
                 if(!currentPath.is_absolute())
                 {

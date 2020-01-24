@@ -40,7 +40,7 @@ namespace builder
 class FWGUI_CLASS_API IMenuBarBuilder : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(IMenuBarBuilder, ::fwGui::GuiBaseObject);
+    fwCoreClassMacro(IMenuBarBuilder, ::fwGui::GuiBaseObject)
 
     typedef std::string RegistryKeyType;
 
@@ -80,8 +80,8 @@ protected:
     /// MenuBar.
     ::fwGui::container::fwMenuBar::sptr m_menuBar;
 
-    /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
-    std::string m_backgroundColor {"default"};
+    /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
+    std::string m_backgroundColor;
 
 };
 

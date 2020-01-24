@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
-#include <boost/assign/list_of.hpp>
 #include <boost/cast.hpp>
 
 #include <vtkCell.h>
@@ -79,60 +78,57 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     return it->second;
 }
 
-const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
-    = boost::assign::map_list_of
-      // char and signed char are treated as the same type.
-      // and plain char is used when writing an int8 image
-          ( fwTools::Type::create("int8" ), VTK_CHAR )
-          ( fwTools::Type::create("uint8" ), VTK_UNSIGNED_CHAR )
+const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
+    // char and signed char are treated as the same type.
+    // and plain char is used when writing an int8 image
+    { fwTools::Type::create("int8" ), VTK_CHAR },
+    { fwTools::Type::create("uint8" ), VTK_UNSIGNED_CHAR },
 
-          ( fwTools::Type::create("int16"), VTK_SHORT )
-          ( fwTools::Type::create("uint16"), VTK_UNSIGNED_SHORT )
+    { fwTools::Type::create("int16"), VTK_SHORT },
+    { fwTools::Type::create("uint16"), VTK_UNSIGNED_SHORT },
 
-          ( fwTools::Type::create("int32"), VTK_INT )
-          ( fwTools::Type::create("uint32"), VTK_UNSIGNED_INT )
+    { fwTools::Type::create("int32"), VTK_INT },
+    { fwTools::Type::create("uint32"), VTK_UNSIGNED_INT },
 
-          ( fwTools::Type::create("float" ), VTK_FLOAT )
-          ( fwTools::Type::create("double"), VTK_DOUBLE )
+    { fwTools::Type::create("float" ), VTK_FLOAT },
+    { fwTools::Type::create("double"), VTK_DOUBLE },
 
 #if ( INT_MAX < LONG_MAX )
-      ( fwTools::Type::create("int64"), VTK_LONG )
-          ( fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG )
+    { fwTools::Type::create("int64"), VTK_LONG },
+    { fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG }
 #endif
-    ;
+};
 
-const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
-    = boost::assign::map_list_of
+const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
+    // char and signed char are treated as the same type.
+    // and plain char is used when writing an int8 image
+    { VTK_SIGNED_CHAR, fwTools::Type::create("int8" )  },
+    { VTK_CHAR, fwTools::Type::create("int8" )  },
+    { VTK_UNSIGNED_CHAR, fwTools::Type::create("uint8" ) },
 
-      // char and signed char are treated as the same type.
-      // and plain char is used when writing an int8 image
-          ( VTK_SIGNED_CHAR, fwTools::Type::create("int8" )  )
-          ( VTK_CHAR, fwTools::Type::create("int8" )  )
-          ( VTK_UNSIGNED_CHAR, fwTools::Type::create("uint8" ) )
+    { VTK_SHORT, fwTools::Type::create("int16")  },
+    { VTK_UNSIGNED_SHORT, fwTools::Type::create("uint16") },
 
-          ( VTK_SHORT, fwTools::Type::create("int16")  )
-          ( VTK_UNSIGNED_SHORT, fwTools::Type::create("uint16") )
+    { VTK_INT, fwTools::Type::create("int32") },
+    { VTK_UNSIGNED_INT, fwTools::Type::create("uint32") },
 
-          ( VTK_INT, fwTools::Type::create("int32")  )
-          ( VTK_UNSIGNED_INT, fwTools::Type::create("uint32") )
-
-          ( VTK_FLOAT, fwTools::Type::create("float" ) )
-          ( VTK_DOUBLE, fwTools::Type::create("double") )
+    { VTK_FLOAT, fwTools::Type::create("float" ) },
+    { VTK_DOUBLE, fwTools::Type::create("double") },
 
 #if ( INT_MAX < LONG_MAX )
-      ( VTK_LONG, fwTools::Type::create("int64")  )
-          ( VTK_UNSIGNED_LONG, fwTools::Type::create("uint64") )
+    { VTK_LONG, fwTools::Type::create("int64") },
+    { VTK_UNSIGNED_LONG, fwTools::Type::create("uint64") },
 
-          ( VTK___INT64, fwTools::Type::create("int64")  )
-          ( VTK_LONG_LONG, fwTools::Type::create("int64")  )
+    { VTK___INT64, fwTools::Type::create("int64") },
+    { VTK_LONG_LONG, fwTools::Type::create("int64") },
 
-          ( VTK_UNSIGNED___INT64, fwTools::Type::create("uint64") )
-          ( VTK_UNSIGNED_LONG_LONG, fwTools::Type::create("uint64") )
+    { VTK_UNSIGNED___INT64, fwTools::Type::create("uint64") },
+    { VTK_UNSIGNED_LONG_LONG, fwTools::Type::create("uint64") },
 #else
-      ( VTK_LONG, fwTools::Type::create("int32")  )
-          ( VTK_UNSIGNED_LONG, fwTools::Type::create("uint32") )
+    { VTK_LONG, fwTools::Type::create("int32") },
+    { VTK_UNSIGNED_LONG, fwTools::Type::create("uint32") },
 #endif
-    ;
+};
 
 // -----------------------------------------------------------------------------
 
@@ -178,16 +174,16 @@ void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE* destBufferTyped = (IMAGETYPE*)destBuffer;
-    IMAGETYPE* inputTyped = (IMAGETYPE*)input;
-    IMAGETYPE* finalPtr = ((IMAGETYPE*)destBuffer) + size;
+    IMAGETYPE* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
+    IMAGETYPE* inputTyped = static_cast<IMAGETYPE*>(input);
+    IMAGETYPE* finalPtr = static_cast<IMAGETYPE*>(destBuffer) + size;
     IMAGETYPE valR, valG, valB;
 
     while (destBufferTyped < finalPtr)
     {
-        valR                 = (IMAGETYPE)(float((*(inputTyped++)) * 0.30));
-        valG                 = (IMAGETYPE)(float((*(inputTyped++)) * 0.59));
-        valB                 = (IMAGETYPE)(float((*(inputTyped++)) * 0.11));
+        valR                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.30));
+        valG                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.59));
+        valB                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.11));
         (*destBufferTyped++) = valR + valG + valB;
     }
 }
@@ -202,9 +198,9 @@ void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE* destBufferTyped = (IMAGETYPE*)destBuffer;
-    IMAGETYPE* inputTyped      = (IMAGETYPE*)input;
-    IMAGETYPE* finalPtr        = ((IMAGETYPE*)destBuffer) + size;
+    IMAGETYPE* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
+    IMAGETYPE* inputTyped      = static_cast<IMAGETYPE*>(input);
+    IMAGETYPE* finalPtr        = static_cast<IMAGETYPE*>(destBuffer) + size;
 
     while (destBufferTyped < finalPtr)
     {
@@ -218,8 +214,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
     SLM_ASSERT("vtkImageData source and/or ::fwData::Image destination are not correct", destination && source );
 
-    ::fwDataTools::helper::Image imageHelper(destination);
-
     // ensure image size correct
 //    source->UpdateInformation();
 //    source->PropagateUpdateExtent();
@@ -229,92 +223,108 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     if(dim == 2)
     {
-        int size[2];
-        size[0] = source->GetDimensions()[0];
-        size[1] = source->GetDimensions()[1];
-        destination->setSize( ::fwData::Image::SizeType(size, size+dim) );
+        const ::fwData::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
+                                            static_cast<size_t>(source->GetDimensions()[1]), 0};
+        destination->setSize2(size);
 
-        double spacing[2];
-        spacing[0] = source->GetSpacing()[0];
-        spacing[1] = source->GetSpacing()[1];
-        destination->setSpacing( ::fwData::Image::SpacingType(spacing, spacing+dim) );
+        const ::fwData::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.};
+        destination->setSpacing2(spacing);
 
-        double origin[2];
-        origin[0] = source->GetOrigin()[0];
-        origin[1] = source->GetOrigin()[1];
-        destination->setOrigin( ::fwData::Image::OriginType(origin, origin+dim) );
+        const ::fwData::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.};
+        destination->setOrigin2(origin);
     }
     else
     {
-        destination->setSize( ::fwData::Image::SizeType(source->GetDimensions(), source->GetDimensions()+dim) );
-        destination->setSpacing( ::fwData::Image::SpacingType(source->GetSpacing(), source->GetSpacing()+dim) );
-        destination->setOrigin( ::fwData::Image::OriginType(source->GetOrigin(), source->GetOrigin()+dim) );
+        const ::fwData::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
+                                            static_cast<size_t>(source->GetDimensions()[1]),
+                                            static_cast<size_t>(source->GetDimensions()[2])};
+        destination->setSize2(size);
+
+        const ::fwData::Image::Spacing spacing =
+        {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]};
+        destination->setSpacing2(spacing);
+
+        const ::fwData::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]};
+        destination->setOrigin2(origin);
     }
 
     const int nbComponents = source->GetNumberOfScalarComponents();
-    const size_t size      =
-        std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, std::max(3,
-                                                                                       nbComponents),
-                        std::multiplies<size_t>() );
+    const size_t size      = static_cast<size_t>(
+        std::accumulate(source->GetDimensions(),
+                        source->GetDimensions()+static_cast<size_t>(dim),
+                        std::max(static_cast<size_t>(3), static_cast<size_t>(nbComponents)),
+                        std::multiplies<size_t>())
+        );
     const void* input = source->GetScalarPointer();
 
     if (size != 0)
     {
         void* destBuffer;
-        const int nbBytePerPixel = source->GetScalarSize();
-        OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
+        OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << source->GetScalarSize() );
         OSLM_TRACE(nbComponents << " components, " << TypeTranslator::translate( source->GetScalarType() ));
         destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
-        destination->setNumberOfComponents(nbComponents);
-        destination->allocate();
-        ::fwData::ObjectLock lock(destination);
-        destBuffer = imageHelper.getBuffer();
+        destination->setNumberOfComponents(static_cast<size_t>(nbComponents));
+        if (nbComponents == 1)
+        {
+            destination->setPixelFormat(::fwData::Image::PixelFormat::GRAY_SCALE);
+        }
+        else if (nbComponents == 3)
+        {
+            destination->setPixelFormat(::fwData::Image::PixelFormat::RGB);
+        }
+        else if (nbComponents == 4)
+        {
+            destination->setPixelFormat(::fwData::Image::PixelFormat::RGBA);
+        }
+        destination->resize();
+
+        const auto dumpLock = destination->lock();
+
+        destBuffer = destination->getBuffer();
         const size_t sizeInBytes = destination->getSizeInBytes();
         std::memcpy(destBuffer, input, sizeInBytes);
-
     }
-
 }
 
 // ------------------------------------------------------------------------------
 
 void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::csptr _pDataImage )
 {
-    ::fwDataTools::helper::ImageGetter imageHelper(_pDataImage);
+    const auto dumpLock = _pDataImage->lock();
 
-    if(_pDataImage->getSize().size() == 2)
+    if(_pDataImage->getNumberOfDimensions() == 2)
     {
-        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
-                                        _pDataImage->getSpacing().at(1),
+        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing2()[0],
+                                        _pDataImage->getSpacing2()[1],
                                         0
                                         );
 
-        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin().at(0),
-                                        _pDataImage->getOrigin().at(1),
+        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin2()[0],
+                                        _pDataImage->getOrigin2()[1],
                                         0
                                         );
 
-        _pImageImport->SetWholeExtent(  0, _pDataImage->getSize().at(0) - 1,
-                                        0, _pDataImage->getSize().at(1) - 1,
+        _pImageImport->SetWholeExtent(  0, static_cast<int>(_pDataImage->getSize2()[0]) - 1,
+                                        0, static_cast<int>(_pDataImage->getSize2()[1]) - 1,
                                         0, 0
                                         );
     }
     else
     {
-        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
-                                        _pDataImage->getSpacing().at(1),
-                                        _pDataImage->getSpacing().at(2)
+        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing2()[0],
+                                        _pDataImage->getSpacing2()[1],
+                                        _pDataImage->getSpacing2()[2]
                                         );
 
-        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin().at(0),
-                                        _pDataImage->getOrigin().at(1),
-                                        _pDataImage->getOrigin().at(2)
+        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin2()[0],
+                                        _pDataImage->getOrigin2()[1],
+                                        _pDataImage->getOrigin2()[2]
                                         );
 
-        _pImageImport->SetWholeExtent(  0, _pDataImage->getSize().at(0) - 1,
-                                        0, _pDataImage->getSize().at(1) - 1,
-                                        0, _pDataImage->getSize().at(2) - 1
+        _pImageImport->SetWholeExtent(  0, static_cast<int>(_pDataImage->getSize2()[0]) - 1,
+                                        0, static_cast<int>(_pDataImage->getSize2()[1]) - 1,
+                                        0, static_cast<int>(_pDataImage->getSize2()[2]) - 1
                                         );
     }
 
@@ -323,7 +333,7 @@ void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::
     // copy WholeExtent to DataExtent
     _pImageImport->SetDataExtentToWholeExtent();
     // no copy, no buffer destruction/management
-    _pImageImport->SetImportVoidPointer( imageHelper.getBuffer() );
+    _pImageImport->SetImportVoidPointer( _pDataImage->getBuffer() );
     // used to set correct pixeltype to VtkImage
     _pImageImport->SetDataScalarType( TypeTranslator::translate(_pDataImage->getType()) );
 }

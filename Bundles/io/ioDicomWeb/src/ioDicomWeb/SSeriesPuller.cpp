@@ -48,7 +48,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 namespace ioDicomWeb
 {
@@ -77,11 +77,11 @@ void SSeriesPuller::configuring()
     bool success;
 
     // Dicom Reader
-    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
+    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
     SLM_ASSERT("It should be a \"dicomReader\" in the ::ioDicomWeb::SSeriesPuller config element.", success);
 
     // Dicom Reader Config
-    ::boost::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
+    std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
 
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
@@ -312,7 +312,7 @@ void SSeriesPuller::pullSeries()
                         }
 
                         // Create dicom folder
-                        ::boost::filesystem::path instancePath = m_path.parent_path() / seriesInstancesUID;
+                        std::filesystem::path instancePath = m_path.parent_path() / seriesInstancesUID;
                         QDir().mkpath(instancePath.string().c_str());
                         // Move dicom file to the created dicom folder
                         instancePath /= m_path.filename();

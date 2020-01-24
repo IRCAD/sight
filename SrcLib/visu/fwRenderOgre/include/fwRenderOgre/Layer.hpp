@@ -41,10 +41,12 @@
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreVector2.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 
 #include <cstdint>
+#include <map>
 #include <vector>
 
 namespace fwData
@@ -78,7 +80,7 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 {
 public:
 
-    fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer);
+    fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer)
     fwCoreAllowSharedFromThis()
 
     /// Extrinsic x Intrinsic camera calibrations.
@@ -154,10 +156,10 @@ public:
     FWRENDEROGRE_API void updateCompositorState(std::string compositorName, bool isEnabled);
 
     /// Place and align camera's focal with the world boundingBox.
-    FWRENDEROGRE_API void resetCameraCoordinates() const;
+    FWRENDEROGRE_API void resetCameraCoordinates();
 
     /// Compute camera's focal with the world boundingBox.
-    FWRENDEROGRE_API void computeCameraParameters() const;
+    FWRENDEROGRE_API void computeCameraParameters();
 
     /// Reset the camera clipping range (near and far).
     FWRENDEROGRE_API void resetCameraClippingRange() const;
@@ -166,24 +168,38 @@ public:
     FWRENDEROGRE_API void resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
 
     /**
-     * @brief set Ogre Movement interactor.
+     * @brief set the movement interactor.
+     * @deprecated Use @see Layer::addInteractor() instead. Removed in sight 21.0
      */
-    FWRENDEROGRE_API virtual void setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::sptr interactor);
+    [[deprecated("Use Layer::addInteractor() instead.")]]
+    FWRENDEROGRE_API virtual void setMoveInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& interactor);
 
     /**
      * @brief set Ogre Select interactor.
+     * @deprecated use \b addInteractor instead.
      */
-    FWRENDEROGRE_API virtual void setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr interactor);
+    [[deprecated("Use Layer::addInteractor instead.")]]
+    FWRENDEROGRE_API virtual void setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor);
+
+    /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
+    FWRENDEROGRE_API void addInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor,
+                                        int _priority = 0);
+
+    /// Removes the given interactor.
+    FWRENDEROGRE_API void removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor);
 
     /**
      * @brief get Ogre Movement interactor.
+     * @deprecated Will be removed in sight 21.0
      */
-    FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IMovementInteractor::sptr getMoveInteractor();
+    [[deprecated("Removed in sight 21.0.")]]
+    FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IInteractor::sptr getMoveInteractor();
 
     /**
      * @brief get Ogre Select interactor.
-     * @deprecated This will be removed soon.
+     * @deprecated Will be removed in sight 21.0
      */
+    [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IPickerInteractor::sptr getSelectInteractor();
 
     /// Returns m_depth.
@@ -303,6 +319,9 @@ public:
     /// Retrieves the overlays enabled on this layer's viewport.
     FWRENDEROGRE_API const OverlaySetType& getEnabledOverlays() const;
 
+    /// Cancels interaction for all interactors with a lower priority than the one calling this.
+    FWRENDEROGRE_API void cancelFurtherInteraction();
+
 private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
@@ -313,8 +332,8 @@ private:
     /// Stops and starts all adaptors belonging to this layer. Subadaptors are expected to be managed by their parent.
     void restartAdaptors();
 
-    /// For a list of semicolon-separated words, returns a vector of these words.
-    std::vector< std::string > trimSemicolons(std::string input);
+    /// Calls a function on all interactors and deletes the ones that expired.
+    void forAllInteractors(const std::function< void(const interactor::IInteractor::sptr&)>&& _f);
 
     /// Ogre scene manager of this viewport.
     ::Ogre::SceneManager* m_sceneManager;
@@ -363,10 +382,13 @@ private:
     ::Ogre::Camera* m_camera;
 
     /// Ogre movement interactor
-    ::fwRenderOgre::interactor::IMovementInteractor::sptr m_moveInteractor;
+    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;
 
-    /// List of interactors
-    std::vector< ::fwRenderOgre::interactor::IInteractor::wptr > m_interactors;
+    /// List of interactors, sorted by priority.
+    std::multimap< int, ::fwRenderOgre::interactor::IInteractor::wptr, std::greater<int> > m_interactors;
+
+    /// Flag cancelling all further interaction when enabled.
+    bool m_cancelFurtherInteraction { false };
 
     ///Connection service, needed for slot/signal association.
     ::fwCom::helper::SigSlotConnection m_connections;
@@ -392,8 +414,6 @@ private:
     /// Abstract light used to set the default light.
     SPTR(::fwRenderOgre::ILight) m_lightAdaptor;
 
-    SPTR(::fwData::TransformationMatrix3D) m_defaultLightTransform;
-
     /// Diffuse color of the default light.
     SPTR(::fwData::Color) m_defaultLightDiffuseColor;
 
@@ -418,6 +438,8 @@ private:
 
     /// Viewport parameters: left, top, width, height.
     ViewportConfigType m_viewportCfg { 0.f, 0.f, 1.f, 1.f};
+
+    float m_dpi { 96.f };
 
 };
 

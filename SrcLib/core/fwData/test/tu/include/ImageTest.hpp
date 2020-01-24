@@ -43,6 +43,7 @@ private:
     CPPUNIT_TEST( testRGBIterator );
     CPPUNIT_TEST( testBGRAIterator );
     CPPUNIT_TEST( testBGRIterator );
+    CPPUNIT_TEST( imageDeepCopy );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -60,6 +61,7 @@ public:
     void testRGBIterator();
     void testBGRIterator();
     void testBGRAIterator();
+    void imageDeepCopy();
 };
 
 } //namespace ut

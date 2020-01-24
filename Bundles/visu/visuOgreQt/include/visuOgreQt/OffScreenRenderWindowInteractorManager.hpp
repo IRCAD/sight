@@ -41,7 +41,7 @@ class VISUOGREQT_CLASS_API OffScreenRenderWindowInteractorManager :
     public ::fwRenderOgre::IRenderWindowInteractorManager
 {
 public:
-    fwCoreClassMacro(OffScreenRenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager);
+    fwCoreClassMacro(OffScreenRenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)
 
     /// Constructor
     VISUOGREQT_API OffScreenRenderWindowInteractorManager(
@@ -84,6 +84,14 @@ public:
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
     VISUOGREQT_API ::fwRenderOgre::IGraphicsWorker* createGraphicsWorker() final;
+
+    /// Doesn't make much sense when not rendering on a screen.
+    /// Returns a DPI of 220 to permit offscreen font rendering.
+    VISUOGREQT_API virtual float getLogicalDotsPerInch() const final
+    {
+        // Return this value which is kind of common for HiDPI monitors.
+        return 220;
+    }
 
 private:
     void render();

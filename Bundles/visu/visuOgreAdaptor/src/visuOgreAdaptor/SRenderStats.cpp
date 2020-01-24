@@ -28,8 +28,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/make_unique.hpp>
-
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
@@ -76,7 +74,7 @@ private:
 
 };
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SRenderStats);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SRenderStats)
 
 //------------------------------------------------------------------------------
 
@@ -108,7 +106,7 @@ void SRenderStats::configuring()
 
     m_textColor = ::Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
 
-    m_textHeight = config.get<float>("height", 0.03f);
+    m_fontSize = config.get<size_t>("fontSize", m_fontSize);
 }
 
 //------------------------------------------------------------------------------
@@ -120,22 +118,22 @@ void SRenderStats::starting()
     ::fwRenderOgre::SRender::sptr renderSrv = this->getRenderService();
     renderSrv->makeCurrent();
 
+    const float dpi = renderSrv->getInteractorManager()->getLogicalDotsPerInch();
+
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::FontPtr dejaVuSansFont          = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
 
     m_statsText = ::fwRenderOgre::Text::New(this->getID() + "_fpsText",
                                             this->getSceneManager(),
                                             textContainer,
-                                            dejaVuSansFont,
-                                            nullptr);
+                                            "DejaVuSans.ttf", m_fontSize, dpi,
+                                            this->getLayer()->getDefaultCamera());
 
-    m_statsText->setPosition(0, 0);
+    m_statsText->setPosition(0.01f, 0.01f);
     m_statsText->setTextColor(m_textColor);
-    m_statsText->setCharHeight(m_textHeight);
 
     auto* renderWindow = renderSrv->getInteractorManager()->getRenderTarget();
 
-    m_listener = ::boost::make_unique<visuOgreAdaptor::PostWindowRenderListener>(*this);
+    m_listener = std::make_unique<visuOgreAdaptor::PostWindowRenderListener>(*this);
     renderWindow->addListener(m_listener.get());
 }
 

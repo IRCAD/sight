@@ -36,16 +36,19 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiVisuOgre::SAddPoint, ::fwData::PointList);
-
 const ::fwCom::Slots::SlotKeyType SAddPoint::s_PICK_SLOT         = "pick";
 const ::fwCom::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoints";
 
 const std::string s_POINTLIST_KEY = "pointList";
 
+fwServicesRegisterMacro( ::fwServices::IController, ::uiVisuOgre::SAddPoint, ::fwData::PointList)
+
 //------------------------------------------------------------------------------
+
 SAddPoint::SAddPoint() noexcept
 {
+    FW_DEPRECATED("::uiVisuOgre::SAddPoint", "::ctrlPicking::SManagePointList", "21.0");
+
     newSlot(s_PICK_SLOT, &SAddPoint::pick, this );
     newSlot(s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this );
 }

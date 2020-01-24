@@ -86,16 +86,16 @@ void ClientQtTest::setUp()
 #if defined(__linux)
     char arg2[]         = "-platform";
     char arg3[]         = "offscreen";
-    static char* argv[] = {arg1, arg2, arg3, 0};
+    static char* argv[] = {arg1, arg2, arg3, nullptr};
     int argc            = 3;
 #else
     static char* argv[] = {arg1, 0};
-    int argc            = 1;
+    static int argc     = 1;
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [this](int& argc, char** argv)
+        = [](int& argc, char** argv)
           {
               return QSharedPointer< QApplication > (new ::fwGuiQt::App(argc, argv, false));
           };

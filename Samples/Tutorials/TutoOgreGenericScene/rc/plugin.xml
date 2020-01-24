@@ -2,6 +2,9 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
+    <requirement id="guiQt" />
+    <requirement id="visuOgre" />
+    <requirement id="material" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoOgreGenericScene</id>
@@ -155,8 +158,8 @@
                 </scene>
             </service>
 
-            <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" movement="Trackball" />
+            <service uid="interactorAdaptor" type="::visuOgreAdaptor::STrackballCamera">
+                <config layer="default" />
             </service>
 
             <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
@@ -185,7 +188,7 @@
             </service>
 
             <service uid="axisAdaptor" type="::visuOgreAdaptor::SAxis" >
-                <config layer="default" length="10"/>
+                <config layer="default" length="10" origin="true" originColor="#808080" />
             </service>
 
             <!-- ##################################### End Generic Scene ########################################### -->

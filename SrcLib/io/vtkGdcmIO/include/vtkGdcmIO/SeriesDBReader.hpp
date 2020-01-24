@@ -77,7 +77,7 @@ private:
      *
      * @return a new SeriesDB object
      */
-    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const ::boost::filesystem::path& dicomDir );
+    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const std::filesystem::path& dicomDir );
 
     /**
      * @brief Fills the related SeriesDB object with DICOM data extracted from the given files.

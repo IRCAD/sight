@@ -39,6 +39,16 @@ namespace visuOgreAdaptor
 /**
  * @brief Manage interactor style for Ogre.
  *
+ * @deprecated removed in sight 21.0
+ *
+ * Use the following adaptors instead:
+ * - \b Trackball -> @ref ::visuOgreAdaptor::STrackballCamera
+ * - \b VR -> @ref ::visuOgreAdaptor::STrackballCamera
+ * - \b Negato -> @ref ::visuOgreAdaptor::SNegato2DCamera
+ * - \b Fixed -> _none_
+ * - \b Mesh -> @ref ::visuOgreAdaptor::SPicker
+ * - \b Video -> @ref ::visuOgreAdaptor::SPicker
+ *
  * @section Signals Signals
  * - \b picked(::fwDataTools::PickingInfo) : Emit the picked informations.
  *

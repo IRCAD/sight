@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,33 +20,31 @@
  *
  ***********************************************************************/
 
+#include "fwZip/WriteDirArchive.hpp"
+
 #include "fwZip/exception/Write.hpp"
 
 #include "minizip/zip.h"
-#include "fwZip/WriteDirArchive.hpp"
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include <fstream>
-
-
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
 #include <boost/iostreams/stream_buffer.hpp>
 
+#include <filesystem>
+
+#include <fstream>
 
 namespace fwZip
 {
 
 //-----------------------------------------------------------------------------
 
-WriteDirArchive::WriteDirArchive( const ::boost::filesystem::path &archive ) :
+WriteDirArchive::WriteDirArchive( const std::filesystem::path& archive ) :
     m_archive(archive)
 {
-    if(!::boost::filesystem::exists(m_archive))
+    if(!std::filesystem::exists(m_archive))
     {
-        ::boost::filesystem::create_directories(m_archive);
+        std::filesystem::create_directories(m_archive);
     }
 }
 
@@ -58,13 +56,13 @@ WriteDirArchive::~WriteDirArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::ostream) WriteDirArchive::createFile(const ::boost::filesystem::path &path)
+SPTR(std::ostream) WriteDirArchive::createFile(const std::filesystem::path& path)
 {
-    const ::boost::filesystem::path file       = m_archive / path;
-    const ::boost::filesystem::path parentFile = file.parent_path();
-    if(!::boost::filesystem::exists(parentFile))
+    const std::filesystem::path file       = m_archive / path;
+    const std::filesystem::path parentFile = file.parent_path();
+    if(!std::filesystem::exists(parentFile))
     {
-        ::boost::filesystem::create_directories(parentFile);
+        std::filesystem::create_directories(parentFile);
     }
 
     SPTR(std::ofstream) os = std::make_shared< std::ofstream >();
@@ -74,19 +72,19 @@ SPTR(std::ostream) WriteDirArchive::createFile(const ::boost::filesystem::path &
 
 //-----------------------------------------------------------------------------
 
-void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile,
-                              const ::boost::filesystem::path &destinationFile)
+void WriteDirArchive::putFile(const std::filesystem::path& sourceFile,
+                              const std::filesystem::path& destinationFile)
 {
-    const ::boost::filesystem::path fileDest = m_archive / destinationFile;
-    if (!::boost::filesystem::exists(fileDest))
+    const std::filesystem::path fileDest = m_archive / destinationFile;
+    if (!std::filesystem::exists(fileDest))
     {
-        const ::boost::filesystem::path parentFile = fileDest.parent_path();
-        if(!::boost::filesystem::exists(parentFile))
+        const std::filesystem::path parentFile = fileDest.parent_path();
+        if(!std::filesystem::exists(parentFile))
         {
-            ::boost::filesystem::create_directories(parentFile);
+            std::filesystem::create_directories(parentFile);
         }
-        ::boost::system::error_code err;
-        ::boost::filesystem::create_hard_link( sourceFile, fileDest, err );
+        std::error_code err;
+        std::filesystem::create_hard_link( sourceFile, fileDest, err );
         if (err.value() != 0)
         {
             // Use std stream instead of boost:::filesystem::copy_file
@@ -105,18 +103,16 @@ void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile,
 
 //-----------------------------------------------------------------------------
 
-bool WriteDirArchive::createDir(const ::boost::filesystem::path &path)
+bool WriteDirArchive::createDir(const std::filesystem::path& path)
 {
-    return ::boost::filesystem::create_directories(m_archive/path);
+    return std::filesystem::create_directories(m_archive/path);
 }
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path WriteDirArchive::getArchivePath() const
+const std::filesystem::path WriteDirArchive::getArchivePath() const
 {
     return m_archive;
 }
 
-
 }
-

@@ -39,8 +39,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <exception>
 #include <sstream>
 
@@ -49,7 +47,7 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveDistance, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveDistance, ::fwData::Image )
 
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
 
@@ -59,6 +57,7 @@ static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 RemoveDistance::RemoveDistance( ) noexcept
 {
+    FW_DEPRECATED("::uiMeasurement::action::RemoveDistance", "::uiMeasurement::action::SRemoveDistance", "21.0");
     newSlot(s_REMOVE_LAST_DISTANCE_SLOT, &RemoveDistance::removeLastDistance, this);
 }
 

@@ -30,8 +30,7 @@
 
 #include <fwRuntime/operations.hpp>
 
-#include <boost/filesystem/operations.hpp>
-
+#include <filesystem>
 #include <QGuiApplication>
 
 fwGuiRegisterMacro( ::fwGuiQml::dialog::LoggerDialog, ::fwGui::dialog::ILoggerDialog::REGISTRY_KEY );
@@ -104,13 +103,13 @@ bool LoggerDialog::show()
     // set the icon of the biggest type of error
     auto information =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/information.svg");
-    SLM_ASSERT("The information svg is not found", ::boost::filesystem::exists(information));
+    SLM_ASSERT("The information svg is not found", std::filesystem::exists(information));
     auto warning =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/warning.svg");
-    SLM_ASSERT("The warning svg is not found", ::boost::filesystem::exists(warning));
+    SLM_ASSERT("The warning svg is not found", std::filesystem::exists(warning));
     auto critical =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.svg");
-    SLM_ASSERT("The critical svg is not found", ::boost::filesystem::exists(critical));
+    SLM_ASSERT("The critical svg is not found", std::filesystem::exists(critical));
     if (m_logger->count(::fwLog::Log::CRITICAL) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
@@ -134,10 +133,10 @@ bool LoggerDialog::show()
     // get the icon of the details checkbox
     auto detailshidden =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-hidden.svg");
-    SLM_ASSERT("The details-hidden svg is not found", ::boost::filesystem::exists(detailshidden));
+    SLM_ASSERT("The details-hidden svg is not found", std::filesystem::exists(detailshidden));
     auto detailsshown =
         ::fwRuntime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/details-shown.svg");
-    SLM_ASSERT("The details-shown svg is not found", ::boost::filesystem::exists(detailsshown));
+    SLM_ASSERT("The details-shown svg is not found", std::filesystem::exists(detailsshown));
     emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
     emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));
 

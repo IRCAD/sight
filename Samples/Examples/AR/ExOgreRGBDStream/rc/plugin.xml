@@ -111,7 +111,6 @@
                 <scene>
                     <layer id="default" depth="1" background="0.0" />
                     <adaptor uid="depthAdaptor" />
-                    <adaptor uid="interactorStyle" />
                 </scene>
             </service>
 
@@ -119,10 +118,6 @@
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="default" />
-            </service>
-
-            <service uid="interactorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" movement="Fixed" />
             </service>
 
             <!-- *************************** End generic scene *************************** -->
@@ -133,17 +128,12 @@
                 <scene>
                     <layer id="default" depth="1" background="0.0" />
                     <adaptor uid="videoAdaptor" />
-                    <adaptor uid="videoInteractorStyle" />
                 </scene>
             </service>
 
             <service uid="videoAdaptor" type="::visuOgreAdaptor::SVideo" autoConnect="yes">
                 <in key="image" uid="imageVideo" />
                 <config layer="default" />
-            </service>
-
-            <service uid="videoInteractorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="Fixed" />
             </service>
 
             <!-- *************************** End generic scene *************************** -->
@@ -322,10 +312,8 @@
             <start uid="viewportRangeSelector" />
             <!-- Ogre scene 'distanceMapRender' -->
             <start uid="depthAdaptor" />
-            <start uid="interactorStyle" />
             <!-- Ogre scene 'videoViewRender' -->
             <start uid="videoAdaptor" />
-            <start uid="videoInteractorStyle" />
         </config>
     </extension>
 </plugin>

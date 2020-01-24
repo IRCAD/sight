@@ -22,610 +22,56 @@
 
 #include "visuOgreAdaptor/SImageMultiDistances.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Mesh.hpp>
+#include <fwData/Material.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Mesh.hpp>
 #include <fwDataTools/helper/Vector.hpp>
 
-#include <fwRenderOgre/helper/Camera.hpp>
-#include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/ManualObject.hpp>
-#include <fwRenderOgre/helper/Scene.hpp>
-#include <fwRenderOgre/Mesh.hpp>
-#include <fwRenderOgre/R2VBRenderable.hpp>
-#include <fwRenderOgre/SRender.hpp>
+#include <fwRenderOgre/picker/IPicker.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
 
-#include <boost/numeric/conversion/cast.hpp>
-
-#include <glm/glm.hpp>
-
-#include <OgreMeshManager.h>
-#include <OgreVector3.h>
+#include <OgreEntity.h>
+#include <OgreNode.h>
+#include <OgreSceneNode.h>
 
 namespace visuOgreAdaptor
 {
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
+static const ::fwCom::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
+static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
+static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
+static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT             = "updateVisibility";
+
+static const std::string s_FONT_SOURCE_CONFIG          = "fontSource";
+static const std::string s_FONT_SIZE_CONFIG            = "fontSize";
+static const std::string s_RADIUS_CONFIG               = "radius";
+static const std::string s_INTERACTIVE_CONFIG          = "interactive";
+static const std::string s_PRIORITY_CONFIG             = "priority";
+static const std::string s_QUERY_MASK_CONFIG           = "queryMask";
+static const std::string s_DISTANCE_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
+
+static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID;
+
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
-static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointList";
-
-SImageMultiDistances::SImageMultiDistances() noexcept
-{
-
-}
-
 //------------------------------------------------------------------------------
 
-SImageMultiDistances::~SImageMultiDistances() noexcept
+::Ogre::ColourValue SImageMultiDistances::generateColor(::fwTools::fwID::IDType _id)
 {
-
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::configuring()
-{
-    this->configureParams();
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::starting()
-{
-    this->initialize();
-    this->getRenderService()->makeCurrent();
-
-    m_sceneMgr = this->getSceneManager();
-    m_picker.setSceneManager(m_sceneMgr);
-
-    m_rootSceneNode = m_sceneMgr->getRootSceneNode();
-    m_materialAdp   = this->setMaterialAdp();
-
-    auto layer = this->getRenderService()->getLayer(m_layerID);
-    layer->setSelectInteractor(std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr()));
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::updating()
-{
-    this->getRenderService()->makeCurrent();
-
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    ::fwData::Vector::sptr distanceField;
-    distanceField = image->getField< ::fwData::Vector >( ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
-
-    const bool isShown = image->getField("ShowDistances", ::fwData::Boolean::New(true))->value();
-
-    // removes the displayed lines if they exist
-    this->deleteDistances();
-
-    if( distanceField && isShown)
-    {
-        m_distanceField = distanceField;
-        /// adds the origin to my distances copy
-        this->removeCurrentOrigin();
-        m_millimeterNodes.resize(m_distanceField->size(), nullptr);
-        m_millimeterValue.resize(m_distanceField->size(), nullptr);
-        m_labels.resize(m_distanceField->size(), nullptr);
-        m_labelNodes.resize(m_distanceField->size(), nullptr);
-        for(::fwData::Object::sptr object :  *m_distanceField)
-        {
-            const ::fwData::PointList::sptr distance = ::fwData::PointList::dynamicCast(object);
-            SLM_ASSERT( "Empty Point List for Distance !!!!", !distance->getPoints().empty() );
-            /// displays a given line
-            const ::fwData::Point::cwptr pointFront = distance->getPoints().front();
-            const ::fwData::Point::cwptr pointBack  = distance->getPoints().back();
-            const ::fwData::Point::csptr p1         = pointFront.lock();
-            const ::fwData::Point::csptr p2         = pointBack.lock();
-
-            float ps1[3];
-            float ps2[3];
-            std::transform(p1->getCoord().begin(), p1->getCoord().end(), ps1, ::boost::numeric_cast<float, double>);
-            std::transform(p2->getCoord().begin(), p2->getCoord().end(), ps2, ::boost::numeric_cast<float, double>);
-            this->createDistance(ps1, ps2, m_distanceNb, this->generateColor(m_distanceNb));
-            ++m_distanceNb;
-        }
-        /// remove the origin to my distances copy
-        this->addCurrentOrigin();
-    }
-    this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::stopping()
-{
-    this->getRenderService()->makeCurrent();
-    this->unregisterServices();
-    this->deleteAllRessources();
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::createDistance(float _begin[3], float _end[3], size_t _id,
-                                          const ::Ogre::ColourValue& _color)
-{
-    /// Increase some points to avoid z-fighting
-    switch (this->getOrientation())
-    {
-        /// Look in z axis, axial
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
-        {
-            _begin[2] += 0.01f;
-            _end[2]   += 0.01f;
-            break;
-        }
-        /// Look in y axis, frontal
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
-        {
-            _begin[1] += 0.01f;
-            _end[1]   += 0.01f;
-            break;
-        }
-        /// Look in x axis, sagittal
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
-        {
-            _begin[0] += 0.01f;
-            _end[0]   += 0.01f;
-            break;
-        }
-    }
-    this->createLine(m_materialAdp, _begin, _end, _id, _color);
-    this->createIdLabel(_begin, _id, _color);
-
-    const Ogre::Vector3 a =
-        Ogre::Vector3(static_cast<Ogre::Real>(_begin[0]), static_cast<Ogre::Real>(_begin[1]),
-                      static_cast<Ogre::Real>(_begin[2]));
-    const Ogre::Vector3 b =
-        Ogre::Vector3(static_cast<Ogre::Real>(_end[0]), static_cast<Ogre::Real>(_end[1]),
-                      static_cast<Ogre::Real>(_end[2]));
-    this->createMillimeterLabel(_end, a.distance(b), _id, _color);
-
-    const ::Ogre::MeshPtr mesh =
-        this->createSphere(m_materialAdp, this->getID() + "_sphere-" + std::to_string(_id), _color)->convertToMesh(
-            this->getID() + "_sphere-" + std::to_string(_id));
-
-    /// Create sphere 1 entity and attach the entity on the different node
-    ::Ogre::Entity* const newSphere =
-        m_sceneMgr->createEntity(this->getID() + "Entitypoint1-" + std::to_string(_id), mesh );
-    newSphere->setVisible(true);
-    m_sphere1Node =
-        m_rootSceneNode->createChildSceneNode(this->getID() + "pointNode1" +
-                                              std::to_string(_id));
-    m_sphere1Node->attachObject(newSphere);
-    m_sphere1Node->translate(_begin[0], _begin[1], _begin[2]);
-
-    /// Create sphere 2 entity and attach the entity on the different node
-    ::Ogre::Entity* const newSphere2 =
-        m_sceneMgr->createEntity(this->getID() + "Entitypoint2-" + std::to_string(_id), mesh );
-    newSphere->setVisible(true);
-
-    m_sphere2Node =
-        m_rootSceneNode->createChildSceneNode(this->getID() + "pointNode2" +
-                                              std::to_string(_id));
-    m_sphere2Node->attachObject(newSphere2);
-    m_sphere2Node->translate(_end[0], _end[1], _end[2]);
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::deleteDistance(size_t _id)
-{
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    /// Hide a distance
-    this->deleteLine(_id);
-    this->deleteIdLabel(_id);
-    this->deleteMillimeterLabel(_id);
-
-    ::Ogre::Entity* const sphere = m_sceneMgr->getEntity(
-        this->getID() + "Entitypoint1-" + std::to_string(_id));
-    ::Ogre::Entity* const sphere2 = m_sceneMgr->getEntity(
-        this->getID() + "Entitypoint2-" + std::to_string(_id));
-    ::Ogre::ManualObject* const mesh = m_sceneMgr->getManualObject(
-        this->getID() + "_sphere-" + std::to_string(_id));
-
-    m_rootSceneNode->removeAndDestroyChild(this->getID() + "pointNode1" + std::to_string(_id));
-    m_rootSceneNode->removeAndDestroyChild(this->getID() + "pointNode2" + std::to_string(_id));
-
-    m_sceneMgr->destroyEntity(sphere);
-    m_sceneMgr->destroyEntity(sphere2);
-    m_sceneMgr->destroyManualObject(mesh);
-
-    ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
-    meshManager.remove(this->getID() + "_sphere-" + std::to_string(_id));
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::deleteDistances()
-{
-    /// Delete all distance
-    for (size_t id = 0; id < m_distanceNb; ++id)
-    {
-        this->deleteDistance(id);
-    }
-    m_distanceNb = 0;
-    m_millimeterValue.clear();
-    m_millimeterNodes.clear();
-    m_labels.clear();
-    m_labelNodes.clear();
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::addCurrentOrigin() const
-{
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    const ::fwData::Vector::ContainerType& container = m_distanceField->getContainer();
-    double ps1[3];
-    double ps2[3];
-
-    /// removes the origin of all points
-    for (auto it = container.begin(); it != container.end(); ++it)
-    {
-        const ::fwData::PointList::sptr distance = ::fwData::PointList::dynamicCast(*it);
-        const ::fwData::Point::cwptr pointFront  = distance->getPoints()[0];
-        const ::fwData::Point::cwptr pointBack   = distance->getPoints()[1];
-        const ::fwData::Point::csptr p1          = pointFront.lock();
-        const ::fwData::Point::csptr p2          = pointBack.lock();
-        std::copy(p1->getCoord().begin(), (p1)->getCoord().end(), ps1 );
-        std::copy(p2->getCoord().begin(), (p2)->getCoord().end(), ps2 );
-
-        double point[3];
-        point[0] = (ps1[0] + image->getOrigin()[0] );
-        point[1] = (ps1[1] + image->getOrigin()[1] );
-        point[2] = (ps1[2] + image->getOrigin()[2] );
-
-        double point2[3];
-        point2[0] = (ps2[0] + image->getOrigin()[0] );
-        point2[1] = (ps2[1] + image->getOrigin()[1] );
-        point2[2] = (ps2[2] + image->getOrigin()[2] );
-
-        distance->getPoints()[0]->setCoord({point[0], point[1], point[2]});
-        distance->getPoints()[1]->setCoord({point2[0], point2[1], point2[2]});
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::removeCurrentOrigin() const
-{
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    const ::fwData::Vector::ContainerType& container = m_distanceField->getContainer();
-    double ps1[3];
-    double ps2[3];
-
-    /// set the origin of all points
-    for (auto it = container.begin(); it != container.end(); ++it)
-    {
-        const ::fwData::PointList::sptr distance = ::fwData::PointList::dynamicCast(*it);
-        const ::fwData::Point::cwptr pointFront  = distance->getPoints()[0];
-        const ::fwData::Point::cwptr pointBack   = distance->getPoints()[1];
-        const ::fwData::Point::csptr p1          = pointFront.lock();
-        const ::fwData::Point::csptr p2          = pointBack.lock();
-        std::copy(p1->getCoord().begin(), (p1)->getCoord().end(), ps1 );
-        std::copy(p2->getCoord().begin(), (p2)->getCoord().end(), ps2 );
-
-        double point[3];
-        point[0] = (ps1[0] - image->getOrigin()[0] );
-        point[1] = (ps1[1] - image->getOrigin()[1] );
-        point[2] = (ps1[2] - image->getOrigin()[2] );
-
-        double point2[3];
-        point2[0] = (ps2[0] - image->getOrigin()[0] );
-        point2[1] = (ps2[1] - image->getOrigin()[1] );
-        point2[2] = (ps2[2] - image->getOrigin()[2] );
-
-        distance->getPoints()[0]->setCoord({point[0], point[1], point[2]});
-        distance->getPoints()[1]->setCoord({point2[0], point2[1], point2[2]});
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::createMillimeterLabel(const float _point[3], const Ogre::Real _distance, size_t _id,
-                                                 const ::Ogre::ColourValue _color)
-{
-    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    const ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
-    const std::string labelNumber = std::to_string(_distance) + "mm";
-
-    m_millimeterValue[_id] = ::fwRenderOgre::Text::New(this->getID() + labelNumber + std::to_string(_id),
-                                                       m_sceneMgr,
-                                                       textContainer,
-                                                       dejaVuSansFont, cam);
-    m_millimeterValue[_id]->setText(labelNumber);
-    m_millimeterValue[_id]->setCharHeight(0.03f);
-    m_millimeterValue[_id]->setTextColor(_color);
-
-    m_millimeterNodes[_id] = m_rootSceneNode->createChildSceneNode(this->getID() + "_distance" +
-                                                                   std::to_string(_id));
-    m_millimeterNodes[_id]->attachObject(m_millimeterValue[_id]);
-    ///+ 3 or - 3 so that the label is not hidden by the sphere when zooming in (depends on the axis)
-    if (this->getOrientation() == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
-    {
-        m_millimeterNodes[_id]->translate(_point[0] - 3, _point[1] - 3, _point[2] - 3);
-    }
-    else
-    {
-        m_millimeterNodes[_id]->translate(_point[0] + 3, _point[1] + 3, _point[2] + 3);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::deleteMillimeterLabel(size_t _id)
-{
-    m_rootSceneNode->removeAndDestroyChild(this->getID() + "_distance" + std::to_string(_id));
-    m_sceneMgr->destroyMovableObject(m_millimeterValue[_id]);
-
-    m_millimeterNodes[_id] = nullptr;
-    m_millimeterValue[_id] = nullptr;
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::createIdLabel(const float ps1[3], size_t _id, const ::Ogre::ColourValue& _color)
-{
-    ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    const ::Ogre::FontPtr dejaVuSansFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
-    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
-    const std::string labelNumber = std::to_string(_id);
-    ::fwRenderOgre::Text* const text = ::fwRenderOgre::Text::New(this->getID() + labelNumber, m_sceneMgr, textContainer,
-                                                                 dejaVuSansFont, cam);
-    m_labels[_id] = text;
-    text->setText(labelNumber);
-    text->setCharHeight(0.03f);
-    text->setTextColor(_color);
-
-    m_labelNodes[_id] = m_rootSceneNode->createChildSceneNode(this->getID() + "_id" + labelNumber);
-    m_labelNodes[_id]->attachObject(m_labels[_id]);
-    ///+ 3 or - 3 so that the label is not hidden by the sphere when zooming in (depends on the axis)
-    if (this->getOrientation() == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
-    {
-        m_labelNodes[_id]->translate(ps1[0] - 3, ps1[1] - 3, ps1[2] - 3);
-    }
-    else
-    {
-        m_labelNodes[_id]->translate(ps1[0] + 3, ps1[1] + 3, ps1[2] + 3);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::deleteIdLabel(size_t _id)
-{
-    m_rootSceneNode->removeAndDestroyChild(this->getID() + "_id" + std::to_string(_id));
-    m_sceneMgr->destroyMovableObject(m_labels[_id]);
-
-    m_labels[_id]     = nullptr;
-    m_labelNodes[_id] = nullptr;
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::createLine(const ::visuOgreAdaptor::SMaterial::sptr _materialAdp,
-                                      const float _ps1[3], const float _ps2[3], size_t _id,
-                                      const ::Ogre::ColourValue& _color) const
-{
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    const ::glm::vec3 APosImageSpace(_ps1[0], _ps1[1], _ps1[2]);
-    const ::glm::vec3 BPosImageSpace(_ps2[0], _ps2[1], _ps2[2]);
-
-    ::glm::vec3 planePosImageSpace = {0, 0, 0};
-    ::glm::vec3 planeDirImageSpaceNormalized;
-
-    /// Checks the axis orientation to add the line correctly
-    switch (this->getOrientation())
-    {
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
-        {
-            const std::int64_t axialIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
-            const double axialPos = static_cast<double>(axialIndex) * image->getSpacing()[2];
-            planePosImageSpace           = {0, 0, axialPos};
-            planeDirImageSpaceNormalized = {0, 0, -1};
-            break;
-        }
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
-        {
-            const std::int64_t frontalIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
-            const double frontalPos = static_cast<double>(frontalIndex) * image->getSpacing()[1];
-            planePosImageSpace           = {0, frontalPos, 0};
-            planeDirImageSpaceNormalized = {0, -1, 0};
-            break;
-        }
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
-        {
-            const std::int64_t sagittalIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
-            const double sagittalPos = static_cast<double>(sagittalIndex) * image->getSpacing()[0];
-            planePosImageSpace           = {sagittalPos, 0, 0};
-            planeDirImageSpaceNormalized = {-1, 0, 0};
-            break;
-        }
-    }
-
-    /// Compute the intersection
-    const float s = ::glm::dot(planeDirImageSpaceNormalized, planePosImageSpace - APosImageSpace) / ::glm::dot(
-        planeDirImageSpaceNormalized, BPosImageSpace - APosImageSpace);
-    const glm::vec3 intersectPosImageSpace = APosImageSpace + s * (BPosImageSpace - APosImageSpace);
-
-    /// Draw lines
-    ::Ogre::ManualObject* const line =
-        m_sceneMgr->createManualObject(this->getID() + "_line" + std::to_string(_id));
-
-    ::Ogre::ManualObject* const lineDashed =
-        m_sceneMgr->createManualObject(this->getID() + "_lineDashed" + std::to_string(_id));
-
-    line->begin(_materialAdp->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
-    line->colour(_color);
-
-    lineDashed->begin(_materialAdp->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
-    lineDashed->colour(_color);
-
-    int compar = 0;
-    switch (this->getOrientation())
-    {
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
-            compar = 2;
-            break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
-            compar = 1;
-            break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
-            compar = 0;
-            break;
-    }
-
-    // Function to create a dashed line
-    const auto dashed = [&](::glm::vec3 _beginPosImageSpace, const ::glm::vec3& _endPosImageSpace)
-                        {
-                            const ::glm::vec3 f3LineDir_Is  = _endPosImageSpace - _beginPosImageSpace;
-                            const float len                 = glm::distance(_endPosImageSpace, _beginPosImageSpace);
-                            const ::glm::vec3 f3LineDir_IsN = ::glm::normalize(f3LineDir_Is);
-                            const float step                = 2.5f;
-                            for(float i = 0.f; i <= len; i += step*2)
-                            {
-                                lineDashed->position(_beginPosImageSpace[0], _beginPosImageSpace[1],
-                                                     _beginPosImageSpace[2]);
-                                _beginPosImageSpace += f3LineDir_IsN*step;
-                                lineDashed->position(_beginPosImageSpace[0], _beginPosImageSpace[1],
-                                                     _beginPosImageSpace[2]);
-                                _beginPosImageSpace += f3LineDir_IsN*step;
-                            }
-                        };
-
-    // Create line
-    if(APosImageSpace[compar] >= intersectPosImageSpace[compar] &&
-       BPosImageSpace[compar] >= intersectPosImageSpace[compar])
-    {
-        dashed(APosImageSpace, BPosImageSpace);
-    }
-    else if((APosImageSpace[compar] < intersectPosImageSpace[compar] &&
-             intersectPosImageSpace[compar] < BPosImageSpace[compar]) ||
-            (APosImageSpace[compar] > intersectPosImageSpace[compar] &&
-             intersectPosImageSpace[compar] > BPosImageSpace[compar]))
-    {
-        if(APosImageSpace[compar] > BPosImageSpace[compar])
-        {
-            dashed(APosImageSpace, intersectPosImageSpace);
-            line->position(BPosImageSpace[0], BPosImageSpace[1], BPosImageSpace[2]);
-            line->position(intersectPosImageSpace[0], intersectPosImageSpace[1], intersectPosImageSpace[2]);
-        }
-        else
-        {
-            dashed(BPosImageSpace, intersectPosImageSpace);
-            line->position(APosImageSpace[0], APosImageSpace[1], APosImageSpace[2]);
-            line->position(intersectPosImageSpace[0], intersectPosImageSpace[1], intersectPosImageSpace[2]);
-        }
-    }
-    else if(APosImageSpace[compar] > planePosImageSpace[compar])
-    {
-        line->position(APosImageSpace[0], APosImageSpace[1], APosImageSpace[2]);
-        line->position(BPosImageSpace[0], BPosImageSpace[1], BPosImageSpace[2]);
-    }
-    else
-    {
-        line->position(APosImageSpace[0], APosImageSpace[1], APosImageSpace[2]);
-        line->position(BPosImageSpace[0], BPosImageSpace[1], BPosImageSpace[2]);
-    }
-
-    line->end();
-    lineDashed->end();
-    m_rootSceneNode->attachObject(line);
-    m_rootSceneNode->attachObject(lineDashed);
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::deleteLine(size_t _id) const
-{
-    ::Ogre::ManualObject* const line =
-        m_sceneMgr->getManualObject(this->getID() + "_line" + std::to_string(_id));
-    ::Ogre::ManualObject* const lineDashed =
-        m_sceneMgr->getManualObject(this->getID() + "_lineDashed" + std::to_string(_id));
-    m_sceneMgr->destroyManualObject(line);
-    m_sceneMgr->destroyManualObject(lineDashed);
-}
-
-//------------------------------------------------------------------------------
-
-::Ogre::ManualObject* SImageMultiDistances::createSphere(const ::visuOgreAdaptor::SMaterial::sptr _materialAdp,
-                                                         const std::string _name,
-                                                         const ::Ogre::ColourValue& _color) const
-{
-    ::Ogre::ManualObject* const sphere =
-        m_sceneMgr->createManualObject(_name);
-    ::fwRenderOgre::helper::ManualObject::createSphere(sphere,
-                                                       _materialAdp->getMaterialName(), _color,
-                                                       2.5f);
-    return sphere;
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::deleteAllRessources()
-{
-    this->deleteDistances();
-
-    m_materialAdp.reset();
-    m_material.reset();
-}
-
-//------------------------------------------------------------------------------
-
-::Ogre::ColourValue SImageMultiDistances::generateColor(size_t _id) const
-{
-    switch(_id % 7)
+    switch(std::hash< std::string >()(_id) % 7)
     {
         case 0:
             return ::Ogre::ColourValue(63/255.0f, 105/255.0f, 170/255.0f);
@@ -646,132 +92,711 @@ void SImageMultiDistances::deleteAllRessources()
 
 //------------------------------------------------------------------------------
 
-::visuOgreAdaptor::SMaterial::sptr SImageMultiDistances::setMaterialAdp()
+::Ogre::Vector3 SImageMultiDistances::getCamDirection(const ::Ogre::Camera* const _cam)
 {
-    m_material = ::fwData::Material::New();
-
-    ::visuOgreAdaptor::SMaterial::sptr materialAdp = this->registerService< ::visuOgreAdaptor::SMaterial >(
-        "::visuOgreAdaptor::SMaterial");
-    materialAdp->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
-    materialAdp->setID(this->getID() + materialAdp->getID());
-    materialAdp->setMaterialName(this->getID() + materialAdp->getID());
-    materialAdp->setRenderService( this->getRenderService() );
-    materialAdp->setLayerID(m_layerID);
-    materialAdp->setShadingMode("ambient");
-    materialAdp->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    materialAdp->start();
-    materialAdp->getMaterialFw()->setHasVertexColor(true);
-    materialAdp->update();
-    return materialAdp;
+    const ::Ogre::Matrix4 view = _cam->getViewMatrix();
+    ::Ogre::Vector3 direction(view[2][0], view[2][1], view[2][2]);
+    direction.normalise();
+    return -direction;
 }
 
 //------------------------------------------------------------------------------
 
-::fwDataTools::helper::MedicalImage::Orientation SImageMultiDistances::getOrientation() const
+void SImageMultiDistances::generateDashedLine(::Ogre::ManualObject* const _object,
+                                              const ::Ogre::Vector3& _begin,
+                                              const ::Ogre::Vector3& _end, float _thickness)
 {
-    const ::Ogre::Camera* cam  = this->getLayer()->getDefaultCamera();
-    const ::Ogre::Matrix4 view = cam->getViewMatrix();
+    const ::Ogre::Vector3 dashedLineDir = (_end-_begin);
+    const float len                     = dashedLineDir.length();
+    ::Ogre::Vector3 dashedLineDirN = (_end-_begin);
+    dashedLineDirN.normalise();
 
-    /// Look in z axis, axial
-    if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
-       std::abs(view[1][1]+1) <= std::numeric_limits<float>::epsilon()*2 &&
-       std::abs(view[2][2]+1) <= std::numeric_limits<float>::epsilon()*2)
+    ::Ogre::Vector3 dashedLinePos = _begin;
+    for(float i = 0.f; i+_thickness*1.5 <= len; i += _thickness*2)
     {
-        return ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS;
+        _object->position(dashedLinePos);
+        dashedLinePos += dashedLineDirN*_thickness;
+        _object->position(dashedLinePos);
+        dashedLinePos += dashedLineDirN*_thickness;
     }
-    /// Look in  y, frontal
-    else if(std::abs(view[0][0]-1) <= std::numeric_limits<float>::epsilon()*2 &&
-            std::abs(view[1][2]-1) <= std::numeric_limits<float>::epsilon()*2 &&
-            std::abs(view[2][1]+1) <= std::numeric_limits<float>::epsilon()*2)
+    _object->end();
+}
+
+//------------------------------------------------------------------------------
+
+std::string SImageMultiDistances::getLength(const ::Ogre::Vector3& _begin, const ::Ogre::Vector3& _end)
+{
+    const int length = static_cast< int >(std::round((_end-_begin).length()));
+    return std::to_string(length) + "mm";
+}
+
+//------------------------------------------------------------------------------
+
+SImageMultiDistances::SImageMultiDistances() noexcept
+{
+    newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
+    newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
+    newSlot(s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SImageMultiDistances::updateVisibility, this);
+}
+
+//------------------------------------------------------------------------------
+
+SImageMultiDistances::~SImageMultiDistances() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::configuring()
+{
+    this->configureParams();
+
+    const ConfigType srvconfig = this->getConfigTree();
+    const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
+
+    m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize             = config.get< size_t >(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_distanceSphereRadius = config.get< float >(s_RADIUS_CONFIG, m_distanceSphereRadius);
+    m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
+    m_priority             = config.get< int >(s_PRIORITY_CONFIG, m_priority);
+
+    std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG);
+    if(!hexaMask.empty())
     {
-        return ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS;
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
-    /// Look in x, sagittal
-    else
+
+    hexaMask = config.get<std::string>(s_DISTANCE_QUERY_FLAGS_CONFIG);
+    if(!hexaMask.empty())
     {
-        return ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS;
+        SLM_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + hexaMask,
+            hexaMask.length() > 2 &&
+            hexaMask.substr(0, 2) == "0x");
+        m_distanceQueryFlag = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::starting()
+{
+    this->initialize();
+
+    this->getRenderService()->makeCurrent();
+
+    const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+
+    m_sphereMaterialName     = this->getID() + "_sphereMaterialName";
+    m_lineMaterialName       = this->getID() + "_lineMaterialNamel";
+    m_dashedLineMaterialName = this->getID() + "_dashedLineMaterialName";
+
+    // Create materials from our wrapper.
+    m_sphereMaterial = std::make_unique< ::fwRenderOgre::Material >(m_sphereMaterialName,
+                                                                    ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_sphereMaterial->setHasVertexColor(true);
+    m_sphereMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
+
+    m_lineMaterial = std::make_unique< ::fwRenderOgre::Material >(m_lineMaterialName,
+                                                                  ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_lineMaterial->setHasVertexColor(true);
+    m_lineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+
+    m_dashedLineMaterial = std::make_unique< ::fwRenderOgre::Material >(m_dashedLineMaterialName,
+                                                                        ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_dashedLineMaterial->setHasVertexColor(true);
+    m_dashedLineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+
+    // Retrive the ogre material to change the depth check.
+    const ::Ogre::MaterialPtr ogreSphereMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
+        m_sphereMaterialName);
+    SLM_ASSERT("'" + m_sphereMaterialName + "' does not exist.", ogreSphereMaterial);
+    const ::Ogre::Technique* const sphereTech = ogreSphereMaterial->getTechnique(0);
+    SLM_ASSERT("No techique found", sphereTech);
+    ::Ogre::Pass* const spherePass = sphereTech->getPass(0);
+    SLM_ASSERT("No pass found", spherePass);
+    spherePass->setDepthCheckEnabled(false);
+
+    const ::Ogre::MaterialPtr ogreDashedLineMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
+        m_dashedLineMaterialName);
+    SLM_ASSERT("'" + m_dashedLineMaterialName + "' does not exist.", ogreDashedLineMaterial);
+    const ::Ogre::Technique* const dashedTech = ogreDashedLineMaterial->getTechnique(0);
+    SLM_ASSERT("No techique found", dashedTech);
+    ::Ogre::Pass* const dashedPass = dashedTech->getPass(0);
+    SLM_ASSERT("No pass found", dashedPass);
+    dashedPass->setDepthCheckEnabled(false);
+
+    if(m_interactive)
+    {
+        auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
+        layer->addInteractor(interactor, m_priority);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::mouseMoveEvent(MouseButton _button, int _x, int _y, int, int)
+void SImageMultiDistances::updating()
 {
-    if (_button != MouseButton::LEFT || !m_activeInteraction)
-    {
-        return;
-    }
-    this->deleteDistance(m_moveID);
+    const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
 
-    /// Set the current cursor position to ogre position
-    ::fwData::Mesh::PointValueType clickedPoint[3] {static_cast<float>(_x), static_cast<float>(_y), -1};
-    const ::Ogre::Vector3 worldspaceClikedPoint = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(
-        *(this->getLayer()->getDefaultCamera()), clickedPoint);
+    m_sphereMaterial->updateShadingMode(::fwData::Material::PHONG, layer->getLightsNumber(), false, false);
+    m_lineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+    m_dashedLineMaterial->updateShadingMode(::fwData::Material::AMBIENT, layer->getLightsNumber(), false, false);
+
+    while(m_distances.size() != 0)
+    {
+        this->destroyDistance(m_distances.begin()->first);
+    }
+    this->addDistances();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::stopping()
+{
+    this->getRenderService()->makeCurrent();
+
+    m_sphereMaterial.reset();
+    m_lineMaterial.reset();
+    m_dashedLineMaterial.reset();
+
+    if(m_interactive)
+    {
+        auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
+        this->getLayer()->removeInteractor(interactor);
+    }
+
+    while(m_distances.size() != 0)
+    {
+        this->destroyDistance(m_distances.begin()->first);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::addDistances()
+{
+    this->getRenderService()->makeCurrent();
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+    const ::fwData::mt::ObjectReadLock lock(image);
 
-    float begin[3];
-    float end[3];
-
-    /// Move points and line
-    if (m_isBeginMove == 0)
+    const ::fwData::Vector::sptr distanceField = image->getField< ::fwData::Vector >(
+        ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    if(distanceField)
     {
-        begin[0] = m_ps2[0];
-        begin[1] = m_ps2[1];
-        begin[2] = m_ps2[2];
+        for(const ::fwData::Object::sptr object : *distanceField)
+        {
+            const ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
+            SLM_ASSERT("The distance should be a point list", pointList);
+            SLM_ASSERT("The distance must contains two points", pointList->getPoints().size() == 2);
+
+            const ::fwTools::fwID::IDType id = pointList->getID();
+            if(m_distances.find(id) == m_distances.end())
+            {
+                this->createDistance(pointList);
+                const auto& sigModified = pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+                    ::fwData::PointList::s_MODIFIED_SIG);
+                sigModified->connect(m_slotUpdate);
+            }
+        }
     }
+    // The signal ::fwData::Image::s_DISTANCE_ADDED_SIG is send if all distances are removed.
+    // When all distances are removed, the field is removed in the image.
     else
     {
-        begin[0] = m_ps1[0];
-        begin[1] = m_ps1[1];
-        begin[2] = m_ps1[2];
+        while(m_distances.size() != 0)
+        {
+            this->destroyDistance(m_distances.begin()->first);
+        }
     }
 
-    /// Checks the axis orientation to add the points correctly
-    switch (this->getOrientation())
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::removeDistances()
+{
+    this->getRenderService()->makeCurrent();
+
+    const ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+    const ::fwData::mt::ObjectReadLock lock(image);
+
+    const ::fwData::Vector::csptr distanceField
+        = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+
+    std::vector< ::fwTools::fwID::IDType > foundId;
+    if(distanceField)
     {
-        /// Look in z axis, axial]
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
+        for(const ::fwData::Object::csptr& object : *distanceField)
         {
-            const auto axialIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
-            const float axialPos = static_cast<float>(axialIndex) * static_cast<float>(image->getSpacing()[2]);
-            end[0] = worldspaceClikedPoint[0];
-            end[1] = worldspaceClikedPoint[1];
-            end[2] = axialPos;
-            break;
-        }
-        /// Look in y axis, frontal
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
-        {
-            const auto frontalIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
-            const float frontalPos = static_cast<float>(frontalIndex) * static_cast<float>(image->getSpacing()[1]);
-            end[0] = worldspaceClikedPoint[0];
-            end[1] = frontalPos;
-            end[2] = worldspaceClikedPoint[2];
-            break;
-        }
-        /// Look in -z axis, sagittal
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
-        {
-            const auto sagittalIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
-            const float sagittalPos = static_cast<float>(sagittalIndex) * static_cast<float>(image->getSpacing()[0]);
-            end[0] = sagittalPos;
-            end[1] = worldspaceClikedPoint[1];
-            end[2] = worldspaceClikedPoint[2];
-            break;
+            foundId.push_back(object->getID());
         }
     }
 
-    if(m_isBeginMove == 0)
+    std::vector< ::fwTools::fwID::IDType > currentdId;
+    for(const auto& [id, _] : m_distances)
     {
-        std::swap(begin, end);
+        currentdId.push_back(id);
     }
 
-    this->createDistance(begin, end, m_moveID, ::Ogre::ColourValue::Red);
+    for(const ::fwTools::fwID::IDType& id : currentdId)
+    {
+        if(std::find(foundId.begin(), foundId.end(), id) == foundId.end())
+        {
+            destroyDistance(id);
+        }
+    }
+
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::updateVisibilityFromField()
+{
+    this->getRenderService()->makeCurrent();
+
+    const ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+    ::fwData::mt::ObjectReadLock lock(image);
+
+    const bool visibility = image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
+                                                true))->value();
+    m_visibility = visibility;
+
+    lock.unlock();
+
+    for(const auto& distance : m_distances)
+    {
+        const DistanceData& data = distance.second;
+        data.m_sphere1->setVisible(m_visibility);
+        data.m_sphere2->setVisible(m_visibility);
+        data.m_line->setVisible(m_visibility);
+        data.m_dashedLine->setVisible(m_visibility);
+        data.m_label->setVisible(m_visibility);
+    }
+
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::updateVisibility(bool _visible)
+{
+    this->getRenderService()->makeCurrent();
+
+    m_visibility = _visible;
+
+    for(const auto& distance : m_distances)
+    {
+        const DistanceData& data = distance.second;
+        data.m_sphere1->setVisible(m_visibility);
+        data.m_sphere2->setVisible(m_visibility);
+        data.m_line->setVisible(m_visibility);
+        data.m_dashedLine->setVisible(m_visibility);
+        data.m_label->setVisible(m_visibility);
+    }
+
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(int _x, int _y)
+{
+    ::fwRenderOgre::picker::IPicker picker;
+    ::Ogre::SceneManager* sm = this->getSceneManager();
+    picker.setSceneManager(sm);
+    picker.executeRaySceneQuery(_x, _y, m_queryMask);
+
+    if(picker.getSelectedObject())
+    {
+        const auto* const camera = sm->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+        const auto* const vp     = camera->getViewport();
+
+        // Screen to viewport space conversion.
+        const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+        const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
+
+        const ::Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
+
+        ::Ogre::Vector3 normal = -ray.getDirection();
+        normal.normalise();
+
+        return picker.getIntersectionInWorldSpace() + normal*0.01f;
+    }
+
+    return std::nullopt;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
+{
+    if(_button == LEFT)
+    {
+        const ::fwRenderOgre::Layer::csptr layer = this->getLayer();
+
+        ::Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+
+        const ::Ogre::Camera* const cam = layer->getDefaultCamera();
+
+        const ::Ogre::Real width  = static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth());
+        const ::Ogre::Real height = static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight());
+
+        const ::Ogre::Ray ray = cam->getCameraToViewportRay(
+            static_cast< ::Ogre::Real >(_x)/width,
+            static_cast< ::Ogre::Real >(_y)/height);
+
+        bool found = false;
+
+        ::Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_distanceQueryFlag);
+        raySceneQuery->setSortByDistance(false);
+        if (raySceneQuery->execute().size() != 0)
+        {
+            const ::Ogre::Real scale = 1.15f;
+
+            const ::Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
+            for (size_t qrIdx = 0; qrIdx < queryResult.size() && !found; qrIdx++)
+            {
+                const ::Ogre::MovableObject* const object = queryResult[qrIdx].movable;
+                if(object->isVisible())
+                {
+                    for(auto& distance : m_distances)
+                    {
+                        DistanceData& distanceData = distance.second;
+                        if(distanceData.m_sphere1 == object)
+                        {
+                            distanceData.m_node1->setScale(scale, scale, scale);
+                            m_pickedData = {&distanceData, true};
+                            found        = true;
+                            break;
+                        }
+                        else if(distanceData.m_sphere2 == object)
+                        {
+                            distanceData.m_node2->setScale(scale, scale, scale);
+                            m_pickedData = {&distanceData, false};
+                            found        = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        delete raySceneQuery;
+
+        if(found)
+        {
+            // Check if something is picked to update the position of the distance.
+            std::optional< ::Ogre::Vector3 > pickedPos = this->getNearestPickedPosition(_x, _y);
+            if(pickedPos.has_value())
+            {
+                if(m_pickedData.m_first)
+                {
+                    const ::Ogre::Vector3 secondPos = m_pickedData.m_data->m_node2->getPosition();
+                    this->updateDistance(m_pickedData.m_data, pickedPos.value(), secondPos);
+                }
+                else
+                {
+                    const ::Ogre::Vector3 firstPos = m_pickedData.m_data->m_node1->getPosition();
+                    this->updateDistance(m_pickedData.m_data, firstPos, pickedPos.value());
+                }
+            }
+
+            this->requestRender();
+            this->getLayer()->cancelFurtherInteraction();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
+{
+    if(m_pickedData.m_data != nullptr)
+    {
+        ::Ogre::Vector3 newPos;
+
+        // Discard the current distance to launch the ray over the scene without picking this one.
+        m_pickedData.m_data->m_sphere1->setQueryFlags(0x0);
+        m_pickedData.m_data->m_sphere2->setQueryFlags(0x0);
+
+        // Check if something is picked.
+        std::optional< ::Ogre::Vector3 > pickedPos = this->getNearestPickedPosition(_x, _y);
+        if(pickedPos.has_value())
+        {
+            newPos = pickedPos.value();
+        }
+        // Else we move the distance along a plane.
+        else
+        {
+            const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+            const ::Ogre::Camera* const cam         = layer->getDefaultCamera();
+            const ::Ogre::Ray ray                   = cam->getCameraToViewportRay(
+                static_cast< ::Ogre::Real >(_x) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth()),
+                static_cast< ::Ogre::Real >(_y) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight()));
+
+            const ::Ogre::Vector3 direction = this->getCamDirection(cam);
+
+            ::Ogre::Vector3 position;
+            if(m_pickedData.m_first)
+            {
+                position = m_pickedData.m_data->m_node1->getPosition();
+            }
+            else
+            {
+                position = m_pickedData.m_data->m_node2->getPosition();
+            }
+
+            const ::Ogre::Plane plane(direction, position);
+
+            const std::pair< bool, ::Ogre::Real > hit = ::Ogre::Math::intersects(ray, plane);
+
+            if(!hit.first)
+            {
+                SLM_ERROR("The ray must intersect the plane")
+                return;
+            }
+
+            newPos = ray.getPoint(hit.second);
+        }
+
+        // Reset the query flag.
+        m_pickedData.m_data->m_sphere1->setQueryFlags(m_distanceQueryFlag);
+        m_pickedData.m_data->m_sphere2->setQueryFlags(m_distanceQueryFlag);
+
+        if(m_pickedData.m_first)
+        {
+            const ::Ogre::Vector3 secondPos = m_pickedData.m_data->m_node2->getPosition();
+            this->updateDistance(m_pickedData.m_data, newPos, secondPos);
+        }
+        else
+        {
+            const ::Ogre::Vector3 firstPos = m_pickedData.m_data->m_node1->getPosition();
+            this->updateDistance(m_pickedData.m_data, firstPos, newPos);
+        }
+
+        this->requestRender();
+        this->getLayer()->cancelFurtherInteraction();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::buttonReleaseEvent(MouseButton, int, int)
+{
+    if(m_pickedData.m_data != nullptr)
+    {
+        const ::Ogre::Real scale = 1.f;
+        m_pickedData.m_data->m_node1->setScale(scale, scale, scale);
+        m_pickedData.m_data->m_node2->setScale(scale, scale, scale);
+        m_pickedData = {nullptr, true};
+
+        this->getLayer()->requestRender();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
+{
+    const ::fwTools::fwID::IDType id = _pl->getID();
+    SLM_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
+
+    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    ::Ogre::SceneNode* const rootNode    = sceneMgr->getRootSceneNode();
+
+    // Retrieve data used to create Ogre resources.
+    const ::Ogre::ColourValue colour = SImageMultiDistances::generateColor(id);
+
+    const std::array< double, 3 > front = _pl->getPoints().front()->getCoord();
+    const std::array< double, 3 > back  = _pl->getPoints().back()->getCoord();
+
+    const ::Ogre::Vector3 begin(static_cast< float >(front[0]),
+                                static_cast< float >(front[1]),
+                                static_cast< float >(front[2]));
+    const ::Ogre::Vector3 end(static_cast< float >(back[0]),
+                              static_cast< float >(back[1]),
+                              static_cast< float >(back[2]));
+
+    // First sphere.
+    ::Ogre::ManualObject* const sphere1 = sceneMgr->createManualObject(this->getID() + "_sphere1_" + id);
+    ::fwRenderOgre::helper::ManualObject::createSphere(sphere1, m_sphereMaterialName, colour, m_distanceSphereRadius);
+    sphere1->setQueryFlags(m_distanceQueryFlag);
+    // Render this sphere over all others objects.
+    sphere1->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
+    SLM_ASSERT("Can't create the first entity", sphere1);
+    ::Ogre::SceneNode* const node1 = rootNode->createChildSceneNode(this->getID() + "_node1_" + id, begin);
+    SLM_ASSERT("Can't create the first node", node1);
+    node1->attachObject(sphere1);
+
+    // Second sphere.
+    ::Ogre::ManualObject* const sphere2 = sceneMgr->createManualObject(this->getID() + "_sphere2_" + id);
+    ::fwRenderOgre::helper::ManualObject::createSphere(sphere2, m_sphereMaterialName, colour, m_distanceSphereRadius);
+    sphere2->setQueryFlags(m_distanceQueryFlag);
+    // Render this sphere over all others objects.
+    sphere2->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
+    SLM_ASSERT("Can't create the second entity", sphere2);
+    ::Ogre::SceneNode* const node2 = rootNode->createChildSceneNode(this->getID() + "_node2_" + id, end);
+    SLM_ASSERT("Can't create the second node", node2);
+    node2->attachObject(sphere2);
+
+    // Line.
+    ::Ogre::ManualObject* const line = sceneMgr->createManualObject(this->getID() + "_line_" + id);
+    SLM_ASSERT("Can't create the line", line);
+    line->begin(m_lineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
+    line->colour(colour);
+    line->position(begin);
+    line->position(end);
+    line->end();
+    line->setQueryFlags(0x0);
+    rootNode->attachObject(line);
+
+    // Dashed line.
+    ::Ogre::ManualObject* const dashedLine = sceneMgr->createManualObject(this->getID() + "_dashedLine_" + id);
+    SLM_ASSERT("Can't create the dashed line", dashedLine);
+    dashedLine->begin(m_dashedLineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST);
+    dashedLine->colour(colour);
+    SImageMultiDistances::generateDashedLine(dashedLine, begin, end,
+                                             m_distanceSphereRadius);
+    dashedLine->setQueryFlags(0x0);
+    // Render this line over all others objects.
+    dashedLine->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
+    rootNode->attachObject(dashedLine);
+
+    // Label.
+    const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+    ::Ogre::OverlayContainer* const textContainer = layer->getOverlayTextPanel();
+    ::Ogre::Camera* const cam                     = layer->getDefaultCamera();
+    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
+    ::fwRenderOgre::Text* label = ::fwRenderOgre::Text::New(
+        this->getID() + "_label_" + id, sceneMgr, textContainer, m_fontSource, m_fontSize, dpi, cam);
+    const std::string length = SImageMultiDistances::getLength(end, begin);
+    label->setText(length);
+    label->setTextColor(colour);
+    label->setQueryFlags(0x0);
+    ::Ogre::SceneNode* const labelNode =
+        rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
+    SLM_ASSERT("Can't create the label node", labelNode);
+    labelNode->attachObject(label);
+
+    // Set the visibility.
+    sphere1->setVisible(m_visibility);
+    sphere2->setVisible(m_visibility);
+    line->setVisible(m_visibility);
+    dashedLine->setVisible(m_visibility);
+    label->setVisible(m_visibility);
+
+    // Store data in the map.
+    DistanceData data {_pl, node1, sphere1, node2, sphere2, line, dashedLine, labelNode, label};
+    m_distances[id] = data;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::updateDistance(const DistanceData* const _data,
+                                          ::Ogre::Vector3 _begin,
+                                          ::Ogre::Vector3 _end)
+{
+    SLM_ASSERT("Distance can't be null", _data);
+
+    // Update spheres position.
+    _data->m_node1->setPosition(_begin);
+    _data->m_node2->setPosition(_end);
+
+    // Update the line.
+    ::Ogre::ManualObject* const line = _data->m_line;
+    line->beginUpdate(0);
+    line->position(_begin);
+    line->position(_end);
+    line->end();
+
+    // Update the label.
+    const std::string length = SImageMultiDistances::getLength(_end, _begin);
+    _data->m_label->setText(length);
+    _data->m_labelNode->setPosition(_end);
+
+    // Update the dashed line
+    ::Ogre::ManualObject* const dashedLine = _data->m_dashedLine;
+    dashedLine->beginUpdate(0);
+    SImageMultiDistances::generateDashedLine(dashedLine, _begin, _end, m_distanceSphereRadius);
+
+    // Update the field data.
+    const ::fwData::mt::ObjectWriteLock lock(_data->m_pointList);
+    _data->m_pointList->getPoints().front()->setCoord({_begin[0], _begin[1], _begin[2]});
+    _data->m_pointList->getPoints().back()->setCoord({_end[0], _end[1], _end[2]});
+
+    const auto& sigModified = _data->m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+        ::fwData::PointList::s_MODIFIED_SIG);
+
+    ::fwCom::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
+    sigModified->asyncEmit();
+
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
+{
+    const DistanceMap::const_iterator it = m_distances.find(_id);
+    SLM_ASSERT("The distance is not found", it != m_distances.end());
+
+    // Destroy Ogre ressource.
+    const DistanceData distanceData = it->second;
+    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+
+    sceneMgr->destroySceneNode(distanceData.m_node1);
+    sceneMgr->destroyManualObject(distanceData.m_sphere1);
+    sceneMgr->destroySceneNode(distanceData.m_node2);
+    sceneMgr->destroyManualObject(distanceData.m_sphere2);
+    sceneMgr->destroyManualObject(distanceData.m_line);
+    sceneMgr->destroyManualObject(distanceData.m_dashedLine);
+    sceneMgr->destroySceneNode(distanceData.m_labelNode);
+    sceneMgr->destroyMovableObject(distanceData.m_label);
+
+    const auto& sigModified = distanceData.m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
+        ::fwData::PointList::s_MODIFIED_SIG);
+    sigModified->disconnect(m_slotUpdate);
+
+    // Remove it from the map.
+    m_distances.erase(it);
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::focusInEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::focusOutEvent()
+{
 }
 
 //------------------------------------------------------------------------------
@@ -795,169 +820,6 @@ void SImageMultiDistances::keyPressEvent(int)
 //------------------------------------------------------------------------------
 
 void SImageMultiDistances::keyReleaseEvent(int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, int _x, int _y)
-{
-    if (_button != MouseButton::LEFT || !m_activeInteraction)
-    {
-        return;
-    }
-    this->removeCurrentOrigin();
-
-    ::fwData::Vector::ContainerType& container = m_distanceField->getContainer();
-
-    /// Set the current cursor position to ogre position
-    const ::fwData::Mesh::PointValueType clickedPoint[3] {static_cast<float>(_x), static_cast<float>(_y), -1};
-    ::Ogre::Vector3 worldspaceClikedPoint = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(
-        *(this->getLayer()->getDefaultCamera()), clickedPoint);
-
-    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(container[m_moveID]);
-
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    /// Checks the axis orientation to add the points correctly
-    switch (this->getOrientation())
-    {
-        /// Look in z axis, axial]
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
-        {
-            const auto axialIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->value();
-            const double axialPos = static_cast<double>(axialIndex) * image->getSpacing()[2];
-            pointList->getPoints()[m_isBeginMove]->setCoord({static_cast<double>(worldspaceClikedPoint[0]),
-                                                             static_cast<double>(worldspaceClikedPoint[1]),
-                                                             axialPos});
-            break;
-        }
-        /// Look in y axis, frontal
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
-        {
-            const auto frontalIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->value();
-            const double frontalPos = static_cast<double>(frontalIndex) * image->getSpacing()[1];
-            pointList->getPoints()[m_isBeginMove]->setCoord({static_cast<double>(worldspaceClikedPoint[0]),
-                                                             frontalPos,
-                                                             static_cast<double>(worldspaceClikedPoint[2])});
-            break;
-        }
-        /// Look in x axis, sagittal
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
-        {
-            const auto sagittalIndex = image->getField< ::fwData::Integer >(
-                ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->value();
-            const double sagittalPos = static_cast<double>(sagittalIndex) * image->getSpacing()[0];
-            pointList->getPoints()[m_isBeginMove]->setCoord({sagittalPos,
-                                                             static_cast<double>(worldspaceClikedPoint[1]),
-                                                             static_cast<double>(worldspaceClikedPoint[2])});
-            break;
-        }
-    }
-
-    this->addCurrentOrigin();
-
-    this->update();
-}
-
-//------------------------------------------------------------------------------
-
-Ogre::MovableObject* SImageMultiDistances::pickObject(int _x, int _y)
-{
-    ::Ogre::Camera* cam = m_sceneMgr->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-
-    const int height       = cam->getViewport()->getActualHeight();
-    const int width        = cam->getViewport()->getActualWidth();
-    const bool pickSuccess = m_picker.executeRaySceneQuery( _x, _y, width, height, 0 );
-
-    return pickSuccess ? m_picker.getSelectedObject() : nullptr;
-}
-
-//------------------------------------------------------------------------------
-
-size_t SImageMultiDistances::findLineID(const std::string& str) const
-{
-    const size_t found = str.find("-");
-    const size_t start = found + 1;
-    const size_t end   = str.size();
-    const size_t res   = static_cast<size_t>(std::stoi(str.substr(start, end - start)));
-    return res;
-}
-
-//------------------------------------------------------------------------------
-
-bool SImageMultiDistances::clickPoint(int _x, int _y)
-{
-    const Ogre::MovableObject* picked = this->pickObject(_x, _y);
-
-    if (picked != nullptr)
-    {
-        /// Check if point 1 was picked
-        std::size_t found = picked->getName().find("Entitypoint1-");
-        if (found != std::string::npos)
-        {
-            m_moveID      = this->findLineID(picked->getName());
-            m_isBeginMove = 0;
-            return true;
-        }
-        /// Check if point 2 was picked
-        found = picked->getName().find("Entitypoint2-");
-        if (found != std::string::npos)
-        {
-            m_moveID      = this->findLineID(picked->getName());
-            m_isBeginMove = 1;
-            return true;
-        }
-    }
-    return false;
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
-{
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-
-    if (_button != MouseButton::LEFT || !m_distanceField)
-    {
-        return;
-    }
-    m_moveID            = 0;
-    m_activeInteraction = false;
-
-    /// Checks if an entity sphere is picked on
-    if (this->clickPoint(_x, _y) == true)
-    {
-        this->removeCurrentOrigin();
-        ::fwData::Vector::ContainerType& container = m_distanceField->getContainer();
-        ::fwData::PointList::sptr distance         = ::fwData::PointList::dynamicCast(container[m_moveID]);
-        SLM_ASSERT( "Empty Point List for Distance !!!!", !distance->getPoints().empty() );
-
-        const ::fwData::Point::cwptr pointFront = distance->getPoints()[0];
-        const ::fwData::Point::cwptr pointBack  = distance->getPoints()[1];
-        const ::fwData::Point::csptr p1         = pointFront.lock();
-        const ::fwData::Point::csptr p2         = pointBack.lock();
-
-        std::transform(p1->getCoord().begin(), p1->getCoord().end(), m_ps1, ::boost::numeric_cast<float, double>);
-        std::transform(p2->getCoord().begin(), p2->getCoord().end(), m_ps2, ::boost::numeric_cast<float, double>);
-        m_activeInteraction = true;
-        this->mouseMoveEvent(_button, _x, _y, 0, 0);
-        this->addCurrentOrigin();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::focusInEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::focusOutEvent()
 {
 }
 

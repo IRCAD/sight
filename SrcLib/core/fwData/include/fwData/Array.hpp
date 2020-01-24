@@ -100,7 +100,7 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API virtual size_t resize(const SizeType& size, bool reallocate = false);
+    FWDATA_API virtual size_t resize(const SizeType& size, bool reallocate = true);
 
     /**
      * @brief Clear this array.
@@ -269,8 +269,12 @@ public:
         IteratorBase(ArrayType array);
         /// Copy constructor
         IteratorBase(const IteratorBase<TYPE, false>& other);
+        IteratorBase(const IteratorBase<TYPE, true>& other);
         /// Destructor
         ~IteratorBase();
+
+        IteratorBase& operator=(const IteratorBase& other) = default;
+        IteratorBase& operator=(IteratorBase&& other)      = default;
 
         /// Comparison operators
         bool operator==(const IteratorBase& other) const;
@@ -279,11 +283,11 @@ public:
         /// Increment/Decrement operators
         IteratorBase& operator++();
         IteratorBase operator++(int);
-        IteratorBase& operator+(difference_type index);
+        IteratorBase operator+(difference_type index);
         IteratorBase& operator+=(difference_type index);
         IteratorBase& operator--();
         IteratorBase operator--(int);
-        IteratorBase& operator-(difference_type index);
+        IteratorBase operator-(difference_type index);
         IteratorBase& operator-=(difference_type index);
 
         difference_type operator+(const IteratorBase& other) const;
@@ -300,7 +304,7 @@ public:
         pointer m_pointer{nullptr};
         ::fwMemory::BufferObject::Lock m_lock;
         difference_type m_idx{0};
-        const difference_type m_numberOfElements;
+        difference_type m_numberOfElements;
     };
 
     template <typename TYPE>
@@ -327,14 +331,14 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API size_t resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate = false);
+    FWDATA_API size_t resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate = true);
 
     /**
      * @brief Return a lock on the array to prevent from dumping the buffer on the disk
      *
      * The buffer cannot be accessed if the array is not locked
      */
-    FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+    [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
     /**
      * @brief Get the value of an element
@@ -361,6 +365,32 @@ public:
      * @throw ::fwData::Exception Index out of bounds
      */
     template< typename T > T at(const ::fwData::Array::IndexType& id) const;
+
+    /**
+     * @brief Get the value of an element
+     *
+     * @tparam T Type in which the pointer will be returned
+     * @param offset Index of the item in the buffer cast to T
+     *
+     * @return Buffer value cast to T
+     * @warning This method is slow and should not be used intensively
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception Index out of bounds
+     */
+    template< typename T > T& at(const size_t& offset);
+
+    /**
+     * @brief Get the value of an element
+     *
+     * @tparam T Type in which the pointer will be returned
+     * @param offset Index of the item in the buffer cast to T
+     *
+     * @return Buffer value cast to T
+     * @warning This method is slow and should not be used intensively
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception Index out of bounds
+     */
+    template< typename T > T& at(const size_t& offset) const;
 
     /**
      * @brief Getter for the array buffer
@@ -468,6 +498,12 @@ public:
     FWDATA_API virtual size_t resizeTMP(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents);
 
     /**
+     * @brief  Temporary method to resize a mesh's array.
+     * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Mesh
+     */
+    FWDATA_API virtual size_t resizeTMP(const SizeType& size, size_t nbOfComponents);
+
+    /**
      * @brief Setter for array's number of components
      * If the array has a buffer and owns it, the buffer will be reallocated
      *
@@ -512,7 +548,8 @@ protected:
      * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
      * removed in sight 22.0. Use computeStrides( SizeType size, size_t sizeOfType )
      */
-    FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
+    [[deprecated]] FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents,
+                                                                size_t sizeOfType );
 
     /**
      * @brief Retrieves a pointer to the value at the given index.
@@ -636,6 +673,28 @@ inline T Array::at(const ::fwData::Array::IndexType& id) const
 
 //------------------------------------------------------------------------------
 
+template< typename T >
+inline T& Array::at(const size_t& offset)
+{
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
+                                              + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
+                          offset >= this->getSizeInBytes()/sizeof(T));
+    return *(reinterpret_cast<T*>(this->getBuffer()) + offset);
+}
+
+//------------------------------------------------------------------------------
+
+template< typename T >
+inline T& Array::at(const size_t& offset) const
+{
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
+                                              + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
+                          offset >= this->getSizeInBytes()/sizeof(T));
+    return *(reinterpret_cast<T*>(this->getBuffer()) + offset);
+}
+
+//------------------------------------------------------------------------------
+
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array) :
     m_pointer(static_cast<pointer>(array->getBuffer())),
@@ -654,6 +713,18 @@ inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE,
     m_idx(other.m_idx),
     m_numberOfElements(other.m_numberOfElements)
 {
+}
+
+//------------------------------------------------------------------------------
+
+template <class TYPE, bool isConst>
+inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, true>& other) :
+    m_pointer(other.m_pointer),
+    m_lock(other.m_lock),
+    m_idx(other.m_idx),
+    m_numberOfElements(other.m_numberOfElements)
+{
+    static_assert(isConst == true, "Cannot convert const Iterator to not const Iterator.");
 }
 
 //------------------------------------------------------------------------------
@@ -716,13 +787,11 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+(difference_type index)
 {
-    m_idx = m_idx + index;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
-    m_pointer = m_pointer + index;
-    return *this;
+    IteratorBase tmp(*this);
+    tmp += index;
+    return tmp;
 }
 
 //------------------------------------------------------------------------------
@@ -763,13 +832,11 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-(difference_type index)
 {
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx     = m_idx - index;
-    m_pointer = m_pointer - index;
-    return *this;
+    IteratorBase tmp(*this);
+    tmp -= index;
+    return tmp;
 }
 
 //------------------------------------------------------------------------------

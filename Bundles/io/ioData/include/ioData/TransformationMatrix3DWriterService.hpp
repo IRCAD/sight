@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace ioData
 {
@@ -50,7 +50,7 @@ class IODATA_CLASS_API TransformationMatrix3DWriterService : public ::fwIO::IWri
 
 public:
 
-    fwCoreServiceMacro(TransformationMatrix3DWriterService, ::fwIO::IWriter);
+    fwCoreServiceMacro(TransformationMatrix3DWriterService, ::fwIO::IWriter)
 
     /// Super class of writer services
     typedef ::fwIO::IWriter SuperClass;

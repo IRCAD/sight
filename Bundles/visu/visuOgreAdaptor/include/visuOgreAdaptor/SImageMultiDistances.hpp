@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,238 +23,271 @@
 #pragma once
 
 #include "visuOgreAdaptor/config.hpp"
-#include "visuOgreAdaptor/SLine.hpp"
-#include "visuOgreAdaptor/SPointList.hpp"
 
-#include <fwData/Vector.hpp>
-
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <fwData/PointList.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwRenderOgre/Material.hpp>
 #include <fwRenderOgre/Text.hpp>
+
+#include <OgreVector3.h>
+
+#include <memory>
+#include <optional>
 
 namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor to display distance on an image
+ * @brief Displays distances retrieved from an image.
  *
  * @section Slots Slots
- * - \b removeDistance: Detection when a point is removed from an image
+ * - \b addDistance(): Adds distances contained in the image from the scene manager.
+ * - \b removeDistance(): Removes distances contained in the image from the scene manager.
+ * - \b updateVisibilityFromField(): Updates the visibility of distances from the field status.
+ * - \b updateVisibility(bool): Updates the visibility of distances.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes">
-            <inout key="image" uid="${image}" />
-            <config layer="default" />
+        <service uid="..." type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+            <inout key="image" uid="..." />
+            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
         </service>
    @endcode
- * @subsection In-Out In-Out
+ *
+ * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image containing the distance field.
- * @subsection Configuration Configuration
- * - \b layer(mandatory) : defines distance's layer.
+ *
+ * @subsection Configuration Configuration:
+ * - \b layer (mandatory) : Defines distance's layer.
+ * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, default=16): Font size in points.
+ * - \b radius (optional, default=4.5): Size of the distances spheres.
+ * - \b interactive (optional, true/false, default=true): Enables interactions with distances.
+ * - \b priority (optional, default=3): Priority of the interactor.
+ * - \b queryMask (optional, uint32, default=0xFFFFFFFF): Mask used to filter out entities when the distance is auto
+ * snapped.
+ * - \b distanceQueryFlags (optional, uint32, default=0x40000000): Mask apply to distances spheres.
  */
-
-class SImageMultiDistances : public ::fwRenderOgre::IAdaptor,
-                             public ::fwRenderOgre::interactor::IInteractor
+class SImageMultiDistances final : public ::fwRenderOgre::IAdaptor,
+                                   public ::fwRenderOgre::interactor::IInteractor
 {
 public:
 
     fwCoreServiceMacro(SImageMultiDistances, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor
+    /// Initialize slots.
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
 
-    /// Destructor
-    VISUOGREADAPTOR_API ~SImageMultiDistances() noexcept;
-
-    /// Called when the mouse is moved
-    VISUOGREADAPTOR_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy) override;
-
-    /// Called on a wheel event
-    VISUOGREADAPTOR_API virtual void wheelEvent(int, int, int) override;
-
-    /// Called when the window is resized
-    VISUOGREADAPTOR_API virtual void resizeEvent(int, int) override;
-
-    /// Called when a key is pressed
-    VISUOGREADAPTOR_API virtual void keyPressEvent(int) override;
-
-    /// Called when a key is released
-    VISUOGREADAPTOR_API virtual void keyReleaseEvent(int) override;
-
-    /// Called when a mouse button is released.
-    VISUOGREADAPTOR_API virtual void buttonReleaseEvent(MouseButton button, int x, int y) override;
-
-    /// Called when a mouse button is pressed.
-    VISUOGREADAPTOR_API virtual void buttonPressEvent(MouseButton button, int x, int y) override;
-
-    /// Called when the focus is win
-    VISUOGREADAPTOR_API virtual void focusInEvent() override;
-
-    /// Called when the focus is lost
-    VISUOGREADAPTOR_API virtual void focusOutEvent() override;
-
-protected:
-
-    /// Configure the adaptor
-    VISUOGREADAPTOR_API void configuring() override;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_DISTANCE_ADDED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_DISTANCE_REMOVED_SIG to this::s_REMOVE_DISTANCE_SLOT
-     * Connect Image::s_DISTANCE_DISPLAYED_SIG to this::s_SHOW_DISTANCE_SLOT
-     */
-    VISUOGREADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
-
-    /// Initialize sceneManager, rootSceneNode, layer and update the service
-    VISUOGREADAPTOR_API void starting() override;
-
-    /// Update distance displaying and set the spacing to the image coord
-    VISUOGREADAPTOR_API void updating() override;
-
-    /// Stop the service
-    VISUOGREADAPTOR_API void stopping() override;
+    /// Destroys the service.
+    VISUOGREADAPTOR_API virtual ~SImageMultiDistances() noexcept override final;
 
 private:
 
-    /// Display line of a given pointlist
-    void createDistance(float begin[3], float end[3], size_t id, const ::Ogre::ColourValue& color);
+    /// Stores Ogre resources used to display a distance.
+    /// Two spheres each attached to a node, a label to display millimeters,
+    /// one line rendered with the depth check and a dashed line rendered without depth check.
+    /// The point list is used to update each points when the interactor move a distance sphere,
+    /// it's retrieve from the image via a field.
+    struct DistanceData
+    {
+        ::fwData::PointList::sptr m_pointList;
+        ::Ogre::SceneNode*  m_node1;
+        ::Ogre::ManualObject* m_sphere1;
+        ::Ogre::SceneNode* m_node2;
+        ::Ogre::ManualObject* m_sphere2;
+        ::Ogre::ManualObject* m_line;
+        ::Ogre::ManualObject* m_dashedLine;
+        ::Ogre::SceneNode* m_labelNode;
+        ::fwRenderOgre::Text* m_label;
+    };
 
-    /// Remove the line corresponding to a specific ID
-    void deleteDistance(size_t lineID);
+    /// Stores picking informations.
+    struct PickedData
+    {
+        DistanceData* m_data;
+        bool m_first;
+    };
 
-    /// Remove lines
-    void deleteDistances();
-
-    /// Remove origin in the image coord
-    void addCurrentOrigin() const;
-
-    /// Set origin in the image coord
-    void removeCurrentOrigin() const;
-
-    /// Create millimeter length label of a specific point. The second argument corresponds to the distance
-    void createMillimeterLabel(const float point[3], const Ogre::Real distance, size_t id,
-                               const ::Ogre::ColourValue color);
-
-    /// Delete millimeter length label of a specific point.
-    void deleteMillimeterLabel(size_t id);
-
-    /// Create ID label of a given point
-    void createIdLabel(const float ps1[3], size_t id, const ::Ogre::ColourValue& color);
-
-    /// Destroy label corresponding on a specific id
-    void deleteIdLabel(size_t id);
-
-    /**
-     * @brief Creates a new line and creates another line to know if you are in front or behind the image.
-     * In the case of the second line, the line should only be displayed if you are in front.
-     *
-     * @param materialAdp corresponds to the material adaptor.
-     * @param ps1 corresponds to the coordinates of the first point.
-     * @param ps2 corresponds to the coordinates of the second point.
-     * @param color corresponds to the color of the line.
-     */
-    void createLine(const ::visuOgreAdaptor::SMaterial::sptr materialAdp, const float ps1[3],
-                    const float ps2[3], size_t id, const ::Ogre::ColourValue& color) const;
-
-    /// Deletes a specific line
-    void deleteLine(size_t id) const;
+    /// Map each distances to there related list ID.
+    typedef std::map< ::fwTools::fwID::IDType, DistanceData > DistanceMap;
 
     /**
-     * @brief Create a new sphere manual object.
-     *
-     * @param materialAdp corresponds to the material adaptor.
-     * @param name corresponds to the name of the node.
-     * @param color corresponds to the color of the sphere.
+     * @brief Generates a color from a distance ID.
+     * @param _id ID of the distance.
+     * @return The generated color.
      */
-    ::Ogre::ManualObject* createSphere(const ::visuOgreAdaptor::SMaterial::sptr materialAdp,
-                                       const std::string name, const ::Ogre::ColourValue& color) const;
-
-    /// Destroys all resources used by this service
-    void deleteAllRessources();
-
-    /// Generate a color from an id
-    ::Ogre::ColourValue generateColor(size_t id) const;
-
-    /// Set and return the material adaptor
-    ::visuOgreAdaptor::SMaterial::sptr setMaterialAdp();
-
-    /// Get the negato orientation based on the camera direction
-    ::fwDataTools::helper::MedicalImage::Orientation getOrientation() const;
-
-    /// Picks the object at screen coordinates (x, y)
-    Ogre::MovableObject* pickObject(int x, int y);
-
-    /// Find and return the id of the name
-    size_t findLineID(const std::string& name) const;
+    static ::Ogre::ColourValue generateColor(::fwTools::fwID::IDType _id);
 
     /**
-     * @brief Check if the mouse click on an existing point..
-     *
-     * @param x corresponds corresponds to the coordinates X of a point.
-     * @param y corresponds to the coordinates Y of a point.
+     * @brief Generates a dashed line in a ::Ogre::ManualObject.
+     * @param _object Object where generate the dashed line.
+     * @param _begin Begin position of the line.
+     * @param _end End position of the line.
+     * @param _thickness Thickness of dash.
      */
-    bool clickPoint(int x, int y);
+    static void generateDashedLine(::Ogre::ManualObject* const _object,
+                                   const ::Ogre::Vector3& _begin,
+                                   const ::Ogre::Vector3& _end,
+                                   float _thickness);
 
-    /// Scene manager of the scene
-    ::Ogre::SceneManager* m_sceneMgr { nullptr };
+    /**
+     * @brief Gets the formated string used to display the length of a distance.
+     * @return The formated string.
+     */
+    static std::string getLength(const ::Ogre::Vector3&, const ::Ogre::Vector3&);
 
-    /// Root Scene Node
-    ::Ogre::SceneNode* m_rootSceneNode { nullptr };
+    /**
+     * @brief Gets the normalized camera direction vector.
+     * @return A vector representing the camera direction
+     */
+    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
 
-    /// Scene node where point 1 is attached
-    ::Ogre::SceneNode* m_sphere1Node { nullptr };
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     *
+     * Connect ::fwData::Image::s_DISTANCE_ADDED_SIG to SImageMultiDistances::s_ADD_DISTANCE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_REMOVED_SIG to SImageMultiDistances::s_REMOVE_DISTANCE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG to SImageMultiDistances::s_UPDATE_VISIBILITY_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG to SImageMultiDistances::s_UPDATE_SLOT
+     */
+    virtual KeyConnectionsMap getAutoConnections() const override;
 
-    /// Scene node where point 2 is attached
-    ::Ogre::SceneNode* m_sphere2Node { nullptr };
+    /// Configures the service.
+    virtual void configuring() override final;
 
-    /// Used to store label of each point
-    std::vector< ::fwRenderOgre::Text*> m_labels {};
+    /// Adds the interactor to the layer and creates the material.
+    virtual void starting() override final;
 
-    /// Used to store the millimeter value for each line
-    std::vector< ::fwRenderOgre::Text*> m_millimeterValue {};
+    /// Updates materials and all distances.
+    virtual void updating() override final;
 
-    /// Used to store the id value labels points nodes
-    std::vector< ::Ogre::SceneNode*> m_labelNodes {};
+    /// Removes the interactor from the layer and destroys Ogre resources.
+    virtual void stopping() override final;
 
-    /// Used to store the length value labels points nodes
-    std::vector< ::Ogre::SceneNode*> m_millimeterNodes {};
+    /// Retrieves distances from the image and adds them to the scene.
+    void addDistances();
 
-    /// Copy of distanceField in case that the signal removed the lign of the image before updating the visual
-    ::fwData::Vector::sptr m_distanceField { };
+    /// Retrieves distances from the image and remove them from the scene.
+    void removeDistances();
 
-    /// Number of existing lines
-    size_t m_distanceNb { 0 };
+    /// Updates distances visibility from the image field.
+    void updateVisibilityFromField();
 
-    /// Id of the point which will move
-    size_t m_moveID  { 0 };
+    /**
+     * @brief Updates distances visibility.
+     * @param _visibility Sets to true to show distances.
+     */
+    void updateVisibility(bool _visibility);
 
-    /// Position (begin/back) of the point which will move
-    size_t m_isBeginMove { 0 };
+    /**
+     * @brief Gets the nearest picked position if there is one.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     * @return The picked world coordinates.
+     */
+    std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
 
-    /// Defines whether interaction is possible or not.
-    bool m_activeInteraction { false };
+    /**
+     * @brief Retrieves the picked distance and stores the result in m_pickedData.
+     * @param _button Mousse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override final;
 
-    /// Position of the first point
-    float m_ps1[3] { 0.f, 0.f, 0.f };
+    /**
+     * @brief Moves a distance stores in m_pickedData.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    virtual void mouseMoveEvent(MouseButton, int _x, int _y, int, int) override final;
 
-    /// Position of the second point
-    float m_ps2[3] { 0.f, 0.f, 0.f };
+    /// Resets m_pickedData.
+    virtual void buttonReleaseEvent(MouseButton, int, int) override final;
 
-    /// The picker used by this interactor.
-    ::fwRenderOgre::picker::IPicker m_picker;
+    /**
+     * @brief Creates a distance and add it into m_distances.
+     * @param _pl The point list used to create the distance.
+     */
+    void createDistance(::fwData::PointList::sptr _pl);
 
-    /// Material Adaptor
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdp {nullptr};
+    /**
+     * @brief Updates a distance.
+     * @param _data Distance to update.
+     * @param _begin New begin position.
+     * @param _end New end position
+     */
+    void updateDistance(const DistanceData* const _data, ::Ogre::Vector3 _begin, ::Ogre::Vector3 _end);
 
-    /// Pointer to the material data
-    ::fwData::Material::sptr m_material {nullptr};
+    /**
+     * @brief Destroys a distance from its ID and remove it from m_distances.
+     * @param _id ID of the distance.
+     */
+    void destroyDistance(::fwTools::fwID::IDType _id);
+
+    /// Radius of distances spheres.
+    float m_distanceSphereRadius {3.5f};
+
+    /// Visibility of distances.
+    bool m_visibility {true};
+
+    /// True type font source file.
+    std::string m_fontSource {"DejaVuSans.ttf"};
+
+    /// Font size in points.
+    size_t m_fontSize {16};
+
+    /// Sets whether or not interactions are enabled with distances.
+    bool m_interactive {true};
+
+    /// Priority of the interactor
+    int m_priority {2};
+
+    /// Current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
+    PickedData m_pickedData {nullptr, true};
+
+    /// Mask used to filter out entities when the distance is auto snapped.
+    std::uint32_t m_queryMask {0xFFFFFFFF};
+
+    /// Mask used to filter distances, it optimizes the ray launched to retrive the picked distance.
+    std::uint32_t m_distanceQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+
+    /// Material name with no depth check for spheres.
+    std::string m_sphereMaterialName;
+
+    /// Material name with depth check for lines.
+    std::string m_lineMaterialName;
+
+    /// Material name with no depth check for dashed lines.
+    std::string m_dashedLineMaterialName;
+
+    /// Material with no depth check for spheres.
+    ::fwRenderOgre::Material::uptr m_sphereMaterial {nullptr};
+
+    /// Material with depth check for lines.
+    ::fwRenderOgre::Material::uptr m_lineMaterial {nullptr};
+
+    /// Material with no depth check for dashed lines.
+    ::fwRenderOgre::Material::uptr m_dashedLineMaterial {nullptr};
+
+    /// Stores all generatesd distances.
+    DistanceMap m_distances;
+
+    /** Unused IInteractor API
+     *@{
+     */
+    virtual void focusInEvent() override final;
+    virtual void focusOutEvent() override final;
+    virtual void wheelEvent(int, int, int) override final;
+    virtual void resizeEvent(int, int) override final;
+    virtual void keyPressEvent(int) override final;
+    virtual void keyReleaseEvent(int) override final;
+    /**
+     *@}
+     */
 
 };
 }

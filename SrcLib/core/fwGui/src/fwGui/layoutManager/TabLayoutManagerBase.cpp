@@ -63,6 +63,29 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
             const std::string border = view->getExistingAttributeValue("border");
             vi.m_border = std::stoi(border);
         }
+        else
+        {
+            if( view->hasAttribute("leftBorder") )
+            {
+                const std::string border = view->getExistingAttributeValue("leftBorder");
+                vi.m_leftBorder = std::stoi(border);
+            }
+            if( view->hasAttribute("topBorder") )
+            {
+                const std::string border = view->getExistingAttributeValue("topBorder");
+                vi.m_topBorder = std::stoi(border);
+            }
+            if( view->hasAttribute("rightBorder") )
+            {
+                const std::string border = view->getExistingAttributeValue("rightBorder");
+                vi.m_rightBorder = std::stoi(border);
+            }
+            if( view->hasAttribute("bottomBorder") )
+            {
+                const std::string border = view->getExistingAttributeValue("bottomBorder");
+                vi.m_bottomBorder = std::stoi(border);
+            }
+        }
         if( view->hasAttribute("caption") )
         {
             vi.m_caption = view->getExistingAttributeValue("caption");
@@ -96,7 +119,7 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("backgroundColor") )
         {
             const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
-            if(hexaColor != "default")
+            if(!hexaColor.empty())
             {
                 OSLM_ASSERT(
                     "Color string should start with '#' and followed by 6 ou 8 "

@@ -22,7 +22,11 @@
 
 #include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
 
+#include "fwGuiQt/App.hpp"
+
 #include <fwCore/base.hpp>
+
+#include <fwDataTools/Color.hpp>
 
 #include <fwGui/registry/macros.hpp>
 
@@ -92,11 +96,17 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
                        !hasCentral);
 
-            if(viewInfo.m_backgroundColor != "default")
+            if(!viewInfo.m_backgroundColor.empty())
             {
-                const QString style = QString::fromStdString(
-                    "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                widget->setStyleSheet(style);
+                std::uint8_t rgba[4];
+                ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                std::stringstream ss;
+                ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+                   << static_cast< short >(rgba[1]) << ','
+                   << static_cast< short >(rgba[2]) << ','
+                   << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                const QString style = QString::fromStdString(ss.str());
+                widget->setStyleSheet(style + qApp->styleSheet());
             }
 
             if (viewInfo.m_useScrollBar)
@@ -104,11 +114,17 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 scrollArea = new QScrollArea(m_qtWindow);
                 scrollArea->setWidget(widget);
                 scrollArea->setWidgetResizable( true );
-                if(viewInfo.m_backgroundColor != "default")
+                if(!viewInfo.m_backgroundColor.empty())
                 {
-                    const QString style = QString::fromStdString(
-                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
-                    scrollArea->setStyleSheet(style);
+                    std::uint8_t rgba[4];
+                    ::fwDataTools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                    std::stringstream ss;
+                    ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
+                       << static_cast< short >(rgba[1]) << ','
+                       << static_cast< short >(rgba[2]) << ','
+                       << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                    const QString style = QString::fromStdString(ss.str());
+                    scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
                 m_qtWindow->setCentralWidget(scrollArea);
             }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_PCH_HPP__
-#define __FWRENDEROGRE_PCH_HPP__
-
 // We need a specific pch because we need OpenMP support
 // Compile flags will be automatically forwarded so that we get a pch with OpenMP inside
 
 // Cause an internal compiler error on windows...
+
+#ifndef __FWRENDEROGRE_PCH_HPP__
+#define __FWRENDEROGRE_PCH_HPP__
+
 #ifndef _WIN32
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
@@ -39,7 +40,7 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 

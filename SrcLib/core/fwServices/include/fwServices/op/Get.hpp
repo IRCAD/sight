@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <fwTools/Object.hpp>
-
 #include "fwServices/IService.hpp"
+
+#include <fwTools/Object.hpp>
 
 namespace fwServices
 {
@@ -33,24 +33,7 @@ namespace fwServices
  * @name Methods for accessing services
  */
 //@{
-#ifndef REMOVE_DEPRECATED
-/**
- * @brief Get the first service of type serviceType which is attached to obj
- * @note The template method is also available, where the template parameter SERVICE relates the service type
- * serviceType
- * @todo Do not automatically add service, raise an error instead
- * @return the requested service, null if not
- * @deprecated It will be removed in 20.0
- */
-FWSERVICES_API ::fwServices::IService::sptr get( ::fwData::Object::sptr obj,
-                                                 std::string serviceType );
 
-/**
- * @deprecated It will be removed in 20.0
- */
-template<class SERVICE>
-SPTR(SERVICE) get( ::fwData::Object::sptr obj);
-#endif
 /**
  * @brief Return a registered IService having uid as unique universal identifier , its an alias on
  * fwData::Object::getID(...) method
@@ -62,5 +45,3 @@ FWSERVICES_API ::fwServices::IService::sptr get( std::string uid );
 //@}
 
 }
-
-#include "fwServices/op/Get.hxx"

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -575,8 +575,8 @@ bool SFilterSelectionEditor::sortFilters(const ::fwDicomIOFilter::IFilter::sptr&
 
 QIcon SFilterSelectionEditor::getFilterIcon(::fwDicomIOFilter::IFilter::sptr filter)
 {
-    const ::boost::filesystem::path path = ::fwRuntime::getBundleResourcePath(std::string("media"));
-    QIcon icons[]                        = {
+    const std::filesystem::path path = ::fwRuntime::getBundleResourcePath(std::string("media"));
+    QIcon icons[]                    = {
         QIcon(QString::fromStdString((path / "icons/Modifier.svg").string())),
         QIcon(QString::fromStdString((path / "icons/Sorter.svg").string())),
         QIcon(QString::fromStdString((path / "icons/Splitter.svg").string())),

@@ -74,7 +74,7 @@ void JpgImageWriterService::configuring()
 void JpgImageWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
@@ -119,7 +119,7 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const CSPTR(::fwData::Image)& img)
+void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(::fwData::Image)& img)
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();

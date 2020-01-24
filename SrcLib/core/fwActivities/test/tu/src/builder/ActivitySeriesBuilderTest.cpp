@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,8 +50,8 @@ namespace ut
 void ActivitySeriesBuilderTest::setUp()
 {
     // Set up context before running a test.
-    ::boost::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_builder");
-    m_bundle                         = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
+    std::filesystem::path plugin = ::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0/tu_builder");
+    m_bundle = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     m_activities = ::fwActivities::registry::Activities::New();
 

@@ -38,17 +38,7 @@
 
 #include <fwTools/Type.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/foreach.hpp>
-
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef WIN32
-#include <windows.h>
-#endif
+#include <filesystem>
 
 namespace videoVLC
 {
@@ -237,20 +227,6 @@ SFrameGrabber::~SFrameGrabber() noexcept
 
 void SFrameGrabber::starting()
 {
-    if(::boost::filesystem::exists(VLC_PLUGINS_DIR))
-    {
-        SFrameGrabber::exportVLCPluginsEnv(VLC_PLUGINS_DIR);
-    }
-    else
-    {
-        SLM_ASSERT("VLC plugins directory is not found.", ::boost::filesystem::exists("./vlc/plugins"));
-#ifdef WIN32
-        SFrameGrabber::exportVLCPluginsEnv(".\\vlc\\plugins");
-#else
-        SFrameGrabber::exportVLCPluginsEnv("./vlc/plugins");
-#endif
-    }
-
     const std::string networkCaching = "--network-caching=" + m_networkCaching;
 
 // initialize libVLC
@@ -321,8 +297,8 @@ void SFrameGrabber::startCamera()
         case ::arData::Camera::FILE:
         {
             // Path of the video file stored in the camera description
-            ::boost::filesystem::path videoPath(camera->getVideoFile());
-            ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
+            std::filesystem::path videoPath(camera->getVideoFile());
+            std::filesystem::path videoDir(::arPreferences::getVideoDir());
 
             // For compatibility with old calibration with absolute path
             if (!videoPath.is_absolute())
@@ -349,7 +325,7 @@ void SFrameGrabber::startCamera()
         case ::arData::Camera::STREAM:
         {
             // Path of the video file stored in the camera description
-            ::boost::filesystem::path videoPath(camera->getStreamUrl());
+            std::filesystem::path videoPath(camera->getStreamUrl());
 
             // Create a new Media
             m_vlcMedia = libvlc_media_new_location(m_vlcInstance, videoPath.string().c_str());
@@ -579,28 +555,6 @@ void SFrameGrabber::onEventCallback(const struct libvlc_event_t* event, void* us
         default:
             break;
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SFrameGrabber::exportVLCPluginsEnv(const std::string& path)
-{
-#ifdef WIN32
-    {
-        typedef int (_cdecl* PUTENVPROC)(const char*);
-
-        HMODULE hmodule = GetModuleHandle("msvcrt");
-        SLM_ASSERT("GetModuleHandle msvcrt failed", hmodule);
-
-        PUTENVPROC putenvFunc = (PUTENVPROC) GetProcAddress(hmodule, "_putenv");
-        SLM_ASSERT("GetProcAddress _putenv failed", hmodule);
-
-        const std::string env = "VLC_PLUGIN_PATH=" + path;
-        putenvFunc(env.c_str());
-    }
-#else
-    setenv("VLC_PLUGIN_PATH", path.c_str(), 1);
-#endif
 }
 
 //----------------------------------------------------------------------------

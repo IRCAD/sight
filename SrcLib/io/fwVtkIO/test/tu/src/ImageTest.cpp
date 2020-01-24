@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,16 +32,11 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-
 #include <fwTest/Data.hpp>
 #include <fwTest/File.hpp>
 #include <fwTest/generator/Image.hpp>
 
 #include <fwTools/System.hpp>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -49,6 +44,8 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::ImageTest );
@@ -83,12 +80,12 @@ void compareImageAttributes(const ExpSizeType& expSize,
     for(size_t i = 0; i < static_cast< size_t >(dim); ++i)
     {
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[i]),
-                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[i]), epsilon );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[i]),
-                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[i]), epsilon );
-        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[i]),
-                              static_cast< ::fwData::Image::SizeType::value_type >(size[i]) );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::Spacing::value_type >(expSpacing[i]),
+                                      static_cast< ::fwData::Image::Spacing::value_type >(spacing[i]), epsilon );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::Origin::value_type >(expOrigin[i]),
+                                      static_cast< ::fwData::Image::Origin::value_type >(origin[i]), epsilon );
+        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::Size::value_type >(expSize[i]),
+                              static_cast< ::fwData::Image::Size::value_type >(size[i]) );
     }
 }
 
@@ -96,24 +93,15 @@ void compareImageAttributes(const ExpSizeType& expSize,
 
 void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 {
-    const size_t dim = 3;
-    ::fwData::Image::SizeType size(dim);
-    size[0] = 10;
-    size[1] = 15;
-    size[2] = 23;
-    ::fwData::Image::SpacingType spacing(dim);
-    spacing[0] = 0.85;
-    spacing[1] = 2.6;
-    spacing[2] = 1.87;
-    ::fwData::Image::OriginType origin(dim);
-    origin[0] = -45.6;
-    origin[1] = 25.97;
-    origin[2] = -53.9;
+    const ::fwData::Image::Size size       = {10, 15, 23};
+    const ::fwData::Image::Spacing spacing = {0.85, 2.6, 1.87};
+    const ::fwData::Image::Origin origin   = {-45.6, 25.97, -53.9};
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(
+                                                  imgtype), ::fwData::Image::PixelFormat::GRAY_SCALE);
 
-    ::fwDataTools::helper::Image imageHelper(image);
+    const auto dumpLock = image->lock();
 
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage(image, vtkImage);
@@ -135,7 +123,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
     CPPUNIT_ASSERT_MESSAGE( "Test failed for type " + imgtype, types.find( vtkImage->GetScalarType() ) != types.end() );
 
     char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
-    char* ptr    = static_cast<char*>(imageHelper.getBuffer());
+    char* ptr    = static_cast<char*>(image->getBuffer());
 
     CPPUNIT_ASSERT_MESSAGE( "Test failed for type " + imgtype, std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );
 }
@@ -145,8 +133,8 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 template<typename W, typename R>
 void writerTest(const std::string& imagetype, const std::string& filename)
 {
-    const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() /
-                                             ::boost::filesystem::path(filename));
+    const std::filesystem::path testFile(::fwTools::System::getTemporaryFolder() /
+                                         std::filesystem::path(filename));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type(imagetype));
@@ -157,7 +145,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     writer->write();
 
     CPPUNIT_ASSERT_MESSAGE( "test on <" + filename + ">  of type <" + imagetype + "> Failed ",
-                            ::boost::filesystem::exists(testFile) );
+                            std::filesystem::exists(testFile) );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     typename R::sptr reader = R::New();
@@ -165,20 +153,20 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     reader->setFile(testFile);
     reader->read();
 
-    ::boost::filesystem::remove(testFile);
+    std::filesystem::remove(testFile);
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + filename + "> of type <" + imagetype + "> Failed ",
                                   image->getType(), image2->getType() );
 
     compareImageAttributes(
-        image->getSize(),
-        image->getSpacing(),
-        image->getOrigin(),
+        image->getSize2(),
+        image->getSpacing2(),
+        image->getOrigin2(),
         image->getNumberOfDimensions(),
 
-        image2->getSize(),
-        image2->getSpacing(),
-        image2->getOrigin(),
+        image2->getSize2(),
+        image2->getSpacing2(),
+        image2->getOrigin2(),
         image2->getNumberOfDimensions()
         );
 }
@@ -187,11 +175,11 @@ void writerTest(const std::string& imagetype, const std::string& filename)
 
 void imageFromVTKTest(const std::string& imagename, const std::string& type)
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() /
-                                               ::boost::filesystem::path(imagename) );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() /
+                                           std::filesystem::path(imagename) );
 
-    CPPUNIT_ASSERT(::boost::filesystem::exists(imagePath));
-    CPPUNIT_ASSERT(::boost::filesystem::is_regular_file(imagePath));
+    CPPUNIT_ASSERT(std::filesystem::exists(imagePath));
+    CPPUNIT_ASSERT(std::filesystem::is_regular_file(imagePath));
 
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     reader->SetFileName(imagePath.string().c_str());
@@ -205,7 +193,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwVtkIO::fromVTKImage(vtkImage, image);
 
-    ::fwDataTools::helper::Image imageHelper(image);
+    const auto dumpLock = image->lock();
 
     compareImageAttributes(
         vtkImage->GetDimensions(),
@@ -213,16 +201,16 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
         vtkImage->GetOrigin(),
         vtkImage->GetDataDimension(),
 
-        image->getSize(),
-        image->getSpacing(),
-        image->getOrigin(),
+        image->getSize2(),
+        image->getSpacing2(),
+        image->getOrigin2(),
         image->getNumberOfDimensions()
         );
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + imagename + "> Failed ", ::fwTools::Type(type), image->getType() );
 
     char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
-    char* ptr    = static_cast<char*>(imageHelper.getBuffer());
+    char* ptr    = static_cast<char*>(image->getBuffer());
 
     CPPUNIT_ASSERT( std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );
 }
@@ -231,10 +219,10 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
 
 void testVtkReader(std::string imagetype)
 {
-    const ::boost::filesystem::path testFile(::fwTest::Data::dir() / ("sight/image/vtk/img-" + imagetype + ".vtk"));
+    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/image/vtk/img-" + imagetype + ".vtk"));
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
-                           ::boost::filesystem::exists(testFile));
+                           std::filesystem::exists(testFile));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
@@ -251,9 +239,9 @@ void testVtkReader(std::string imagetype)
                                   ::fwTools::Type(imagetype), image->getType());
 
     compareImageAttributes(
-        image->getSize(),
-        image->getSpacing(),
-        image->getOrigin(),
+        image->getSize2(),
+        image->getSpacing2(),
+        image->getOrigin2(),
         image->getNumberOfDimensions(),
 
         vtkImage->GetDimensions(),
@@ -268,7 +256,7 @@ void testVtkReader(std::string imagetype)
 void ImageTest::setUp()
 {
     // Set up context before running a test.
-    srand(static_cast<unsigned int>(time(NULL)));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
 
 // ------------------------------------------------------------------------------
@@ -334,7 +322,7 @@ void ImageTest::testFromVtk()
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwVtkIO::fromVTKImage(vtkImage, image);
 
-    ::fwDataTools::helper::Image imageHelper(image);
+    const auto dumpLock = image->lock();
     CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
                           static_cast< size_t >( image->getNumberOfComponents()) );
     compareImageAttributes(
@@ -343,15 +331,15 @@ void ImageTest::testFromVtk()
         vtkImage->GetOrigin(),
         vtkImage->GetDataDimension(),
 
-        image->getSize(),
-        image->getSpacing(),
-        image->getOrigin(),
+        image->getSize2(),
+        image->getSpacing2(),
+        image->getOrigin2(),
         image->getNumberOfDimensions()
         );
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + type + "> Failed ", ::fwTools::Type(type), image->getType() );
 
     char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());
-    char* ptr    = static_cast<char*>(imageHelper.getBuffer());
+    char* ptr    = static_cast<char*>(image->getBuffer());
 
     CPPUNIT_ASSERT( std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );
 }
@@ -360,10 +348,10 @@ void ImageTest::testFromVtk()
 
 void ImageTest::mhdReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
@@ -377,9 +365,9 @@ void ImageTest::mhdReaderTest()
         bostonTeapotOrigin,
         bostonTeapotSize.size(),
 
-        image->getSize(),
-        image->getSpacing(),
-        image->getOrigin(),
+        image->getSize2(),
+        image->getSpacing2(),
+        image->getOrigin2(),
         image->getNumberOfDimensions()
         );
 
@@ -389,17 +377,17 @@ void ImageTest::mhdReaderTest()
 
 void ImageTest::mhdWriterTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
-    const ::boost::filesystem::path zRawPath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
+    const std::filesystem::path zRawPath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + zRawPath.string() + "' does not exist",
-                           ::boost::filesystem::exists(zRawPath));
+                           std::filesystem::exists(zRawPath));
 
-    const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
-    const ::boost::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
+    const std::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
+    const std::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
     ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
@@ -412,14 +400,14 @@ void ImageTest::mhdWriterTest()
     writer->setFile(testFile);
     writer->write();
 
-    CPPUNIT_ASSERT( ::boost::filesystem::exists(testFile) );
-    CPPUNIT_ASSERT( ::boost::filesystem::exists(testZRawFile) );
+    CPPUNIT_ASSERT( std::filesystem::exists(testFile) );
+    CPPUNIT_ASSERT( std::filesystem::exists(testZRawFile) );
 
     CPPUNIT_ASSERT( ::fwTest::File::contentEquals(imagePath, testFile) );
     CPPUNIT_ASSERT( ::fwTest::File::contentEquals(zRawPath, testZRawFile) );
 
-    ::boost::filesystem::remove(testFile);
-    ::boost::filesystem::remove(testZRawFile);
+    std::filesystem::remove(testFile);
+    std::filesystem::remove(testZRawFile);
 
     writerTest< ::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader>("int8", "imageTest.mhd");
     writerTest< ::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader>("uint8", "imageTest.mhd");
@@ -430,18 +418,18 @@ void ImageTest::mhdWriterTest()
     // writerTest< ::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader>("int64", "imageTest.mhd");
     // writerTest< ::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader>("uint64", "imageTest.mhd");
 
-    const ::boost::filesystem::path zFile(::fwTools::System::getTemporaryFolder() / "imagetestfile.zraw");
-    ::boost::filesystem::remove(zFile);
+    const std::filesystem::path zFile(::fwTools::System::getTemporaryFolder() / "imagetestfile.zraw");
+    std::filesystem::remove(zFile);
 }
 
 // ------------------------------------------------------------------------------
 
 void ImageTest::vtiReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vti/BostonTeapot.vti" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vti/BostonTeapot.vti" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     ::fwData::Image::sptr image            = ::fwData::Image::New();
     ::fwVtkIO::VtiImageReader::sptr reader = ::fwVtkIO::VtiImageReader::New();
@@ -456,9 +444,9 @@ void ImageTest::vtiReaderTest()
         bostonTeapotOrigin,
         bostonTeapotSize.size(),
 
-        image->getSize(),
-        image->getSpacing(),
-        image->getOrigin(),
+        image->getSize2(),
+        image->getSpacing2(),
+        image->getOrigin2(),
         image->getNumberOfDimensions()
         );
 
@@ -483,10 +471,10 @@ void ImageTest::vtiWriterTest()
 
 void ImageTest::vtkReaderTest()
 {
-    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
+    const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/vtk/img.vtk" );
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
-                           ::boost::filesystem::exists(imagePath));
+                           std::filesystem::exists(imagePath));
 
     ::fwData::Image::sptr image         = ::fwData::Image::New();
     ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
@@ -505,9 +493,9 @@ void ImageTest::vtkReaderTest()
         vtkOrigin,
         3,
 
-        image->getSize(),
-        image->getSpacing(),
-        image->getOrigin(),
+        image->getSize2(),
+        image->getSpacing2(),
+        image->getOrigin2(),
         image->getNumberOfDimensions()
         );
 

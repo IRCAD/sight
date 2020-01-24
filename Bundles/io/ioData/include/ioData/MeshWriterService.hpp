@@ -26,7 +26,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace ioData
 {
@@ -65,7 +65,7 @@ class IODATA_CLASS_API MeshWriterService : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceMacro(MeshWriterService, ::fwIO::IWriter);
+    fwCoreServiceMacro(MeshWriterService, ::fwIO::IWriter)
 
     /// Super class of writer services
     typedef ::fwIO::IWriter SuperClass;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, ::fwMedData::SeriesDB )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -88,7 +88,7 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 void SSeriesDBReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
@@ -124,9 +124,8 @@ void SSeriesDBReader::configureWithIHM()
         // Init and execute the service
         ::fwServices::IService::sptr filterSelectorSrv;
         ::fwData::String::sptr key = ::fwData::String::New();
-        filterSelectorSrv          = ::fwServices::add(key,
-                                                       "::fwGui::editor::IDialogEditor",
-                                                       "::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv          = ::fwServices::add("::ioDicom::SFilterSelectorDialog");
+        filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
@@ -225,7 +224,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir)
 {
     SLM_TRACE_FUNC();
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

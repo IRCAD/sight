@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,14 +35,16 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
 
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL);
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL)
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_MATRIX  = "saveMatrix";
+static const ::fwCom::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
@@ -50,8 +52,7 @@ static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
 //------------------------------------------------------------------------------
 
 SMatrixWriter::SMatrixWriter() noexcept :
-    m_isRecording(false),
-    m_filestream(nullptr)
+    m_isRecording(false)
 {
     newSlot(s_SAVE_MATRIX, &SMatrixWriter::saveMatrix, this);
     newSlot(s_START_RECORD, &SMatrixWriter::startRecord, this);
@@ -63,10 +64,10 @@ SMatrixWriter::SMatrixWriter() noexcept :
 
 SMatrixWriter::~SMatrixWriter() noexcept
 {
-    if(nullptr != m_filestream)
+    if(m_filestream.is_open())
     {
-        m_filestream->close();
-        delete m_filestream;
+        m_filestream.flush();
+        m_filestream.close();
     }
 }
 
@@ -94,7 +95,7 @@ void SMatrixWriter::starting()
 
 void SMatrixWriter::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath("");
+    static std::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
@@ -104,18 +105,11 @@ void SMatrixWriter::configureWithIHM()
 
     ::fwData::location::SingleFile::sptr result;
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    if(result)
     {
         _sDefaultPath = result->getPath();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         this->setFile(_sDefaultPath);
-
-        if(nullptr != m_filestream)
-        {
-            m_filestream->close();
-        }
-
-        m_filestream = new std::ofstream(this->getFile().string());
     }
     else
     {
@@ -153,32 +147,33 @@ void SMatrixWriter::saveMatrix(::fwCore::HiResClock::HiResClockType _timestamp)
 
 void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    if (m_isRecording)
+    if(m_isRecording)
     {
         ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(::fwIO::s_DATA_KEY);
 
-        unsigned int numberOfMat = matrixTL->getMaxElementNum();
-        // Get the buffer of the copied timeline
+        const unsigned int numberOfMat = matrixTL->getMaxElementNum();
 
+        // Get the buffer of the copied timeline
         CSPTR(::arData::timeline::Object) object = matrixTL->getClosestObject(timestamp);
         if(object)
         {
             CSPTR(::arData::MatrixTL::BufferType) buffer =
                 std::dynamic_pointer_cast< const ::arData::MatrixTL::BufferType >(object);
-            if (buffer)
+            if(buffer)
             {
                 timestamp = object->getTimestamp();
-                size_t time = static_cast<size_t>(timestamp);
-                *m_filestream << time <<";";
+                const size_t time = static_cast<size_t>(timestamp);
+                m_filestream << time <<";";
                 for(unsigned int i = 0; i < numberOfMat; ++i)
                 {
                     const float* values = buffer->getElement(i);
+
                     for(unsigned int v = 0; v < 16; ++v)
                     {
-                        *m_filestream << values[v] << ";";
+                        m_filestream << values[v] << ";";
                     }
                 }
-                *m_filestream << std::endl;
+                m_filestream << std::endl;
             }
         }
     }
@@ -188,21 +183,31 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 
 void SMatrixWriter::startRecord()
 {
-    if (!this->hasLocationDefined())
+    // Default mode when opening a file is in append mode
+    std::ios_base::openmode openMode = std::ofstream::app;
+    if(!this->hasLocationDefined())
     {
         this->configureWithIHM();
+        // In trunc mode, any contents that existed in the file before it is open are discarded.
+        // This is the needed behavior when opening the file for the first time.
+        openMode = std::ofstream::trunc;
     }
 
-    if (this->hasLocationDefined())
+    if(this->hasLocationDefined())
     {
-        if(nullptr == m_filestream)
+        if(!m_filestream.is_open())
         {
-            std::string file = this->getFile().string();
-
-            m_filestream = new std::ofstream(file);
+            m_filestream.open(this->getFile().string(), std::ofstream::out | openMode);
+            m_filestream.precision(7);
+            m_filestream << std::fixed;
+            m_isRecording = true;
         }
-
-        m_isRecording = true;
+        else
+        {
+            SLM_WARN(
+                "The file " + this->getFile().string() +
+                " can't be open. Please check if it is already open in another program.");
+        }
     }
 }
 
@@ -211,11 +216,11 @@ void SMatrixWriter::startRecord()
 void SMatrixWriter::stopRecord()
 {
     m_isRecording = false;
-    if(nullptr != m_filestream)
+    if(m_filestream.is_open())
     {
-        m_filestream->flush();
+        m_filestream.flush();
+        m_filestream.close();
     }
-
 }
 
 //------------------------------------------------------------------------------

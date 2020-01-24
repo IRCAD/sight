@@ -40,6 +40,8 @@
 
 #include <QtWidgets/QApplication>
 
+#include <optional>
+
 namespace visuOgreQt
 {
 class Window : public QWindow,
@@ -49,7 +51,7 @@ Q_OBJECT
 
 public:
     /**
-     * @brief Window Initialise attributes
+     * @brief Window Initialize attributes
      * @param parent This window parent's
      */
     Window(QWindow* parent = nullptr);
@@ -66,6 +68,7 @@ public:
      */
     virtual void render(QPainter* painter);
 
+    /// Enables animations i.e. forces the window to keep rendering.
     void setAnimating(bool animating);
 
     /// Returns Ogre render window.
@@ -83,23 +86,28 @@ public:
     /// Destroy ogre window
     void destroyWindow();
 
-    void setFullScreen(bool fullscreen);
-
     int getFrameId() const;
 
     /**
-     * @brief initialise
+     * @brief initialize
      * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
      */
-    void initialise();
+    void initialize();
 
     /**
      * @brief renderNow
      * Force the renderWindow update
      */
-    void renderNow( const bool force = false);
+    void renderNow();
 
-protected:
+Q_SIGNALS:
+    /// Emitted when the user interacts with the scene using the mouse and keyboard.
+    void interacted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
+
+    /// Emitted to recompute the camera's clipping range.
+    void cameraClippingComputation();
+
+private:
 
     /*
      * Qt events to manage keyboard and mouse input
@@ -122,25 +130,12 @@ protected:
     virtual void moveEvent(QMoveEvent* event) override;
     /// Qt event to manage generic events
     virtual bool event(QEvent* event) override;
-    /// Qt event to manage focus
-    virtual void focusInEvent(QFocusEvent* event) override;
-    /// Qt event to manage focus
-    virtual void focusOutEvent(QFocusEvent* event) override;
 
-Q_SIGNALS:
-    /// When the render window is created
-    void renderWindowCreated();
+    using InteractionInfo = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo;
 
-    /// When the render window is created
-    void interacted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
-
-    /// When a ray cast request is emitted
-    void rayCastRequested(int, int, int, int);
-
-    /// When the clipping range has to match the last updating of the scene bounding box
-    void cameraClippingComputation();
-
-private:
+    /// Converts the mouse event to be able to handle it with ogre.
+    InteractionInfo convertMouseEvent(const QMouseEvent* const _evt,
+                                      InteractionInfo::InteractionEnum _interactionType) const;
 
     /**
      * @brief render
@@ -156,7 +151,7 @@ private:
     void renderLater();
 
     /// Apply device pixel ratio on screen coordinates, needed only for MacOs currently
-    std::pair<int, int> getDeviceCoordinates(int _x, int _y);
+    std::pair<int, int> getDeviceCoordinates(int _x, int _y) const;
 
     /// resizeEvent forwarding function
     void ogreResize(const QSize& newSize);
@@ -170,25 +165,21 @@ private:
     /*
        Ogre3D pointers added here. Useful to have the pointers here for use by the window later.
      */
-    Ogre::Root* m_ogreRoot;
-    Ogre::RenderWindow* m_ogreRenderWindow;
+    Ogre::Root* m_ogreRoot { nullptr };
+    Ogre::RenderWindow* m_ogreRenderWindow { nullptr };
 
     /// Tells if an update is requested
-    bool m_update_pending;
+    bool m_update_pending { false };
     /// Tells if the window is currently showed
-    bool m_animating;
-    /// Tells if the window fills the screen.
-    bool m_fullscreen;
+    bool m_animating { false };
 
-    /// Logs left click positions.
-    QPoint* m_lastPosLeftClick;
-    /// Logs middle click positions.
-    QPoint* m_lastPosMiddleClick;
-    /// Logs right click positions.
-    QPoint* m_lastPosRightClick;
+    /// Stores previous mouse positions.
+    std::optional<QPoint> m_lastMousePosition;
 
-    int m_frameId;
+    /// Counts the number of frames rendered since the window's creation.
+    int m_frameId { 0 };
 
+    /// OpenGL context used by this window.
     std::shared_ptr<QOpenGLContext> m_glContext;
 
     /// Last size sent to ogre
@@ -199,13 +190,6 @@ private Q_SLOTS:
     /// Called when the screen change
     void onScreenChanged(QScreen*);
 };
-
-//-----------------------------------------------------------------------------
-
-inline void Window::setFullScreen(bool fullscreen)
-{
-    m_fullscreen = fullscreen;
-}
 
 //-----------------------------------------------------------------------------
 

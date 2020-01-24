@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,7 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <gdcmSurfaceReader.h>
 
 namespace fwData
@@ -73,7 +72,7 @@ public:
      * @param[in] filepath Path to the registry CSV file
      * @return True on success
      */
-    FWGDCMIO_API bool loadSegmentedPropertyRegistry(const ::boost::filesystem::path& filepath);
+    FWGDCMIO_API bool loadSegmentedPropertyRegistry(const std::filesystem::path& filepath);
 
     /// Destructor
     FWGDCMIO_API virtual ~Surface();

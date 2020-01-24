@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <boost/assign/list_of.hpp>
-
 #include <QApplication>
 #include <QMessageBox>
 #include <QPushButton>
@@ -41,24 +39,22 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Icons, QMessageBox::Icon> MessageDialogQtIconsType;
-MessageDialogQtIconsType messageDialogQtIcons =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon     )
-        (::fwGui::dialog::IMessageDialog::QUESTION, QMessageBox::Question   )
-        (::fwGui::dialog::IMessageDialog::INFO, QMessageBox::Information)
-        (::fwGui::dialog::IMessageDialog::WARNING, QMessageBox::Warning    )
-        (::fwGui::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical   );
+MessageDialogQtIconsType messageDialogQtIcons = { {::fwGui::dialog::IMessageDialog::NONE, QMessageBox::NoIcon},
+                                                  {::fwGui::dialog::IMessageDialog::QUESTION, QMessageBox::Question },
+                                                  {::fwGui::dialog::IMessageDialog::INFO, QMessageBox::Information},
+                                                  {::fwGui::dialog::IMessageDialog::WARNING, QMessageBox::Warning},
+                                                  {::fwGui::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical} };
 
 typedef const std::map< ::fwGui::dialog::IMessageDialog::Buttons,
                         QMessageBox::StandardButtons> MessageDialogQtButtonType;
-MessageDialogQtButtonType messageDialogQtButton =
-    ::boost::assign::map_list_of(::fwGui::dialog::IMessageDialog::OK, QMessageBox::Ok   )
-        (::fwGui::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel)
-        (::fwGui::dialog::IMessageDialog::YES, QMessageBox::Yes    )
-        (::fwGui::dialog::IMessageDialog::NO, QMessageBox::No   );
+MessageDialogQtButtonType messageDialogQtButton = { {::fwGui::dialog::IMessageDialog::OK, QMessageBox::Ok},
+                                                    {::fwGui::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel},
+                                                    {::fwGui::dialog::IMessageDialog::YES, QMessageBox::Yes},
+                                                    {::fwGui::dialog::IMessageDialog::NO, QMessageBox::No} };
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) :
+MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key ) :
     m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON),
     m_defaultButton(::fwGui::dialog::IMessageDialog::NOBUTTON),
     m_icon(::fwGui::dialog::IMessageDialog::NONE)

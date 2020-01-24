@@ -114,7 +114,7 @@ void SDicomSeriesDBReader::configuring()
 
 void SDicomSeriesDBReader::configureWithIHM()
 {
-    static ::boost::filesystem::path _sDefaultPath;
+    static std::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
@@ -160,7 +160,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem::path& dicomDir)
 {
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     ::fwMedData::SeriesDB::sptr seriesDB      = ::fwMedData::SeriesDB::New();

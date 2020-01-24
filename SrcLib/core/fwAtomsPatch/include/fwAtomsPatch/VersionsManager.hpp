@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,23 @@
  *
  ***********************************************************************/
 
-#ifndef __FWATOMSPATCH_VERSIONSMANAGER_HPP__
-#define __FWATOMSPATCH_VERSIONSMANAGER_HPP__
+#pragma once
 
-#include <map>
-#include <vector>
-#include <string>
-
-#include <boost/filesystem/path.hpp>
+#include "fwAtomsPatch/config.hpp"
+#include "fwAtomsPatch/VersionsGraph.hpp"
 
 #include <fwCore/mt/types.hpp>
 
-#include "fwAtomsPatch/VersionsGraph.hpp"
-#include "fwAtomsPatch/config.hpp"
+#include <filesystem>
+
+#include <map>
+#include <string>
+#include <vector>
 
 namespace fwAtomsPatch
 {
 
 /**
- * @class VersionsManager
  * @brief Maintains a table of object versions and a table of links between objects.
  *
  * Version and link tables are built from .versions and .graphlink files.
@@ -51,7 +49,7 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef std::vector< ::boost::filesystem::path > ListPathType;
+    typedef std::vector< std::filesystem::path > ListPathType;
     typedef std::map< std::string, VersionsGraph::sptr > VersionsGraphMapType;
     /**  @} */
 
@@ -72,7 +70,7 @@ public:
      * @param versionName name of the version to write.
      * @todo Ignoring file in ignored library.
      */
-    FWATOMSPATCH_API static void generateNewFile(const ::boost::filesystem::path& filePath, const std::string& context,
+    FWATOMSPATCH_API static void generateNewFile(const std::filesystem::path& filePath, const std::string& context,
                                                  const std::string& versionName);
 
     /**
@@ -96,20 +94,19 @@ public:
 
 private:
 
-
     /**
      * @brief Loads a file containing object versions.
      * @param filePath path to a .versions file
      */
     FWATOMSPATCH_API static ::fwAtomsPatch::VersionDescriptor getVersion(
-        const ::boost::filesystem::path& filePath);
+        const std::filesystem::path& filePath);
 
     /**
      * @brief Loads a file containing links between objects versions.
      * @param filePath path to a .graphlink file
      */
     FWATOMSPATCH_API static ::fwAtomsPatch::LinkDescriptor getLink(
-        const ::boost::filesystem::path& filePath);
+        const std::filesystem::path& filePath);
 
     /**
      * @brief Generates the versions graph.
@@ -140,5 +137,3 @@ private:
 };
 
 } // fwAtomsPatch
-
-#endif /* __FWATOMSPATCH_VERSIONSMANAGER_HPP__ */

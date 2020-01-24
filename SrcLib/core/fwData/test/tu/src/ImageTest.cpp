@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,8 @@
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Image.hpp>
 
+#include <fwTest/generator/Image.hpp>
+
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <exception>
@@ -43,6 +45,39 @@ namespace fwData
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
+
+static bool imagesEqual(const ::fwData::Image::sptr& _leftImg, const ::fwData::Image::sptr& _rightImg)
+{
+    bool result            = false;
+    const bool equalFormat = _leftImg->getPixelFormat() == _rightImg->getPixelFormat() &&
+                             _leftImg->getNumberOfComponents() == _rightImg->getNumberOfComponents();
+    const bool equalDims = _leftImg->getSize2() == _rightImg->getSize2() &&
+                           _leftImg->getSpacing2() == _rightImg->getSpacing2() &&
+                           _leftImg->getOrigin2() == _rightImg->getOrigin2();
+
+    if(equalFormat && equalDims)
+    {
+        // Compare images bytewise.
+        const auto leftLock  = _leftImg->lock();
+        const auto rightLock = _rightImg->lock();
+        auto leftIt          = _leftImg->begin();
+        auto rightIt         = _rightImg->begin();
+        const auto leftEnd   = _leftImg->end();
+        const auto rightEnd  = _rightImg->end();
+        bool bytesEqual      = true;
+
+        for(; leftIt != leftEnd && rightIt != rightEnd && bytesEqual; ++leftIt, ++rightIt)
+        {
+            bytesEqual = (leftIt->value == rightIt->value);
+        }
+
+        result = bytesEqual;
+    }
+
+    return result;
+}
 
 //------------------------------------------------------------------------------
 
@@ -353,11 +388,45 @@ void ImageTest::testSetGetPixel()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), iter2->value);
     }
 
+    ::fwData::Image::csptr img2 = ::fwData::Image::copy(img);
+
+    const auto lock2 = img2->lock();
+    {
+        auto iterImg2          = img2->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        auto iterImg1          = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        const auto iterImg2End = img2->end<iterator::IterationBase<std::int16_t>::Raw>();
+
+        for (; iterImg2 != iterImg2End; ++iterImg2, ++iterImg1)
+        {
+            CPPUNIT_ASSERT_EQUAL(*iterImg1, *iterImg2);
+        }
+    }
     std::fill(img->begin(), img->end(), 0);
 
     for (const auto& element: *img)
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<char>(0), element.value);
+    }
+
+    auto iter3 = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+    for (; iter3 != iterEnd; ++iter3)
+    {
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(0), iter3->value);
+    }
+
+    std::copy(img2->begin(), img2->end(), img->begin());
+
+    {
+        auto iterImg1          = img->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        auto iterImg2          = img2->begin<iterator::IterationBase<std::int16_t>::Raw>();
+        const auto iterImg2End = img2->end<iterator::IterationBase<std::int16_t>::Raw>();
+
+        size_t i = 0;
+        for (; iterImg2 != iterImg2End; ++iterImg2, ++iterImg1)
+        {
+            ++i;
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: "+ std::to_string(i), *iterImg2, *iterImg1);
+        }
     }
 }
 
@@ -639,6 +708,58 @@ void ImageTest::testBGRAIterator()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("buff["+std::to_string(count) + "].a",
                                      static_cast<BGRAIteration::type>(4*count+3), iter2->a);
         ++count;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::imageDeepCopy()
+{
+    {
+        const ::fwData::Image::sptr img = ::fwData::Image::New();
+        const ::fwData::Image::Size size { 32, 32, 32 };
+        const ::fwData::Image::Origin origin { 0.2, 123.4, 999.666 };
+        const ::fwData::Image::Spacing spacing { 0.6, 0.6, 1.8};
+        const auto type   = ::fwTools::Type::s_UINT8;
+        const auto format = ::fwData::Image::PixelFormat::RGB;
+
+        {
+            const auto imgDumpLock = img->lock();
+            ::fwTest::generator::Image::generateImage(img, size, spacing, origin, type, format);
+            ::fwTest::generator::Image::randomizeImage(img);
+        }
+
+        const ::fwData::Image::sptr imgCopy = ::fwData::Image::New();
+
+        // Lock the imgCopy buffer to make sure the underlying array isn't deleted.
+        // Attempting to delete a locked array raises an assert in `fwMemory::BufferManager::unregisterBufferImpl()`.
+        const auto imgCopyLock = imgCopy->lock();
+
+        imgCopy->deepCopy(img);
+
+        CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
+    }
+
+    {
+        const ::fwData::Image::sptr img = ::fwData::Image::New();
+        const ::fwData::Image::Size size { 156, 126, 0 };
+        const ::fwData::Image::Origin origin { 1., 1., 0. };
+        const ::fwData::Image::Spacing spacing {10., 10., 0. };
+        const auto type   = ::fwTools::Type::s_FLOAT;
+        const auto format = ::fwData::Image::PixelFormat::GRAY_SCALE;
+
+        {
+            const auto imgDumpLock = img->lock();
+            ::fwTest::generator::Image::generateImage(img, size, spacing, origin, type, format);
+            ::fwTest::generator::Image::randomizeImage(img);
+        }
+
+        const ::fwData::Image::sptr imgCopy = ::fwData::Image::New();
+        const auto imgCopyLock              = imgCopy->lock();
+
+        imgCopy->deepCopy(img);
+
+        CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
     }
 }
 

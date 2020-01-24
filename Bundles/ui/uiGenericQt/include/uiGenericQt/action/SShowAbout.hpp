@@ -26,8 +26,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <QObject>
 #include <QSize>
 #include <QUrl>
@@ -47,7 +46,7 @@ class UIGENERICQT_CLASS_API SShowAbout : public QObject,
 
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SShowAbout,  ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SShowAbout,  ::fwGui::IActionSrv)
 
     /**
      * @name Constructor/Destructor
@@ -100,7 +99,7 @@ private:
     /**
      * @brief about file path.
      */
-    ::boost::filesystem::path m_fsAboutPath;
+    std::filesystem::path m_fsAboutPath;
 
     /// Frame title (default value set to "About").
     std::string m_title;

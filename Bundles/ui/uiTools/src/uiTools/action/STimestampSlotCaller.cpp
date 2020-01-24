@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,17 +22,17 @@
 
 #include "uiTools/action/STimestampSlotCaller.hpp"
 
-#include <fwCom/Slots.hxx>
-#include <fwCom/Slot.hxx>
-
-#include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwCore/HiResClock.hpp>
-
 #include <arData/Camera.hpp>
 #include <arData/CameraSeries.hpp>
 
-#include <boost/regex.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hxx>
+
+#include <fwCore/HiResClock.hpp>
+
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <regex>
 
 namespace uiTools
 {
@@ -40,7 +40,6 @@ namespace action
 {
 
 fwServicesRegisterMacro(::fwGui::IActionSrv, ::uiTools::action::STimestampSlotCaller, ::fwData::Object);
-
 
 //-----------------------------------------------------------------------------
 
@@ -65,14 +64,14 @@ void STimestampSlotCaller::configuring()
 
     ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement("slot");
 
-    ::boost::regex re("(.*)/(.*)");
-    ::boost::smatch match;
+    std::regex re("(.*)/(.*)");
+    std::smatch match;
     std::string src, uid, key;
 
     for(ConfigurationType elem :  slotCfgs.getElements())
     {
         src = elem->getValue();
-        if( ::boost::regex_match(src, match, re) )
+        if( std::regex_match(src, match, re) )
         {
             OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);

@@ -105,9 +105,11 @@ void TextTest::factoryTest()
     auto overlayTextPanel =
         static_cast< ::Ogre::OverlayContainer* >(overlayManager.createOverlayElement("Panel", "_GUI"));
 
-    ::Ogre::FontPtr dejaVuFont = ::fwRenderOgre::helper::Font::getFont("DejaVuSans.ttf", 32);
+    auto* const camera = sceneManager->createCamera("TestCamera");
+    ogreRenderWindow->addViewport(camera);
 
-    ::fwRenderOgre::Text* textObj1 = ::fwRenderOgre::Text::New("testTest", sceneManager, overlayTextPanel, dejaVuFont);
+    ::fwRenderOgre::Text* textObj1 = ::fwRenderOgre::Text::New("testTest", sceneManager, overlayTextPanel,
+                                                               "DejaVuSans.ttf", 32, 96, camera);
     CPPUNIT_ASSERT(textObj1 != nullptr); // See if it has the right type.
 
     ::Ogre::MovableObject* movableText1 = textObj1;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,7 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #include <fstream>
 
@@ -46,6 +45,8 @@ namespace fwMedDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void AttachmentSeriesTest::setUp()
 {
     // Set up context before running a test.
@@ -53,6 +54,8 @@ void AttachmentSeriesTest::setUp()
     const int version = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
     FwCoreNotUsedMacro(version);
 }
+
+//------------------------------------------------------------------------------
 
 void AttachmentSeriesTest::tearDown()
 {
@@ -97,9 +100,9 @@ void AttachmentSeriesTest::propertiesTest()
     obj->setPerformingPhysiciansName(performing_physicians_names);
     obj->setDescription(description);
 
-    const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "attachmenttest";
-    ::boost::filesystem::create_directories(path);
-    const ::boost::filesystem::path attachmentFile = path / filename;
+    const std::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "attachmenttest";
+    std::filesystem::create_directories(path);
+    const std::filesystem::path attachmentFile = path / filename;
 
     {
         std::ofstream file;

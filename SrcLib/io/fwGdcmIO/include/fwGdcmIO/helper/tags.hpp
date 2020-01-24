@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_TAGS_HPP__
-#define __FWGDCMIO_HELPER_TAGS_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
-#include <boost/filesystem/path.hpp>
-
+#include <filesystem>
 #include <gdcmTag.h>
 
 #include <string>
@@ -70,10 +68,7 @@ typedef std::vector< ::gdcm::Tag > PrivateTagVecType;
  *
  * @return a list of ::gdcm::PrivateTag instances
  */
-FWGDCMIO_API PrivateTagVecType loadPrivateTags(const ::boost::filesystem::path& tagsPath);
+FWGDCMIO_API PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath);
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_HELPER_TAGS_HPP__
-

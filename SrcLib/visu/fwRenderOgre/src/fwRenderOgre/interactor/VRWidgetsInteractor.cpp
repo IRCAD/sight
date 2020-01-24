@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,11 @@ namespace interactor
 
 //------------------------------------------------------------------------------
 
-VRWidgetsInteractor::VRWidgetsInteractor() noexcept :
+VRWidgetsInteractor::VRWidgetsInteractor(Layer::sptr _layer) noexcept :
+    TrackballInteractor(_layer),
     m_pickedObject(nullptr)
 {
+    FW_DEPRECATED_MSG("Use 'ClippingBoxInteractor' and 'TrackBallInteractor' instead.", "21.0");
 }
 
 //------------------------------------------------------------------------------
@@ -60,47 +62,47 @@ Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
     const int height = camera->getViewport()->getActualHeight();
     const int width  = camera->getViewport()->getActualWidth();
 
-    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0 );
+    const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, width, height, 0xFFFFFFFF );
 
     return pickSuccess ? m_picker.getSelectedObject() : nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
+void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, Modifier _mods, int x, int y, int dx, int dy)
 {
-    auto widget = m_widget.lock();
-    if(widget) // If a widget is present in the scene.
+    auto widget    = m_widget.lock();
+    bool trackball = (widget == nullptr);
+
+    if(!trackball) // If a widget is present in the scene.
     {
         if(button == LEFT)
         {
-            if(m_pickedObject == nullptr) // Enable trackball if no face was picked.
-            {
-                TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
-            }
-            else
+            trackball = m_pickedObject == nullptr;
+            if(!trackball) // Enable trackball if no face was picked.
             {
                 widget->widgetPicked(m_pickedObject, x, y);
             }
         }
         else if(button == MIDDLE)
         {
-            widget->moveClippingBox(x, y, -dx, -dy);
+            trackball = !widget->moveClippingBox(x, y, -dx, -dy);
         }
         else if(button == RIGHT)
         {
-            widget->scaleClippingBox(x, y, dy);
+            trackball = !widget->scaleClippingBox(x, y, dy);
         }
     }
-    else // Fallback to trackball otherwise.
+
+    if(trackball) // Fallback to trackball if the user did not interact with the widget.
     {
-        TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
+        TrackballInteractor::mouseMoveEvent(button, _mods, x, y, dx, dy);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
+void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, Modifier, int /*x*/, int /*y*/)
 {
     auto widget = m_widget.lock();
     if(widget)
@@ -112,7 +114,7 @@ void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, 
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
+void VRWidgetsInteractor::buttonPressEvent(MouseButton button, Modifier, int x, int y)
 {
     auto widget = m_widget.lock();
     if(widget)
@@ -143,7 +145,7 @@ void VRWidgetsInteractor::buttonPressEvent(MouseButton button, int x, int y)
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::setWidget(ui::VRWidget::sptr widget)
+void VRWidgetsInteractor::setWidget(widget::ClippingBox::sptr widget)
 {
     m_widget = widget;
 }
