@@ -31,11 +31,11 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="start/stop" icon="arMedia-0.1/icons/start-cam.svg" icon2="arMedia-0.1/icons/stop-cam.svg" style="check"/>
-                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <menuItem name="start/stop" icon="media-0.1/icons/start-cam.svg" icon2="media-0.1/icons/stop-cam.svg" style="check"/>
+                        <menuItem name="pause" icon="media-0.1/icons/pause-cam.svg" />
                         <separator />
-                        <menuItem name="Frame recording" icon="arMedia-0.1/icons/start-record.svg" icon2="arMedia-0.1/icons/stop-record.svg" style="check" />
-                        <menuItem name="Video recording" icon="arMedia-0.1/icons/start-record.svg" icon2="arMedia-0.1/icons/stop-record.svg" style="check"  />
+                        <menuItem name="Frame recording" icon="media-0.1/icons/start-record.svg" icon2="media-0.1/icons/stop-record.svg" style="check" />
+                        <menuItem name="Video recording" icon="media-0.1/icons/start-record.svg" icon2="media-0.1/icons/stop-record.svg" style="check"  />
                         <editor/>
                     </layout>
                 </gui>

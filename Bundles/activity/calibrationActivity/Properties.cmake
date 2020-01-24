@@ -23,7 +23,6 @@ set( REQUIREMENTS
     visuVTKAdaptor
     visuVTKARAdaptor
 
-    arMedia
     media
 
     uiTools

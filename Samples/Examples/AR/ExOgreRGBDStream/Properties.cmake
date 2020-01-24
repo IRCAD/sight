@@ -27,7 +27,6 @@ set( REQUIREMENTS
     videoOpenCV
     videoQt
 
-    arMedia
     media
     preferences
 )

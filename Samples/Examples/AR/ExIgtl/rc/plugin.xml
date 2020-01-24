@@ -38,12 +38,12 @@
                         <editor/>
                         <menuItem name="Load mesh" icon="media-0.1/icons/Import.svg" />
                         <separator/>
-                        <menuItem name="start sender" icon="arMedia-0.1/icons/Network-Sending.svg" />
-                        <menuItem name="stop sender" icon="arMedia-0.1/icons/Network-Stop-Sending.svg" />
+                        <menuItem name="start sender" icon="media-0.1/icons/Network-Sending.svg" />
+                        <menuItem name="stop sender" icon="media-0.1/icons/Network-Stop-Sending.svg" />
                         <menuItem name="configure sender" icon="media-0.1/icons/Settings.svg" />
                         <separator/>
-                        <menuItem name="start listener" icon="arMedia-0.1/icons/Network-Receiving.svg" />
-                        <menuItem name="stop listener" icon="arMedia-0.1/icons/Network-Stop-Receiving.svg" />
+                        <menuItem name="start listener" icon="media-0.1/icons/Network-Receiving.svg" />
+                        <menuItem name="stop listener" icon="media-0.1/icons/Network-Stop-Receiving.svg" />
                         <menuItem name="configure listener" icon="media-0.1/icons/Settings.svg" />
                         <separator/>
                     </layout>

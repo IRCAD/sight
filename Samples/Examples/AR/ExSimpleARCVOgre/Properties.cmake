@@ -7,7 +7,6 @@ set( REQUIREMENTS
 
     appXml
     arDataReg
-    arMedia
     ctrlCamp
     ctrlCom
     dataReg

@@ -145,18 +145,18 @@
                     <layout>
                         <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg"/>
                         <editor/>
-                        <menuItem name="Start" icon="arMedia-0.1/icons/start.svg" />
-                        <menuItem name="Stop" icon="arMedia-0.1/icons/stop.svg" />
-                        <menuItem name="Pause" icon="arMedia-0.1/icons/pause.svg" />
-                        <menuItem name="Loop" icon="arMedia-0.1/icons/loop.svg" style="check" />
+                        <menuItem name="Start" icon="media-0.1/icons/start.svg" />
+                        <menuItem name="Stop" icon="media-0.1/icons/stop.svg" />
+                        <menuItem name="Pause" icon="media-0.1/icons/pause.svg" />
+                        <menuItem name="Loop" icon="media-0.1/icons/loop.svg" style="check" />
                         <separator/>
                         <menuItem name="Start openvslam" icon="media-0.1/icons/tracking.svg" />
                         <menuItem name="Stop openvslam" icon="media-0.1/icons/disableTracking.svg" />
                         <menuItem name="Pause openvslam" icon="media-0.1/icons/pause-tracking.svg" style="check" />
-                        <menuItem name="Reset openvslam" icon="arMedia-0-1/icons/reset.svg" />
+                        <menuItem name="Reset openvslam" icon="media-0-1/icons/reset.svg" />
                         <menuItem name="Localization Mode" icon="media-0.1/icons/enableLocalization.svg" icon2="media-0.1/icons/disableLocalization.svg" style="check"/>
                         <separator/>
-                        <menuItem name="Hide/Show point cloud" icon="arMedia-0.1/icons/hide.svg" icon2="arMedia-0.1/icons/show.svg" style="check" />
+                        <menuItem name="Hide/Show point cloud" icon="media-0.1/icons/hide.svg" icon2="media-0.1/icons/show.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>

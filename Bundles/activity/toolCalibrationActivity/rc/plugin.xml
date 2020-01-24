@@ -8,7 +8,7 @@
         <id>toolCalibrationActivity</id>
         <title>Tool calibration</title>
         <desc>Tool Calibration Activity using a tracking system</desc>
-        <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
+        <icon>media-0.1/icons/calibrationActivity.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="toolCalibration">

@@ -83,12 +83,12 @@
                         <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
                         <editor/>
                         <editor/>
-                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
-                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <menuItem name="start" icon="media-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="media-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="media-0.1/icons/pause-cam.svg" />
                         <separator/>
-                        <menuItem name="Start camera pose recording" icon="arMedia-0.1/icons/start-record.svg" />
-                        <menuItem name="Stop camera pose recording" icon="arMedia-0.1/icons/stop-record.svg" />
+                        <menuItem name="Start camera pose recording" icon="media-0.1/icons/start-record.svg" />
+                        <menuItem name="Stop camera pose recording" icon="media-0.1/icons/stop-record.svg" />
                     </layout>
                 </gui>
                 <registry>

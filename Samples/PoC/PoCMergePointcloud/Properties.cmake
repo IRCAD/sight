@@ -18,7 +18,6 @@ set( REQUIREMENTS
     ioVTK
     maths
     media
-    arMedia
     opDepthMap
     preferences
     servicesReg
