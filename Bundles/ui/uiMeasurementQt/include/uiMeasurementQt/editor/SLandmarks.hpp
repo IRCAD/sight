@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,12 +47,13 @@ namespace editor
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - \b pickPoint(::fwDataTools::PickingInfo) : Add picked landmark.
+ * - \b @deprecated addPickedPoint(::fwDataTools::PickingInfo) : Adds picked landmark.
+ * - \b pick(::fwDataTools::PickingInfo) : Adds or removes picked landmark.
  * - \b addPoint(std::string) : Add point to editor.
- * - \b removePoint(std::string, size_t) : Remove point from editor.
  * - \b modifyPoint(std::string, size_t) : Update editor when a point has moved.
  * - \b selectPoint(std::string, size_t) : Select point in editor.
  * - \b deselectPoint(std::string, size_t) : Deselect item in editor.
+ * - \b removePoint(std::string, size_t) : Remove point from editor.
  * - \b addGroup(std::string) : Add group to editor.
  * - \b removeGroup(std::string) : Removes group from editor.
  * - \b modifyGroup(std::string) : Update group attributes.
@@ -149,8 +150,27 @@ private:
     /// Called when the remove button is pressed, deletes selected group or point.
     void onRemoveSelection();
 
-    /// Slot: Adds a new landmark.
-    void addPickedPoint(::fwDataTools::PickingInfo pickingInfo);
+    /**
+     * @brief SLOT: Adds or removes a landmark from picking informations.
+     *
+     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
+     * - CTRL + right mouse click: removes the landmark at the closest picking position.
+     *
+     * @deprecated Uses pick(::fwDataTools::PickingInfo _info) instead.
+     *
+     * @param _pickingInfo Picking informations.
+     */
+    void addPickedPoint(::fwDataTools::PickingInfo _pickingInfo);
+
+    /**
+     * @brief SLOT: Adds or removes a landmark from picking informations.
+     *
+     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
+     * - CTRL + right mouse click: removes the landmark at the closest picking position.
+     *
+     * @param _info Picking informations.
+     */
+    void pick(::fwDataTools::PickingInfo _info);
 
     /// Slot: Add point to editor.
     void addPoint(std::string groupName);

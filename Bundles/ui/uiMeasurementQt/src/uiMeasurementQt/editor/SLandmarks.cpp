@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,6 +31,8 @@
 
 #include <fwData/Exception.hpp>
 #include <fwData/Landmarks.hpp>
+#include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -60,6 +62,7 @@ static const char* s_GROUP_PROPERTY_NAME = "group";
 static const int s_GROUP_NAME_ROLE       = ::Qt::UserRole + 1;
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
+static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT             = "pick";
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
 static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
@@ -81,6 +84,7 @@ SLandmarks::SLandmarks() noexcept :
     m_advancedMode(false)
 {
     newSlot(s_ADD_PICKED_POINT_SLOT, &SLandmarks::addPickedPoint, this);
+    newSlot(s_PICK_SLOT, &SLandmarks::pick, this);
     newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     newSlot(s_MODIFY_POINT_SLOT, &SLandmarks::modifyPoint, this);
     newSlot(s_SELECT_POINT_SLOT, &SLandmarks::selectPoint, this);
@@ -604,53 +608,140 @@ void SLandmarks::onRemoveSelection()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo pickingInfo)
+void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo _pickingInfo)
 {
-    if(pickingInfo.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP &&
-       pickingInfo.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
+    this->pick(_pickingInfo);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::pick(::fwDataTools::PickingInfo _info)
+{
+    if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
     {
-        double* pickedPos = pickingInfo.m_worldPos;
-        ::fwData::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
-
-        ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
-        std::string groupName;
-        QTreeWidgetItem* item = m_treeWidget->currentItem();
-
-        if(item == nullptr || !m_advancedMode) // No selection or simple mode, create a new group.
+        // Adds a new landmark.
+        if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
-            groupName = this->generateNewGroupName();
-            landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
+            const double* const pickedPos                 = _info.m_worldPos;
+            const ::fwData::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
 
-            this->addGroup(groupName);
+            const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+            SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+            const ::fwData::mt::ObjectWriteLock lock(landmarks);
 
-            auto sig = landmarks->signal< ::fwData::Landmarks::GroupAddedSignalType >(
-                ::fwData::Landmarks::s_GROUP_ADDED_SIG);
+            std::string groupName;
+            QTreeWidgetItem* item = m_treeWidget->currentItem();
 
+            // No selection or simple mode, create a new group.
+            if(item == nullptr || !m_advancedMode)
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
+                groupName = this->generateNewGroupName();
+                landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
+
+                this->addGroup(groupName);
+
+                const auto sig = landmarks->signal< ::fwData::Landmarks::GroupAddedSignalType >(
+                    ::fwData::Landmarks::s_GROUP_ADDED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
+                    sig->asyncEmit(groupName);
+                }
+            }
+            // Advanced mode and a point or a group is selected.
+            else
+            {
+                const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
+
+                // Point selected, add new point to parent group.
+                if(topLevelIndex == -1)
+                {
+                    item = item->parent();
+                }
+                groupName = item->text(0).toStdString();
+            }
+
+            landmarks->addPoint(groupName, newPoint);
+            this->addPoint(groupName);
+
+            const auto sig =
+                landmarks->signal< ::fwData::Landmarks::PointAddedSignalType >(::fwData::Landmarks::s_POINT_ADDED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
                 sig->asyncEmit(groupName);
             }
         }
-        else // Advanced mode and a point or a group is selected.
+        else if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP)
         {
-            const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
+            const double* const pickedPos = _info.m_worldPos;
 
-            if(topLevelIndex == -1) // Point selected, add new point to parent group.
+            const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+            SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+            ::fwData::mt::ObjectReadToWriteLock lock(landmarks);
+
+            // Find closest landmarks.
+            double closest             = std::numeric_limits<double>::max();
+            size_t foundIndex          = 0;
+            std::string foundGroupname = "";
+
+            for(const std::string& groupName : landmarks->getGroupNames())
             {
-                item = item->parent();
+                for(size_t index = 0; index < landmarks->getNumberOfPoints(groupName); ++index)
+                {
+                    const ::fwData::Landmarks::PointType landmark = landmarks->getPoint(groupName, index);
+
+                    const double tmpClosest = std::sqrt(
+                        std::pow(pickedPos[0] - landmark[0], 2) +
+                        std::pow(pickedPos[1] - landmark[1], 2) +
+                        std::pow(pickedPos[2] - landmark[2], 2)
+                        );
+
+                    if(tmpClosest < closest)
+                    {
+                        closest        = tmpClosest;
+                        foundGroupname = groupName;
+                        foundIndex     = index;
+                    }
+                }
             }
-            groupName = item->text(0).toStdString();
+
+            // 10.0 is an acceptable delta to remove a landmark.
+            if(!foundGroupname.empty() && closest < 10.)
+            {
+                // If the groupd contains only one point, we remove it.
+                if(landmarks->getNumberOfPoints(foundGroupname) == 1)
+                {
+                    lock.upgrade();
+                    landmarks->removeGroup(foundGroupname);
+                    lock.downgrade();
+
+                    this->removeGroup(foundGroupname);
+
+                    auto sig = landmarks->signal< ::fwData::Landmarks::GroupRemovedSignalType >(
+                        ::fwData::Landmarks::s_GROUP_REMOVED_SIG);
+                    {
+                        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
+                        sig->asyncEmit(foundGroupname);
+                    }
+                }
+                else
+                {
+                    lock.upgrade();
+                    landmarks->removePoint(foundGroupname, foundIndex);
+                    lock.downgrade();
+
+                    this->removePoint(foundGroupname, foundIndex);
+
+                    const auto sig = landmarks->signal< ::fwData::Landmarks::PointRemovedSignalType >(
+                        ::fwData::Landmarks::s_POINT_REMOVED_SIG);
+
+                    {
+                        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
+                        sig->asyncEmit(foundGroupname, foundIndex);
+                    }
+                }
+            }
         }
 
-        landmarks->addPoint(groupName, newPoint);
-        this->addPoint(groupName);
-
-        auto sig =
-            landmarks->signal< ::fwData::Landmarks::PointAddedSignalType >(::fwData::Landmarks::s_POINT_ADDED_SIG);
-
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
-        sig->asyncEmit(groupName);
     }
 }
 
