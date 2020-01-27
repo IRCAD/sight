@@ -80,8 +80,7 @@ static const std::string s_TEXT_CONFIG     = "text";
 
 //------------------------------------------------------------------------------
 
-SLandmarks::SLandmarks() noexcept :
-    m_advancedMode(false)
+SLandmarks::SLandmarks() noexcept
 {
     newSlot(s_ADD_PICKED_POINT_SLOT, &SLandmarks::addPickedPoint, this);
     newSlot(s_PICK_SLOT, &SLandmarks::pick, this);
@@ -112,23 +111,23 @@ void SLandmarks::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    m_defaultLandmarkSize = config.get_optional<float>(s_SIZE_CONFIG).get_value_or(10.0);
+    m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
     OSLM_FATAL_IF(
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
             m_defaultLandmarkSize <= 0.f);
 
-    m_defaultLandmarkOpacity = config.get_optional<float>(s_OPACITY_CONFIG).get_value_or(1.0);
+    m_defaultLandmarkOpacity = config.get<float>(s_OPACITY_CONFIG, m_defaultLandmarkOpacity);
     OSLM_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
             m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
-    const std::string advancedMode = config.get_optional<std::string>(s_ADVANCED_CONFIG).get_value_or("no");
+    const std::string advancedMode = config.get<std::string>(s_ADVANCED_CONFIG, "no");
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
 
     m_advancedMode = (advancedMode == "yes");
 
-    m_text = config.get_optional<std::string>(s_TEXT_CONFIG).get_value_or("Use 'Ctrl+Left Click' to add new landmarks");
+    m_text = config.get<std::string>(s_TEXT_CONFIG, m_text);
 }
 
 //------------------------------------------------------------------------------
@@ -879,8 +878,6 @@ void SLandmarks::modifyGroup(std::string name)
 
     if(groupSelected)
     {
-        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(name);
-
         // Set widget values
         m_sizeSlider->setValue(static_cast<int>(group.m_size));
         m_visibilityCheckbox->setChecked(group.m_visibility);

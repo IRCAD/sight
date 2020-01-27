@@ -80,8 +80,8 @@ namespace editor
  * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
  * and groups with multiple points.
  */
-class UIMEASUREMENTQT_CLASS_API SLandmarks : public QObject,
-                                             public ::fwGui::editor::IEditor
+class UIMEASUREMENTQT_CLASS_API SLandmarks final : public QObject,
+                                                   public ::fwGui::editor::IEditor
 {
 
 Q_OBJECT
@@ -96,11 +96,9 @@ public:
     /// Destructor. Do nothing.
     UIMEASUREMENTQT_API virtual ~SLandmarks() noexcept;
 
-    UIMEASUREMENTQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+private:
 
-protected:
-
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
+    virtual void configuring() override;
 
     /**
      * @brief Install the layout.
@@ -109,19 +107,17 @@ protected:
      */
     virtual void starting() override;
 
+    virtual KeyConnectionsMap getAutoConnections() const override;
+
+    /// Do nothing
+    virtual void updating() override;
+
     /**
      * @brief Destroy the layout.
      *
      * This method launches the IEditor::stopping method.
      */
     virtual void stopping() override;
-
-    /// Do nothing
-    virtual void updating() override;
-
-    virtual void configuring() override;
-
-private:
 
     /// This method is called when a color button is clicked
     void onColorButton();
@@ -234,16 +230,16 @@ private:
     QPointer<QPushButton> m_removeButton;
 
     /// Used to disable/enable advanced mode.
-    bool m_advancedMode;
+    bool m_advancedMode { false };
 
     /// Used to set the default landmark size
-    float m_defaultLandmarkSize;
+    float m_defaultLandmarkSize { 10.f };
 
     /// Used to set the default landmark opacity
-    float m_defaultLandmarkOpacity;
+    float m_defaultLandmarkOpacity { 1.f };
 
     /// Text displayed at the top of this editor.
-    std::string m_text;
+    std::string m_text { "Use 'Ctrl+Left Click' to add new landmarks" };
 
 };
 } // namespace editor
