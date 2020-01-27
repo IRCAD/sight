@@ -37,15 +37,15 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Adaptor to display a 2D negato.
+ * @brief Adaptor to display a 2D negato.
  *
  * @section Signals Signals
  * - \b sliceIndexChanged(): emitted when the slice index changed.
  *
  * @section Slots Slots
- * - \b newImage() : update the image display to show the new content. @deprecated call \b update() instead.
- * - \b sliceType(int, int) : update image slice index .
- * - \b sliceIndex(int, int, int) : update image slice type.
+ * - \b newImage(): updates the image display to show the new content. @deprecated call \b update() instead.
+ * - \b sliceType(int, int): updates image slice index .
+ * - \b sliceIndex(int, int, int): updates image slice type.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -62,9 +62,9 @@ namespace visuOgreAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): id of the layer where this adaptor applies.
- * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
- * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
- * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
+ * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
+ * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
+ * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D final : public ::fwRenderOgre::IAdaptor
 {
@@ -77,7 +77,7 @@ public:
     /// Creates the service and initializes slots.
     VISUOGREADAPTOR_API SNegato2D() noexcept;
 
-    /// Destroyes the service.
+    /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SNegato2D() noexcept;
 
     /// Sets the filtering type.
@@ -88,8 +88,8 @@ private:
     /// Configures the service.
     virtual void configuring() override;
 
-    /// Instanciates the texture, material, pass and texture unit state.
-    /// Sets the connection between attached data and the receive slot.
+    /// Instantiates the texture, material, pass and texture unit state.
+    /// Sets the connection between attached data and the received slot.
     virtual void starting() override;
 
     /**
@@ -110,11 +110,11 @@ private:
 
     /**
      * @brief Retrieves the current transfer function.
-     * @param _key Key of the swapped data.
+     * @param _key key of the swapped data.
      */
     virtual void swapping(const KeyType& _key) override;
 
-    /// Disconnects the attached data from the receive slot.
+    /// Disconnects the attached data from the received slot.
     virtual void stopping() override;
 
     /// Updates the displayed transfer function.
@@ -123,19 +123,31 @@ private:
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     void newImage();
 
-    /// Updates the image buffer, @deprecated call 'update' instead.
+    /// SLOT: updates the image buffer, @deprecated call @ref update() instead.
     void newImageDeprecatedSlot();
 
-    /// Updates image slice type.
+    /**
+     * @brief SLOT: updates the image slice type.
+     * @param _from origin of the orientation.
+     * @param _to destination of the orientation.
+     */
     void changeSliceType(int _from, int _to);
 
-    /// Updates image slice index.
+    /**
+     * @brief SLOT: updates the image slice index.
+     * @param _axialIndex new axial slice index.
+     * @param _frontalIndex new frontal slice index.
+     * @param _sagittalIndex new sagittal slice index.
+     */
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
 
     /// Updates image slice index for the current fragment program.
     void updateShaderSliceIndexParameter();
 
-    /// Initializes the planar mesh on which the negato is displayed.
+    /**
+     * @brief Initializes the planar mesh on which the negato is displayed.
+     * @param _spacing spacing of the input image.
+     */
     void createPlane(const ::Ogre::Vector3& _spacing);
 
     /// Contains the Ogre texture which will be displayed on the negato.
@@ -147,19 +159,19 @@ private:
     /// Contains the plane on which we will apply our texture.
     std::unique_ptr< ::fwRenderOgre::Plane > m_plane { nullptr };
 
-    /// Defines the usage of the transfer function alpha channel.
+    /// Enables/disables the usage of the transfer function alpha channel.
     bool m_enableAlpha { false };
 
     /// Contains the scene node allowing to move the entire negato.
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
-    /// Defines the filtering type for this negato.
+    /// Sets the filtering type for this negato.
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
-    /// Contains the current slice index for each axis.
+    /// Stores the current slice index for each axis.
     std::vector<float> m_currentSliceIndex { 0.f, 0.f, 0.f };
 
-    /// Contains the image orientation.
+    /// Sets the image orientation.
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     /// Helps interfacing with the transfer function input.

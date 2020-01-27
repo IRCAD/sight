@@ -110,7 +110,7 @@ private:
 
     /**
      * @brief Retrieves the current transfer function.
-     * @param _key Key of the swapped data.
+     * @param _key key of the swapped data.
      */
     virtual void swapping(const KeyType& _key) override;
 
@@ -119,84 +119,86 @@ private:
 
     /**
      * @brief Zooms in the scene at the current cursor position.
-     * @param _delta Distance that the wheel is rotated.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
+     * @param _delta distance that the wheel is rotated.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
      */
     virtual void wheelEvent(Modifier, int _delta, int _x, int _y) final;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
+     *
      * Interactions will take place while holding down the button. The following actions are available:
      * - Middle mouse click: moves the camera along the projection plane.
      * - Right mouse click: adjust the transfer function level and window by moving
      *                      the mouse up/down and left/right respectively.
-     * @param _button Mousse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
+     *
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
      */
     virtual void mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the
      * case.
-     * @param _button Mousse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
      */
     virtual void buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) final;
 
     /**
      * @brief Disables mouse movements.
-     * @param _button Mousse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
      */
     virtual void buttonReleaseEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) final;
 
     /**
      * @brief Resets the camera when the 'R' key is pressed.
-     * @param _key Current pressed key.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
+     * @param _key key button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
      */
     virtual void keyPressEvent(int _key, Modifier, int _x, int _y) final;
 
-    /// Resets the camera's zoom.
+    /// SLOT: resets the camera's zoom.
     void resetCamera();
 
     /**
-     * @brief Sets the camera's orientation to one of the image's axes.
-     * @param _from Origin of the orientation.
-     * @param _to Destination of the orientation.
+     * @brief SLOT: sets the camera's orientation to one of the image's axes.
+     * @param _from origin of the orientation.
+     * @param _to destination of the orientation.
      */
     void changeOrientation(int _from, int _to);
 
-    /// Moves the camera backwards outside the scene's bounding box.
+    /// SLOT: moves the camera backwards outside the scene's bounding box.
     void moveBack();
-
-    /// Contains the current interaction status.
-    bool m_isInteracting { false };
 
     /// Updates the transfer function window and level by adding the input values.
     void updateWindowing(double _windowDelta, double _levelDelta);
 
-    /// Current image orientation.
+    /// Defines the current interaction status.
+    bool m_isInteracting { false };
+
+    /// Defines the image current orientation.
     Orientation m_currentNegatoOrientation {  ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS };
 
-    /// Interaction priority.
+    /// Sets the interaction priority.
     int m_priority { 0 };
 
     /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
 
-    /// Stores the transfer function window value at the time the interaction started.
+    /// Sets the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };
 
-    /// Stores the transfer function level value at the time the interaction started.
+    /// Sets the transfer function level value at the time the interaction started.
     double m_initialLevel { 0.f };
 
-    /// Stores the mouse position at the time the windowing interaction started.
+    /// Sets the mouse position at the time the windowing interaction started.
     ::Ogre::Vector2i m_initialPos { -1, -1 };
 
 };
