@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,11 +73,14 @@ SManagePointList::~SManagePointList() noexcept
 
 void SManagePointList::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const auto config = this->getConfigTree().get_child_optional("config.<xmlattr>");
 
-    m_max       = config.get<size_t>(s_MAX_CONFIG, m_max);
-    m_removable = config.get<bool>(s_REMOVABLE_CONFIG, m_removable);
-    m_label     = config.get<bool>(s_LABEL_CONFIG, m_label);
+    if(config)
+    {
+        m_max       = config->get<size_t>(s_MAX_CONFIG, m_max);
+        m_removable = config->get<bool>(s_REMOVABLE_CONFIG, m_removable);
+        m_label     = config->get<bool>(s_LABEL_CONFIG, m_label);
+    }
 }
 
 //------------------------------------------------------------------------------
