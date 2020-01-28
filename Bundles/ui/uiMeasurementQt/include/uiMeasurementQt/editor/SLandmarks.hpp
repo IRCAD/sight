@@ -70,6 +70,7 @@ namespace editor
            <advanced>yes</advanced>
         </service>
        @endcode
+ *
  * @subsection In-Out In-Out
  * - \b landmarks [::fwData::Landmarks]: the landmarks structure on which this editor is working.
  *
