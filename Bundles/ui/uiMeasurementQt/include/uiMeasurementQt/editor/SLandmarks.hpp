@@ -146,7 +146,7 @@ private:
      * @param _item The changed item.
      * @param _column The changed column
      *
-     * @pre _column should be 0.
+     * @pre _column must be 0.
      */
     void onGroupNameEdited(QTreeWidgetItem* _item, int _column);
 
@@ -179,7 +179,7 @@ private:
      * @brief Called when the landmarks' shape is changed for a group.
      * @param _shape The new shape of the group.
      *
-     * @pre _shape should be 'Cube' or 'Sphere'.
+     * @pre _shape must be 'Cube' or 'Sphere'.
      */
     void onShapeChanged(const QString& _shape);
 
@@ -306,46 +306,46 @@ private:
      */
     static void setColorButtonIcon(QPushButton* button, const QColor& _color);
 
-    /// Used to display a tree representing landmarks sorted by their groups.
+    /// Contains a tree representing landmarks sorted by their groups.
     QPointer<QTreeWidget> m_treeWidget;
 
-    /// Used to store all widgets.
+    /// Contains all widgets.
     QPointer<QWidget> m_groupEditorWidget;
 
-    /// Used to change the size of the current selected group.
+    /// Contains the slider used to change the size of the current selected group.
     /// @ref onSizeChanged(int) "onSizeChanged(int)"
     QPointer<QSlider> m_sizeSlider;
 
-    /// Uses to change the opacity of the current selected group.
+    /// Contains the slider used to change the opacity of the current selected group.
     /// @ref onOpacityChanged(int) "onOpacityChanged(int)"
     QPointer<QSlider> m_opacitySlider;
 
-    /// Uses to change the visibility of the current selected group.
+    /// Contains the button used to change the visibility of the current selected group.
     /// @ref onVisibilityChanged(int) "onVisibilityChanged(int)"
     QPointer<QCheckBox> m_visibilityCheckbox;
 
-    /// Used to change the shape of the current selected group.
+    /// Contains the combo box used to change the shape of the current selected group.
     /// @ref onShapeChanged(const QString&) "onShapeChanged(const QString&)"
     QPointer<QComboBox> m_shapeSelector;
 
-    /// Used to adds a new empty group.
+    /// Contains the button used to adds a new empty group.
     /// @ref onAddNewGroup() "onAddNewGroup()"
     QPointer<QPushButton> m_newGroupButton;
 
-    /// Used to remove a group or a landmark.
+    /// Contains the button used to remove a group or a landmark.
     /// @ref onRemoveSelection() "onRemoveSelection()"
     QPointer<QPushButton> m_removeButton;
 
-    /// Used to disable/enable advanced mode.
+    /// Disables or enables advanced mode.
     bool m_advancedMode { false };
 
-    /// Used to set the default landmark size.
+    /// Stores the default landmark size.
     float m_defaultLandmarkSize { 10.f };
 
-    /// Used to set the default landmark opacity.
+    /// Stores the default landmark opacity.
     float m_defaultLandmarkOpacity { 1.f };
 
-    /// Text displayed at the top of this editor.
+    /// Stores the text displayed at the top of this editor.
     std::string m_text { "Use 'Ctrl+Left Click' to add new landmarks" };
 
 };
