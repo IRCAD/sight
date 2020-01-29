@@ -343,9 +343,9 @@ void SVolumeRender::newImage()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::resetCameraPosition(const ::fwData::Image::csptr& image)
+void SVolumeRender::resetCameraPosition(const ::fwData::Image::csptr& _image)
 {
-    if(m_autoResetCamera || image->getField("resetCamera"))
+    if(m_autoResetCamera || _image->getField("resetCamera"))
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
@@ -446,12 +446,12 @@ void SVolumeRender::updateImage()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSampling(int nbSamples)
+void SVolumeRender::updateSampling(int _nbSamples)
 {
     this->getRenderService()->makeCurrent();
 
-    OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
-    m_nbSamples = static_cast<std::uint16_t>(nbSamples);
+    OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536 && _nbSamples >= 0);
+    m_nbSamples = static_cast<std::uint16_t>(_nbSamples);
 
     m_volumeRenderer->setSampling(m_nbSamples);
     m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
@@ -473,19 +473,19 @@ void SVolumeRender::updateSampling(int nbSamples)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateOpacityCorrection(int opacityCorrection)
+void SVolumeRender::updateOpacityCorrection(int _opacityCorrection)
 {
-    m_volumeRenderer->setOpacityCorrection(opacityCorrection);
+    m_volumeRenderer->setOpacityCorrection(_opacityCorrection);
     this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateAOFactor(double aoFactor)
+void SVolumeRender::updateAOFactor(double _aoFactor)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
-        m_aoFactor = aoFactor;
+        m_aoFactor = _aoFactor;
 
         m_volumeRenderer->setAOFactor(m_aoFactor);
 
@@ -495,11 +495,11 @@ void SVolumeRender::updateAOFactor(double aoFactor)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateColorBleedingFactor(double colorBleedingFactor)
+void SVolumeRender::updateColorBleedingFactor(double _colorBleedingFactor)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
-        m_colorBleedingFactor = colorBleedingFactor;
+        m_colorBleedingFactor = _colorBleedingFactor;
 
         m_volumeRenderer->setColorBleedingFactor(m_colorBleedingFactor);
 
@@ -509,14 +509,14 @@ void SVolumeRender::updateColorBleedingFactor(double colorBleedingFactor)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatSizeRatio(int sizeRatio)
+void SVolumeRender::updateSatSizeRatio(int _sizeRatio)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         this->getRenderService()->makeCurrent();
 
         float scaleCoef(.25f);
-        m_satSizeRatio = static_cast<float>(sizeRatio) * scaleCoef;
+        m_satSizeRatio = static_cast<float>(_sizeRatio) * scaleCoef;
         m_ambientOcclusionSAT->updateSatFromRatio(m_satSizeRatio);
 
         this->updateVolumeIllumination();
@@ -538,13 +538,13 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatShellsNumber(int shellsNumber)
+void SVolumeRender::updateSatShellsNumber(int _shellsNumber)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         this->getRenderService()->makeCurrent();
 
-        m_satShells = shellsNumber;
+        m_satShells = _shellsNumber;
 
         auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setNbShells(m_satShells);
@@ -556,13 +556,13 @@ void SVolumeRender::updateSatShellsNumber(int shellsNumber)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatShellRadius(int shellRadius)
+void SVolumeRender::updateSatShellRadius(int _shellRadius)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         this->getRenderService()->makeCurrent();
 
-        m_satShellRadius = shellRadius;
+        m_satShellRadius = _shellRadius;
 
         auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setShellRadius(m_satShellRadius);
@@ -574,13 +574,13 @@ void SVolumeRender::updateSatShellRadius(int shellRadius)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatConeAngle(int coneAngle)
+void SVolumeRender::updateSatConeAngle(int _coneAngle)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         this->getRenderService()->makeCurrent();
 
-        m_satConeAngle = static_cast<float>(coneAngle) / 100;
+        m_satConeAngle = static_cast<float>(_coneAngle) / 100;
 
         auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setConeAngle(m_satConeAngle);
@@ -592,13 +592,13 @@ void SVolumeRender::updateSatConeAngle(int coneAngle)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatConeSamples(int nbConeSamples)
+void SVolumeRender::updateSatConeSamples(int _nbConeSamples)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         this->getRenderService()->makeCurrent();
 
-        m_satConeSamples = nbConeSamples;
+        m_satConeSamples = _nbConeSamples;
 
         auto illumVolume = m_volumeRenderer->getIllumVolume();
         illumVolume->setSamplesAlongCone(m_satConeSamples);
@@ -610,11 +610,11 @@ void SVolumeRender::updateSatConeSamples(int nbConeSamples)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::togglePreintegration(bool preintegration)
+void SVolumeRender::togglePreintegration(bool _preintegration)
 {
     this->getRenderService()->makeCurrent();
 
-    m_preIntegratedRendering = preintegration;
+    m_preIntegratedRendering = _preintegration;
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
@@ -635,33 +635,33 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::toggleAmbientOcclusion(bool ambientOcclusion)
+void SVolumeRender::toggleAmbientOcclusion(bool _ambientOcclusion)
 {
-    m_ambientOcclusion = ambientOcclusion;
+    m_ambientOcclusion = _ambientOcclusion;
     this->toggleVREffect(::visuOgreAdaptor::SVolumeRender::VR_AMBIENT_OCCLUSION);
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::toggleColorBleeding(bool colorBleeding)
+void SVolumeRender::toggleColorBleeding(bool _colorBleeding)
 {
-    m_colorBleeding = colorBleeding;
+    m_colorBleeding = _colorBleeding;
     this->toggleVREffect(::visuOgreAdaptor::SVolumeRender::VR_COLOR_BLEEDING);
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::toggleShadows(bool shadows)
+void SVolumeRender::toggleShadows(bool _shadows)
 {
-    m_shadows = shadows;
+    m_shadows = _shadows;
     this->toggleVREffect(::visuOgreAdaptor::SVolumeRender::VR_SHADOWS);
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::toggleWidgets(bool visible)
+void SVolumeRender::toggleWidgets(bool _visible)
 {
-    m_widgetVisibilty = visible;
+    m_widgetVisibilty = _visible;
 
     if(m_widget)
     {
@@ -673,41 +673,41 @@ void SVolumeRender::toggleWidgets(bool visible)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setFocalDistance(int focalDistance)
+void SVolumeRender::setFocalDistance(int _focalDistance)
 {
     if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() !=
        ::fwRenderOgre::compositor::Core::StereoModeType::NONE)
     {
-        m_volumeRenderer->setFocalLength(static_cast<float>(focalDistance) / 100);
+        m_volumeRenderer->setFocalLength(static_cast<float>(_focalDistance) / 100);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setBoolParameter(bool val, std::string key)
+void SVolumeRender::setBoolParameter(bool _val, std::string _key)
 {
     this->getRenderService()->makeCurrent();
     std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
-    if(key == "preIntegration")
+    if(_key == "preIntegration")
     {
-        this->togglePreintegration(val);
+        this->togglePreintegration(_val);
     }
-    else if(key == "ambientOcclusion")
+    else if(_key == "ambientOcclusion")
     {
-        this->toggleAmbientOcclusion(val);
+        this->toggleAmbientOcclusion(_val);
     }
-    else if(key == "colorBleeding")
+    else if(_key == "colorBleeding")
     {
-        this->toggleColorBleeding(val);
+        this->toggleColorBleeding(_val);
     }
-    else if(key == "shadows")
+    else if(_key == "shadows")
     {
-        this->toggleShadows(val);
+        this->toggleShadows(_val);
     }
-    else if(key == "widgets")
+    else if(_key == "widgets")
     {
-        this->toggleWidgets(val);
+        this->toggleWidgets(_val);
     }
 
     this->requestRender();
@@ -715,38 +715,38 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setIntParameter(int val, std::string key)
+void SVolumeRender::setIntParameter(int _val, std::string _key)
 {
     this->getRenderService()->makeCurrent();
     std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
-    if(key == "sampling")
+    if(_key == "sampling")
     {
-        this->updateSampling(val);
+        this->updateSampling(_val);
     }
-    else if(key == "opacityCorrection")
+    else if(_key == "opacityCorrection")
     {
-        this->updateOpacityCorrection(val);
+        this->updateOpacityCorrection(_val);
     }
-    else if(key == "satSizeRatio")
+    else if(_key == "satSizeRatio")
     {
-        this->updateSatSizeRatio(val);
+        this->updateSatSizeRatio(_val);
     }
-    else if(key == "satShellsNumber")
+    else if(_key == "satShellsNumber")
     {
-        this->updateSatShellsNumber(val);
+        this->updateSatShellsNumber(_val);
     }
-    else if(key == "satShellRadius")
+    else if(_key == "satShellRadius")
     {
-        this->updateSatShellRadius(val);
+        this->updateSatShellRadius(_val);
     }
-    else if(key == "satConeAngle")
+    else if(_key == "satConeAngle")
     {
-        this->updateSatConeAngle(val);
+        this->updateSatConeAngle(_val);
     }
-    else if(key == "satConeSamples")
+    else if(_key == "satConeSamples")
     {
-        this->updateSatConeSamples(val);
+        this->updateSatConeSamples(_val);
     }
 
     this->requestRender();
@@ -754,18 +754,18 @@ void SVolumeRender::setIntParameter(int val, std::string key)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setDoubleParameter(double val, std::string key)
+void SVolumeRender::setDoubleParameter(double _val, std::string _key)
 {
     this->getRenderService()->makeCurrent();
     std::lock_guard<std::mutex> swapLock(m_bufferSwapMutex);
 
-    if(key == "aoFactor")
+    if(_key == "aoFactor")
     {
-        this->updateAOFactor(val);
+        this->updateAOFactor(_val);
     }
-    else if(key == "colorBleedingFactor")
+    else if(_key == "colorBleedingFactor")
     {
-        this->updateColorBleedingFactor(val);
+        this->updateColorBleedingFactor(_val);
     }
 }
 
@@ -824,7 +824,7 @@ void SVolumeRender::updateVolumeIllumination()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectType vrEffect)
+void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectType _vrEffect)
 {
     this->getRenderService()->makeCurrent();
 
@@ -848,7 +848,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
         }
         else if(m_ambientOcclusionSAT)
         {
-            switch(vrEffect)
+            switch(_vrEffect)
             {
                 case ::visuOgreAdaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
                 case ::visuOgreAdaptor::SVolumeRender::VR_COLOR_BLEEDING:
@@ -861,7 +861,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         }
 
-        switch(vrEffect)
+        switch(_vrEffect)
         {
             case ::visuOgreAdaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
                 m_volumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
@@ -935,15 +935,15 @@ void SVolumeRender::updateClippingTM3D()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateVisibility(bool visibility)
+void SVolumeRender::updateVisibility(bool _visibility)
 {
     if(m_volumeSceneNode)
     {
-        m_volumeSceneNode->setVisible(visibility);
+        m_volumeSceneNode->setVisible(_visibility);
 
         if(m_widget)
         {
-            m_widget->setBoxVisibility(visibility && m_widgetVisibilty);
+            m_widget->setBoxVisibility(_visibility && m_widgetVisibilty);
         }
 
         this->requestRender();

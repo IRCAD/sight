@@ -56,23 +56,23 @@ namespace visuOgreAdaptor
  * - \b updateVisibility(bool): Shows or hides the volume.
  * - \b updateClippingBox(): Updates the cropping widget from the clipping matrix.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
- *   - preIntegration: Toggle pre-integration.
- *   - ambientOcclusion: Toggle ambient occlusion.
- *   - colorBleeding: Toggle color bleeding.
- *   - shadows: Toggle soft shadows.
- *   - widgets: Toggle the clipping box widget's visibility.
+ *  - preIntegration: Toggles the pre-integration.
+ *  - ambientOcclusion: Toggles the ambient occlusion.
+ *  - colorBleeding: Toggles the color bleeding.
+ *  - shadows: Toggles soft shadows.
+ *  - widgets: Toggles the clipping box widget's visibility.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
- *   - sampling: Sets the number of volume samples used by the renderer. More samples yield more details but slow down
+ *  - sampling: Sets the number of volume samples used by the renderer. More samples yield more details but slow down
  * rendering.
- *   - opacityCorrection: Sets the volume opacity correction factor.
- *   - satSizeRatio: Sets the SAT ratio and computes it again with the new corresponding size.
- *   - satShellsNumber: Sets the number of SAT shells and compute the SAT.
- *   - satShellRadius: Sets the SAT shell radius and computes the SAT.
- *   - satConeAngle: Sets the SAT cone angle and computes the SAT.
- *   - satConeSamples: Sets the SAT cone samples number and computes the SAT.
+ *  - opacityCorrection: Sets the volume opacity correction factor.
+ *  - satSizeRatio: Sets the SAT ratio and computes it again with the new corresponding size.
+ *  - satShellsNumber: Sets the number of SAT shells and compute the SAT.
+ *  - satShellRadius: Sets the SAT shell radius and computes the SAT.
+ *  - satConeAngle: Sets the SAT cone angle and computes the SAT.
+ *  - satConeSamples: Sets the SAT cone samples number and computes the SAT.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
- *   - aoFactor: Sets the ambient occlusion factor and computes the SAT.
- *   - colorBleedingFactor: Sets the color bleeding factor and computes the SAT.
+ *  - aoFactor: Sets the ambient occlusion factor and computes the SAT.
+ *  - colorBleedingFactor: Sets the color bleeding factor and computes the SAT.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -115,17 +115,17 @@ namespace visuOgreAdaptor
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
  * - \b transform (optional): transform applied to the adaptor's scene node
  */
-class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
-                                                public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SVolumeRender final : public ::fwRenderOgre::IAdaptor,
+                                                      public ::fwRenderOgre::ITransformable
 {
 public:
 
     fwCoreServiceMacro(SVolumeRender, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor.
+    /// Creates slots.
     VISUOGREADAPTOR_API SVolumeRender() noexcept;
 
-    /// Destructor.
+    /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SVolumeRender() noexcept;
 
 private:
@@ -138,22 +138,34 @@ private:
         VR_SHADOWS
     } VREffectType;
 
-    /// Returns proposals to connect service slots to associated object signals.
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
     /// Configures the service.
-    virtual void configuring() override;
+    virtual void configuring() override final;
 
-    /// Starts the service initializes scene objects.
-    virtual void starting() override;
+    /// Starts the service and initializes scene objects.
+    virtual void starting() override final;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::SVolumeRender::s_NEW_IMAGE_SLOT
+     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to
+     *::visuOgreAdaptor::SVolumeRender::s_BUFFER_IMAGE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to
+     *::visuOgreAdaptor::SVolumeRender::s_UPDATE_CLIPPING_BOX_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
 
     /// Does nothing.
-    virtual void updating() override;
+    virtual void updating() override final;
 
-    /// Retrieves the current transfer function.
+    /**
+     * @brief Notifies that the TF is swapped.
+     * @param _key key of the swapped data.
+     */
     virtual void swapping(const KeyType& _key) override;
 
-    /// Cleans up memory.
+    /// Cleans up scene objects.
     virtual void stopping() override;
 
     /// Updates the transfer function applied to the volume.
@@ -162,8 +174,11 @@ private:
     /// Sets a new image.
     void newImage();
 
-    /// Reset the camera coordinates.
-    void resetCameraPosition(const ::fwData::Image::csptr& image);
+    /**
+     * @brief Resets the camera coordinates.
+     * @param _image data of the input volume.
+     */
+    void resetCameraPosition(const ::fwData::Image::csptr& _image);
 
     /// Updates renderer and the GPU volume texture with the new input image data.
     void updateImage();
@@ -171,62 +186,150 @@ private:
     /// Starts a parallel task to copy the updated image buffer into the texture buffer.
     void bufferImage();
 
-    /// Updates the sampling.
-    void updateSampling(int nbSamples);
+    /**
+     * @brief Updates the sampling.
+     * @param _nbSamples number of sample.
+     *
+     * @pre _nbSamples must fit in a 16 bit unsigned int.
+     */
+    void updateSampling(int _nbSamples);
 
-    /// Sets the opacity correction.
-    void updateOpacityCorrection(int opacityCorrection);
+    /**
+     * @brief Sets the opacity correction.
+     * @param _opacityCorrection value of the opacity correction.
+     */
+    void updateOpacityCorrection(int _opacityCorrection);
 
-    /// Sets the ambient occlusion factor.
-    void updateAOFactor(double aoFactor);
+    /**
+     * @brief Sets the ambient occlusion factor.
+     * @param _aoFactor value of the ambient occlusion factor.
+     */
+    void updateAOFactor(double _aoFactor);
 
-    /// Sets the color bleeding factor.
-    void updateColorBleedingFactor(double colorBleedingFactor);
+    /**
+     * @brief Sets the color bleeding factor.
+     * @param _colorBleedingFactor value of the color bleeding factor.
+     */
+    void updateColorBleedingFactor(double _colorBleedingFactor);
 
-    /// Sets the SAT size ration.
-    void updateSatSizeRatio(int sizeRatio);
+    /**
+     * @brief Sets the SAT size ratio.
+     * @param _sizeRatio value of the SAT size ratio.
+     */
+    void updateSatSizeRatio(int _sizeRatio);
 
-    /// Sets the SAT shells number.
-    void updateSatShellsNumber(int shellsNumber);
+    /**
+     * @brief Sets the SAT shells number.
+     * @param _shellsNumber the number of shells used by the SAT.
+     */
+    void updateSatShellsNumber(int _shellsNumber);
 
-    /// Sets the SAT shells radius.
-    void updateSatShellRadius(int shellRadius);
+    /**
+     * @brief Sets the SAT shells radius.
+     * @param _shellRadius the shells radius used by the SAT.
+     */
+    void updateSatShellRadius(int _shellRadius);
 
-    /// Sets the SAT cone angle.
-    void updateSatConeAngle(int coneAngle);
+    /**
+     * @brief Sets the SAT cone angle.
+     * @param _coneAngle the cone angle size of the SAT. Cones ares used to compute soft shadows.
+     */
+    void updateSatConeAngle(int _coneAngle);
 
-    /// Sets the SAT cone samples.
-    void updateSatConeSamples(int nbConeSamples);
+    /**
+     * @brief Sets the SAT cone samples.
+     * @param _nbConeSamples the cone sample number of the SAT. Cones ares used to compute soft shadows.
+     */
+    void updateSatConeSamples(int _nbConeSamples);
 
-    /// Enables/disables the pre integration table.
-    void togglePreintegration(bool preintegration);
+    /**
+     * @brief Enables/disables the pre integration table.
+     * @param _preintegration state of the pre integration.
+     */
+    void togglePreintegration(bool _preintegration);
 
-    /// Enables/disables the ambient occlision.
-    void toggleAmbientOcclusion(bool ambientOcclusion);
+    /**
+     * @brief Enables/disables the ambient occlision.
+     * @param _ambientOcclusion state of the ambient occlusion.
+     */
+    void toggleAmbientOcclusion(bool _ambientOcclusion);
 
-    /// Enables/disables the color bleeding.
-    void toggleColorBleeding(bool colorBleeding);
+    /**
+     * @brief Enables/disables the color bleeding.
+     * @param _colorBleeding state of the color bleeding.
+     */
+    void toggleColorBleeding(bool _colorBleeding);
 
-    /// Enables/disables the volume self-shadowing.
-    void toggleShadows(bool shadows);
+    /**
+     * @brief Enables/disables the volume self-shadowing.
+     * @param _shadows state of soft shadows computation.
+     */
+    void toggleShadows(bool _shadows);
 
-    /// Displays/Hides the widget.
-    void toggleWidgets(bool visible);
+    /**
+     * @brief Displays/Hides the widget.
+     * @param _visible state of the widget visibility.
+     */
+    void toggleWidgets(bool _visible);
 
-    /// Sets the focal distance.
-    void setFocalDistance(int focalDistance);
+    /**
+     * @brief Sets the focal distance.
+     * @param _focalDistance value of the focal distance.
+     */
+    void setFocalDistance(int _focalDistance);
 
-    /// Updates a bool parameter.
-    void setBoolParameter(bool val, std::string key);
+    /**
+     * @brief Updates a bool parameter.
+     * @param _val new value of the boolean parameter.
+     * @param _key the key of the parameter. Following keys are accepted:
+     *  - preIntegration: Toggles the pre-integration.
+     *  @ref togglePreintegration(int) "togglePreintegration(int)"
+     *  - ambientOcclusion: Toggles the ambient occlusion.
+     *  @ref toggleAmbientOcclusion(int) "toggleAmbientOcclusion(int)"
+     *  - colorBleeding: Toggles the color bleeding.
+     *  @ref toggleColorBleeding(int) "toggleColorBleeding(int)"
+     *  - shadows: Toggles soft shadows.
+     *  @ref toggleShadows(int) "toggleShadows(int)"
+     *  - widgets: Toggles the clipping box widget's visibility.
+     *  @ref toggleWidgets(int) "toggleWidgets(int)"
+     */
+    void setBoolParameter(bool _val, std::string _key);
 
-    /// Updates a int parameter.
-    void setIntParameter(int val, std::string key);
+    /**
+     * @brief Updates a int parameter.
+     * @param _val New value of the boolean parameter.
+     * @param _key the key of the parameter. Following keys are accepted:
+     *  - sampling: Sets the number of volume samples used by the renderer. More samples yield more details but slow
+     * down rendering.
+     *  @ref updateSampling(int) "updateSampling(int)"
+     *  - opacityCorrection: Sets the volume opacity correction factor.
+     *  @ref updateOpacityCorrection(int) "updateOpacityCorrection(int)"
+     *  - satSizeRatio: Sets the SAT ratio and computes it again with the new corresponding size.
+     *  @ref updateSatSizeRatio(int) "updateSatSizeRatio(int)"
+     *  - satShellsNumber: Sets the number of SAT shells and compute the SAT.
+     *  @ref updateSatShellsNumber(int) "updateSatShellsNumber(int)"
+     *  - satShellRadius: Sets the SAT shell radius and computes the SAT.
+     *  @ref updateSatShellRadius(int) "updateSatShellRadius(int)"
+     *  - satConeAngle: Sets the SAT cone angle and computes the SAT.
+     *  @ref updateSatConeAngle(int) "updateSatConeAngle(int)"
+     *  - satConeSamples: Sets the SAT cone samples number and computes the SAT.
+     *  @ref updateSatConeSamples(int) "updateSatConeSamples(int)"
+     */
+    void setIntParameter(int _val, std::string _key);
 
-    /// Updates a double parameter.
-    void setDoubleParameter(double val, std::string key);
+    /**
+     * @brief Updates a double parameter.
+     * @param _val New value of the boolean parameter.
+     * @param _key the key of the parameter. Following keys are accepted:
+     *  - aoFactor: Sets the ambient occlusion factor and computes the SAT.
+     *  @ref updateAOFactor(int) "updateAOFactor(int)"
+     *  - colorBleedingFactor: Sets the color bleeding factor and computes the SAT.
+     *  @ref updateColorBleedingFactor(int) "updateColorBleedingFactor(int)"
+     */
+    void setDoubleParameter(double _val, std::string _key);
 
     /// Sets the volume to be visible or not.
-    void updateVisibility(bool visibility);
+    void updateVisibility(bool _visibility);
 
     /// Creates widgets and connects its slots to interactor signals.
     void createWidget();
@@ -238,7 +341,7 @@ private:
     void updateVolumeIllumination();
 
     /// Updates or creates the illumination volume according to the given VR effect.
-    void toggleVREffect(VREffectType vrEffect);
+    void toggleVREffect(VREffectType _vrEffect);
 
     /// Updates the clipping box position from the inout clipping matrix.
     void updateClippingBox();
@@ -246,16 +349,16 @@ private:
     /// Updates the inout clipping matrix from the clipping box positions.
     void updateClippingTM3D();
 
-    /// Helper to manage the volume TF.
+    /// Helps to manage the optional volume TF.
     ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
 
-    /// Renders the volume.
+    /// Implements a simple GPU ray-tracing renderer.
     ::fwRenderOgre::vr::RayTracingVolumeRenderer* m_volumeRenderer { nullptr };
 
-    /// 3D Image texture.
+    /// Contains the GPU 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
 
-    /// Buffering texture for the 3D image.
+    /// Contains the buffering texture for the 3D image.
     ::Ogre::TexturePtr m_bufferingTexture;
 
     /// Prevents the service from accessing the textures while they are swapped.
@@ -264,30 +367,31 @@ private:
     /// Fills the incoming image texture in a parallel thread.
     std::unique_ptr< ::fwRenderOgre::IGraphicsWorker > m_bufferingWorker;
 
-    /// TF texture used for rendering.
+    /// Contains the GPU TF texture used for rendering.
     ::fwRenderOgre::TransferFunction::sptr m_gpuVolumeTF;
 
-    /// Pre-integration table.
+    /// Contains the pre-integration table.
     ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
 
-    /// This object's scene manager.
+    /// Stores the scene manager.
     ::Ogre::SceneManager* m_sceneManager { nullptr };
 
-    /// This object's scene node.
+    /// Stores the scene node of the volume.
     ::Ogre::SceneNode* m_volumeSceneNode { nullptr };
 
-    /// Camera used for rendering.
+    /// Stores the camera used for rendering.
     ::Ogre::Camera* m_camera { nullptr };
 
-    /// Widgets used for clipping.
+    /// Stores the widgets used for clipping.
     std::shared_ptr< ::fwRenderOgre::interactor::ClippingBoxInteractor > m_widget;
 
+    /// Stores the priority of the widget interactor.
     int m_widgetPriority { 2 };
 
-    /// Sampling rate.
+    /// Stores the sampling rate.
     std::uint16_t m_nbSamples { 512 };
 
-    /// Use pre-integration.
+    /// Enables the pre-integration usage.
     bool m_preIntegratedRendering { false };
 
     /// Enables background buffering for dynamic images.
@@ -305,31 +409,31 @@ private:
     /// Toggles widget visibility.
     bool m_widgetVisibilty { true };
 
-    /// Illumination volume used to render shadows and ambient occlusion.
+    /// Contains the ilumination volume used to render shadows and ambient occlusion.
     std::shared_ptr< ::fwRenderOgre::vr::IllumAmbientOcclusionSAT> m_ambientOcclusionSAT;
 
-    /// Ratio used to determine the size of the SAT regarding of the associated image size.
+    /// Stores the ratio used to determine the size of the SAT regarding of the associated image size.
     float m_satSizeRatio {0.25f };
 
-    /// Number of shells used to compute the volume illumination from the SAT.
+    /// Stores the number of shells used to compute the volume illumination from the SAT.
     int m_satShells { 4 };
 
-    /// Radius of the shells used to compute the volume illumination from the SAT.
+    /// Stores the radius of the shells used to compute the volume illumination from the SAT.
     int m_satShellRadius { 4 };
 
-    /// Angle used to define the soft shadows cones.
+    /// Stores the angle used to define the soft shadows cones.
     float m_satConeAngle { 0.1f };
 
     /// Number of samples along the soft shadows cones.
     int m_satConeSamples { 50 };
 
-    /// Factor parameter used to weight the ambient occlusion.
+    /// Stores the factor parameter used to weight the ambient occlusion.
     double m_aoFactor { 1. };
 
-    /// Factor parameter used to weight the color bleeding.
+    /// Stores the factor parameter used to weight the color bleeding.
     double m_colorBleedingFactor { 1. };
 
-    /// Sets whether the camera must be auto reset when a mesh is updated or not.
+    /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };
 
 };
