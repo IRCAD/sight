@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -164,6 +164,30 @@ void Window::makeCurrent()
     if(m_glContext)
     {
         m_glContext->makeCurrent(this);
+        if(m_ogreRenderWindow)
+        {
+            ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
+
+            if(renderSystem)
+            {
+                // This allows to set the current OpengGL context in Ogre internal state
+                renderSystem->_setRenderTarget(m_ogreRenderWindow);
+
+                // Use this trick to apply the current OpenGL context
+                //
+                // Actually this method does the following :
+                // void GLRenderSystem::postExtraThreadsStarted()
+                // {
+                //   OGRE_LOCK_MUTEX(mThreadInitMutex);
+                //   if(mCurrentContext)
+                //     mCurrentContext->setCurrent();
+                // }
+                //
+                // This is actually want we want to do, even if this is not the initial purpose of this method
+                //
+                renderSystem->postExtraThreadsStarted();
+            }
+        }
     }
 }
 
