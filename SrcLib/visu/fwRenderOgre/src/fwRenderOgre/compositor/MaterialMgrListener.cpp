@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ MaterialMgrListener::~MaterialMgrListener()
     const auto mtlName = _originalMaterial->getName();
 
     // Volume rendering techniques don't handle OIT. Ignore them.
-    if(::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") || mtlName == "RayEntryPoints")
+    if(::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") ||::Ogre::StringUtil::endsWith(mtlName, "RayEntryPoints"))
     {
         return nullptr;
     }
