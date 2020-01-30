@@ -290,16 +290,14 @@ void SLandmarks::onColorButton()
         const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
         SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
-        ::fwData::mt::ObjectReadLock lock(landmarks);
-        auto& group = landmarks->getGroup(groupName);
-        lock.unlock();
-
         ::fwData::Landmarks::ColorType color = {{colorQt.red()/255.f, colorQt.green()/255.f, colorQt.blue()/255.f,
                                                                       colorQt.alpha()/255.f}};
+        ::fwData::mt::ObjectWriteLock lock(landmarks);
+        auto& group = landmarks->getGroup(groupName);
+        group.m_color = color;
+        lock.unlock();
 
         m_opacitySlider->setValue(static_cast<int>(color[3] * m_opacitySlider->maximum()));
-
-        group.m_color = color;
 
         const auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
@@ -1004,7 +1002,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
     const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
     SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
-    const ::fwData::mt::ObjectWriteLock lock(landmarks);
+    const ::fwData::mt::ObjectReadLock lock(landmarks);
 
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 

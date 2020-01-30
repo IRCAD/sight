@@ -79,7 +79,7 @@ namespace editor
  * - \b size (optional, default="10.0") : default size of created landmarks.
  * - \b opacity (optional, default="1.0") : default opacity of created landmarks.
  * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
- * and groups with multiple points.
+ *      and groups with multiple points.
  */
 class UIMEASUREMENTQT_CLASS_API SLandmarks final : public QObject,
                                                    public ::fwGui::editor::IEditor
@@ -110,25 +110,25 @@ private:
      * @return A map of each proposed connection.
      *
      * Connect ::fwData::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_UPDATE_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_UPDATE_SLOT
      * Connect ::fwData::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_ADD_POINT_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_ADD_POINT_SLOT
      * Connect ::fwData::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_MODIFY_POINT_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_MODIFY_POINT_SLOT
      * Connect ::fwData::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_SELECT_POINT_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_SELECT_POINT_SLOT
      * Connect ::fwData::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_DESELECT_POINT_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_DESELECT_POINT_SLOT
      * Connect ::fwData::Landmarks::s_GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_ADD_GROUP_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_ADD_GROUP_SLOT
      * Connect ::fwData::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_REMOVE_GROUP_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_REMOVE_GROUP_SLOT
      * Connect ::fwData::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_REMOVE_POINT_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_REMOVE_POINT_SLOT
      * Connect ::fwData::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_MODIFY_GROUP_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_MODIFY_GROUP_SLOT
      * Connect ::fwData::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
-     *::uiMeasurementQt::editor::SLandmarks::s_RENAME_GROUP_SLOT
+     * ::uiMeasurementQt::editor::SLandmarks::s_RENAME_GROUP_SLOT
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -336,16 +336,16 @@ private:
     /// @ref onRemoveSelection() "onRemoveSelection()"
     QPointer<QPushButton> m_removeButton;
 
-    /// Disables or enables advanced mode.
+    /// Enables/disbqles the advanced mode.
     bool m_advancedMode { false };
 
-    /// Stores the default landmark size.
+    /// Sets the default landmark size.
     float m_defaultLandmarkSize { 10.f };
 
-    /// Stores the default landmark opacity.
+    /// Sets the default landmark opacity.
     float m_defaultLandmarkOpacity { 1.f };
 
-    /// Stores the text displayed at the top of this editor.
+    /// Sets the text displayed at the top of this editor.
     std::string m_text { "Use 'Ctrl+Left Click' to add new landmarks" };
 
 };
