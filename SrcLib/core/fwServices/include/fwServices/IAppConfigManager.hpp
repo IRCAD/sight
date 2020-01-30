@@ -122,8 +122,6 @@ protected:
 inline IAppConfigManager::IAppConfigManager() :
     m_state(STATE_DESTROYED)
 {
-    FW_DEPRECATED_MSG("::fwServices::IAppConfigManager is no longer supported, use ::fwServices::AppConfigManager",
-                      "22.0");
 }
 
 //------------------------------------------------------------------------------

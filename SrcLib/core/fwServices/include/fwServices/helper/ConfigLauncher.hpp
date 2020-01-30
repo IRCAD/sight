@@ -98,13 +98,13 @@ public:
 
 private:
 
-    /// App config.
+    /// Stores the app config.
     ::fwActivities::registry::ActivityAppConfig m_appConfig;
 
-    /// To know if configuration is running.
+    /// Sets the configuration running state.
     bool m_configIsRunning;
 
-    /// Config manager.
+    /// Stores the config manager.
     ::fwServices::AppConfigManager::sptr m_appConfigManager;
 
     /// Defines a special key to defines the associated object him self.

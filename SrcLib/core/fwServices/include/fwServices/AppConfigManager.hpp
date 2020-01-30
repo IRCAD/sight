@@ -201,7 +201,7 @@ private:
 
     void destroyProxies();
 
-    /// Given a list of UIDs or WIDs, get a friendly printable message.
+    /// Gets a list of UIDs or WIDs, get a friendly printable message.
     static std::string getUIDListAsString(const std::vector<std::string>& uidList);
 
     typedef std::pair< ::fwData::Object::sptr, ::fwServices::IXMLParser::sptr> CreatedObjectType;
