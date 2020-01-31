@@ -47,17 +47,18 @@ namespace editor
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - \b @deprecated addPickedPoint(::fwDataTools::PickingInfo) : adds or removes picked landmark.
- * - \b pick(::fwDataTools::PickingInfo) : adds or removes picked landmark.
- * - \b addPoint(std::string) : adds a point to editor.
- * - \b modifyPoint(std::string, size_t) : updates the editor when a point has moved.
- * - \b selectPoint(std::string, size_t) : selects a point in the editor.
- * - \b deselectPoint(std::string, size_t) : deselect a point in the editor.
- * - \b removePoint(std::string, size_t) : removes a point from editor.
- * - \b addGroup(std::string) : adds a group to the editor.
- * - \b removeGroup(std::string) : removes a group from the editor.
- * - \b modifyGroup(std::string) : updates a group attributes.
- * - \b renameGroup(std::string, std::string) : renames a group in the editor.
+ * - \b addPickedPoint(::fwDataTools::PickingInfo): adds or removes picked landmark. @deprecated call \b
+ *      pick(::fwDataTools::PickingInfo) instead.
+ * - \b pick(::fwDataTools::PickingInfo): adds or removes picked landmark.
+ * - \b addPoint(std::string): adds a point to editor.
+ * - \b modifyPoint(std::string, size_t): updates the editor when a point has moved.
+ * - \b selectPoint(std::string, size_t): selects a point in the editor.
+ * - \b deselectPoint(std::string, size_t): deselect a point in the editor.
+ * - \b removePoint(std::string, size_t): removes a point from editor.
+ * - \b addGroup(std::string): adds a group to the editor.
+ * - \b removeGroup(std::string): removes a group from the editor.
+ * - \b modifyGroup(std::string): updates a group attributes.
+ * - \b renameGroup(std::string, std::string): renames a group in the editor.
  *
  * @section XML XML Configuration
  *
@@ -76,9 +77,9 @@ namespace editor
  *
  * @subsection Configuration Configuration
  * - \b text (optional): text displayed at the top of this editor.
- * - \b size (optional, default="10.0") : default size of created landmarks.
- * - \b opacity (optional, default="1.0") : default opacity of created landmarks.
- * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
+ * - \b size (optional, default="10.0"): default size of created landmarks.
+ * - \b opacity (optional, default="1.0"): default opacity of created landmarks.
+ * - \b advanced (optional, default="no"): if "yes", use the advanced mode displaying point information
  *      and groups with multiple points.
  */
 class UIMEASUREMENTQT_CLASS_API SLandmarks final : public QObject,
@@ -143,8 +144,8 @@ private:
 
     /**
      * @brief Called when a group name is changed.
-     * @param _item The changed item.
-     * @param _column The changed column
+     * @param _item the changed item.
+     * @param _column the changed column
      *
      * @pre _column must be 0.
      */
@@ -152,32 +153,32 @@ private:
 
     /**
      * @brief Called when a new group is selected in the editor.
-     * @param _current The new selected item.
-     * @param _previous The old selected item.
+     * @param _current the new selected item.
+     * @param _previous the old selected item.
      */
     void onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous);
 
     /**
      * @brief Called when a group's point size is modified.
-     * @param _newSize New size of the group.
+     * @param _newSize the new size of the group.
      */
     void onSizeChanged(int _newSize);
 
     /**
      * @brief Called when a group's opacity is modified.
-     * @param _newOpacity New opacity of the group.
+     * @param _newOpacity the new opacity of the group.
      */
     void onOpacityChanged(int _newOpacity);
 
     /**
      * @brief Called when a group's visibility is turned on or off.
-     * @param _visibility The visibility status
+     * @param _visibility the visibility status
      */
     void onVisibilityChanged(int _visibility);
 
     /**
      * @brief Called when the landmarks' shape is changed for a group.
-     * @param _shape The new shape of the group.
+     * @param _shape the new shape of the group.
      *
      * @pre _shape must be 'Cube' or 'Sphere'.
      */
@@ -192,6 +193,7 @@ private:
     /**
      * @brief SLOT: adds or removes a landmark from picking informations.
      *
+     * Interactions will take place while holding down the button. The following actions are available:
      * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
      * - CTRL + right mouse click: removes the landmark at the closest picking position.
      *
@@ -204,30 +206,31 @@ private:
     /**
      * @brief SLOT: adds or removes a landmark from picking informations.
      *
+     * Interactions will take place while holding down the button. The following actions are available:
      * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
      * - CTRL + right mouse click: removes the landmark at the closest picking position.
      *
-     * @param _info Picking informations.
+     * @param _info contains picking informations.
      */
     void pick(::fwDataTools::PickingInfo _info);
 
     /**
-     * @brief Slot: adds a point to the editor.
-     * @param _groupName The group name where the point is added.
+     * @brief SLOT: adds a point to the editor.
+     * @param _groupName the group name where the point is added.
      */
     void addPoint(std::string _groupName);
 
     /**
      * @brief Slot: updates a point coordinates in the editor.
-     * @param _groupName The group name of the updated point.
-     * @param _index The index of the point to update.
+     * @param _groupName the group name of the updated point.
+     * @param _index the index of the point to update.
      */
     void modifyPoint(std::string _groupName, size_t _index);
 
     /**
-     * @brief Slot: selects the point's corresponding item in the editor.
-     * @param _groupName The group name of the selected point.
-     * @param _index The index of the point to select.
+     * @brief SLOT: selects the point's corresponding item in the editor.
+     * @param _groupName the group name of the selected point.
+     * @param _index the index of the point to select.
      */
     void selectPoint(std::string _groupName, size_t _index);
 
@@ -241,41 +244,41 @@ private:
     void addGroup(std::string _name);
 
     /**
-     * @brief Slot: removes a group from the editor.
+     * @brief SLOT: removes a group from the editor.
      * @param _name The group name to remove.
      */
     void removeGroup(std::string _name);
 
     /**
-     * @brief Slot: removes point from editor
-     * @param _groupName The group name of the point the remove.
-     * @param _index The index of the point to remove.
+     * @brief SLOT: removes point from editor
+     * @param _groupName the group name of the point the remove.
+     * @param _index the index of the point to remove.
      */
     void removePoint(std::string _groupName, size_t _index);
 
     /**
-     * @brief Slot: renames a group in the editor.
-     * @param _oldName Old name of the group.
-     * @param _newName New name of the group.
+     * @brief SLOT: renames a group in the editor.
+     * @param _oldName the old name of the group.
+     * @param _newName the new name of the group.
      */
     void renameGroup(std::string _oldName, std::string _newName);
 
     /**
-     * @brief Slot: updates a group properties in the editor.
+     * @brief SLOT: updates a group properties in the editor.
      * @param _name The group name to updates.
      */
     void modifyGroup(std::string _name);
 
     /**
      * @brief Gets the name of the currently selected group.
-     * @param [out] _selection The name of the currently selected group.
+     * @param [out] _selection the name of the currently selected group.
      * @return false if no group is selected.
      */
     bool currentSelection(std::string& _selection) const;
 
     /**
      * @brief Gets tree item representing the group.
-     * @param _groupName The name of the item to find.
+     * @param _groupName the name of the item to find.
      * @return The item representing _groupName.
      */
     QTreeWidgetItem* getGroupItem(const std::string& _groupName) const;
@@ -301,8 +304,8 @@ private:
 
     /**
      * @brief Draws a colored square on the button.
-     * @param button The button where the square will be drawn.
-     * @param _color The color of the square.
+     * @param button the button where the square will be drawn.
+     * @param _color the color of the square.
      */
     static void setColorButtonIcon(QPushButton* button, const QColor& _color);
 
@@ -313,27 +316,27 @@ private:
     QPointer<QWidget> m_groupEditorWidget;
 
     /// Contains the slider used to change the size of the current selected group.
-    /// @ref onSizeChanged(int) "onSizeChanged(int)"
+    /// @see onSizeChanged(int)
     QPointer<QSlider> m_sizeSlider;
 
     /// Contains the slider used to change the opacity of the current selected group.
-    /// @ref onOpacityChanged(int) "onOpacityChanged(int)"
+    /// @see onOpacityChanged(int)
     QPointer<QSlider> m_opacitySlider;
 
     /// Contains the button used to change the visibility of the current selected group.
-    /// @ref onVisibilityChanged(int) "onVisibilityChanged(int)"
+    /// @see onVisibilityChanged(int)
     QPointer<QCheckBox> m_visibilityCheckbox;
 
     /// Contains the combo box used to change the shape of the current selected group.
-    /// @ref onShapeChanged(const QString&) "onShapeChanged(const QString&)"
+    /// @see onShapeChanged(const QString&)
     QPointer<QComboBox> m_shapeSelector;
 
     /// Contains the button used to adds a new empty group.
-    /// @ref onAddNewGroup() "onAddNewGroup()"
+    /// @see onAddNewGroup()
     QPointer<QPushButton> m_newGroupButton;
 
     /// Contains the button used to remove a group or a landmark.
-    /// @ref onRemoveSelection() "onRemoveSelection()"
+    /// @see onRemoveSelection()
     QPointer<QPushButton> m_removeButton;
 
     /// Enables/disbqles the advanced mode.
