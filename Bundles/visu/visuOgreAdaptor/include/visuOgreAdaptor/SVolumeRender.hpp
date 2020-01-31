@@ -63,7 +63,7 @@ namespace visuOgreAdaptor
  *  - widgets: Toggles the clipping box widget's visibility.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  *  - sampling: Sets the number of volume samples used by the renderer. More samples yield more details but slow down
- * rendering.
+ *    rendering.
  *  - opacityCorrection: Sets the volume opacity correction factor.
  *  - satSizeRatio: Sets the SAT ratio and computes it again with the new corresponding size.
  *  - satShellsNumber: Sets the number of SAT shells and compute the SAT.
@@ -90,7 +90,7 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: input volume data.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- * image's default transferFunction (CT-GreyLevel).
+ *      image's default transferFunction (CT-GreyLevel).
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  *
  * @subsection Configuration Configuration
@@ -104,16 +104,16 @@ namespace visuOgreAdaptor
  * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
  * - \b shadows (optional, true/false, default=false): Soft shadows usage.
  * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
- * associated image size.
+ *      associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
- * - \b satShellRadius (optional, int, default=7): radius of the shells used to compute the volume illumination from the
- * SAT.
+ * - \b satShellRadius (optional, int, default=7): radius of the shells used to compute the volume illumination
+ *      from the SAT.
  * - \b satConeAngle (optional, float, default=0.1): angle used to define the soft shadows cones.
  * - \b satConeSamples (optional, float, default=50): number of samples along the soft shadows cones.
  * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
- * - \b transform (optional): transform applied to the adaptor's scene node
+ * - \b transform (optional): transform applied to the adaptor's scene node.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender final : public ::fwRenderOgre::IAdaptor,
                                                       public ::fwRenderOgre::ITransformable
@@ -130,7 +130,7 @@ public:
 
 private:
 
-    /// Volume rendering effects.
+    /// Defines volume rendering effects.
     typedef enum
     {
         VR_AMBIENT_OCCLUSION,
@@ -150,9 +150,9 @@ private:
      *
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::SVolumeRender::s_NEW_IMAGE_SLOT
      * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to
-     *::visuOgreAdaptor::SVolumeRender::s_BUFFER_IMAGE_SLOT
+     * ::visuOgreAdaptor::SVolumeRender::s_BUFFER_IMAGE_SLOT
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to
-     *::visuOgreAdaptor::SVolumeRender::s_UPDATE_CLIPPING_BOX_SLOT
+     * ::visuOgreAdaptor::SVolumeRender::s_UPDATE_CLIPPING_BOX_SLOT
      */
     virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
 
@@ -280,55 +280,58 @@ private:
 
     /**
      * @brief Updates a bool parameter.
-     * @param _val new value of the boolean parameter.
+     * @param _val new value of the parameter.
      * @param _key the key of the parameter. Following keys are accepted:
-     *  - preIntegration: Toggles the pre-integration.
-     *  @ref togglePreintegration(int) "togglePreintegration(int)"
-     *  - ambientOcclusion: Toggles the ambient occlusion.
-     *  @ref toggleAmbientOcclusion(int) "toggleAmbientOcclusion(int)"
-     *  - colorBleeding: Toggles the color bleeding.
-     *  @ref toggleColorBleeding(int) "toggleColorBleeding(int)"
-     *  - shadows: Toggles soft shadows.
-     *  @ref toggleShadows(int) "toggleShadows(int)"
-     *  - widgets: Toggles the clipping box widget's visibility.
-     *  @ref toggleWidgets(int) "toggleWidgets(int)"
+     *  - preIntegration: toggles the pre-integration.
+     *  - ambientOcclusion: toggles the ambient occlusion.
+     *  - colorBleeding: toggles the color bleeding.
+     *  - shadows: toggles soft shadows.
+     *  - widgets: toggles the clipping box widget's visibility.
+     * @see togglePreintegration(bool)
+     * @see toggleAmbientOcclusion(bool)
+     * @see toggleColorBleeding(bool)
+     * @see toggleShadows(bool)
+     * @see toggleWidgets(bool)
      */
     void setBoolParameter(bool _val, std::string _key);
 
     /**
      * @brief Updates a int parameter.
-     * @param _val New value of the boolean parameter.
+     * @param _val New value of the parameter.
      * @param _key the key of the parameter. Following keys are accepted:
      *  - sampling: Sets the number of volume samples used by the renderer. More samples yield more details but slow
-     * down rendering.
-     *  @ref updateSampling(int) "updateSampling(int)"
-     *  - opacityCorrection: Sets the volume opacity correction factor.
-     *  @ref updateOpacityCorrection(int) "updateOpacityCorrection(int)"
-     *  - satSizeRatio: Sets the SAT ratio and computes it again with the new corresponding size.
-     *  @ref updateSatSizeRatio(int) "updateSatSizeRatio(int)"
-     *  - satShellsNumber: Sets the number of SAT shells and compute the SAT.
-     *  @ref updateSatShellsNumber(int) "updateSatShellsNumber(int)"
-     *  - satShellRadius: Sets the SAT shell radius and computes the SAT.
-     *  @ref updateSatShellRadius(int) "updateSatShellRadius(int)"
-     *  - satConeAngle: Sets the SAT cone angle and computes the SAT.
-     *  @ref updateSatConeAngle(int) "updateSatConeAngle(int)"
-     *  - satConeSamples: Sets the SAT cone samples number and computes the SAT.
-     *  @ref updateSatConeSamples(int) "updateSatConeSamples(int)"
+     *    down rendering.
+     *  - opacityCorrection: sets the volume opacity correction factor.
+     *  - satSizeRatio: sets the SAT ratio and computes it again with the new corresponding size.
+     *  - satShellsNumber: sets the number of SAT shells and compute the SA.
+     *  - satShellRadius: sets the SAT shell radius and computes the SAT.
+     *  - satConeAngle: sets the SAT cone angle and computes the SAT.
+     *  - satConeSamples: sets the SAT cone samples number and computes the SAT.
+     * @see updateSampling(int)
+     * @see updateOpacityCorrection(int)
+     * @see updateSatSizeRatio(int)
+     * @see updateSatShellsNumber(int)
+     * @see updateSatShellRadius(int)
+     * @see updateSatConeAngle(int)
+     * @see updateSatConeSamples(int)
      */
     void setIntParameter(int _val, std::string _key);
 
     /**
      * @brief Updates a double parameter.
-     * @param _val New value of the boolean parameter.
+     * @param _val the new value of the parameter.
      * @param _key the key of the parameter. Following keys are accepted:
-     *  - aoFactor: Sets the ambient occlusion factor and computes the SAT.
-     *  @ref updateAOFactor(int) "updateAOFactor(int)"
-     *  - colorBleedingFactor: Sets the color bleeding factor and computes the SAT.
-     *  @ref updateColorBleedingFactor(int) "updateColorBleedingFactor(int)"
+     *  - aoFactor: sets the ambient occlusion factor and computes the SAT.
+     *  - colorBleedingFactor: sets the color bleeding factor and computes the SAT.
+     * @see updateAOFactor(double)
+     * @see updateColorBleedingFactor(double)
      */
     void setDoubleParameter(double _val, std::string _key);
 
-    /// Sets the volume to be visible or not.
+    /**
+     * @brief Sets the volume to be visible or not.
+     * @param _visibility the visibility status of the volume.
+     */
     void updateVisibility(bool _visibility);
 
     /// Creates widgets and connects its slots to interactor signals.
@@ -340,7 +343,10 @@ private:
     /// Computes the volume illumination and applies it to the ray tracing renderer.
     void updateVolumeIllumination();
 
-    /// Updates or creates the illumination volume according to the given VR effect.
+    /**
+     * @brief Updates or creates the illumination volume according to the given VR effect.
+     * @param _vrEffect volume rendering effects.
+     */
     void toggleVREffect(VREffectType _vrEffect);
 
     /// Updates the clipping box position from the inout clipping matrix.

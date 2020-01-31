@@ -98,7 +98,7 @@ private:
     /// Starts the service, create Container, place in Buttons, ComboBox, Layout, and connect them.
     virtual void starting() override;
 
-    /// Doeas nothing.
+    /// Does nothing.
     virtual void updating() override;
 
     /// Stops the service, disconnect Buttons and Combo Box, delete them and clean the container.
@@ -200,7 +200,7 @@ private:
     /// Contains the current selected TF.
     ::fwData::TransferFunction::sptr m_selectedTF;
 
-    /// Stores the path were looking for TF presets.
+    /// Stores path were looking for TF presets.
     typedef std::vector< std::filesystem::path > PathContainerType;
     PathContainerType m_paths;
 };

@@ -45,7 +45,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Adaptor to display a 3D negato.
+ * @brief Adaptor to display a 3D negato.
  *
  * @section Signals Signals
  * - \b pickedVoxel(string): sends the coordinates and intensity of the voxel picked by the cross widget.
@@ -79,7 +79,7 @@ namespace visuOgreAdaptor
  * - \b interactive (optional, true/false, default=false): enables interactions on the negato
  * - \b priority (optional, int, default=1): interaction priority of the negato.
  * - \b transform (optional): the name of the Ogre transform node where to attach the negato, as it was specified
- * in the STransform adaptor.
+ *      in the STransform adaptor.
  * - \b queryFlags (optional, default=0x40000000): Mask set to planes for picking request.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D final : public ::fwRenderOgre::IAdaptor,
@@ -113,13 +113,13 @@ private:
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::SNegato3D::s_NEWIMAGE_SLOT
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_BUFFER_MODIFIED_SIG to ::visuOgreAdaptor::SNegato3D::s_NEWIMAGE_SLOT
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_TYPE_MODIFIED_SIG to
-     *::visuOgreAdaptor::SNegato3D::s_SLICETYPE_SLOT
+     * ::visuOgreAdaptor::SNegato3D::s_SLICETYPE_SLOT
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_INDEX_MODIFIED_SIG to
-     *::visuOgreAdaptor::SNegato3D::s_SLICEINDEX_SLOT
+     * ::visuOgreAdaptor::SNegato3D::s_SLICEINDEX_SLOT
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to
-     *::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
+     * ::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to
-     *::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
+     * ::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
      */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -232,16 +232,16 @@ private:
     /// Updates the intensity picking widget's position.
     void updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin);
 
-    /// Sets whether the camera must be auto reset when a mesh is updated or not.
+    /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };
 
-    /// Sets the opacity to that of the transfer function.
+    /// Enables the opacity to that of the transfer function.
     bool m_enableAlpha { false };
 
-    /// Sets whether or not interactions are enabled on the negato.
+    /// Enables whether or not interactions are enabled on the negato.
     bool m_interactive { false };
 
-    /// Defines the order in which interactions take place in the scene.
+    /// Sets the order in which interactions take place in the scene.
     int m_interactionPriority { 1 };
 
     /// Contains the ogre texture which will be displayed on the negato.
@@ -262,25 +262,25 @@ private:
     /// Contains the scene node allowing to move the entire negato.
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
-    /// Defines the filtering type for this negato.
+    /// Sets the filtering type for this negato.
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
     /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
 
-    /// Stores the transfer function window value at the time the interaction started.
+    /// Sets the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };
 
-    /// Stores the transfer function level value at the time the interaction started.
+    /// Sets the transfer function level value at the time the interaction started.
     double m_initialLevel { 0.f };
 
-    /// Stores the mouse position at the time the windowing interaction started.
+    /// Sets the mouse position at the time the windowing interaction started.
     ::Ogre::Vector2i m_initialPos { -1, -1 };
 
-    /// Store the mask used for picking request.
+    /// Sets the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    /// Stores the signal sent when a voxel is picked using the left mouse button.
+    /// Sets the signal sent when a voxel is picked using the left mouse button.
     using PickedVoxelSigType = ::fwCom::Signal< void (std::string) >;
     PickedVoxelSigType::sptr m_pickedVoxelSignal { nullptr };
 
