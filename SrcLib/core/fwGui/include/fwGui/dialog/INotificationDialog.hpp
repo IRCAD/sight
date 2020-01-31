@@ -42,7 +42,7 @@ public:
 
     fwCoreClassMacro(INotificationDialog, ::fwGui::GuiBaseObject)
 
-    /// Icon type
+    /// Notification Type (changes Qss style).
     enum class Type
     {
         INFO = 0,
@@ -52,6 +52,7 @@ public:
         DEFAULT = INFO
     };
 
+    /// Where to display notifications.
     enum class Position
     {
         TOP_RIGHT = 0,
@@ -84,11 +85,20 @@ public:
     /// Set the size
     FWGUI_API virtual void setSize(unsigned int _width, unsigned int _height);
 
+    /// Set the index
+    FWGUI_API virtual void setIndex(unsigned int _index);
+
     /// Set the duration in ms.
     FWGUI_API virtual void setDuration(int _durationInMs);
 
     /// Show the message box and return the clicked button.
     FWGUI_API virtual void show() = 0;
+
+    /// Is the popup displayed at screen.
+    FWGUI_API virtual bool isVisible() const = 0;
+
+    /// Close the popup without any effects.
+    FWGUI_API virtual void close() const = 0;
 
 protected:
 
@@ -106,6 +116,10 @@ protected:
 
     /// Size as [width, height].
     std::array<unsigned int, 2> m_size {200, 60};
+
+    /// Position of the notification, used to avoid overlapping
+    /// when several notifications are shown. (0 = first, 1 = second, ...)
+    unsigned int m_index {0};
 
 };
 

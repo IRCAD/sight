@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,11 @@
 
 #include <fwGui/dialog/INotificationDialog.hpp>
 
+#include <QGraphicsOpacityEffect>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QPointer>
+#include <QPropertyAnimation>
 
 #include <string>
 
@@ -50,6 +53,22 @@ public:
     virtual ~ClickableQLabel()
     {
 
+    }
+
+public Q_SLOTS:
+
+    /// Fadeout effect launched when closing the Widget.
+    void fadeout()
+    {
+        QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
+        this->setGraphicsEffect(effect);
+        QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
+        a->setDuration(500); // it will took 500 to fade out
+        a->setStartValue(0.9);
+        a->setEndValue(0);
+        a->setEasingCurve(QEasingCurve::OutBack);
+        a->start(QPropertyAnimation::DeleteWhenStopped);
+        QObject::connect(a, &QPropertyAnimation::finished, this, &ClickableQLabel::close);
     }
 
 Q_SIGNALS:
@@ -90,6 +109,17 @@ public:
     /// Show the notification relative to the active window.
     FWGUIQT_API void show() override;
 
+    /**
+     * @brief Returns whether the popup is displayed or not.
+     * @return boolean (true is visible, false otherwise).
+     */
+    FWGUIQT_API bool isVisible() const override final;
+
+    /**
+     * @brief Closes the popup (use a fadeout effect).
+     */
+    FWGUIQT_API void close() const override final;
+
 private:
 
     /**
@@ -97,6 +127,9 @@ private:
      * @return the position in pixel as QPoint.
      */
     QPoint computePosition();
+
+    /// Pointer to the Popup QLabel.
+    QPointer< ClickableQLabel > m_msgBox;
 
 };
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,6 +74,28 @@ public:
 
     /// Show the message box and return the clicked button.
     FWGUI_API virtual void show() override;
+
+    /// Set the message.
+    FWGUI_API virtual void setMessage(const std::string& _msg) override;
+
+    /// Set the notification type.
+    FWGUI_API virtual void setType( Type _type) override;
+
+    /// Set the position.
+    FWGUI_API virtual void setPosition( Position _position) override;
+
+    /// Set the size
+    FWGUI_API virtual void setSize(unsigned int _width, unsigned int _height) override;
+
+    /// Set the index
+    FWGUI_API virtual void setIndex(unsigned int _index) override;
+
+    /// Set the duration in ms.
+    FWGUI_API virtual void setDuration(int _durationInMs) override;
+
+    FWGUI_API virtual bool isVisible() const override;
+
+    FWGUI_API virtual void close() const override;
 
 protected:
 

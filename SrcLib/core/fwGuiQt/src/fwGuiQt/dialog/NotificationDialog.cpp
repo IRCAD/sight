@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,6 @@
 #include <fwGui/registry/macros.hpp>
 
 #include <QApplication>
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
 #include <QTimer>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::NotificationDialog, ::fwGui::dialog::INotificationDialog::REGISTRY_KEY );
@@ -52,6 +50,10 @@ void NotificationDialog::show()
     QWidget* win    = qApp->activeWindow();
     QPoint position = computePosition();
 
+    QTimer fadeOutTime;
+    fadeOutTime.setSingleShot(true);
+    fadeOutTime.setInterval(m_duration);
+
     // Fade in effect.
     QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
     QPropertyAnimation* a          = new QPropertyAnimation(effect, "opacity");
@@ -61,66 +63,88 @@ void NotificationDialog::show()
     a->setEasingCurve(QEasingCurve::InBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 
-    ClickableQLabel* msgbox = new ClickableQLabel(win);
-    msgbox->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
-    msgbox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
-    msgbox->setWordWrap(true);
-    msgbox->setScaledContents(true);
-    msgbox->setText(QString::fromStdString(m_message));
+    m_msgBox = new ClickableQLabel(win);
+    m_msgBox->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
+    m_msgBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+    m_msgBox->setWordWrap(true);
+    m_msgBox->setScaledContents(true);
+    m_msgBox->setText(QString::fromStdString(m_message));
 
-    msgbox->move(position);
+    m_msgBox->move(position);
 
-    if(m_notificationType == INotificationDialog::Type::SUCCESS)
+    if(qApp->styleSheet().isEmpty()) // If no styleSheet is used.
     {
-        msgbox->setStyleSheet("background-color:#58D68D;color:white;font-weight: bold;font-size: 16px");
-    }
-    else if(m_notificationType == INotificationDialog::Type::FAILURE)
-    {
-        msgbox->setStyleSheet("background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px");
-    }
-    else if(m_notificationType == INotificationDialog::Type::INFO)
-    {
-        msgbox->setStyleSheet("background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px");
+        if(m_notificationType == INotificationDialog::Type::SUCCESS)
+        {
+            m_msgBox->setStyleSheet("background-color:#58D68D;color:white;font-weight: bold;font-size: 16px");
+        }
+        else if(m_notificationType == INotificationDialog::Type::FAILURE)
+        {
+            m_msgBox->setStyleSheet("background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px");
+        }
+        else // INFO by default.
+        {
+            m_msgBox->setStyleSheet("background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px");
+        }
     }
     else
     {
-        //TODO: Default style.
+        if(m_notificationType == INotificationDialog::Type::SUCCESS)
+        {
+            m_msgBox->setObjectName("Notification-Success");
+        }
+        else if(m_notificationType == INotificationDialog::Type::FAILURE)
+        {
+            m_msgBox->setObjectName("Notification-Failure");
+        }
+        else // INFO by default.
+        {
+            m_msgBox->setObjectName("Notification-Info");
+        }
     }
 
     // fade in effect.
-    msgbox->setGraphicsEffect(effect);
+    m_msgBox->setGraphicsEffect(effect);
     // Align text at center.
-    msgbox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     // Remove Title & Status bar, and display always on top.
-    msgbox->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    m_msgBox->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     // Add rounded borders.
     QPainterPath path;
-    path.addRoundedRect(msgbox->rect(), 10, 10);
-    msgbox->setMask(path.toFillPolygon().toPolygon());
-
-    // Fade out effect as a lambda.
-    auto fadeout = [msgbox]()
-                   {
-                       QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
-                       msgbox->setGraphicsEffect(effect);
-                       QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
-                       a->setDuration(500); // it will took 500 to fade out
-                       a->setStartValue(0.9);
-                       a->setEndValue(0);
-                       a->setEasingCurve(QEasingCurve::OutBack);
-                       a->start(QPropertyAnimation::DeleteWhenStopped);
-                       QObject::connect(a, &QPropertyAnimation::finished, msgbox, &ClickableQLabel::close);
-                   };
+    path.addRoundedRect(m_msgBox->rect(), 10, 10);
+    m_msgBox->setMask(path.toFillPolygon().toPolygon());
 
     /// Close when clicked.
-    QObject::connect(msgbox, &ClickableQLabel::clicked, msgbox, &ClickableQLabel::close);
+    QObject::connect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::close);
 
     /// Display it.
-    msgbox->show();
+    m_msgBox->show();
 
     /// Launch Timer and fadeout before closing.
-    QTimer::singleShot(m_duration, fadeout);
+    QTimer::singleShot(m_duration, m_msgBox, &ClickableQLabel::fadeout);
+}
+
+//------------------------------------------------------------------------------
+
+bool NotificationDialog::isVisible() const
+{
+    if(!m_msgBox)
+    {
+        return false;
+    }
+
+    return m_msgBox->isVisible();
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::close() const
+{
+    if(m_msgBox)
+    {
+        m_msgBox->fadeout();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +174,9 @@ QPoint NotificationDialog::computePosition()
             const auto parentPosTop    = win->rect().top();
 
             position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
-                              parentPosTop + margins.y());
+                              parentPosTop + margins.y() +
+                              ((parentPosTop + margins.y() + static_cast<int>(m_size[1])) *
+                               static_cast<int>(m_index)));
 
         }
         else if (m_position == Position::CENTERED_BOTTOM)
@@ -159,28 +185,36 @@ QPoint NotificationDialog::computePosition()
             const auto parentPosBottom = win->rect().bottom();
 
             position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
-                              parentPosBottom - margins.y() - static_cast<int>(m_size[1]));
+                              parentPosBottom - margins.y()- static_cast<int>(m_size[1]));
+
+            position.setY( position.y() - (static_cast<int>(m_index) * (static_cast<int>(m_size[1]) + margins.y())) );
         }
         else if(m_position == Position::TOP_LEFT)
         {
             const auto parentPosTopLeft = win->rect().topLeft();
 
             position = QPoint((parentPosTopLeft.x() + margins.x()),
-                              parentPosTopLeft.y() + margins.y());
+                              parentPosTopLeft.y() + margins.y() +
+                              (  (parentPosTopLeft.y() + margins.y() + static_cast<int>(m_size[1])) *
+                                 static_cast<int>(m_index)));
         }
         else if(m_position == Position::TOP_RIGHT)
         {
             const auto parentPosTopRight = win->rect().topRight();
 
             position = QPoint((parentPosTopRight.x() - margins.x()) - static_cast<int>(m_size[0]),
-                              parentPosTopRight.y() + margins.y());
+                              parentPosTopRight.y() + margins.y() +
+                              (  (parentPosTopRight.y() + margins.y() + static_cast<int>(m_size[1])) *
+                                 static_cast<int>(m_index)));
         }
         else if(m_position == Position::BOTTOM_LEFT)
         {
             const auto parentPosBottomLeft = win->rect().bottomLeft();
 
-            position = QPoint((parentPosBottomLeft.x() + margins.x()),
+            position = QPoint(parentPosBottomLeft.x() + margins.x(),
                               parentPosBottomLeft.y() - margins.y() - static_cast<int>(m_size[1]));
+
+            position.setY( position.y() - (static_cast<int>(m_index) * (static_cast<int>(m_size[1]) + margins.y())) );
         }
         else if(m_position == Position::BOTTOM_RIGHT)
         {
@@ -188,6 +222,8 @@ QPoint NotificationDialog::computePosition()
 
             position = QPoint((parentPosBottomRight.x() - margins.x()) - static_cast<int>(m_size[0]),
                               parentPosBottomRight.y() - margins.y() - static_cast<int>(m_size[1]));
+
+            position.setY( position.y() - (static_cast<int>(m_index) * (static_cast<int>(m_size[1]) + margins.y())) );
         }
     }
     else // FIXME: if no active window where to pop the notification ?

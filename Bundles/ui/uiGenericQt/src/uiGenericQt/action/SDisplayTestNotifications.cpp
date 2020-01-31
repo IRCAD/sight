@@ -32,6 +32,7 @@ namespace action
 {
 
 static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SDisplayTestNotifications)
 
@@ -40,6 +41,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SDisplayTes
 SDisplayTestNotifications::SDisplayTestNotifications( ) noexcept
 {
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SDisplayTestNotifications::setEnumParameter, this);
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SDisplayTestNotifications::setBoolParameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -119,6 +121,20 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
 
 //------------------------------------------------------------------------------
 
+void SDisplayTestNotifications::setBoolParameter(bool _val, std::string _key)
+{
+    if(_key == "useSNotifier")
+    {
+        m_useSNotifier = _val;
+    }
+    else
+    {
+        SLM_ERROR("Key '" + _key + "' is not handled." );
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SDisplayTestNotifications::info(std::ostream& _sstream )
 {
     _sstream << "SDisplayTestNotifications" << std::endl;
@@ -135,27 +151,59 @@ void SDisplayTestNotifications::configuring()
 
 void SDisplayTestNotifications::updating( )
 {
-
-    if(m_displayAll)
+    if(m_useSNotifier)
     {
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                           ::dial::NotificationDialog::Position::TOP_LEFT );
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                           ::dial::NotificationDialog::Position::TOP_RIGHT );
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                           ::dial::NotificationDialog::Position::CENTERED_TOP );
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                           ::dial::NotificationDialog::Position::CENTERED );
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                           ::dial::NotificationDialog::Position::BOTTOM_LEFT );
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                           ::dial::NotificationDialog::Position::BOTTOM_RIGHT );
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
-                                                           ::dial::NotificationDialog::Position::CENTERED_BOTTOM );
+        // Mode 1: You use the SNotifier service that will display for you the notifications, you need to emit the
+        // proper signal.
+        // Notification will always be displayed at the same place,
+        // and will be queued if several notifications are displayed at the same time.
+
+        if(m_type == ::dial::NotificationDialog::Type::SUCCESS)
+        {
+            auto notif = this->signal< ::fwServices::IService::NotifyFailureSignalType >(
+                ::fwServices::IService::s_NOTIFY_SUCCESS_SIG);
+
+            notif->asyncEmit("Notification Test !");
+        }
+        else if(m_type == ::dial::NotificationDialog::Type::FAILURE)
+        {
+            auto notif = this->signal< ::fwServices::IService::NotifyFailureSignalType >(
+                ::fwServices::IService::s_NOTIFY_FAILURE_SIG);
+
+            notif->asyncEmit("Notification Test !.");
+        }
+        else
+        {
+            auto notif = this->signal< ::fwServices::IService::NotifyFailureSignalType >(
+                ::fwServices::IService::s_NOTIFY_INFO_SIG);
+
+            notif->asyncEmit("Notification Test !.");
+        }
     }
     else
     {
-        ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type, m_position );
+        // Mode 2: Standalone, you decide where to pop the notification by calling directly the NotificationDialog.
+        if(m_displayAll)
+        {
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
+                                                               ::dial::NotificationDialog::Position::TOP_LEFT );
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
+                                                               ::dial::NotificationDialog::Position::TOP_RIGHT );
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
+                                                               ::dial::NotificationDialog::Position::CENTERED_TOP );
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
+                                                               ::dial::NotificationDialog::Position::CENTERED );
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
+                                                               ::dial::NotificationDialog::Position::BOTTOM_LEFT );
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
+                                                               ::dial::NotificationDialog::Position::BOTTOM_RIGHT );
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type,
+                                                               ::dial::NotificationDialog::Position::CENTERED_BOTTOM );
+        }
+        else
+        {
+            ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type, m_position );
+        }
     }
 
 }

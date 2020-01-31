@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,6 +86,116 @@ void NotificationDialog::show()
         std::shared_future<void> f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
         f.wait();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::setMessage(const std::string& _msg)
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setMessage(_msg);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::setType(INotificationDialog::Type _type)
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setType(_type);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::setPosition(INotificationDialog::Position _position)
+{
+
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setPosition(_position);
+                }
+            })).wait();
+
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setSize(_width, _height);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::setIndex(unsigned int _index)
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setIndex(_index);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::setDuration(int _durationInMs)
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setDuration(_durationInMs);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+bool NotificationDialog::isVisible() const
+{
+
+    bool visible = false;
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    visible = m_implementation->isVisible();
+                }
+            })).wait();
+
+    return visible;
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::close() const
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->close();
+                }
+            })).wait();
 }
 
 //-----------------------------------------------------------------------------

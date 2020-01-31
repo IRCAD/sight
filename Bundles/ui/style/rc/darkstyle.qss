@@ -1476,3 +1476,27 @@ QLabel#SActivityWizard_description
 {
     background: #31363B;
 }
+
+#Notification-Success
+{
+    background-color:#58D68D;
+    color:white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#Notification-Failure
+{
+    background-color:#E74C3C;
+    color:white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#Notification-Info
+{
+    background-color:#5DADE2;
+    color:white;
+    font-weight: bold;
+    font-size: 16px;
+}

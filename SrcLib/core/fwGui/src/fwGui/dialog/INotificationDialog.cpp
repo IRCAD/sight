@@ -72,6 +72,13 @@ void INotificationDialog::setSize(unsigned int _width, unsigned int _height)
 
 //-----------------------------------------------------------------------------
 
+void INotificationDialog::setIndex(unsigned int _index)
+{
+    m_index = _index;
+}
+
+//-----------------------------------------------------------------------------
+
 void INotificationDialog::setDuration(int _durationInMs)
 {
     m_duration = _durationInMs;
