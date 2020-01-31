@@ -131,8 +131,6 @@ void OffScreenRenderWindowInteractorManager::disconnectInteractor()
 {
     m_ogreRenderTarget = nullptr;
 
-    OffScreenRenderWindowInteractorManager::m_counter--;
-
     if(m_ogreRenderWindow)
     {
         ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
