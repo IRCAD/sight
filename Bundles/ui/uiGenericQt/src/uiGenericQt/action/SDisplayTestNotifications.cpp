@@ -22,9 +22,15 @@
 
 #include "uiGenericQt/action/SDisplayTestNotifications.hpp"
 
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwServices/macros.hpp>
+
+#include <QApplication>
+#include <QFile>
+#include <QString>
+#include <QTextStream>
 
 namespace uiGenericQt
 {
@@ -160,24 +166,24 @@ void SDisplayTestNotifications::updating( )
 
         if(m_type == ::dial::NotificationDialog::Type::SUCCESS)
         {
-            auto notif = this->signal< ::fwServices::IService::NotifyFailureSignalType >(
-                ::fwServices::IService::s_NOTIFY_SUCCESS_SIG);
+            auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+                ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
 
             notif->asyncEmit("Notification Test !");
         }
         else if(m_type == ::dial::NotificationDialog::Type::FAILURE)
         {
-            auto notif = this->signal< ::fwServices::IService::NotifyFailureSignalType >(
-                ::fwServices::IService::s_NOTIFY_FAILURE_SIG);
+            auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+                ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
 
-            notif->asyncEmit("Notification Test !.");
+            notif->asyncEmit("Notification Test !");
         }
         else
         {
-            auto notif = this->signal< ::fwServices::IService::NotifyFailureSignalType >(
-                ::fwServices::IService::s_NOTIFY_INFO_SIG);
+            auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+                ::fwServices::IService::s_INFO_NOTIFIED_SIG);
 
-            notif->asyncEmit("Notification Test !.");
+            notif->asyncEmit("Notification Test !");
         }
     }
     else
@@ -205,7 +211,6 @@ void SDisplayTestNotifications::updating( )
             ::dial::NotificationDialog::showNotificationDialog("Notification Test !", m_type, m_position );
         }
     }
-
 }
 
 //------------------------------------------------------------------------------

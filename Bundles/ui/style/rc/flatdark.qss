@@ -1351,24 +1351,27 @@ QProgressBar::chunk
 
 #Notification-Success
 {
-    background-color:#58D68D;
-    color:white;
+    background-color: rgb(119, 183, 103);
+    color: rgb(255, 255, 255);
     font-weight: bold;
     font-size: 16px;
+    border-radius: 4px;
 }
 
 #Notification-Failure
 {
-    background-color:#E74C3C;
-    color:white;
+    background-color: rgb(255, 107, 104);
+    color: rgb(255, 255, 255);
     font-weight: bold;
     font-size: 16px;
+    border-radius: 4px;
 }
 
 #Notification-Info
 {
-    background-color:#5DADE2;
-    color:white;
+    background-color: rgb(104, 151, 187);
+    color: rgb(255, 255, 255);
     font-weight: bold;
     font-size: 16px;
+    border-radius: 4px;
 }

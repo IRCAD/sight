@@ -23,6 +23,7 @@
 #pragma once
 
 #include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/GuiBaseObject.hpp"
 
 #include <array>
@@ -33,7 +34,7 @@ namespace fwGui
 namespace dialog
 {
 /**
- * @brief   Defines the generic notification popup GUI.
+ * @brief Defines the generic notification popup GUI.
  */
 class FWGUI_CLASS_API INotificationDialog : public ::fwGui::GuiBaseObject
 {
@@ -65,40 +66,69 @@ public:
         DEFAULT = TOP_RIGHT
     };
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     FWGUI_API INotificationDialog();
-    /// Destructor. Do nothing.
+
+    /// Destructor. Does nothing.
     FWGUI_API virtual ~INotificationDialog() override;
 
     typedef std::string FactoryRegistryKeyType;
     FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
-    /// Set the message.
+    /**
+     * @brief Sets the message.
+     * @param _msg message as a std::string, it can be empty.
+     */
     FWGUI_API virtual void setMessage(const std::string& _msg);
 
-    /// Set the notification type.
+    /**
+     * @brief Sets the notification type.
+     * @param _type notification type @see Type.
+     */
     FWGUI_API virtual void setType( Type _type);
 
-    /// Set the position.
+    /**
+     * @brief Sets the position.
+     * @param _position notification position @see Position.
+     */
     FWGUI_API virtual void setPosition( Position _position);
 
-    /// Set the size
+    /**
+     * @brief Sets the size
+     * @param _width width of the notification in pixel.
+     * @param _height height of the notification in pixel.
+     */
     FWGUI_API virtual void setSize(unsigned int _width, unsigned int _height);
 
-    /// Set the index
+    /**
+     * @brief Sets the queue index of the notification (when notifications are queued).
+     * @param _index index in the queue (0 = first, 1 = second,...).
+     */
     FWGUI_API virtual void setIndex(unsigned int _index);
 
-    /// Set the duration in ms.
+    /**
+     * @brief Sets the duration in ms.
+     * @param _durationInMs duration of the notification before closing (+ 1 sec of fade in/out effects).
+     */
     FWGUI_API virtual void setDuration(int _durationInMs);
 
-    /// Show the message box and return the clicked button.
+    /// Shows the message box and return the clicked button.
     FWGUI_API virtual void show() = 0;
 
-    /// Is the popup displayed at screen.
+    /// Gets the visibility, needs to be reimplemented.
     FWGUI_API virtual bool isVisible() const = 0;
 
-    /// Close the popup without any effects.
+    /// Closes the notification, needs to be reimplemented.
     FWGUI_API virtual void close() const = 0;
+
+    /**
+     * @brief Attaches a parent container to the notification.
+     * @param _container the parent container, nullptr is handled.
+     */
+    FWGUI_API virtual void setContainer(::fwGui::container::fwContainer::csptr _container)
+    {
+        m_parentContainer = _container;
+    }
 
 protected:
 
@@ -120,6 +150,9 @@ protected:
     /// Position of the notification, used to avoid overlapping
     /// when several notifications are shown. (0 = first, 1 = second, ...)
     unsigned int m_index {0};
+
+    /// Pointer to the parent container, default nullptr.
+    ::fwGui::container::fwContainer::csptr m_parentContainer {nullptr};
 
 };
 

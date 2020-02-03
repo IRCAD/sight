@@ -73,9 +73,9 @@ class Worker;
  * - \b started() : Emitted when the service has started.
  * - \b updated() : Emitted when the service has updated.
  * - \b stopped() : Emitted when the service has stopped.
- * - \b notifyInfo(std::string _message): Emitted when the service wants to pop an info notification.
- * - \b notifySuccess(std::string _message): Emitted when the service wants to pop a success notification.
- * - \b notifyFailure(std::string _message): Emitted when the service wants to pop a failure notification.
+ * - \b infoNotified(std::string _message): Emitted when the service wants to pop an info notification.
+ * - \b successNotified(std::string _message): Emitted when the service wants to pop a success notification.
+ * - \b failureNotified(std::string _message): Emitted when the service wants to pop a failure notification.
  *
  * @section Slots Slots
  * - \b start() : Start the service.
@@ -207,14 +207,14 @@ public:
     FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_STOPPED_SIG;
     typedef ::fwCom::Signal<void ()> StoppedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_NOTIFY_INFO_SIG;
-    typedef ::fwCom::Signal<void (std::string)> NotifyInfoSignalType;
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_INFO_NOTIFIED_SIG;
+    typedef ::fwCom::Signal<void (std::string)> InfoNotifiedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_NOTIFY_SUCCESS_SIG;
-    typedef ::fwCom::Signal<void (std::string)> NotifySuccessSignalType;
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_SUCCESS_NOTIFIED_SIG;
+    typedef ::fwCom::Signal<void (std::string)> SuccessNotifiedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_NOTIFY_FAILURE_SIG;
-    typedef ::fwCom::Signal<void (std::string)> NotifyFailureSignalType;
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_FAILURE_NOTIFIED_SIG;
+    typedef ::fwCom::Signal<void (std::string)> FailureNotifiedSignalType;
 
     //@}
 

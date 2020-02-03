@@ -41,8 +41,9 @@ namespace action
  * @section Slots Slots
  * - \b setEnumParameter (std::string _value, std::string _key) : call this slot when changing the position or
  * the type of displayed notification( accepted _key are 'position' & 'type').
- *   - Values for'position' key : ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM.
- *   - Values for 'type' key : INFO,SUCCESS,FAILURE.
+ *   - Values for'position' key : ALL, TOP_LEFT, TOP_RIGHT, CENTERED_TOP, CENTERED, BOTTOM_LEFT, BOTTOM_RIGHT,
+ * CENTERED_BOTTOM.
+ *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
 class UIGENERICQT_CLASS_API SDisplayTestNotifications : public ::fwGui::IActionSrv
@@ -89,10 +90,9 @@ private:
     /// Type of the notification.
     ::dial::NotificationDialog::Type m_type {::dial::NotificationDialog::Type::DEFAULT};
     /// Display notification at all position, default true.
-    bool m_displayAll {true};
-
+    bool m_displayAll {false};
     /// Use centralized Mode.
-    bool m_useSNotifier {false};
+    bool m_useSNotifier {true};
 
 };
 

@@ -51,24 +51,27 @@ namespace guiQt
             <maxNotifications>3</maxNotifications>
             <position>TOP_RIGHT</position>
             <duration>3000</duration>
+            <parent uid="myContainerID"/>
         </service>
    @endcode
  *
  * @subsection Configuration Configuration
  * - \b message (optional) : default message of the notification is the emited signal contains empty string (default:
- *"Notification").
- * - \b maxNotifications (optional): max number of queued notifications (default 3).
- * - \b position (optional) : position of the notification queue (default: TOP_RIGHT).
+ * "Notification").
+ * - \b maxNotifications (optional): max number of queued notifications (default: 3).
+ * - \b position (optional): position of the notification queue (default: TOP_RIGHT).
  *  accepted values are:
- *   - TOP_RIGHT(default).
+ *   - TOP_RIGHT: default value.
  *   - TOP_LEFT
  *   - CENTERED_TOP
  *   - CENTERED: when choosing CENTERED, only ONE notification can be displayed at time (maxNotifications is ignored).
  *   - BOTTOM_RIGHT
  *   - BOTTOM_LEFT
- *   - CENTERED_BOTTOM.
+ *   - CENTERED_BOTTOM
  *
- * - \b duration (optional) : duration in ms of the notification (+ 1 sec for fadein & fadeout effects) (default 3000).
+ * - \b duration (optional): duration in ms of the notification (+ 1 sec for fadein & fadeout effects) (default 3000).
+ * - \b parent (optional): uid of the gui Container where the notifications will be displayed (default the whole app),
+ * NOTE: we use the xml attribute "uid" to resolve "${GENERIC_UID}_" prefixes.
  */
 class GUIQT_CLASS_API SNotifier : public ::fwServices::IController
 {
@@ -76,10 +79,10 @@ public:
 
     fwCoreServiceMacro(SNotifier, ::fwServices::IController)
 
-    /// Constructor. Do nothing.
+    /// Constructor, initializes position map & slots.
     GUIQT_API SNotifier() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Destructor, clears the position map.
     GUIQT_API virtual ~SNotifier() noexcept override;
 
 protected:
@@ -92,12 +95,12 @@ protected:
     GUIQT_API virtual void configuring() override;
 
     /**
-     * @brief This method enables the eventFilter
+     * @brief Starts and setups the service optionnaly gets the parent container SID/WID if set.
      */
     GUIQT_API virtual void starting() override;
 
     /**
-     * @brief This method deletes the eventFilter
+     * @brief Stops & clears the service
      */
     GUIQT_API virtual void stopping() override;
 
@@ -113,26 +116,26 @@ private:
 
     /**
      * @brief Slot pop info notification
-     * @param _message: text of the notification
+     * @param _message text of the notification
      */
     void popInfo(std::string _message);
 
     /**
-     * @brief Slot pop info notification
-     * @param _message: text of the notification
+     * @brief Slot pop success notification
+     * @param _message text of the notification
      */
     void popSuccess(std::string _message);
 
     /**
-     * @brief Slot pop info notification
-     * @param _message: text of the notification
+     * @brief Slot pop failure notification
+     * @param _message text of the notification
      */
     void popFailure(std::string _message);
 
     /**
      * @brief Queue the notification and display it (called by popInfo/Success/Failure Slot).
-     * @param _message: message to display.
-     * @param _type: type of the notification.
+     * @param _message message to display.
+     * @param _type type of the notification.
      */
     void showNotification(const std::string& _message, ::fwGui::dialog::NotificationDialog::Type _type);
 
@@ -156,6 +159,12 @@ private:
     std::vector< ::fwGui::dialog::NotificationDialog::sptr > m_popups {};
     /// Queue of index in m_popups to remove oldest if m_maxStackedNotifs is reached.
     std::queue< size_t > m_indexQueue;
+
+    /// fwContainer where notifications will be displayed in, default nullptr.
+    ::fwGui::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};
+
+    /// Parent containner ID (SID or WID), default empty.
+    std::string m_parentContainerID;
 
 };
 

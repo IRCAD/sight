@@ -26,6 +26,12 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwGui/GuiRegistry.hpp>
+
+#include <fwServices/macros.hpp>
+
+fwServicesRegisterMacro( ::fwServices::IController, ::guiQt::SNotifier )
+
 namespace guiQt
 {
 
@@ -34,8 +40,6 @@ static const ::fwCom::Slots::SlotKeyType s_POP_SUCCESS_SLOT = "popSuccess";
 static const ::fwCom::Slots::SlotKeyType s_POP_FAILURE_SLOT = "popFailure";
 
 static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
-
-fwServicesRegisterMacro( ::fwServices::IController, ::guiQt::SNotifier )
 
 //-----------------------------------------------------------------------------
 
@@ -70,12 +74,22 @@ void SNotifier::configuring()
     const auto configTree = this->getConfigTree();
     m_defaultMessage = configTree.get< std::string >("message", m_defaultMessage);
     const std::string position = configTree.get< std::string >("position", "TOP_RIGHT");
-    m_notifcationsPosition = m_positionMap[position];
+
+    if(m_positionMap.find(position) != m_positionMap.end())
+    {
+        m_notifcationsPosition = m_positionMap[position];
+    }
+    else
+    {
+        SLM_ERROR("Position '" + position + "' isn't a valid position value, accepted values are:"
+                  "TOP_RIGHT, TOP_LEFT, CENTERED_TOP, CENTERED, BOTTOM_RIGHT, BOTTOM_LEFT, CENTERED_BOTTOM.")
+    }
 
     m_durationInMs = configTree.get<int>("duration", m_durationInMs);
 
     m_maxStackedNotifs = configTree.get<std::uint8_t>("maxNotifications", m_maxStackedNotifs);
 
+    m_parentContainerID = configTree.get< std::string >("parent.<xmlattr>.uid", m_parentContainerID);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,6 +97,23 @@ void SNotifier::configuring()
 void SNotifier::starting()
 {
     m_popups.resize(m_maxStackedNotifs);
+
+    if(!m_parentContainerID.empty())
+    {
+        auto container = ::fwGui::GuiRegistry::getSIDContainer(m_parentContainerID);
+
+        if(!container)
+        {
+            container = ::fwGui::GuiRegistry::getWIDContainer(m_parentContainerID);
+        }
+
+        // If we have an SID/WID set the container.
+        if(container)
+        {
+            m_containerWhereToDisplayNotifs = container;
+        }
+
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -186,6 +217,8 @@ void SNotifier::showNotification(const std::string& _message, fwGui::dialog::INo
 
     ::fwGui::dialog::NotificationDialog::sptr notif =
         ::fwGui::dialog::NotificationDialog::New();
+
+    notif->setContainer(m_containerWhereToDisplayNotifs);
 
     notif->setMessage(messageToShow);
     notif->setType(_type);

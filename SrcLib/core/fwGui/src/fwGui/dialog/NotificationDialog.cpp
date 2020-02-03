@@ -200,5 +200,18 @@ void NotificationDialog::close() const
 
 //-----------------------------------------------------------------------------
 
+void NotificationDialog::setContainer(container::fwContainer::csptr _container)
+{
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setContainer(_container);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace dialog
 } // namespace fwGui

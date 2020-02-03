@@ -32,7 +32,7 @@ namespace fwGui
 namespace dialog
 {
 /**
- * @brief   Defines the generic message box for IHM.
+ * @brief Defines the generic message box for IHM.
  * Use the Delegate design pattern.
  */
 class FWGUI_CLASS_API NotificationDialog : public ::fwGui::dialog::INotificationDialog
@@ -46,8 +46,8 @@ public:
      * Opens a default message box with the specified title, text and icon.
      *
      * @param _message Message of the notification box
-     * @param _type : type of the notification box (SUCESS, FAILURE or INFO)
-     * @param _pos : position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
+     * @param _type type of the notification box (SUCESS, FAILURE or INFO)
+     * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      */
     FWGUI_API static void showNotificationDialog( const std::string& _message,
                                                   INotificationDialog::Type _type =
@@ -61,41 +61,52 @@ public:
      * Constructor
      * Creates a notification box with the specified text and type.
      *
-     * @param message Message of the notification box
-     * @param _type : type of the notification box (SUCESS, FAILURE or INFO)
-     * @param _pos : position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
+     * @param _message message of the notification box
+     * @param _type type of the notification box (SUCCESS, FAILURE or INFO)
+     * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      */
     FWGUI_API NotificationDialog( const std::string& _message,
                                   INotificationDialog::Type _type    = INotificationDialog::Type::DEFAULT,
                                   INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT);
 
-    /// Destructor. Do nothing
+    /// Destructor. Does nothing
     FWGUI_API virtual ~NotificationDialog() override;
 
-    /// Show the message box and return the clicked button.
+    /// Shows the message box and return the clicked button.
     FWGUI_API virtual void show() override;
 
-    /// Set the message.
+    /// Sets the message.
     FWGUI_API virtual void setMessage(const std::string& _msg) override;
 
-    /// Set the notification type.
+    /// Sets the notification type.
     FWGUI_API virtual void setType( Type _type) override;
 
-    /// Set the position.
+    /// Sets the position.
     FWGUI_API virtual void setPosition( Position _position) override;
 
-    /// Set the size
+    /// Sets the size
     FWGUI_API virtual void setSize(unsigned int _width, unsigned int _height) override;
 
-    /// Set the index
+    /// Sets the index
     FWGUI_API virtual void setIndex(unsigned int _index) override;
 
-    /// Set the duration in ms.
+    /// Sets the duration in ms.
     FWGUI_API virtual void setDuration(int _durationInMs) override;
 
+    /**
+     * @brief Gets the visibility
+     * @return Visibility, true = visible.
+     */
     FWGUI_API virtual bool isVisible() const override;
 
+    /// Closes the notification.
     FWGUI_API virtual void close() const override;
+
+    /**
+     * @brief Sets the parent container.
+     * @param _container const pointer to a ::fwGui::container::fwContainer.
+     */
+    FWGUI_API virtual void setContainer(::fwGui::container::fwContainer::csptr _container) override;
 
 protected:
 

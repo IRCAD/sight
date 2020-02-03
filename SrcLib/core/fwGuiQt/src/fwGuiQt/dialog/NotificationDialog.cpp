@@ -22,6 +22,8 @@
 
 #include "fwGuiQt/dialog/NotificationDialog.hpp"
 
+#include "fwGuiQt/container/QtContainer.hpp"
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QApplication>
@@ -47,23 +49,34 @@ NotificationDialog::~NotificationDialog()
 
 void NotificationDialog::show()
 {
-    QWidget* win    = qApp->activeWindow();
-    QPoint position = computePosition();
+    // Check if we have a Parent widget.
+    QWidget* parent = qApp->activeWindow();
+
+    ::fwGuiQt::container::QtContainer::csptr parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        m_parentContainer);
+
+    // Replace the activeWindow by the parentContainer if exists.
+    if(parentContainer)
+    {
+        parent = parentContainer->getQtContainer();
+    }
+
+    const QPoint position = computePosition(parent);
 
     QTimer fadeOutTime;
     fadeOutTime.setSingleShot(true);
     fadeOutTime.setInterval(m_duration);
 
     // Fade in effect.
-    QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
-    QPropertyAnimation* a          = new QPropertyAnimation(effect, "opacity");
+    QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
+    QPropertyAnimation* const a          = new QPropertyAnimation(effect, "opacity");
     a->setDuration(500);  // in miliseconds
-    a->setStartValue(0);
-    a->setEndValue(0.9);
+    a->setStartValue(0); // Full transparent.
+    a->setEndValue(0.9); // 90% of opacity, to see through the popup.
     a->setEasingCurve(QEasingCurve::InBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 
-    m_msgBox = new ClickableQLabel(win);
+    m_msgBox = new ClickableQLabel(parent);
     m_msgBox->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
     m_msgBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
     m_msgBox->setWordWrap(true);
@@ -76,15 +89,18 @@ void NotificationDialog::show()
     {
         if(m_notificationType == INotificationDialog::Type::SUCCESS)
         {
-            m_msgBox->setStyleSheet("background-color:#58D68D;color:white;font-weight: bold;font-size: 16px");
+            m_msgBox->setStyleSheet(
+                "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px");
         }
         else if(m_notificationType == INotificationDialog::Type::FAILURE)
         {
-            m_msgBox->setStyleSheet("background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px");
+            m_msgBox->setStyleSheet(
+                "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px");
         }
         else // INFO by default.
         {
-            m_msgBox->setStyleSheet("background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px");
+            m_msgBox->setStyleSheet(
+                "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px");
         }
     }
     else
@@ -109,11 +125,6 @@ void NotificationDialog::show()
     m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     // Remove Title & Status bar, and display always on top.
     m_msgBox->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-
-    // Add rounded borders.
-    QPainterPath path;
-    path.addRoundedRect(m_msgBox->rect(), 10, 10);
-    m_msgBox->setMask(path.toFillPolygon().toPolygon());
 
     /// Close when clicked.
     QObject::connect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::close);
@@ -143,35 +154,34 @@ void NotificationDialog::close() const
 {
     if(m_msgBox)
     {
+        // Closing after a fade out effect.
         m_msgBox->fadeout();
     }
 }
 
 //------------------------------------------------------------------------------
 
-QPoint NotificationDialog::computePosition()
+QPoint NotificationDialog::computePosition(const QWidget* _parent) const
 {
-    QWidget* win = qApp->activeWindow();
     QPoint position;
 
     const QPoint margins(5, 5); // keep margins from border of active window.
 
-    // Use active window as basis.
-    if(win)
+    // Use _parent containter as basis.
+    if(_parent)
     {
         if(m_position == Position::CENTERED )
         {
-            const auto parentPosCenter = win->rect().center();
+            const auto parentPosCenter = _parent->rect().center();
 
             position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
                               parentPosCenter.y() - static_cast<int>(m_size[1] / 2));
 
         }
-        // Pop notification on center top of active window
         else if (m_position == Position::CENTERED_TOP)
         {
-            const auto parentPosCenter = win->rect().center();
-            const auto parentPosTop    = win->rect().top();
+            const auto parentPosCenter = _parent->rect().center();
+            const auto parentPosTop    = _parent->rect().top();
 
             position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
                               parentPosTop + margins.y() +
@@ -181,8 +191,8 @@ QPoint NotificationDialog::computePosition()
         }
         else if (m_position == Position::CENTERED_BOTTOM)
         {
-            const auto parentPosCenter = win->rect().center();
-            const auto parentPosBottom = win->rect().bottom();
+            const auto parentPosCenter = _parent->rect().center();
+            const auto parentPosBottom = _parent->rect().bottom();
 
             position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
                               parentPosBottom - margins.y()- static_cast<int>(m_size[1]));
@@ -191,7 +201,7 @@ QPoint NotificationDialog::computePosition()
         }
         else if(m_position == Position::TOP_LEFT)
         {
-            const auto parentPosTopLeft = win->rect().topLeft();
+            const auto parentPosTopLeft = _parent->rect().topLeft();
 
             position = QPoint((parentPosTopLeft.x() + margins.x()),
                               parentPosTopLeft.y() + margins.y() +
@@ -200,7 +210,7 @@ QPoint NotificationDialog::computePosition()
         }
         else if(m_position == Position::TOP_RIGHT)
         {
-            const auto parentPosTopRight = win->rect().topRight();
+            const auto parentPosTopRight = _parent->rect().topRight();
 
             position = QPoint((parentPosTopRight.x() - margins.x()) - static_cast<int>(m_size[0]),
                               parentPosTopRight.y() + margins.y() +
@@ -209,7 +219,7 @@ QPoint NotificationDialog::computePosition()
         }
         else if(m_position == Position::BOTTOM_LEFT)
         {
-            const auto parentPosBottomLeft = win->rect().bottomLeft();
+            const auto parentPosBottomLeft = _parent->rect().bottomLeft();
 
             position = QPoint(parentPosBottomLeft.x() + margins.x(),
                               parentPosBottomLeft.y() - margins.y() - static_cast<int>(m_size[1]));
@@ -218,7 +228,7 @@ QPoint NotificationDialog::computePosition()
         }
         else if(m_position == Position::BOTTOM_RIGHT)
         {
-            const auto parentPosBottomRight = win->rect().bottomRight();
+            const auto parentPosBottomRight = _parent->rect().bottomRight();
 
             position = QPoint((parentPosBottomRight.x() - margins.x()) - static_cast<int>(m_size[0]),
                               parentPosBottomRight.y() - margins.y() - static_cast<int>(m_size[1]));

@@ -36,6 +36,9 @@
 
 #include <string>
 
+namespace fwGuiQt
+{
+
 /// Create a clickable QLabel.
 class FWGUIQT_CLASS_API ClickableQLabel : public QLabel
 {
@@ -57,13 +60,13 @@ public:
 
 public Q_SLOTS:
 
-    /// Fadeout effect launched when closing the Widget.
+    /// Fade out effect launched when closing the Widget.
     void fadeout()
     {
-        QGraphicsOpacityEffect* effect = new QGraphicsOpacityEffect();
+        QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
         this->setGraphicsEffect(effect);
         QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
-        a->setDuration(500); // it will took 500 to fade out
+        a->setDuration(500); // it will took 500ms to fade out
         a->setStartValue(0.9);
         a->setEndValue(0);
         a->setEasingCurve(QEasingCurve::OutBack);
@@ -84,13 +87,40 @@ protected:
     }
 };
 
-namespace fwGuiQt
-{
 namespace dialog
 {
 
 /**
  * @brief Defines a notification popup.
+ *
+ * Example of how to customize the style of the popups (You need to refers to their names):
+ *
+ * @code{.qss}
+ #Notification-Success
+    {
+        background-color:#58D68D;
+        color:white;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+ #Notification-Failure
+    {
+        background-color:#E74C3C;
+        color:white;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+ #Notification-Info
+    {
+        background-color:#5DADE2;
+        color:white;
+        font-weight: bold;
+        font-size: 16px;
+    }
+   @endcode
+ *
  */
 class FWGUIQT_CLASS_API NotificationDialog : public ::fwGui::dialog::INotificationDialog
 {
@@ -124,9 +154,9 @@ private:
 
     /**
      * @brief Computes the position using the active window boundings.
-     * @return the position in pixel as QPoint.
+     * @return the position in pixel as a QPoint.
      */
-    QPoint computePosition();
+    QPoint computePosition(const QWidget* _parent) const;
 
     /// Pointer to the Popup QLabel.
     QPointer< ClickableQLabel > m_msgBox;

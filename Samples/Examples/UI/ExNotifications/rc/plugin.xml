@@ -67,13 +67,13 @@ are already displayed and where they are displayed on screen.
 
             <service uid="useSNotifier" type="::guiQt::editor::SParameters">
                 <parameters>
-                    <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="false" />
+                    <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="true" />
                 </parameters>
             </service>
 
             <service uid="position" type="::guiQt::editor::SParameters">
                 <parameters>
-                    <param type="enum" name="Position" key="position" defaultValue="ALL" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
+                    <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
                 </parameters>
             </service>
 
@@ -88,24 +88,26 @@ are already displayed and where they are displayed on screen.
 
             <!-- SNotifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
             <service uid="notifier" type="::guiQt::SNotifier" >
+                <parent uid="mainview"/> <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maiview" -->
                 <message>Default Message</message><!-- Default message printed if empty string is emitted in notify* signals -->
                 <position>TOP_RIGHT</position><!-- Default position for ALL notifications (overriden by setEnumParameter slot) -->
-                <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fadein & fadeout effects) -->
+                <maxNotifications>3</maxNotifications> <!-- Maximum number of queued notifications -->
+                <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
             </service>
 
             <!-- connection from IService notify signals to the SNotifier,you can add as many service as you need -->
             <connect>
-                <signal>testNotifier/notifyInfo</signal>
+                <signal>testNotifier/infoNotified</signal>
                 <slot>notifier/popInfo</slot>
             </connect>
 
             <connect>
-                <signal>testNotifier/notifySuccess</signal>
+                <signal>testNotifier/successNotified</signal>
                 <slot>notifier/popSuccess</slot>
             </connect>
 
             <connect>
-                <signal>testNotifier/notifyFailure</signal>
+                <signal>testNotifier/failureNotified</signal>
                 <slot>notifier/popFailure</slot>
             </connect>
 
