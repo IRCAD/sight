@@ -198,6 +198,7 @@ void SVolumeRender::starting()
     // Initially focus on the image center.
     this->setFocalDistance(50);
 
+    m_volumeRenderer->setSampling(m_nbSamples);
     m_gpuVolumeTF->setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
