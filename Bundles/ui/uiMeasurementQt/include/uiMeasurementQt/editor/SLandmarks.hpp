@@ -47,8 +47,9 @@ namespace editor
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - \b addPickedPoint(::fwDataTools::PickingInfo): adds or removes picked landmark. @deprecated call \b
- *      pick(::fwDataTools::PickingInfo) instead.
+ * - @deprecated \b addPickedPoint(::fwDataTools::PickingInfo): adds or removes picked landmark. call \b
+ * pick(::fwDataTools::PickingInfo) instead.
+ *
  * - \b pick(::fwDataTools::PickingInfo): adds or removes picked landmark.
  * - \b addPoint(std::string): adds a point to editor.
  * - \b modifyPoint(std::string, size_t): updates the editor when a point has moved.
@@ -97,8 +98,6 @@ public:
 
     /// Destroys the service.
     UIMEASUREMENTQT_API virtual ~SLandmarks() noexcept;
-
-private:
 
     /// Configures the service.
     virtual void configuring() override;
