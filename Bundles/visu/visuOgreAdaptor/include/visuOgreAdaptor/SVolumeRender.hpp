@@ -287,6 +287,7 @@ private:
      *  - colorBleeding: toggles the color bleeding.
      *  - shadows: toggles soft shadows.
      *  - widgets: toggles the clipping box widget's visibility.
+     *
      * @see togglePreintegration(bool)
      * @see toggleAmbientOcclusion(bool)
      * @see toggleColorBleeding(bool)
@@ -307,6 +308,7 @@ private:
      *  - satShellRadius: sets the SAT shell radius and computes the SAT.
      *  - satConeAngle: sets the SAT cone angle and computes the SAT.
      *  - satConeSamples: sets the SAT cone samples number and computes the SAT.
+     *
      * @see updateSampling(int)
      * @see updateOpacityCorrection(int)
      * @see updateSatSizeRatio(int)
@@ -323,6 +325,7 @@ private:
      * @param _key the key of the parameter. Following keys are accepted:
      *  - aoFactor: sets the ambient occlusion factor and computes the SAT.
      *  - colorBleedingFactor: sets the color bleeding factor and computes the SAT.
+     *
      * @see updateAOFactor(double)
      * @see updateColorBleedingFactor(double)
      */

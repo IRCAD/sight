@@ -159,19 +159,19 @@ private Q_SLOTS:
     /// Creates a new TF.
     void newTF();
 
-    /// Reset the current selected TF.
+    /// Resets the current selected TF.
     void reinitializeTFPool();
 
-    /// Rename the current selected TF.
+    /// Renames the current selected TF.
     void renameTF();
 
-    /// Import a TF.
+    /// Imports a TF.
     void importTF();
 
-    /// Export the current selected TF.
+    /// Exports the current selected TF.
     void exportTF();
 
-    /// Change the current selected TF.
+    /// Changes the current selected TF.
     void presetChoice(int index);
 
 private:
