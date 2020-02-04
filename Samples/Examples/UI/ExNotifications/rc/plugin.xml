@@ -40,6 +40,9 @@ are already displayed and where they are displayed on screen.
                         <editor/>
                         <separator/>
                         <menuItem name="NOTIFY !"/>
+                        <spacer />
+                        <separator/>
+                        <editor />
                     </layout>
                 </gui>
                 <registry>
@@ -47,6 +50,7 @@ are already displayed and where they are displayed on screen.
                     <editor sid="type" start="yes" />
                     <editor sid="position" start="yes" />
                     <menuItem sid="notify" start="yes" />
+                    <editor sid="style" start ="yes" />
                 </registry>
             </service>
 
@@ -84,6 +88,12 @@ are already displayed and where they are displayed on screen.
                 </parameters>
             </service>
 
+            <service uid="style" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="enum" name="Style" key="theme" defaultValue="DEFAULT" values="DEFAULT,DARKSTYLE,FLATDARK" />
+                </parameters>
+            </service>
+
             <!-- Dummy service only used to test notifications -->
             <service uid="testNotifier" type="::uiGenericQt::action::SDisplayTestNotifications" />
 
@@ -95,6 +105,8 @@ are already displayed and where they are displayed on screen.
                 <maxNotifications>3</maxNotifications> <!-- Maximum number of queued notifications -->
                 <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
             </service>
+
+            <service uid="styleChanger" type="::style::SStyleSelector" />
 
             <!-- connection from IService notify signals to the SNotifier,you can add as many service as you need -->
             <connect>
@@ -120,6 +132,11 @@ are already displayed and where they are displayed on screen.
             </connect>
 
             <connect>
+                <signal>style/enumChanged</signal>
+                <slot>styleChanger/setEnumParameter</slot>
+            </connect>
+
+            <connect>
                 <signal>type/enumChanged</signal>
                 <slot>testNotifier/setEnumParameter</slot>
             </connect>
@@ -132,6 +149,7 @@ are already displayed and where they are displayed on screen.
             <start uid="mainFrame" />
             <start uid="notifier" />
             <start uid="testNotifier" />
+            <start uid="styleChanger" />
 
         </config>
     </extension>

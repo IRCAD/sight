@@ -10,7 +10,6 @@ set( REQUIREMENTS
     appXml
     fwlauncher
     uiGenericQt
-    media
     style
 )
 
