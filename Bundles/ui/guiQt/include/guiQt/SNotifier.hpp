@@ -28,19 +28,17 @@
 
 #include <fwServices/IController.hpp>
 
-#include <boost/circular_buffer.hpp>
-
 namespace guiQt
 {
 /**
- * @brief SNotifier is a general service to display notification in a centralized way.
- * SNotifier needs to be connected to notifySuccess/Failure/Info signals implemented in IService.
+ * @brief SNotifier is a general service used to display notification in a centralized way.
+ * SNotifier needs to be connected to [Sucess/Failure/Info]Notified signals implemented in IService.
  *
  * @section Slots Slots
- * - \b popInfo() : Adds an INFO popup in the queue & display it.
- * - \b popFailure() : Adds a FAILURE popup in the queue & display it.
- * - \b popSuccess() :Adds a SUCCESS popup in the queue & display it.
- * - \b setEnumParameter() : Use to change the position of notifications (key "position"),
+ * - \b popInfo(): Adds an INFO popup in the queue & display it.
+ * - \b popFailure(): Adds a FAILURE popup in the queue & display it.
+ * - \b popSuccess():Adds a SUCCESS popup in the queue & display it.
+ * - \b setEnumParameter(std::string value, std::string key): Changes the position of notifications (key "position"),
  * accepted values are the same than the "position" tag in the XML configuration.
  *
  * @section XML XML Configuration
@@ -56,11 +54,11 @@ namespace guiQt
    @endcode
  *
  * @subsection Configuration Configuration
- * - \b message (optional) : default message of the notification is the emited signal contains empty string (default:
+ * - \b message (optional): Default message of the notification is the emited signal contains empty string (default:
  * "Notification").
- * - \b maxNotifications (optional): max number of queued notifications (default: 3).
- * - \b position (optional): position of the notification queue (default: TOP_RIGHT).
- *  accepted values are:
+ * - \b maxNotifications (optional): Maximum number of queued notifications (default: 3).
+ * - \b position (optional): Position of the notification queue (default: TOP_RIGHT).
+ *  Accepted values are:
  *   - TOP_RIGHT: default value.
  *   - TOP_LEFT
  *   - CENTERED_TOP
@@ -69,11 +67,12 @@ namespace guiQt
  *   - BOTTOM_LEFT
  *   - CENTERED_BOTTOM
  *
- * - \b duration (optional): duration in ms of the notification (+ 1 sec for fadein & fadeout effects) (default 3000).
- * - \b parent (optional): uid of the gui Container where the notifications will be displayed (default the whole app),
+ * - \b duration (optional): Duration in ms of the notification (+ 1 sec for fadein & fadeout effects) (default:
+ * 3000ms).
+ * - \b parent (optional): UID of the gui Container where the notifications will be displayed (default the whole app),
  * NOTE: we use the xml attribute "uid" to resolve "${GENERIC_UID}_" prefixes.
  */
-class GUIQT_CLASS_API SNotifier : public ::fwServices::IController
+class GUIQT_CLASS_API SNotifier final : public ::fwServices::IController
 {
 public:
 
@@ -155,15 +154,16 @@ private:
     /// Default message (if message in slot are empty), the default message can be configured in xml.
     std::string m_defaultMessage = "Notification";
 
-    /// Vector of displayed NotificationDialog
+    /// Vector of displayed NotificationDialog, resized with "m_maxStackedNotifs" at start.
     std::vector< ::fwGui::dialog::NotificationDialog::sptr > m_popups {};
+
     /// Queue of index in m_popups to remove oldest if m_maxStackedNotifs is reached.
     std::queue< size_t > m_indexQueue;
 
-    /// fwContainer where notifications will be displayed in, default nullptr.
+    /// fwContainer where notifications will be displayed in, nullptr by default.
     ::fwGui::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};
 
-    /// Parent containner ID (SID or WID), default empty.
+    /// Parent containner ID (SID or WID), empty by default.
     std::string m_parentContainerID;
 
 };

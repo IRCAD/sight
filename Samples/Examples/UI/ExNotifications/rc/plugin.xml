@@ -12,6 +12,7 @@ are already displayed and where they are displayed on screen.
 <plugin id="ExNotifications" version="@PROJECT_VERSION@">
 
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExNotificationsConfig</id>
