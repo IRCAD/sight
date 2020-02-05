@@ -73,6 +73,9 @@ class Worker;
  * - \b started() : Emitted when the service has started.
  * - \b updated() : Emitted when the service has updated.
  * - \b stopped() : Emitted when the service has stopped.
+ * - \b infoNotified(std::string _message): Emitted when the service wants to pop an info notification.
+ * - \b successNotified(std::string _message): Emitted when the service wants to pop a success notification.
+ * - \b failureNotified(std::string _message): Emitted when the service wants to pop a failure notification.
  *
  * @section Slots Slots
  * - \b start() : Start the service.
@@ -195,14 +198,23 @@ public:
      * @name Signal API
      */
     //@{
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STARTED_SIG;
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_STARTED_SIG;
     typedef ::fwCom::Signal<void ()> StartedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_UPDATED_SIG;
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
     typedef ::fwCom::Signal<void ()> UpdatedSignalType;
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOPPED_SIG;
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_STOPPED_SIG;
     typedef ::fwCom::Signal<void ()> StoppedSignalType;
+
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_INFO_NOTIFIED_SIG;
+    typedef ::fwCom::Signal<void (std::string)> InfoNotifiedSignalType;
+
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_SUCCESS_NOTIFIED_SIG;
+    typedef ::fwCom::Signal<void (std::string)> SuccessNotifiedSignalType;
+
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_FAILURE_NOTIFIED_SIG;
+    typedef ::fwCom::Signal<void (std::string)> FailureNotifiedSignalType;
 
     //@}
 

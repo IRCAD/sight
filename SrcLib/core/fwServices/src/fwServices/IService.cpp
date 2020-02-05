@@ -46,9 +46,12 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IService::s_STARTED_SIG = "started";
-const ::fwCom::Slots::SlotKeyType IService::s_UPDATED_SIG = "updated";
-const ::fwCom::Slots::SlotKeyType IService::s_STOPPED_SIG = "stopped";
+const ::fwCom::Signals::SignalKeyType IService::s_STARTED_SIG          = "started";
+const ::fwCom::Signals::SignalKeyType IService::s_UPDATED_SIG          = "updated";
+const ::fwCom::Signals::SignalKeyType IService::s_STOPPED_SIG          = "stopped";
+const ::fwCom::Signals::SignalKeyType IService::s_INFO_NOTIFIED_SIG    = "infoNotified";
+const ::fwCom::Signals::SignalKeyType IService::s_SUCCESS_NOTIFIED_SIG = "successNotified";
+const ::fwCom::Signals::SignalKeyType IService::s_FAILURE_NOTIFIED_SIG = "failureNotified";
 
 const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT   = "start";
 const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
@@ -67,6 +70,9 @@ IService::IService() :
     newSignal<StartedSignalType>( s_STARTED_SIG );
     newSignal<UpdatedSignalType>( s_UPDATED_SIG );
     newSignal<StoppedSignalType>( s_STOPPED_SIG );
+    newSignal<InfoNotifiedSignalType>( s_INFO_NOTIFIED_SIG );
+    newSignal<SuccessNotifiedSignalType>( s_SUCCESS_NOTIFIED_SIG );
+    newSignal<FailureNotifiedSignalType>( s_FAILURE_NOTIFIED_SIG );
 
     m_slotStart   = newSlot( s_START_SLOT, &IService::startSlot, this );
     m_slotStop    = newSlot( s_STOP_SLOT, &IService::stopSlot, this );
