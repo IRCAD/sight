@@ -1002,18 +1002,21 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
     const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
     SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
-    const ::fwData::mt::ObjectReadLock lock(landmarks);
+    ::fwData::mt::ObjectReadLock lock(landmarks);
 
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
-    // Set widget values
-    m_sizeSlider->setValue(static_cast<int>(group.m_size));
-    m_visibilityCheckbox->setChecked(group.m_visibility);
-
+    const int size          = static_cast<int>(group.m_size);
+    const bool visible      = group.m_visibility;
     const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
-    m_shapeSelector->setCurrentText(shapeText);
+    const float opacity     = group.m_color[3];
 
-    const float opacity = group.m_color[3];
+    lock.unlock();
+
+    // Set widget values
+    m_sizeSlider->setValue(size);
+    m_visibilityCheckbox->setChecked(visible);
+    m_shapeSelector->setCurrentText(shapeText);
     m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
     m_groupEditorWidget->setEnabled(true);
