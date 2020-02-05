@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -63,7 +63,11 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
     instance->m_3DImageTexture     = _3DImageTexture;
     instance->m_gpuTF              = _tf;
 
-    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName);
+    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_name + "_" + _mtlName);
+    if(!mat)
+    {
+        mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName)->clone(_name + "_" + _mtlName);
+    }
     instance->setMaterial(mat);
 
     instance->initialize();
@@ -184,11 +188,21 @@ void GridProxyGeometry::initializeR2VBSource()
 
 void GridProxyGeometry::initializeGridMaterials()
 {
-    ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
+    ::Ogre::MaterialManager& mtlMng = ::Ogre::MaterialManager::getSingleton();
+
+    ::Ogre::MaterialPtr gridMtl = mtlMng.getByName(this->getName() + "_VolumeBricksGrid");
+    if(!gridMtl)
+    {
+        gridMtl = mtlMng.getByName("VolumeBricksGrid")->clone(this->getName() + "_VolumeBricksGrid");
+    }
     gridMtl->load();
     m_gridComputingPass = gridMtl->getTechnique(0)->getPass(0);
 
-    ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
+    ::Ogre::MaterialPtr geomGeneratorMtl = mtlMng.getByName(this->getName() + "_VolumeBricks");
+    if(!geomGeneratorMtl)
+    {
+        geomGeneratorMtl = mtlMng.getByName("VolumeBricks")->clone(this->getName() + "_VolumeBricks");
+    }
     geomGeneratorMtl->load();
     m_geomGeneratorPass = geomGeneratorMtl->getTechnique(0)->getPass(0);
 
@@ -262,7 +276,7 @@ void GridProxyGeometry::setupGrid()
         const size_t maximumVertexCount = 1 + (meshVtxData->vertexCount * 36 - 1) / 2; // = (vC * 36)/2 + (vC * 36)%2
 
         this->setOutputSettings(maximumVertexCount, false, false, false);
-        this->setRenderToBufferMaterial("VolumeBricks");
+        this->setRenderToBufferMaterial(this->getName() + "_VolumeBricks");
     }
 
     // Set shader parameters.

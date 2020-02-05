@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -131,8 +131,6 @@ void OffScreenRenderWindowInteractorManager::disconnectInteractor()
 {
     m_ogreRenderTarget = nullptr;
 
-    OffScreenRenderWindowInteractorManager::m_counter--;
-
     if(m_ogreRenderWindow)
     {
         ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
@@ -157,6 +155,31 @@ void OffScreenRenderWindowInteractorManager::makeCurrent()
     if(m_glContext)
     {
         m_glContext->makeCurrent(m_offscreenSurface.get());
+
+        if(m_ogreRenderWindow)
+        {
+            ::Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
+
+            if(renderSystem)
+            {
+                // This allows to set the current OpengGL context in Ogre internal state
+                renderSystem->_setRenderTarget(m_ogreRenderTarget);
+
+                // Use this trick to apply the current OpenGL context
+                //
+                // Actually this method does the following :
+                // void GLRenderSystem::postExtraThreadsStarted()
+                // {
+                //   OGRE_LOCK_MUTEX(mThreadInitMutex);
+                //   if(mCurrentContext)
+                //     mCurrentContext->setCurrent();
+                // }
+                //
+                // This is actually want we want to do, even if this is not the initial purpose of this method
+                //
+                renderSystem->postExtraThreadsStarted();
+            }
+        }
     }
 }
 

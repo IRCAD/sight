@@ -39,6 +39,7 @@
     <!-- Object Type -->
     <xs:complexType name="ObjectType">
         <xs:sequence>
+            <xs:element name="name"  type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />

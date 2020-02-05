@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,8 +29,9 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
-#include <filesystem>
 #include <QObject>
+
+#include <filesystem>
 
 class QComboBox;
 class QPushButton;
@@ -40,6 +41,7 @@ namespace uiTF
 {
 
 /**
+ * @deprecated this service will be removed in sight 22.0, please use STransferFunction instead.
  * @brief Editor to select a transfer function.
  *
  * The available transfer function are stored in a composite (transferFunctionPool), if it contains at most one
@@ -81,7 +83,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(TransferFunctionEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(TransferFunctionEditor, ::fwGui::editor::IEditor)
 
     /// Basic constructor, do nothing.
     UITF_API TransferFunctionEditor();

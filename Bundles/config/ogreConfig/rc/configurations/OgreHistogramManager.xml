@@ -55,7 +55,7 @@
             <inout key="image" uid="${IMAGE}" />
         </service>
 
-        <service uid="TransferFunctionEditor" type="::uiTF::TransferFunctionEditor" >
+        <service uid="TransferFunctionEditor" type="::uiTF::STransferFunction" >
             <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
             <out key="tf" uid="${TF}" />
         </service>

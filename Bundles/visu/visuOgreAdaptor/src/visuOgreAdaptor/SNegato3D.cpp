@@ -51,20 +51,20 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_NEWIMAGE_SLOT          = "newImage";
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICETYPE_SLOT         = "sliceType";
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICEINDEX_SLOT        = "sliceIndex";
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_OPACITY_SLOT    = "updateOpacity";
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType SNegato3D::s_SET_VISIBILITY_SLOT    = "setVisibility";
+static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT          = "newImage";
+static const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT         = "sliceType";
+static const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT        = "sliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT    = "updateOpacity";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT    = "setVisibility";
 
 static const ::fwCom::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
-static const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
-static const std::string VISIBILITY_FIELD   = "VISIBILITY";
+static const std::string s_TRANSPARENCY_FIELD = "TRANSPARENCY";
+static const std::string s_VISIBILITY_FIELD   = "VISIBILITY";
 
 static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID - 1;
 
@@ -89,6 +89,20 @@ SNegato3D::SNegato3D() noexcept :
 
 SNegato3D::~SNegato3D() noexcept
 {
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +166,7 @@ void SNegato3D::starting()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing '" + s_IMAGE_INOUT + "' inout.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -217,6 +231,29 @@ void SNegato3D::starting()
 
 //------------------------------------------------------------------------------
 
+void SNegato3D::updating()
+{
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        m_helperTF.setOrCreateTF(tf, image);
+
+        this->updateTF();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SNegato3D::stopping()
 {
     this->getRenderService()->makeCurrent();
@@ -257,29 +294,6 @@ void SNegato3D::stopping()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::updating()
-{
-    this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::swapping(const KeyType& key)
-{
-    if (key == s_TF_INOUT)
-    {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Missing image", image);
-
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-        m_helperTF.setOrCreateTF(tf, image);
-
-        this->updateTF();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SNegato3D::createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vector3& _origin)
 {
     // Fits the planes to the new texture
@@ -300,7 +314,11 @@ void SNegato3D::newImage()
     this->getRenderService()->makeCurrent();
     {
         const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Missing '" + s_IMAGE_INOUT + "' inout.", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        m_helperTF.setOrCreateTF(tf, image);
+
         const ::fwData::mt::ObjectReadLock imageLock(image);
 
         if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
@@ -343,7 +361,7 @@ void SNegato3D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::changeSliceType(int /*_from*/, int /* _to */)
+void SNegato3D::changeSliceType(int, int)
 {
     this->getRenderService()->makeCurrent();
 
@@ -374,20 +392,6 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     }
 
     this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -423,8 +427,8 @@ void SNegato3D::setPlanesOpacity()
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
         const ::fwData::mt::ObjectReadLock imageLock(image);
 
-        const auto transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
-        const auto isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
+        const auto transparency = image->setDefaultField(s_TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
+        const auto isVisible    = image->setDefaultField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(true));
 
         const bool visible  = isVisible->getValue();
         const float opacity = (100.f - static_cast<float>(transparency->getValue()))/100.f;
@@ -441,13 +445,13 @@ void SNegato3D::setPlanesOpacity()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::setVisibility(bool visibility)
+void SNegato3D::setVisibility(bool _visibility)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
     const ::fwData::mt::ObjectReadLock imageLock(image);
 
-    image->setField(VISIBILITY_FIELD, ::fwData::Boolean::New(visibility));
+    image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visibility));
 
     this->setPlanesOpacity();
 
@@ -456,7 +460,7 @@ void SNegato3D::setVisibility(bool visibility)
 
     {
         ::fwCom::Connection::Blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
-        visUpdateSig->asyncEmit(visibility);
+        visUpdateSig->asyncEmit(_visibility);
     }
 }
 
