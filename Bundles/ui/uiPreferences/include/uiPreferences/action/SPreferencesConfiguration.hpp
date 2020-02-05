@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,6 +64,12 @@ namespace action
                 <default_value>...</default_value>
             </preference>
             <preference>
+                <type>file</type>
+                <name>Video file</name>
+                <key>VIDEO_REF_FILE</key>
+                <default_value>...</default_value>
+            </preference>
+            <preference>
                 <type>text</type>
                 <name>DICOM/MPPS port</name>
                 <key>DICOM_PORT_KEY</key>
@@ -103,7 +109,7 @@ class UIPREFERENCES_CLASS_API SPreferencesConfiguration : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SPreferencesConfiguration, ::fwGui::IActionSrv);
+    fwCoreServiceMacro(SPreferencesConfiguration, ::fwGui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIPREFERENCES_API SPreferencesConfiguration() noexcept;
@@ -137,6 +143,8 @@ protected:
 
     void onSelectDir(QPointer<QLineEdit> lineEdit);
 
+    void onSelectFile(QPointer<QLineEdit> lineEdit);
+
 private:
 
     enum class PreferenceType : std::int8_t
@@ -145,6 +153,7 @@ private:
         CHECKBOX,
         U_INT,
         PATH,
+        FILE,
         COMBOBOX,
         DOUBLE
     };
