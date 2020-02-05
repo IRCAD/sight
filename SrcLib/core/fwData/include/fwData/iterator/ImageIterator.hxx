@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -109,7 +109,7 @@ inline bool ImageIteratorBase<FORMAT, isConst>::operator!=(const ImageIteratorBa
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
-inline typename ImageIteratorBase<FORMAT, isConst>::reference ImageIteratorBase<FORMAT, isConst>::operator*()
+inline typename ImageIteratorBase<FORMAT, isConst>::reference ImageIteratorBase<FORMAT, isConst>::operator*() const
 {
     return *(reinterpret_cast<ImageIteratorBase<FORMAT, isConst>::value_type*>(m_pointer));
 }
@@ -117,7 +117,7 @@ inline typename ImageIteratorBase<FORMAT, isConst>::reference ImageIteratorBase<
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
-inline typename ImageIteratorBase<FORMAT, isConst>::value_type* ImageIteratorBase<FORMAT, isConst>::operator->()
+inline typename ImageIteratorBase<FORMAT, isConst>::value_type* ImageIteratorBase<FORMAT, isConst>::operator->() const
 {
     return reinterpret_cast<ImageIteratorBase<FORMAT, isConst>::value_type*>(m_pointer);
 }
@@ -150,7 +150,7 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator+(difference_type index)
+inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator+(difference_type index)  const
 {
     ImageIteratorBase tmp(*this);
     tmp += index;
@@ -195,7 +195,7 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator-(difference_type index)
+inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator-(difference_type index) const
 {
     ImageIteratorBase tmp(*this);
     tmp -= index;

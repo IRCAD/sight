@@ -269,21 +269,21 @@ public:
     /// Increment/Decrement operators
     ImageIteratorBase& operator++();
     ImageIteratorBase operator++(int);
-    ImageIteratorBase operator+(difference_type index);
+    ImageIteratorBase operator+(difference_type index) const;
     ImageIteratorBase& operator+=(difference_type index);
     ImageIteratorBase& operator--();
     ImageIteratorBase operator--(int);
-    ImageIteratorBase operator-(difference_type index);
+    ImageIteratorBase operator-(difference_type index) const;
     ImageIteratorBase& operator-=(difference_type index);
 
     difference_type operator+(const ImageIteratorBase& other) const;
     difference_type operator-(const ImageIteratorBase& other) const;
 
     /// Value access operators
-    reference operator*();
+    reference operator*() const;
 
     /// Value access operators
-    value_type* operator->();
+    value_type* operator->() const;
 
 protected:
 

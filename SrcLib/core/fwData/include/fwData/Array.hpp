@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -283,18 +283,19 @@ public:
         /// Increment/Decrement operators
         IteratorBase& operator++();
         IteratorBase operator++(int);
-        IteratorBase operator+(difference_type index);
+        IteratorBase operator+(difference_type index) const;
         IteratorBase& operator+=(difference_type index);
         IteratorBase& operator--();
         IteratorBase operator--(int);
-        IteratorBase operator-(difference_type index);
+        IteratorBase operator-(difference_type index) const;
         IteratorBase& operator-=(difference_type index);
 
         difference_type operator+(const IteratorBase& other) const;
         difference_type operator-(const IteratorBase& other) const;
 
         /// Value access operators
-        reference operator*();
+        reference operator*() const;
+        value_type* operator->() const;
 
     private:
 
@@ -754,9 +755,17 @@ inline bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& o
 //------------------------------------------------------------------------------
 
 template <typename TYPE, bool isConst>
-inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*()
+inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*() const
 {
     return *m_pointer;
+}
+
+//------------------------------------------------------------------------------
+
+template <typename TYPE, bool isConst>
+inline typename Array::IteratorBase<TYPE, isConst>::value_type* Array::IteratorBase<TYPE, isConst>::operator->() const
+{
+    return m_pointer;
 }
 
 //------------------------------------------------------------------------------
@@ -787,7 +796,7 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+(difference_type index) const
 {
     IteratorBase tmp(*this);
     tmp += index;
@@ -832,7 +841,7 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-(difference_type index) const
 {
     IteratorBase tmp(*this);
     tmp -= index;
