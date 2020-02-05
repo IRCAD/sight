@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,10 +31,11 @@ namespace fwServices
 
 IAppConfigManager::sptr IAppConfigManager::New()
 {
+    FW_DEPRECATED_MSG("::fwServices::IAppConfigManager is no longer supported, use ::fwServices::AppConfigManager",
+                      "22.0");
     return ::fwServices::AppConfigManager::New();
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace fwServices
-

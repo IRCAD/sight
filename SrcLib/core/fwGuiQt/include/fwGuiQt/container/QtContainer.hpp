@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,14 +52,14 @@ class FWGUIQT_CLASS_API QtContainer : public ::fwGui::container::fwContainer
 
 public:
 
-    fwCoreClassMacro(QtContainer, ::fwGui::container::fwContainer, ::fwGui::factory::New< QtContainer >);
+    fwCoreClassMacro(QtContainer, ::fwGui::container::fwContainer, ::fwGui::factory::New< QtContainer >)
 
     FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 
-    FWGUIQT_API virtual ~QtContainer() noexcept;
+    FWGUIQT_API virtual ~QtContainer() noexcept override;
 
     FWGUIQT_API virtual void setQtContainer(QWidget* container);
-    FWGUIQT_API virtual QWidget* getQtContainer();
+    FWGUIQT_API virtual QWidget* getQtContainer() const;
 
     /**
      * @brief Assign a layout to the container widget. Previous layout and its children are deleted and the container
