@@ -578,12 +578,14 @@ void SLandmarks::onShapeChanged(const QString& _shape)
 
 void SLandmarks::onAddNewGroup()
 {
+    const std::string groupName = this->generateNewGroupName();
+
     const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
     SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
-    const ::fwData::mt::ObjectWriteLock lock(landmarks);
 
-    const std::string groupName = this->generateNewGroupName();
+    ::fwData::mt::ObjectWriteLock lock(landmarks);
     landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
+    lock.unlock();
 
     this->addGroup(groupName);
 
@@ -761,11 +763,11 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
                 // If the groupd contains only one point, we remove it.
                 if(landmarks->getNumberOfPoints(foundGroupname) == 1)
                 {
+                    this->removeGroup(foundGroupname);
+
                     lock.upgrade();
                     landmarks->removeGroup(foundGroupname);
                     lock.downgrade();
-
-                    this->removeGroup(foundGroupname);
 
                     auto sig = landmarks->signal< ::fwData::Landmarks::GroupRemovedSignalType >(
                         ::fwData::Landmarks::s_GROUP_REMOVED_SIG);
@@ -863,15 +865,24 @@ void SLandmarks::addGroup(std::string _name)
 
 void SLandmarks::removeGroup(std::string _name)
 {
-    QTreeWidgetItem* const item = getGroupItem(_name);
-
-    while(item->childCount() != 0)
+    try
     {
-        item->removeChild(item->child(0));
+        QTreeWidgetItem* const item = getGroupItem(_name);
+
+        while(item->childCount() != 0)
+        {
+            QTreeWidgetItem* const child = item->child(0);
+            item->removeChild(child);
+        }
+        const int index                = m_treeWidget->indexOfTopLevelItem(item);
+        QTreeWidgetItem* const topItem = m_treeWidget->takeTopLevelItem(index);
+        delete topItem;
     }
-    const int index                = m_treeWidget->indexOfTopLevelItem(item);
-    QTreeWidgetItem* const topItem = m_treeWidget->takeTopLevelItem(index);
-    delete topItem;
+    catch(const std::exception& _e)
+    {
+        std::cout << "coucou" << std::endl;
+        std::cout << _e.what() << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
