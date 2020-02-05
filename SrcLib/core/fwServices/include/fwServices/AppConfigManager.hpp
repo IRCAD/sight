@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2019 IRCAD France
- * Copyright (C) 2015-2019 IHU Strasbourg
+ * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,40 +45,71 @@ class Composite;
 
 namespace fwServices
 {
+
 /**
- * @brief   This class provides an API to manage config template.
+ * @brief This class provides an API to manage config template.
+ *
+ * @section Slots Slots
+ * - \b addObject(fwData::Object::sptr, const std::string&): adds objects to the configuration.
+ * - \b removeObject(fwData::Object::sptr, const std::string&): removes objects from the configuration.
  */
 class FWSERVICES_CLASS_API AppConfigManager :  public ::fwServices::IAppConfigManager,
                                                public ::fwCom::HasSlots
 {
 public:
 
-    fwCoreClassMacro(AppConfigManager, ::fwServices::IAppConfigManager, std::make_shared< AppConfigManager >);
+    fwCoreClassMacro(AppConfigManager, ::fwServices::IAppConfigManager, std::make_shared< AppConfigManager >)
+
     fwCoreAllowSharedFromThis()
 
-    /// Constructor. Do nothing.
+    /// Creates slots.
     FWSERVICES_API AppConfigManager();
 
-    /// Destructor. Do nothing.
+    /// Does nothing.
     FWSERVICES_API virtual ~AppConfigManager();
 
     /**
-     * @name Overrides
-     * @{
+     * @brief Sets configuration.
+     * @param _configId The identifier of the requested config.
+     * @param _replaceFields The associations between the value and the pattern to replace in the config.
      */
-    FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const FieldAdaptorType& replaceFields = FieldAdaptorType()) override;
-    FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const ::fwData::Composite::csptr& replaceFields) override;
+    FWSERVICES_API virtual void setConfig(const std::string& _configId,
+                                          const FieldAdaptorType& _replaceFields = FieldAdaptorType()) override;
+
+    /**
+     * @brief Sets configuration.
+     * @param _configId The identifier of the requested config.
+     * @param _replaceFields Composite of association between the value and the pattern to replace in the config.
+     */
+    FWSERVICES_API virtual void setConfig(const std::string& _configId,
+                                          const ::fwData::Composite::csptr& _replaceFields) override;
+
+    /**
+     * @brief Get the configuraton root.
+     * @return The configuration root.
+     */
     FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const override;
+
+    /// Calls methods : create, start then update.
     FWSERVICES_API virtual void launch() override;
+
+    /// Stops and destroys services specified in config, then resets the configRoot sptr.
     FWSERVICES_API virtual void stopAndDestroy() override;
+
+    /// Creates objects and services from config.
     FWSERVICES_API virtual void create() override;
+
+    /// Starts services specified in config.
     FWSERVICES_API virtual void start() override;
+
+    /// Updates services specified in config.
     FWSERVICES_API virtual void update() override;
+
+    /// Stops services specified in config.
     FWSERVICES_API virtual void stop() override;
+
+    /// Destroys services specified in config.
     FWSERVICES_API virtual void destroy() override;
-    ///@}
 
     /**
      * @brief Starts the bundle associated to the config
@@ -87,8 +118,25 @@ public:
      */
     FWSERVICES_API virtual void startBundle();
 
-    /// Set it to true if we are testing the class
-    FWSERVICES_API void setIsUnitTest(bool isUnitTest);
+    /**
+     * @brief Sets if we are testing the class.
+     * @param _isUnitTest Use true to set it as a test.
+     */
+    FWSERVICES_API void setIsUnitTest(bool _isUnitTest);
+
+    /**
+     * @brief Adds an existing deferred object to the deferred objects map.
+     *
+     * @pre The manager musn't be started.
+     *
+     * When a configuration is launched, deferred objects may already exist.
+     * This loop allow to notify the app config manager that this data exist and can be used by services.
+     * Whitout that, the data is considered as null.
+     *
+     * @param _obj The object to add.
+     * @param _uid The uid of this object.
+     */
+    FWSERVICES_API void addExistingDeferredObject(const ::fwData::Object::sptr& _obj, const std::string& _uid);
 
 private:
 
@@ -107,62 +155,75 @@ private:
 
     ::fwServices::IService::sptr getNewService(const std::string& uid, const std::string& implType) const;
 
+    /// Stops all started services.
     void stopStartedServices();
+
+    /// Destroyes all created services
     void destroyCreatedServices();
 
     void processStartItems();
+
     void processUpdateItems();
 
-    /// Parse objects section and create objects
+    /// Parses objects section and create objects.
     void createObjects(::fwRuntime::ConfigurationElement::csptr cfgElem);
 
-    /// Parse services and create all the services that can be instantiated
+    /// Parses services and create all the services that can be instantiated.
     void createServices(::fwRuntime::ConfigurationElement::csptr cfgElem);
 
-    /// Create a single service from its configuration
+    /// Creates a single service from its configuration.
     ::fwServices::IService::sptr createService(const ServiceConfig& srvConfig);
 
-    /// Parse connection sections and creates them
+    /// Parses connection sections and creates them.
     void createConnections();
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
     std::string msgHead() const;
 
-    /// Slot: add objects
-    void addObjects(::fwData::Object::sptr obj, const std::string& id);
+    /**
+     * @brief Adds objects to the configuration.
+     * @param _obj The object to add.
+     * @param _id The id of the object.
+     */
+    void addObjects(::fwData::Object::sptr _obj, const std::string& _id);
 
-    /// Slot: remove objects
-    void removeObjects(::fwData::Object::sptr obj, const std::string& id);
+    /**
+     * @brief Removes objects from the configuration.
+     * @param _obj The object to remove.
+     * @param _id The id of the remove.
+     */
+    void removeObjects(::fwData::Object::sptr _obj, const std::string& _id);
 
-    /// Connect signal and slots
-    void connectProxy(const std::string& channel, const ProxyConnections& connectCfg);
+    void connectProxy(const std::string& _channel, const ProxyConnections& _connectCfg);
 
-    void destroyProxy(const std::string& channel, const ProxyConnections& proxyCfg, const std::string& key = "",
-                      fwData::Object::csptr hintObj = nullptr);
+    void destroyProxy(const std::string& _channel, const ProxyConnections& _proxyCfg, const std::string& _key = "",
+                      fwData::Object::csptr _hintObj = nullptr);
+
     void destroyProxies();
 
-    /// Given a list of UIDs or WIDs, get a friendly printable message
+    /// Gets a list of UIDs or WIDs, get a friendly printable message.
     static std::string getUIDListAsString(const std::vector<std::string>& uidList);
 
     typedef std::pair< ::fwData::Object::sptr, ::fwServices::IXMLParser::sptr> CreatedObjectType;
-    /// Map containing the object and its XML parser
+
+    /// Map containing the object and its XML parser.
     std::unordered_map<std::string, CreatedObjectType> m_createdObjects;
 
     struct DeferredObjectType
     {
         std::vector< ServiceConfig > m_servicesCfg;
         std::unordered_map< std::string, ProxyConnections > m_proxyCnt;
-        /// Copy of the object pointer necessary to access signals/slots when destroying proxy
+        /// Copy of the object pointer necessary to access signals/slots when destroying proxy.
         ::fwData::Object::sptr m_object;
     };
 
-    /// Map indexed by the object uid, containing all the service configurations that depend on this object
+    /// Map indexed by the object uid, containing all the service configurations that depend on this object.
     std::unordered_map<std::string, DeferredObjectType > m_deferredObjects;
 
-    /// All the identifiers of the deferred services
+    /// All the identifiers of the deferred services.
     std::unordered_set<std::string> m_deferredServices;
 
-    /// All proxies of created objects, ordered by channel name
+    /// All proxies of created objects, ordered by channel name.
     std::unordered_map<std::string, ProxyConnections> m_createdObjectsProxies;
 
     struct ServiceProxyType
@@ -171,35 +232,38 @@ private:
     };
     std::unordered_map< std::string, ServiceProxyType > m_servicesProxies;
 
-    /// Identifier of this configuration
+    /// Identifier of this configuration.
     std::string m_configId;
 
     typedef std::vector< ::fwServices::IService::wptr > ServiceContainer;
 
-    /// List of services created in this configuration
+    /// List of services created in this configuration.
     ServiceContainer m_createdSrv;
 
-    /// List of services started in this configuration
+    /// List of services started in this configuration.
     ServiceContainer m_startedSrv;
 
-    /// Start ordered list of deferred services
+    /// Start ordered list of deferred services.
     std::vector<std::string> m_deferredStartSrv;
 
-    /// Update ordered list of deferred services
+    /// Update ordered list of deferred services.
     std::vector<std::string> m_deferredUpdateSrv;
 
     /// While we need to maintain old and new services behavior, we need a dummy data for new services
     /// that don't work on any data.
-    /// TODO: Remove with V1
+    /// TODO: Remove with V1.
     ::fwData::Composite::sptr m_tmpRootObject;
 
-    /// Counter used to generate a unique proxy name
+    /// Counter used to generate a unique proxy name.
     unsigned int m_proxyID;
 
+    /// Keep the connection between the OSR and `addObjects`.
     ::fwCom::Connection m_addObjectConnection;
+
+    /// Keep the connection between the OSR and `removeObjects`.
     ::fwCom::Connection m_removeObjectConnection;
 
-    /// Hack to know if we are doing a unit test. We skip some code in this case to be able to launch a configuration
+    /// Hack to know if we are doing a unit test. We skip some code in this case to be able to launch a configuration.
     bool m_isUnitTest;
 };
 

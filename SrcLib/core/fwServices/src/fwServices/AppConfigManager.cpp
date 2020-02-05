@@ -51,7 +51,6 @@ namespace fwServices
 // ------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 // ------------------------------------------------------------------------
@@ -76,18 +75,20 @@ AppConfigManager::~AppConfigManager()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string& configId, const FieldAdaptorType& replaceFields)
+void AppConfigManager::setConfig(const std::string& _configId, const FieldAdaptorType& _replaceFields)
 {
-    m_configId = configId;
-    m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields, !m_isUnitTest );
+    m_configId = _configId;
+    m_cfgElem  =
+        registry::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
 }
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string& configId, const ::fwData::Composite::csptr& replaceFields)
+void AppConfigManager::setConfig(const std::string& _configId, const ::fwData::Composite::csptr& _replaceFields)
 {
-    m_configId = configId;
-    m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields, !m_isUnitTest );
+    m_configId = _configId;
+    m_cfgElem  =
+        registry::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
 }
 
 // ------------------------------------------------------------------------
@@ -224,9 +225,20 @@ void AppConfigManager::destroy()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setIsUnitTest(bool isUnitTest)
+void AppConfigManager::setIsUnitTest(bool _isUnitTest)
 {
-    m_isUnitTest = isUnitTest;
+    m_isUnitTest = _isUnitTest;
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::addExistingDeferredObject(const ::fwData::Object::sptr& _obj, const std::string& _uid)
+{
+    SLM_ASSERT("Existing deferred objects must be added before starting the configuration, it's useless to do it later",
+               m_state == STATE_DESTROYED);
+    DeferredObjectType deferredObject;
+    deferredObject.m_object = _obj;
+    m_deferredObjects.insert(std::make_pair(_uid, deferredObject));
 }
 
 // ------------------------------------------------------------------------
@@ -510,7 +522,7 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
 #ifndef _DEBUG
                 FwCoreNotUsedMacro(ret);
 #endif
-                SLM_ASSERT(this->msgHead() + "Object '" + id.first + "' already exists in this config.", ret.second);
+                SLM_INFO_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.", !ret.second);
             }
             else
             {
@@ -759,16 +771,16 @@ void AppConfigManager::createConnections()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::destroyProxy(const std::string& channel, const ProxyConnections& proxyCfg,
-                                    const std::string& key, ::fwData::Object::csptr hintObj)
+void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConnections& _proxyCfg,
+                                    const std::string& _key, ::fwData::Object::csptr _hintObj)
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 
-    for(const ProxyConnections::ProxyEltType& signalElt : proxyCfg.m_signals)
+    for(const ProxyConnections::ProxyEltType& signalElt : _proxyCfg.m_signals)
     {
-        if(key.empty() || signalElt.first == key)
+        if(_key.empty() || signalElt.first == _key)
         {
-            ::fwTools::Object::csptr obj = hintObj;
+            ::fwTools::Object::csptr obj = _hintObj;
             if(obj == nullptr)
             {
                 obj = ::fwTools::fwID::getObject(signalElt.first);
@@ -780,18 +792,18 @@ void AppConfigManager::destroyProxy(const std::string& channel, const ProxyConne
 
             try
             {
-                proxy->disconnect(channel, sig);
+                proxy->disconnect(_channel, sig);
             }
             catch (const std::exception& e)
             {
                 SLM_ERROR("Signal '" + signalElt.second + "' from '" + signalElt.first + "' can not be disconnected "
-                          "from the channel '" + channel + "': " + std::string(e.what()));
+                          "from the channel '" + _channel + "': " + std::string(e.what()));
             }
         }
     }
-    for(const ProxyConnections::ProxyEltType& slotElt : proxyCfg.m_slots)
+    for(const ProxyConnections::ProxyEltType& slotElt : _proxyCfg.m_slots)
     {
-        if(key.empty() || slotElt.first == key)
+        if(_key.empty() || slotElt.first == _key)
         {
             ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
             ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
@@ -801,12 +813,12 @@ void AppConfigManager::destroyProxy(const std::string& channel, const ProxyConne
 
             try
             {
-                proxy->disconnect(channel, slot);
+                proxy->disconnect(_channel, slot);
             }
             catch (const std::exception& e)
             {
                 SLM_ERROR("Slot '" + slotElt.second + "' from '" + slotElt.first + "' can not be disconnected from the "
-                          "channel '" + channel + "': " + std::string(e.what()));
+                          "channel '" + _channel + "': " + std::string(e.what()));
             }
         }
     }
@@ -840,7 +852,7 @@ void AppConfigManager::destroyProxies()
 
 //------------------------------------------------------------------------------
 
-void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& id)
+void AppConfigManager::addObjects(fwData::Object::sptr _obj, const std::string& _id)
 {
     FW_PROFILE("addObjects");
 
@@ -852,7 +864,7 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
     std::vector< const ServiceConfig* > servicesCfg;
 
     // Are there services that were waiting for this object ?
-    auto itDeferredObj = m_deferredObjects.find(id);
+    auto itDeferredObj = m_deferredObjects.find(_id);
     if(itDeferredObj != m_deferredObjects.end())
     {
         // For each service waiting to be started
@@ -866,7 +878,7 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
         }
 
         // Connect signals of this deferred object
-        itDeferredObj->second.m_object = obj;
+        itDeferredObj->second.m_object = _obj;
 
         for(const auto& connectCfg : itDeferredObj->second.m_proxyCnt)
         {
@@ -996,17 +1008,17 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
 
 //------------------------------------------------------------------------------
 
-void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string& id)
+void AppConfigManager::removeObjects(fwData::Object::sptr _obj, const std::string& _id)
 {
     FW_PROFILE("removeObjects");
 
     // Are there services that were connected with this object ?
-    const auto itDeferredObj = m_deferredObjects.find(id);
+    const auto itDeferredObj = m_deferredObjects.find(_id);
     if(itDeferredObj != m_deferredObjects.end())
     {
         for(const auto& itProxy : itDeferredObj->second.m_proxyCnt)
         {
-            this->destroyProxy(itProxy.first, itProxy.second, id, itDeferredObj->second.m_object);
+            this->destroyProxy(itProxy.first, itProxy.second, _id, itDeferredObj->second.m_object);
         }
 
         itDeferredObj->second.m_object.reset();
@@ -1021,7 +1033,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
 
                 for(const auto& objCfg : srvCfg.m_objects)
                 {
-                    if(id == objCfg.m_uid)
+                    if(_id == objCfg.m_uid)
                     {
                         ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
                         OSLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
@@ -1035,7 +1047,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
 
                                 if(srv->isStarted())
                                 {
-                                    srv->swapKey(objCfg.m_key, obj).wait();
+                                    srv->swapKey(objCfg.m_key, _obj).wait();
                                 }
                             }
                         }
@@ -1084,7 +1096,7 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
 
                     SLM_INFO( this->msgHead() + "Service '" + srvCfg.m_uid +
                               "' has been stopped because the object " +
-                              id + " is no longer available.");
+                              _id + " is no longer available.");
                 }
                 else
                 {
@@ -1102,11 +1114,11 @@ void AppConfigManager::removeObjects(fwData::Object::sptr obj, const std::string
 
 //------------------------------------------------------------------------------
 
-void AppConfigManager::connectProxy(const std::string& channel, const ProxyConnections& connectCfg)
+void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConnections& _connectCfg)
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 
-    for(const auto& signalCfg : connectCfg.m_signals)
+    for(const auto& signalCfg : _connectCfg.m_signals)
     {
         ::fwTools::Object::sptr sigSource = ::fwTools::fwID::getObject(signalCfg.first);
         if(sigSource == nullptr)
@@ -1126,16 +1138,16 @@ void AppConfigManager::connectProxy(const std::string& channel, const ProxyConne
 
         try
         {
-            proxy->connect(channel, sig);
+            proxy->connect(_channel, sig);
         }
         catch (const std::exception& e)
         {
             SLM_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the "
-                      "channel '" + channel + "': " + std::string(e.what()));
+                      "channel '" + _channel + "': " + std::string(e.what()));
         }
     }
 
-    for(const auto& slotCfg : connectCfg.m_slots)
+    for(const auto& slotCfg : _connectCfg.m_slots)
     {
         ::fwTools::Object::sptr slotDest = ::fwTools::fwID::getObject(slotCfg.first);
         ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(slotDest);
@@ -1146,12 +1158,12 @@ void AppConfigManager::connectProxy(const std::string& channel, const ProxyConne
 
         try
         {
-            proxy->connect(channel, slot);
+            proxy->connect(_channel, slot);
         }
         catch (const std::exception& e)
         {
             SLM_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
-                      "channel '" + channel + "': " + std::string(e.what()));
+                      "channel '" + _channel + "': " + std::string(e.what()));
         }
     }
 }

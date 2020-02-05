@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,8 @@
 
 #pragma once
 
+#include "fwServices/AppConfigManager.hpp"
 #include "fwServices/config.hpp"
-#include "fwServices/IAppConfigManager.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 
@@ -43,9 +43,7 @@ namespace helper
 {
 
 /**
- * @brief   This class provides few methods to manage AppConfig (parsing, starting, stopping...).
- *
- * Example of configuration
+ * @brief This class provides few methods to manage AppConfig (parsing, starting, stopping...).
  *
  * @code{.xml}
     <service type="::fwServices::SConfigController" >
@@ -64,52 +62,59 @@ public:
     typedef std::unique_ptr<ConfigLauncher> uptr;
     typedef ::fwServices::registry::FieldAdaptorType FieldAdaptorType;
 
-    /// Constructor. Do nothing.
+    /// Initializes member.
     FWSERVICES_API ConfigLauncher();
 
-    /// Destructor. Do nothing.
+    /// Does nothing.
     FWSERVICES_API virtual ~ConfigLauncher();
 
     /**
-     * @brief Parse a ConfigLauncher configuration
+     * @brief Parses a configuration.
+     * @param _config The config to parse.
+     * @param _service Related service.
      */
-    FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& config,
-                                            const ::fwServices::IService::sptr& service);
+    FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& _config,
+                                            const ::fwServices::IService::sptr& _service);
 
     /**
-     * @brief Launch Appconfig
-     * @param[in] srv  service to connect with config root object
-     * @param[in] optReplaceMap optional replace map used to replace patterns (concatenated with parsed parameter)
+     * @brief Launches Appconfig.
+     * @param _srv  service to connect with config root object.
+     * @param _optReplaceMap optional replace map used to replace patterns (concatenated with parsed parameter).
      */
-    FWSERVICES_API virtual void startConfig( SPTR(::fwServices::IService) srv,
-                                             const FieldAdaptorType& optReplaceMap = FieldAdaptorType() );
+    FWSERVICES_API virtual void startConfig( ::fwServices::IService::sptr _srv,
+                                             const FieldAdaptorType& _optReplaceMap = FieldAdaptorType() );
 
-    /// Stop/destroy AppConfig and disconnect connection with config root object
+    /// Stops/destroys AppConfig and disconnect connection with config root object.
     FWSERVICES_API virtual void stopConfig();
 
-    //------------------------------------------------------------------------------
-
+    /**
+     * @brief Gets the running status of the configuration.
+     * @return True if the configuration is running.
+     */
     virtual bool configIsRunning() const
     {
         return m_configIsRunning;
     }
 
-protected:
-
-    ::fwActivities::registry::ActivityAppConfig m_appConfig;
-
-    /// to know if AppConfig is running
-    bool m_configIsRunning;
-
-    // config manager
-    ::fwServices::IAppConfigManager::sptr m_appConfigManager;
-
 private:
 
-    /// Defines a special key to defines the associated object him self
+    /// Stores the app config.
+    ::fwActivities::registry::ActivityAppConfig m_appConfig;
+
+    /// Sets the configuration running state.
+    bool m_configIsRunning;
+
+    /// Stores the config manager.
+    ::fwServices::AppConfigManager::sptr m_appConfigManager;
+
+    /// Defines a special key to defines the associated object him self.
     static const std::string s_SELF_KEY;
-    /// Defines a special key to defines the generated uid
+
+    /// Defines a special key to defines the generated uid.
     static const std::string s_GENERIC_UID_KEY;
+
+    /// Stores key and uid of optional inputs.
+    std::map<std::string, std::string> m_optionalInputs;
 
 };
 
