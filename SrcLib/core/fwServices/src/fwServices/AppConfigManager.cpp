@@ -519,9 +519,7 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
             {
                 SLM_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
                 const auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
-#ifndef _DEBUG
                 FwCoreNotUsedMacro(ret);
-#endif
                 SLM_INFO_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.", !ret.second);
             }
             else
