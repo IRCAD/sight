@@ -20,7 +20,6 @@ set( REQUIREMENTS
     videoVLC
     videoQt
     videoTools
-    arMedia
     preferences
 )
 

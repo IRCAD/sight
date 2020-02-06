@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 
 #include "fwGuiQt/container/QtContainer.hpp"
 
+#include <fwCore/macros.hpp>
+
 #include <QDockWidget>
 #include <QLayout>
 #include <QList>
@@ -36,8 +38,9 @@ namespace container
 //-----------------------------------------------------------------------------
 
 QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) noexcept :
-    m_container(0)
+    m_container(nullptr)
 {
+    FwCoreNotUsedMacro(key);
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +120,7 @@ void QtContainer::setQtContainer(QWidget* container)
 
 //-----------------------------------------------------------------------------
 
-QWidget* QtContainer::getQtContainer()
+QWidget* QtContainer::getQtContainer() const
 {
     return m_container;
 }

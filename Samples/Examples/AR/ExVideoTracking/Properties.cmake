@@ -20,7 +20,6 @@ set( REQUIREMENTS
     videoOpenCV
     videoTools
     trackerAruco
-    arMedia
     preferences
     )
 

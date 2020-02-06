@@ -7,7 +7,6 @@ set( REQUIREMENTS
     media
     appXml
     arDataReg
-    arMedia
     ctrlCamp
     dataReg
     fwlauncher

@@ -98,12 +98,12 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" style="check" shortcut="Space" />
-                    <menuItem name="Loop video" icon="arMedia-0.1/icons/loop-cam.svg" style="check" />
+                    <menuItem name="Start camera" icon="media-0.1/icons/start-cam.svg" />
+                    <menuItem name="Stop camera" icon="media-0.1/icons/stop-cam.svg" />
+                    <menuItem name="Pause video" icon="media-0.1/icons/pause-cam.svg" style="check" shortcut="Space" />
+                    <menuItem name="Loop video" icon="media-0.1/icons/loop-cam.svg" style="check" />
                     <separator />
-                    <menuItem name="Undistort video" icon="arMedia-0.1/icons/distortion.svg" style="check" />
+                    <menuItem name="Undistort video" icon="media-0.1/icons/distortion.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -121,12 +121,12 @@
                 <layout>
                     <editor/>
                     <menuItem name="Add" icon="media-0.1/icons/Import.svg" shortcut="A" />
-                    <menuItem name="Remove" icon="arMedia-0.1/icons/remove.svg" />
-                    <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" />
-                    <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" shortcut="Return"/>
+                    <menuItem name="Remove" icon="media-0.1/icons/remove.svg" />
+                    <menuItem name="Reset" icon="media-0.1/icons/reset.svg" />
+                    <menuItem name="Calibrate with openCV" icon="media-0.1/icons/CheckButton.svg" shortcut="Return"/>
                     <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
-                    <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
-                    <menuItem name="Save calibration images" icon="arMedia-0.1/icons/save.svg" />
+                    <menuItem name="Edit" icon="media-0.1/icons/configuration.svg" />
+                    <menuItem name="Save calibration images" icon="media-0.1/icons/save.svg" />
                     <menuItem name="Load calibration images" icon="media-0.1/icons/LoadActivity.svg" />
                 </layout>
             </gui>

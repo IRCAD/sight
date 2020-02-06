@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,13 +45,14 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <filesystem>
 #include <QBoxLayout>
 #include <QComboBox>
 #include <QIcon>
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
+
+#include <filesystem>
 
 namespace uiTF
 {
@@ -62,12 +63,14 @@ static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::TransferFunctionEditor);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::TransferFunctionEditor)
 
 //------------------------------------------------------------------------------
 
 TransferFunctionEditor::TransferFunctionEditor()
 {
+    FW_DEPRECATED_MSG("`uiTF::TransferFunctionEditor` is deprecated, please use `uiTF::STransferFunction` instead.",
+                      "22.0");
 }
 
 //------------------------------------------------------------------------------

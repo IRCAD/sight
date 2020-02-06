@@ -26,7 +26,6 @@ set( REQUIREMENTS
     uiActivitiesQt
 
     media
-    arMedia
 
     activities
     calibrationActivity

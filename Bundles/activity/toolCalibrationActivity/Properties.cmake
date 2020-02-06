@@ -10,7 +10,6 @@ set( REQUIREMENTS
         ctrlSelection
         visuVTKAdaptor
         media
-        arMedia
         videoQt
         visuVTKQt
         visuVTKARAdaptor
@@ -23,5 +22,7 @@ set( REQUIREMENTS
         ioTimeline
         syncTimeline
         uiTools
+        uiIO
+        uiPreferences
         )
 

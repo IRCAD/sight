@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,13 +58,13 @@ ConfigLauncher::~ConfigLauncher()
 
 //------------------------------------------------------------------------------
 
-void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& config,
-                                 const ::fwServices::IService::sptr& service)
+void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& _config,
+                                 const ::fwServices::IService::sptr& _service)
 {
     ::fwServices::IService::ConfigType srvCfg;
-    const ::fwServices::IService::ConfigType* curConfig = &config;
+    const ::fwServices::IService::ConfigType* curConfig = &_config;
 
-    const ::fwServices::IService::ConfigType& oldConfig = config;
+    const ::fwServices::IService::ConfigType& oldConfig = _config;
     SLM_ASSERT("There must be only one <appConfig/> element.", oldConfig.count("appConfig") == 1 );
 
     const ::fwServices::IService::ConfigType& appConfig = oldConfig.get_child("appConfig");
@@ -90,9 +90,10 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
         const std::string strOptional = itCfg->second.get<std::string>("<xmlattr>.optional", "no");
         const bool optional           = strOptional == "yes" ? true : false;
 
-        auto obj = service->getInOut< ::fwData::Object>(key);
+        auto obj = _service->getInOut< ::fwData::Object>(key);
         if(optional)
         {
+            m_optionalInputs[key] = uid;
             parameterCfg.add("<xmlattr>.uid", uid);
         }
         else
@@ -118,6 +119,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 
         if(itCfg->second.get_child("<xmlattr>").count("uid") == 1)
         {
+            FW_DEPRECATED_MSG("'uid' is deprecated for parameters of ConfigLauncher, use 'by' instead", "22.0");
             const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
             parameterCfg.add("<xmlattr>.uid", uid);
         }
@@ -142,14 +144,14 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 
 //------------------------------------------------------------------------------
 
-void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
-                                 const FieldAdaptorType& optReplaceMap )
+void ConfigLauncher::startConfig(::fwServices::IService::sptr _srv,
+                                 const FieldAdaptorType& _optReplaceMap )
 {
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
-    FieldAdaptorType replaceMap(optReplaceMap);
+    FieldAdaptorType replaceMap(_optReplaceMap);
 
     // Generate generic UID
-    const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( srv->getID() );
+    const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( _srv->getID() );
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
     for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
@@ -158,8 +160,20 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
     }
 
     // Init manager
-    m_appConfigManager = ::fwServices::IAppConfigManager::New();
+    m_appConfigManager = ::fwServices::AppConfigManager::New();
     m_appConfigManager->setConfig( m_appConfig.id, replaceMap );
+
+    // When a configuration is launched, deferred objects may already exist.
+    // This loop allow to notify the app config manager that this data exist and can be used by services.
+    // Whitout that, the data is considered as null.
+    for(const auto& [key, uid] : m_optionalInputs)
+    {
+        auto obj = _srv->getInOut< ::fwData::Object >(key);
+        if(obj)
+        {
+            m_appConfigManager->addExistingDeferredObject(obj, uid);
+        }
+    }
 
     // Launch config
     m_appConfigManager->launch();

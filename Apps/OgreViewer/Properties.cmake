@@ -17,7 +17,6 @@ set( REQUIREMENTS
     # UI declaration/Actions
     gui
     media
-    arMedia
     guiQt
 
     # Configuration launchers

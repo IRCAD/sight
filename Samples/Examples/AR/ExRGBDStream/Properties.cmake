@@ -29,8 +29,6 @@ set( REQUIREMENTS
     videoRealSense
     videoQt
     videoTools
-
-    arMedia
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDStream)

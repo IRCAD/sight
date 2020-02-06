@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,11 +37,7 @@ namespace adaptor
 const ::fwCom::Slots::SlotKeyType SSquare::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 //-----------------------------------------------------------------------------
 
-SSquare::SSquare() noexcept :
-    m_size(0),
-    m_layer(nullptr),
-    m_rec(nullptr),
-    m_pointIsCaptured(false)
+SSquare::SSquare() noexcept
 {
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SSquare::setDoubleParameter, this);
 }
@@ -66,7 +62,9 @@ void SSquare::configuring()
 
     m_coord.setX( config.get<double>("x") );
     m_coord.setY( config.get<double>("y") );
-    m_size = config.get<std::uint32_t>("size");
+    m_size        = config.get<std::uint32_t>("size");
+    m_autoRefresh = config.get<bool>("autoRefresh", m_autoRefresh);
+    m_interaction = config.get<bool>("interaction", m_interaction);
 
     if ( config.count("color") )
     {
@@ -97,6 +95,7 @@ void SSquare::starting()
 
 void SSquare::updating()
 {
+    m_rec->setPos(m_coord.getX(), m_coord.getY());
 }
 
 //-----------------------------------------------------------------------------
@@ -123,30 +122,33 @@ void SSquare::setColor(const std::string& _color )
 
 void SSquare::processInteraction( ::fwRenderQt::data::Event& _event )
 {
-    if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress &&
-         _event.getButton() == ::fwRenderQt::data::Event::LeftButton )
+    if(m_interaction)
     {
-        if ( this->coordViewIsInItem( _event.getCoord(), m_rec ) )
+        if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress &&
+             _event.getButton() == ::fwRenderQt::data::Event::LeftButton )
         {
-            SLM_TRACE("Point is captured");
-            m_pointIsCaptured = true;
-            m_oldCoord        = this->coordViewToCoordItem( _event.getCoord(), m_rec );
-            m_rec->setBrush( Qt::yellow );
+            if ( this->coordViewIsInItem( _event.getCoord(), m_rec ) )
+            {
+                SLM_TRACE("Point is captured");
+                m_pointIsCaptured = true;
+                m_oldCoord        = this->coordViewToCoordItem( _event.getCoord(), m_rec );
+                m_rec->setBrush( Qt::yellow );
+                _event.setAccepted(true);
+            }
+        }
+        else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseMove )
+        {
+            ::fwRenderQt::data::Coord newCoord = this->coordViewToCoordItem( _event.getCoord(), m_rec );
+            m_rec->moveBy( newCoord.getX() - m_oldCoord.getX(), newCoord.getY() - m_oldCoord.getY() );
+            m_oldCoord = newCoord;
             _event.setAccepted(true);
         }
-    }
-    else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseMove )
-    {
-        ::fwRenderQt::data::Coord newCoord = this->coordViewToCoordItem( _event.getCoord(), m_rec );
-        m_rec->moveBy( newCoord.getX() - m_oldCoord.getX(), newCoord.getY() - m_oldCoord.getY() );
-        m_oldCoord = newCoord;
-        _event.setAccepted(true);
-    }
-    else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
-    {
-        m_rec->setBrush( m_color );
-        m_pointIsCaptured = false;
-        _event.setAccepted(true);
+        else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
+        {
+            m_rec->setBrush( m_color );
+            m_pointIsCaptured = false;
+            _event.setAccepted(true);
+        }
     }
 }
 
@@ -187,7 +189,10 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     {
         SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
-    m_rec->setPos(m_coord.getX(), m_coord.getY());
+    if(m_autoRefresh)
+    {
+        this->updating();
+    }
 }
 } // namespace adaptor
 } // namespace scene2D

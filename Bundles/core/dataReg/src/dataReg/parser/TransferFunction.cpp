@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::TransferFunction, ::fwData::TransferFunction );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::TransferFunction, ::fwData::TransferFunction )
 
 namespace dataReg
 {
@@ -79,10 +79,13 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
             }
             tf->setWLMinMax(tf->getMinMaxTFValues());
 
-            if (colorCfg.count("<xmlattr>.isClamped"))
+            const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
+            tf->setIsClamped(isClamped);
+
+            const std::string name = config.get<std::string>("name", "");
+            if(!name.empty())
             {
-                const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped");
-                tf->setIsClamped(isClamped);
+                tf->setName(name);
             }
         }
     }

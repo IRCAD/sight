@@ -26,7 +26,6 @@ set(REQUIREMENTS
         hybridMarkerTracker
         media
         maths
-        arMedia
         preferences
         )
 

@@ -3,13 +3,11 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="SERIESDB" />
-        <param name="AS_UID" />
         <param name="cameraSeries" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
         <object uid="newCameraSeries" type="::arData::CameraSeries" src="deferred" />
         <object uid="camera0" type="::arData::Camera" src="deferred" />
@@ -53,12 +51,12 @@
                 <layout>
                     <menuItem name="Export camera series" icon="media-0.1/icons/Export.svg" />
                     <separator/>
-                    <menuItem name="Export XML" icon="arMedia-0.1/icons/save.svg" />
+                    <menuItem name="Export XML" icon="media-0.1/icons/save.svg" />
                     <separator/>
-                    <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="arMedia-0.1/icons/pause-cam.svg" />
-                    <menuItem name="Loop video" icon="arMedia-0.1/icons/loop-cam.svg" style="check" />
+                    <menuItem name="Start camera" icon="media-0.1/icons/start-cam.svg" />
+                    <menuItem name="Stop camera" icon="media-0.1/icons/stop-cam.svg" />
+                    <menuItem name="Pause video" icon="media-0.1/icons/pause-cam.svg" />
+                    <menuItem name="Loop video" icon="media-0.1/icons/loop-cam.svg" style="check" />
                 </layout>
             </gui>
             <registry>

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,17 +45,18 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Adaptor to display a 3D negato.
+ * @brief Adaptor to display a 3D negato.
  *
  * @section Signals Signals
  * - \b pickedVoxel(string): sends the coordinates and intensity of the voxel picked by the cross widget.
  *
  * @section Slots Slots
- * - \b newImage() : update the image display to show the new content.
- * - \b sliceType(int, int) : update image slice index .
- * - \b sliceIndex(int, int, int) : update image slice type.
- * - \b updateVisibility() : updates the negato visibility from the image field.
- * - \b setVisibility(bool) : sets the image visibility fields.
+ * - \b newImage(): update the image display to show the new content.
+ * - \b sliceType(int, int): update image slice index .
+ * - \b sliceIndex(int, int, int): update image slice type.
+ * - \b updateOpacity(): sets the planes's opacity.
+ * - \b updateVisibility(): updates the negato visibility from the image field.
+ * - \b setVisibility(bool): sets the image visibility fields.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -78,12 +79,12 @@ namespace visuOgreAdaptor
  * - \b interactive (optional, true/false, default=false): enables interactions on the negato
  * - \b priority (optional, int, default=1): interaction priority of the negato.
  * - \b transform (optional): the name of the Ogre transform node where to attach the negato, as it was specified
- * in the STransform adaptor.
+ *      in the STransform adaptor.
  * - \b queryFlags (optional, default=0x40000000): Mask set to planes for picking request.
  */
-class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwRenderOgre::ITransformable,
-                                            public ::fwRenderOgre::interactor::IInteractor
+class VISUOGREADAPTOR_CLASS_API SNegato3D final : public ::fwRenderOgre::IAdaptor,
+                                                  public ::fwRenderOgre::ITransformable,
+                                                  public ::fwRenderOgre::interactor::IInteractor
 {
 public:
 
@@ -91,89 +92,136 @@ public:
 
     fwCoreServiceMacro(SNegato3D, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor
+    /// Creates slots.
     VISUOGREADAPTOR_API SNegato3D() noexcept;
-    /// Destructor. Does nothing.
+
+    /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SNegato3D() noexcept;
-    /// Sets the filtering type
-    VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
 
     /**
-     * @name Slots API
-     * @{
+     * @brief Sets the filtering type.
+     * @param _filtering the filtering type.
      */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT;
-///@}
-
-protected:
-
-    /// Configures the service
-    VISUOGREADAPTOR_API virtual void configuring() override;
-    /// Starts the service,
-    VISUOGREADAPTOR_API virtual void starting() override;
-    /// Stops the service, disconnects connections.
-    VISUOGREADAPTOR_API virtual void stopping() override;
-    /// Requests rendering of the scene.
-    VISUOGREADAPTOR_API virtual void updating() override;
-
-    /// Retrieves the current transfer function
-    VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
-
-    /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    /// Slot: update the displayed transfer function
-    VISUOGREADAPTOR_API virtual void updateTF();
+    VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
 
 private:
 
-    /** Interacts with the negato if it was picked by pressing any mouse button.
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::SNegato3D::s_NEWIMAGE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_BUFFER_MODIFIED_SIG to ::visuOgreAdaptor::SNegato3D::s_NEWIMAGE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_TYPE_MODIFIED_SIG to
+     * ::visuOgreAdaptor::SNegato3D::s_SLICETYPE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_INDEX_MODIFIED_SIG to
+     * ::visuOgreAdaptor::SNegato3D::s_SLICEINDEX_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to
+     * ::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to
+     * ::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
+     */
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Configures the service.
+    virtual void configuring() override;
+
+    /// Starts the service.
+    virtual void starting() override;
+
+    /// Requests rendering of the scene.
+    virtual void updating() override;
+
+    /**
+     * @brief Notifies that the TF is swapped.
+     * @param _key key of the swapped data.
+     */
+    void swapping(const KeyType& key) override;
+
+    /// Stops the service, disconnects connections.
+    virtual void stopping() override;
+
+    /// Update the displayed transfer function.
+    void updateTF();
+
+    /**
+     * @brief Interacts with the negato if it was picked by pressing any mouse button.
+     *
      * Interactions will take place while holding down the button. The following actions are available:
      * - Left mouse click: shows a cross widget to select a voxel and retrieve its intensity.
      * - Middle mouse click: move the slice's intersection to where the mouse cursor is.
      * - Right mouse click: adjust the transfer function level and window by moving
      *                      the mouse up/down and left/right respectively.
+     *
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     * @param _dx the cursor's width displacement since the last event.
+     * @param _dy the cursor's height displacement since the last event.
      */
-    virtual void mouseMoveEvent(MouseButton button, Modifier, int _x, int _y, int _dx, int _dy) final;
+    virtual void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) override;
 
-    /// Attempts to pick the negato and starts interactions if picking was successful.
-    virtual void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) final;
+    /**
+     * @brief Attempts to pick the negato and starts interactions if picking was successful.
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
+    virtual void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
 
     /// Ends all interactions, regardless of the input.
-    virtual void buttonReleaseEvent(MouseButton, Modifier, int, int ) final;
+    virtual void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
 
-    /// Sets the slice intersection at the (_x, _y) screen position if possible.
+    /**
+     * @brief Sets the slice intersection at the (_x, _y) screen position if possible.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
     void moveSlices(int _x, int _y);
 
-    /// Picks the intensity value at the (_x, _y) screen position.
+    /**
+     * @brief Picks the intensity value at the (_x, _y) screen position.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
     void pickIntensity(int _x, int _y);
 
-    /// Updates the transfer function window and level by adding the input values.
-    void updateWindowing(double _windowDelta, double _levelDelta);
+    /**
+     * @brief Updates the transfer function window and level by adding the input values.
+     * @param _dw window delta.
+     * @param _dl level delta.
+     */
+    void updateWindowing(double _dw, double _dl);
 
-    /// Slot: update image buffer
+    /// SLOT: updates the image buffer.
     void newImage();
 
-    /// Slot: update image slice type
-    void changeSliceType(int _from, int _to);
+    /// SLOT: updates the image slice type.
+    void changeSliceType(int, int);
 
-    /// Slot: update image slice index
+    /**
+     * @brief SLOT: updates the image slice index.
+     * @param _axialIndex new axial slice index.
+     * @param _frontalIndex new frontal slice index.
+     * @param _sagittalIndex new sagittal slice index.
+     */
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
 
-    /// Makes the planes process their meshes
+    /**
+     * @brief Makes the planes process their meshes.
+     * @param _spacing spacing of the input image.
+     * @param _origin origin of the input image.
+     */
     void createPlanes(const ::Ogre::Vector3& _spacing, const ::Ogre::Vector3& _origin);
 
-    /// Sets the planes's opacity
-    /// Also a slot called when image opacity is modified
+    /// SLOT: sets the planes's opacity.
     void setPlanesOpacity();
 
-    /// Slot: sets the negato's visibility
-    void setVisibility(bool visibility);
+    /**
+     * @brief SLOT: sets the negato's visibility.
+     * @param _visibility visibility status of the negato.
+     */
+    void setVisibility(bool _visibility);
 
     /// Sets the picking flags on all three negato planes.
     void setPlanesQueryFlags(std::uint32_t _flags);
@@ -184,57 +232,58 @@ private:
     /// Updates the intensity picking widget's position.
     void updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin);
 
-    /// Sets whether the camera must be auto reset when a mesh is updated or not.
+    /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { true };
 
-    /// Sets the opacity to that of the transfer function.
-    bool m_enableAlpha {false};
+    /// Enables the opacity to that of the transfer function.
+    bool m_enableAlpha { false };
 
-    /// Sets whether or not interactions are enabled on the negato.
+    /// Enables whether or not interactions are enabled on the negato.
     bool m_interactive { false };
 
-    /// Defines the order in which interactions take place in the scene.
+    /// Sets the order in which interactions take place in the scene.
     int m_interactionPriority { 1 };
 
-    /// Ogre texture which will be displayed on the negato
-    ::Ogre::TexturePtr m_3DOgreTexture;
+    /// Contains the ogre texture which will be displayed on the negato.
+    ::Ogre::TexturePtr m_3DOgreTexture { nullptr };
 
-    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
-    std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
+    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
+    std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF { nullptr };
 
-    /// Stores the planes on which we will apply our texture
+    /// Stores the planes on which we will apply our texture.
     std::array< ::fwRenderOgre::Plane::sptr, 3> m_planes;
 
-    /// Points to the plane that the user is currently interacting with.
-    ::fwRenderOgre::Plane::sptr m_pickedPlane;
+    /// Contains the plane that the user is currently interacting with.
+    ::fwRenderOgre::Plane::sptr m_pickedPlane { nullptr };
 
-    /// Widget used to pick intensities.
+    /// Contains the widget displayed to pick intensities.
     ::Ogre::ManualObject* m_pickingCross { nullptr };
 
-    /// The scene node allowing to move the entire negato
+    /// Contains the scene node allowing to move the entire negato.
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
-    /// Defines the filtering type for this negato
+    /// Sets the filtering type for this negato.
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
     /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
 
-    /// Stores the transfer function window value at the time the interaction started.
+    /// Sets the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };
 
-    /// Stores the transfer function level value at the time the interaction started.
+    /// Sets the transfer function level value at the time the interaction started.
     double m_initialLevel { 0.f };
 
-    /// Stores the mouse position at the time the windowing interaction started.
+    /// Sets the mouse position at the time the windowing interaction started.
     ::Ogre::Vector2i m_initialPos { -1, -1 };
 
-    /// Mask for picking request.
+    /// Sets the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
+    /// Sets the signal sent when a voxel is picked using the left mouse button.
     using PickedVoxelSigType = ::fwCom::Signal< void (std::string) >;
-    /// Sent when a voxel is picked using the left mouse button.
-    PickedVoxelSigType::sptr m_pickedVoxelSignal;
+    PickedVoxelSigType::sptr m_pickedVoxelSignal { nullptr };
+
 };
 
 //------------------------------------------------------------------------------

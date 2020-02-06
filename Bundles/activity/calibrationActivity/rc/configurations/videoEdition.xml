@@ -35,7 +35,7 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
+                    <menuItem name="Edit" icon="media-0.1/icons/configuration.svg" />
                 </layout>
             </gui>
             <registry>
@@ -54,7 +54,7 @@
         <!-- ******************************* Services ***************************************** -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="camera" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="camera" type="::fwRenderVTK::SRender">
             <scene renderMode="timer">
                 <renderer id="default" background="0.0" />
                 <adaptor uid="videoAdapter" />
