@@ -659,6 +659,9 @@ void SLandmarks::onRemoveSelection()
 
 void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo _pickingInfo)
 {
+    FW_DEPRECATED_MSG(
+        "::uiMeasurementQt::editor::addPickedPoint is no longer supported, the methods have been moved to ::uiMeasurementQt::editor::pick",
+        "22.0")
     this->pick(_pickingInfo);
 }
 
