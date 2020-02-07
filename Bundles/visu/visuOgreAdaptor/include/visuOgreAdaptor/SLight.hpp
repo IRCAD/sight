@@ -41,11 +41,11 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor for a light.
+ * @brief This adaptors adds a light to the scene manager.
  *
  * @section Slots Slots
- * - \b setThetaOffset(float): Called when the theta offset is changed and moves the light accordingly.
- * - \b setPhiOffset(float): Called when the phi offset is changed and moves the light accordingly.
+ * - \b setThetaOffset(float): called when the theta offset is changed and moves the light accordingly.
+ * - \b setPhiOffset(float): called when the phi offset is changed and moves the light accordingly.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -157,26 +157,28 @@ public:
     VISUOGREADAPTOR_API virtual void switchOn(bool _on) override final;
 
     /**
-     * @brief Gets the theta offset of the light (used for directional light).
+     * @brief Gets the angle in degrees defining the rotation of the light around x axis.
      * @return The theta offset of the light.
      */
     VISUOGREADAPTOR_API virtual float getThetaOffset() const override final;
 
     /**
-     * @brief Sets the theta offset of the light (used for directional light).
-     * @param _thetaOffset The new theta offset of the light.
+     * @brief Sets the angle in degrees defining the rotation of the light around x axis.
+     * @param _thetaOffset the value of the thta offset.
+     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override final;
 
     /**
-     * @brief Gets the phi offset of the light (used for directional light).
-     * @return The phi offset of the light.
+     * @brief Gets the angle in degrees defining the rotation of the light around y axis.
+     * @return The phi of the light.
      */
     VISUOGREADAPTOR_API virtual float getPhiOffset() const override final;
 
     /**
-     * @brief Sets the phi offset of the light (used for directional light).
-     * @param _phiOffset The new phi offset of the light.
+     * @brief Sets the angle in degrees defining the rotation of the light around y axis.
+     * @param _phiOffset the phi of the thta offset.
+     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
     VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override final;
 
@@ -216,31 +218,31 @@ private:
     /// Removes the light from the scene manager.
     virtual void stopping() override final;
 
-    /// Ogre light managed by this adaptor.
+    /// Containes the Ogre light managed by this adaptor.
     ::Ogre::Light* m_light {nullptr};
 
-    /// Name of the associated Ogre light.
+    /// Defines the name of the associated Ogre light.
     std::string m_lightName;
 
-    /// Type of the associated Ogre light.
+    /// Sets the type of the associated Ogre light.
     ::Ogre::Light::LightTypes m_lightType {::Ogre::Light::LT_DIRECTIONAL};
 
-    /// Diffuse color of the associated Ogre light.
+    /// Containes the diffuse color of the associated Ogre light.
     ::fwData::Color::sptr m_lightDiffuseColor {nullptr};
 
-    /// Specular color of the associated Ogre light.
+    /// Contains the specular color of the associated Ogre light.
     ::fwData::Color::sptr m_lightSpecularColor {nullptr};
 
-    /// Light activation flag.
+    /// Enables the light.
     bool m_switchedOn {true};
 
-    /// Angle in degrees defining the rotation of the light around x axis.
+    /// Sets the angle in degrees defining the rotation of the light around x axis.
     float m_thetaOffset {0.f};
 
-    /// Angle in degrees defining the rotation of the light around y axis.
+    /// Sets the angle in degrees defining the rotation of the light around y axis.
     float m_phiOffset {0.f};
 
-    /// Node used to attach the light
+    /// Contains the node used to attach the light
     ::Ogre::SceneNode* m_lightNode {nullptr};
 };
 
