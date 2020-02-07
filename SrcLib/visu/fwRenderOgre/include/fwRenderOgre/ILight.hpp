@@ -222,6 +222,13 @@ public:
      */
     [[deprecated("Deprecated method. Removed in sight 21.0")]]
     FWRENDEROGRE_API virtual bool isOrphanNode() const = 0;
+
+    /**
+     * @brief Enables the light visual feedback.
+     * @param _enable the visual feedback visibility state.
+     */
+    FWRENDEROGRE_API virtual void enableVisualFeedback(bool _enable) = 0;
+
 };
 
 } // namespace fwRenderOgre

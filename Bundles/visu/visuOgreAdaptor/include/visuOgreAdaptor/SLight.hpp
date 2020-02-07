@@ -25,6 +25,8 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
 
+#include <fwData/Material.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
@@ -92,7 +94,7 @@ public:
 
     /**
      * @brief Sets the name of the light.
-     * @param _name The new light name.
+     * @param _name the new light name.
      */
     VISUOGREADAPTOR_API virtual void setName(const std::string& _name) override final;
 
@@ -104,7 +106,7 @@ public:
 
     /**
      * @brief Sets the type of the light.
-     * @param _type The new light type.
+     * @param _type the new light type.
      */
     VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type) override final;
 
@@ -116,13 +118,13 @@ public:
 
     /**
      * @brief Sets the diffuse color of the light.
-     * @param _diffuseColor The new light diffuse color.
+     * @param _diffuseColor the new light diffuse color.
      */
     VISUOGREADAPTOR_API void setDiffuseColor(::fwData::Color::sptr _diffuseColor);
 
     /**
      * @brief Sets the diffuse color of the light.
-     * @param _diffuseColor The new light diffuse color.
+     * @param _diffuseColor the new light diffuse color.
      */
     VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override final;
 
@@ -134,13 +136,13 @@ public:
 
     /**
      * @brief Sets the specular color of the light.
-     * @param _specularColor The new light specular color.
+     * @param _specularColor the new light specular color.
      */
     VISUOGREADAPTOR_API void setSpecularColor(::fwData::Color::sptr _specularColor);
 
     /**
      * @brief Sets the specular color of the light.
-     * @param _specularColor The new light specular color.
+     * @param _specularColor the new light specular color.
      */
     VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override final;
 
@@ -152,7 +154,7 @@ public:
 
     /**
      * @brief Sets the light activation state.
-     * @param _on The light new activation state.
+     * @param _on the light new activation state.
      */
     VISUOGREADAPTOR_API virtual void switchOn(bool _on) override final;
 
@@ -194,6 +196,12 @@ public:
     VISUOGREADAPTOR_API virtual void setParentTransformName(
         const fwRenderOgre::SRender::OgreObjectIdType&) override final;
 
+    /**
+     * @brief Enables the light visual feedback.
+     * @param _enable the visual feedback visibility state.
+     */
+    VISUOGREADAPTOR_API virtual void enableVisualFeedback(bool _enable) override final;
+
 private:
 
     /**
@@ -225,25 +233,40 @@ private:
     std::string m_lightName;
 
     /// Sets the type of the associated Ogre light.
-    ::Ogre::Light::LightTypes m_lightType {::Ogre::Light::LT_DIRECTIONAL};
+    ::Ogre::Light::LightTypes m_lightType { ::Ogre::Light::LT_DIRECTIONAL };
 
     /// Containes the diffuse color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightDiffuseColor {nullptr};
+    ::fwData::Color::sptr m_lightDiffuseColor { nullptr };
 
     /// Contains the specular color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightSpecularColor {nullptr};
+    ::fwData::Color::sptr m_lightSpecularColor { nullptr };
 
     /// Enables the light.
-    bool m_switchedOn {true};
+    bool m_switchedOn { true };
 
     /// Sets the angle in degrees defining the rotation of the light around x axis.
-    float m_thetaOffset {0.f};
+    float m_thetaOffset { 0.f };
 
     /// Sets the angle in degrees defining the rotation of the light around y axis.
-    float m_phiOffset {0.f};
+    float m_phiOffset { 0.f };
 
     /// Contains the node used to attach the light
-    ::Ogre::SceneNode* m_lightNode {nullptr};
+    ::Ogre::SceneNode* m_lightNode { nullptr };
+
+    /// Defines the visual feedback visibility state.
+    bool m_visualFeedback { false };
+
+    /// Contains the material used for the feedback visualization.
+    ::fwData::Material::sptr m_material { nullptr };
+
+    /// Contains the sphere at the light position.
+    ::Ogre::ManualObject* m_lightPosition { nullptr };
+
+    /// Sets the length of the visual feedback object.
+    float m_length { 50.f };
+
+    /// Contains objects used for the directional light visual feedback.
+    std::pair< ::Ogre::ManualObject*, ::Ogre::ManualObject* > m_directionalFeedback { nullptr, nullptr };
 };
 
 //------------------------------------------------------------------------------
@@ -265,13 +288,6 @@ inline void SLight::setName(const std::string& _name)
 inline ::Ogre::Light::LightTypes SLight::getType() const
 {
     return m_lightType;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SLight::setType(::Ogre::Light::LightTypes _type)
-{
-    m_lightType = _type;
 }
 
 //------------------------------------------------------------------------------
