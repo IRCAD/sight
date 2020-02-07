@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight)
 
-fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY);
+fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
 
 //------------------------------------------------------------------------------
 
@@ -135,8 +135,11 @@ void SLight::starting()
 
     this->getRenderService()->makeCurrent();
 
-    m_lightDiffuseColor  = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
+    m_lightDiffuseColor = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
+    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
+
     m_lightSpecularColor = this->getInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
+    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
 
     m_light = this->getSceneManager()->createLight(this->getID() + "_" + m_lightName);
 
@@ -163,18 +166,24 @@ void SLight::starting()
 
 void SLight::updating()
 {
-    SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
+    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
+    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
 
     this->getRenderService()->makeCurrent();
 
+    ::fwData::mt::ObjectReadLock diffuseLock(m_lightDiffuseColor);
     const ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
                                            m_lightDiffuseColor->green(),
                                            m_lightDiffuseColor->blue(),
                                            m_lightDiffuseColor->alpha());
+    diffuseLock.unlock();
+
+    ::fwData::mt::ObjectReadLock specularLock(m_lightSpecularColor);
     const ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
                                             m_lightSpecularColor->green(),
                                             m_lightSpecularColor->blue(),
                                             m_lightSpecularColor->alpha());
+    specularLock.unlock();
 
     m_light->setDiffuseColour(diffuseColor);
     m_light->setSpecularColour(specularColor);
@@ -200,8 +209,11 @@ void SLight::stopping()
 
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
-    SLM_ASSERT("Missing diffuse color data object.", m_lightDiffuseColor);
+    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
+
+    ::fwData::mt::ObjectWriteLock lock(m_lightDiffuseColor);
     m_lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
+    lock.unlock();
 
     m_light->setDiffuseColour(_diffuseColor);
     this->requestRender();
@@ -211,8 +223,11 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
-    SLM_ASSERT("Missing specular color data object.", m_lightSpecularColor);
+    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
+
+    ::fwData::mt::ObjectWriteLock lock(m_lightSpecularColor);
     m_lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
+    lock.unlock();
 
     m_light->setSpecularColour(_specularColor);
     this->requestRender();
