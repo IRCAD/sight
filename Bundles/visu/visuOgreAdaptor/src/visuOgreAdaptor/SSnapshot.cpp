@@ -22,9 +22,8 @@
 
 #include "visuOgreAdaptor/SSnapshot.hpp"
 
-#include <fwCom/HasSlots.hpp>
 #include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -148,7 +147,7 @@ void SSnapshot::createCompositor(int _width, int _height)
     m_target = technique->createTextureDefinition(m_targetName);
 
     m_target->scope = ::Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
-    m_target->formatList.push_back(::Ogre::PixelFormat::PF_A8R8G8B8);
+    m_target->formatList.push_back(::Ogre::PixelFormat::PF_R8G8B8);
 
     m_target->height = _height;
     m_target->width  = _width;
