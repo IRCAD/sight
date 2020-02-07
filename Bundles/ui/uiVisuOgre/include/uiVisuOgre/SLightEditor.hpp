@@ -106,6 +106,9 @@ private:
     /// Contains a list of each possible light type.
     QPointer<QComboBox> m_lightTypeBox;
 
+    /// Contains a button to show or hide the visual feedback of the light.
+    QPointer<QPushButton> m_visualFeedback;
+
     /// Contains a button that manage the light diffuse color.
     QPointer<QPushButton> m_diffuseColorBtn;
 
@@ -170,6 +173,13 @@ private Q_SLOTS:
      * @see m_lightTypeBox
      */
     void onEditType(const QString& _type);
+
+    /**
+     * @brief Toggles the visual feedback of the light.
+     * @param _enable value of the pressed button.
+     * @see m_visualFeedback
+     */
+    void onToggleFeedback(bool _enable);
 
     /**
      * @brief Sets the new position on the light adaptor accurately.

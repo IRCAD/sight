@@ -377,7 +377,7 @@ void SLight::enableVisualFeedback(bool _enable)
 
 //------------------------------------------------------------------------------
 
-inline void SLight::setType(::Ogre::Light::LightTypes _type)
+void SLight::setType(::Ogre::Light::LightTypes _type)
 {
     m_lightType = _type;
     if(m_directionalFeedback.first)

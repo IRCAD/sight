@@ -25,10 +25,10 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
 
-#include <fwData/Material.hpp>
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+
+#include <fwData/Material.hpp>
 
 #include <fwRenderOgre/ILight.hpp>
 
@@ -202,6 +202,12 @@ public:
      */
     VISUOGREADAPTOR_API virtual void enableVisualFeedback(bool _enable) override final;
 
+    /**
+     * @brief Indicates if the visual feedback is enabled.
+     * @return True if the visual feedback is activated.
+     */
+    VISUOGREADAPTOR_API virtual bool isVisualFeedbackOn() const override final;
+
 private:
 
     /**
@@ -353,6 +359,13 @@ inline bool SLight::isOrphanNode() const
 {
     FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
     return false;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool SLight::isVisualFeedbackOn() const
+{
+    return m_visualFeedback;
 }
 
 //------------------------------------------------------------------------------

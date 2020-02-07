@@ -229,6 +229,12 @@ public:
      */
     FWRENDEROGRE_API virtual void enableVisualFeedback(bool _enable) = 0;
 
+    /**
+     * @brief Indicates if the visual feedback is enabled.
+     * @return True if the visual feedback is activated.
+     */
+    FWRENDEROGRE_API virtual bool isVisualFeedbackOn() const = 0;
+
 };
 
 } // namespace fwRenderOgre
