@@ -101,9 +101,6 @@ private:
     /// Ogre target name (used to get back the texture).
     std::string m_targetName;
 
-    /// Ogre Texture definition.
-    ::Ogre::CompositionTechnique::TextureDefinition* m_target { nullptr };
-
     /// Handles connection the to layer.
     ::fwCom::helper::SigSlotConnection m_layerConnection;
 

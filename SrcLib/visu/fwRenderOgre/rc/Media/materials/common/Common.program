@@ -195,3 +195,11 @@ fragment_program SpatialTransforms_FP glsl
 {
     source SpatialTransforms.glsl
 }
+
+//---------------------------------------------------------------------------
+
+fragment_program ForwardDepth_FP glsl
+{
+    source ForwardDepth_FP.glsl
+}
+

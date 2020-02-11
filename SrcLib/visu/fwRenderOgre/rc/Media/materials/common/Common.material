@@ -41,3 +41,26 @@ material RenderQuad
         }
     }
 }
+
+material ForwardDepth
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref ForwardDepth_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
