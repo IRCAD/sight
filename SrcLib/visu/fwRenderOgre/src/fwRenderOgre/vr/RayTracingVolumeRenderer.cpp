@@ -160,6 +160,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_fragmentShaderAttachements.push_back("Lighting_FP");
     m_fragmentShaderAttachements.push_back("VolumeNormals_FP");
     m_fragmentShaderAttachements.push_back("RayUtils_FP");
+    m_fragmentShaderAttachements.push_back("VolumeRayCompositing_FP");
+    m_fragmentShaderAttachements.push_back("VolumeRay_FP");
 
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
@@ -606,8 +608,25 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
         if(fpPPDefines.find(s_PREINTEGRATION_DEFINE) == std::string::npos)
         {
-            fsp->setParameter("attach", "TransferFunction_FP");
+            fsp->setParameter("attach", "VolumeTransferFunctionSampling_FP");
         }
+        else
+        {
+            fsp->setParameter("attach", "VolumePreIntegratedSampling_FP");
+        }
+
+        std::string lightingShaderName = "Volume";
+        if(m_colorBleeding)
+        {
+            lightingShaderName += "ColorBleeding";
+        }
+        if(m_ambientOcclusion || m_shadows)
+        {
+            lightingShaderName += "Advanced";
+        }
+        lightingShaderName += "Lighting_FP";
+
+        fsp->setParameter("attach", lightingShaderName);
 
         if(fpPPDefines.size() > 0)
         {

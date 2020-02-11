@@ -1,0 +1,12 @@
+#ifndef SIGHT_VOLUME_RAY
+#define SIGHT_VOLUME_RAY
+
+struct VolumeRay {
+    vec3 position;     // Current ray position.
+    vec3 direction;    // Ray direction. Precondition: length(direction) must be equal to stepLength.
+    float totalLength; // Remaining ray length.
+    float stepLength;  // Length of a ray sample.
+    int numSteps;      // Number of steps taken by the ray.
+};
+
+#endif // SIGHT_VOLUME_RAY
