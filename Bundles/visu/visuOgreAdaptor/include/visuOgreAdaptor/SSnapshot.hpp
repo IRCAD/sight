@@ -46,8 +46,8 @@ namespace visuOgreAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory) : defines the mesh's layer.
- * - \b width (optionnal) : fixed width of snapshot.
- * - \b height (optionnal): fixed height of snaphot.
+ * - \b width (optional) : fixed width of snapshot.
+ * - \b height (optional): fixed height of snaphot.
  * NOTE: if width & height are missing (or one of them), size of the snapshot will be connected to the layer:
  * if the layer is resized the snaphot will be resized.
  *
@@ -61,15 +61,15 @@ public:
 
     fwCoreServiceMacro(SSnapshot, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor, initializes the adaptor.
+    /// Initializes the adaptor.
     VISUOGREADAPTOR_API SSnapshot() noexcept;
 
-    /// Destructor, destroys the adaptor.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API virtual ~SSnapshot() noexcept final;
 
 private:
 
-    /// Configures IAdaptor.
+    /// Configures the layer and retrieves the size of the output image.
     virtual void configuring() final;
 
     /// Intializes adaptor and connection to layer signals.
@@ -78,16 +78,18 @@ private:
     /// Updates the service. Convert render target texture to fwData::Image.
     virtual void updating() noexcept final;
 
-    /// Destroys adaptor, call destroyCompositor().
+    /// Destroys adaptor, only calls @ref ::visuOgreAdaptor::destroyCompositor().
     virtual void stopping() final;
 
-    /// Creates the compositor with _with * _height size.
+    /// Creates the compositor which copies the layer color buffer to a global render target.
+    /// (size =_width * _height).
     void createCompositor(int _width, int _height);
 
     /// Destroys compositor.
     void destroyCompositor();
 
-    /// Slot: resizes render target, new size = _width * _height.
+    /// Slot: resizes the global render target, new size = _width * _height.
+    /// Call @ref ::visuOgreAdaptor::destroyCompositor() and @ref ::visuOgreAdaptor::createCompositor(int, int).
     void resizeRenderTarget(int _width, int _height);
 
     /// Ogre compositor pointer.

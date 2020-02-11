@@ -64,8 +64,8 @@ void SSnapshot::configuring()
     this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-    m_width  = config.get<int>("width");
-    m_height = config.get<int>("height");
+    m_width  = config.get<int>("width", m_width);
+    m_height = config.get<int>("height", m_height);
 
     // If Both width & height are found we fix the size.
     if(m_width != -1 && m_height != -1)
@@ -97,13 +97,14 @@ void SSnapshot::starting()
     // If not listen to the resize event of the layer.
     else
     {
-        m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
-                                  this->getSptr(), s_RESIZE_RENDER_TARGET_SLOT);
 
         const auto h = this->getLayer()->getViewport()->getActualHeight();
         const auto w = this->getLayer()->getViewport()->getActualWidth();
 
         this->createCompositor(h, w);
+
+        m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
+                                  this->getSptr(), s_RESIZE_RENDER_TARGET_SLOT);
     }
 
 }
@@ -142,7 +143,7 @@ void SSnapshot::createCompositor(int _width, int _height)
     m_compositor = cmpMngr.create(m_compositorName,
                                   ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    ::Ogre::CompositionTechnique* technique = m_compositor->createTechnique();
+    ::Ogre::CompositionTechnique* const technique = m_compositor->createTechnique();
 
     m_target = technique->createTextureDefinition(m_targetName);
 
@@ -153,20 +154,20 @@ void SSnapshot::createCompositor(int _width, int _height)
     m_target->width  = _width;
 
     {
-        ::Ogre::CompositionTargetPass* targetPass = technique->createTargetPass();
+        ::Ogre::CompositionTargetPass* const targetPass = technique->createTargetPass();
         targetPass->setOutputName(m_targetName);
         targetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
         targetPass->createPass(::Ogre::CompositionPass::PassType::PT_CLEAR);
     }
 
     {
-        ::Ogre::CompositionTargetPass* targetPass = technique->createTargetPass();
+        ::Ogre::CompositionTargetPass* const targetPass = technique->createTargetPass();
         targetPass->setOutputName(m_targetName);
         targetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
     }
 
     {
-        ::Ogre::CompositionTargetPass* targetOutputPass = technique->getOutputTargetPass();
+        ::Ogre::CompositionTargetPass* const targetOutputPass = technique->getOutputTargetPass();
         targetOutputPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
     }
 
