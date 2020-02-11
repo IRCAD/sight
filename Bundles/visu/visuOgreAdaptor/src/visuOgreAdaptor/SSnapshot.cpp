@@ -131,17 +131,16 @@ void SSnapshot::updating() noexcept
 
     if(depth)
     {
-        const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 1);
+        const ::Ogre::TexturePtr depthText = m_compositor->getTextureInstance(m_targetName, 1);
 
         {
             ::fwData::mt::ObjectWriteLock lock(depth);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(text, depth, false);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth, false);
         }
 
-        auto sig = depth->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        auto depthSig = depth->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        depthSig->asyncEmit();
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -155,56 +154,43 @@ void SSnapshot::stopping()
 
 void SSnapshot::createCompositor(int _width, int _height)
 {
+    // Creates the following compositor:
+    // compositor 'm_compositorName'
+    // {
+    //     technique
+    //     {
+    //         // The depth attachment  only exist if the depth is needed.
+    //         texture 'm_targetName' '_width' '_height' PF_R8G8B8 PF_FLOAT32_R global_scope
+    //
+    //         // We use a local depth texture since Ogre doesn't allow global depth textures.
+    //         // It will be copied by ForwardDepth.
+    //         texture rt_depth target_width target_height PF_DEPTH32 local_scope
+    //
+    //         // This target pass only exist if the depth is needed.
+    //         target rt_depth
+    //         {
+    //             input previous
+    //         }
+    //
+    //         target 'm_targetName'
+    //         {
+    //             input previous
+    //
+    //             // This pass only exist if the depth is needed.
+    //             pass render_quad
+    //             {
+    //                 input 0 rt_depth
+    //                 material ForwardDepth
+    //             }
+    //         }
+    //
+    //         target_output
+    //         {
+    //             input previous
+    //         }
+    //     }
+    // }
 
-    /*
-     * compositor Snapshot
-       {
-       technique
-       {
-       texture _target 1920 1080 PF_R8G8B8 global_scope
-       texture rt_depth target_width target_height PF_DEPTH32 local_scope
-
-       target _target
-       {
-        input none
-        pass clear
-        {
-        }
-       }
-
-       // Only if the depth is needed.
-       target rt_depth
-       {
-        input none
-        pass clear
-        {
-        }
-       }
-
-       // Only if the depth is needed.
-       target rt_depth
-       {
-        input previous
-       }
-
-       target _target
-       {
-        input previous
-
-        // Only if the depth is needed.
-        pass render_quad
-        {
-            input 0 rt_depth
-            material ForwardDepth
-        }
-       }
-
-       target_output
-       {
-        input previous
-       }
-       }
-       }*/
     bool retrieveDepth = this->getInOut< ::fwData::Image>(s_DEPTH_INOUT) != nullptr;
 
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
@@ -215,20 +201,11 @@ void SSnapshot::createCompositor(int _width, int _height)
     ::Ogre::CompositionTechnique* const technique = m_compositor->createTechnique();
 
     ::Ogre::CompositionTechnique::TextureDefinition* globalTarget;
-
     globalTarget        = technique->createTextureDefinition(m_targetName);
     globalTarget->scope = ::Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
     globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_R8G8B8);
-    globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_FLOAT32_R);
     globalTarget->height = _height;
     globalTarget->width  = _width;
-
-    {
-        ::Ogre::CompositionTargetPass* const targetPass = technique->createTargetPass();
-        targetPass->setOutputName(m_targetName);
-        targetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
-        targetPass->createPass(::Ogre::CompositionPass::PassType::PT_CLEAR);
-    }
 
     ::Ogre::CompositionTargetPass* const globalTargetPass = technique->createTargetPass();
     globalTargetPass->setOutputName(m_targetName);
@@ -236,6 +213,8 @@ void SSnapshot::createCompositor(int _width, int _height)
 
     if(retrieveDepth)
     {
+        globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_FLOAT32_R);
+
         ::Ogre::CompositionTechnique::TextureDefinition* localTarget;
         const std::string localName("rt_depth");
 
@@ -244,13 +223,6 @@ void SSnapshot::createCompositor(int _width, int _height)
         localTarget->formatList.push_back(::Ogre::PixelFormat::PF_DEPTH32);
         localTarget->height = _height;
         localTarget->width  = _width;
-
-        {
-            ::Ogre::CompositionTargetPass* const targetPass = technique->createTargetPass();
-            targetPass->setOutputName(localName);
-            targetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_NONE);
-            targetPass->createPass(::Ogre::CompositionPass::PassType::PT_CLEAR);
-        }
 
         {
             ::Ogre::CompositionTargetPass* const targetPass = technique->createTargetPass();
@@ -271,8 +243,8 @@ void SSnapshot::createCompositor(int _width, int _height)
     targetOutputPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
 
     const auto layer = this->getLayer();
-    cmpMngr.addCompositor(layer->getViewport(), m_compositorName);
-    cmpMngr.setCompositorEnabled(layer->getViewport(), m_compositorName, true);
+    layer->addAvailableCompositor(m_compositorName);
+    layer->updateCompositorState(m_compositorName, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -282,7 +254,7 @@ void SSnapshot::destroyCompositor()
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 
     const auto layer = this->getLayer();
-    cmpMngr.setCompositorEnabled(layer->getViewport(), m_compositorName, false);
+    layer->updateCompositorState(m_compositorName, false);
     cmpMngr.removeCompositor(layer->getViewport(), m_compositorName);
     cmpMngr.remove(m_compositor);
     m_compositor.reset();
@@ -294,7 +266,6 @@ void SSnapshot::resizeRenderTarget(int _width, int _height)
 {
     this->destroyCompositor();
     this->createCompositor(_width, _height);
-
 }
 
 //-----------------------------------------------------------------------------

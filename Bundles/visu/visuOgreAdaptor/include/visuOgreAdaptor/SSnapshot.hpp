@@ -81,33 +81,43 @@ private:
     /// Destroys adaptor, only calls @ref ::visuOgreAdaptor::destroyCompositor().
     virtual void stopping() final;
 
-    /// Creates the compositor which copies the layer color buffer to a global render target.
-    /// (size =_width * _height).
+    /**
+     * @brief Creates the compositor witch copy the layer color buffer to a global render target.
+     * @param _width width of the global render target (color and depth).
+     * @param _height height of the global render target (color and depth).
+     */
     void createCompositor(int _width, int _height);
 
     /// Destroys compositor.
     void destroyCompositor();
 
-    /// Slot: resizes the global render target, new size = _width * _height.
-    /// Call @ref ::visuOgreAdaptor::destroyCompositor() and @ref ::visuOgreAdaptor::createCompositor(int, int).
+    /**
+     * @brief SLOT: resizes the global render target.
+     *
+     * Call @ref ::visuOgreAdaptor::destroyCompositor() and @ref ::visuOgreAdaptor::createCompositor(int, int).
+     *
+     * @param _width width of the global render target (color and depth).
+     * @param _height height of the global render target (color and depth).
+     */
     void resizeRenderTarget(int _width, int _height);
 
-    /// Ogre compositor pointer.
+    /// Contains the created compositor.
     ::Ogre::CompositorPtr m_compositor { nullptr };
 
-    /// Ogre compositor name.
+    /// Defines the compositor name.
     std::string m_compositorName;
 
-    /// Ogre target name (used to get back the texture).
+    /// Defines the global render target name (used to get back textures).
     std::string m_targetName;
 
     /// Handles connection the to layer.
     ::fwCom::helper::SigSlotConnection m_layerConnection;
 
-    /// If width & height parmeters are found in config xml, use fixed size.
+    /// Enables the fixed size, if width & height parameters are found in config xml, use fixed size.
     /// If not use the layer's viewport size and listen the resize event.
     bool m_fixedSize { false };
 
+    /// Defines the width and the height of the compositor's render target.
     /// Only used if width & height are found in <config /> of xml configuration
     int m_width { -1 }; ///< Fixed width.
     int m_height { -1 }; ///< Fixed height.
