@@ -154,42 +154,40 @@ void SSnapshot::stopping()
 
 void SSnapshot::createCompositor(int _width, int _height)
 {
-    // Creates the following compositor:
-    // compositor 'm_compositorName'
-    // {
-    //     technique
-    //     {
-    //         // The depth attachment  only exist if the depth is needed.
-    //         texture 'm_targetName' '_width' '_height' PF_R8G8B8 PF_FLOAT32_R global_scope
-    //
-    //         // We use a local depth texture since Ogre doesn't allow global depth textures.
-    //         // It will be copied by ForwardDepth.
-    //         texture rt_depth target_width target_height PF_DEPTH32 local_scope
-    //
-    //         // This target pass only exist if the depth is needed.
-    //         target rt_depth
-    //         {
-    //             input previous
-    //         }
-    //
-    //         target 'm_targetName'
-    //         {
-    //             input previous
-    //
-    //             // This pass only exist if the depth is needed.
-    //             pass render_quad
-    //             {
-    //                 input 0 rt_depth
-    //                 material ForwardDepth
-    //             }
-    //         }
-    //
-    //         target_output
-    //         {
-    //             input previous
-    //         }
-    //     }
-    // }
+    /* Creates the following compositor:
+       compositor 'm_compositorName'
+       {
+            technique
+            {
+                // The depth attachment only exist if the depth is needed.
+                texture 'm_targetName' '_width' '_height' PF_R8G8B8 PF_FLOAT32_R global_scope
+
+                // We use a local depth texture since Ogre doesn't allow global depth textures.
+                // It will be copied by ForwardDepth.
+                texture rt_depth target_width target_height PF_DEPTH32 local_scope
+
+                // This target pass only exist if the depth is needed.
+                target rt_depth
+                {
+                    input previous
+                }
+
+                target 'm_targetName'
+                {
+                    input previous
+                    // This pass only exist if the depth is needed.
+                    pass render_quad
+                    {
+                        input 0 rt_depth
+                        material ForwardDepth
+                    }
+                }
+                target_output
+                {
+                    input previous
+                }
+            }
+       }*/
 
     bool retrieveDepth = this->getInOut< ::fwData::Image>(s_DEPTH_INOUT) != nullptr;
 
@@ -207,16 +205,12 @@ void SSnapshot::createCompositor(int _width, int _height)
     globalTarget->height = _height;
     globalTarget->width  = _width;
 
-    ::Ogre::CompositionTargetPass* const globalTargetPass = technique->createTargetPass();
-    globalTargetPass->setOutputName(m_targetName);
-    globalTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
-
+    const std::string localName("rt_depth");
     if(retrieveDepth)
     {
         globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_FLOAT32_R);
 
         ::Ogre::CompositionTechnique::TextureDefinition* localTarget;
-        const std::string localName("rt_depth");
 
         localTarget        = technique->createTextureDefinition(localName);
         localTarget->scope = ::Ogre::CompositionTechnique::TextureScope::TS_LOCAL;
@@ -229,16 +223,20 @@ void SSnapshot::createCompositor(int _width, int _height)
             targetPass->setOutputName(localName);
             targetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
         }
-
-        {
-            ::Ogre::CompositionPass* const compPass = globalTargetPass->createPass(
-                ::Ogre::CompositionPass::PT_RENDERQUAD);
-            compPass->setMaterialName("ForwardDepth");
-            compPass->setInput(0, localName);
-        }
     }
 
-    // We blit the previous texture to the output framebuffer.
+    ::Ogre::CompositionTargetPass* const globalTargetPass = technique->createTargetPass();
+    globalTargetPass->setOutputName(m_targetName);
+    globalTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+
+    if(retrieveDepth)
+    {
+        ::Ogre::CompositionPass* const compPass = globalTargetPass->createPass(
+            ::Ogre::CompositionPass::PT_RENDERQUAD);
+        compPass->setMaterialName("ForwardDepth");
+        compPass->setInput(0, localName);
+    }
+
     ::Ogre::CompositionTargetPass* const targetOutputPass = technique->getOutputTargetPass();
     targetOutputPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
 

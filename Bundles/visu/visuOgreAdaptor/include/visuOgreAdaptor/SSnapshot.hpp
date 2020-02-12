@@ -33,6 +33,8 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor take a snapshot of a layer and output it as a fwData::Image.
  *
+ * @pre This adaptor only work with the default transparency technique, the compositor chain is broken with others one.
+ *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SSnapshot">
@@ -45,14 +47,14 @@ namespace visuOgreAdaptor
  * If width & height are not present in <config /> this slot is connected to the resize signal of the layer.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory) : defines the mesh's layer.
- * - \b width (optional) : fixed width of snapshot.
+ * - \b layer (mandatory): defines the mesh's layer.
+ * - \b width (optional): fixed width of snapshot.
  * - \b height (optional): fixed height of snaphot.
  * NOTE: if width & height are missing (or one of them), size of the snapshot will be connected to the layer:
  * if the layer is resized the snaphot will be resized.
  *
  * @subsection InOut InOut:
- * - \b image [::fwData::Image] : image containing the snapshot of the layer.
+ * - \b image [::fwData::Image]: image containing the snapshot of the layer.
  *
  */
 class VISUOGREADAPTOR_CLASS_API SSnapshot final : public ::fwRenderOgre::IAdaptor
