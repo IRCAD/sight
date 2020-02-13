@@ -43,9 +43,9 @@ namespace visuOgreAdaptor
  * - \b sliceIndexChanged(): emitted when the slice index changed.
  *
  * @section Slots Slots
- * - \b newImage(): updates the image display to show the new content. @deprecated call \b update() instead.
  * - \b sliceType(int, int): updates image slice index .
  * - \b sliceIndex(int, int, int): updates image slice type.
+ * - @deprecated \b newImage(): updates the image display to show the new content. call \b update() instead.
  *
  * @section XML XML Configuration
  * @code{.xml}
