@@ -208,6 +208,10 @@ void SNegato2D::newImage()
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+
+    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    m_helperTF.setOrCreateTF(tf, image);
+
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
