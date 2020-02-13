@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -364,7 +364,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         const auto dumplock           = image->lock();
         const std::uint8_t* frameBuff = &buffer->getElement(0);
-        auto iter                     = image->begin< ::fwData::Image::Iteration<std::uint8_t> >();
+        auto iter                     = image->begin<std::uint8_t>();
         std::copy( frameBuff, frameBuff+buffer->getSize(), iter);
 
         // Notify

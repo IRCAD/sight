@@ -251,17 +251,6 @@ public:
     template <typename FORMAT>
     /// Image const iterator
     using ConstIterator = iterator::ImageIteratorBase<FORMAT, true>;
-    /// Format used to iterate though all the buffer values
-    template <typename TYPE>
-    using Iteration = typename iterator::IterationBase<TYPE>::Raw;
-    /// Format used to iterate though a RGB image in uint8
-    typedef iterator::IterationBase<std::uint8_t>::RGB RGBIteration;
-    /// Format used to iterate though a RGBA image in uint8
-    typedef iterator::IterationBase<std::uint8_t>::RGBA RGBAIteration;
-    /// Format used to iterate though a BGR image in uint8
-    typedef iterator::IterationBase<std::uint8_t>::BGR BGRIteration;
-    /// Format used to iterate though a BGRA image in uint8
-    typedef iterator::IterationBase<std::uint8_t>::BGRA BGRAIteration;
     /// @}
 
     /**
@@ -303,10 +292,10 @@ public:
      * @note These functions lock the buffer
      * @{
      */
-    FWDATA_API Iterator<iterator::IterationBase<char>::Raw> begin();
-    FWDATA_API Iterator<iterator::IterationBase<char>::Raw> end();
-    FWDATA_API ConstIterator<iterator::IterationBase<char>::Raw> begin() const;
-    FWDATA_API ConstIterator<iterator::IterationBase<char>::Raw> end() const;
+    FWDATA_API Iterator<char> begin();
+    FWDATA_API Iterator<char> end();
+    FWDATA_API ConstIterator<char> begin() const;
+    FWDATA_API ConstIterator<char> end() const;
     /// @}
 
     ///
@@ -634,8 +623,8 @@ template< typename F >
 inline Image::Iterator<F> Image::begin()
 {
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<typename F::type>().string() + "'",
-                m_type != ::fwTools::Type::create<typename F::type>())
+                ::fwTools::Type::create<F>().string() + "'",
+                m_type != ::fwTools::Type::create<F>())
     return Iterator<F>(this);
 }
 
@@ -644,13 +633,11 @@ inline Image::Iterator<F> Image::begin()
 template< typename F >
 inline Image::Iterator<F> Image::end()
 {
-    using FormatType = typename F::type;
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<FormatType>().string() + "'",
-                m_type != ::fwTools::Type::create<FormatType>())
-    const auto elementSize = sizeof(FormatType)*F::elementSize;
+                ::fwTools::Type::create<F>().string() + "'",
+                m_type != ::fwTools::Type::create<F>())
     auto itr = Iterator<F>(this);
-    itr += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/elementSize);
+    itr     += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/sizeof(F));
     return itr;
 }
 
@@ -660,8 +647,8 @@ template< typename F >
 inline Image::ConstIterator<F> Image::begin() const
 {
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<typename F::type>().string() + "'",
-                m_type != ::fwTools::Type::create<typename F::type>())
+                ::fwTools::Type::create<F>().string() + "'",
+                m_type != ::fwTools::Type::create<F>())
     return ConstIterator<F>(this);
 }
 
@@ -670,13 +657,11 @@ inline Image::ConstIterator<F> Image::begin() const
 template< typename F >
 inline Image::ConstIterator<F> Image::end() const
 {
-    using FormatType = typename F::type;
     SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<FormatType>().string() + "'",
-                m_type != ::fwTools::Type::create<FormatType>())
-    const auto elementSize = sizeof(FormatType)*F::elementSize;
+                ::fwTools::Type::create<F>().string() + "'",
+                m_type != ::fwTools::Type::create<F>())
     auto itr = ConstIterator<F>(this);
-    itr += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/elementSize);
+    itr     += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/sizeof(F));
     return itr;
 }
 

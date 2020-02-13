@@ -325,33 +325,33 @@ const std::string Image::getPixelAsString(IndexType x,
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<iterator::IterationBase<char>::Raw> Image::begin()
+Image::Iterator<char> Image::begin()
 {
-    return Iterator<iterator::IterationBase<char>::Raw>(this);
+    return Iterator<char>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<iterator::IterationBase<char>::Raw> Image::end()
+Image::Iterator<char> Image::end()
 {
-    auto itr = Iterator<iterator::IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getSizeInBytes());
+    auto itr = Iterator<char>(this);
+    itr += static_cast< typename Iterator<char>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::begin() const
+Image::ConstIterator<char> Image::begin() const
 {
-    return ConstIterator<iterator::IterationBase<char>::Raw>(this);
+    return ConstIterator<char>(this);
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<iterator::IterationBase<char>::Raw> Image::end() const
+Image::ConstIterator<char> Image::end() const
 {
-    auto itr = ConstIterator<iterator::IterationBase<char>::Raw>(this);
-    itr += static_cast< typename Iterator<iterator::IterationBase<char>::Raw>::difference_type>(this->getSizeInBytes());
+    auto itr = ConstIterator<char>(this);
+    itr += static_cast< typename Iterator<char>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 
