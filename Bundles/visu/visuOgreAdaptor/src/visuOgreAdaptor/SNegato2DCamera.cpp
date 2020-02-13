@@ -106,12 +106,6 @@ void SNegato2DCamera::starting()
     cam->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
     this->resetCamera();
-
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
-
-    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
-    m_helperTF.setOrCreateTF(tf, image);
 }
 
 //-----------------------------------------------------------------------------
@@ -264,6 +258,14 @@ void SNegato2DCamera::keyPressEvent(int _key, Modifier, int _x, int _y)
 
 void SNegato2DCamera::resetCamera()
 {
+    // This method is called when the image buffer is modified,
+    // we need to retrieve the TF here if it came from the image.
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+
+    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    m_helperTF.setOrCreateTF(tf, image);
+
     const auto layer           = this->getLayer();
     const auto* const viewport = layer->getViewport();
     auto* const camera         = layer->getDefaultCamera();
