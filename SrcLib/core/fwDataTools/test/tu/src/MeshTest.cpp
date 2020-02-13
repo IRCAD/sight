@@ -86,7 +86,7 @@ void MeshTest::colorizePointsTest()
         const auto itrEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
 
         size_t count = 0;
-        for (; itr != itrEnd; ++itr)
+        for (; itr != itrEnd; ++itr, ++count)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(R), static_cast<int>(itr->rgba->r));
             CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(G), static_cast<int>(itr->rgba->g));
@@ -115,41 +115,40 @@ void MeshTest::colorizePointsTest()
 
         ::fwDataTools::Mesh::colorizeMeshPoints(mesh, vectorNumTriangle, R, G, B, A);
 
-        ::fwData::Array::csptr cellsArray = mesh->getCellDataArray();
-        ::fwDataTools::helper::ArrayGetter cellHelper(cellsArray);
-        const ::fwData::Mesh::CellValueType* cells = cellHelper.begin< ::fwData::Mesh::CellValueType >();
+        const auto dumpLock = mesh->lock();
+
+        const auto cellIterBegin = mesh->begin< ::fwData::iterator::ConstCellIterator >();
 
         // get the 3 points of each triangles
         std::set< size_t > vertexIndices;
         for (size_t i = 0; i < vectorNumTriangle.size(); ++i)
         {
-            vertexIndices.insert(cells[vectorNumTriangle[i] * 3 + 0]);
-            vertexIndices.insert(cells[vectorNumTriangle[i] * 3 + 1]);
-            vertexIndices.insert(cells[vectorNumTriangle[i] * 3 + 2]);
+            auto cell = cellIterBegin + vectorNumTriangle[i];
+            vertexIndices.insert(cell->pointIdx[0]);
+            vertexIndices.insert(cell->pointIdx[1]);
+            vertexIndices.insert(cell->pointIdx[2]);
         }
 
-        ::fwData::Array::csptr pointcolorArray = mesh->getPointColorsArray();
-        ::fwDataTools::helper::ArrayGetter helper(pointcolorArray);
-        const ::fwData::Mesh::ColorValueType* colorBuff    = helper.begin< ::fwData::Mesh::ColorValueType >();
-        const ::fwData::Mesh::ColorValueType* colorBuffEnd = helper.end< ::fwData::Mesh::ColorValueType >();
+        auto itr          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto itrEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
 
         size_t count = 0;
-        for (; colorBuff != colorBuffEnd; colorBuff += 4 )
+        for (; itr != itrEnd; ++itr)
         {
             auto iter = std::find(vertexIndices.begin(), vertexIndices.end(), count);
             if (iter != vertexIndices.end())
             {
-                CPPUNIT_ASSERT_EQUAL(R, colorBuff[0]);
-                CPPUNIT_ASSERT_EQUAL(G, colorBuff[1]);
-                CPPUNIT_ASSERT_EQUAL(B, colorBuff[2]);
-                CPPUNIT_ASSERT_EQUAL(A, colorBuff[3]);
+                CPPUNIT_ASSERT_EQUAL(R, itr->rgba->r);
+                CPPUNIT_ASSERT_EQUAL(G, itr->rgba->g);
+                CPPUNIT_ASSERT_EQUAL(B, itr->rgba->b);
+                CPPUNIT_ASSERT_EQUAL(A, itr->rgba->a);
             }
             else
             {
-                CPPUNIT_ASSERT_EQUAL( std::uint8_t(0), colorBuff[0]);
-                CPPUNIT_ASSERT_EQUAL( std::uint8_t(0), colorBuff[1]);
-                CPPUNIT_ASSERT_EQUAL( std::uint8_t(0), colorBuff[2]);
-                CPPUNIT_ASSERT_EQUAL( std::uint8_t(0), colorBuff[3]);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->r);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->g);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->b);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->a);
             }
             ++count;
         }
@@ -169,21 +168,23 @@ void MeshTest::colorizeCellsTest()
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
-        mesh->allocateCellColors(::fwData::Mesh::RGBA);
+        mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
+                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
 
         ::fwDataTools::Mesh::colorizeMeshCells(mesh, R, G, B);
 
-        ::fwData::Array::csptr cellcolorArray = mesh->getCellColorsArray();
-        ::fwDataTools::helper::ArrayGetter helper(cellcolorArray);
+        const auto dumpLock = mesh->lock();
 
-        const ::fwData::Mesh::ColorValueType* colorBuff    = helper.begin< ::fwData::Mesh::ColorValueType >();
-        const ::fwData::Mesh::ColorValueType* colorBuffEnd = helper.end< ::fwData::Mesh::ColorValueType >();
-        for (; colorBuff != colorBuffEnd; colorBuff += 4 )
+        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+
+        size_t count = 0;
+        for (; itr != itrEnd; ++itr, ++count)
         {
-            CPPUNIT_ASSERT_EQUAL(R, colorBuff[0]);
-            CPPUNIT_ASSERT_EQUAL(G, colorBuff[1]);
-            CPPUNIT_ASSERT_EQUAL(B, colorBuff[2]);
-            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), colorBuff[3]);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(R), static_cast<int>(itr->rgba->r));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(G), static_cast<int>(itr->rgba->g));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(B), static_cast<int>(itr->rgba->b));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(255), static_cast<int>(itr->rgba->a));
         }
     }
 
@@ -197,25 +198,27 @@ void MeshTest::colorizeCellsTest()
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
-        mesh->allocateCellColors(::fwData::Mesh::RGBA);
+        mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
+                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
 
         ::fwDataTools::Mesh::colorizeMeshCells(mesh, R, G, B, A);
 
-        ::fwData::Array::csptr cellcolorArray = mesh->getCellColorsArray();
-        ::fwDataTools::helper::ArrayGetter helper(cellcolorArray);
+        const auto dumpLock = mesh->lock();
 
-        const ::fwData::Mesh::ColorValueType* colorBuff    = helper.begin< ::fwData::Mesh::ColorValueType >();
-        const ::fwData::Mesh::ColorValueType* colorBuffEnd = helper.end< ::fwData::Mesh::ColorValueType >();
-        for (; colorBuff != colorBuffEnd; colorBuff += 4 )
+        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
+
+        size_t count = 0;
+        for (; itr != itrEnd; ++itr, ++count)
         {
-            CPPUNIT_ASSERT_EQUAL(R, colorBuff[0]);
-            CPPUNIT_ASSERT_EQUAL(G, colorBuff[1]);
-            CPPUNIT_ASSERT_EQUAL(B, colorBuff[2]);
-            CPPUNIT_ASSERT_EQUAL(A, colorBuff[3]);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(R), static_cast<int>(itr->rgba->r));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(G), static_cast<int>(itr->rgba->g));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(B), static_cast<int>(itr->rgba->b));
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(std::to_string(count), static_cast<int>(A), static_cast<int>(itr->rgba->a));
         }
     }
 
-    // Check to colorize few points with RGB
+    // Check to colorize few cells with RGB
     {
         const std::uint8_t R = 24;
         const std::uint8_t G = 55;
@@ -224,7 +227,8 @@ void MeshTest::colorizeCellsTest()
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
-        mesh->allocateCellColors(::fwData::Mesh::RGBA);
+        mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
+                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
 
         std::vector< size_t >vectorNumTriangle = {{ 2, 3, 18, 23, 6 }};
 
@@ -233,34 +237,33 @@ void MeshTest::colorizeCellsTest()
 
         ::fwDataTools::Mesh::colorizeMeshCells(mesh, vectorNumTriangle, R, G, B);
 
-        ::fwData::Array::csptr cellcolorArray = mesh->getCellColorsArray();
-        ::fwDataTools::helper::ArrayGetter helper(cellcolorArray);
-        const ::fwData::Mesh::ColorValueType* colorBuff    = helper.begin< ::fwData::Mesh::ColorValueType >();
-        const ::fwData::Mesh::ColorValueType* colorBuffEnd = helper.end< ::fwData::Mesh::ColorValueType >();
+        const auto dumpLock = mesh->lock();
+
+        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
         size_t count = 0;
-        for (; colorBuff != colorBuffEnd; colorBuff += 4 )
+        for (; itr != itrEnd; ++itr, ++count)
         {
             auto iter = std::find(vectorNumTriangle.begin(), vectorNumTriangle.end(), count);
             if (iter != vectorNumTriangle.end())
             {
-                CPPUNIT_ASSERT_EQUAL(R, colorBuff[0]);
-                CPPUNIT_ASSERT_EQUAL(G, colorBuff[1]);
-                CPPUNIT_ASSERT_EQUAL(B, colorBuff[2]);
-                CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), colorBuff[3]);
+                CPPUNIT_ASSERT_EQUAL(R, itr->rgba->r);
+                CPPUNIT_ASSERT_EQUAL(G, itr->rgba->g);
+                CPPUNIT_ASSERT_EQUAL(B, itr->rgba->b);
+                CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), itr->rgba->a);
             }
             else
             {
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[0]);
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[1]);
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[2]);
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[3]);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->r);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->g);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->b);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->a);
             }
-            ++count;
         }
     }
 
-    // Check to colorize few points with RGB
+    // Check to colorize few cells with RGBA
     {
         const std::uint8_t R = 2;
         const std::uint8_t G = 125;
@@ -270,7 +273,8 @@ void MeshTest::colorizeCellsTest()
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
         ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
 
-        mesh->allocateCellColors(::fwData::Mesh::RGBA);
+        mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
+                     mesh->getCellDataSize(), ::fwData::Mesh::Attributes::CELL_COLORS);
 
         std::vector< size_t >vectorNumTriangle = {{ 2, 3, 18, 23, 6, 5 }};
 
@@ -279,30 +283,29 @@ void MeshTest::colorizeCellsTest()
 
         ::fwDataTools::Mesh::colorizeMeshCells(mesh, vectorNumTriangle, R, G, B, A);
 
-        ::fwData::Array::csptr cellcolorArray = mesh->getCellColorsArray();
-        ::fwDataTools::helper::ArrayGetter helper(cellcolorArray);
-        const ::fwData::Mesh::ColorValueType* colorBuff    = helper.begin< ::fwData::Mesh::ColorValueType >();
-        const ::fwData::Mesh::ColorValueType* colorBuffEnd = helper.end< ::fwData::Mesh::ColorValueType >();
+        const auto dumpLock = mesh->lock();
+
+        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
         size_t count = 0;
-        for (; colorBuff != colorBuffEnd; colorBuff += 4 )
+        for (; itr != itrEnd; ++itr, ++count)
         {
             auto iter = std::find(vectorNumTriangle.begin(), vectorNumTriangle.end(), count);
             if (iter != vectorNumTriangle.end())
             {
-                CPPUNIT_ASSERT_EQUAL(R, colorBuff[0]);
-                CPPUNIT_ASSERT_EQUAL(G, colorBuff[1]);
-                CPPUNIT_ASSERT_EQUAL(B, colorBuff[2]);
-                CPPUNIT_ASSERT_EQUAL(A, colorBuff[3]);
+                CPPUNIT_ASSERT_EQUAL(R, itr->rgba->r);
+                CPPUNIT_ASSERT_EQUAL(G, itr->rgba->g);
+                CPPUNIT_ASSERT_EQUAL(B, itr->rgba->b);
+                CPPUNIT_ASSERT_EQUAL(A, itr->rgba->a);
             }
             else
             {
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[0]);
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[1]);
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[2]);
-                CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), colorBuff[3]);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->r);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->g);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->b);
+                CPPUNIT_ASSERT_EQUAL( static_cast<std::uint8_t>(0), itr->rgba->a);
             }
-            ++count;
         }
     }
 }
@@ -330,57 +333,48 @@ void MeshTest::transformTest()
 
     const size_t numPts = mesh->getNumberOfPoints();
 
-    // Test points transform
+    const auto dumpLock = mesh->lock();
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(mesh->getPointsArray());
-        ::fwDataTools::helper::ArrayGetter arrayOrigHelper(meshOrig->getPointsArray());
-        const ::fwData::Mesh::PointValueType* values     = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
-        const ::fwData::Mesh::PointValueType* valuesOrig = arrayOrigHelper.begin< ::fwData::Mesh::PointValueType >();
 
-        for(size_t i = 0; i < numPts; ++i )
+        auto origItr      = meshOrig->begin< ::fwData::iterator::ConstPointIterator >();
+        auto itr          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto itrEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+
+        for (; itr != itrEnd; ++itr, ++origItr)
         {
-            const ::glm::vec4 pt(valuesOrig[i*3], valuesOrig[i*3 + 1], valuesOrig[i*3 + 2], 1.);
+            // Test points transform
+            const ::glm::vec4 pt(origItr->point->x, origItr->point->y, origItr->point->z, 1.);
             const ::glm::vec4 transformedPt = matrix * pt;
 
-            CPPUNIT_ASSERT_EQUAL(transformedPt.x, values[i*3]);
-            CPPUNIT_ASSERT_EQUAL(transformedPt.y, values[i*3 + 1]);
-            CPPUNIT_ASSERT_EQUAL(transformedPt.z, values[i*3 + 2]);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.x, itr->point->x);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.y, itr->point->y);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.z, itr->point->z);
+
+            // Test points normals transform
+            const ::glm::vec4 n(origItr->normal->nx, origItr->normal->ny, origItr->normal->nz, 0.);
+            const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * n);
+
+            CPPUNIT_ASSERT_EQUAL(transformedNormal.x, itr->normal->nx);
+            CPPUNIT_ASSERT_EQUAL(transformedNormal.y, itr->normal->ny);
+            CPPUNIT_ASSERT_EQUAL(transformedNormal.z, itr->normal->nz);
         }
-    }
 
-    // Test points normals transform
-    {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(mesh->getPointNormalsArray());
-        ::fwDataTools::helper::ArrayGetter arrayOrigHelper(meshOrig->getPointNormalsArray());
-        const ::fwData::Mesh::PointValueType* values     = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
-        const ::fwData::Mesh::PointValueType* valuesOrig = arrayOrigHelper.begin< ::fwData::Mesh::PointValueType >();
-
-        for(size_t i = 0; i < numPts; ++i )
-        {
-            const ::glm::vec4 pt(valuesOrig[i*3], valuesOrig[i*3 + 1], valuesOrig[i*3 + 2], 0.);
-            const ::glm::vec4 transformedPt = ::glm::normalize(matrix * pt);
-
-            CPPUNIT_ASSERT_EQUAL(transformedPt.x, values[i*3]);
-            CPPUNIT_ASSERT_EQUAL(transformedPt.y, values[i*3 + 1]);
-            CPPUNIT_ASSERT_EQUAL(transformedPt.z, values[i*3 + 2]);
-        }
     }
 
     // Test cells normals transform
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(mesh->getCellNormalsArray());
-        ::fwDataTools::helper::ArrayGetter arrayOrigHelper(meshOrig->getCellNormalsArray());
-        const ::fwData::Mesh::PointValueType* values     = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
-        const ::fwData::Mesh::PointValueType* valuesOrig = arrayOrigHelper.begin< ::fwData::Mesh::PointValueType >();
+        auto origItr      = meshOrig->begin< ::fwData::iterator::ConstCellIterator >();
+        auto itr          = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto itrEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
-        for(size_t i = 0; i < numPts; ++i )
+        for (; itr != itrEnd; ++itr, ++origItr)
         {
-            const ::glm::vec4 pt(valuesOrig[i*3], valuesOrig[i*3 + 1], valuesOrig[i*3 + 2], 0.);
-            const ::glm::vec4 transformedPt = ::glm::normalize(matrix * pt);
+            const ::glm::vec4 n(origItr->normal->nx, origItr->normal->ny, origItr->normal->nz, 0.);
+            const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * n);
 
-            CPPUNIT_ASSERT_EQUAL(transformedPt.x, values[i*3]);
-            CPPUNIT_ASSERT_EQUAL(transformedPt.y, values[i*3 + 1]);
-            CPPUNIT_ASSERT_EQUAL(transformedPt.z, values[i*3 + 2]);
+            CPPUNIT_ASSERT_EQUAL(transformedNormal.x, itr->normal->nx);
+            CPPUNIT_ASSERT_EQUAL(transformedNormal.y, itr->normal->ny);
+            CPPUNIT_ASSERT_EQUAL(transformedNormal.z, itr->normal->nz);
         }
     }
 
@@ -529,6 +523,159 @@ void MeshTest::isClosedTest()
 
         CPPUNIT_ASSERT_EQUAL(false, isClosed);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::cellNormalTest()
+{
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const auto dumpLock = mesh->lock();
+
+    mesh->pushPoint(0.f, 0.f, 0.f);
+    mesh->pushPoint(1.f, 0.f, 0.f);
+    mesh->pushPoint(1.f, 1.f, 0.f);
+    mesh->pushPoint(0.f, 1.f, 0.f);
+    mesh->pushPoint(0.f, 0.f, 1.f);
+    mesh->pushPoint(1.f, 0.f, 1.f);
+    mesh->pushPoint(1.f, 1.f, 1.f);
+    mesh->pushPoint(0.f, 1.f, 1.f);
+
+    mesh->pushCell(0, 3, 2, 1);
+    mesh->pushCell(0, 4, 5, 1);
+    mesh->pushCell(1, 2, 6, 5);
+    mesh->pushCell(4, 5, 6, 7);
+    mesh->pushCell(0, 4, 7, 3);
+    mesh->pushCell(3, 2, 6, 7);
+
+    CPPUNIT_ASSERT_NO_THROW(::fwDataTools::Mesh::generateCellNormals(mesh));
+
+    auto cellIter = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+
+    // check first cell normal = {0, 0, -1}
+    std::array<float, 3> n = {0.f, 0.f, -1.f};
+    CPPUNIT_ASSERT_EQUAL(n[0], cellIter->normal->nx);
+    CPPUNIT_ASSERT_EQUAL(n[1], cellIter->normal->ny);
+    CPPUNIT_ASSERT_EQUAL(n[2], cellIter->normal->nz);
+
+    // check cell 2 normal = {0, 1, 0}
+    ++cellIter;
+    n = {0.f, 1.f, 0.f};
+    CPPUNIT_ASSERT_EQUAL(n[0], cellIter->normal->nx);
+    CPPUNIT_ASSERT_EQUAL(n[1], cellIter->normal->ny);
+    CPPUNIT_ASSERT_EQUAL(n[2], cellIter->normal->nz);
+
+    // check cell 3 normal = {1, 0, 0}
+    ++cellIter;
+    n = {1.f, 0.f, 0.f};
+    CPPUNIT_ASSERT_EQUAL(n[0], cellIter->normal->nx);
+    CPPUNIT_ASSERT_EQUAL(n[1], cellIter->normal->ny);
+    CPPUNIT_ASSERT_EQUAL(n[2], cellIter->normal->nz);
+
+    // check cell 4 normal = {0, 0, 1}
+    ++cellIter;
+    n = {0.f, 0.f, 1.f};
+    CPPUNIT_ASSERT_EQUAL(n[0], cellIter->normal->nx);
+    CPPUNIT_ASSERT_EQUAL(n[1], cellIter->normal->ny);
+    CPPUNIT_ASSERT_EQUAL(n[2], cellIter->normal->nz);
+
+    // check cell 5 normal = {-1, 0, 0}
+    ++cellIter;
+    n = {-1.f, 0.f, 0.f};
+    CPPUNIT_ASSERT_EQUAL(n[0], cellIter->normal->nx);
+    CPPUNIT_ASSERT_EQUAL(n[1], cellIter->normal->ny);
+    CPPUNIT_ASSERT_EQUAL(n[2], cellIter->normal->nz);
+
+    // check cell 6 normal = {0, -1, 0}
+    ++cellIter;
+    n = {0.f, -1.f, 0.f};
+    CPPUNIT_ASSERT_EQUAL(n[0], cellIter->normal->nx);
+    CPPUNIT_ASSERT_EQUAL(n[1], cellIter->normal->ny);
+    CPPUNIT_ASSERT_EQUAL(n[2], cellIter->normal->nz);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::pointNormalTest()
+{
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const auto dumpLock = mesh->lock();
+
+    mesh->pushPoint(0.f, 0.f, 0.f);
+    mesh->pushPoint(1.f, 0.f, 0.f);
+    mesh->pushPoint(1.f, 1.f, 0.f);
+    mesh->pushPoint(0.f, 1.f, 0.f);
+    mesh->pushPoint(0.f, 0.f, 1.f);
+    mesh->pushPoint(1.f, 0.f, 1.f);
+    mesh->pushPoint(1.f, 1.f, 1.f);
+    mesh->pushPoint(0.f, 1.f, 1.f);
+
+    mesh->pushCell(0, 3, 2, 1);
+    mesh->pushCell(0, 4, 5, 1);
+    mesh->pushCell(1, 2, 6, 5);
+    mesh->pushCell(4, 5, 6, 7);
+    mesh->pushCell(0, 4, 7, 3);
+    mesh->pushCell(3, 2, 6, 7);
+
+    CPPUNIT_ASSERT_NO_THROW(::fwDataTools::Mesh::generatePointNormals(mesh));
+
+    auto pointIter          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto pointIterEnd = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+
+    // check first point normal = {-0.57735, 0.57735, -0.57735}
+    std::array<float, 3> n = {-0.57735f, 0.57735f, -0.57735f};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
+
+    // check point 2 normal = {0.57735, 0.57735, -0.57735}
+    ++pointIter;
+    n = {0.57735, 0.57735, -0.57735};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
+
+    // check point 3 normal = {0.57735, -0.57735, -0.57735}
+    ++pointIter;
+    n = {0.57735, -0.57735, -.57735};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
+
+    // check point 4 normal = {-0.57735, -0.57735, -0.57735}
+    ++pointIter;
+    n = {-0.57735, -0.57735, -0.57735};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
+
+    // check point 5 normal = {-0.57735, 0.57735, 0.57735}
+    ++pointIter;
+    n = {-0.57735, 0.57735, 0.57735};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
+
+    // check point 6 normal = {0.57735, 0.57735, 0.57735}
+    ++pointIter;
+    n = {0.57735, 0.57735, 0.57735};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
+
+    // check point 7 normal = {0.57735, -0.57735, 0.57735}
+    ++pointIter;
+    n = {0.57735, -0.57735, 0.57735};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
+
+    // check point 8 normal = {-0.57735, -0.57735, 0.57735}
+    ++pointIter;
+    n = {-0.57735, -0.57735, 0.57735};
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], pointIter->normal->nx, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], pointIter->normal->ny, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], pointIter->normal->nz, 0.00001);
 }
 
 //------------------------------------------------------------------------------
