@@ -60,7 +60,8 @@
 
         <service uid="negatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera">
             <config layer="default" orientation="sagittal" />
-            <in key="image" uid="${image}" autoConnect="yes" />
+            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="tf" uid="${volumeTF}" optional="yes" />
         </service>
 
         <service uid="2DNegatoAdp" type="::visuOgreAdaptor::SNegato2D">
