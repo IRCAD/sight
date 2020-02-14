@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,17 +58,44 @@ public:
     /// Identifier of the role UID in the series tree item.
     UIMEDDATAQT_API static const int s_UID_ROLE;
 
-    enum class ColumnType : int
+    /// Defines comun header columns used in the tree widget of all created tabs.
+    enum class ColumnCommunType : int
     {
-        NAME,
-        TYPE,
-        DESC,
-        PATIENT,
-        STUDY
+        ID = 0
     };
 
-    /// Fill tab widget with activity info (create on item by activity parameter)
-    UIMEDDATAQT_API void fillInformation(const ::fwActivities::registry::ActivityInfo& info);
+    /// Defines header columns used in the tree widget of all data.
+    enum class ColumnObjectType : int
+    {
+        DESC = 1,
+    };
+
+    /// Defines header columns used in the tree widget of all series.
+    enum class ColumnSeriesType : int
+    {
+        NAME = 1,
+        SEX,
+        BIRTHDATE,
+
+        MODALITY,
+        MODALITY_DESC,
+
+        STUDY_DESC,
+        DATE,
+        TIME,
+
+        PATIENT_AGE
+    };
+
+    /**
+     * @brief Creates all tabs from an activity information.
+     *
+     * One tab will be added for each activity parameter, if the type of the data is a @ref ::fwMedData::Series,
+     * more informations will be displayed in the tree widget.
+     *
+     * @param _info the struct containing the activity configuration.
+     */
+    UIMEDDATAQT_API void fillInformation(const ::fwActivities::registry::ActivityInfo& _info);
 
     /// Fill widget from existing activity info (create on item by activity parameter)
     UIMEDDATAQT_API void fillInformation(const ::fwMedData::ActivitySeries::sptr& actSeries);
