@@ -65,6 +65,8 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
+#include <iomanip>
+
 namespace uiMedDataQt
 {
 namespace widget

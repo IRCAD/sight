@@ -218,17 +218,26 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
 
         for(const auto& elt : mapSeries)
         {
-            ::fwMedData::ImageSeries::sptr series  = ::fwMedData::ImageSeries::New();
-            ::fwMedData::Patient::sptr patient     = series->getPatient();
-            ::fwMedData::Study::sptr study         = series->getStudy();
-            ::fwMedData::Equipment::sptr equipment = series->getEquipment();
-
-            seriesDB->getContainer().push_back(series);
 
             SLM_TRACE( "Processing: '" + elt.first + "' file set.");
             const MapSeriesType::mapped_type& files = elt.second;
             if ( !files.empty() )
             {
+                // The modality attribute is mandatory for all DICOM,
+                // so we can read it to check if the type is supported by this reader.
+                if(std::string(scanner.GetValue(files[0].c_str(), seriesTypeTag)) == "SR")
+                {
+                    SLM_INFO("Structured report document can't be read with `::fwGdcmIO::SeriesDBReader`");
+                    continue;
+                }
+
+                ::fwMedData::ImageSeries::sptr series  = ::fwMedData::ImageSeries::New();
+                ::fwMedData::Patient::sptr patient     = series->getPatient();
+                ::fwMedData::Study::sptr study         = series->getStudy();
+                ::fwMedData::Equipment::sptr equipment = series->getEquipment();
+
+                seriesDB->getContainer().push_back(series);
+
                 vtkSmartPointer< vtkStringArray > fileArray  = vtkSmartPointer< vtkStringArray >::New();
                 vtkSmartPointer< vtkGDCMImageReader > reader = vtkSmartPointer< vtkGDCMImageReader >::New();
                 reader->FileLowerLeftOn();
