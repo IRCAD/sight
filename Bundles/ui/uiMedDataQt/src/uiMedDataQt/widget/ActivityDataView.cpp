@@ -78,8 +78,8 @@ const int ActivityDataView::s_UID_ROLE = Qt::UserRole + 1;
 
 //-----------------------------------------------------------------------------
 
-ActivityDataView::ActivityDataView(QWidget* parent) :
-    QTabWidget(parent)
+ActivityDataView::ActivityDataView(QWidget* _parent) :
+    QTabWidget(_parent)
 {
 }
 
@@ -100,12 +100,12 @@ void ActivityDataView::clear()
 
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
+bool ActivityDataView::eventFilter(QObject* _obj, QEvent* _event)
 {
     // get dropped data in tree widget
-    if (event->type() == QEvent::Drop)
+    if (_event->type() == QEvent::Drop)
     {
-        QDropEvent* dropEvent = static_cast<QDropEvent*>(event);
+        QDropEvent* dropEvent = static_cast<QDropEvent*>(_event);
 
         size_t index = static_cast<size_t>(this->currentIndex());
         ::fwActivities::registry::ActivityRequirement requirement = m_activityInfo.requirements[index];
@@ -170,9 +170,9 @@ bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
         }
         return true;
     }
-    else if (event->type() == QEvent::KeyPress)
+    else if (_event->type() == QEvent::KeyPress)
     {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(_event);
         if (keyEvent->key() == Qt::Key_Delete)
         {
             this->removeSelectedObjects();
@@ -181,7 +181,7 @@ bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
     }
 
     // standard event processing
-    return QObject::eventFilter(obj, event);
+    return QObject::eventFilter(_obj, _event);
 
 }
 
@@ -345,14 +345,15 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& activitySeries)
+void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& _activitySeries)
 {
     namespace ActReg = ::fwActivities::registry;
     ::fwActivities::registry::ActivityInfo info;
-    info           = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    info =
+        ::fwActivities::registry::Activities::getDefault()->getInfo(_activitySeries->getActivityConfigId());
     m_activityInfo = info;
 
-    ::fwData::Composite::sptr data = activitySeries->getData();
+    ::fwData::Composite::sptr data = _activitySeries->getData();
 
     this->fillInformation(info);
 
@@ -409,12 +410,12 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ActivityDataView::checkData(size_t index, std::string& errorMsg)
+::fwData::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _errorMsg)
 {
     ::fwData::Object::sptr data;
 
-    ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
-    QPointer<QTreeWidget> tree = m_treeWidgets[index];
+    ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[_index];
+    QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
     bool ok = true;
     if ((req.minOccurs == 1 && req.maxOccurs == 1) ||
@@ -435,8 +436,8 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             }
             else
             {
-                ok        = false;
-                errorMsg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
+                ok         = false;
+                _errorMsg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
             }
         }
         else
@@ -447,8 +448,8 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             }
             else
             {
-                ok        = false;
-                errorMsg += "\n - The parameter '" + req.name + "' is required but is not defined.";
+                ok         = false;
+                _errorMsg += "\n - The parameter '" + req.name + "' is required but is not defined.";
             }
         }
     }
@@ -458,15 +459,15 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
 
         if (nbObj < req.minOccurs)
         {
-            ok        = false;
-            errorMsg += "\n - The parameter '" + req.name + "' must contain at least " +
-                        std::to_string(req.minOccurs) + " elements.";
+            ok         = false;
+            _errorMsg += "\n - The parameter '" + req.name + "' must contain at least " +
+                         std::to_string(req.minOccurs) + " elements.";
         }
         else if (nbObj > req.maxOccurs)
         {
-            ok        = false;
-            errorMsg += "\n - The parameter '" + req.name + "' must contain at most " +
-                        std::to_string(req.maxOccurs) + " elements.";
+            ok         = false;
+            _errorMsg += "\n - The parameter '" + req.name + "' must contain at most " +
+                         std::to_string(req.maxOccurs) + " elements.";
         }
         else
         {
@@ -487,8 +488,8 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     }
                     else
                     {
-                        ok        = false;
-                        errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
+                        ok         = false;
+                        _errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
                     }
                 }
                 if (ok)
@@ -522,8 +523,8 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     }
                     else
                     {
-                        ok        = false;
-                        errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
+                        ok         = false;
+                        _errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
                     }
                 }
                 if (ok)
@@ -545,8 +546,8 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
         ::fwActivities::IValidator::ValidationType validation = dataValidator->validate(data);
         if(!validation.first)
         {
-            errorMsg += "\n" + validation.second;
-            data      = nullptr;
+            _errorMsg += "\n" + validation.second;
+            data       = nullptr;
         }
     }
 
@@ -750,20 +751,20 @@ void ActivityDataView::importObjectFromSDB()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ActivityDataView::readObject(const std::string& classname,
-                                                    const std::string& ioSelectorSrvConfig)
+::fwData::Object::sptr ActivityDataView::readObject(const std::string& _classname,
+                                                    const std::string& _ioSelectorSrvConfig)
 {
     ::fwData::Object::sptr obj;
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(ioSelectorSrvConfig,
+    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::SIOSelector");
 
     auto ioConfig  = ::fwRuntime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
-    srvConfig.add("type.<xmlattr>.class", classname); // add the class of the output object
+    srvConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
 
     try
     {
@@ -794,20 +795,20 @@ void ActivityDataView::importObjectFromSDB()
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::csptr& obj)
+void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::csptr& _obj)
 {
-    QPointer<QTreeWidget> tree = m_treeWidgets[index];
+    QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
     QTreeWidgetItem* const newItem = new QTreeWidgetItem();
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
-    newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(obj->getID())));
+    newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->getID())));
 
-    const ::fwMedData::Series::csptr series           = ::fwMedData::Series::dynamicCast(obj);
-    const ::fwData::String::csptr strObj              = ::fwData::String::dynamicCast(obj);
-    const ::fwData::Integer::csptr intObj             = ::fwData::Integer::dynamicCast(obj);
-    const ::fwData::Float::csptr floatObj             = ::fwData::Float::dynamicCast(obj);
-    const ::fwData::Boolean::csptr boolObj            = ::fwData::Boolean::dynamicCast(obj);
-    const ::fwData::TransformationMatrix3D::csptr trf = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+    const ::fwMedData::Series::csptr series           = ::fwMedData::Series::dynamicCast(_obj);
+    const ::fwData::String::csptr strObj              = ::fwData::String::dynamicCast(_obj);
+    const ::fwData::Integer::csptr intObj             = ::fwData::Integer::dynamicCast(_obj);
+    const ::fwData::Float::csptr floatObj             = ::fwData::Float::dynamicCast(_obj);
+    const ::fwData::Boolean::csptr boolObj            = ::fwData::Boolean::dynamicCast(_obj);
+    const ::fwData::TransformationMatrix3D::csptr trf = ::fwData::TransformationMatrix3D::dynamicCast(_obj);
     if (series)
     {
         newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
@@ -860,7 +861,7 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::csptr
     }
 
     // set icon
-    ObjectIconMapType::iterator iter = m_objectIcons.find(obj->getClassname());
+    ObjectIconMapType::iterator iter = m_objectIcons.find(_obj->getClassname());
     if (iter != m_objectIcons.end())
     {
         newItem->setIcon(int(ColumnCommunType::ID), QIcon(QString::fromStdString(iter->second)));
@@ -875,11 +876,11 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::csptr
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
+void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
 {
-    if (item)
+    if (_item)
     {
-        std::string uid = item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
+        std::string uid = _item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
         if (!uid.empty())
         {
             ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
@@ -896,7 +897,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     if ( isOkClicked)
                     {
                         str->value() = value.toStdString();
-                        item->setText(int(ColumnObjectType::DESC), value);
+                        _item->setText(int(ColumnObjectType::DESC), value);
                     }
                 }
                 else if (obj->isA("::fwData::Integer"))
@@ -910,7 +911,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     if (isOkClicked)
                     {
                         intObj->value() = value;
-                        item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
+                        _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
                 else if (obj->isA("::fwData::Float"))
@@ -924,7 +925,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     if (isOkClicked)
                     {
                         floatObj->value() = static_cast<float>(value);
-                        item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
+                        _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
                 else if (obj->isA("::fwData::Boolean"))
@@ -933,7 +934,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     QMessageBox::StandardButton button = QMessageBox::question(
                         this, "Edition", "Defines the Boolean value");
                     boolObj->value() = (button == QMessageBox::Yes);
-                    item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false" );
+                    _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false" );
                 }
                 else if (obj->isA("::fwData::TransformationMatrix3D"))
                 {
@@ -963,7 +964,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                             }
                         }
                         trf->setCoefficients(coeffs);
-                        item->setText(int(ColumnObjectType::DESC), value.trimmed() );
+                        _item->setText(int(ColumnObjectType::DESC), value.trimmed() );
                     }
                     else if (isOkClicked)
                     {
