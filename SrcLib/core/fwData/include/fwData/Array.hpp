@@ -605,8 +605,6 @@ inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
 template< typename T >
 inline Array::Iterator<T> Array::begin()
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
     return Iterator<T>(this);
 }
 
@@ -615,9 +613,6 @@ inline Array::Iterator<T> Array::begin()
 template< typename T >
 inline Array::Iterator<T> Array::end()
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
-
     auto itr = Iterator<T>(this);
     itr += static_cast< typename Array::Iterator<T>::difference_type>(this->getSizeInBytes()/sizeof(T));
     return itr;
@@ -628,8 +623,6 @@ inline Array::Iterator<T> Array::end()
 template< typename T >
 inline Array::ConstIterator<T> Array::begin() const
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
     return ConstIterator<T>(this);
 }
 
@@ -638,9 +631,6 @@ inline Array::ConstIterator<T> Array::begin() const
 template< typename T >
 inline Array::ConstIterator<T> Array::end() const
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
-
     auto itr = ConstIterator<T>(this);
     itr += static_cast< typename Array::ConstIterator<T>::difference_type>(this->getSizeInBytes()/sizeof(T));
     return itr;
