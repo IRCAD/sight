@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,7 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SMaterial">
         <inout key="material" uid="..." />
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
-                shadingMode="gouraud" normalLength="0.1" />
+                shadingMode="gouraud" normalLength="0.1" representationMode="SURFACE" />
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -78,13 +78,15 @@ namespace visuOgreAdaptor
  * managed by an another ::visuOgreAdaptor::STexture.
  *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
  *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
+ *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE default= SURFACE):
+ *  representation mode as in ::fwData::Material.
  */
 class VISUOGREADAPTOR_CLASS_API SMaterial : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
-    fwCoreServiceMacro(SMaterial, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SMaterial, ::fwRenderOgre::IAdaptor)
 
     /**
      * @name Slots API
@@ -190,6 +192,12 @@ private:
 
     /// The configured shading mode
     std::string m_shadingMode;
+
+    /// The configured representation mode.
+    std::string m_representationMode {"SURFACE"};
+
+    /// Map to convert from string to fwData::Material::RepresentationType (ex: "SURFACE" = SURFACE).
+    std::map< std::string, ::fwData::Material::RepresentationType > m_representationDict;
 
     /// Current number of lights in the scene.
     int m_lightsNumber;
