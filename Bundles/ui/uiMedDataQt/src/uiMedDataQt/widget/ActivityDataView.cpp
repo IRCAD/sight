@@ -29,7 +29,6 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
-#include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -40,7 +39,6 @@
 
 #include <fwIO/ioTypes.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -814,8 +812,11 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
         newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatient()->getSex()));
         std::string birthdate = series->getPatient()->getBirthdate();
-        birthdate.insert(4, "-");
-        birthdate.insert(7, "-");
+        if(!birthdate.empty())
+        {
+            birthdate.insert(4, "-");
+            birthdate.insert(7, "-");
+        }
         newItem->setText(int(ColumnSeriesType::BIRTHDATE), QString::fromStdString(birthdate));
 
         newItem->setText(int(ColumnSeriesType::MODALITY), QString::fromStdString(series->getModality()));
@@ -824,16 +825,22 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         newItem->setText(int(ColumnSeriesType::STUDY_DESC),
                          QString::fromStdString(series->getStudy()->getDescription()));
         std::string date = series->getStudy()->getDate();
-        date.insert(4, "-");
-        date.insert(7, "-");
+        if(!date.empty())
+        {
+            date.insert(4, "-");
+            date.insert(7, "-");
+        }
         newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
         newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(series->getStudy()->getTime()));
 
         std::string patientAge = series->getStudy()->getPatientAge();
-        patientAge.insert(3, " ");
-        if(patientAge[0] == '0')
+        if(!patientAge.empty())
         {
-            patientAge.erase(0, 1);
+            patientAge.insert(3, " ");
+            if(patientAge[0] == '0')
+            {
+                patientAge.erase(0, 1);
+            }
         }
         newItem->setText(int(ColumnSeriesType::PATIENT_AGE), QString::fromStdString(patientAge));
     }
