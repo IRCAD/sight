@@ -118,7 +118,7 @@ bool ActivityDataView::eventFilter(QObject* _obj, QEvent* _event)
         QDataStream stream(&encoded, QIODevice::ReadOnly);
 
         QList<QTreeWidgetItem* > itemList;
-        QTreeWidgetItem* item;
+        QTreeWidgetItem* item = nullptr;
 
         // Get the dropped item
         while (!stream.atEnd())
@@ -353,7 +353,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
         ::fwActivities::registry::Activities::getDefault()->getInfo(_activitySeries->getActivityConfigId());
     m_activityInfo = info;
 
-    ::fwData::Composite::sptr data = _activitySeries->getData();
+    ::fwData::Composite::sptr activitySeriesData = _activitySeries->getData();
 
     this->fillInformation(info);
 
@@ -361,7 +361,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
     {
         ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[i];
 
-        ::fwData::Object::sptr obj = data->at< ::fwData::Object >(req.name);
+        ::fwData::Object::sptr obj = activitySeriesData->at< ::fwData::Object >(req.name);
         if (obj)
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) ||
@@ -412,7 +412,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
 
 ::fwData::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _errorMsg)
 {
-    ::fwData::Object::sptr data;
+    ::fwData::Object::sptr object;
 
     ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[_index];
     QPointer<QTreeWidget> tree = m_treeWidgets[_index];
@@ -432,7 +432,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
             if (obj && obj->isA(req.type))
             {
-                data = obj;
+                object = obj;
             }
             else
             {
@@ -444,7 +444,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
-                data = ::fwData::factory::New(req.type);
+                object = ::fwData::factory::New(req.type);
             }
             else
             {
@@ -494,7 +494,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                 }
                 if (ok)
                 {
-                    data = vector;
+                    object = vector;
                 }
             }
             else // container == composite
@@ -529,29 +529,29 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                 }
                 if (ok)
                 {
-                    data = composite;
+                    object = composite;
                 }
 
             }
         }
     }
 
-    if (data && !req.validator.empty())
+    if (object && !req.validator.empty())
     {
         /// Process object validator
         ::fwActivities::IValidator::sptr validator           = ::fwActivities::validator::factory::New(req.validator);
         ::fwActivities::IObjectValidator::sptr dataValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
         SLM_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
 
-        ::fwActivities::IValidator::ValidationType validation = dataValidator->validate(data);
+        ::fwActivities::IValidator::ValidationType validation = dataValidator->validate(object);
         if(!validation.first)
         {
             _errorMsg += "\n" + validation.second;
-            data       = nullptr;
+            object     = nullptr;
         }
     }
 
-    return data;
+    return object;
 }
 
 //-----------------------------------------------------------------------------
@@ -560,7 +560,7 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
 {
     namespace ActReg = ::fwActivities::registry;
 
-    ::fwData::Composite::sptr data = actSeries->getData();
+    ::fwData::Composite::sptr composite = actSeries->getData();
 
     bool ok = true;
     errorMsg += "The required data are not correct:";
@@ -573,7 +573,7 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
         ::fwData::Object::sptr obj = this->checkData(i, msg);
         if (obj)
         {
-            (*data)[req.name] = obj;
+            (*composite)[req.name] = obj;
         }
         else
         {
