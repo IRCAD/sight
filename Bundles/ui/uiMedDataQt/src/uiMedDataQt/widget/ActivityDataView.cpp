@@ -269,7 +269,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
         }
 
         QStringList headers;
-        headers << "";
+        headers << "" << "description";
 
         QHBoxLayout* const treeLayout   = new QHBoxLayout();
         QVBoxLayout* const buttonLayout = new QVBoxLayout();
@@ -277,8 +277,6 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             || req.type == "::fwData::Integer" || req.type == "::fwData::Float"
             || req.type == "::fwData::TransformationMatrix3D")
         {
-            headers << "description";
-
             QPushButton* const buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
             buttonLayout->addWidget(buttonNew);
@@ -303,7 +301,8 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
                                          arg(QString::fromStdString(req.type)));
             QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &ActivityDataView::importObjectFromSDB);
 
-            headers << "name" << "sex" << "birthdate"
+            headers.clear();
+            headers << "" << "name" << "sex" << "birthdate"
                     << "modality" << "description"
                     << "study description" << "date" << "time"
                     << "patient age";
@@ -812,7 +811,7 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
         newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatient()->getSex()));
         std::string birthdate = series->getPatient()->getBirthdate();
-        if(!birthdate.empty())
+        if(!birthdate.empty() && birthdate != "unknown")
         {
             birthdate.insert(4, "-");
             birthdate.insert(7, "-");
@@ -825,16 +824,23 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         newItem->setText(int(ColumnSeriesType::STUDY_DESC),
                          QString::fromStdString(series->getStudy()->getDescription()));
         std::string date = series->getStudy()->getDate();
-        if(!date.empty())
+        if(!date.empty() && date != "unknown")
         {
             date.insert(4, "-");
             date.insert(7, "-");
         }
         newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
-        newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(series->getStudy()->getTime()));
+
+        std::string time = series->getStudy()->getTime();
+        if(!time.empty() && time != "unknown")
+        {
+            time.insert(2, ":");
+            time.insert(5, ":");
+        }
+        newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(time));
 
         std::string patientAge = series->getStudy()->getPatientAge();
-        if(!patientAge.empty())
+        if(!patientAge.empty() && patientAge != "unknown")
         {
             patientAge.insert(3, " ");
             if(patientAge[0] == '0')

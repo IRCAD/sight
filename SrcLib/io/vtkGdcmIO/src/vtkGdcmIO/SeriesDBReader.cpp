@@ -227,7 +227,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
                 // so we can read it to check if the type is supported by this reader.
                 if(std::string(scanner.GetValue(files[0].c_str(), seriesTypeTag)) == "SR")
                 {
-                    SLM_INFO("Structured report document can't be read with `::fwGdcmIO::SeriesDBReader`");
+                    SLM_INFO("Structured report document can't be read with `::vtkGdcmIO::SeriesDBReader`");
                     continue;
                 }
 
