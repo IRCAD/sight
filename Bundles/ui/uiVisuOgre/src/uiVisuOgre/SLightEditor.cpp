@@ -85,8 +85,11 @@ void SLightEditor::starting()
     m_lightTypeBox->addItems(QStringList() <<
                              ::fwRenderOgre::ILight::s_POINT_LIGHT.c_str() <<
                              ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str());
-
     m_lightTypeBox->setEnabled(false);
+
+    m_visualFeedback = new QPushButton("Feedback");
+    m_visualFeedback->setCheckable(true);
+    m_visualFeedback->setEnabled(false);
 
     m_diffuseColorBtn = new QPushButton("Diffuse color");
     m_diffuseColorBtn->setEnabled(false);
@@ -139,7 +142,11 @@ void SLightEditor::starting()
     // Name of the selected light and its type
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_lightNameLabel);
-    layout->addWidget(m_lightTypeBox);
+
+    QHBoxLayout* const typeLayout = new QHBoxLayout();
+    typeLayout->addWidget(m_lightTypeBox);
+    typeLayout->addWidget(m_visualFeedback);
+    layout->addLayout(typeLayout);
 
     // Diffuse and specular colors
     QHBoxLayout* const colorLayout = new QHBoxLayout();
@@ -188,6 +195,8 @@ void SLightEditor::starting()
 
     QObject::connect(m_lightTypeBox, &QComboBox::currentTextChanged, this, &SLightEditor::onEditType);
 
+    QObject::connect(m_visualFeedback, &QPushButton::clicked, this, &SLightEditor::onToggleFeedback);
+
     QObject::connect(m_xTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditXTranslation);
     QObject::connect(m_yTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditYTranslation);
     QObject::connect(m_zTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditZTranslation);
@@ -214,6 +223,8 @@ void SLightEditor::stopping()
     QObject::disconnect(m_phiSlider, &QSlider::valueChanged, this, &SLightEditor::onEditPhiOffset);
 
     QObject::disconnect(m_lightTypeBox, &QComboBox::currentTextChanged, this, &SLightEditor::onEditType);
+
+    QObject::disconnect(m_visualFeedback, &QPushButton::clicked, this, &SLightEditor::onToggleFeedback);
 
     QObject::disconnect(m_xTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditXTranslation);
     QObject::disconnect(m_yTranslation, &QSlider::valueChanged, this, &SLightEditor::onEditYTranslation);
@@ -299,6 +310,14 @@ void SLightEditor::onEditType(const QString& _type)
         SLM_ASSERT("Unknow type for light", false);
     }
     m_currentLight->update();
+}
+
+//------------------------------------------------------------------------------
+
+void SLightEditor::onToggleFeedback(bool _enable)
+{
+    m_currentLight->enableVisualFeedback(_enable);
+    m_currentLight->getRenderService()->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -403,6 +422,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 
         if(m_currentLight->getName().find(::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME) == std::string::npos)
         {
+            m_visualFeedback->setEnabled(true);
             if(m_currentLight->getType() == ::Ogre::Light::LT_DIRECTIONAL)
             {
                 m_thetaSlider->setEnabled(true);
@@ -424,6 +444,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
         }
         else
         {
+            m_visualFeedback->setEnabled(false);
             m_thetaSlider->setEnabled(false);
             m_phiSlider->setEnabled(false);
             m_xTranslation->setEnabled(false);
@@ -433,6 +454,8 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
             m_yReset->setEnabled(false);
             m_zReset->setEnabled(false);
         }
+
+        m_visualFeedback->setChecked(m_currentLight->isVisualFeedbackOn());
 
         m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
                                                  ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
@@ -455,6 +478,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
         m_thetaSlider->setEnabled(false);
         m_phiSlider->setEnabled(false);
         m_lightTypeBox->setEnabled(false);
+        m_visualFeedback->setEnabled(false);
     }
 }
 
