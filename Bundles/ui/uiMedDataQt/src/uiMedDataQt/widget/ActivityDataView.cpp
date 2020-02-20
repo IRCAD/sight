@@ -852,7 +852,12 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
     }
     else if (strObj)
     {
-        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(strObj->value()));
+        std::string description = strObj->value();
+        if(description.empty())
+        {
+            description = _obj->getClassname();
+        }
+        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(description));
     }
     else if (intObj)
     {
@@ -871,6 +876,10 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         std::stringstream str;
         str << *trf;
         newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(str.str()));
+    }
+    else
+    {
+        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(_obj->getClassname()));
     }
 
     // set icon
