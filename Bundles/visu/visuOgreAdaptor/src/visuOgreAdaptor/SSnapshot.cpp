@@ -178,14 +178,20 @@ void SSnapshot::createCompositor(int _width, int _height)
                     // This pass only exist if the depth is needed.
                     pass render_quad
                     {
-                        input 0 rt_depth
                         material ForwardDepth
+                        input 0 rt_depth
                     }
                 }
 
                 target_output
                 {
-                    input previous
+                    input none
+
+                    pass render_quad
+                    {
+                        material Forward
+                        input 0 m_targetName 0
+                    }
                 }
             }
        }*/
@@ -202,44 +208,54 @@ void SSnapshot::createCompositor(int _width, int _height)
     ::Ogre::CompositionTechnique::TextureDefinition* globalTarget;
     globalTarget        = technique->createTextureDefinition(m_targetName);
     globalTarget->scope = ::Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
-    globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_R8G8B8);
+    globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_A8B8G8R8);
     globalTarget->height = _height;
     globalTarget->width  = _width;
 
-    const std::string localName("rt_depth");
-    if(retrieveDepth)
+    if(!retrieveDepth)
+    {
+        ::Ogre::CompositionTargetPass* const globalTargetPass = technique->createTargetPass();
+        {
+            globalTargetPass->setOutputName(m_targetName);
+            globalTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+        }
+    }
+    else
     {
         globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_FLOAT32_R);
 
+        const std::string localName("rt_local");
         ::Ogre::CompositionTechnique::TextureDefinition* localTarget;
-
         localTarget        = technique->createTextureDefinition(localName);
         localTarget->scope = ::Ogre::CompositionTechnique::TextureScope::TS_LOCAL;
         localTarget->formatList.push_back(::Ogre::PixelFormat::PF_DEPTH32);
         localTarget->height = _height;
         localTarget->width  = _width;
 
+        ::Ogre::CompositionTargetPass* const localTargetPass = technique->createTargetPass();
         {
-            ::Ogre::CompositionTargetPass* const targetPass = technique->createTargetPass();
-            targetPass->setOutputName(localName);
-            targetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+            localTargetPass->setOutputName(localName);
+            localTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+        }
+
+        ::Ogre::CompositionTargetPass* const globalTargetPass = technique->createTargetPass();
+        {
+            globalTargetPass->setOutputName(m_targetName);
+            globalTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+            ::Ogre::CompositionPass* const targetOutputCompPass = globalTargetPass->createPass(
+                ::Ogre::CompositionPass::PT_RENDERQUAD);
+            targetOutputCompPass->setMaterialName("ForwardDepth");
+            targetOutputCompPass->setInput(0, localName);
         }
     }
 
-    ::Ogre::CompositionTargetPass* const globalTargetPass = technique->createTargetPass();
-    globalTargetPass->setOutputName(m_targetName);
-    globalTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
-
-    if(retrieveDepth)
-    {
-        ::Ogre::CompositionPass* const compPass = globalTargetPass->createPass(
-            ::Ogre::CompositionPass::PT_RENDERQUAD);
-        compPass->setMaterialName("ForwardDepth");
-        compPass->setInput(0, localName);
-    }
-
     ::Ogre::CompositionTargetPass* const targetOutputPass = technique->getOutputTargetPass();
-    targetOutputPass->setInputMode(::Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
+    {
+        ::Ogre::CompositionPass* const targetOutputCompPass = targetOutputPass->createPass(
+            ::Ogre::CompositionPass::PT_RENDERQUAD);
+        targetOutputCompPass->setMaterialName("Forward");
+        targetOutputCompPass->setInput(0, m_targetName, 0);
+    }
 
     const auto layer = this->getLayer();
     layer->addAvailableCompositor(m_compositorName);

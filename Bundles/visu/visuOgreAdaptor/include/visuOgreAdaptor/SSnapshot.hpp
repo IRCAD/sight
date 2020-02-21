@@ -33,8 +33,6 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor take a snapshot of a layer and output it as a fwData::Image.
  *
- * @pre This adaptor only work with the default transparency technique, the compositor chain is broken with others one.
- *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SSnapshot">
