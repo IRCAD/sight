@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,6 +31,9 @@
 
 #include <fwData/Exception.hpp>
 #include <fwData/Landmarks.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -51,15 +54,14 @@ namespace uiMeasurementQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks )
-
 //------------------------------------------------------------------------------
 
 static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
-static const char* s_GROUP_PROPERTY_NAME = "group";
-static const int s_GROUP_NAME_ROLE       = ::Qt::UserRole + 1;
+static const char* s_GROUP_PROPERTY_NAME                       = "group";
+static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
+static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT             = "pick";
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
 static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
@@ -75,12 +77,14 @@ static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks )
+
 //------------------------------------------------------------------------------
 
-SLandmarks::SLandmarks() noexcept :
-    m_advancedMode(false)
+SLandmarks::SLandmarks() noexcept
 {
     newSlot(s_ADD_PICKED_POINT_SLOT, &SLandmarks::addPickedPoint, this);
+    newSlot(s_PICK_SLOT, &SLandmarks::pick, this);
     newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     newSlot(s_MODIFY_POINT_SLOT, &SLandmarks::modifyPoint, this);
     newSlot(s_SELECT_POINT_SLOT, &SLandmarks::selectPoint, this);
@@ -108,23 +112,23 @@ void SLandmarks::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    m_defaultLandmarkSize = config.get_optional<float>(s_SIZE_CONFIG).get_value_or(10.0);
+    m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
     OSLM_FATAL_IF(
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
             m_defaultLandmarkSize <= 0.f);
 
-    m_defaultLandmarkOpacity = config.get_optional<float>(s_OPACITY_CONFIG).get_value_or(1.0);
+    m_defaultLandmarkOpacity = config.get<float>(s_OPACITY_CONFIG, m_defaultLandmarkOpacity);
     OSLM_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
             m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
-    const std::string advancedMode = config.get_optional<std::string>(s_ADVANCED_CONFIG).get_value_or("no");
+    const std::string advancedMode = config.get<std::string>(s_ADVANCED_CONFIG, "no");
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
 
     m_advancedMode = (advancedMode == "yes");
 
-    m_text = config.get_optional<std::string>(s_TEXT_CONFIG).get_value_or("Use 'Ctrl+Left Click' to add new landmarks");
+    m_text = config.get<std::string>(s_TEXT_CONFIG, m_text);
 }
 
 //------------------------------------------------------------------------------
@@ -133,24 +137,24 @@ void SLandmarks::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    QVBoxLayout* layout     = new QVBoxLayout();
-    QGridLayout* gridLayout = new QGridLayout();
+    QVBoxLayout* const layout     = new QVBoxLayout();
+    QGridLayout* const gridLayout = new QGridLayout();
 
     m_visibilityCheckbox = new QCheckBox();
-    QLabel* visibilityLabel = new QLabel(QString("Visibility"));
+    QLabel* const visibilityLabel = new QLabel(QString("Visibility"));
     m_sizeSlider = new QSlider(Qt::Horizontal);
     m_sizeSlider->setMinimum(1);
     m_sizeSlider->setMaximum(100);
-    QLabel* sizeLabel = new QLabel(QString("Size"));
+    QLabel* const sizeLabel = new QLabel(QString("Size"));
     m_opacitySlider = new QSlider(Qt::Horizontal);
-    QLabel* opacityLabel = new QLabel("Opacity");
+    QLabel* const opacityLabel = new QLabel("Opacity");
     m_shapeSelector = new QComboBox();
     m_shapeSelector->addItem(QString("Cube"));
     m_shapeSelector->addItem(QString("Sphere"));
-    QLabel* shapeLabel = new QLabel("Shape");
+    QLabel* const shapeLabel = new QLabel("Shape");
 
     m_newGroupButton = m_advancedMode ? new QPushButton("New Group") : nullptr;
 
@@ -204,19 +208,43 @@ void SLandmarks::starting()
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_ADD_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 void SLandmarks::updating()
 {
     m_treeWidget->blockSignals(true);
 
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    ::fwData::mt::ObjectReadLock lock(landmarks);
 
     m_treeWidget->clear();
 
-    for (const auto& name : landmarks->getGroupNames())
+    for(const auto& name : landmarks->getGroupNames())
     {
         this->addGroup(name);
         this->addPoint(name);
     }
+
+    lock.unlock();
 
     QObject::connect(m_treeWidget.data(), &QTreeWidget::itemChanged, this, &SLandmarks::onGroupNameEdited);
     QObject::connect(m_treeWidget.data(), &QTreeWidget::currentItemChanged, this, &SLandmarks::onSelectionChanged);
@@ -241,7 +269,7 @@ void SLandmarks::stopping()
 
 void SLandmarks::onColorButton()
 {
-    QObject* sender = this->sender();
+    QObject* const sender = this->sender();
 
     // Create Color choice dialog.
     auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -252,24 +280,26 @@ void SLandmarks::onColorButton()
     const QColor colorQt  = QColorDialog::getColor(oldColor, container, "Select Color", QColorDialog::ShowAlphaChannel);
     if(colorQt.isValid())
     {
-        QPushButton* colorButton = dynamic_cast<QPushButton*>(sender);
+        QPushButton* const colorButton = dynamic_cast<QPushButton*>(sender);
         colorButton->setProperty("color", colorQt);
 
         setColorButtonIcon(colorButton, colorQt);
 
         const std::string groupName = colorButton->property(s_GROUP_PROPERTY_NAME).value<QString>().toStdString();
 
-        ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
-        auto& group = landmarks->getGroup(groupName);
         ::fwData::Landmarks::ColorType color = {{colorQt.red()/255.f, colorQt.green()/255.f, colorQt.blue()/255.f,
                                                                       colorQt.alpha()/255.f}};
+        ::fwData::mt::ObjectWriteLock lock(landmarks);
+        auto& group = landmarks->getGroup(groupName);
+        group.m_color = color;
+        lock.unlock();
 
         m_opacitySlider->setValue(static_cast<int>(color[3] * m_opacitySlider->maximum()));
 
-        group.m_color = color;
-
-        auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
+        const auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
         {
@@ -281,34 +311,37 @@ void SLandmarks::onColorButton()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onGroupNameEdited(QTreeWidgetItem* item, int column)
+void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
 {
-    OSLM_ERROR_IF("A column different from the group's name is being edited", column != 0);
+    OSLM_ERROR_IF("A column different from the group's name is being edited", _column != 0);
     m_treeWidget->blockSignals(true);
 
-    if(column == 0)
+    if(_column == 0)
     {
-        ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
-        QString oldGroupName = item->data(0, s_GROUP_NAME_ROLE).toString();
-        QString newGroupName = item->text(0);
+        const QString oldGroupName = _item->data(0, s_GROUP_NAME_ROLE).toString();
+        const QString newGroupName = _item->text(0);
 
         if(newGroupName.isEmpty())
         {
-            QString msg = "The new group name for '" + oldGroupName +
-                          "' is empty. Please enter a valid name and try again";
+            const QString msg = "The new group name for '" + oldGroupName +
+                                "' is empty. Please enter a valid name and try again";
             QMessageBox msgBox(QMessageBox::Warning, "No group name", msg, QMessageBox::Ok);
             msgBox.exec();
 
-            item->setText(0, oldGroupName);
+            _item->setText(0, oldGroupName);
         }
         else if(oldGroupName != newGroupName)
         {
             try
             {
-                landmarks->renameGroup(oldGroupName.toStdString(), newGroupName.toStdString());
+                const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+                SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
-                auto sig = landmarks->signal< ::fwData::Landmarks::GroupRenamedSignalType >(
+                ::fwData::mt::ObjectWriteLock lock(landmarks);
+                landmarks->renameGroup(oldGroupName.toStdString(), newGroupName.toStdString());
+                lock.unlock();
+
+                const auto sig = landmarks->signal< ::fwData::Landmarks::GroupRenamedSignalType >(
                     ::fwData::Landmarks::s_GROUP_RENAMED_SIG);
 
                 {
@@ -316,19 +349,19 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* item, int column)
                     sig->asyncEmit(oldGroupName.toStdString(), newGroupName.toStdString());
                 }
 
-                item->setData(0, s_GROUP_NAME_ROLE, newGroupName);
-                QWidget* widget = m_treeWidget->itemWidget(item, 1);
+                _item->setData(0, s_GROUP_NAME_ROLE, newGroupName);
+                QWidget* const widget = m_treeWidget->itemWidget(_item, 1);
 
                 widget->setProperty(s_GROUP_PROPERTY_NAME, newGroupName);
             }
             catch(::fwData::Exception& e)
             {
-                QString msg = "Can't rename '" + oldGroupName +"' as '" + newGroupName + ".\n" +
-                              QString(e.what());
+                const QString msg = "Can't rename '" + oldGroupName +"' as '" + newGroupName + ".\n" +
+                                    QString(e.what());
                 QMessageBox msgBox(QMessageBox::Warning, "Can't rename" + oldGroupName, msg, QMessageBox::Ok);
                 msgBox.exec();
 
-                item->setText(0, oldGroupName);
+                _item->setText(0, oldGroupName);
             }
         }
     }
@@ -337,26 +370,27 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* item, int column)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onSelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
-    if(previous)
+    if(_previous)
     {
-        auto deselectSig = landmarks->signal< ::fwData::Landmarks::PointDeselectedSignalType >(
+        const auto deselectSig = landmarks->signal< ::fwData::Landmarks::PointDeselectedSignalType >(
             ::fwData::Landmarks::s_POINT_DESELECTED_SIG);
 
-        ::fwCom::Connection::Blocker block(deselectSig->getConnection(this->slot(s_DESELECT_POINT_SLOT)));
+        const ::fwCom::Connection::Blocker block(deselectSig->getConnection(this->slot(s_DESELECT_POINT_SLOT)));
 
         if(m_advancedMode)
         {
-            QTreeWidgetItem* previousParent = previous->parent();
+            const QTreeWidgetItem* const previousParent = _previous->parent();
 
             if(previousParent != nullptr)
             {
                 const std::string& groupName = previousParent->text(0).toStdString();
 
-                size_t index = static_cast<size_t>(previousParent->indexOfChild(previous));
+                const size_t index = static_cast<size_t>(previousParent->indexOfChild(_previous));
 
                 SLM_ASSERT("index must be inferior to the number of points in '" + groupName +"'.",
                            index < landmarks->getNumberOfPoints(groupName));
@@ -366,81 +400,87 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem* p
         }
         else
         {
-            const std::string& groupName = previous->text(0).toStdString();
+            const std::string& groupName = _previous->text(0).toStdString();
 
             deselectSig->asyncEmit(groupName, 0);
         }
     }
 
-    if(current)
+    if(_current)
     {
-        auto selectSig = landmarks->signal< ::fwData::Landmarks::PointSelectedSignalType >(
+        const auto selectSig = landmarks->signal< ::fwData::Landmarks::PointSelectedSignalType >(
             ::fwData::Landmarks::s_POINT_SELECTED_SIG);
 
         std::string groupName;
         if(m_advancedMode)
         {
-            QTreeWidgetItem* currentParent = current->parent();
+            const QTreeWidgetItem* const currentParent = _current->parent();
 
             if(currentParent != nullptr)
             {
                 groupName = currentParent->text(0).toStdString();
 
-                size_t index = static_cast<size_t>(currentParent->indexOfChild(current));
+                const size_t index = static_cast<size_t>(currentParent->indexOfChild(_current));
 
                 SLM_ASSERT("index must be inferior to the number of points in '" + groupName +"'.",
                            index < landmarks->getNumberOfPoints(groupName));
 
-                ::fwCom::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
+                const ::fwCom::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
                 selectSig->asyncEmit(groupName, index);
             }
             else
             {
-                groupName = current->text(0).toStdString();
+                groupName = _current->text(0).toStdString();
             }
         }
         else
         {
-            groupName = current->text(0).toStdString();
+            groupName = _current->text(0).toStdString();
 
             ::fwCom::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
             selectSig->asyncEmit(groupName, 0);
         }
 
+        ::fwData::mt::ObjectReadLock lock(landmarks);
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
 
-        // Set widget values
-        m_sizeSlider->setValue(static_cast<int>(group.m_size));
-        m_visibilityCheckbox->setChecked(group.m_visibility);
-
+        const int size          = static_cast<int>(group.m_size);
+        const bool visible      = group.m_visibility;
         const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
-        m_shapeSelector->setCurrentText(shapeText);
+        const float opacity     = group.m_color[3];
 
-        float opacity = group.m_color[3];
+        lock.unlock();
+
+        // Set widget values
+        m_sizeSlider->setValue(size);
+        m_visibilityCheckbox->setChecked(visible);
+        m_shapeSelector->setCurrentText(shapeText);
         m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
     }
 
-    m_groupEditorWidget->setDisabled(current == nullptr);
+    m_groupEditorWidget->setDisabled(_current == nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onSizeChanged(int newSize)
+void SLandmarks::onSizeChanged(int _newSize)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
-    const ::fwData::Landmarks::SizeType realSize = static_cast< ::fwData::Landmarks::SizeType >(newSize);
+    const ::fwData::Landmarks::SizeType realSize = static_cast< ::fwData::Landmarks::SizeType >(_newSize);
 
     std::string groupName;
     if(currentSelection(groupName))
     {
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        const ::fwData::mt::ObjectWriteLock lock(landmarks);
+
         landmarks->setGroupSize(groupName, realSize);
 
-        auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
+        const auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
 
         sig->asyncEmit(groupName);
     }
@@ -448,26 +488,28 @@ void SLandmarks::onSizeChanged(int newSize)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onOpacityChanged(int newOpacity)
+void SLandmarks::onOpacityChanged(int _newOpacity)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
     const float sliderSize = static_cast<float>( m_opacitySlider->maximum() - m_opacitySlider->minimum());
 
-    const float realOpacity = static_cast<float>(newOpacity) / sliderSize;
+    const float realOpacity = static_cast<float>(_newOpacity) / sliderSize;
 
     std::string groupName;
     if(currentSelection(groupName))
     {
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        const ::fwData::mt::ObjectWriteLock lock(landmarks);
+
         const auto groupColor = landmarks->getGroup(groupName).m_color;
 
-        ::fwData::Landmarks::ColorType newGroupColor
+        const ::fwData::Landmarks::ColorType newGroupColor
             = {{groupColor[0], groupColor[1], groupColor[2], realOpacity}};
 
         landmarks->setGroupColor(groupName, newGroupColor);
 
-        QTreeWidgetItem* item    = getGroupItem(groupName);
-        QPushButton* colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
+        QTreeWidgetItem* const item    = getGroupItem(groupName);
+        QPushButton* const colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
 
         QColor currentColor = colorButton->property("color").value<QColor>();
         currentColor.setAlphaF(realOpacity);
@@ -486,19 +528,21 @@ void SLandmarks::onOpacityChanged(int newOpacity)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onVisibilityChanged(int visibility)
+void SLandmarks::onVisibilityChanged(int _visibility)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
     std::string groupName;
     if(currentSelection(groupName))
     {
-        landmarks->setGroupVisibility(groupName, static_cast<bool>(visibility));
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        const ::fwData::mt::ObjectWriteLock lock(landmarks);
 
-        auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
+        landmarks->setGroupVisibility(groupName, static_cast<bool>(_visibility));
+
+        const auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
 
         sig->asyncEmit(groupName);
     }
@@ -506,23 +550,25 @@ void SLandmarks::onVisibilityChanged(int visibility)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onShapeChanged(const QString& shape)
+void SLandmarks::onShapeChanged(const QString& _shape)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
     std::string groupName;
     if(currentSelection(groupName))
     {
-        SLM_ASSERT("Shape must be 'Cube' or 'Sphere'.", shape == "Cube" || shape == "Sphere");
+        SLM_ASSERT("Shape must be 'Cube' or 'Sphere'.", _shape == "Cube" || _shape == "Sphere");
         const ::fwData::Landmarks::Shape s
-            = (shape == "Cube") ? ::fwData::Landmarks::Shape::CUBE : ::fwData::Landmarks::Shape::SPHERE;
+            = (_shape == "Cube") ? ::fwData::Landmarks::Shape::CUBE : ::fwData::Landmarks::Shape::SPHERE;
+
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        const ::fwData::mt::ObjectWriteLock lock(landmarks);
 
         landmarks->setGroupShape(groupName, s);
 
         auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
 
         sig->asyncEmit(groupName);
     }
@@ -532,18 +578,22 @@ void SLandmarks::onShapeChanged(const QString& shape)
 
 void SLandmarks::onAddNewGroup()
 {
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
     const std::string groupName = this->generateNewGroupName();
+
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+
+    ::fwData::mt::ObjectWriteLock lock(landmarks);
     landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
+    lock.unlock();
 
     this->addGroup(groupName);
 
-    auto sig = landmarks->signal< ::fwData::Landmarks::GroupAddedSignalType >(
+    const auto sig = landmarks->signal< ::fwData::Landmarks::GroupAddedSignalType >(
         ::fwData::Landmarks::s_GROUP_ADDED_SIG);
 
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
+        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
         sig->asyncEmit(groupName);
     }
 }
@@ -554,16 +604,19 @@ void SLandmarks::onRemoveSelection()
 {
     m_treeWidget->blockSignals(true);
 
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-    QTreeWidgetItem* item = m_treeWidget->currentItem();
+    QTreeWidgetItem* const item = m_treeWidget->currentItem();
 
     if(item != nullptr)
     {
         const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
 
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        const ::fwData::mt::ObjectWriteLock lock(landmarks);
+
         if(m_advancedMode && topLevelIndex == -1) // Delete point
         {
-            QTreeWidgetItem* itemParent = item->parent();
+            QTreeWidgetItem* const itemParent = item->parent();
 
             const size_t index           = static_cast<size_t>(itemParent->indexOfChild(item));
             const std::string& groupName = itemParent->text(0).toStdString();
@@ -575,7 +628,7 @@ void SLandmarks::onRemoveSelection()
                 ::fwData::Landmarks::s_POINT_REMOVED_SIG);
 
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
+                const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
                 sig->asyncEmit(groupName, index);
             }
         }
@@ -586,11 +639,11 @@ void SLandmarks::onRemoveSelection()
             landmarks->removeGroup(groupName);
             delete m_treeWidget->takeTopLevelItem(topLevelIndex);
 
-            auto sig = landmarks->signal< ::fwData::Landmarks::GroupRemovedSignalType >(
+            const auto sig = landmarks->signal< ::fwData::Landmarks::GroupRemovedSignalType >(
                 ::fwData::Landmarks::s_GROUP_REMOVED_SIG);
 
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
+                const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
                 sig->asyncEmit(groupName);
             }
         }
@@ -604,75 +657,171 @@ void SLandmarks::onRemoveSelection()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo pickingInfo)
+void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo _pickingInfo)
 {
-    if(pickingInfo.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP &&
-       pickingInfo.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
+    FW_DEPRECATED_MSG(
+        "::uiMeasurementQt::editor::addPickedPoint is no longer supported, the methods have been moved to ::uiMeasurementQt::editor::pick",
+        "22.0")
+    this->pick(_pickingInfo);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::pick(::fwDataTools::PickingInfo _info)
+{
+    if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
     {
-        double* pickedPos = pickingInfo.m_worldPos;
-        ::fwData::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
-
-        ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
-
-        std::string groupName;
-        QTreeWidgetItem* item = m_treeWidget->currentItem();
-
-        if(item == nullptr || !m_advancedMode) // No selection or simple mode, create a new group.
+        // Adds a new landmark.
+        if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
-            groupName = this->generateNewGroupName();
-            landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
+            const double* const pickedPos                 = _info.m_worldPos;
+            const ::fwData::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
 
-            this->addGroup(groupName);
+            const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+            SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
-            auto sig = landmarks->signal< ::fwData::Landmarks::GroupAddedSignalType >(
-                ::fwData::Landmarks::s_GROUP_ADDED_SIG);
+            std::string groupName;
+            QTreeWidgetItem* item = m_treeWidget->currentItem();
 
+            // No selection or simple mode, create a new group.
+            if(item == nullptr || !m_advancedMode)
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
+                groupName = this->generateNewGroupName();
+                ::fwData::mt::ObjectWriteLock lock(landmarks);
+                landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
+                lock.unlock();
+
+                this->addGroup(groupName);
+
+                const auto sig = landmarks->signal< ::fwData::Landmarks::GroupAddedSignalType >(
+                    ::fwData::Landmarks::s_GROUP_ADDED_SIG);
+                {
+                    const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
+                    sig->asyncEmit(groupName);
+                }
+            }
+            // Advanced mode and a point or a group is selected.
+            else
+            {
+                const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
+
+                // Point selected, add new point to parent group.
+                if(topLevelIndex == -1)
+                {
+                    item = item->parent();
+                }
+                groupName = item->text(0).toStdString();
+            }
+
+            ::fwData::mt::ObjectWriteLock lock(landmarks);
+            landmarks->addPoint(groupName, newPoint);
+            lock.unlock();
+
+            this->addPoint(groupName);
+
+            const auto sig =
+                landmarks->signal< ::fwData::Landmarks::PointAddedSignalType >(::fwData::Landmarks::s_POINT_ADDED_SIG);
+            {
+                const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
                 sig->asyncEmit(groupName);
             }
         }
-        else // Advanced mode and a point or a group is selected.
+        else if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP)
         {
-            const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
+            const double* const pickedPos = _info.m_worldPos;
 
-            if(topLevelIndex == -1) // Point selected, add new point to parent group.
+            const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+            SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+            ::fwData::mt::ObjectReadToWriteLock lock(landmarks);
+
+            // Find closest landmarks.
+            double closest             = std::numeric_limits<double>::max();
+            size_t foundIndex          = 0;
+            std::string foundGroupname = "";
+
+            for(const std::string& groupName : landmarks->getGroupNames())
             {
-                item = item->parent();
+                for(size_t index = 0; index < landmarks->getNumberOfPoints(groupName); ++index)
+                {
+                    const ::fwData::Landmarks::PointType landmark = landmarks->getPoint(groupName, index);
+
+                    const double tmpClosest = std::sqrt(
+                        std::pow(pickedPos[0] - landmark[0], 2) +
+                        std::pow(pickedPos[1] - landmark[1], 2) +
+                        std::pow(pickedPos[2] - landmark[2], 2)
+                        );
+
+                    if(tmpClosest < closest)
+                    {
+                        closest        = tmpClosest;
+                        foundGroupname = groupName;
+                        foundIndex     = index;
+                    }
+                }
             }
-            groupName = item->text(0).toStdString();
+
+            // 10.0 is an acceptable delta to remove a landmark.
+            if(!foundGroupname.empty() && closest < 10.)
+            {
+                // If the groupd contains only one point, we remove it.
+                if(landmarks->getNumberOfPoints(foundGroupname) == 1)
+                {
+                    this->removeGroup(foundGroupname);
+
+                    lock.upgrade();
+                    landmarks->removeGroup(foundGroupname);
+                    lock.downgrade();
+
+                    auto sig = landmarks->signal< ::fwData::Landmarks::GroupRemovedSignalType >(
+                        ::fwData::Landmarks::s_GROUP_REMOVED_SIG);
+                    {
+                        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
+                        sig->asyncEmit(foundGroupname);
+                    }
+                }
+                else
+                {
+                    lock.upgrade();
+                    landmarks->removePoint(foundGroupname, foundIndex);
+                    lock.downgrade();
+
+                    this->removePoint(foundGroupname, foundIndex);
+
+                    const auto sig = landmarks->signal< ::fwData::Landmarks::PointRemovedSignalType >(
+                        ::fwData::Landmarks::s_POINT_REMOVED_SIG);
+
+                    {
+                        const ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
+                        sig->asyncEmit(foundGroupname, foundIndex);
+                    }
+                }
+            }
         }
 
-        landmarks->addPoint(groupName, newPoint);
-        this->addPoint(groupName);
-
-        auto sig =
-            landmarks->signal< ::fwData::Landmarks::PointAddedSignalType >(::fwData::Landmarks::s_POINT_ADDED_SIG);
-
-        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
-        sig->asyncEmit(groupName);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::addPoint(std::string groupName)
+void SLandmarks::addPoint(std::string _groupName)
 {
     if(m_advancedMode)
     {
         m_treeWidget->blockSignals(true);
 
-        ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        const ::fwData::mt::ObjectReadLock lock(landmarks);
 
-        QTreeWidgetItem* item = getGroupItem(groupName);
+        QTreeWidgetItem* const item = getGroupItem(_groupName);
 
         const size_t nbChilds = static_cast<size_t>(item->childCount());
-        const size_t nbPoints = landmarks->getNumberOfPoints(groupName);
+        const size_t nbPoints = landmarks->getNumberOfPoints(_groupName);
         for(size_t idx = nbChilds; idx < nbPoints; ++idx)
         {
-            const ::fwData::Landmarks::PointType& newPoint = landmarks->getPoint(groupName, idx);
+            const ::fwData::Landmarks::PointType& newPoint = landmarks->getPoint(_groupName, idx);
 
-            QTreeWidgetItem* pt = new QTreeWidgetItem();
+            QTreeWidgetItem* const pt = new QTreeWidgetItem();
             for(int i = 0; i < 3; ++i)
             {
                 pt->setText(i, QString::fromStdString(std::to_string(newPoint[static_cast<size_t>(i)])));
@@ -686,26 +835,29 @@ void SLandmarks::addPoint(std::string groupName)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::addGroup(std::string name)
+void SLandmarks::addGroup(std::string _name)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
-    const auto& group = landmarks->getGroup(name);
+    ::fwData::mt::ObjectReadLock lock(landmarks);
+    const auto& group = landmarks->getGroup(_name);
+    lock.unlock();
 
-    QTreeWidgetItem* item = new QTreeWidgetItem();
+    QTreeWidgetItem* const item = new QTreeWidgetItem();
     item->setFlags(item->flags() | Qt::ItemIsEditable);
-    item->setData(0, s_GROUP_NAME_ROLE, QString::fromStdString(name));
+    item->setData(0, s_GROUP_NAME_ROLE, QString::fromStdString(_name));
 
     m_treeWidget->addTopLevelItem(item);
 
-    item->setText(0, QString::fromStdString(name));
-    QPushButton* button = new QPushButton();
+    item->setText(0, QString::fromStdString(_name));
+    QPushButton* const button = new QPushButton();
 
     const QColor color = convertToQColor(group.m_color);
 
     setColorButtonIcon(button, color);
     button->setProperty("color", color);
-    button->setProperty(s_GROUP_PROPERTY_NAME, QString::fromStdString(name));
+    button->setProperty(s_GROUP_PROPERTY_NAME, QString::fromStdString(_name));
 
     QObject::connect(button, &QPushButton::clicked, this, &SLandmarks::onColorButton);
 
@@ -714,44 +866,53 @@ void SLandmarks::addGroup(std::string name)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removeGroup(std::string name)
+void SLandmarks::removeGroup(std::string _name)
 {
-    QTreeWidgetItem* item = getGroupItem(name);
-
-    while(item->childCount() != 0)
+    try
     {
-        item->removeChild(item->child(0));
+        QTreeWidgetItem* const item = getGroupItem(_name);
+
+        while(item->childCount() != 0)
+        {
+            QTreeWidgetItem* const child = item->child(0);
+            item->removeChild(child);
+        }
+        const int index                = m_treeWidget->indexOfTopLevelItem(item);
+        QTreeWidgetItem* const topItem = m_treeWidget->takeTopLevelItem(index);
+        delete topItem;
     }
-    const int index          = m_treeWidget->indexOfTopLevelItem(item);
-    QTreeWidgetItem* topItem = m_treeWidget->takeTopLevelItem(index);
-    delete topItem;
+    catch(const std::exception& _e)
+    {
+        std::cout << "coucou" << std::endl;
+        std::cout << _e.what() << std::endl;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removePoint(std::string groupName, size_t index)
+void SLandmarks::removePoint(std::string _groupName, size_t _index)
 {
     m_treeWidget->blockSignals(true);
 
-    QTreeWidgetItem* item = getGroupItem(groupName);
+    QTreeWidgetItem* const item = getGroupItem(_groupName);
 
-    OSLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(index) < item->childCount());
+    OSLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
 
-    QTreeWidgetItem* pointItem = item->child(static_cast<int>(index));
+    QTreeWidgetItem* const pointItem = item->child(static_cast<int>(_index));
     item->removeChild(pointItem);
     m_treeWidget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::renameGroup(std::string oldName, std::string newName)
+void SLandmarks::renameGroup(std::string _oldName, std::string _newName)
 {
     m_treeWidget->blockSignals(true);
 
-    const QString qtNewName = QString::fromStdString(newName);
-    QTreeWidgetItem* item   = getGroupItem(oldName);
+    const QString qtNewName     = QString::fromStdString(_newName);
+    QTreeWidgetItem* const item = getGroupItem(_oldName);
     item->setData(0, s_GROUP_NAME_ROLE, qtNewName);
-    QWidget* widget = m_treeWidget->itemWidget(item, 1);
+    QWidget* const widget = m_treeWidget->itemWidget(item, 1);
     widget->setProperty(s_GROUP_PROPERTY_NAME, qtNewName);
 
     item->setText(0, qtNewName);
@@ -760,17 +921,20 @@ void SLandmarks::renameGroup(std::string oldName, std::string newName)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::modifyGroup(std::string name)
+void SLandmarks::modifyGroup(std::string _name)
 {
-    QTreeWidgetItem* item = getGroupItem(name);
+    QTreeWidgetItem* const item = getGroupItem(_name);
 
-    item->setText(0, name.c_str());
+    item->setText(0, _name.c_str());
 
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
-    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(name);
+    ::fwData::mt::ObjectReadLock lock(landmarks);
+    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_name);
+    lock.unlock();
 
-    QPushButton* colorButton = dynamic_cast< QPushButton* >(m_treeWidget->itemWidget(item, 1));
+    QPushButton* const colorButton = dynamic_cast< QPushButton* >(m_treeWidget->itemWidget(item, 1));
 
     const QColor color = convertToQColor(group.m_color);
 
@@ -788,8 +952,6 @@ void SLandmarks::modifyGroup(std::string name)
 
     if(groupSelected)
     {
-        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(name);
-
         // Set widget values
         m_sizeSlider->setValue(static_cast<int>(group.m_size));
         m_visibilityCheckbox->setChecked(group.m_visibility);
@@ -805,22 +967,25 @@ void SLandmarks::modifyGroup(std::string name)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::modifyPoint(std::string groupName, size_t index)
+void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
 {
     if( m_advancedMode )
     {
-        ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        auto const itemList = m_treeWidget->findItems(QString::fromStdString(_groupName), Qt::MatchExactly);
 
-        auto itemList = m_treeWidget->findItems(QString::fromStdString(groupName), Qt::MatchExactly);
+        SLM_ASSERT("Only a single item can be named '" + _groupName + "'", itemList.size() == 1);
 
-        SLM_ASSERT("Only a single item can be named '" + groupName + "'", itemList.size() == 1);
+        QTreeWidgetItem* const item = itemList.at(0);
 
-        QTreeWidgetItem* item = itemList.at(0);
+        OSLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
 
-        OSLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(index) < item->childCount());
+        QTreeWidgetItem* const pointItem = item->child(static_cast<int>(_index));
 
-        QTreeWidgetItem* pointItem                  = item->child(static_cast<int>(index));
-        const ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, index);
+        const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        const ::fwData::mt::ObjectReadLock lock(landmarks);
+
+        const ::fwData::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
 
         m_treeWidget->blockSignals(true);
         for(int i = 0; i < 3; ++i)
@@ -833,34 +998,39 @@ void SLandmarks::modifyPoint(std::string groupName, size_t index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::selectPoint(std::string groupName, size_t index)
+void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 {
     m_treeWidget->blockSignals(true);
 
-    QTreeWidgetItem* currentItem = getGroupItem(groupName);
+    QTreeWidgetItem* currentItem = getGroupItem(_groupName);
 
     if(m_advancedMode)
     {
         OSLM_ASSERT(
             "Index must be less than " << currentItem->childCount(),
-                static_cast<int>(index) < currentItem->childCount());
+                static_cast<int>(_index) < currentItem->childCount());
 
-        currentItem = currentItem->child(static_cast<int>(index));
+        currentItem = currentItem->child(static_cast<int>(_index));
     }
     m_treeWidget->setCurrentItem(currentItem);
 
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    ::fwData::mt::ObjectReadLock lock(landmarks);
 
-    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
+    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
+
+    const int size          = static_cast<int>(group.m_size);
+    const bool visible      = group.m_visibility;
+    const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
+    const float opacity     = group.m_color[3];
+
+    lock.unlock();
 
     // Set widget values
-    m_sizeSlider->setValue(static_cast<int>(group.m_size));
-    m_visibilityCheckbox->setChecked(group.m_visibility);
-
-    const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
+    m_sizeSlider->setValue(size);
+    m_visibilityCheckbox->setChecked(visible);
     m_shapeSelector->setCurrentText(shapeText);
-
-    const float opacity = group.m_color[3];
     m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
     m_groupEditorWidget->setEnabled(true);
@@ -884,6 +1054,8 @@ std::string SLandmarks::generateNewGroupName() const
     static size_t groupCount = 0;
 
     const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    const ::fwData::mt::ObjectReadLock lock(landmarks);
 
     const ::fwData::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
 
@@ -909,7 +1081,7 @@ std::array<float, 4> SLandmarks::generateNewColor()
 
 //------------------------------------------------------------------------------
 
-bool SLandmarks::currentSelection(std::string& selection) const
+bool SLandmarks::currentSelection(std::string& _selection) const
 {
     QTreeWidgetItem* item = m_treeWidget->currentItem();
 
@@ -924,7 +1096,7 @@ bool SLandmarks::currentSelection(std::string& selection) const
             item = item->parent();
         }
 
-        selection = item->text(0).toStdString();
+        _selection = item->text(0).toStdString();
     }
 
     return selectedGroup;
@@ -932,56 +1104,36 @@ bool SLandmarks::currentSelection(std::string& selection) const
 
 //------------------------------------------------------------------------------
 
-QColor SLandmarks::convertToQColor(const ::fwData::Landmarks::ColorType& color)
+QColor SLandmarks::convertToQColor(const ::fwData::Landmarks::ColorType& _color)
 {
     return QColor(
-        static_cast<int>(color[0]*255),
-        static_cast<int>(color[1]*255),
-        static_cast<int>(color[2]*255),
-        static_cast<int>(color[3]*255)
+        static_cast<int>(_color[0]*255),
+        static_cast<int>(_color[1]*255),
+        static_cast<int>(_color[2]*255),
+        static_cast<int>(_color[3]*255)
         );
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::setColorButtonIcon(QPushButton* button, const QColor& color)
+void SLandmarks::setColorButtonIcon(QPushButton* _button, const QColor& _color)
 {
-    const int iconSize = button->style()->pixelMetric(QStyle::PM_LargeIconSize);
+    const int iconSize = _button->style()->pixelMetric(QStyle::PM_LargeIconSize);
     QPixmap pix(iconSize, iconSize);
-    pix.fill(color);
+    pix.fill(_color);
 
-    button->setIcon(QIcon(pix));
+    _button->setIcon(QIcon(pix));
 }
 
 //------------------------------------------------------------------------------
 
-QTreeWidgetItem* SLandmarks::getGroupItem(const std::string& groupName) const
+QTreeWidgetItem* SLandmarks::getGroupItem(const std::string& _groupName) const
 {
-    const auto itemList = m_treeWidget->findItems(QString::fromStdString(groupName), Qt::MatchExactly);
+    const auto itemList = m_treeWidget->findItems(QString::fromStdString(_groupName), Qt::MatchExactly);
 
-    SLM_ASSERT("Only a single item can be named '" + groupName + "'", itemList.size() == 1);
+    SLM_ASSERT("Only a single item can be named '" + _groupName + "'", itemList.size() == 1);
 
     return itemList.at(0);
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_ADD_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT);
-
-    return connections;
 }
 
 } // namespace editor

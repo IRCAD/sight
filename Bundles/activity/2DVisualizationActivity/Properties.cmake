@@ -7,11 +7,13 @@ set( REQUIREMENTS
     activities
     gui
     guiQt
+    dataReg
     uiMeasurement
     uiMeasurementQt
     ctrlCamp
     ctrlMemory
     ctrlSelection
+    servicesReg
     uiImageQt
     uiVisu
     uiVisuQt

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,14 @@
 
 #include "visuOgreAdaptor/SLight.hpp"
 
+#include "visuOgreAdaptor/SMaterial.hpp"
+
 #include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
@@ -43,7 +46,7 @@
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight)
 
-fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY);
+fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
 
 //------------------------------------------------------------------------------
 
@@ -69,12 +72,7 @@ SLight::SLight() noexcept
 
 //------------------------------------------------------------------------------
 
-SLight::SLight(::fwRenderOgre::ILight::Key /*key*/) :
-    m_light(nullptr),
-    m_lightName(""),
-    m_switchedOn(true),
-    m_thetaOffset(0.f),
-    m_phiOffset(0.f)
+SLight::SLight(::fwRenderOgre::ILight::Key /*key*/)
 {
     newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
     newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
@@ -135,12 +133,16 @@ void SLight::starting()
 
     this->getRenderService()->makeCurrent();
 
-    m_lightDiffuseColor  = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
+    m_lightDiffuseColor = this->getInOut< ::fwData::Color >(s_DIFFUSE_COLOR_INOUT);
+    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
+
     m_lightSpecularColor = this->getInOut< ::fwData::Color >(s_SPECULAR_COLOR_INOUT);
+    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
 
-    m_light = this->getSceneManager()->createLight(this->getID() + "_" + m_lightName);
+    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    m_light                              = sceneMgr->createLight(this->getID() + "_" + m_lightName);
 
-    // Set the default light direction to the camera's view direction,
+    // Sets the default light direction to the camera's view direction,
     m_light->setDirection(::Ogre::Vector3::NEGATIVE_UNIT_Z);
     m_light->setType(m_lightType);
     m_light->setVisible(m_switchedOn);
@@ -156,6 +158,73 @@ void SLight::starting()
         this->setPhiOffset(m_phiOffset);
     }
 
+    if(m_lightName != ::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME)
+    {
+        // Creates the visual feedback
+        // Creates the material
+        m_material = ::fwData::Material::New();
+
+        const ::visuOgreAdaptor::SMaterial::sptr materialAdaptor =
+            this->registerService< ::visuOgreAdaptor::SMaterial >(
+                "::visuOgreAdaptor::SMaterial");
+        materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
+        materialAdaptor->setID(this->getID() + materialAdaptor->getID());
+        materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
+        materialAdaptor->setRenderService( this->getRenderService() );
+        materialAdaptor->setLayerID(m_layerID);
+        materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+        materialAdaptor->start();
+
+        materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+        materialAdaptor->update();
+
+        // Size, these value allow to display light with good enough ratio.
+        const float originRadius   = m_length * 0.1f;
+        const float cylinderLength = m_length - m_length/10;
+        const float cylinderRadius = m_length/80;
+        const float coneLength     = m_length - cylinderLength;
+        const float coneRadius     = cylinderRadius*2;
+        const unsigned sample      = 64;
+
+        // Creates the commun sphere position
+        m_lightPosition = sceneMgr->createManualObject(this->getID() + "_origin");
+        ::fwRenderOgre::helper::ManualObject::createSphere(m_lightPosition, materialAdaptor->getMaterialName(),
+                                                           ::Ogre::ColourValue(0.98f, 0.96f, 0.62f, 1.0f),
+                                                           originRadius,
+                                                           sample);
+        m_lightPosition->setVisible(m_visualFeedback);
+        m_lightNode->attachObject(m_lightPosition);
+
+        // Create the directional light feedback
+        m_directionalFeedback.first  = sceneMgr->createManualObject(this->getID() + "_line");
+        m_directionalFeedback.second = sceneMgr->createManualObject(this->getID() + "_cone");
+
+        ::fwRenderOgre::helper::ManualObject::createCylinder(m_directionalFeedback.first,
+                                                             materialAdaptor->getMaterialName(),
+                                                             ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+                                                             cylinderRadius,
+                                                             cylinderLength,
+                                                             sample);
+        ::Ogre::SceneNode* lineNode = m_lightNode->createChildSceneNode(this->getID() + "_lineNode");
+        lineNode->attachObject(m_directionalFeedback.first);
+        lineNode->yaw(::Ogre::Degree(-90));
+
+        ::fwRenderOgre::helper::ManualObject::createCone(m_directionalFeedback.second,
+                                                         materialAdaptor->getMaterialName(),
+                                                         ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+                                                         coneRadius,
+                                                         coneLength,
+                                                         sample);
+        ::Ogre::SceneNode* coneNode = m_lightNode->createChildSceneNode(this->getID() + "_coneNode");
+
+        coneNode->attachObject(m_directionalFeedback.second);
+        coneNode->translate(0.f, 0.f, cylinderLength);
+        coneNode->yaw(::Ogre::Degree(-90));
+
+        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+    }
+
     updating();
 }
 
@@ -163,18 +232,24 @@ void SLight::starting()
 
 void SLight::updating()
 {
-    SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
+    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
+    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
 
     this->getRenderService()->makeCurrent();
 
+    ::fwData::mt::ObjectReadLock diffuseLock(m_lightDiffuseColor);
     const ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
                                            m_lightDiffuseColor->green(),
                                            m_lightDiffuseColor->blue(),
                                            m_lightDiffuseColor->alpha());
+    diffuseLock.unlock();
+
+    ::fwData::mt::ObjectReadLock specularLock(m_lightSpecularColor);
     const ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
                                             m_lightSpecularColor->green(),
                                             m_lightSpecularColor->blue(),
                                             m_lightSpecularColor->alpha());
+    specularLock.unlock();
 
     m_light->setDiffuseColour(diffuseColor);
     m_light->setSpecularColour(specularColor);
@@ -191,17 +266,38 @@ void SLight::stopping()
 
     this->unregisterServices();
 
-    m_light->detachFromParent();
-    this->getSceneManager()->destroyLight(m_light);
-    this->getSceneManager()->destroySceneNode(m_lightNode);
+    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    if(m_lightName != ::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME)
+    {
+        m_lightNode->removeAndDestroyChild(this->getID() + "_lineNode");
+        m_lightNode->removeAndDestroyChild(this->getID() + "_coneNode");
+
+        sceneMgr->destroyManualObject(m_lightPosition);
+        sceneMgr->destroyManualObject(m_directionalFeedback.first);
+        sceneMgr->destroyManualObject(m_directionalFeedback.second);
+
+        m_lightPosition              = nullptr;
+        m_directionalFeedback.first  = nullptr;
+        m_directionalFeedback.second = nullptr;
+        m_material.reset();
+    }
+
+    sceneMgr->destroyLight(m_light);
+    sceneMgr->destroySceneNode(m_lightNode);
+
+    m_light     = nullptr;
+    m_lightNode = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
-    SLM_ASSERT("Missing diffuse color data object.", m_lightDiffuseColor);
+    SLM_ASSERT("inout '" + s_DIFFUSE_COLOR_INOUT + "' does not exist.", m_lightDiffuseColor);
+
+    ::fwData::mt::ObjectWriteLock lock(m_lightDiffuseColor);
     m_lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
+    lock.unlock();
 
     m_light->setDiffuseColour(_diffuseColor);
     this->requestRender();
@@ -211,8 +307,11 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
-    SLM_ASSERT("Missing specular color data object.", m_lightSpecularColor);
+    SLM_ASSERT("inout '" + s_SPECULAR_COLOR_INOUT + "' does not exist.", m_lightSpecularColor);
+
+    ::fwData::mt::ObjectWriteLock lock(m_lightSpecularColor);
     m_lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
+    lock.unlock();
 
     m_light->setSpecularColour(_specularColor);
     this->requestRender();
@@ -261,6 +360,31 @@ void SLight::setPhiOffset(float _phiOffset)
 
     m_lightNode->rotate(xAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SLight::enableVisualFeedback(bool _enable)
+{
+    m_visualFeedback = _enable;
+    if(m_lightPosition)
+    {
+        m_lightPosition->setVisible(m_visualFeedback);
+        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLight::setType(::Ogre::Light::LightTypes _type)
+{
+    m_lightType = _type;
+    if(m_directionalFeedback.first)
+    {
+        m_directionalFeedback.first->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+        m_directionalFeedback.second->setVisible(m_visualFeedback && m_lightType == ::Ogre::Light::LT_DIRECTIONAL);
+    }
 }
 
 //------------------------------------------------------------------------------

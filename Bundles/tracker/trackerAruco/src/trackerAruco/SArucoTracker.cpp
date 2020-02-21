@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,10 +47,10 @@
 
 namespace trackerAruco
 {
-fwServicesRegisterMacro(::arServices::ITracker, ::trackerAruco::SArucoTracker);
+fwServicesRegisterMacro(::arServices::ITracker, ::trackerAruco::SArucoTracker)
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG  = "detectionDone";
+const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
 const ::fwCom::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "markerDetected";
 
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
@@ -221,6 +221,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
             const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
             OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
+
             if(buffer)
             {
                 m_lastTimestamp = timestamp;
@@ -238,11 +239,32 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
     if(!inImage.empty())
     {
-        // aruco expects a grey image and make a conversion at the beginning of the detect() method if it receives
-        // a RGB image. However we have a RGBA image so we must make the conversion ourselves.
-        cv::Mat grey, bgr;
-        // inImage is BGRA (see constructor of ::cv::Mat)
-        cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
+
+        // Check number of components of image.
+        const auto nbOfComponents = inImage.channels();
+
+        ::cv::Mat grey, bgr;
+
+        if(nbOfComponents == 4) // RGBA or BGRA.
+        {
+            ::cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
+        }
+        else if(nbOfComponents == 3) // RGB or BGR.
+        {
+            ::cv::cvtColor(inImage, grey, CV_BGR2GRAY);
+        }
+        else if(nbOfComponents == 1) // Grey level.
+        {
+            grey = inImage;
+        }
+        // Discard "exotic" values of components (0, 2, > 4).
+        else
+        {
+            SLM_ERROR("Invalid number of components ( " + std::to_string(nbOfComponents) + " ) for : '"
+                      + s_FRAME_INOUT + "' (accepted values are 1, 3 or 4). ");
+
+            return;
+        }
 
         bool foundMarker = false;
         std::vector<std::vector< ::cv::Point2f> > detectedMarkers;
@@ -260,10 +282,21 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
             {
                 lockFrame->upgrade();
             }
-            // since drawDetectedMarkers does not handle 4 channels ::cv::mat
-            ::cv::cvtColor(inImage, bgr, CV_BGRA2BGR);
-            ::cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
-            ::cv::cvtColor(bgr, inImage, CV_BGR2BGRA);
+
+            if(nbOfComponents == 4) // RGBA or BGRA.
+            {
+                // since drawDetectedMarkers does not handle 4 channels ::cv::mat
+                ::cv::cvtColor(inImage, bgr, CV_BGRA2BGR);
+                ::cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
+                ::cv::cvtColor(bgr, inImage, CV_BGR2BGRA);
+            }
+            // If nbOfComponents == 1 or == 3 it's ok.
+            // It is useless to test other values since "wrong" number of components has previoulsy been discarded.
+            else
+            {
+                ::cv::aruco::drawDetectedMarkers(inImage, detectedMarkers, detectedMarkersIds);
+            }
+
         }
 
         size_t tagTLIndex = 0;

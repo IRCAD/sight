@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-const ::fwRenderOgre::ILight::FactoryRegistryKeyType ILight::REGISTRY_KEY = "::fwRenderOgre::ILight::REGISTRY_KEY";
+const std::string ILight::REGISTRY_KEY = "::fwRenderOgre::ILight::REGISTRY_KEY";
 
 const std::string ILight::s_POINT_LIGHT       = "Point";
 const std::string ILight::s_DIRECTIONAL_LIGHT = "Directional";

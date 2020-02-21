@@ -10,6 +10,8 @@ in vec2 uv;
 
 out vec4 fragColour;
 
+#define TEXREADS 32
+
 void main(void)
 {
     ivec3 voxelCoords = ivec3(gl_FragCoord.xy, u_sliceIndex);

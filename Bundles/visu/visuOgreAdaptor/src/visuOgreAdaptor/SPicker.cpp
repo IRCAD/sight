@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@ void SPicker::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_pickingPriority = config.get<int>("priority", m_pickingPriority);
-    const std::string hexaMask = config.get<std::string>("queryMask");
+    const std::string hexaMask = config.get<std::string>("queryMask", "");
 
     if(!hexaMask.empty())
     {

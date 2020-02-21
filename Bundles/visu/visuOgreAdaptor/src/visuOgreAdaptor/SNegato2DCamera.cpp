@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
 
@@ -39,11 +41,14 @@ static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamer
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
 static const ::fwCom::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //-----------------------------------------------------------------------------
 
-SNegato2DCamera::SNegato2DCamera() noexcept
+SNegato2DCamera::SNegato2DCamera() noexcept :
+    // This connection is useless here but needed to create the TF helper.
+    m_helperTF(std::bind(&SNegato2DCamera::updating, this))
 {
     newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
     newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
@@ -107,7 +112,21 @@ void SNegato2DCamera::starting()
 
 void SNegato2DCamera::updating() noexcept
 {
+    // Only used for the TF helper.
+}
 
+//-----------------------------------------------------------------------------
+
+void SNegato2DCamera::swapping(const KeyType& _key)
+{
+    if(_key == s_TF_INOUT)
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+        m_helperTF.setOrCreateTF(tf, image);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -124,30 +143,30 @@ void SNegato2DCamera::stopping()
 ::fwServices::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT);
-    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT);
 
     return connections;
 }
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
+void SNegato2DCamera::wheelEvent(Modifier, int _delta, int _x, int _y)
 {
     const auto layer = this->getLayer();
 
-    if(IInteractor::isInLayer(mouseX, mouseY, layer))
+    if(IInteractor::isInLayer(_x, _y, layer))
     {
         const auto* const viewport = layer->getViewport();
         auto* const camera         = layer->getDefaultCamera();
         auto* const camNode        = camera->getParentNode();
 
         constexpr float mouseWheelScale = 0.05f;
-        const float zoomAmount          = static_cast<float>(-delta) * mouseWheelScale;
+        const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
 
         // Compute the mouse's position in the camera's view.
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
+        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
 
         // Zoom in.
         const float orthoHeight    = camera->getOrthoWindowHeight();
@@ -161,7 +180,7 @@ void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
         camera->setOrthoWindowHeight(clampedHeight);
 
         // Compute the mouse's position in the zoomed view.
-        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, mouseX, mouseY);
+        const auto newMousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
 
         // Translate the camera back to the cursor's previous position.
         camNode->translate(mousePosView - newMousePosView);
@@ -170,9 +189,9 @@ void SNegato2DCamera::wheelEvent(Modifier, int delta, int mouseX, int mouseY)
 
 // ----------------------------------------------------------------------------
 
-void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, int x, int y, int dx, int dy)
+void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy)
 {
-    if(m_moveCamera && button == MIDDLE)
+    if(m_isInteracting && _button == MouseButton::MIDDLE)
     {
         const auto layer = this->getLayer();
 
@@ -180,34 +199,56 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton button, Modifier, 
         auto* const camNode = camera->getParentNode();
 
         const auto previousMousePosView =
-            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, x - dx, y - dy);
-        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, x, y);
+            ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x - _dx, _y - _dy);
+        const auto mousePosView = ::fwRenderOgre::helper::Camera::convertPixelToViewSpace(*camera, _x, _y);
 
         camNode->translate(mousePosView - previousMousePosView);
+    }
+    else if(m_isInteracting && _button == MouseButton::RIGHT)
+    {
+        const double dx = static_cast<double>(_x - m_initialPos[0]);
+        const double dy = static_cast<double>(m_initialPos[1] - _y);
+
+        this->updateWindowing(dx, dy);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton button, Modifier, int x, int y)
+void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y)
 {
     const auto layer = this->getLayer();
-    m_moveCamera = button == MIDDLE && IInteractor::isInLayer(x, y, layer);
+    if(_button == MouseButton::MIDDLE)
+    {
+        m_isInteracting = IInteractor::isInLayer(_x, _y, layer);
+    }
+    else if(_button == MouseButton::RIGHT && IInteractor::isInLayer(_x, _y, layer))
+    {
+        m_isInteracting = true;
+
+        const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
+
+        m_initialLevel  = tf->getLevel();
+        m_initialWindow = tf->getWindow();
+
+        m_initialPos = { _x, _y };
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SNegato2DCamera::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int, int)
 {
-    m_moveCamera = false;
+    m_isInteracting = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::keyPressEvent(int key, Modifier, int mouseX, int mouseY)
+void SNegato2DCamera::keyPressEvent(int _key, Modifier, int _x, int _y)
 {
     const auto layer = this->getLayer();
-    if(IInteractor::isInLayer(mouseX, mouseY, layer) && (key == 'R' || key == 'r'))
+    if(IInteractor::isInLayer(_x, _y, layer) && (_key == 'R' || _key == 'r'))
     {
         this->resetCamera();
     }
@@ -217,6 +258,14 @@ void SNegato2DCamera::keyPressEvent(int key, Modifier, int mouseX, int mouseY)
 
 void SNegato2DCamera::resetCamera()
 {
+    // This method is called when the image buffer is modified,
+    // we need to retrieve the TF here if it came from the image.
+    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+
+    const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    m_helperTF.setOrCreateTF(tf, image);
+
     const auto layer           = this->getLayer();
     const auto* const viewport = layer->getViewport();
     auto* const camera         = layer->getDefaultCamera();
@@ -307,6 +356,27 @@ void SNegato2DCamera::moveBack()
         camNode->setPosition(camPos);
 
         this->requestRender();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2DCamera::updateWindowing( double _dw, double _dl )
+{
+    const double newWindow = m_initialWindow + _dw;
+    const double newLevel  = m_initialLevel - _dl;
+
+    const ::fwData::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
+    {
+        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+
+        tf->setWindow( newWindow );
+        tf->setLevel( newLevel );
+        const auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        {
+            sig->asyncEmit(newWindow, newLevel);
+        }
     }
 }
 

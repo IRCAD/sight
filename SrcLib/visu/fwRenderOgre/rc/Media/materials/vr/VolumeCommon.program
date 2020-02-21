@@ -1,3 +1,38 @@
+fragment_program RayUtils_FP glsl
+{
+    source RayUtils.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeLighting_FP glsl
+{
+    source VolumeLighting.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeAdvancedLighting_FP glsl
+{
+    preprocessor_defines ADVANCED_LIGHTING=1
+    source VolumeLighting.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeColorBleedingLighting_FP glsl
+{
+    preprocessor_defines COLOR_BLEEDING=1
+    source VolumeLighting.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeColorBleedingAdvancedLighting_FP glsl
+{
+    preprocessor_defines ADVANCED_LIGHTING=1,COLOR_BLEEDING=1
+    source VolumeLighting.glsl
+}
 
 //---------------------------------------------------------------------------
 
@@ -8,7 +43,31 @@ fragment_program VolumeNormals_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program RayUtils_FP glsl
+fragment_program VolumeRay_FP glsl
 {
-    source RayUtils.glsl
+    source VolumeRay.glsl
 }
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeRayCompositing_FP glsl
+{
+    source VolumeRayCompositing.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumePreIntegratedSampling_FP glsl
+{
+    preprocessor_defines PREINTEGRATION=1
+    source VolumeSampling.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeTransferFunctionSampling_FP glsl
+{
+    attach TransferFunction_FP
+    source VolumeSampling.glsl
+}
+
