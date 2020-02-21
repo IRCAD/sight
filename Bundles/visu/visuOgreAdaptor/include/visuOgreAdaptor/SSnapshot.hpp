@@ -54,7 +54,8 @@ namespace visuOgreAdaptor
  * if the layer is resized the snaphot will be resized.
  *
  * @subsection InOut InOut:
- * - \b image [::fwData::Image]: image containing the snapshot of the layer.
+ * - \b image [::fwData::Image] (optional): image containing the snapshot of the layer color buffer.
+ * - \b depth [::fwData::Image] (optional): image containing the snapshot of the layer depth buffer.
  *
  */
 class VISUOGREADAPTOR_CLASS_API SSnapshot final : public ::fwRenderOgre::IAdaptor

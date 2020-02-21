@@ -115,17 +115,17 @@ void SSnapshot::starting()
 void SSnapshot::updating() noexcept
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
-    const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
-
+    if(image)
     {
+        const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
+
         ::fwData::mt::ObjectWriteLock lock(image);
         ::fwRenderOgre::Utils::convertFromOgreTexture(text, image, false);
-    }
 
-    auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 
     const ::fwData::Image::sptr depth = this->getInOut< ::fwData::Image >(s_DEPTH_INOUT);
 
@@ -182,6 +182,7 @@ void SSnapshot::createCompositor(int _width, int _height)
                         material ForwardDepth
                     }
                 }
+
                 target_output
                 {
                     input previous
