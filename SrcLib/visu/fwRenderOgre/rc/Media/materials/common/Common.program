@@ -1,37 +1,12 @@
 
-//---------------------------------------------------------------------------
-
-vertex_program Render_VP glsl
+fragment_program ColorFormats_FP glsl
 {
-    source Render_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeelingCommon_FP glsl
-{
-    source DepthPeelingCommon_FP.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeeling/depthMap_FP glsl
-{
-    source DepthPeelingDepthMap_FP.glsl
-    attach DepthPeelingCommon_FP
-    default_params
-    {
-        param_named_auto u_diffuse surface_diffuse_colour
-    }
+    source ColorFormats.glsl
 }
 
 //-----------------------------------------------------------------------------
 
-vertex_program Default/Edge_VP glsl
+vertex_program Edge_VP glsl
 {
     source DefaultEdge_VP.glsl
     default_params
@@ -44,9 +19,9 @@ vertex_program Default/Edge_VP glsl
 
 //-----------------------------------------------------------------------------
 
-vertex_program Default/Normal_VP glsl
+vertex_program Normals_VP glsl
 {
-    source NormalsDisplay_VP.glsl
+    source Normals_VP.glsl
     default_params
     {
 
@@ -55,9 +30,9 @@ vertex_program Default/Normal_VP glsl
 
 //-----------------------------------------------------------------------------
 
-geometry_program VerticesNormalsDisplay_GP glsl
+geometry_program VerticesNormals_GP glsl
 {
-    source NormalsDisplay_GP.glsl
+    source Normals_GP.glsl
     preprocessor_defines POINT=1
     default_params
     {
@@ -69,7 +44,7 @@ geometry_program VerticesNormalsDisplay_GP glsl
 
 //-----------------------------------------------------------------------------
 
-geometry_program CellsNormalsDisplay_GP glsl
+geometry_program CellsNormals_GP glsl
 {
     source NormalsDisplay_GP.glsl
     preprocessor_defines CELL=1
@@ -81,38 +56,15 @@ geometry_program CellsNormalsDisplay_GP glsl
     }
 }
 
-//-----------------------------------------------------------------------------
-
-geometry_program DepthPeeling/depthMap/VerticesNormalsDisplay_GP glsl
-{
-    source NormalsDisplay_GP.glsl
-    preprocessor_defines POINT=1,DEPTH=1
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_sceneSize float 10.
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
-{
-    source NormalsDisplay_GP.glsl
-    preprocessor_defines CELL=1,DEPTH=1
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_sceneSize float 10.
-    }
-}
-
 //---------------------------------------------------------------------------
 
-fragment_program ClearDepth_FP glsl
+vertex_program Render_VP glsl
 {
-    source ClearDepth.glsl
-    attach DepthPeelingCommon_FP
+    source Render_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -139,40 +91,9 @@ fragment_program RenderQuad_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling/Blend_FP glsl
+fragment_program SpatialTransforms_FP glsl
 {
-    source DepthPeelingBlend_FP.glsl
-    default_params
-    {
-        param_named u_fragData0 int 0
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeeling/Final_FP glsl
-{
-    source DepthPeelingFinal_FP.glsl
-    attach DepthPeelingCommon_FP
-    default_params
-    {
-        param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DualDepthPeeling/peelInit_FP glsl
-{
-    source DualDepthPeelingInit_FP.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DualDepthPeeling_Edge_Normal_FP glsl
-{
-    source DualDepthPeelingInit_FP.glsl
+    source SpatialTransforms.glsl
 }
 
 //---------------------------------------------------------------------------
@@ -180,18 +101,4 @@ fragment_program DualDepthPeeling_Edge_Normal_FP glsl
 fragment_program TransferFunction_FP glsl
 {
     source TransferFunction.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program ColorFormats_FP glsl
-{
-    source ColorFormats.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program SpatialTransforms_FP glsl
-{
-    source SpatialTransforms.glsl
 }

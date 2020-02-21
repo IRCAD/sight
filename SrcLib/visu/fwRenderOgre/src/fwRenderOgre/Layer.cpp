@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -287,7 +287,7 @@ void Layer::createScene()
     {
         // FIXME : background isn't shown when using compositor with a clear pass
         // We must blend the input previous in each compositor
-        ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("DefaultBackground");
+        ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("Background");
         ::Ogre::MaterialPtr material        = ::Ogre::MaterialManager::getSingleton().create(
             this->getName() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         defaultMaterial.get()->copyDetailsTo(material);

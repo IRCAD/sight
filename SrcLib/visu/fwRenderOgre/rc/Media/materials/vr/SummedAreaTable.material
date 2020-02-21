@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 
-fragment_program SummedAreaTable/Init_FP glsl
+fragment_program SummedAreaTableInit_FP glsl
 {
     source ApplyTransferFunction_FP.glsl
     attach TransferFunction_FP
@@ -17,10 +17,9 @@ fragment_program SummedAreaTable/Init_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program SummedAreaTable/SAT_FP glsl
+fragment_program SummedAreaTable_FP glsl
 {
     source SummedAreaTable_FP.glsl
-    preprocessor_defines TEXREADS=32
 
     default_params
     {
@@ -48,7 +47,7 @@ material SummedAreaTableInit
             {
             }
 
-            fragment_program_ref SummedAreaTable/Init_FP
+            fragment_program_ref SummedAreaTableInit_FP
             {
             }
 
@@ -84,7 +83,7 @@ material SummedAreaTable
             {
             }
 
-            fragment_program_ref SummedAreaTable/SAT_FP
+            fragment_program_ref SummedAreaTable_FP
             {
             }
 

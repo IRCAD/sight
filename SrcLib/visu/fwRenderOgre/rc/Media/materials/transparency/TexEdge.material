@@ -1,4 +1,4 @@
-vertex_program myTextureSobelVertProgram glsl
+vertex_program TexSobel_VP glsl
 {
     source TexSobel_VP.glsl
     default_params
@@ -7,7 +7,7 @@ vertex_program myTextureSobelVertProgram glsl
     }
 }
 
-fragment_program myTextureSobelFragProgram glsl
+fragment_program TexSobel_FP glsl
 {
     source TexSobel_FP.glsl
     default_params
@@ -38,11 +38,11 @@ material TexEdge
             cull_software none
             depth_check off
 
-            vertex_program_ref myTextureSobelVertProgram
+            vertex_program_ref TexSobel_VP
             {
             }
 
-            fragment_program_ref myTextureSobelFragProgram
+            fragment_program_ref TexSobel_FP
             {
             }
 

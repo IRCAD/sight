@@ -1,4 +1,4 @@
-fragment_program Stereo/Mix glsl
+fragment_program LineByLineStereoMix_FP glsl
 {
         source LineByLineStereoMix_FP.glsl
 
@@ -28,7 +28,7 @@ material Stereo
             {
             }
 
-            fragment_program_ref Stereo/Mix
+            fragment_program_ref LineByLineStereoMix_FP
             {
             }
 
@@ -37,6 +37,7 @@ material Stereo
                 tex_address_mode clamp
                 filtering bilinear
             }
+
             texture_unit 1
             {
                 tex_address_mode clamp
