@@ -20,7 +20,6 @@ FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/materials/vr
 
 [compositors]
 FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/core
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/frag
 FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/stereo
 FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/transparency
 FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/vr

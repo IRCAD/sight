@@ -19,7 +19,7 @@ fragment_program DepthPeeling/depthMap_FP glsl
 
 geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
 {
-    source NormalsDisplay_GP.glsl
+    source Normals_GP.glsl
     preprocessor_defines CELL=1,DEPTH=1
     default_params
     {

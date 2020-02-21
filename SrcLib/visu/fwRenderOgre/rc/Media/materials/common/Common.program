@@ -8,7 +8,7 @@ fragment_program ColorFormats_FP glsl
 
 vertex_program Edge_VP glsl
 {
-    source DefaultEdge_VP.glsl
+    source Edge_VP.glsl
     default_params
     {
         param_named_auto u_worldView worldview_matrix
@@ -46,7 +46,7 @@ geometry_program VerticesNormals_GP glsl
 
 geometry_program CellsNormals_GP glsl
 {
-    source NormalsDisplay_GP.glsl
+    source Normals_GP.glsl
     preprocessor_defines CELL=1
     default_params
     {
