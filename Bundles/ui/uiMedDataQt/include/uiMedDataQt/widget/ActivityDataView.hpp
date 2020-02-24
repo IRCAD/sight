@@ -133,7 +133,7 @@ public:
 
     /**
      * @brief Sets the IO selector configuration used to import data.
-     * @param _ioSelectorSrvConfig the service confiuration used for the IO selector.
+     * @param _ioSelectorSrvConfig the service configuration used for the IO selector.
      */
     inline void setIOSelectorConfig(const std::string& _ioSelectorSrvConfig)
     {
@@ -142,7 +142,7 @@ public:
 
     /**
      * @brief Sets the IO selector configuration used to import data from a series DB.
-     * @param _ioSelectorSrvConfig the service confiuration used for the IO selector.
+     * @param _ioSelectorSrvConfig the service configuration used for the IO selector.
      */
     inline void setSDBIOSelectorConfig(const std::string& _ioSelectorSrvConfig)
     {
@@ -183,7 +183,7 @@ private:
     /**
      * @brief Calls @ref ::uiIO::editor::SIOSelector service to read the object. Return true if the object is properly
      * read.
-     * @param _classname the type name of the object to read.
+     * @param _classname the class name of the object to read.
      * @param _ioSelectorSrvConfig the IO selector configuration.
      * @return the object read by the selector.
      */
