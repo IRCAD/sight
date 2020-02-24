@@ -293,7 +293,7 @@
             <config layer="default" color="#ff0000" fontSize="12" />
         </service>
 
-        <service uid="snapshotAdp" type="::visuOgreAdaptor::SSnapshot">
+        <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
             <inout key="image" uid="snaphotImg" />
             <config layer="default" />
         </service>

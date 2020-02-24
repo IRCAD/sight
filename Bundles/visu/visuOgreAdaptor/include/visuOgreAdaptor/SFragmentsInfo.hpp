@@ -36,7 +36,7 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::visuOgreAdaptor::SSnapshot">
+    <service uid="..." type="::visuOgreAdaptor::SFragmentsInfo">
         <config layer="default  width="1280" height="720"/>
     </service>
    @endcode
@@ -57,17 +57,17 @@ namespace visuOgreAdaptor
  * - \b depth [::fwData::Image] (optional): image containing the snapshot of the layer depth buffer.
  *
  */
-class VISUOGREADAPTOR_CLASS_API SSnapshot final : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SFragmentsInfo final : public ::fwRenderOgre::IAdaptor
 {
 public:
 
-    fwCoreServiceMacro(SSnapshot, ::fwRenderOgre::IAdaptor)
+    fwCoreServiceMacro(SFragmentsInfo, ::fwRenderOgre::IAdaptor)
 
     /// Initializes the adaptor.
-    VISUOGREADAPTOR_API SSnapshot() noexcept;
+    VISUOGREADAPTOR_API SFragmentsInfo() noexcept;
 
     /// Destroys the adaptor.
-    VISUOGREADAPTOR_API virtual ~SSnapshot() noexcept final;
+    VISUOGREADAPTOR_API virtual ~SFragmentsInfo() noexcept final;
 
 private:
 

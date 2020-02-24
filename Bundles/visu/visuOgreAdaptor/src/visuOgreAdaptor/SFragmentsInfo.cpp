@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "visuOgreAdaptor/SSnapshot.hpp"
+#include "visuOgreAdaptor/SFragmentsInfo.hpp"
 
 #include "fwRenderOgre/helper/Technique.hpp"
 
@@ -41,12 +41,12 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SSnapshot)
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFragmentsInfo)
 
-struct SnapshotMaterialListener : public ::Ogre::MaterialManager::Listener
+struct FragmentsInfoMaterialListener : public ::Ogre::MaterialManager::Listener
 {
 
-    virtual ~SnapshotMaterialListener()
+    virtual ~FragmentsInfoMaterialListener()
     {
     }
 
@@ -84,25 +84,25 @@ static const ::fwServices::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID
 
 static const ::fwCom::Signals::SignalKeyType s_RESIZE_RENDER_TARGET_SLOT = "resizeRenderTarget";
 
-static std::unique_ptr< SnapshotMaterialListener > s_MATERIAL_LISTENER = nullptr;
+static std::unique_ptr< FragmentsInfoMaterialListener > s_MATERIAL_LISTENER = nullptr;
 
 //-----------------------------------------------------------------------------
 
-SSnapshot::SSnapshot() noexcept
+SFragmentsInfo::SFragmentsInfo() noexcept
 {
-    newSlot(s_RESIZE_RENDER_TARGET_SLOT, &SSnapshot::resizeRenderTarget, this);
+    newSlot(s_RESIZE_RENDER_TARGET_SLOT, &SFragmentsInfo::resizeRenderTarget, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SSnapshot::~SSnapshot() noexcept
+SFragmentsInfo::~SFragmentsInfo() noexcept
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-void SSnapshot::configuring()
+void SFragmentsInfo::configuring()
 {
     // IAdaptor handles the layerID.
     this->configureParams();
@@ -120,7 +120,7 @@ void SSnapshot::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SSnapshot::starting()
+void SFragmentsInfo::starting()
 {
     this->initialize();
 
@@ -135,7 +135,7 @@ void SSnapshot::starting()
 
     if(!s_MATERIAL_LISTENER)
     {
-        s_MATERIAL_LISTENER = std::make_unique< SnapshotMaterialListener >();
+        s_MATERIAL_LISTENER = std::make_unique< FragmentsInfoMaterialListener >();
         ::Ogre::MaterialManager::getSingleton().addListener(s_MATERIAL_LISTENER.get());
     }
 
@@ -161,7 +161,7 @@ void SSnapshot::starting()
 
 //-----------------------------------------------------------------------------
 
-void SSnapshot::updating() noexcept
+void SFragmentsInfo::updating() noexcept
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
@@ -209,14 +209,14 @@ void SSnapshot::updating() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SSnapshot::stopping()
+void SFragmentsInfo::stopping()
 {
     this->destroyCompositor();
 }
 
 //-----------------------------------------------------------------------------
 
-void SSnapshot::createCompositor(int _width, int _height)
+void SFragmentsInfo::createCompositor(int _width, int _height)
 {
     /* Creates the following compositor:
        compositor 'm_compositorName'
@@ -350,7 +350,7 @@ void SSnapshot::createCompositor(int _width, int _height)
 
 //-----------------------------------------------------------------------------
 
-void SSnapshot::destroyCompositor()
+void SFragmentsInfo::destroyCompositor()
 {
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 
@@ -363,7 +363,7 @@ void SSnapshot::destroyCompositor()
 
 //-----------------------------------------------------------------------------
 
-void SSnapshot::resizeRenderTarget(int _width, int _height)
+void SFragmentsInfo::resizeRenderTarget(int _width, int _height)
 {
     this->destroyCompositor();
     this->createCompositor(_width, _height);
