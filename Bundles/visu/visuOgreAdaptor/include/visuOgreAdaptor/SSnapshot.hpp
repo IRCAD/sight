@@ -30,6 +30,7 @@
 
 namespace visuOgreAdaptor
 {
+
 /**
  * @brief This adaptor take a snapshot of a layer and output it as a fwData::Image.
  *
@@ -108,8 +109,11 @@ private:
     /// Defines the compositor name.
     std::string m_compositorName;
 
-    /// Defines the global render target name (used to get back textures).
+    /// Defines the global render target name used to get back color and depth.
     std::string m_targetName;
+
+    /// Defines the global render target name used to get back the primitive ID.
+    std::string m_targetPrimitiveIDName;
 
     /// Handles connection the to layer.
     ::fwCom::helper::SigSlotConnection m_layerConnection;
@@ -120,8 +124,10 @@ private:
 
     /// Defines the width and the height of the compositor's render target.
     /// Only used if width & height are found in <config /> of xml configuration
-    int m_width { -1 }; ///< Fixed width.
-    int m_height { -1 }; ///< Fixed height.
+    int m_width { -1 };
+
+    /// Fixed height.
+    int m_height { -1 };
 
 };
 
