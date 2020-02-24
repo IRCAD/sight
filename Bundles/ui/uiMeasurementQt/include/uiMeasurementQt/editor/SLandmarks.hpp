@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,16 +47,19 @@ namespace editor
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - \b pickPoint(::fwDataTools::PickingInfo) : Add picked landmark.
- * - \b addPoint(std::string) : Add point to editor.
- * - \b removePoint(std::string, size_t) : Remove point from editor.
- * - \b modifyPoint(std::string, size_t) : Update editor when a point has moved.
- * - \b selectPoint(std::string, size_t) : Select point in editor.
- * - \b deselectPoint(std::string, size_t) : Deselect item in editor.
- * - \b addGroup(std::string) : Add group to editor.
- * - \b removeGroup(std::string) : Removes group from editor.
- * - \b modifyGroup(std::string) : Update group attributes.
- * - \b renameGroup(std::string, std::string) : Renames group in editor.
+ * - @deprecated \b addPickedPoint(::fwDataTools::PickingInfo): adds or removes picked landmark. call \b
+ * pick(::fwDataTools::PickingInfo) instead.
+ *
+ * - \b pick(::fwDataTools::PickingInfo): adds or removes picked landmark.
+ * - \b addPoint(std::string): adds a point to editor.
+ * - \b modifyPoint(std::string, size_t): updates the editor when a point has moved.
+ * - \b selectPoint(std::string, size_t): selects a point in the editor.
+ * - \b deselectPoint(std::string, size_t): deselect a point in the editor.
+ * - \b removePoint(std::string, size_t): removes a point from editor.
+ * - \b addGroup(std::string): adds a group to the editor.
+ * - \b removeGroup(std::string): removes a group from the editor.
+ * - \b modifyGroup(std::string): updates a group attributes.
+ * - \b renameGroup(std::string, std::string): renames a group in the editor.
  *
  * @section XML XML Configuration
  *
@@ -69,18 +72,19 @@ namespace editor
            <advanced>yes</advanced>
         </service>
        @endcode
+ *
  * @subsection In-Out In-Out
  * - \b landmarks [::fwData::Landmarks]: the landmarks structure on which this editor is working.
  *
  * @subsection Configuration Configuration
  * - \b text (optional): text displayed at the top of this editor.
- * - \b size (optional, default="10.0") : default size of created landmarks.
- * - \b opacity (optional, default="1.0") : default opacity of created landmarks.
- * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
- * and groups with multiple points.
+ * - \b size (optional, default="10.0"): default size of created landmarks.
+ * - \b opacity (optional, default="1.0"): default opacity of created landmarks.
+ * - \b advanced (optional, default="no"): if "yes", use the advanced mode displaying point information
+ *      and groups with multiple points.
  */
-class UIMEASUREMENTQT_CLASS_API SLandmarks : public QObject,
-                                             public ::fwGui::editor::IEditor
+class UIMEASUREMENTQT_CLASS_API SLandmarks final : public QObject,
+                                                   public ::fwGui::editor::IEditor
 {
 
 Q_OBJECT
@@ -89,59 +93,95 @@ public:
 
     fwCoreServiceMacro(SLandmarks, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
+    /// Initializes slots.
     UIMEASUREMENTQT_API SLandmarks() noexcept;
 
-    /// Destructor. Do nothing.
+    /// Destroys the service.
     UIMEASUREMENTQT_API virtual ~SLandmarks() noexcept;
 
-    UIMEASUREMENTQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    /// Configures the service.
+    virtual void configuring() override;
 
-protected:
-
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
-
-    /**
-     * @brief Install the layout.
-     *
-     * This method launches the IEditor::starting method.
-     */
+    /// Installs the layout.
     virtual void starting() override;
 
     /**
-     * @brief Destroy the layout.
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
      *
-     * This method launches the IEditor::stopping method.
+     * Connect ::fwData::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_ADD_POINT_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_MODIFY_POINT_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_SELECT_POINT_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_DESELECT_POINT_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_ADD_GROUP_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_REMOVE_GROUP_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_REMOVE_POINT_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_MODIFY_GROUP_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
+     * ::uiMeasurementQt::editor::SLandmarks::s_RENAME_GROUP_SLOT
      */
-    virtual void stopping() override;
+    virtual KeyConnectionsMap getAutoConnections() const override;
 
-    /// Do nothing
+    /// Resets the interface content and create connections between widgets and this service.
     virtual void updating() override;
 
-    virtual void configuring() override;
+    /// Destroys the layout.
+    virtual void stopping() override;
 
-private:
-
-    /// This method is called when a color button is clicked
+    /// Called when a color button is clicked.
     void onColorButton();
 
-    /// Called when a group name is changed
-    void onGroupNameEdited(QTreeWidgetItem* item, int column);
+    /**
+     * @brief Called when a group name is changed.
+     * @param _item the changed item.
+     * @param _column the changed column
+     *
+     * @pre _column must be 0.
+     */
+    void onGroupNameEdited(QTreeWidgetItem* _item, int _column);
 
-    /// Called when a new group is selected in the editor.
-    void onSelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+    /**
+     * @brief Called when a new group is selected in the editor.
+     * @param _current the new selected item.
+     * @param _previous the old selected item.
+     */
+    void onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous);
 
-    /// Called when a group's point size is modified.
-    void onSizeChanged(int newSize);
+    /**
+     * @brief Called when a group's point size is modified.
+     * @param _newSize the new size of the group.
+     */
+    void onSizeChanged(int _newSize);
 
-    /// Called when a group's opacity is modified.
-    void onOpacityChanged(int newOpacity);
+    /**
+     * @brief Called when a group's opacity is modified.
+     * @param _newOpacity the new opacity of the group.
+     */
+    void onOpacityChanged(int _newOpacity);
 
-    /// Called when a group's visibility is turned on or off.
-    void onVisibilityChanged(int visibility);
+    /**
+     * @brief Called when a group's visibility is turned on or off.
+     * @param _visibility the visibility status
+     */
+    void onVisibilityChanged(int _visibility);
 
-    /// Called when the landmarks' shape is changed for a group.
-    void onShapeChanged(const QString& shape);
+    /**
+     * @brief Called when the landmarks' shape is changed for a group.
+     * @param _shape the new shape of the group.
+     *
+     * @pre _shape must be 'Cube' or 'Sphere'.
+     */
+    void onShapeChanged(const QString& _shape);
 
     /// Called when the new group button is pressed, adds an empty landmark group in our data.
     void onAddNewGroup();
@@ -149,81 +189,166 @@ private:
     /// Called when the remove button is pressed, deletes selected group or point.
     void onRemoveSelection();
 
-    /// Slot: Adds a new landmark.
-    void addPickedPoint(::fwDataTools::PickingInfo pickingInfo);
+    /**
+     * @brief SLOT: adds or removes a landmark from picking informations.
+     *
+     * Interactions will take place while holding down the button. The following actions are available:
+     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
+     * - CTRL + right mouse click: removes the landmark at the closest picking position.
+     *
+     * @deprecated Uses pick(::fwDataTools::PickingInfo _info) instead.
+     *
+     * @param _pickingInfo Picking informations.
+     */
+    void addPickedPoint(::fwDataTools::PickingInfo _pickingInfo);
 
-    /// Slot: Add point to editor.
-    void addPoint(std::string groupName);
+    /**
+     * @brief SLOT: adds or removes a landmark from picking informations.
+     *
+     * Interactions will take place while holding down the button. The following actions are available:
+     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
+     * - CTRL + right mouse click: removes the landmark at the closest picking position.
+     *
+     * @param _info contains picking informations.
+     */
+    void pick(::fwDataTools::PickingInfo _info);
 
-    /// Slot: Update point coordinates in editor.
-    void modifyPoint(std::string groupName, size_t index);
+    /**
+     * @brief SLOT: adds a point to the editor.
+     * @param _groupName the group name where the point is added.
+     */
+    void addPoint(std::string _groupName);
 
-    /// Slot: select the point's corresponding item in editor.
-    void selectPoint(std::string groupName, size_t index);
+    /**
+     * @brief Slot: updates a point coordinates in the editor.
+     * @param _groupName the group name of the updated point.
+     * @param _index the index of the point to update.
+     */
+    void modifyPoint(std::string _groupName, size_t _index);
 
-    /// Slot: deselect the currently selected item.
-    void deselectPoint(std::string groupName, size_t index);
+    /**
+     * @brief SLOT: selects the point's corresponding item in the editor.
+     * @param _groupName the group name of the selected point.
+     * @param _index the index of the point to select.
+     */
+    void selectPoint(std::string _groupName, size_t _index);
 
-    /// Slot: add a landmark group to the editor.
-    void addGroup(std::string name);
+    /// Slot: deselects the currently selected item.
+    void deselectPoint(std::string, size_t);
 
-    /// Slot: remove group from editor
-    void removeGroup(std::string name);
+    /**
+     * @brief Slot: adds a landmark group to the editor.
+     * @param _name Name of the new group.
+     */
+    void addGroup(std::string _name);
 
-    /// Slot: remove point from editor
-    void removePoint(std::string groupName, size_t index);
+    /**
+     * @brief SLOT: removes a group from the editor.
+     * @param _name The group name to remove.
+     */
+    void removeGroup(std::string _name);
 
-    /// Slot: rename group in editor.
-    void renameGroup(std::string oldName, std::string newName);
+    /**
+     * @brief SLOT: removes point from editor
+     * @param _groupName the group name of the point the remove.
+     * @param _index the index of the point to remove.
+     */
+    void removePoint(std::string _groupName, size_t _index);
 
-    /// Slot: update group properties in editor.
-    void modifyGroup(std::string name);
+    /**
+     * @brief SLOT: renames a group in the editor.
+     * @param _oldName the old name of the group.
+     * @param _newName the new name of the group.
+     */
+    void renameGroup(std::string _oldName, std::string _newName);
 
-    /// Gets the name of the currently selected group, returns false if no group is selected.
-    bool currentSelection(std::string& selection) const;
+    /**
+     * @brief SLOT: updates a group properties in the editor.
+     * @param _name The group name to updates.
+     */
+    void modifyGroup(std::string _name);
 
-    /// Get tree item representing the group.
-    QTreeWidgetItem* getGroupItem(const std::string& groupName) const;
+    /**
+     * @brief Gets the name of the currently selected group.
+     * @param [out] _selection the name of the currently selected group.
+     * @return false if no group is selected.
+     */
+    bool currentSelection(std::string& _selection) const;
 
-    /// Generate a group name that doesn't exist already.
+    /**
+     * @brief Gets tree item representing the group.
+     * @param _groupName the name of the item to find.
+     * @return The item representing _groupName.
+     */
+    QTreeWidgetItem* getGroupItem(const std::string& _groupName) const;
+
+    /**
+     * @brief Generates a group name that doesn't exist already.
+     * @return A group name that doesn't exist already.
+     */
     std::string generateNewGroupName() const;
 
-    /// Generate a new random color
+    /**
+     * @brief Generates a new random color.
+     * @return An array of 4 float (between 0.f and 1.f) representing an rgba color.
+     */
     std::array<float, 4> generateNewColor();
 
-    /// Converts a landmark color to a QColor.
-    static QColor convertToQColor(const ::fwData::Landmarks::ColorType& color);
+    /**
+     * @brief Converts a landmark color to a QColor.
+     * @param _color The landmarks color type.
+     * @return A QColor with same colour value than _color.
+     */
+    static QColor convertToQColor(const ::fwData::Landmarks::ColorType& _color);
 
-    /// Draws a colored square on the button.
-    static void setColorButtonIcon(QPushButton* button, const QColor& color);
+    /**
+     * @brief Draws a colored square on the button.
+     * @param button the button where the square will be drawn.
+     * @param _color the color of the square.
+     */
+    static void setColorButtonIcon(QPushButton* button, const QColor& _color);
 
+    /// Contains a tree representing landmarks sorted by their groups.
     QPointer<QTreeWidget> m_treeWidget;
 
+    /// Contains all widgets.
     QPointer<QWidget> m_groupEditorWidget;
 
+    /// Contains the slider used to change the size of the current selected group.
+    /// @see onSizeChanged(int)
     QPointer<QSlider> m_sizeSlider;
 
+    /// Contains the slider used to change the opacity of the current selected group.
+    /// @see onOpacityChanged(int)
     QPointer<QSlider> m_opacitySlider;
 
+    /// Contains the button used to change the visibility of the current selected group.
+    /// @see onVisibilityChanged(int)
     QPointer<QCheckBox> m_visibilityCheckbox;
 
+    /// Contains the combo box used to change the shape of the current selected group.
+    /// @see onShapeChanged(const QString&)
     QPointer<QComboBox> m_shapeSelector;
 
+    /// Contains the button used to adds a new empty group.
+    /// @see onAddNewGroup()
     QPointer<QPushButton> m_newGroupButton;
 
+    /// Contains the button used to remove a group or a landmark.
+    /// @see onRemoveSelection()
     QPointer<QPushButton> m_removeButton;
 
-    /// Used to disable/enable advanced mode.
-    bool m_advancedMode;
+    /// Enables/disbqles the advanced mode.
+    bool m_advancedMode { false };
 
-    /// Used to set the default landmark size
-    float m_defaultLandmarkSize;
+    /// Sets the default landmark size.
+    float m_defaultLandmarkSize { 10.f };
 
-    /// Used to set the default landmark opacity
-    float m_defaultLandmarkOpacity;
+    /// Sets the default landmark opacity.
+    float m_defaultLandmarkOpacity { 1.f };
 
-    /// Text displayed at the top of this editor.
-    std::string m_text;
+    /// Sets the text displayed at the top of this editor.
+    std::string m_text { "Use 'Ctrl+Left Click' to add new landmarks" };
 
 };
 } // namespace editor

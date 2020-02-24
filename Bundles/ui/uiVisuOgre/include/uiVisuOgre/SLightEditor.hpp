@@ -42,7 +42,7 @@ namespace uiVisuOgre
 {
 
 /**
- * @brief User interface to edit a light adaptor.
+ * @brief This service creates a user interface to manage a light adaptor.
  *
  * @section Slots Slots
  * - \b editLight(::fwRenderOgre::ILight::sptr): loads the editor with the parameters from the selected light.
@@ -88,116 +88,136 @@ private:
     ::Ogre::Node* getLightNode() const;
 
     /**
-     * @brief Sets the current light adaptor to edit.
+     * @brief SLOT: sets the current light adaptor to edit.
      * @param _lightAdaptor The light adaptor to edit.
      */
     void editLight(::fwRenderOgre::ILight::sptr _lightAdaptor);
 
     /**
      * @brief Opens a QColorDialog to pick a new color that is returned.
-     * @param _currentColor The curent light color.
-     * @param _title The title of the dialog.
+     * @param _currentColor the curent light color.
+     * @param _title the title of the dialog.
      */
     ::Ogre::ColourValue editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title);
 
-    /// Name of the light.
+    /// Contains the name of the light.
     QPointer<QLabel> m_lightNameLabel;
 
-    /// List of each light type.
+    /// Contains a list of each possible light type.
     QPointer<QComboBox> m_lightTypeBox;
 
-    /// Button that manage the light diffuse color.
+    /// Contains a button to show or hide the visual feedback of the light.
+    QPointer<QPushButton> m_visualFeedback;
+
+    /// Contains a button that manage the light diffuse color.
     QPointer<QPushButton> m_diffuseColorBtn;
 
-    /// Button that manage the light specular color.
+    /// Contains a button that manage the light specular color.
     QPointer<QPushButton> m_specularColorBtn;
 
-    /// Slider used to edit the theta value of directional lights.
+    /// Contains a slider used to edit the theta value of directional lights.
     QPointer<QSlider> m_thetaSlider;
 
-    /// Slider used to edit the phi value of directional lights.
+    /// Contains a slider used to edit the phi value of directional lights.
     QPointer<QSlider> m_phiSlider;
 
-    /// Slider used to edit the X translation value of directional lights.
+    /// Contains a slider used to edit the X translation value of directional lights.
     QPointer<QSlider> m_xTranslation;
     QPointer<QLineEdit> m_xLabel;
     QPointer<QPushButton> m_xReset;
 
-    /// Slider used to edit the Y translation value of directional lights.
+    /// Contains a slider used to edit the Y translation value of directional lights.
     QPointer<QSlider> m_yTranslation;
     QPointer<QLineEdit> m_yLabel;
     QPointer<QPushButton> m_yReset;
 
-    /// Slider used to edit the Z translation value of directional lights.
+    /// Contains a slider used to edit the Z translation value of directional lights.
     QPointer<QSlider> m_zTranslation;
     QPointer<QLineEdit> m_zLabel;
     QPointer<QPushButton> m_zReset;
 
-    /// Current selected light.
+    /// Contains the current selected light.
     ::fwRenderOgre::ILight::sptr m_currentLight;
 
 private Q_SLOTS:
 
-    /// Slot: called when the light diffuse color button is clicked.
-    /// Opens a color picker and lets the user choose a new diffuse color.
+    /**
+     * @brief Opens a color picker and lets the user choose a new diffuse color.
+     * @see m_diffuseColorBtn.
+     */
     void onEditDiffuseColor(bool);
 
-    /// Slot: called when the light specular color button is clicked.
-    /// Opens a color picker and lets the user choose a new specular color.
+    /**
+     * @brief Opens a color picker and lets the user choose a new specular color.
+     * @see m_specularColorBtn.
+     */
     void onEditSpecularColor(bool);
 
     /**
-     * @brief Called when the theta offset slider value is modified.
-     * Sets the new theta offset value on the light adaptor accurately.
-     * @param _value Value of the current theta offset.
+     * @brief Sets the new theta offset value on the light adaptor accurately.
+     * @param _value value of the current theta offset.
+     * @see m_thetaSlider.
      */
     void onEditThetaOffset(int _value);
 
     /**
-     * @brief Called when the theta offset slider value is modified.
-     * Sets the new phi offset value on the light adaptor accurately.
-     * @param _value Value of the current phi offset.
+     * @brief the new phi offset value on the light adaptor accurately.
+     * @param _value value of the current phi offset.
+     * @see m_phiSlider.
      */
     void onEditPhiOffset(int _value);
 
     /**
-     * @brief Called when the type box value is modified..
-     * Sets the new type on the light adaptor accurately.
-     * @param _value Value of the current type.
+     * @brief Sets the new type on the light adaptor accurately.
+     * @param _value value of the current type.
+     * @see m_lightTypeBox
      */
     void onEditType(const QString& _type);
 
     /**
-     * @brief Called when the x slider value is modified..
-     * Sets the new position on the light adaptor accurately.
-     * @param _value Value of the x translation type.
+     * @brief Toggles the visual feedback of the light.
+     * @param _enable value of the pressed button.
+     * @see m_visualFeedback
+     */
+    void onToggleFeedback(bool _enable);
+
+    /**
+     * @brief Sets the new position on the light adaptor accurately.
+     * @param _value value of the x translation type.
+     * @see m_xTranslation
      */
     void onEditXTranslation(int _value);
 
     /**
-     * @brief Called when the y slider value is modified..
-     * Sets the new position on the light adaptor accurately.
-     * @param _value Value of the y translation type.
+     * @brief Sets the new position on the light adaptor accurately.
+     * @param _value value of the y translation type.
+     * @see m_yTranslation
      */
     void onEditYTranslation(int _value);
 
     /**
-     * @brief Called when the z slider value is modified..
-     * Sets the new position on the light adaptor accurately.
-     * @param _value Value of the z translation type.
+     * @brief Sets the new position on the light adaptor accurately.
+     * @param _value value of the z translation type.
+     * @see m_zTranslation
      */
     void onEditZTranslation(int _value);
 
-    /// Slot: called when the reset button of the X translation is clicked.
-    /// Reset the X translation of the light.
+    /**
+     * @brief Reset the X translation of the light.
+     * @see m_xReset.
+     */
     void onResetXTranslation(bool);
 
-    /// Slot: called when the reset button of the Y translation is clicked.
-    /// Reset the Y translation of the light.
+    /**
+     * @brief Reset the Y translation of the light.
+     * @see m_yReset.
+     */
     void onResetYTranslation(bool);
 
-    /// Slot: called when the reset button of the Z translation is clicked.
-    /// Reset the Z translation of the light.
+    /**
+     * @brief Reset the Z translation of the light.
+     * @see m_zReset.
+     */
     void onResetZTranslation(bool);
 
 };

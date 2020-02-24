@@ -2,6 +2,8 @@
 
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="activities" />
+    <requirement id="servicesReg" />
 
     <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

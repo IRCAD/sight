@@ -76,7 +76,7 @@
         </service>
 
         <service uid="pickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="negatodefault" event="MOUSE_LEFT_UP" />
+            <config renderer="default" picker="negatodefault" event="MOUSE_LEFT_UP,MOUSE_RIGHT_UP" />
         </service>
 
         <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">

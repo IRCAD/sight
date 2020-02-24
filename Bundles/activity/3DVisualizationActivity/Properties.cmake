@@ -9,8 +9,10 @@ set( REQUIREMENTS
     guiQt
     ctrlMemory
     ctrlSelection
+    dataReg
     uiVisu
     uiVisuQt
+    servicesReg
     visuVTKQt
     visuVTKAdaptor
     uiImageQt
