@@ -32,7 +32,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor take a snapshot of a layer and output it as a fwData::Image.
+ * @brief This adaptor take a snapshot of layer fragments informations and output it as a fwData::Image.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -55,7 +55,7 @@ namespace visuOgreAdaptor
  * @subsection InOut InOut:
  * - \b image [::fwData::Image] (optional): image containing the snapshot of the layer color buffer.
  * - \b depth [::fwData::Image] (optional): image containing the snapshot of the layer depth buffer.
- *
+ * - \b primitiveID [::fwData::Image] (optional): image containing the primitive ID of the layer.
  */
 class VISUOGREADAPTOR_CLASS_API SFragmentsInfo final : public ::fwRenderOgre::IAdaptor
 {
