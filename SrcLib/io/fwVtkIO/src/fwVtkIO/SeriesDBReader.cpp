@@ -79,31 +79,18 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-void  initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
+void initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
 {
-    const std::string unknown = "unknown";
     series->setModality("OT");
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
     const std::string date = ::fwTools::getDate(now);
     const std::string time = ::fwTools::getTime(now);
     series->setDate(date);
     series->setTime(time);
-    //series->setDescription(??);
-    //series->setPerformingPhysiciansName(??);
-
-    series->getEquipment()->setInstitutionName(unknown);
-
-    series->getPatient()->setName(unknown);
-    series->getPatient()->setPatientId(unknown);
-    series->getPatient()->setBirthdate(unknown);
-    series->getPatient()->setSex(unknown);
 
     series->getStudy()->setInstanceUID(instanceUID);
     series->getStudy()->setDate(date);
     series->getStudy()->setTime(time);
-    series->getStudy()->setReferringPhysicianName(unknown);
-    series->getStudy()->setDescription(unknown);
-    series->getStudy()->setPatientAge(unknown);
 }
 
 //------------------------------------------------------------------------------

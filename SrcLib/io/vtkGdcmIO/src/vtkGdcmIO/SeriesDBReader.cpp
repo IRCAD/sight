@@ -443,21 +443,21 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
 
                     // Get the series instance UID.
                     SLM_ASSERT("No series UID", seriesUIDStr);
-                    series->setInstanceUID(( seriesUIDStr ? seriesUIDStr : "UNKNOWN-UID" ));
-                    series->setModality( seriesModality );
-                    series->setDescription( seriesDescription );
-                    series->setDate( seriesDate );
-                    series->setTime( seriesTime );
-                    series->setPerformingPhysiciansName( seriesPhysicianNames );
+                    series->setInstanceUID(seriesUIDStr);
+                    series->setModality(seriesModality);
+                    series->setDate(seriesDate);
+                    series->setTime(seriesTime);
+                    series->setDescription(seriesDescription);
+                    series->setPerformingPhysiciansName(seriesPhysicianNames);
                     series->setImage(pDataImage);
 
                     SLM_ASSERT("No study UID",  studyUIDStr);
-                    study->setInstanceUID(( studyUIDStr ? studyUIDStr : "UNKNOWN-UID" ));
+                    study->setInstanceUID(studyUIDStr);
                     study->setDate(studyDate);
                     study->setTime(studyTime);
                     study->setDescription(studyDescription);
-                    study->setPatientAge(studyPatientAge);
                     study->setReferringPhysicianName(studyReferingPhysicianName);
+                    study->setPatientAge(studyPatientAge);
 
                     patient->setName(patientName);
                     patient->setPatientId(patientId);
