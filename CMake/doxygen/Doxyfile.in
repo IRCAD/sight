@@ -100,21 +100,21 @@ WARN_LOGFILE           = doxygen.log
 #---------------------------------------------------------------------------
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@ @ADDITIONAL_REPOSITORIES_SOURCE_DIR@
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = 
+FILE_PATTERNS          =
 RECURSIVE              = YES
-EXCLUDE                = 
+EXCLUDE                =
 EXCLUDE_SYMLINKS       = YES
 EXCLUDE_PATTERNS       = .hg/* .git/* */tu/*
 EXCLUDE_SYMBOLS        = ServiceImplConceptCheck* ServiceObjectConceptCheck* ServiceTypeConceptCheck* camp::detail __FWCORE*
 EXAMPLE_PATH           =
-EXAMPLE_PATTERNS       = 
+EXAMPLE_PATTERNS       =
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             =
 INPUT_FILTER           =
 FILTER_PATTERNS        =
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
-USE_MDFILE_AS_MAINPAGE = README.md
+USE_MDFILE_AS_MAINPAGE = @CMAKE_CURRENT_SOURCE_DIR@/README.md
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
 #---------------------------------------------------------------------------
@@ -265,7 +265,7 @@ SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration options related to external references
 #---------------------------------------------------------------------------
-TAGFILES               = 
+TAGFILES               =
 GENERATE_TAGFILE       = doxygen.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
