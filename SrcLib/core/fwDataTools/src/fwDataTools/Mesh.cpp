@@ -80,52 +80,11 @@ bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTyp
 
 //------------------------------------------------------------------------------
 
-typedef boost::multi_array_ref<Point, 1> PointsMultiArrayType;
-
-//------------------------------------------------------------------------------
-
-Vector<float>& computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3, Vector<float>& n)
+Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3)
 {
-    n = Vector<float>(p1, p2);
+    Vector<float> n(p1, p2);
     Vector<float> v(p1, p3);
     n.crossWith(v);
-    n.normalize();
-    return n;
-}
-
-//------------------------------------------------------------------------------
-
-Vector<float>& computeTriangleNormal( const PointsMultiArrayType& points, const ::fwData::Mesh::CellValueType* cell,
-                                      Vector<float>& n)
-{
-    const Point& p1 = points[cell[0]];
-    const Point& p2 = points[cell[1]];
-    const Point& p3 = points[cell[2]];
-
-    computeTriangleNormal(p1, p2, p3, n);
-    return n;
-}
-
-//------------------------------------------------------------------------------
-
-Vector<float>& computeCellNormal( const PointsMultiArrayType& points, const ::fwData::Mesh::CellValueType* cell,
-                                  size_t cellSize, Vector<float>& n)
-{
-    n = Vector<float>();
-    Vector<float> v;
-
-    for (size_t i = 0; i < cellSize; ++i)
-    {
-        const Point& p1 = points[cell[i  ]];
-        const Point& p2 = points[cell[(i+1)% cellSize]];
-        const Point& p3 = points[cell[(i+2)% cellSize]];
-
-        v = computeTriangleNormal(p1, p2, p3, v);
-
-        n += v;
-    }
-
-    n /= ::fwTools::numericRoundCast<float>(cellSize);
     n.normalize();
     return n;
 }
@@ -136,7 +95,7 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
                                const ::fwData::Mesh::Id regionMax)
 {
 
-    const auto pointItr = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto pointBegin = mesh->begin< ::fwData::iterator::ConstPointIterator >();
 
     auto cellItr          = mesh->begin< ::fwData::iterator::CellIterator >() + regionMin;
     const auto cellItrEnd = mesh->begin< ::fwData::iterator::CellIterator >() + regionMax;
@@ -157,13 +116,13 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
                 break;
             case 3:
             {
-                auto pItr = pointItr + cellItr->pointIdx[0];
+                auto pItr = pointBegin + cellItr->pointIdx[0];
                 const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
-                pItr = pointItr + cellItr->pointIdx[1];
+                pItr = pointBegin + cellItr->pointIdx[1];
                 const Point p2(pItr->point->x, pItr->point->y, pItr->point->z);
-                pItr = pointItr + cellItr->pointIdx[2];
+                pItr = pointBegin + cellItr->pointIdx[2];
                 const Point p3(pItr->point->x, pItr->point->y, pItr->point->z);
-                n = computeTriangleNormal(p1, p2, p3, n);
+                n = computeTriangleNormal(p1, p2, p3);
             }
             break;
             case 4:
@@ -173,14 +132,14 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
                 for (size_t i = 0; i < nbPoints; ++i)
                 {
                     Vector<float> v;
-                    auto pItr = pointItr + cellItr->pointIdx[i];
+                    auto pItr = pointBegin + cellItr->pointIdx[i];
                     const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
-                    pItr = pointItr + cellItr->pointIdx[(i+1)% nbPoints];
+                    pItr = pointBegin + cellItr->pointIdx[(i+1)% nbPoints];
                     const Point p2(pItr->point->x, pItr->point->y, pItr->point->z);
-                    pItr = pointItr + cellItr->pointIdx[(i+2)% nbPoints];
+                    pItr = pointBegin + cellItr->pointIdx[(i+2)% nbPoints];
                     const Point p3(pItr->point->x, pItr->point->y, pItr->point->z);
 
-                    v = computeTriangleNormal(p1, p2, p3, v);
+                    v = computeTriangleNormal(p1, p2, p3);
 
                     n += v;
                 }
@@ -242,7 +201,6 @@ void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-typedef std::vector< std::vector< unsigned char > > CharVectors;
 typedef std::vector< std::vector< float > > FloatVectors;
 
 //------------------------------------------------------------------------------
@@ -322,7 +280,6 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
         ::fwDataTools::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
         FloatVectors normalsData(rt.numberOfThread());
-        CharVectors normalCounts(rt.numberOfThread());
 
         rt( std::bind(&generateRegionCellNormalsByPoints,
                       std::ref(normalsData),
