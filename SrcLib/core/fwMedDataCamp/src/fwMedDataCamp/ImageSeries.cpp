@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,10 +33,21 @@
 fwCampImplementDataMacro((fwMedData)(ImageSeries))
 {
     builder
-    .tag("object_version", "2")
+    .tag("object_version", "3")
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
     .property("image", &::fwMedData::ImageSeries::m_image)
     .property("dicom_reference", &::fwMedData::ImageSeries::m_dicomReference)
+    .property("contrast_bolus_agent", &::fwMedData::ImageSeries::m_contrastBolusAgent)
+    .property("contrast_bolus_route", &::fwMedData::ImageSeries::m_contrastBolusRoute)
+    .property("contrast_bolus_volume", &::fwMedData::ImageSeries::m_contrastBolusVolume)
+    .property("contrast_bolus_start_time", &::fwMedData::ImageSeries::m_contrastBolusStartTime)
+    .property("contrast_bolus_stop_time", &::fwMedData::ImageSeries::m_contrastBolusStopTime)
+    .property("contrast_bolus_total_dose", &::fwMedData::ImageSeries::m_contrastBolusTotalDose)
+    .property("contrast_bolus_flow_rate", &::fwMedData::ImageSeries::m_contrastBolusFlowRate)
+    .property("contrast_bolus_flow_duration", &::fwMedData::ImageSeries::m_contrastBolusFlowDuration)
+    .property("contrast_bolus_ingredient", &::fwMedData::ImageSeries::m_contrastBolusIngredient)
+    .property("contrast_bolus_ingredient_concentration",
+              &::fwMedData::ImageSeries::m_contrastBolusIngredientConcentration)
     ;
 }
