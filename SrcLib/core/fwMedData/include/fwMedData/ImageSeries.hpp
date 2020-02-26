@@ -98,6 +98,126 @@ public:
      */
     void setDicomReference(const ::fwMedData::DicomSeries::csptr& _reference);
 
+    /**
+     * @brief Gets the contrast/bolus agent.
+     * @return the contrast/bolus agent.
+     */
+    const DicomValueType& getContrastAgent() const;
+
+    /**
+     * @brief Sets the contrast/bolus agent.
+     * @param _val the contrast/bolus agent.
+     */
+    void setContrastAgent(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the administration route of contrast agent.
+     * @return the administration route of contrast agent.
+     */
+    const DicomValueType& getContrastRoute() const;
+
+    /**
+     * @brief Sets the administration route of contrast agent.
+     * @param _val the administration route of contrast agent.
+     */
+    void setContrastRoute(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the volume injected in milliliters of diluted contrast agent.
+     * @return the volume.
+     */
+    const DicomValueType& getContrastVolume() const;
+
+    /**
+     * @brief Sets the volume injected in milliliters of diluted contrast agent.
+     * @param _val the volume.
+     */
+    void setContrastVolume(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the time of start of injection.
+     * @return the time.
+     */
+    const DicomValueType& getContrastStartTime() const;
+
+    /**
+     * @brief Sets the time of start of injection.
+     * @param _val the time.
+     */
+    void setContrastStartTime(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the time of end of injection.
+     * @return the time.
+     */
+    const DicomValueType& getContrastStopTime() const;
+
+    /**
+     * @brief Sets the time of end of injection.
+     * @param _val the time.
+     */
+    void setContrastStopTime(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the total amount in milliliters of the undiluted contrast agent.
+     * @return the total amount in milliliters of the undiluted contrast agent.
+     */
+    const DicomValueType& getContrastTotalDose() const;
+
+    /**
+     * @brief Sets the total amount in milliliters of the undiluted contrast agent.
+     * @param _val the total amount in milliliters of the undiluted contrast agent.
+     */
+    void setContrastTotalDose(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the rate of injection in milliliters/sec.
+     * @return the rate of injection.
+     */
+    const DicomValueType& getContrastFlowRate() const;
+
+    /**
+     * @brief Sets the rate of injection in milliliters/sec.
+     * @param _val the rate of injection.
+     */
+    void setContrastFlowRate(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the duration of injection in seconds.
+     * @return the duration.
+     */
+    const DicomValueType& getContrastFlowDuration() const;
+
+    /**
+     * @brief Sets the duration of injection in seconds.
+     * @param _val the duration.
+     */
+    void setContrastFlowDuration(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
+     * @return the active ingredient of agent.
+     */
+    const DicomValueType& getContrastIngredient() const;
+
+    /**
+     * @brief Sets the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
+     * @param _val the active ingredient of agent.
+     */
+    void setContrastIngredient(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the milligrams of active ingredient per milliliter of (diluted) agent.
+     * @return the milligrams of active ingredient per milliliter of (diluted) agent.
+     */
+    const DicomValueType& getContrastIngredientConcentration() const;
+
+    /**
+     * @brief Sets the milligrams of active ingredient per milliliter of (diluted) agent.
+     * @param _val the milligrams of active ingredient per milliliter of (diluted) agent.
+     */
+    void setContrastIngredientConcentration(const DicomValueType& _val);
+
 protected:
 
     /// Contains the image.
@@ -105,6 +225,36 @@ protected:
 
     /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
     ::fwMedData::DicomSeries::sptr m_dicomReference;
+
+    /// Defines the contrast/bolus agent.
+    DicomValueType m_contrastBolusAgent;
+
+    /// Defines the administration route of contrast agent.
+    DicomValueType m_contrastBolusRoute;
+
+    /// Defines the volume injected in milliliters of diluted contrast agent.
+    DicomValueType m_contrastBolusVolume;
+
+    /// Defines the time of start of injection.
+    DicomValueType m_contrastBolusStartTime;
+
+    /// Defines the time of end of injection.
+    DicomValueType m_contrastBolusStopTime;
+
+    /// Defines the total amount in milliliters of the undiluted contrast agent.
+    DicomValueType m_contrastBolusTotalDose;
+
+    /// Defines the rate of injection in milliliters/sec;
+    DicomValueType m_contrastBolusFlowRate;
+
+    /// Defines the duration of injection in seconds;
+    DicomValueType m_contrastBolusFlowDuration;
+
+    /// Defines the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
+    DicomValueType m_contrastBolusIngredient;
+
+    /// Defines the milligrams of active ingredient per milliliter of (diluted) agent.
+    DicomValueType m_contrastBolusIngredientConcentration;
 
 };
 
@@ -138,4 +288,142 @@ inline void ImageSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr
 
 //-----------------------------------------------------------------------------
 
-} //end namespace fwMedData
+inline const DicomValueType& ImageSeries::getContrastAgent() const
+{
+    return m_contrastBolusAgent;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastAgent(const DicomValueType& _val)
+{
+    m_contrastBolusAgent = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastRoute() const
+{
+    return m_contrastBolusRoute;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastRoute(const DicomValueType& _val)
+{
+    m_contrastBolusRoute = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastVolume() const
+{
+    return m_contrastBolusVolume;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastVolume(const DicomValueType& _val)
+{
+    m_contrastBolusVolume = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastStartTime() const
+{
+    return m_contrastBolusStartTime;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastStartTime(const DicomValueType& _val)
+{
+    m_contrastBolusStartTime = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastStopTime() const
+{
+    return m_contrastBolusStopTime;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastStopTime(const DicomValueType& _val)
+{
+    m_contrastBolusStopTime = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastTotalDose() const
+{
+    return m_contrastBolusTotalDose;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastTotalDose(const DicomValueType& _val)
+{
+    m_contrastBolusTotalDose = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastFlowRate() const
+{
+    return m_contrastBolusFlowRate;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastFlowRate(const DicomValueType& _val)
+{
+    m_contrastBolusFlowRate = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastFlowDuration() const
+{
+    return m_contrastBolusFlowDuration;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastFlowDuration(const DicomValueType& _val)
+{
+    m_contrastBolusFlowDuration = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastIngredient() const
+{
+    return m_contrastBolusIngredient;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastIngredient(const DicomValueType& _val)
+{
+    m_contrastBolusIngredient = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getContrastIngredientConcentration() const
+{
+    return m_contrastBolusIngredientConcentration;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setContrastIngredientConcentration(const DicomValueType& _val)
+{
+    m_contrastBolusIngredientConcentration = _val;
+}
+
+} //end namespace fwMedData.
