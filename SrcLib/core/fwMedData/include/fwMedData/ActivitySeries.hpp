@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 
 #include <fwData/factory/new.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(ActivitySeries), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(ActivitySeries), FWMEDDATA_API)
 
 namespace fwData
 {
@@ -40,59 +40,70 @@ namespace fwMedData
 class Series;
 
 /**
- * @brief Holds activity information
+ * @brief Holds activity information.
  */
 class FWMEDDATA_CLASS_API ActivitySeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassMacro(ActivitySeries, ::fwMedData::Series, ::fwData::factory::New< ActivitySeries >);
+    fwCoreClassMacro(ActivitySeries, ::fwMedData::Series, ::fwData::factory::New< ActivitySeries >)
 
-    fwCampMakeFriendDataMacro((fwMedData)(ActivitySeries));
+    fwCampMakeFriendDataMacro((fwMedData)(ActivitySeries))
 
     typedef std::string ConfigIdType;
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the activity series.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API ActivitySeries(::fwData::Object::Key key);
+    FWMEDDATA_API ActivitySeries(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the activity series.
     FWMEDDATA_API virtual ~ActivitySeries();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
-     * @name Getters / Setters
-     * @{ */
-
-    /**
-     * @brief Data container
-     * @{ */
+     * @brief Gets the activity container.
+     * @return The activity container.
+     */
     SPTR(::fwData::Composite) getData() const;
-    void setData(const SPTR(::fwData::Composite)& val);
-    /**  @} */
 
     /**
-     * @brief Activity configuration identifier
-     * @{ */
-    const ConfigIdType& getActivityConfigId () const;
-    void setActivityConfigId (const ConfigIdType& val);
-    /**  @} */
+     * @brief Sets the activity container.
+     * @param _val the activity container.
+     */
+    void setData(const SPTR(::fwData::Composite)& _val);
 
-    /**  @} */
+    /**
+     * @brief Gets the activity configuration ID.
+     * @return the activity configuration ID.
+     */
+    const ConfigIdType& getActivityConfigId () const;
+
+    /**
+     * @brief Sets the activity configuration ID.
+     * @param _val the activity configuration ID.
+     */
+    void setActivityConfigId (const ConfigIdType& _val);
 
 protected:
 
-    /// Activity configuration identifier
+    /// Defines the activity configuration ID.
     ConfigIdType m_activityConfigId;
 
-    /// ... container
+    /// Stores the composite used to stores activities.
     SPTR(::fwData::Composite) m_data;
 
 };
@@ -106,9 +117,9 @@ inline SPTR(::fwData::Composite) ActivitySeries::getData() const
 
 //-----------------------------------------------------------------------------
 
-inline void ActivitySeries::setData(const SPTR(::fwData::Composite)& val)
+inline void ActivitySeries::setData(const SPTR(::fwData::Composite)& _val)
 {
-    m_data = val;
+    m_data = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -120,11 +131,11 @@ inline const ActivitySeries::ConfigIdType& ActivitySeries::getActivityConfigId (
 
 //-----------------------------------------------------------------------------
 
-inline void ActivitySeries::setActivityConfigId (const ActivitySeries::ConfigIdType& val)
+inline void ActivitySeries::setActivityConfigId(const ActivitySeries::ConfigIdType& _val)
 {
-    m_activityConfigId = val;
+    m_activityConfigId = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.

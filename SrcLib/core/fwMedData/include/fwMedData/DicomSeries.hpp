@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,22 +32,22 @@
 
 #include <filesystem>
 
-fwCampAutoDeclareDataMacro((fwMedData)(DicomSeries), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(DicomSeries), FWMEDDATA_API)
 
 namespace fwMedData
 {
 
 /**
- * @brief Holds DICOM data
+ * @brief Holds DICOM series.
  */
 class FWMEDDATA_CLASS_API DicomSeries : public ::fwMedData::Series
 {
 
 public:
 
-    fwCoreClassMacro(DicomSeries, ::fwData::Object, ::fwData::factory::New< DicomSeries >);
+    fwCoreClassMacro(DicomSeries, ::fwData::Object, ::fwData::factory::New< DicomSeries >)
 
-    fwCampMakeFriendDataMacro((fwMedData)(DicomSeries));
+    fwCampMakeFriendDataMacro((fwMedData)(DicomSeries))
 
     typedef std::map < std::size_t, ::fwMemory::BufferObject::sptr > DicomContainerType;
 
@@ -56,152 +56,180 @@ public:
     typedef std::map < std::string, std::string > ComputedTagValueContainerType;
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the DICOM series.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API DicomSeries(::fwData::Object::Key key);
+    FWMEDDATA_API DicomSeries(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the DICOM series.
     FWMEDDATA_API virtual ~DicomSeries() override;
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
-    /// Add dicom path
-    FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, const std::filesystem::path& path);
-
-    /// Add binary buffer
-    FWMEDDATA_API void addBinary(std::size_t instanceIndex, const ::fwMemory::BufferObject::sptr& buffer);
-
     /**
-     * @brief Return true if the instance is available on the local computer
+     * @brief Adds a DICOM path.
+     * @param _instanceIndex index of the instance.
+     * @param _path the path.
      */
-    FWMEDDATA_API bool isInstanceAvailable(std::size_t instanceIndex) const;
+    FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, const std::filesystem::path& _path);
 
     /**
-     * @brief Add a SOPClassUID that is used by this series.
-     * @param[in] sopClassUID SOPClassUID that must be added.
+     * @brief Adds a binary buffer.
+     * @param _instanceIndex index of the instance.
+     * @param _buffer the buffer.
      */
-    FWMEDDATA_API void addSOPClassUID(const std::string& sopClassUID);
+    FWMEDDATA_API void addBinary(std::size_t _instanceIndex, const ::fwMemory::BufferObject::sptr& _buffer);
 
     /**
-     * @brief Add a computed value to the specified tag.
-     * @param[in] tagName Name of the tag
-     * @param[in] value Computed value
+     * @brief Gets if the instance is available on the local computer
+     * @param _instanceIndex
+     * @return True if the instance is available on the local computer
      */
-    FWMEDDATA_API void addComputedTagValue(const std::string& tagName, const std::string& value);
+    FWMEDDATA_API bool isInstanceAvailable(std::size_t _instanceIndex) const;
 
     /**
-     * @brief Return true if there is a computed value for the specified tag
-     * @param[in] tagName Name of the tag
-     * @return True if there is a computed value for the tag
+     * @brief Adds a SOPClassUID that is used by this series.
+     * @param _sopClassUID SOPClassUID that must be added.
      */
-    FWMEDDATA_API bool hasComputedValues(const std::string& tagName) const;
+    FWMEDDATA_API void addSOPClassUID(const std::string& _sopClassUID);
 
     /**
-     * @brief Number of instances in the series (0020,1009)
-     * @{ */
-    size_t  getNumberOfInstances () const
+     * @brief Adds a computed value to the specified tag.
+     * @param _tagName Name of the tag.
+     * @param _value Computed value.
+     */
+    FWMEDDATA_API void addComputedTagValue(const std::string& _tagName, const std::string& _value);
+
+    /**
+     * @brief Gets if there is a computed value for the specified tag.
+     * @param _tagName Name of the tag.
+     * @return True if there is a computed value for the tag.
+     */
+    FWMEDDATA_API bool hasComputedValues(const std::string& _tagName) const;
+
+    /**
+     * @brief Gets the number of instances in the series.
+     * @return The number of instances in the series.
+     */
+    size_t  getNumberOfInstances() const
     {
         return m_numberOfInstances;
     }
-    //------------------------------------------------------------------------------
-
-    void setNumberOfInstances (std::size_t val)
-    {
-        m_numberOfInstances = val;
-    }
-    /**  @} */
 
     /**
-     * @brief Dicom container
-     * @{ */
+     * @brief Sets the number of instances in the series.
+     * @param _val the number of instances in the series.
+     */
+    void setNumberOfInstances(std::size_t _val)
+    {
+        m_numberOfInstances = _val;
+    }
+
+    /**
+     * @brief Gets the DICOM container.
+     * @return The DICOM container.
+     */
     const DicomContainerType& getDicomContainer () const
     {
         return m_dicomContainer;
     }
-    //------------------------------------------------------------------------------
 
-    void setDicomContainer (const DicomContainerType& dicomContainer)
+    /**
+     * @brief Sets the DICOM container.
+     * @param _dicomContainer the DICOM container.
+     */
+    void setDicomContainer(const DicomContainerType& _dicomContainer)
     {
-        m_dicomContainer = dicomContainer;
+        m_dicomContainer = _dicomContainer;
     }
 
-    //------------------------------------------------------------------------------
-
+    /// Clears the DICOM container.
     void clearDicomContainer()
     {
         m_dicomContainer.clear();
     }
-    /**  @} */
 
     /**
-     * @brief SOP Class UID
-     * @{ */
-    const SOPClassUIDContainerType& getSOPClassUIDs () const
+     * @brief Gets the SOP Class UID.
+     * @return The SOP Class UID.
+     */
+    const SOPClassUIDContainerType& getSOPClassUIDs() const
     {
         return m_SOPClassUIDs;
     }
-    //------------------------------------------------------------------------------
-
-    void setSOPClassUIDs (const SOPClassUIDContainerType& val)
-    {
-        m_SOPClassUIDs = val;
-    }
-    /**  @} */
 
     /**
-     * @brief Computed Tag Values
-     * @{ */
-    const ComputedTagValueContainerType& getComputedTagValues () const
+     * @brief Sets the SOP Class UID.
+     * @param _val the SOP Class UID.
+     */
+    void setSOPClassUIDs(const SOPClassUIDContainerType& _val)
+    {
+        m_SOPClassUIDs = _val;
+    }
+
+    /**
+     * @brief Gets the computed tag values.
+     * @return The computed tag values.
+     */
+    const ComputedTagValueContainerType& getComputedTagValues() const
     {
         return m_computedTagValues;
     }
-    //------------------------------------------------------------------------------
-
-    void setComputedTagValues (const ComputedTagValueContainerType& val)
-    {
-        m_computedTagValues = val;
-    }
-    /**  @} */
 
     /**
-     * @brief First Instance Number (0 or 1) - Used for PACS preview
-     * @{ */
+     * @brief Sets the computed tag values.
+     * @param _val the computed tag values.
+     */
+    void setComputedTagValues(const ComputedTagValueContainerType& _val)
+    {
+        m_computedTagValues = _val;
+    }
+
+    /**
+     * @brief Gets the first instance number (0 or 1) - Used for PACS preview.
+     * @return The first instance number.
+     */
     std::size_t getFirstInstanceNumber() const
     {
         return m_firstInstanceNumber;
     }
 
-    //------------------------------------------------------------------------------
-
-    void setFirstInstanceNumber(std::size_t firstInstanceNumber)
+    /**
+     * @brief Sets the first instance number (0 or 1) - Used for PACS preview.
+     * @param _firstInstanceNumber the first instance number.
+     */
+    void setFirstInstanceNumber(std::size_t _firstInstanceNumber)
     {
-        m_firstInstanceNumber = firstInstanceNumber;
+        m_firstInstanceNumber = _firstInstanceNumber;
     }
-    /**  @} */
-
-    /**  @} */
 
 protected:
 
-    /// Number of instances in the series (0020,1209)
+    /// Defines the number of instances in the series.
     size_t m_numberOfInstances;
 
-    /// Dicom container
+    /// Stores DICOM.
     DicomContainerType m_dicomContainer;
 
-    /// SOP Class UIDs
+    /// Stores SOP Class UIDs.
     SOPClassUIDContainerType m_SOPClassUIDs;
 
-    /// Computed tag values
+    /// Stores computed tag values.
     ComputedTagValueContainerType m_computedTagValues;
 
-    /// First instance number (0 or 1) - Used for PACS preview
+    /// Defines the first instance number (0 or 1) - Used for PACS preview.
     std::size_t m_firstInstanceNumber;
 };
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.

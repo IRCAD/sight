@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __FWMEDDATA_NAMESPACE_HPP__
-#define __FWMEDDATA_NAMESPACE_HPP__
+
+#pragma once
 
 /**
  * @brief Namespace containing medical data
@@ -28,7 +28,4 @@
 namespace fwMedData
 {
 
-} // namespace fwMedData
-
-#endif /* __FWMEDDATA_NAMESPACE_HPP__ */
-
+}

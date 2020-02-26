@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,107 +28,137 @@
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(Study), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(Study), FWMEDDATA_API)
 
 namespace fwMedData
 {
 
 /**
- * @brief Holds study information
+ * @brief Holds a study information.
  */
 class FWMEDDATA_CLASS_API Study : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(Study, ::fwData::Object, ::fwData::factory::New< Study >);
 
-    fwCampMakeFriendDataMacro((fwMedData)(Study));
+    fwCoreClassMacro(Study, ::fwData::Object, ::fwData::factory::New< Study >)
+
+    fwCampMakeFriendDataMacro((fwMedData)(Study))
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the study.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API Study(::fwData::Object::Key key);
+    FWMEDDATA_API Study(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the study.
     FWMEDDATA_API virtual ~Study();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
-     * @name Getters/Setters
-     * @{ */
-
-    /**
-     * @brief Unique identifier of the Study (0020,000D)
-     * @{ */
+     * @brief Gets the unique identifier of the study.
+     * @return The unique identifier of the study.
+     */
     const DicomValueType& getInstanceUID () const;
-    void setInstanceUID (const DicomValueType& val);
-
-    /**  @} */
 
     /**
-     * @brief Date the Study started (0008,0020)
-     * @{ */
+     * @brief Sets the unique identifier of the study.
+     * @param _val the unique identifier of the study.
+     */
+    void setInstanceUID (const DicomValueType& _val);
+
+    /**
+     * @brief Gets the date the study started.
+     * @return The date the study started.
+     */
     const DicomValueType& getDate () const;
-    void setDate (const DicomValueType& val);
-    /**  @} */
 
     /**
-     * @brief Time the Study started (0008,0030)
-     * @{ */
+     * @brief Sets the date the study started.
+     * @param _val the date the study started.
+     */
+    void setDate (const DicomValueType& _val);
 
+    /**
+     * @brief Gets the time the study started.
+     * @return The time the study started.
+     */
     const DicomValueType& getTime () const;
-    void setTime (const DicomValueType& val);
-
-    /**  @} */
 
     /**
-     * @brief Name of the patient's referring physician (0008,0090)
-     * @{ */
+     * @brief Sets the time the study started.
+     * @param _val the time the study started.
+     */
+    void setTime (const DicomValueType& _val);
+
+    /**
+     * @brief Gets the name of the patient's referring physician.
+     * @return The name of the patient's referring physician.
+     */
     const DicomValueType& getReferringPhysicianName () const;
-    void setReferringPhysicianName (const DicomValueType& val);
-    /**  @} */
 
     /**
-     * @brief Institution-generated description or classification of the Study (component) performed (0008,1030)
-     * @{ */
+     * @brief Sets the name of the patient's referring physician.
+     * @param _val the name of the patient's referring physician.
+     */
+    void setReferringPhysicianName (const DicomValueType& _val);
+
+    /**
+     * @brief Gets the institution-generated description or classification of the study (component) performed.
+     * @return The institution-generated description or classification of the study performed.
+     */
     const DicomValueType& getDescription () const;
-    void setDescription (const DicomValueType& val);
-    /**  @} */
 
     /**
-     * @brief Age of the Patient (0010,1010)
-     * @{ */
+     * @brief Sets the institution-generated description or classification of the study (component) performed.
+     * @param _val the institution-generated description or classification of the study performed.
+     */
+    void setDescription (const DicomValueType& _val);
+
+    /**
+     * @brief Gets the age of the Patient.
+     * @return The age of the Patient.
+     */
     const DicomValueType& getPatientAge () const;
-    void setPatientAge (const DicomValueType& val);
-    /**  @} */
 
-    /**  @} */
+    /**
+     * @brief Sets the age of the Patient.
+     * @param _val the age of the Patient.
+     */
+    void setPatientAge (const DicomValueType& _val);
 
-protected:
+private:
 
-    /// Study unique identifier
+    /// Defines the study unique identifier.
     DicomValueType m_instanceUID;
 
-    /// Date
+    /// Defines the date the study started.
     DicomValueType m_date;
 
-    /// Time
+    /// Defines the date the time started.
     DicomValueType m_time;
 
-    /// Referring physician name
+    /// Defines the referring physician name.
     DicomValueType m_referringPhysicianName;
 
-    /// Description
+    /// Defines the description of this study.
     DicomValueType m_description;
 
-    /// Patient age
+    /// Defines the the patient age during this study.
     DicomValueType m_patientAge;
+
 };
 
 //-----------------------------------------------------------------------------
@@ -140,9 +170,9 @@ inline const DicomValueType& Study::getInstanceUID () const
 
 //-----------------------------------------------------------------------------
 
-inline void Study::setInstanceUID (const DicomValueType& val)
+inline void Study::setInstanceUID (const DicomValueType& _val)
 {
-    m_instanceUID = val;
+    m_instanceUID = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -154,9 +184,9 @@ inline const DicomValueType& Study::getDate () const
 
 //-----------------------------------------------------------------------------
 
-inline void Study::setDate (const DicomValueType& val)
+inline void Study::setDate (const DicomValueType& _val)
 {
-    m_date = val;
+    m_date = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -168,9 +198,9 @@ inline const DicomValueType& Study::getTime () const
 
 //-----------------------------------------------------------------------------
 
-inline void Study::setTime (const DicomValueType& val)
+inline void Study::setTime (const DicomValueType& _val)
 {
-    m_time = val;
+    m_time = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -182,9 +212,9 @@ inline const DicomValueType& Study::getReferringPhysicianName () const
 
 //-----------------------------------------------------------------------------
 
-inline void Study::setReferringPhysicianName (const DicomValueType& val)
+inline void Study::setReferringPhysicianName (const DicomValueType& _val)
 {
-    m_referringPhysicianName = val;
+    m_referringPhysicianName = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -196,9 +226,9 @@ inline const DicomValueType& Study::getDescription () const
 
 //-----------------------------------------------------------------------------
 
-inline void Study::setDescription (const DicomValueType& val)
+inline void Study::setDescription (const DicomValueType& _val)
 {
-    m_description = val;
+    m_description = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -210,11 +240,11 @@ inline const DicomValueType& Study::getPatientAge () const
 
 //-----------------------------------------------------------------------------
 
-inline void Study::setPatientAge (const DicomValueType& val)
+inline void Study::setPatientAge (const DicomValueType& _val)
 {
-    m_patientAge = val;
+    m_patientAge = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.

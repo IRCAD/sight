@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@
 #include <array>
 #include <map>
 
-fwCampAutoDeclareDataMacro((fwMedData)(NavigationSeries), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(NavigationSeries), FWMEDDATA_API)
 
 namespace fwMedData
 {
@@ -38,76 +38,119 @@ namespace fwMedData
 class Series;
 
 /**
- * @brief Holds navigation information
+ * @brief Holds a navigation information.
  */
 class FWMEDDATA_CLASS_API NavigationSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassMacro(NavigationSeries, ::fwMedData::Series, ::fwData::factory::New< NavigationSeries >);
 
-    fwCampMakeFriendDataMacro((fwMedData)(NavigationSeries));
+    fwCoreClassMacro(NavigationSeries, ::fwMedData::Series, ::fwData::factory::New< NavigationSeries >)
+
+    fwCampMakeFriendDataMacro((fwMedData)(NavigationSeries))
 
     typedef std::array<double, 3> CoordinateType;
     typedef double TimestampType;
     typedef std::map<TimestampType, CoordinateType> ContainerType;
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the navigation series.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API NavigationSeries(::fwData::Object::Key key);
+    FWMEDDATA_API NavigationSeries(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the navigation series.
     FWMEDDATA_API virtual ~NavigationSeries();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
-    /// Adds a position associate with the specified timestamp
-    FWMEDDATA_API void addPosition(TimestampType time, const CoordinateType& pos);
+    /**
+     * @brief Adds a position associate with the specified timestamp.
+     * @param _time the timestamp.
+     * @param _pos the position.
+     */
+    FWMEDDATA_API void addPosition(TimestampType _time, const CoordinateType& _pos);
 
-    /// Adds a move direction associate with the specified timestamp
-    FWMEDDATA_API void addMove(TimestampType time, const CoordinateType& dir);
+    /**
+     * @brief Adds a move direction associate with the specified timestamp.
+     * @param _time the timestamp.
+     * @param _dir the direction.
+     */
+    FWMEDDATA_API void addMove(TimestampType _time, const CoordinateType& _dir);
 
-    /// Adds a lookAt point associate with the specified timestamp
-    FWMEDDATA_API void addLookAt(TimestampType time, const CoordinateType& point);
+    /**
+     * @brief Adds a lookAt point associate with the specified timestamp.
+     * @param _time the timestamp.
+     * @param _point the lookAt point.
+     */
+    FWMEDDATA_API void addLookAt(TimestampType _time, const CoordinateType& _point);
 
-    /// Removes the position (if one exists) associate with the specified timestamp
-    FWMEDDATA_API void erasePosition(TimestampType time);
+    /**
+     * @brief Removes the position (if one exists) associate with the specified timestamp.
+     * @param _time the timestamp.
+     */
+    FWMEDDATA_API void erasePosition(TimestampType _time);
 
-    /// Removes the move direction (if one exists) associate with the specified timestamp
-    FWMEDDATA_API void eraseMove(TimestampType time);
+    /**
+     * @brief Removes the move direction (if one exists) associate with the specified timestamp.
+     * @param _time the timestamp.
+     */
+    FWMEDDATA_API void eraseMove(TimestampType _time);
 
-    /// Removes the lookAt point (if one exists) associate with the specified timestamp
-    FWMEDDATA_API void eraseLookAt(TimestampType time);
+    /**
+     * @brief Removes thelookAt point (if one exists) associate with the specified timestamp.
+     * @param _time the timestamp.
+     */
+    FWMEDDATA_API void eraseLookAt(TimestampType _time);
 
-    /// Clear all positions
+    /// Clears all positions.
     FWMEDDATA_API void clearPosition();
 
-    /// Clear all move directions
+    /// Clears all move directions.
     FWMEDDATA_API void clearMove();
 
-    /// Clear all lookAt points
+    /// Clears all lookAt points.
     FWMEDDATA_API void clearLookAt();
 
-    /// Returns positions map container
+    /**
+     * @brief Gets the positions map container.
+     * @return the positions map container.
+     */
     FWMEDDATA_API const ContainerType& getPositionMap() const;
 
-    /// Returns move map container
+    /**
+     * @brief Gets the move map container.
+     * @return the move map container.
+     */
     FWMEDDATA_API const ContainerType& getMoveMap() const;
 
-    /// Returns lokAt map container
+    /**
+     * @brief Gets the lookAt map container.
+     * @return the lookAt map container.
+     */
     FWMEDDATA_API const ContainerType& getLookAtMap() const;
 
 protected:
 
+    /// Stores position.
     ContainerType m_position;
+
+    /// Stores move.
     ContainerType m_move;
+
+    /// Stores lookAt.
     ContainerType m_lookAt;
 };
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.

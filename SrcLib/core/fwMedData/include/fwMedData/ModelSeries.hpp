@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries), FWMEDDATA_API)
 
 namespace fwData
 {
@@ -45,95 +45,95 @@ namespace fwMedData
 {
 
 /**
- * @brief Holds models data
+ * @brief Holds models series.
  */
 class FWMEDDATA_CLASS_API ModelSeries : public ::fwMedData::Series
 {
 
 public:
+
     typedef std::vector< SPTR(::fwData::Reconstruction) > ReconstructionVectorType;
 
-    fwCoreClassMacro(ModelSeries, ::fwData::Object, ::fwData::factory::New< ModelSeries >);
+    fwCoreClassMacro(ModelSeries, ::fwData::Object, ::fwData::factory::New< ModelSeries >)
 
-    fwCampMakeFriendDataMacro((fwMedData)(ModelSeries));
+    fwCampMakeFriendDataMacro((fwMedData)(ModelSeries))
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the models series.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API ModelSeries(::fwData::Object::Key key);
+    FWMEDDATA_API ModelSeries(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the models series.
     FWMEDDATA_API virtual ~ModelSeries() override;
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
-     * @name Getters / Setters
-     * @{ */
-
-    /**
-     * @brief  Reconstruction container use to store mesh, material and image mask
-     * @{ */
+     * @brief Gets the reconstruction container use to store mesh, material and image mask.
+     * @return the reconstruction container.
+     */
     const ReconstructionVectorType& getReconstructionDB() const;
-    void setReconstructionDB(const ReconstructionVectorType& val);
-    /**  @} */
 
     /**
-     * @brief Dicom reference use to generate valid Dicom Segmentation Surface
-     * @{ */
+     * @brief Sets the reconstruction container use to store mesh, material and image mask.
+     * @param _val the reconstruction container.
+     */
+    void setReconstructionDB(const ReconstructionVectorType& _val);
+
+    /**
+     * @brief Gets the DICOM reference use to generate valid DICOM Segmentation Surface
+     * @return the DICOM reference
+     */
     ::fwMedData::DicomSeries::csptr getDicomReference() const;
-    void setDicomReference(const ::fwMedData::DicomSeries::csptr& reference);
-    /**  @} */
 
-    /**  @} */
+    /**
+     * @brief Sets the DICOM reference use to generate valid DICOM Segmentation Surface
+     * @param _reference the DICOM reference
+     */
+    void setDicomReference(const ::fwMedData::DicomSeries::csptr& _reference);
 
-    /***
+    /**
      * @name Signals
      * @{
      */
-    /// Type of signal when reconstructions are added
+    /// Defines the type of signal sent when a reconstructions are added.
     typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
-
-    /// Key in m_signals map of signal m_sigReconstructionsAdded
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
 
-    /// Type of signal when reconstructions are removed
+    /// Defines the type of signal sent when a reconstructions are removed.
     typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
-
-    /// Key in m_signals map of signal m_sigReconstructionsRemoved
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
-
     /**
      * @}
      */
 
 protected:
 
-    /// Model container
+    /// Stores models.
     ReconstructionVectorType m_reconstructionDB;
 
-    /// Dicom reference used to generate a valid Dicom Segmentation Surface
+    /// Stores the DICOM reference used to generate a valid DICOM Segmentation Surface.
     ::fwMedData::DicomSeries::sptr m_dicomReference;
 
 private:
 
-    /***
-     * @name Signals attributes
-     * @{
-     */
-    /// Signal emitted when reconstructions are added
+    /// Stores the signal emitted when reconstructions are added.
     ReconstructionsAddedSignalType::sptr m_sigReconstructionsAdded;
 
-    /// Signal emitted when reconstructions are removed
+    /// Stores the signal emitted when reconstructions are removed.
     ReconstructionsRemovedSignalType ::sptr m_sigReconstructionsRemoved;
-    /**
-     * @}
-     */
 
 };
 
@@ -146,9 +146,9 @@ inline const ModelSeries::ReconstructionVectorType& ModelSeries::getReconstructi
 
 //-----------------------------------------------------------------------------
 
-inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVectorType& val)
+inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVectorType& _val)
 {
-    m_reconstructionDB = val;
+    m_reconstructionDB = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -160,11 +160,11 @@ inline ::fwMedData::DicomSeries::csptr ModelSeries::getDicomReference() const
 
 //-----------------------------------------------------------------------------
 
-inline void ModelSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr& reference)
+inline void ModelSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast< ::fwMedData::DicomSeries >( reference );
+    m_dicomReference = std::const_pointer_cast< ::fwMedData::DicomSeries >( _reference );
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.

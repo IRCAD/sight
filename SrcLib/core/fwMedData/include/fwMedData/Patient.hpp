@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(Patient), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(Patient), FWMEDDATA_API)
 
 namespace fwMedData
 {
@@ -40,73 +40,100 @@ class FWMEDDATA_CLASS_API Patient : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(Patient, ::fwData::Object, ::fwData::factory::New< Patient >);
+    fwCoreClassMacro(Patient, ::fwData::Object, ::fwData::factory::New< Patient >)
 
-    fwCampMakeFriendDataMacro((fwMedData)(Patient));
+    fwCampMakeFriendDataMacro((fwMedData)(Patient))
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the patient.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API Patient(::fwData::Object::Key key);
+    FWMEDDATA_API Patient(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the patient.
     FWMEDDATA_API virtual ~Patient();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
-     * @name Getters/Setters
-     * @{ */
-
-    /**
-     * @brief Patient's full name (0010,0010)
-     * @{ */
+     * @brief Gets the patient's full name.
+     * @return the patient's full name.
+     */
     const DicomValueType& getName () const;
-    void setName(const DicomValueType& val);
-    /**  @} */
 
     /**
-     * @brief Primary hospital identification number or code for the patient (0010,0020)
-     * @{ */
+     * @brief Sets the patient's full name.
+     * @param _val the patient's full name.
+     */
+    void setName(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the primary hospital identification number or code for the patient.
+     * @return the primary hospital identification number or code for the patient.
+     */
     const DicomValueType& getPatientId () const;
-    void setPatientId (const DicomValueType& val);
-    /**  @} */
 
     /**
-     * @brief Birthdate of the patient (0010,0030)
-     * @{ */
+     * @brief Sets the primary hospital identification number or code for the patient.
+     * @param _val the primary hospital identification number or code for the patient.
+     */
+    void setPatientId (const DicomValueType& _val);
+
+    /**
+     * @brief Gets the birthdate of the patient.
+     * @return the birthdate of the patient.
+     */
     const DicomValueType& getBirthdate () const;
-    void setBirthdate (const DicomValueType& val);
-    /**  @} */
 
     /**
-     * @brief Sex of the named patient (0010,0040)
-     * Enumerated Values: M = male, F = female, O = other
-     * @{ */
-    const DicomValueType& getSex () const;
-    void setSex (const DicomValueType& val);
-    /**  @} */
+     * @brief Sets the birthdate of the patient.
+     * @param _val the birthdate of the patient.
+     */
+    void setBirthdate (const DicomValueType& _val);
 
-    /**  @} */
+    /**
+     * @brief Gets the sex of the named patient.
+     *
+     * Enumerated _values: M = male, F = female, O = other
+     *
+     * @return the sex of the named patient.
+     */
+    const DicomValueType& getSex () const;
+
+    /**
+     * @brief Sets the sex of the named patient.
+     *
+     * Enumerated _values: M = male, F = female, O = other
+     *
+     * @param _val the sex of the named patient.
+     */
+    void setSex (const DicomValueType& _val);
 
 protected:
 
-    /// Full name
+    /// Defines the full name.
     DicomValueType m_name;
 
-    /// Primary hospital identification
+    /// Defines the primary hospital identification.
     DicomValueType m_patientId;
 
-    /// Birthdate
+    /// Defines the patient's birthdate.
     DicomValueType m_birthdate;
 
-    /// Patient's sex
+    /// Defines the patient's sex.
     DicomValueType m_sex;
+
 };
 
 //-----------------------------------------------------------------------------
@@ -118,9 +145,9 @@ inline const DicomValueType& Patient::getName () const
 
 //-----------------------------------------------------------------------------
 
-inline void Patient::setName(const DicomValueType& val)
+inline void Patient::setName(const DicomValueType& _val)
 {
-    m_name = val;
+    m_name = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -132,9 +159,9 @@ inline const DicomValueType& Patient::getPatientId () const
 
 //-----------------------------------------------------------------------------
 
-inline void Patient::setPatientId (const DicomValueType& val)
+inline void Patient::setPatientId (const DicomValueType& _val)
 {
-    m_patientId = val;
+    m_patientId = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -146,9 +173,9 @@ inline const DicomValueType& Patient::getBirthdate () const
 
 //-----------------------------------------------------------------------------
 
-inline void Patient::setBirthdate (const DicomValueType& val)
+inline void Patient::setBirthdate (const DicomValueType& _val)
 {
-    m_birthdate = val;
+    m_birthdate = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -160,11 +187,11 @@ inline const DicomValueType& Patient::getSex () const
 
 //-----------------------------------------------------------------------------
 
-inline void Patient::setSex (const DicomValueType& val)
+inline void Patient::setSex (const DicomValueType& _val)
 {
-    m_sex = val;
+    m_sex = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.

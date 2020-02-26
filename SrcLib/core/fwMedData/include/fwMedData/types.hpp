@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMEDDATA_TYPES_HPP__
-#define __FWMEDDATA_TYPES_HPP__
+#pragma once
 
 #include <string>
 #include <vector>
 
 namespace fwMedData
 {
+
 typedef std::string DicomValueType;
 typedef std::vector<DicomValueType> DicomValuesType;
 
-}//end namespace fwMedData
-
-#endif // __FWMEDDATA_TYPES_HPP__
-
-
+} // Namespace fwMedData.

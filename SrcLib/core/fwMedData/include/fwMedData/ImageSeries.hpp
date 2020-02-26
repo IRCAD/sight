@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 
 #include <fwData/factory/new.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(ImageSeries), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(ImageSeries), FWMEDDATA_API)
 
 namespace fwData
 {
@@ -40,58 +40,72 @@ namespace fwMedData
 {
 
 /**
- * @brief Holds images data
+ * @brief Holds a medical images data.
  */
 class FWMEDDATA_CLASS_API ImageSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassMacro(ImageSeries, ::fwData::Object, ::fwData::factory::New< ImageSeries >);
 
-    fwCampMakeFriendDataMacro((fwMedData)(ImageSeries));
+    fwCoreClassMacro(ImageSeries, ::fwData::Object, ::fwData::factory::New< ImageSeries >)
+
+    fwCampMakeFriendDataMacro((fwMedData)(ImageSeries))
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the series.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API ImageSeries(::fwData::Object::Key key);
+    FWMEDDATA_API ImageSeries(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the series.
     FWMEDDATA_API virtual ~ImageSeries() override;
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache ) override;
 
     /**
-     * @name Getters / Setters
-     * @{ */
-
-    /**
-     * @brief Image container
-     * @{ */
+     * @brief Gets the image.
+     * @return The image data container.
+     */
     SPTR(::fwData::Image) getImage() const;
-    void setImage(const SPTR(::fwData::Image)& val);
-    /**  @} */
 
     /**
-     * @brief Dicom reference use to generate valid Dicom Segmentation
-     * @{ */
-    ::fwMedData::DicomSeries::csptr getDicomReference() const;
-    void setDicomReference(const ::fwMedData::DicomSeries::csptr& reference);
-    /**  @} */
+     * @brief Sets the image data..
+     * @param _source the source object where find data.
+     * @param _image the image data container.
+     */
+    void setImage(const SPTR(::fwData::Image)& _image);
 
-    /**  @} */
+    /**
+     * @brief Gets the DICOM reference used to generate valid Dicom Segmentation.
+     * @return The DICOM reference of this data.
+     */
+    ::fwMedData::DicomSeries::csptr getDicomReference() const;
+
+    /**
+     * @brief Sets the DICOM reference used to generate valid Dicom Segmentation.
+     * @param _reference the DICOM reference of this data.
+     */
+    void setDicomReference(const ::fwMedData::DicomSeries::csptr& _reference);
 
 protected:
 
-    /// Image container
+    /// Contains the image.
     SPTR(::fwData::Image) m_image;
 
-    /// Dicom reference used to generate a valid Dicom Segmentation
+    /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
     ::fwMedData::DicomSeries::sptr m_dicomReference;
+
 };
 
 //-----------------------------------------------------------------------------
@@ -103,9 +117,9 @@ inline SPTR(::fwData::Image) ImageSeries::getImage() const
 
 //-----------------------------------------------------------------------------
 
-inline void ImageSeries::setImage(const SPTR(::fwData::Image)& val)
+inline void ImageSeries::setImage(const SPTR(::fwData::Image)& _image)
 {
-    m_image = val;
+    m_image = _image;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,11 +131,11 @@ inline ::fwMedData::DicomSeries::csptr ImageSeries::getDicomReference() const
 
 //-----------------------------------------------------------------------------
 
-inline void ImageSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr& reference)
+inline void ImageSeries::setDicomReference(const ::fwMedData::DicomSeries::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast< ::fwMedData::DicomSeries >( reference );
+    m_dicomReference = std::const_pointer_cast< ::fwMedData::DicomSeries >( _reference );
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+} //end namespace fwMedData

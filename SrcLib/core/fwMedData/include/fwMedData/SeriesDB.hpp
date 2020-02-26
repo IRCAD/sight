@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((fwMedData)(SeriesDB), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(SeriesDB), FWMEDDATA_API)
 
 namespace fwMedData
 {
@@ -41,15 +41,15 @@ namespace fwMedData
 class Series;
 
 /**
- * @brief Holds series data
+ * @brief Holds series data.
  */
 class FWMEDDATA_CLASS_API SeriesDB : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(SeriesDB, ::fwData::Object, ::fwData::factory::New< SeriesDB >);
+    fwCoreClassMacro(SeriesDB, ::fwData::Object, ::fwData::factory::New< SeriesDB >)
 
-    fwCampMakeFriendDataMacro((fwMedData)(SeriesDB));
+    fwCampMakeFriendDataMacro((fwMedData)(SeriesDB))
 
     typedef std::vector< SPTR(Series) > ContainerType;
 
@@ -95,43 +95,54 @@ public:
     /// @}
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the series DB.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API SeriesDB(::fwData::Object::Key key);
+    FWMEDDATA_API SeriesDB(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the series DB.
     FWMEDDATA_API virtual ~SeriesDB();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache
+     */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
-     * @name Getters / Setters
-     * @{ */
+     * @brief Gets the series container.
+     * @return The series container.
+     */
+    ContainerType& getContainer();
 
     /**
-     * @brief Series container
-     * @{ */
-    ContainerType& getContainer();
-    const ContainerType& getContainer () const;
-    void setContainer (const ContainerType& val);
-    /**  @} */
+     * @brief Gets the series const container.
+     * @return The series container.
+     */
+    const ContainerType& getContainer() const;
 
-    /**  @} */
+    /**
+     * @brief Sets the series container.
+     * @param _val the series container.
+     */
+    void setContainer (const ContainerType& _val);
 
     /**
      * @name Signals
      * @{
      */
-    /// Type of signal when series are added
+    /// Defines the type of signal sent when series are added.
     typedef ::fwCom::Signal< void (ContainerType) > AddedSeriesSignalType;
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_SERIES_SIG;
 
-    /// Type of signal when series are removed
+    /// Defines the type of signal sent when series are removed.
     typedef ::fwCom::Signal< void (ContainerType) > RemovedSeriesSignalType;
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_SERIES_SIG;
     /**
@@ -140,7 +151,7 @@ public:
 
 protected:
 
-    /// Series container
+    /// Stores all series.
     ContainerType m_container;
 
 };
@@ -273,11 +284,11 @@ inline const SeriesDB::ContainerType& SeriesDB::getContainer () const
 
 //-----------------------------------------------------------------------------
 
-inline void SeriesDB::setContainer (const SeriesDB::ContainerType& val)
+inline void SeriesDB::setContainer (const SeriesDB::ContainerType& _val)
 {
-    m_container = val;
+    m_container = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.
