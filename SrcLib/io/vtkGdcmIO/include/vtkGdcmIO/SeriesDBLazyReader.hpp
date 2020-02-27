@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,10 +53,7 @@ class Observer;
 namespace vtkGdcmIO
 {
 
-/**
- *
- * @brief Reads DICOM data from a directory path in order to create a SeriesDB object in lazy mode.
- */
+/// Reads a DICOM data from a directory path in order to create a SeriesDB object in a lazy mode.
 class SeriesDBLazyReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
                            public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
                            public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
@@ -69,67 +66,103 @@ public:
     typedef std::map< std::string, SeriesFilesType > MapSeriesType;
 
     fwCoreClassMacro(SeriesDBLazyReader, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                     ::fwDataIO::reader::factory::New< SeriesDBLazyReader >);
+                     ::fwDataIO::reader::factory::New< SeriesDBLazyReader >)
 
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    /// Does nothing
-    VTKGDCMIO_API SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key key);
+    /// Creates the reader.
+    VTKGDCMIO_API SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key);
 
-    /// Does nothing
+    /// Destroyes the reader.
     VTKGDCMIO_API ~SeriesDBLazyReader();
 
     /// Reads DICOM data from configured path and fills SeriesDB object. Use lazy reading process to read images.
     VTKGDCMIO_API void read() override;
 
-    /// @return internal job
+    /// @return internal job.
     VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 
     /**
      * @brief Creates a SeriesDB from the data contained in the given directory path.
-     *
-     * @param directory path from which data is read
-     *
+     * @param _dicomDir path from which data is read
      * @return a new SeriesDB object
      */
-    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const std::filesystem::path& dicomDir );
+    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const std::filesystem::path& _dicomDir );
 
     /**
      * @brief Fills the related SeriesDB object with DICOM data extracted from the given files.
-     *
-     * @param seriesDB SeriesDB object to be filled with DICOM data
-     * @param filenames files to extract DICOM data from
+     * @param _seriesDB SeriesDB object to be filled with DICOM data
+     * @param _filenames files to extract DICOM data from
      */
-    void addSeries( const SPTR( ::fwMedData::SeriesDB )& seriesDB, const std::vector< std::string >& filenames);
+    void addSeries( const SPTR(::fwMedData::SeriesDB)& _seriesDB, const std::vector< std::string >& _filenames);
 
-    /// Tries estimating Z spacing of an image dicom, returns 0 if it is not a success
-    double computeZSpacing( const SeriesFilesType& seriesFiles );
+    /**
+     * @brief Tries estimating Z spacing of an image DICOM, returns 0 if it is not a success.
+     * @param _seriesFiles the sorted list of all series fiels.
+     * @return The estimated Z spacing.
+     */
+    double computeZSpacing(const SeriesFilesType& _seriesFiles);
 
-    /// Searches and sets image information: window/center, correct spacing after preprocessImage(not read image buffer)
-    void fillImage( gdcm::Scanner& scanner, const SeriesFilesType& seriesFiles,
-                    const std::string& dcmFile, ::fwData::Image::sptr img );
+    /**
+     * @brief Searches and sets image information: window/center, correct spacing after preprocessImage(not read image
+     * buffer).
+     * @param _scanner the gdcm scanner.
+     * @param _seriesFiles the sorted list of all series files.
+     * @param _dcmFile the main file.
+     * @param _img the image where fill data.
+     */
+    void fillImage(gdcm::Scanner& scanner, const SeriesFilesType& _seriesFiles, const std::string& _dcmFile,
+                   ::fwData::Image::sptr img);
 
-    /// Searches and sets another image information ( origin, spacing, type, size, nbComponent )
-    void preprocessImage( const ::fwData::Image::sptr& img, const SeriesFilesType& files );
+    /**
+     * @brief Searches and sets another image information (origin, spacing, type, size, nbComponent).
+     * @param _img the image where fill data.
+     * @param _files the sorted list of all series files.
+     */
+    void preprocessImage(const ::fwData::Image::sptr& _img, const SeriesFilesType& _files);
 
-    /// Searches and sets equipment information
-    void fillEquipment( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Equipment ) equipment);
+    /**
+     * @brief Searches and sets equipment information.
+     * @param _scanner the gdcm scanner.
+     * @param _dcmFile the main file.
+     * @param _equipment the equipment where fill data.
+     */
+    void fillEquipment(gdcm::Scanner& _scanner, const std::string& _dcmFile, SPTR(::fwMedData::Equipment) _equipment);
 
-    /// Searches and sets study information
-    void fillStudy( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Study ) study );
+    /**
+     * @brief Searches and sets study information.
+     * @param _scanner the gdcm scanner.
+     * @param _dcmFile the main file.
+     * @param _study the study where fill data.
+     */
+    void fillStudy(gdcm::Scanner& _scanner, const std::string& _dcmFile, SPTR(::fwMedData::Study) _study);
 
-    /// Searches and sets patient information
-    void fillPatient( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Patient ) patient );
+    /**
+     * @brief Searches and sets patient information.
+     * @param _scanner the gdcm scanner.
+     * @param _dcmFile the main file.
+     * @param _patient the patient where fill data.
+     */
+    void fillPatient(gdcm::Scanner& _scanner, const std::string& _dcmFile, SPTR(::fwMedData::Patient) _patient);
 
-    /// Searches and sets series information
-    void fillSeries( gdcm::Scanner& scanner, const std::string& dcmFile, SPTR( ::fwMedData::Series ) series );
+    /**
+     * @brief Searches and sets series information.
+     * @param _scanner the gdcm scanner.
+     * @param _dcmFile the main file.
+     * @param _imgSeries the image series where fill data.
+     */
+    void fillSeries(gdcm::Scanner& _scanner, const std::string& _dcmFile, SPTR(::fwMedData::ImageSeries) _imgSeries);
 
-    /// Select some dicom tags and scan information in all filenames
-    void scanFiles( gdcm::Scanner& scanner, const std::vector< std::string >& filenames );
+    /**
+     * @brief Selects some DICOM tags and scan information in all filenames.
+     * @param _scanner the gdcm scanner.
+     * @param _filenames files where scan DICOM tags.
+     */
+    void scanFiles(gdcm::Scanner& _scanner, const std::vector< std::string >& _filenames);
 
-    ///Internal job
+    /// Contains the internal job.
     SPTR(::fwJobs::Observer) m_job;
 };
 

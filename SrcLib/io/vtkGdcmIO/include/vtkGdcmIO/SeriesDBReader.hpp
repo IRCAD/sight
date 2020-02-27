@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,10 +41,7 @@ class Observer;
 namespace vtkGdcmIO
 {
 
-/**
- *
- * @brief Reads DICOM data from a directory path in order to create a SeriesDB object.
- */
+/// Reads a DICOM data from a directory path in order to create a SeriesDB object.
 class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
                        public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
                        public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
@@ -53,41 +50,39 @@ class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedDa
 public:
 
     fwCoreClassMacro(SeriesDBReader, ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                     ::fwDataIO::reader::factory::New< SeriesDBReader >);
-    fwCoreAllowSharedFromThis();
+                     ::fwDataIO::reader::factory::New< SeriesDBReader >)
 
-    VTKGDCMIO_API SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key);
+    fwCoreAllowSharedFromThis()
 
+    /// Creates the reader.
+    VTKGDCMIO_API SeriesDBReader(::fwDataIO::reader::IObjectReader::Key);
+
+    /// Destroyes the reader.
     VTKGDCMIO_API ~SeriesDBReader();
 
-    /**
-     * @brief Reads DICOM data from configured path and fills SeriesDB object.
-     */
+    /// Reads DICOM data from configured path and fills SeriesDB object.
     VTKGDCMIO_API void read() override;
 
-    /// @return internal job
+    /// @return internal job.
     VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 
     /**
      * @brief Creates a SeriesDB from the data contained in the given directory path.
-     *
-     * @param directory path from which data is read
-     *
+     * @param _dicomDir path from which data is read
      * @return a new SeriesDB object
      */
-    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const std::filesystem::path& dicomDir );
+    SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& _dicomDir);
 
     /**
      * @brief Fills the related SeriesDB object with DICOM data extracted from the given files.
-     *
-     * @param seriesDB SeriesDB object to be filled with DICOM data
-     * @param filenames files to extract DICOM data from
+     * @param _seriesDB SeriesDB object to be filled with DICOM data
+     * @param _filenames files to extract DICOM data from
      */
-    void addSeries( const SPTR( ::fwMedData::SeriesDB )& seriesDB, const std::vector< std::string >& filenames);
+    void addSeries(const SPTR(::fwMedData::SeriesDB)& _seriesDB, const std::vector< std::string >& _filenames);
 
-    ///Internal job
+    /// Contains the internal job.
     SPTR(::fwJobs::Observer) m_job;
 
 };
