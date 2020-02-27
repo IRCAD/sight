@@ -36,7 +36,6 @@
 #include "fwStructuralPatch/fwData/Reconstruction/V2ToV3.hpp"
 #include "fwStructuralPatch/fwData/Study/V1ToFwMedDataStudyV1.hpp"
 #include "fwStructuralPatch/fwData/TransformationMatrix3D/V1ToV2.hpp"
-
 #include "fwStructuralPatch/fwMedData/ActivitySeries/V1ToV2.hpp"
 #include "fwStructuralPatch/fwMedData/ActivitySeries/V2ToV1.hpp"
 #include "fwStructuralPatch/fwMedData/AttachmentSeries/V1ToV2.hpp"
@@ -53,8 +52,6 @@
 #include "fwStructuralPatch/fwMedData/ModelSeries/V3ToV2.hpp"
 #include "fwStructuralPatch/fwMedData/NavigationSeries/V1ToV2.hpp"
 #include "fwStructuralPatch/fwMedData/NavigationSeries/V2ToV1.hpp"
-#include "fwStructuralPatch/fwMedData/Series/V1ToV2.hpp"
-#include "fwStructuralPatch/fwMedData/Series/V2ToV1.hpp"
 #include "fwStructuralPatch/fwMedData/Study/V1ToV2.hpp"
 #include "fwStructuralPatch/fwMedData/Study/V2ToV1.hpp"
 
@@ -101,8 +98,6 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ModelSeries::V3ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::NavigationSeries::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::NavigationSeries::V2ToV1::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::Series::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::Series::V2ToV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::Study::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::Study::V2ToV1::New());
     }
