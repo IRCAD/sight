@@ -82,7 +82,7 @@ public:
 
     /**
      * @brief Gets the reconstruction container use to store mesh, material and image mask.
-     * @return the reconstruction container.
+     * @return The reconstruction container.
      */
     const ReconstructionVectorType& getReconstructionDB() const;
 
@@ -94,7 +94,7 @@ public:
 
     /**
      * @brief Gets the DICOM reference use to generate valid DICOM Segmentation Surface
-     * @return the DICOM reference
+     * @return The DICOM reference
      */
     ::fwMedData::DicomSeries::csptr getDicomReference() const;
 

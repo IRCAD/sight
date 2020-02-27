@@ -96,6 +96,8 @@ void ImageSeriesTest::propertiesTest()
     const std::string contrastBolusFlowDuration            = "40";
     const std::string contrastBolusIngredient              = "IODINE";
     const std::string contrastBolusIngredientConcentration = "12";
+    const std::string acquisitionDate                      = "202020";
+    const std::string acquisitionTime                      = "115420";
 
     const ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
                                                                   { "patient" },
@@ -132,7 +134,9 @@ void ImageSeriesTest::propertiesTest()
                                                                   { "contrast_bolus_flow_rate" },
                                                                   { "contrast_bolus_flow_duration" },
                                                                   { "contrast_bolus_ingredient" },
-                                                                  { "contrast_bolus_ingredient_concentration" }, };
+                                                                  { "contrast_bolus_ingredient_concentration" },
+                                                                  { "acquisition_date" },
+                                                                  { "acquisition_time" }, };
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("uint8"));
@@ -171,6 +175,8 @@ void ImageSeriesTest::propertiesTest()
     obj->setContrastFlowDuration(contrastBolusFlowDuration);
     obj->setContrastIngredient(contrastBolusIngredient);
     obj->setContrastIngredientConcentration(contrastBolusIngredientConcentration);
+    obj->setAcquisitionDate(acquisitionDate);
+    obj->setAcquisitionTime(acquisitionTime);
 
     ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
     ::DataCampHelper::compareObjectPropertyValue(obj, "@patient", obj->getPatient());
@@ -213,6 +219,8 @@ void ImageSeriesTest::propertiesTest()
     ::DataCampHelper::compareSimplePropertyValue(obj, "@contrast_bolus_ingredient", contrastBolusIngredient);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@contrast_bolus_ingredient_concentration",
                                                  contrastBolusIngredientConcentration);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@acquisition_date", acquisitionDate);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@acquisition_time", acquisitionTime);
 }
 
 //------------------------------------------------------------------------------

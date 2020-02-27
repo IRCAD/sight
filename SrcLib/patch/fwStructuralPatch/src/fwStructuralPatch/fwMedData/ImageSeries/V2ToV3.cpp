@@ -91,6 +91,8 @@ void V2ToV3::apply( const ::fwAtoms::Object::sptr& _previous,
     helper.addAttribute("contrast_bolus_flow_duration", ::fwAtoms::String::New(""));
     helper.addAttribute("contrast_bolus_ingredient", ::fwAtoms::String::New(""));
     helper.addAttribute("contrast_bolus_ingredient_concentration", ::fwAtoms::String::New(""));
+    helper.addAttribute("acquisition_date", ::fwAtoms::String::New(""));
+    helper.addAttribute("acquisition_time", ::fwAtoms::String::New(""));
 }
 
 } // namespace ImageSeries

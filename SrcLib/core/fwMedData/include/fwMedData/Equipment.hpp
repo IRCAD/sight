@@ -69,7 +69,7 @@ public:
 
     /**
      * @brief Gets the institution where the equipment that produced the composite instances is located.
-     * @return the institution name.
+     * @return The institution name.
      */
     const DicomValueType& getInstitutionName() const;
 

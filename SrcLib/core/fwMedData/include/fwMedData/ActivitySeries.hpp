@@ -88,7 +88,7 @@ public:
 
     /**
      * @brief Gets the activity configuration ID.
-     * @return the activity configuration ID.
+     * @return The activity configuration ID.
      */
     const ConfigIdType& getActivityConfigId () const;
 

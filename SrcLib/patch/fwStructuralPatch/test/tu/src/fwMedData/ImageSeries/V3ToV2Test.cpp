@@ -103,6 +103,8 @@ void V3ToV2Test::applyPatchTest()
     helper.addAttribute("contrast_bolus_flow_duration", ::fwAtoms::String::New(""));
     helper.addAttribute("contrast_bolus_ingredient", ::fwAtoms::String::New(""));
     helper.addAttribute("contrast_bolus_ingredient_concentration", ::fwAtoms::String::New(""));
+    helper.addAttribute("acquisition_date", ::fwAtoms::String::New(""));
+    helper.addAttribute("acquisition_time", ::fwAtoms::String::New(""));
 
     {
         imgSeriesV2 = ::fwAtoms::Object::dynamicCast(imgSeriesV3->clone());
@@ -140,6 +142,8 @@ void V3ToV2Test::applyPatchTest()
         CPPUNIT_ASSERT(attributes.find("contrast_bolus_flow_duration") == attributes.end());
         CPPUNIT_ASSERT(attributes.find("contrast_bolus_ingredient") == attributes.end());
         CPPUNIT_ASSERT(attributes.find("contrast_bolus_ingredient_concentration") == attributes.end());
+        CPPUNIT_ASSERT(attributes.find("acquisition_date") == attributes.end());
+        CPPUNIT_ASSERT(attributes.find("acquisition_time") == attributes.end());
     }
 }
 

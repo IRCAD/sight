@@ -68,7 +68,7 @@ public:
 
     /**
      * @brief Gets the patient's full name.
-     * @return the patient's full name.
+     * @return The patient's full name.
      */
     const DicomValueType& getName () const;
 
@@ -80,7 +80,7 @@ public:
 
     /**
      * @brief Gets the primary hospital identification number or code for the patient.
-     * @return the primary hospital identification number or code for the patient.
+     * @return The primary hospital identification number or code for the patient.
      */
     const DicomValueType& getPatientId () const;
 
@@ -92,7 +92,7 @@ public:
 
     /**
      * @brief Gets the birthdate of the patient.
-     * @return the birthdate of the patient.
+     * @return The birthdate of the patient.
      */
     const DicomValueType& getBirthdate () const;
 
@@ -107,7 +107,7 @@ public:
      *
      * Enumerated _values: M = male, F = female, O = other
      *
-     * @return the sex of the named patient.
+     * @return The sex of the named patient.
      */
     const DicomValueType& getSex () const;
 

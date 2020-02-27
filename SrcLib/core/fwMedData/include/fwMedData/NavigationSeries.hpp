@@ -125,19 +125,19 @@ public:
 
     /**
      * @brief Gets the positions map container.
-     * @return the positions map container.
+     * @return The positions map container.
      */
     FWMEDDATA_API const ContainerType& getPositionMap() const;
 
     /**
      * @brief Gets the move map container.
-     * @return the move map container.
+     * @return The move map container.
      */
     FWMEDDATA_API const ContainerType& getMoveMap() const;
 
     /**
      * @brief Gets the lookAt map container.
-     * @return the lookAt map container.
+     * @return The lookAt map container.
      */
     FWMEDDATA_API const ContainerType& getLookAtMap() const;
 

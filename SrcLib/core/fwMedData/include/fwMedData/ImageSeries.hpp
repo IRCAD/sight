@@ -100,7 +100,7 @@ public:
 
     /**
      * @brief Gets the contrast/bolus agent.
-     * @return the contrast/bolus agent.
+     * @return The contrast/bolus agent.
      */
     const DicomValueType& getContrastAgent() const;
 
@@ -112,7 +112,7 @@ public:
 
     /**
      * @brief Gets the administration route of contrast agent.
-     * @return the administration route of contrast agent.
+     * @return The administration route of contrast agent.
      */
     const DicomValueType& getContrastRoute() const;
 
@@ -124,7 +124,7 @@ public:
 
     /**
      * @brief Gets the volume injected in milliliters of diluted contrast agent.
-     * @return the volume.
+     * @return The volume.
      */
     const DicomValueType& getContrastVolume() const;
 
@@ -136,7 +136,7 @@ public:
 
     /**
      * @brief Gets the time of start of injection.
-     * @return the time.
+     * @return The time.
      */
     const DicomValueType& getContrastStartTime() const;
 
@@ -148,7 +148,7 @@ public:
 
     /**
      * @brief Gets the time of end of injection.
-     * @return the time.
+     * @return The time.
      */
     const DicomValueType& getContrastStopTime() const;
 
@@ -160,7 +160,7 @@ public:
 
     /**
      * @brief Gets the total amount in milliliters of the undiluted contrast agent.
-     * @return the total amount in milliliters of the undiluted contrast agent.
+     * @return The total amount in milliliters of the undiluted contrast agent.
      */
     const DicomValueType& getContrastTotalDose() const;
 
@@ -172,7 +172,7 @@ public:
 
     /**
      * @brief Gets the rate of injection in milliliters/sec.
-     * @return the rate of injection.
+     * @return The rate of injection.
      */
     const DicomValueType& getContrastFlowRate() const;
 
@@ -184,7 +184,7 @@ public:
 
     /**
      * @brief Gets the duration of injection in seconds.
-     * @return the duration.
+     * @return The duration.
      */
     const DicomValueType& getContrastFlowDuration() const;
 
@@ -196,7 +196,7 @@ public:
 
     /**
      * @brief Gets the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
-     * @return the active ingredient of agent.
+     * @return The active ingredient of agent.
      */
     const DicomValueType& getContrastIngredient() const;
 
@@ -208,7 +208,7 @@ public:
 
     /**
      * @brief Gets the milligrams of active ingredient per milliliter of (diluted) agent.
-     * @return the milligrams of active ingredient per milliliter of (diluted) agent.
+     * @return The milligrams of active ingredient per milliliter of (diluted) agent.
      */
     const DicomValueType& getContrastIngredientConcentration() const;
 
@@ -217,6 +217,30 @@ public:
      * @param _val the milligrams of active ingredient per milliliter of (diluted) agent.
      */
     void setContrastIngredientConcentration(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the date acquisition of data that resulted in this image started.
+     * @return The date.
+     */
+    const DicomValueType& getAcquisitionDate() const;
+
+    /**
+     * @brief Sets the date acquisition of data that resulted in this image started.
+     * @param _val the date.
+     */
+    void setAcquisitionDate(const DicomValueType& _val);
+
+    /**
+     * @brief Gets the time acquisition of data that resulted in this image started.
+     * @return The time.
+     */
+    const DicomValueType& getAcquisitionTime() const;
+
+    /**
+     * @brief Sets the time acquisition of data that resulted in this image started.
+     * @param _val the time.
+     */
+    void setAcquisitionTime(const DicomValueType& _val);
 
 protected:
 
@@ -255,6 +279,12 @@ protected:
 
     /// Defines the milligrams of active ingredient per milliliter of (diluted) agent.
     DicomValueType m_contrastBolusIngredientConcentration;
+
+    /// Defines the date acquisition of data that resulted in this image started.
+    DicomValueType m_acquisitionDate;
+
+    /// Defines the time acquisition of data that resulted in this image started.
+    DicomValueType m_acquisitionTime;
 
 };
 
@@ -424,6 +454,34 @@ inline const DicomValueType& ImageSeries::getContrastIngredientConcentration() c
 inline void ImageSeries::setContrastIngredientConcentration(const DicomValueType& _val)
 {
     m_contrastBolusIngredientConcentration = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getAcquisitionDate() const
+{
+    return m_acquisitionDate;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setAcquisitionDate(const DicomValueType& _val)
+{
+    m_acquisitionDate = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& ImageSeries::getAcquisitionTime() const
+{
+    return m_acquisitionTime;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setAcquisitionTime(const DicomValueType& _val)
+{
+    m_acquisitionTime = _val;
 }
 
 } //end namespace fwMedData.

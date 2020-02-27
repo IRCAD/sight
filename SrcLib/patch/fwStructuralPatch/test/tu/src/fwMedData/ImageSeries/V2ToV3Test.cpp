@@ -116,6 +116,8 @@ void V2ToV3Test::applyPatchTest()
         CPPUNIT_ASSERT(attributes.find("contrast_bolus_flow_duration") != attributes.end());
         CPPUNIT_ASSERT(attributes.find("contrast_bolus_ingredient") != attributes.end());
         CPPUNIT_ASSERT(attributes.find("contrast_bolus_ingredient_concentration") != attributes.end());
+        CPPUNIT_ASSERT(attributes.find("acquisition_date") != attributes.end());
+        CPPUNIT_ASSERT(attributes.find("acquisition_time") != attributes.end());
     }
 }
 

@@ -49,5 +49,7 @@ fwCampImplementDataMacro((fwMedData)(ImageSeries))
     .property("contrast_bolus_ingredient", &::fwMedData::ImageSeries::m_contrastBolusIngredient)
     .property("contrast_bolus_ingredient_concentration",
               &::fwMedData::ImageSeries::m_contrastBolusIngredientConcentration)
+    .property("acquisition_date", &::fwMedData::ImageSeries::m_acquisitionDate)
+    .property("acquisition_time", &::fwMedData::ImageSeries::m_acquisitionTime)
     ;
 }

@@ -80,7 +80,6 @@ void V2ToV3::apply( const ::fwAtoms::Object::sptr& _previous,
     helper.addAttribute("performed_procedure_step_end_time", ::fwAtoms::String::New(""));
     helper.addAttribute("performed_procedure_step_description", ::fwAtoms::String::New(""));
     helper.addAttribute("performed_procedure_comments", ::fwAtoms::String::New(""));
-
 }
 
 } // namespace ModelSeries
