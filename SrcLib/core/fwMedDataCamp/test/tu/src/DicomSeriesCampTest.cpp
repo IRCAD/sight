@@ -143,7 +143,7 @@ void DicomSeriesCampTest::propertiesTest()
     obj->setBodyPartExamined(bodyPartExamined);
     obj->setPatientPosition(patientPosition);
     obj->setAnatomicalOrientationType(anatomicalOrientationType);
-    obj->setPerformdedProcedureStepID(performdedProcedureStepId);
+    obj->setPerformedProcedureStepID(performdedProcedureStepId);
     obj->setPerformedProcedureStepStartDate(performedProcedureStepStartDate);
     obj->setPerformedProcedureStepStartTime(performedProcedureStepStartTime);
     obj->setPerformedProcedureStepEndDate(performedProcedureStepEndDate);

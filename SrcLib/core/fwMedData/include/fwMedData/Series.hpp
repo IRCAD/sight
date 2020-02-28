@@ -254,13 +254,13 @@ public:
      * @brief Gets the user or equipment generated identifier.
      * @return The identifier.
      */
-    const DicomValueType& getPerformdedProcedureStepID() const;
+    const DicomValueType& getPerformedProcedureStepID() const;
 
     /**
      * @brief Sets the user or equipment generated identifier.
      * @param _val the identifier.
      */
-    void setPerformdedProcedureStepID(const DicomValueType& _val);
+    void setPerformedProcedureStepID(const DicomValueType& _val);
 
     /**
      * @brief Gets the date on which the performed procedure step started.
@@ -616,14 +616,14 @@ inline void Series::setAnatomicalOrientationType(const DicomValueType& _val)
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Series::getPerformdedProcedureStepID() const
+inline const DicomValueType& Series::getPerformedProcedureStepID() const
 {
     return m_performdedProcedureStepID;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setPerformdedProcedureStepID(const DicomValueType& _val)
+inline void Series::setPerformedProcedureStepID(const DicomValueType& _val)
 {
     m_performdedProcedureStepID = _val;
 }
