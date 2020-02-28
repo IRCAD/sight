@@ -127,7 +127,7 @@ void ImageSeriesWriter::write()
         modality = "OT";
     }
     medprop->SetModality(modality.c_str());
-    setValue(medprop, 0x0020, 0x0011, imgSeries->getInstanceUID());
+    setValue(medprop, 0x0020, 0x0011, imgSeries->getNumber());
     setValue(medprop, 0x0020, 0x0060, imgSeries->getLaterality());
     setValue(medprop, 0x0008, 0x0021, imgSeries->getDate());
     setValue(medprop, 0x0008, 0x0031, imgSeries->getTime());
