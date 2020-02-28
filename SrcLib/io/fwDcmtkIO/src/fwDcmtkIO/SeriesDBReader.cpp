@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -272,16 +272,20 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
 
     // Get Study ID
     dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data);
-    ::std::string studyID = data.c_str();
+    ::std::string studyUID = data.c_str();
 
     // Check if the study already exists
-    if(m_studyMap.find(studyID) == m_studyMap.end())
+    if(m_studyMap.find(studyUID) == m_studyMap.end())
     {
-        result              = ::fwMedData::Study::New();
-        m_studyMap[studyID] = result;
+        result               = ::fwMedData::Study::New();
+        m_studyMap[studyUID] = result;
+
+        //Study UID
+        result->setInstanceUID(studyUID);
 
         //Study ID
-        result->setInstanceUID(studyID);
+        dataset->findAndGetOFStringArray(DCM_StudyID, data);
+        result->setDate(data.c_str());
 
         //Study Date
         dataset->findAndGetOFStringArray(DCM_StudyDate, data);
@@ -295,6 +299,10 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
         dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data);
         result->setReferringPhysicianName(data.c_str());
 
+        //Consulting Physician Name
+        dataset->findAndGetOFStringArray(DCM_ConsultingPhysicianName, data);
+        result->setConsultingPhysicianName(data.c_str());
+
         //Study Description
         dataset->findAndGetOFStringArray(DCM_StudyDescription, data);
         result->setDescription(data.c_str());
@@ -303,10 +311,22 @@ void SeriesDBReader::addSeries(const std::vector< std::string >& filenames)
         dataset->findAndGetOFStringArray(DCM_PatientAge, data);
         result->setPatientAge(data.c_str());
 
+        //Study Patient Size
+        dataset->findAndGetOFStringArray(DCM_PatientSize, data);
+        result->setPatientSize(data.c_str());
+
+        //Study Patient Weight
+        dataset->findAndGetOFStringArray(DCM_PatientWeight, data);
+        result->setPatientWeight(data.c_str());
+
+        //Study Patient Age
+        dataset->findAndGetOFStringArray(DCM_PatientBodyMassIndex, data);
+        result->setPatientBodyMassIndex(data.c_str());
+
     }
     else
     {
-        result = m_studyMap[studyID];
+        result = m_studyMap[studyUID];
     }
 
     return result;
@@ -368,12 +388,20 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
         series = ::fwMedData::DicomSeries::New();
         m_dicomSeriesContainer.push_back(series);
 
-        //Instance UID
-        series->setInstanceUID(seriesInstanceUID);
-
         //Modality
         dataset->findAndGetOFStringArray(DCM_Modality, data);
         series->setModality(data.c_str());
+
+        //Instance UID
+        series->setInstanceUID(seriesInstanceUID);
+
+        //Number
+        dataset->findAndGetOFStringArray(DCM_SeriesNumber, data);
+        series->setNumber(data.c_str());
+
+        //Laterality
+        dataset->findAndGetOFStringArray(DCM_Laterality, data);
+        series->setLaterality(data.c_str());
 
         //Date
         dataset->findAndGetOFStringArray(DCM_SeriesDate, data);
@@ -383,10 +411,6 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
         dataset->findAndGetOFStringArray(DCM_SeriesTime, data);
         series->setTime(data.c_str());
 
-        //Description
-        dataset->findAndGetOFStringArray(DCM_SeriesDescription, data);
-        series->setDescription(data.c_str());
-
         //Performing Physicians Name
         std::vector<std::string> performingPhysiciansName;
         for(int i = 0; dataset->findAndGetOFString(DCM_PerformingPhysicianName, data, i).good(); ++i)
@@ -394,6 +418,75 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
             performingPhysiciansName.push_back(data.c_str());
         }
         series->setPerformingPhysiciansName(performingPhysiciansName);
+
+        //Protocol Name
+        dataset->findAndGetOFStringArray(DCM_ProtocolName, data);
+        series->setProtocolName(data.c_str());
+
+        //Description
+        dataset->findAndGetOFStringArray(DCM_SeriesDescription, data);
+        series->setDescription(data.c_str());
+
+        //Body Part Examined
+        dataset->findAndGetOFStringArray(DCM_BodyPartExamined, data);
+        series->setBodyPartExamined(data.c_str());
+
+        //Patient Position
+        dataset->findAndGetOFStringArray(DCM_PatientPosition, data);
+        series->setPatientPosition(data.c_str());
+
+        //Anatomical Orientation Type
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        //PerformedProcedure
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        //Anatomical Orientation Type
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        //Anatomical Orientation Type
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        //Anatomical Orientation Type
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        //Anatomical Orientation Type
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        //Anatomical Orientation Type
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        //Anatomical Orientation Type
+        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+        series->setAnatomicalOrientationType(data.c_str());
+
+        dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepID, data);
+        series->setPerformedProcedureStepID(data.c_str());
+
+        dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartDate, data);
+        series->setPerformedProcedureStepStartDate(data.c_str());
+
+        dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartTime, data);
+        series->setPerformedProcedureStepStartTime(data.c_str());
+
+        dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndDate, data);
+        series->setPerformedProcedureStepEndDate(data.c_str());
+
+        dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndTime, data);
+        series->setPerformedProcedureStepEndTime(data.c_str());
+
+        dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepDescription, data);
+        series->setPerformedProcedureStepDescription(data.c_str());
+
+        dataset->findAndGetOFStringArray(DCM_CommentsOnThePerformedProcedureStep, data);
+        series->setPerformedProcedureComments(data.c_str());
     }
 
     // Add the SOPClassUID to the series
