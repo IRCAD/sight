@@ -325,7 +325,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
 
                 if(seriesModality != "CT" && seriesModality != "MR" && seriesModality != "US")
                 {
-                    SLM_WARN("The modality " + modality + " is maybe not support be this reader`");
+                    SLM_WARN("The modality " + seriesModality + " is maybe not support be this reader`");
                 }
 
                 ::fwMedData::ImageSeries::sptr series  = ::fwMedData::ImageSeries::New();
