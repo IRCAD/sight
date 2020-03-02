@@ -396,6 +396,10 @@ void SeriesDBLazyReader::scanFiles(::gdcm::Scanner& _scanner, const std::vector<
     _scanner.AddTag(s_IMAGE_ACQUISITION_DATE_TAG);
     _scanner.AddTag(s_IMAGE_ACQUISITION_TIME_TAG);
 
+    _scanner.AddTag(s_SLICE_THICKNESS_TAG);
+    _scanner.AddTag(s_WINDOW_CENTER_TAG);
+    _scanner.AddTag(s_WINDOW_WIDTH_TAG);
+
     bool scanIsOk = _scanner.Scan(_filenames);
     FW_RAISE_IF("Dicom scanner failed", !scanIsOk);
 }
