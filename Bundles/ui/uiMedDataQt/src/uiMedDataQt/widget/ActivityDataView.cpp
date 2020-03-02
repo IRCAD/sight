@@ -39,6 +39,7 @@
 
 #include <fwIO/ioTypes.hpp>
 
+#include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -65,6 +66,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
+#include <algorithm>
 #include <iomanip>
 
 namespace uiMedDataQt
@@ -269,7 +271,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
         }
 
         QStringList headers;
-        headers << "" << "description";
+        headers << "" << "Description";
 
         QHBoxLayout* const treeLayout   = new QHBoxLayout();
         QVBoxLayout* const buttonLayout = new QVBoxLayout();
@@ -302,10 +304,16 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &ActivityDataView::importObjectFromSDB);
 
             headers.clear();
-            headers << "" << "name" << "sex" << "birthdate"
-                    << "modality" << "description"
-                    << "study description" << "date" << "time"
-                    << "patient age";
+            headers << "" << "Name" << "Sex" << "Birthdate"
+                    << "Modality" << "Description"
+                    << "Study description" << "Date" << "Time"
+                    << "Patient age";
+
+            if(::fwMedData::ImageSeries::dynamicCast(newObject))
+            {
+                headers << "Body part examined" << "Patient position" << "Contrast agent" << "Acquisition time" <<
+                    "Contrast/bolus time";
+            }
         }
 
         buttonLayout->addWidget(buttonRemove);
@@ -824,23 +832,23 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
         newItem->setText(int(ColumnSeriesType::STUDY_DESC),
                          QString::fromStdString(series->getStudy()->getDescription()));
         std::string date = series->getStudy()->getDate();
-        if(!date.empty() && date != "unknown")
+        if(!date.empty())
         {
-            date.insert(4, "-");
-            date.insert(7, "-");
+            date.insert(4, "/");
+            date.insert(7, "/");
         }
         newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
 
         std::string time = series->getStudy()->getTime();
-        if(!time.empty() && time != "unknown")
+        if(!time.empty())
         {
             time.insert(2, ":");
             time.insert(5, ":");
         }
-        newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(time));
+        newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(time.substr(0, 8)));
 
         std::string patientAge = series->getStudy()->getPatientAge();
-        if(!patientAge.empty() && patientAge != "unknown")
+        if(!patientAge.empty())
         {
             patientAge.insert(3, " ");
             if(patientAge[0] == '0')
@@ -849,6 +857,108 @@ void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::cspt
             }
         }
         newItem->setText(int(ColumnSeriesType::PATIENT_AGE), QString::fromStdString(patientAge));
+
+        const ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(_obj);
+        if(imageSeries)
+        {
+            newItem->setText(int(ColumnImageSeriesType::BODY_PART_EXAMINED),
+                             QString::fromStdString(imageSeries->getBodyPartExamined()));
+            std::string patientPosition = imageSeries->getPatientPosition();
+            if(!patientPosition.empty())
+            {
+                // Code string can contains leading or trailing spaces, we removed it frist.
+                const std::string::const_iterator forward
+                    = std::remove_if( patientPosition.begin(), patientPosition.end(), [&](unsigned char _c)
+                        {
+                            return _c == ' ';
+                        });
+                patientPosition.erase(forward);
+                if(patientPosition.compare("HFP") == 0)
+                {
+                    patientPosition = "Head First-Prone";
+                }
+                else if(patientPosition.compare("HFS") == 0)
+                {
+                    patientPosition = "Head First-Supine";
+                }
+                else if(patientPosition.compare("HFDR") == 0)
+                {
+                    patientPosition = "Head First-Decubitus Right";
+                }
+                else if(patientPosition.compare("HFDL") == 0)
+                {
+                    patientPosition = "Head First-Decubitus Left";
+                }
+                else if(patientPosition.compare("FFDR") == 0)
+                {
+                    patientPosition = "Feet First-Decubitus Right";
+                }
+                else if(patientPosition.compare("FFDL") == 0)
+                {
+                    patientPosition = "Feet First-Decubitus Left";
+                }
+                else if(patientPosition.compare("FFP") == 0)
+                {
+                    patientPosition = "Feet First-Prone";
+                }
+                else if(patientPosition.compare("FFS") == 0)
+                {
+                    patientPosition = "Feet First-Supine";
+                }
+                else if(patientPosition.compare("LFP") == 0)
+                {
+                    patientPosition = "Left First-Prone";
+                }
+                else if(patientPosition.compare("LFS") == 0)
+                {
+                    patientPosition = "Left First-Supine";
+                }
+                else if(patientPosition.compare("RFP") == 0)
+                {
+                    patientPosition = "Right First-Prone";
+                }
+                else if(patientPosition.compare("RFS") == 0)
+                {
+                    patientPosition = "Right First-Supine";
+                }
+                else if(patientPosition.compare("AFDR") == 0)
+                {
+                    patientPosition = "Anterior First-Decubitus Right";
+                }
+                else if(patientPosition.compare("AFDL") == 0)
+                {
+                    patientPosition = "Anterior First-Decubitus Left";
+                }
+                else if(patientPosition.compare("PFDR") == 0)
+                {
+                    patientPosition = "Posterior First-Decubitus Right";
+                }
+                else if(patientPosition.compare("PFDL") == 0)
+                {
+                    patientPosition = "Posterior First-Decubitus Left";
+                }
+            }
+            newItem->setText(int(ColumnImageSeriesType::PATIENT_POSITION),
+                             QString::fromStdString(patientPosition));
+            newItem->setText(int(ColumnImageSeriesType::CONTRAST_AGENT),
+                             QString::fromStdString(imageSeries->getContrastAgent()));
+            std::string acquisitionTime = imageSeries->getAcquisitionTime();
+            if(!acquisitionTime.empty())
+            {
+                acquisitionTime.insert(2, ":");
+                acquisitionTime.insert(5, ":");
+            }
+            newItem->setText(int(ColumnImageSeriesType::ACQUISITION_TIME),
+                             QString::fromStdString(acquisitionTime.substr(0, 8)));
+            std::string contrastTime = imageSeries->getContrastStartTime();
+            if(!contrastTime.empty())
+            {
+                contrastTime.insert(2, ":");
+                contrastTime.insert(5, ":");
+            }
+            newItem->setText(int(ColumnImageSeriesType::CONTRAST_BOLUS_START_TIME),
+                             QString::fromStdString(contrastTime.substr(0, 8)));
+        }
     }
     else if (strObj)
     {

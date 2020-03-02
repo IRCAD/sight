@@ -84,6 +84,16 @@ public:
         PATIENT_AGE
     };
 
+    /// Defines header columns used in the tree widget of image series.
+    enum ColumnImageSeriesType : int
+    {
+        BODY_PART_EXAMINED = 10,
+        PATIENT_POSITION,
+        CONTRAST_AGENT,
+        ACQUISITION_TIME,
+        CONTRAST_BOLUS_START_TIME
+    };
+
     /**
      * @brief Creates the tabbed widget.
      * @param _parent the parent of this widget.
