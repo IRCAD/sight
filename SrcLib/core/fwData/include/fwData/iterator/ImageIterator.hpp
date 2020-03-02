@@ -33,157 +33,34 @@ class Image;
 namespace iterator
 {
 
-/**
- *  @brief Class for Image iteration
- *
- * Define the formats used to iterate through an image buffer
- */
-template <class TYPE>
-class IterationBase
-{
+/// Used to iterate through a RGB image
+struct RGB {
+    std::uint8_t r;
+    std::uint8_t g;
+    std::uint8_t b;
+};
 
-public:
+/// Used to iterate through a RGBA image
+struct RGBA {
+    std::uint8_t r;
+    std::uint8_t g;
+    std::uint8_t b;
+    std::uint8_t a;
+};
 
-    /// Used to iterate through all the values of an image
-    struct Raw {
-        typedef TYPE type;
-        typedef TYPE value_type;
+/// Used to iterate through a BGR image
+struct BGR {
+    std::uint8_t b;
+    std::uint8_t g;
+    std::uint8_t r;
+};
 
-        //------------------------------------------------------------------------------
-
-        Raw& operator=(const value_type& val)
-        {
-            value = val;
-            return *this;
-        }
-
-        //------------------------------------------------------------------------------
-
-        type& operator*()
-        {
-            return value;
-        }
-
-        //------------------------------------------------------------------------------
-
-        type operator*() const
-        {
-            return value;
-        }
-
-        operator value_type() const
-        {
-            return value;
-        }
-
-        type value;
-        static constexpr size_t elementSize{1};
-    };
-
-    /// Used to iterate through a RGB image
-    struct RGB {
-        typedef TYPE type;
-        typedef std::array<type, 3> value_type;
-
-        //------------------------------------------------------------------------------
-
-        RGB& operator=(const value_type& val)
-        {
-            r = val[0];
-            g = val[1];
-            b = val[2];
-            return *this;
-        }
-
-        operator value_type() const
-        {
-            return value_type({r, g, b});
-        }
-
-        type r;
-        type g;
-        type b;
-        static constexpr size_t elementSize{3};
-    };
-
-    /// Used to iterate through a RGBA image
-    struct RGBA {
-        typedef TYPE type;
-        typedef std::array<type, 4> value_type;
-        //------------------------------------------------------------------------------
-
-        RGBA& operator=(const value_type& val)
-        {
-            r = val[0];
-            g = val[1];
-            b = val[2];
-            a = val[3];
-            return *this;
-        }
-
-        operator value_type() const
-        {
-            return value_type({r, g, b, a});
-        }
-
-        type r;
-        type g;
-        type b;
-        type a;
-        static constexpr size_t elementSize{4};
-    };
-
-    /// Used to iterate through a BGR image
-    struct BGR {
-        typedef TYPE type;
-        typedef std::array<type, 3> value_type;
-        //------------------------------------------------------------------------------
-
-        BGR& operator=(const value_type& val)
-        {
-            b = val[0];
-            g = val[1];
-            r = val[2];
-            return *this;
-        }
-
-        operator value_type() const
-        {
-            return value_type({b, g, r});
-        }
-
-        type b;
-        type g;
-        type r;
-        static constexpr size_t elementSize{3};
-    };
-
-    /// Used to iterate through a BGRA image
-    struct BGRA {
-        typedef TYPE type;
-        typedef std::array<type, 4> value_type;
-        //------------------------------------------------------------------------------
-
-        RGBA& operator=(const value_type& val)
-        {
-            b = val[0];
-            g = val[1];
-            r = val[2];
-            a = val[3];
-            return *this;
-        }
-
-        operator value_type() const
-        {
-            return value_type({b, g, r, a});
-        }
-
-        type b;
-        type g;
-        type r;
-        type a;
-        static constexpr size_t elementSize{4};
-    };
+/// Used to iterate through a BGRA image
+struct BGRA {
+    std::uint8_t b;
+    std::uint8_t g;
+    std::uint8_t r;
+    std::uint8_t a;
 };
 
 /**
@@ -197,8 +74,8 @@ public:
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
     img->resize({1920, 1080}, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
-    ImageIteratorBase<IterationBase<std::int8_t>::RGBA> iter    = img->begin<IterationBase<std::int16_t>::RGBA>();
-    const ImageIteratorBase<IterationBase<std::int8_t>::RGBA> iterEnd = img->end<IterationBase<std::int16_t>::RGBA>();
+    ImageIteratorBase<RGBA> iter    = img->begin<RGBA>();
+    const ImageIteratorBase<RGBA> iterEnd = img->end<RGBA>();
 
     for (; iter != iterEnd; ++iter)
     {
@@ -210,7 +87,7 @@ public:
    @endcode
  */
 template <class FORMAT, bool isConstIterator = true>
-class ImageIteratorBase : public IterationBase<typename FORMAT::type>
+class ImageIteratorBase
 {
 public:
 
@@ -228,9 +105,7 @@ public:
      * For ConstIterator:   define buffer type to be a const TYPE*
      * For Iterator: define buffer type to be a TYPE*
      */
-    typedef typename std::conditional<isConstIterator,
-                                      const typename FORMAT::type*,
-                                      typename FORMAT::type*>::type pointer;
+    typedef typename std::conditional<isConstIterator, const FORMAT*, FORMAT*>::type pointer;
 
     /**
      * For const_iterator:   define value_type to be a   const TYPE
@@ -269,21 +144,21 @@ public:
     /// Increment/Decrement operators
     ImageIteratorBase& operator++();
     ImageIteratorBase operator++(int);
-    ImageIteratorBase operator+(difference_type index);
+    ImageIteratorBase operator+(difference_type index) const;
     ImageIteratorBase& operator+=(difference_type index);
     ImageIteratorBase& operator--();
     ImageIteratorBase operator--(int);
-    ImageIteratorBase operator-(difference_type index);
+    ImageIteratorBase operator-(difference_type index) const;
     ImageIteratorBase& operator-=(difference_type index);
 
     difference_type operator+(const ImageIteratorBase& other) const;
     difference_type operator-(const ImageIteratorBase& other) const;
 
     /// Value access operators
-    reference operator*();
+    reference operator*() const;
 
     /// Value access operators
-    value_type* operator->();
+    value_type* operator->() const;
 
 protected:
 
@@ -293,7 +168,6 @@ protected:
     pointer m_pointer{nullptr};
     ::fwMemory::BufferObject::Lock m_lock;
     difference_type m_idx{0};
-    difference_type m_elementSize{1};
     difference_type m_numberOfElements{0};
 };
 
