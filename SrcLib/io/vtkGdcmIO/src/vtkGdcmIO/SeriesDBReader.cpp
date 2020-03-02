@@ -83,7 +83,7 @@ static const ::gdcm::Tag s_SERIES_DESCRIPTION_TAG(0x0008, 0x103e);
 static const ::gdcm::Tag s_SERIES_BODY_PART_EXAMINED_TAG(0x0018, 0x0015);
 static const ::gdcm::Tag s_SERIES_PATIENT_POSITION_TAG(0x0018, 0x5100);
 static const ::gdcm::Tag s_SERIES_ANATOMICAL_ORIENTATION_TYPE_TAG(0x0010, 0x2210);
-static const ::gdcm::Tag s_SERIES_PERFORMDED_PROCEDURE_STEP_ID_TAG(0x0040, 0x0253);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_ID_TAG(0x0040, 0x0253);
 static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_START_DATE_TAG(0x0040, 0x0244);
 static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_START_TIME_TAG(0x0040, 0x0245);
 static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_END_DATE_TAG(0x0040, 0x0250);
@@ -217,7 +217,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
     scanner.AddTag(s_SERIES_BODY_PART_EXAMINED_TAG);
     scanner.AddTag(s_SERIES_PATIENT_POSITION_TAG);
     scanner.AddTag(s_SERIES_ANATOMICAL_ORIENTATION_TYPE_TAG);
-    scanner.AddTag(s_SERIES_PERFORMDED_PROCEDURE_STEP_ID_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_ID_TAG);
     scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_START_DATE_TAG);
     scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_START_TIME_TAG);
     scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_END_DATE_TAG);
@@ -495,7 +495,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
                     const std::string seriesAnatomicalOrientationType
                         = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_ANATOMICAL_ORIENTATION_TYPE_TAG);
                     const std::string seriesPerformedProcedureStepID
-                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_PERFORMDED_PROCEDURE_STEP_ID_TAG);
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_PERFORMED_PROCEDURE_STEP_ID_TAG);
                     const std::string seriesPerformedProcedureStepStartDate
                         = helper::GdcmHelper::getValue(scanner, files[0],
                                                        s_SERIES_PERFORMED_PROCEDURE_STEP_START_DATE_TAG);
