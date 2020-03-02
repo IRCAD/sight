@@ -24,11 +24,6 @@
 
 #include <fwData/Array.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/ArrayGetter.hpp>
-#include <fwDataTools/helper/Mesh.hpp>
-#include <fwDataTools/helper/MeshGetter.hpp>
-
 #include <vtkCell.h>
 #include <vtkCellData.h>
 #include <vtkDataArray.h>
@@ -870,20 +865,20 @@ void Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
                                 const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
-    ::fwDataTools::helper::ArrayGetter arrayHelper(meshSrc->getPointsArray());
 
-    vtkPoints* polyDataPoints                    = polyDataDst->GetPoints();
-    const vtkIdType nbPoints                     = static_cast<vtkIdType>(meshSrc->getNumberOfPoints());
-    const ::fwData::Mesh::PointValueType* points = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+    vtkPoints* polyDataPoints = polyDataDst->GetPoints();
+    const vtkIdType nbPoints  = static_cast<vtkIdType>(meshSrc->getNumberOfPoints());
+    const auto dumpLock       = meshSrc->lock();
+    auto points               = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
 
     if (nbPoints != polyDataPoints->GetNumberOfPoints())
     {
         polyDataPoints->SetNumberOfPoints(nbPoints);
     }
 
-    for (vtkIdType i = 0; i != nbPoints; ++i)
+    for (vtkIdType i = 0; i != nbPoints; ++i, ++points)
     {
-        polyDataPoints->SetPoint(i, points[i*3], points[i*3+1], points[i*3+2]);
+        polyDataPoints->SetPoint(i, points->point->x, points->point->y, points->point->z);
     }
 
     polyDataPoints->Modified();
@@ -896,23 +891,41 @@ void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::csptr pointColorArray = meshSrc->getPointColorsArray();
-    if(pointColorArray)
+    if(meshSrc->hasPointColors())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(pointColorArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = pointColorArray->getNumberOfComponents();
+        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const unsigned char* pointColor          = arrayHelper.begin< unsigned char >();
-        const unsigned char* const pointColorEnd = arrayHelper.end< unsigned char >();
-
-        const vtkIdType size = static_cast<vtkIdType>(pointColorArray->getSize()[0] * nbComponents);
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * nbComponents);
 
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        std::copy(pointColor, pointColorEnd, newColors);
+
+        size_t i = 0;
+        if (iter->rgb)
+        {
+            for (; iter != iterEnd; ++iter, i += 3)
+            {
+                newColors[i]   = iter->rgb->r;
+                newColors[i+1] = iter->rgb->g;
+                newColors[i+2] = iter->rgb->b;
+            }
+        }
+        else
+        {
+            for (; iter != iterEnd; ++iter, i += 4)
+            {
+                newColors[i]   = iter->rgba->r;
+                newColors[i+1] = iter->rgba->g;
+                newColors[i+2] = iter->rgba->b;
+                newColors[i+3] = iter->rgba->a;
+            }
+        }
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetPointData()->SetScalars(colors);
@@ -935,24 +948,40 @@ void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::csptr cellColorArray = meshSrc->getCellColorsArray();
-    if(cellColorArray)
+    if(meshSrc->hasCellColors())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(cellColorArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = cellColorArray->getNumberOfComponents();
+        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        ::fwMemory::BufferObject::Lock lock = cellColorArray->getBufferObject()->lock();
-        const unsigned char* cellColor          = arrayHelper.begin< unsigned char >();
-        const unsigned char* const cellColorEnd = arrayHelper.end< unsigned char >();
-
-        const vtkIdType size = static_cast<vtkIdType>(cellColorArray->getSize()[0] * nbComponents);
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * nbComponents);
 
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        std::copy(cellColor, cellColorEnd, newColors);
+        size_t i                 = 0;
+        if (iter->rgb)
+        {
+            for (; iter != iterEnd; ++iter, i += 3)
+            {
+                newColors[i]   = iter->rgb->r;
+                newColors[i+1] = iter->rgb->g;
+                newColors[i+2] = iter->rgb->b;
+            }
+        }
+        else
+        {
+            for (; iter != iterEnd; ++iter, i += 4)
+            {
+                newColors[i]   = iter->rgba->r;
+                newColors[i+1] = iter->rgba->g;
+                newColors[i+2] = iter->rgba->b;
+                newColors[i+3] = iter->rgba->a;
+            }
+        }
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetScalars(colors);
@@ -976,22 +1005,26 @@ void Mesh::updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::csptr pointNormalsArray = meshSrc->getPointNormalsArray();
-    if(pointNormalsArray)
+    if(meshSrc->hasPointNormals())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(pointNormalsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents              = pointNormalsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        normals->SetNumberOfComponents(3);
 
-        const float* pointNormal          = arrayHelper.begin< float >();
-        const float* const pointNormalEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * 3);
+        float* newNormals    = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(pointNormalsArray->getSize()[0] * nbComponents);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 3)
+        {
+            newNormals[i]   = iter->normal->nx;
+            newNormals[i+1] = iter->normal->ny;
+            newNormals[i+2] = iter->normal->nz;
+        }
 
-        float* newNormals = new float[static_cast<size_t>(size)];
-        std::copy(pointNormal, pointNormalEnd, newNormals);
         normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetPointData()->SetNormals(normals);
@@ -1014,23 +1047,26 @@ void Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::csptr cellNormalsArray = meshSrc->getCellNormalsArray();
-
-    if(cellNormalsArray)
+    if(meshSrc->hasCellNormals())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(cellNormalsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents              = cellNormalsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        normals->SetNumberOfComponents(3);
 
-        const float* cellNormal          = arrayHelper.begin< float >();
-        const float* const cellNormalEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * 3);
+        float* newNormals    = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(cellNormalsArray->getSize()[0] * nbComponents);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 3)
+        {
+            newNormals[i]   = iter->normal->nx;
+            newNormals[i+1] = iter->normal->ny;
+            newNormals[i+2] = iter->normal->nz;
+        }
 
-        float* newNormals = new float[static_cast<size_t>(size)];
-        std::copy(cellNormal, cellNormalEnd, newNormals);
         normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetNormals(normals);
@@ -1053,22 +1089,24 @@ void Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::csptr pointTexCoordsArray = meshSrc->getPointTexCoordsArray();
-    if(pointTexCoordsArray)
+    if(meshSrc->hasPointTexCoords())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(pointTexCoordsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
 
         vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents                = pointTexCoordsArray->getNumberOfComponents();
-        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
+        texCoords->SetNumberOfComponents(3);
 
-        const float* pointTexCoord          = arrayHelper.begin< float >();
-        const float* const pointTexCoordEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * 2);
+        float* newTexCoords  = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(pointTexCoordsArray->getSize()[0] * nbComponents);
-
-        float* newTexCoords = new float[static_cast<size_t>(size)];
-        std::copy(pointTexCoord, pointTexCoordEnd, newTexCoords);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 2)
+        {
+            newTexCoords[i]   = iter->tex->u;
+            newTexCoords[i+1] = iter->tex->v;
+        }
         texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetPointData()->SetTCoords(texCoords);
@@ -1091,22 +1129,24 @@ void Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
-    const ::fwData::Array::csptr cellTexCoordsArray = meshSrc->getCellTexCoordsArray();
-    if(cellTexCoordsArray)
+    if(meshSrc->hasCellTexCoords())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(cellTexCoordsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
 
         vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents                = cellTexCoordsArray->getNumberOfComponents();
-        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
+        texCoords->SetNumberOfComponents(3);
 
-        const float* cellTexCoord          = arrayHelper.begin< float >();
-        const float* const cellTexCoordEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * 2);
+        float* newTexCoords  = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(cellTexCoordsArray->getSize()[0] * nbComponents);
-
-        float* newTexCoords = new float[static_cast<size_t>(size)];
-        std::copy(cellTexCoord, cellTexCoordEnd, newTexCoords);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 2)
+        {
+            newTexCoords[i]   = iter->tex->u;
+            newTexCoords[i+1] = iter->tex->v;
+        }
         texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetTCoords(texCoords);
@@ -1287,22 +1327,26 @@ void Mesh::updateGridPointNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkUnstructuredGrid should not be NULL", gridDst);
 
-    const ::fwData::Array::csptr pointNormalsArray = meshSrc->getPointNormalsArray();
-    if(pointNormalsArray)
+    if(meshSrc->hasPointNormals())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(pointNormalsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents              = pointNormalsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        normals->SetNumberOfComponents(3);
 
-        const float* pointNormal          = arrayHelper.begin< float >();
-        const float* const pointNormalEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * 3);
+        float* newNormals    = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(pointNormalsArray->getSize()[0] * nbComponents);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 3)
+        {
+            newNormals[i]   = iter->normal->nx;
+            newNormals[i+1] = iter->normal->ny;
+            newNormals[i+2] = iter->normal->nz;
+        }
 
-        float* newNormals = new float[static_cast<size_t>(size)];
-        std::copy(pointNormal, pointNormalEnd, newNormals);
         normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetPointData()->SetNormals(normals);
@@ -1325,20 +1369,20 @@ void Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                             const ::fwData::Mesh::csptr& meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
-    ::fwDataTools::helper::ArrayGetter arrayHelper(meshSrc->getPointsArray());
 
-    vtkPoints* polyDataPoints                    = gridDst->GetPoints();
-    const vtkIdType nbPoints                     = static_cast<vtkIdType>(meshSrc->getNumberOfPoints());
-    const ::fwData::Mesh::PointValueType* points = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+    vtkPoints* polyDataPoints = gridDst->GetPoints();
+    const vtkIdType nbPoints  = static_cast<vtkIdType>(meshSrc->getNumberOfPoints());
+    const auto dumpLock       = meshSrc->lock();
+    auto points               = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
 
     if (nbPoints != polyDataPoints->GetNumberOfPoints())
     {
         polyDataPoints->SetNumberOfPoints(nbPoints);
     }
 
-    for (vtkIdType i = 0; i != nbPoints; ++i)
+    for (vtkIdType i = 0; i != nbPoints; ++i, ++points)
     {
-        polyDataPoints->SetPoint(i, points[i*3], points[i*3+1], points[i*3+2]);
+        polyDataPoints->SetPoint(i, points->point->x, points->point->y, points->point->z);
     }
 
     polyDataPoints->Modified();
@@ -1350,24 +1394,42 @@ void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::csptr pointColorArray = meshSrc->getPointColorsArray();
-    if(pointColorArray)
+    if(meshSrc->hasPointColors())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(pointColorArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
 
-        vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                    = pointColorArray->getNumberOfComponents();
+        const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const unsigned char* pointColor          = arrayHelper.begin< unsigned char >();
-        const unsigned char* const pointColorEnd = arrayHelper.end< unsigned char >();
-
-        const vtkIdType size = static_cast<vtkIdType>(pointColorArray->getSize()[0] * nbComponents);
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * nbComponents);
 
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        std::copy(pointColor, pointColorEnd, newColors);
-        colors->SetArray(newColors, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+
+        size_t i = 0;
+        if (iter->rgb)
+        {
+            for (; iter != iterEnd; ++iter, i += 3)
+            {
+                newColors[i]   = iter->rgb->r;
+                newColors[i+1] = iter->rgb->g;
+                newColors[i+2] = iter->rgb->b;
+            }
+        }
+        else
+        {
+            for (; iter != iterEnd; ++iter, i += 4)
+            {
+                newColors[i]   = iter->rgba->r;
+                newColors[i+1] = iter->rgba->g;
+                newColors[i+2] = iter->rgba->b;
+                newColors[i+3] = iter->rgba->a;
+            }
+        }
+        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetPointData()->SetScalars(colors);
         gridDst->Modified();
@@ -1390,25 +1452,41 @@ void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::csptr cellColorArray = meshSrc->getCellColorsArray();
-    if(cellColorArray)
+    if(meshSrc->hasCellColors())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(cellColorArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
 
-        vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                    = cellColorArray->getNumberOfComponents();
+        const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const ::fwMemory::BufferObject::Lock lock = cellColorArray->getBufferObject()->lock();
-        const unsigned char* cellColor            = arrayHelper.begin< unsigned char >();
-        const unsigned char* const cellColorEnd   = arrayHelper.end< unsigned char >();
-
-        const vtkIdType size = static_cast<vtkIdType>(cellColorArray->getSize()[0] * nbComponents);
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * nbComponents);
 
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        std::copy(cellColor, cellColorEnd, newColors);
-        colors->SetArray(newColors, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+        size_t i                 = 0;
+        if (iter->rgb)
+        {
+            for (; iter != iterEnd; ++iter, i += 3)
+            {
+                newColors[i]   = iter->rgb->r;
+                newColors[i+1] = iter->rgb->g;
+                newColors[i+2] = iter->rgb->b;
+            }
+        }
+        else
+        {
+            for (; iter != iterEnd; ++iter, i += 4)
+            {
+                newColors[i]   = iter->rgba->r;
+                newColors[i+1] = iter->rgba->g;
+                newColors[i+2] = iter->rgba->b;
+                newColors[i+3] = iter->rgba->a;
+            }
+        }
+        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetCellData()->SetScalars(colors);
         gridDst->Modified();
@@ -1430,23 +1508,26 @@ void Mesh::updateGridCellNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::csptr cellNormalsArray = meshSrc->getCellNormalsArray();
-
-    if(cellNormalsArray)
+    if(meshSrc->hasCellNormals())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(cellNormalsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
 
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents              = cellNormalsArray->getNumberOfComponents();
-        normals->SetNumberOfComponents(static_cast<int>(nbComponents));
+        normals->SetNumberOfComponents(3);
 
-        const float* cellNormal          = arrayHelper.begin< float >();
-        const float* const cellNormalEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * 3);
+        float* newNormals    = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(cellNormalsArray->getSize()[0] * nbComponents);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 3)
+        {
+            newNormals[i]   = iter->normal->nx;
+            newNormals[i+1] = iter->normal->ny;
+            newNormals[i+2] = iter->normal->nz;
+        }
 
-        float* newNormals = new float[static_cast<size_t>(size)];
-        std::copy(cellNormal, cellNormalEnd, newNormals);
         normals->SetArray(newNormals, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetCellData()->SetNormals(normals);
@@ -1470,22 +1551,24 @@ void Mesh::updateGridPointTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::csptr pointTexCoordsArray = meshSrc->getPointTexCoordsArray();
-    if(pointTexCoordsArray)
+    if(meshSrc->hasPointTexCoords())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(pointTexCoordsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
 
         vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
-        const size_t nbComponents                = pointTexCoordsArray->getNumberOfComponents();
-        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
+        texCoords->SetNumberOfComponents(3);
 
-        const float* pointTexCoord          = arrayHelper.begin< float >();
-        const float* const pointTexCoordEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * 2);
+        float* newTexCoords  = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(pointTexCoordsArray->getSize()[0] * nbComponents);
-
-        float* newTexCoords = new float[static_cast<size_t>(size)];
-        std::copy(pointTexCoord, pointTexCoordEnd, newTexCoords);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 2)
+        {
+            newTexCoords[i]   = iter->tex->u;
+            newTexCoords[i+1] = iter->tex->v;
+        }
         texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetPointData()->SetTCoords(texCoords);
@@ -1509,25 +1592,25 @@ void Mesh::updateGridCellTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
-    const ::fwData::Array::csptr cellTexCoordsArray = meshSrc->getCellTexCoordsArray();
-
-    if(cellTexCoordsArray)
+    if(meshSrc->hasCellTexCoords())
     {
-        ::fwDataTools::helper::ArrayGetter arrayHelper(cellTexCoordsArray);
+        const auto dumpLock = meshSrc->lock();
+        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
 
         vtkSmartPointer<vtkFloatArray> texCoords = vtkSmartPointer<vtkFloatArray>::New();
-        size_t nbComponents                      = cellTexCoordsArray->getNumberOfComponents();
-        texCoords->SetNumberOfComponents(static_cast<int>(nbComponents));
+        texCoords->SetNumberOfComponents(3);
 
-        const float* cellTexCoord          = arrayHelper.begin< float >();
-        const float* const cellTexCoordEnd = arrayHelper.end< float >();
+        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * 2);
+        float* newTexCoords  = new float[static_cast<size_t>(size)];
 
-        const vtkIdType size = static_cast<vtkIdType>(cellTexCoordsArray->getSize()[0] * nbComponents);
-
-        float* newTexCoords = new float[static_cast<size_t>(size)];
-        std::copy(cellTexCoord, cellTexCoordEnd, newTexCoords);
+        size_t i = 0;
+        for (; iter != iterEnd; ++iter, i += 2)
+        {
+            newTexCoords[i]   = iter->tex->u;
+            newTexCoords[i+1] = iter->tex->v;
+        }
         texCoords->SetArray(newTexCoords, size, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
-
         gridDst->GetCellData()->SetTCoords(texCoords);
         gridDst->Modified();
     }
