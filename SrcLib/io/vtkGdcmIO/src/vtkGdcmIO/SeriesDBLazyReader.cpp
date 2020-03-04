@@ -282,7 +282,7 @@ void SeriesDBLazyReader::addSeries(const ::fwMedData::SeriesDB::sptr& _seriesDB,
     try
     {
 
-#if (SPYLOG_LEVEL >= 4) // Log level info
+#if SLM_INFO_ENABLED // Log level info
         ::fwCore::HiResTimer timer;
         timer.start();
 #endif

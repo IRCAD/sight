@@ -108,11 +108,11 @@ public:
      * @name Signals
      * @{
      */
-    /// Defines the type of signal sent when reconstructions are added.
+    /// Defines the type of signal sent when a reconstruction is added.
     typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
 
-    /// Defines the type of signal sent when a reconstruction is added.
+    /// Defines the type of signal sent when a reconstruction is removed.
     typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
     /**

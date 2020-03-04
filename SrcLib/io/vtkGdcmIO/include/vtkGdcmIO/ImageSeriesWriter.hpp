@@ -68,10 +68,13 @@ public:
     /// Writes the image series in DICOM format.
     VTKGDCMIO_API void write() override;
 
-    /// @return An empty string.
+    /**
+     * @brief Gets the extension.
+     * @return An empty string.
+     */
     VTKGDCMIO_API std::string extension() override;
 
-    /// @return The internal job.
+    /// Gets the internal job.
     VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
     /**

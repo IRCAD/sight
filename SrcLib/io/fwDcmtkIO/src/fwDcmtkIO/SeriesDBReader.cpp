@@ -439,52 +439,31 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
         dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
         series->setAnatomicalOrientationType(data.c_str());
 
-        //PerformedProcedure
-        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-        series->setAnatomicalOrientationType(data.c_str());
-
-        //Anatomical Orientation Type
-        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-        series->setAnatomicalOrientationType(data.c_str());
-
-        //Anatomical Orientation Type
-        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-        series->setAnatomicalOrientationType(data.c_str());
-
-        //Anatomical Orientation Type
-        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-        series->setAnatomicalOrientationType(data.c_str());
-
-        //Anatomical Orientation Type
-        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-        series->setAnatomicalOrientationType(data.c_str());
-
-        //Anatomical Orientation Type
-        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-        series->setAnatomicalOrientationType(data.c_str());
-
-        //Anatomical Orientation Type
-        dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-        series->setAnatomicalOrientationType(data.c_str());
-
+        //Performed procedure step id
         dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepID, data);
         series->setPerformedProcedureStepID(data.c_str());
 
+        //Performed procedure step start date
         dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartDate, data);
         series->setPerformedProcedureStepStartDate(data.c_str());
 
+        //Performed procedure step start time
         dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartTime, data);
         series->setPerformedProcedureStepStartTime(data.c_str());
 
+        //Performed procedure step end date
         dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndDate, data);
         series->setPerformedProcedureStepEndDate(data.c_str());
 
+        //Performed procedure step end time
         dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndTime, data);
         series->setPerformedProcedureStepEndTime(data.c_str());
 
+        //Performed procedure step description
         dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepDescription, data);
         series->setPerformedProcedureStepDescription(data.c_str());
 
+        //Comment on the performed procedure step
         dataset->findAndGetOFStringArray(DCM_CommentsOnThePerformedProcedureStep, data);
         series->setPerformedProcedureComments(data.c_str());
     }

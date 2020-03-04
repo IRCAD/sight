@@ -72,7 +72,7 @@ public:
      * @param _source the source object to copy into this one.
      * @param _cache
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache ) override;
 
     /**
      * @brief Gets the activity container.

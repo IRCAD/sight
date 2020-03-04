@@ -74,7 +74,11 @@ void Series::writeGeneralSeriesModule()
     const std::string instanceUID = uidGenerator.Generate();
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(instanceUID, dataset);
 
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0011>(std::stoi(m_object->getNumber()), dataset);
+    if(!m_object->getNumber().empty())
+    {
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0011>
+            (std::stoi(m_object->getNumber()), dataset);
+    }
 
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0020, 0x0060>(m_object->getLaterality(), dataset);
 
@@ -133,25 +137,35 @@ void Series::writeGeneralSeriesModule()
     {
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0018, 0x0010>(imageSeries->getContrastAgent(), dataset);
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0018, 0x1040>(imageSeries->getContrastRoute(), dataset);
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1041>(std::stoi(
-                                                                                  imageSeries->getContrastVolume()),
-                                                                              dataset);
+        if(!imageSeries->getContrastVolume().empty())
+        {
+            ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1041>
+                (std::stoi(imageSeries->getContrastVolume()), dataset);
+        }
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0018, 0x1042>(imageSeries->getContrastStartTime(), dataset);
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0018, 0x1043>(imageSeries->getContrastStopTime(), dataset);
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018,
-                                                         0x1044>(std::stoi(imageSeries->getContrastTotalDose()),
-                                                                 dataset);
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018,
-                                                         0x1046>(std::stoi(imageSeries->getContrastFlowRate()),
-                                                                 dataset);
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018,
-                                                         0x1047>(std::stoi(
-                                                                     imageSeries->getContrastFlowDuration()), dataset);
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0018, 0x1048>(imageSeries->getContrastIngredient(), dataset);
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018,
-                                                         0x1049>(std::stoi(imageSeries->
-                                                                           getContrastIngredientConcentration()),
-                                                                 dataset);
+        if(!imageSeries->getContrastTotalDose().empty())
+        {
+            ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1044>
+                (std::stoi(imageSeries->getContrastTotalDose()),  dataset);
+        }
+        if(!imageSeries->getContrastFlowRate().empty())
+        {
+            ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1046>
+                (std::stoi(imageSeries->getContrastFlowRate()), dataset);
+        }
+        if(!imageSeries->getContrastFlowDuration().empty())
+        {
+            ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1047>
+                (std::stoi(imageSeries->getContrastFlowDuration()), dataset);
+        }
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0018, 0x1048>
+            (imageSeries->getContrastIngredient(), dataset);
+        if(!imageSeries->getContrastIngredientConcentration().empty())
+        {
+            ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1049>
+                (std::stoi(imageSeries->getContrastIngredientConcentration()), dataset);
+        }
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0022>(imageSeries->getAcquisitionDate(), dataset);
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0032>(imageSeries->getAcquisitionTime(), dataset);
     }

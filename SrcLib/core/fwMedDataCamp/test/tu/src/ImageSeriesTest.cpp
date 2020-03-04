@@ -96,7 +96,7 @@ void ImageSeriesTest::propertiesTest()
     const std::string contrastBolusFlowDuration            = "40";
     const std::string contrastBolusIngredient              = "IODINE";
     const std::string contrastBolusIngredientConcentration = "12";
-    const std::string acquisitionDate                      = "202020";
+    const std::string acquisitionDate                      = "20201120";
     const std::string acquisitionTime                      = "115420";
 
     const ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
