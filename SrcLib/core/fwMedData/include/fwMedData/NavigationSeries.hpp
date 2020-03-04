@@ -71,9 +71,9 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /**
      * @brief Adds a position associate with the specified timestamp.
@@ -123,22 +123,13 @@ public:
     /// Clears all lookAt points.
     FWMEDDATA_API void clearLookAt();
 
-    /**
-     * @brief Gets the positions map container.
-     * @return The positions map container.
-     */
+    /// Gets the positions map container.
     FWMEDDATA_API const ContainerType& getPositionMap() const;
 
-    /**
-     * @brief Gets the move map container.
-     * @return The move map container.
-     */
+    /// Gets the move map container.
     FWMEDDATA_API const ContainerType& getMoveMap() const;
 
-    /**
-     * @brief Gets the lookAt map container.
-     * @return The lookAt map container.
-     */
+    /// Gets the lookAt map container.
     FWMEDDATA_API const ContainerType& getLookAtMap() const;
 
 protected:

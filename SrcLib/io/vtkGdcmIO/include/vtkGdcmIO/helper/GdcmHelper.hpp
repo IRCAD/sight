@@ -42,7 +42,7 @@ public:
 
     /**
      * @brief Searchs recursively DICOM files on the filesystem.
-     * @param _dirPath the path of the DICOM folder.
+     * @param[in] _dirPath the path of the DICOM folder.
      * @param[out] _dicomFiles the list of all DICOM files.
      */
     VTKGDCMIO_API static void searchRecursivelyFiles(const std::filesystem::path& _dirPath,

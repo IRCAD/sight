@@ -63,140 +63,74 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object where find data.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the unique identifier of the study.
-     * @return The unique identifier of the study.
-     */
+    /// Gets the unique identifier of the study.
     const DicomValueType& getInstanceUID() const;
 
-    /**
-     * @brief Sets the unique identifier of the study.
-     * @param _val the unique identifier of the study.
-     */
+    /// Sets the unique identifier of the study.
     void setInstanceUID(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the user or equipment generated study identifier.
-     * @return The identifier.
-     */
+    /// Gets the user or equipment generated study identifier.
     const DicomValueType& getStudyID() const;
 
-    /**
-     * @brief Sets the user or equipment generated study identifier.
-     * @param _val the identifier.
-     */
+    /// Sets the user or equipment generated study identifier.
     void setStudyID(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the date the study started.
-     * @return The date the study started.
-     */
+    /// Gets the date the study started.
     const DicomValueType& getDate() const;
 
-    /**
-     * @brief Sets the date the study started.
-     * @param _val the date the study started.
-     */
+    /// Sets the date the study started.
     void setDate(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the time the study started.
-     * @return The time the study started.
-     */
+    /// Gets the time the study started.
     const DicomValueType& getTime() const;
 
-    /**
-     * @brief Sets the time the study started.
-     * @param _val the time the study started.
-     */
+    /// Sets the time the study started.
     void setTime(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the name of the patient's referring physician.
-     * @return The name of the patient's referring physician.
-     */
+    /// Gets the name of the patient's referring physician.
     const DicomValueType& getReferringPhysicianName() const;
 
-    /**
-     * @brief Sets the name of the patient's referring physician.
-     * @param _val the name of the patient's referring physician.
-     */
+    /// Sets the name of the patient's referring physician.
     void setReferringPhysicianName(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the name of the patient's consulting physician.
-     * @return The name of the patient's consulting physician.
-     */
+    /// Gets the name of the patient's consulting physician.
     const DicomValueType& getConsultingPhysicianName() const;
 
-    /**
-     * @brief Sets the name of the patient's consulting physician.
-     * @param _val the name of the patient's consulting physician.
-     */
+    /// Sets the name of the patient's consulting physician.
     void setConsultingPhysicianName(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the institution-generated description or classification of the study performed.
-     * @return The institution-generated description or classification of the study performed.
-     */
+    /// Gets the institution-generated description or classification of the study performed.
     const DicomValueType& getDescription() const;
 
-    /**
-     * @brief Sets the institution-generated description or classification of the study performed.
-     * @param _val the institution-generated description or classification of the study performed.
-     */
+    /// Sets the institution-generated description or classification of the study performed.
     void setDescription(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the age of the Patient.
-     * @return The age of the Patient.
-     */
+    /// Gets the age of the Patient.
     const DicomValueType& getPatientAge() const;
 
-    /**
-     * @brief Sets the age of the Patient.
-     * @param _val the age of the Patient.
-     */
+    /// Sets the age of the Patient.
     void setPatientAge(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the size of the Patient.
-     * @return The size of the Patient.
-     */
+    /// Gets the size of the Patient.
     const DicomValueType& getPatientSize() const;
 
-    /**
-     * @brief Sets the size of the Patient.
-     * @param _val the size of the Patient.
-     */
+    /// Sets the size of the Patient.
     void setPatientSize(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the weight of the Patient.
-     * @return The weight of the Patient.
-     */
+    /// Gets the weight of the Patient.
     const DicomValueType& getPatientWeight() const;
 
-    /**
-     * @brief Sets the weight of the Patient.
-     * @param _val the weight of the Patient.
-     */
+    /// Sets the weight of the Patient.
     void setPatientWeight(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the body mass index of the Patient.
-     * @return The body mass index of the Patient.
-     */
+    /// Gets the body mass index of the Patient.
     const DicomValueType& getPatientBodyMassIndex() const;
 
-    /**
-     * @brief Sets the body mass index of the Patient.
-     * @param _val the body mass index of the Patient.
-     */
+    /// Sets the body mass index of the Patient.
     void setPatientBodyMassIndex(const DicomValueType& _val);
 
 private:

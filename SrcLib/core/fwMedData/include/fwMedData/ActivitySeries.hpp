@@ -65,37 +65,25 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the activity container.
-     * @return The activity container.
-     */
+    /// Gets the activity container.
     SPTR(::fwData::Composite) getData() const;
 
-    /**
-     * @brief Sets the activity container.
-     * @param _val the activity container.
-     */
+    /// Sets the activity container.
     void setData(const SPTR(::fwData::Composite)& _val);
 
-    /**
-     * @brief Gets the activity configuration ID.
-     * @return The activity configuration ID.
-     */
+    /// Gets the activity configuration ID.
     const ConfigIdType& getActivityConfigId () const;
 
-    /**
-     * @brief Sets the activity configuration ID.
-     * @param _val the activity configuration ID.
-     */
+    /// Sets the activity configuration ID.
     void setActivityConfigId (const ConfigIdType& _val);
 
 protected:

@@ -112,26 +112,17 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the series container.
-     * @return The series container.
-     */
+    /// Gets the series container.
     ContainerType& getContainer();
 
-    /**
-     * @brief Gets the series const container.
-     * @return The series container.
-     */
+    /// Gets the series const container.
     const ContainerType& getContainer() const;
 
-    /**
-     * @brief Sets the series container.
-     * @param _val the series container.
-     */
+    /// Sets the series container.
     void setContainer (const ContainerType& _val);
 
     /**

@@ -69,176 +69,92 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the image.
-     * @return The image data container.
-     */
+    /// Gets the image container.
     SPTR(::fwData::Image) getImage() const;
 
-    /**
-     * @brief Sets the image data.
-     * @param _image the image data container.
-     */
+    /// Sets the image data.
     void setImage(const SPTR(::fwData::Image)& _image);
 
-    /**
-     * @brief Gets the DICOM reference used to generate valid Dicom Segmentation.
-     * @return The DICOM reference of this data.
-     */
+    /// Gets the DICOM reference used to generate valid Dicom Segmentation.
     ::fwMedData::DicomSeries::csptr getDicomReference() const;
 
-    /**
-     * @brief Sets the DICOM reference used to generate valid Dicom Segmentation.
-     * @param _reference the DICOM reference of this data.
-     */
+    /// Sets the DICOM reference used to generate valid Dicom Segmentation.
     void setDicomReference(const ::fwMedData::DicomSeries::csptr& _reference);
 
-    /**
-     * @brief Gets the contrast/bolus agent.
-     * @return The contrast/bolus agent.
-     */
+    /// Gets the contrast/bolus agent.
     const DicomValueType& getContrastAgent() const;
 
-    /**
-     * @brief Sets the contrast/bolus agent.
-     * @param _val the contrast/bolus agent.
-     */
+    /// Sets the contrast/bolus agent.
     void setContrastAgent(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the administration route of contrast agent.
-     * @return The administration route of contrast agent.
-     */
+    /// Gets the administration route of contrast agent.
     const DicomValueType& getContrastRoute() const;
 
-    /**
-     * @brief Sets the administration route of contrast agent.
-     * @param _val the administration route of contrast agent.
-     */
+    /// Sets the administration route of contrast agent.
     void setContrastRoute(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the volume injected in milliliters of diluted contrast agent.
-     * @return The volume.
-     */
+    /// Gets the volume injected in milliliters of diluted contrast agent.
     const DicomValueType& getContrastVolume() const;
 
-    /**
-     * @brief Sets the volume injected in milliliters of diluted contrast agent.
-     * @param _val the volume.
-     */
+    /// Sets the volume injected in milliliters of diluted contrast agent.
     void setContrastVolume(const DicomValueType& _val);
 
-    /**
-     * @brief Gets injection start time.
-     * @return The time.
-     */
+    // Gets injection start time.
     const DicomValueType& getContrastStartTime() const;
 
-    /**
-     * @brief Sets the injection start time.
-     * @param _val the time.
-     */
+    /// Sets the injection start time.
     void setContrastStartTime(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the injection end time.
-     * @return The time.
-     */
+    /// Gets the injection end time.
     const DicomValueType& getContrastStopTime() const;
 
-    /**
-     * @brief Sets injection end time.
-     * @param _val the time.
-     */
+    /// Sets injection end time.
     void setContrastStopTime(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the total amount in milliliters of the undiluted contrast agent.
-     * @return The total amount in milliliters of the undiluted contrast agent.
-     */
+    /// Gets the total amount in milliliters of the undiluted contrast agent.
     const DicomValueType& getContrastTotalDose() const;
 
-    /**
-     * @brief Sets the total amount in milliliters of the undiluted contrast agent.
-     * @param _val the total amount in milliliters of the undiluted contrast agent.
-     */
+    /// Sets the total amount in milliliters of the undiluted contrast agent.
     void setContrastTotalDose(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the rate of injection in milliliters/sec.
-     * @return The rate of injection.
-     */
+    ///  Gets the rate of injection in milliliters/sec.
     const DicomValueType& getContrastFlowRate() const;
 
-    /**
-     * @brief Sets the rate of injection in milliliters/sec.
-     * @param _val the rate of injection.
-     */
+    /// Sets the rate of injection in milliliters/sec.
     void setContrastFlowRate(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the duration of injection in seconds.
-     * @return The duration.
-     */
+    /// Gets the duration of injection in seconds.
     const DicomValueType& getContrastFlowDuration() const;
 
-    /**
-     * @brief Sets the duration of injection in seconds.
-     * @param _val the duration.
-     */
+    /// Sets the duration of injection in seconds.
     void setContrastFlowDuration(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
-     * @return The active ingredient of agent.
-     */
+    /// Gets the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
     const DicomValueType& getContrastIngredient() const;
 
-    /**
-     * @brief Sets the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
-     * @param _val the active ingredient of agent.
-     */
+    /// Sets the active ingredient of agent (IODINE, GADOLINIUM, CARBON DIOXIDE, BARIUM).
     void setContrastIngredient(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the milligrams of active ingredient per milliliter of (diluted) agent.
-     * @return The milligrams of active ingredient per milliliter of (diluted) agent.
-     */
+    /// Gets the milligrams of active ingredient per milliliter of (diluted) agent.
     const DicomValueType& getContrastIngredientConcentration() const;
 
-    /**
-     * @brief Sets the milligrams of active ingredient per milliliter of (diluted) agent.
-     * @param _val the milligrams of active ingredient per milliliter of (diluted) agent.
-     */
+    /// Sets the milligrams of active ingredient per milliliter of (diluted) agent.
     void setContrastIngredientConcentration(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the acquisition date of data that resulted in this image started.
-     * @return The date.
-     */
+    /// Gets the acquisition date of data that resulted in this image started.
     const DicomValueType& getAcquisitionDate() const;
 
-    /**
-     * @brief Sets the acquisition date of data that resulted in this image started.
-     * @param _val the date.
-     */
+    /// Sets the acquisition date of data that resulted in this image started.
     void setAcquisitionDate(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the acquisition time of data that resulted in this image started.
-     * @return The time.
-     */
+    /// Gets the acquisition time of data that resulted in this image started.
     const DicomValueType& getAcquisitionTime() const;
 
-    /**
-     * @brief Sets the acquisition time of data that resulted in this image started.
-     * @param _val the time.
-     */
+    /// Sets the acquisition time of data that resulted in this image started.
     void setAcquisitionTime(const DicomValueType& _val);
 
 protected:

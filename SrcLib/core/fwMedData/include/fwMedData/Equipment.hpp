@@ -63,20 +63,14 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the institution where the equipment that produced the composite instances is located.
-     * @return The institution name.
-     */
+    /// Gets the institution where the equipment that produced the composite instances is located.
     const DicomValueType& getInstitutionName() const;
 
-    /**
-     * @brief Sets the institution where the equipment that produced the composite instances is located.
-     * @param _val the institution name.
-     */
+    /// Sets the institution where the equipment that produced the composite instances is located.
     void setInstitutionName(const DicomValueType& _val);
 
 protected:

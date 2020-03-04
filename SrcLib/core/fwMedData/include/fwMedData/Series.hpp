@@ -66,272 +66,140 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the referring patient.
-     * @return The referring patient.
-     */
+    /// Gets the referring patient.
     SPTR(::fwMedData::Patient) getPatient() const;
 
-    /**
-     * @brief Sets the referring patient.
-     * @param _val the referring patient.
-     */
+    /// Sets the referring patient.
     void setPatient(const SPTR(::fwMedData::Patient)& _val);
 
-    /**
-     * @brief Gets the referring study.
-     * @return The referring study.
-     */
+    /// Gets the referring study.
     SPTR(::fwMedData::Study) getStudy() const;
 
-    /**
-     * @brief Sets the referring study.
-     * @param _val the referring study.
-     */
+    /// Sets the referring study.
     void setStudy(const SPTR(::fwMedData::Study)& _val);
 
-    /**
-     * @brief Gets the related equipment.
-     * @return The related equipment.
-     */
+    /// Gets the related equipment.
     SPTR(::fwMedData::Equipment) getEquipment() const;
 
-    /**
-     * @brief Sets the related equipment.
-     * @param _val the related equipment.
-     */
+    /// Sets the related equipment.
     void setEquipment(const SPTR(::fwMedData::Equipment)& _val);
 
-    /**
-     * @brief Gets the type of equipment that originally acquired the data used to create this series.
-     * @return The type of equipment that originally acquired the data used to create this series.
-     */
+    /// Gets the type of equipment that originally acquired the data used to create this series.
     const DicomValueType& getModality () const;
 
-    /**
-     * @brief Sets the type of equipment that originally acquired the data used to create this series.
-     * @param _val the type of equipment that originally acquired the data used to create this series.
-     */
+    /// Sets the type of equipment that originally acquired the data used to create this series.
     void setModality (const DicomValueType& _val);
 
-    /**
-     * @brief Gets the unique identifier of the series.
-     * @return The unique identifier of the series.
-     */
+    /// Gets the unique identifier of the series.
     const DicomValueType& getInstanceUID () const;
 
-    /**
-     * @brief Sets the unique identifier of the series.
-     * @param _val the unique identifier of the series.
-     */
+    /// Sets the unique identifier of the series.
     void setInstanceUID (const DicomValueType& _val);
 
-    /**
-     * @brief Gets the number that identify this series.
-     * @return The number that identify this series.
-     */
+    // Gets the number that identify this series.
     DicomValueType getNumber() const;
 
-    /**
-     * @brief Sets the number that identify this series.
-     * @param _val the number that identify this series.
-     */
+    /// Sets the number that identify this series.
     void setNumber(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the laterality of body part examined.
-     * @return The laterality of body part examined.
-     */
+    /// Gets the laterality of body part examined.
     DicomValueType getLaterality() const;
 
-    /**
-     * @brief Sets the laterality of body part examined.
-     * @param _val the laterality of body part examined.
-     */
+    /// Sets the laterality of body part examined.
     void setLaterality(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the date the series started.
-     * @return The date the series started.
-     */
+    /// Gets the date the series started.
     const DicomValueType& getDate () const;
 
-    /**
-     * @brief Sets the date the series started.
-     * @param _val the date the series started.
-     */
+    /// Sets the date the series started.
     void setDate (const DicomValueType& _val);
 
-    /**
-     * @brief Gets the time the series started.
-     * @return The time the series started.
-     */
+    /// Gets the time the series started.
     const DicomValueType& getTime () const;
 
-    /**
-     * @brief Sets the time the series started.
-     * @param _val the time the series started.
-     */
+    /// Sets the time the series started.
     void setTime (const DicomValueType& _val);
 
-    /**
-     * @brief Gets the name of the physician(s) administering the series.
-     * @return The name of the physician(s) administering the series.
-     */
+    /// Gets the name of the physician(s) administering the series.
     const DicomValuesType& getPerformingPhysiciansName() const;
 
-    /**
-     * @brief Sets the name of the physician(s) administering the series.
-     * @param _val the name of the physician(s) administering the series.
-     */
+    /// Sets the name of the physician(s) administering the series.
     void setPerformingPhysiciansName(const DicomValuesType& _val);
 
-    /**
-     * @brief Gets the description of the conditions under which the Series was performed.
-     * @return The description.
-     */
+    /// Gets the description of the conditions under which the Series was performed.
     const DicomValueType& getProtocolName() const;
 
-    /**
-     * @brief Sets description of the conditions under which the Series was performed.
-     * @param _val the description.
-     */
+    /// Sets description of the conditions under which the Series was performed.
     void setProtocolName(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the description of the series.
-     * @return The description of the series.
-     */
+    /// Gets the description of the series.
     const DicomValueType& getDescription() const;
 
-    /**
-     * @brief Sets the description of the series.
-     * @param _val the description of the series.
-     */
+    /// Sets the description of the series.
     void setDescription(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the body part examined.
-     * @return The body part examined.
-     */
+    /// Gets the body part examined.
     const DicomValueType& getBodyPartExamined() const;
 
-    /**
-     * @brief Sets the body part examined.
-     * @param _val the body part examined.
-     */
+    /// Sets the body part examined.
     void setBodyPartExamined(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the patient position descriptor.
-     * @return The patient position descriptor.
-     */
+    /// Gets the patient position descriptor.
     const DicomValueType& getPatientPosition() const;
 
-    /**
-     * @brief Sets the patient position descriptor.
-     * @param _val the patient position descriptor.
-     */
+    /// Sets the patient position descriptor.
     void setPatientPosition(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the anatomical orientation type.
-     * @return The anatomical orientation.
-     */
+    /// Gets the anatomical orientation type.
     const DicomValueType& getAnatomicalOrientationType() const;
 
-    /**
-     * @brief Sets the anatomical orientation type.
-     * @param _val the anatomical orientation.
-     */
+    /// Sets the anatomical orientation type.
     void setAnatomicalOrientationType(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the user or equipment generated identifier.
-     * @return The identifier.
-     */
+    /// Gets the user or equipment generated identifier.
     const DicomValueType& getPerformedProcedureStepID() const;
 
-    /**
-     * @brief Sets the user or equipment generated identifier.
-     * @param _val the identifier.
-     */
+    /// Sets the user or equipment generated identifier.
     void setPerformedProcedureStepID(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the date on which the performed procedure step started.
-     * @return The date.
-     */
+    /// Gets the date on which the performed procedure step started.
     const DicomValueType& getPerformedProcedureStepStartDate() const;
 
-    /**
-     * @brief Sets the date on which the performed procedure step started.
-     * @param _val the date.
-     */
+    /// Sets the date on which the performed procedure step started.
     void setPerformedProcedureStepStartDate(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the time on which the performed procedure step started.
-     * @return The time.
-     */
+    /// Gets the time on which the performed procedure step started.
     const DicomValueType& getPerformedProcedureStepStartTime() const;
 
-    /**
-     * @brief Sets the time on which the performed procedure step started.
-     * @param _val the time.
-     */
+    /// Sets the time on which the performed procedure step started.
     void setPerformedProcedureStepStartTime(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the date on which the performed procedure step end.
-     * @return The date.
-     */
+    /// Gets the date on which the performed procedure step end.
     const DicomValueType& getPerformedProcedureStepEndDate() const;
 
-    /**
-     * @brief Sets the date on which the performed procedure step end.
-     * @param _val the date.
-     */
+    /// Sets the date on which the performed procedure step end.
     void setPerformedProcedureStepEndDate(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the time on which the performed procedure step end.
-     * @return The time.
-     */
+    /// Gets the time on which the performed procedure step end.
     const DicomValueType& getPerformedProcedureStepEndTime() const;
 
-    /**
-     * @brief Sets the time on which the performed procedure step end.
-     * @param _val the time.
-     */
+    /// Sets the time on which the performed procedure step end.
     void setPerformedProcedureStepEndTime(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the institution-generated description or classification of the procedure step that was performed.
-     * @return The institution-generated description or classification.
-     */
+    /// Gets the institution-generated description or classification of the procedure step that was performed.
     const DicomValueType& getPerformedProcedureStepDescription() const;
 
-    /**
-     * @brief Sets the institution-generated description or classification of the procedure step that was performed.
-     * @param _val the institution-generated description or classification.
-     */
+    /// Sets the institution-generated description or classification of the procedure step that was performed.
     void setPerformedProcedureStepDescription(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the user-defined comments on the performed procedure step.
-     * @return The comments.
-     */
+    /// Gets the user-defined comments on the performed procedure step.
     const DicomValueType& getPerformedProcedureComments() const;
 
-    /**
-     * @brief Sets the user-defined comments on the performed procedure step.
-     * @param _val the comments.
-     */
+    /// Sets the user-defined comments on the performed procedure step.
     void setPerformedProcedureComments(const DicomValueType& _va);
 
 protected:

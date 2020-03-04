@@ -25,7 +25,7 @@
 #include "vtkGdcmIO/helper/ImageDicomStream.hpp"
 
 #include <fwCore/base.hpp>
-#if (SPYLOG_LEVEL >= 4)
+#if SLM_INFO_ENABLED
 #include <fwCore/HiResTimer.hpp>
 #endif
 
@@ -322,7 +322,7 @@ void SeriesDBLazyReader::addSeries(const ::fwMedData::SeriesDB::sptr& _seriesDB,
             }
         }
 
-#if (SPYLOG_LEVEL >= 4)
+#if SLM_INFO_ENABLED
         timer.stop();
         OSLM_INFO("Time in to lazy read data : " << timer.getElapsedTimeInMilliSec());
 #endif

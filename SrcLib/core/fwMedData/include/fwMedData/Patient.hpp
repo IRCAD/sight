@@ -62,52 +62,32 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the patient's full name.
-     * @return The patient's full name.
-     */
+    /// Gets the patient's full name.
     const DicomValueType& getName () const;
 
-    /**
-     * @brief Sets the patient's full name.
-     * @param _val the patient's full name.
-     */
+    /// Sets the patient's full name.
     void setName(const DicomValueType& _val);
 
-    /**
-     * @brief Gets the primary hospital identification number or code for the patient.
-     * @return The primary hospital identification number or code for the patient.
-     */
+    /// Gets the primary hospital identification number or code for the patient.
     const DicomValueType& getPatientId () const;
 
-    /**
-     * @brief Sets the primary hospital identification number or code for the patient.
-     * @param _val the primary hospital identification number or code for the patient.
-     */
+    /// Sets the primary hospital identification number or code for the patient.
     void setPatientId (const DicomValueType& _val);
 
-    /**
-     * @brief Gets the birthdate of the patient.
-     * @return The birthdate of the patient.
-     */
+    /// Gets the birthdate of the patient.
     const DicomValueType& getBirthdate () const;
 
-    /**
-     * @brief Sets the birthdate of the patient.
-     * @param _val the birthdate of the patient.
-     */
+    /// Sets the birthdate of the patient.
     void setBirthdate (const DicomValueType& _val);
 
     /**
      * @brief Gets the sex of the named patient.
      *
      * Enumerated _values: M = male, F = female, O = other
-     *
-     * @return The sex of the named patient.
      */
     const DicomValueType& getSex () const;
 
@@ -115,8 +95,6 @@ public:
      * @brief Sets the sex of the named patient.
      *
      * Enumerated _values: M = male, F = female, O = other
-     *
-     * @param _val the sex of the named patient.
      */
     void setSex (const DicomValueType& _val);
 

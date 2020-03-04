@@ -73,9 +73,9 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /**
      * @brief Adds a DICOM path.
@@ -93,7 +93,7 @@ public:
 
     /**
      * @brief Gets if the instance is available on the local computer
-     * @param _instanceIndex
+     * @param _instanceIndex the instance to check.
      * @return True if the instance is available on the local computer
      */
     FWMEDDATA_API bool isInstanceAvailable(std::size_t _instanceIndex) const;
@@ -127,28 +127,19 @@ public:
         return m_numberOfInstances;
     }
 
-    /**
-     * @brief Sets the number of instances in the series.
-     * @param _val the number of instances in the series.
-     */
+    ///f Sets the number of instances in the series.
     void setNumberOfInstances(std::size_t _val)
     {
         m_numberOfInstances = _val;
     }
 
-    /**
-     * @brief Gets the DICOM container.
-     * @return The DICOM container.
-     */
+    /// Gets the DICOM container.
     const DicomContainerType& getDicomContainer () const
     {
         return m_dicomContainer;
     }
 
-    /**
-     * @brief Sets the DICOM container.
-     * @param _dicomContainer the DICOM container.
-     */
+    /// Sets the DICOM container.
     void setDicomContainer(const DicomContainerType& _dicomContainer)
     {
         m_dicomContainer = _dicomContainer;
@@ -160,55 +151,37 @@ public:
         m_dicomContainer.clear();
     }
 
-    /**
-     * @brief Gets the SOP Class UID.
-     * @return The SOP Class UID.
-     */
+    /// Gets the SOP Class UID.
     const SOPClassUIDContainerType& getSOPClassUIDs() const
     {
         return m_SOPClassUIDs;
     }
 
-    /**
-     * @brief Sets the SOP Class UID.
-     * @param _val the SOP Class UID.
-     */
+    /// Sets the SOP Class UID.
     void setSOPClassUIDs(const SOPClassUIDContainerType& _val)
     {
         m_SOPClassUIDs = _val;
     }
 
-    /**
-     * @brief Gets the computed tag values.
-     * @return The computed tag values.
-     */
+    /// Gets the computed tag values.
     const ComputedTagValueContainerType& getComputedTagValues() const
     {
         return m_computedTagValues;
     }
 
-    /**
-     * @brief Sets the computed tag values.
-     * @param _val the computed tag values.
-     */
+    /// Sets the computed tag values.
     void setComputedTagValues(const ComputedTagValueContainerType& _val)
     {
         m_computedTagValues = _val;
     }
 
-    /**
-     * @brief Gets the first instance number (0 or 1) - Used for PACS preview.
-     * @return The first instance number.
-     */
+    /// Gets the first instance number (0 or 1) - Used for PACS preview.
     std::size_t getFirstInstanceNumber() const
     {
         return m_firstInstanceNumber;
     }
 
-    /**
-     * @brief Sets the first instance number (0 or 1) - Used for PACS preview.
-     * @param _firstInstanceNumber the first instance number.
-     */
+    /// Sets the first instance number (0 or 1) - Used for PACS preview.
     void setFirstInstanceNumber(std::size_t _firstInstanceNumber)
     {
         m_firstInstanceNumber = _firstInstanceNumber;

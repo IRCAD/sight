@@ -78,7 +78,7 @@ private:
     /**
      * @brief Fills the related SeriesDB object with DICOM data extracted from the given files.
      * @param _seriesDB SeriesDB object to be filled with DICOM data
-     * @param _filenames files to extract DICOM data from
+     * @param _dicomDir directory path from which data is read
      */
     void addSeries(const SPTR(::fwMedData::SeriesDB)& _seriesDB, const std::vector< std::string >& _filenames);
 

@@ -76,32 +76,20 @@ public:
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
-     * @param _cache
+     * @param _cache contains all copied objects to avoid duplication.
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Gets the reconstruction container use to store mesh, material and image mask.
-     * @return The reconstruction container.
-     */
+    /// Gets the reconstruction container use to store mesh, material and image mask.
     const ReconstructionVectorType& getReconstructionDB() const;
 
-    /**
-     * @brief Sets the reconstruction container use to store mesh, material and image mask.
-     * @param _val the reconstruction container.
-     */
+    /// Sets the reconstruction container use to store mesh, material and image mask.
     void setReconstructionDB(const ReconstructionVectorType& _val);
 
-    /**
-     * @brief Gets the DICOM reference use to generate valid DICOM Segmentation Surface
-     * @return The DICOM reference
-     */
+    /// Gets the DICOM reference use to generate valid DICOM Segmentation Surface.
     ::fwMedData::DicomSeries::csptr getDicomReference() const;
 
-    /**
-     * @brief Sets the DICOM reference use to generate valid DICOM Segmentation Surface
-     * @param _reference the DICOM reference
-     */
+    /// Sets the DICOM reference use to generate valid DICOM Segmentation Surface.
     void setDicomReference(const ::fwMedData::DicomSeries::csptr& _reference);
 
     /**
