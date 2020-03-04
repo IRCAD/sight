@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -283,18 +283,19 @@ public:
         /// Increment/Decrement operators
         IteratorBase& operator++();
         IteratorBase operator++(int);
-        IteratorBase operator+(difference_type index);
+        IteratorBase operator+(difference_type index) const;
         IteratorBase& operator+=(difference_type index);
         IteratorBase& operator--();
         IteratorBase operator--(int);
-        IteratorBase operator-(difference_type index);
+        IteratorBase operator-(difference_type index) const;
         IteratorBase& operator-=(difference_type index);
 
         difference_type operator+(const IteratorBase& other) const;
         difference_type operator-(const IteratorBase& other) const;
 
         /// Value access operators
-        reference operator*();
+        reference operator*() const;
+        value_type* operator->() const;
 
     private:
 
@@ -604,8 +605,6 @@ inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
 template< typename T >
 inline Array::Iterator<T> Array::begin()
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
     return Iterator<T>(this);
 }
 
@@ -614,9 +613,6 @@ inline Array::Iterator<T> Array::begin()
 template< typename T >
 inline Array::Iterator<T> Array::end()
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
-
     auto itr = Iterator<T>(this);
     itr += static_cast< typename Array::Iterator<T>::difference_type>(this->getSizeInBytes()/sizeof(T));
     return itr;
@@ -627,8 +623,6 @@ inline Array::Iterator<T> Array::end()
 template< typename T >
 inline Array::ConstIterator<T> Array::begin() const
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
     return ConstIterator<T>(this);
 }
 
@@ -637,9 +631,6 @@ inline Array::ConstIterator<T> Array::begin() const
 template< typename T >
 inline Array::ConstIterator<T> Array::end() const
 {
-    SLM_WARN_IF("Array is of type '" + m_type.string() + "', but you try get a buffer of type '" +
-                ::fwTools::Type::create<T>().string() + "'", m_type != ::fwTools::Type::create<T>());
-
     auto itr = ConstIterator<T>(this);
     itr += static_cast< typename Array::ConstIterator<T>::difference_type>(this->getSizeInBytes()/sizeof(T));
     return itr;
@@ -754,9 +745,17 @@ inline bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& o
 //------------------------------------------------------------------------------
 
 template <typename TYPE, bool isConst>
-inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*()
+inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*() const
 {
     return *m_pointer;
+}
+
+//------------------------------------------------------------------------------
+
+template <typename TYPE, bool isConst>
+inline typename Array::IteratorBase<TYPE, isConst>::value_type* Array::IteratorBase<TYPE, isConst>::operator->() const
+{
+    return m_pointer;
 }
 
 //------------------------------------------------------------------------------
@@ -787,7 +786,7 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+(difference_type index) const
 {
     IteratorBase tmp(*this);
     tmp += index;
@@ -832,7 +831,7 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 //------------------------------------------------------------------------------
 
 template <class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-(difference_type index)
+inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-(difference_type index) const
 {
     IteratorBase tmp(*this);
     tmp -= index;

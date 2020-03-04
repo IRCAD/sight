@@ -1,4 +1,4 @@
-vertex_program myBackgroundVertexShader glsl
+vertex_program Background_VP glsl
 {
     source Background_VP.glsl
 
@@ -8,7 +8,7 @@ vertex_program myBackgroundVertexShader glsl
     }
 }
 
-fragment_program myBackgroundFragmentShader glsl
+fragment_program Background_FP glsl
 {
     source Background_FP.glsl
 
@@ -21,11 +21,8 @@ fragment_program myBackgroundFragmentShader glsl
     }
 }
 
-// Default background material of Ogre Generic Scene
-// Use it only with an ::Ogre::Rectangle2D used for background
-material DefaultBackground
+material Background
 {
-    // Default technique
     technique
     {
         pass
@@ -35,11 +32,11 @@ material DefaultBackground
             depth_check false
             depth_write false
 
-            vertex_program_ref myBackgroundVertexShader
+            vertex_program_ref Background_VP
             {
             }
 
-            fragment_program_ref myBackgroundFragmentShader
+            fragment_program_ref Background_FP
             {
             }
         }

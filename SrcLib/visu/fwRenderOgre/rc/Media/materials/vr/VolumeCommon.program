@@ -1,46 +1,6 @@
-
-//---------------------------------------------------------------------------
-
-fragment_program VolumeNormals_FP glsl
-{
-    source VolumeNormals.glsl
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program RayUtils_FP glsl
 {
     source RayUtils.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program VolumeRay_FP glsl
-{
-    source VolumeRay.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program VolumeTransferFunctionSampling_FP glsl
-{
-    attach TransferFunction_FP
-    source VolumeSampling.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program VolumePreIntegratedSampling_FP glsl
-{
-    preprocessor_defines PREINTEGRATION=1
-    source VolumeSampling.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program VolumeRayCompositing_FP glsl
-{
-    source VolumeRayCompositing.glsl
 }
 
 //---------------------------------------------------------------------------
@@ -75,3 +35,39 @@ fragment_program VolumeColorBleedingAdvancedLighting_FP glsl
 }
 
 //---------------------------------------------------------------------------
+
+fragment_program VolumeNormals_FP glsl
+{
+    source VolumeNormals.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeRay_FP glsl
+{
+    source VolumeRay.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeRayCompositing_FP glsl
+{
+    source VolumeRayCompositing.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumePreIntegratedSampling_FP glsl
+{
+    preprocessor_defines PREINTEGRATION=1
+    source VolumeSampling.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolumeTransferFunctionSampling_FP glsl
+{
+    attach TransferFunction_FP
+    source VolumeSampling.glsl
+}
+

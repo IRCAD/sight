@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -91,12 +91,12 @@ void Material::updateOptionsMode(int _optionsMode)
                 normalsPass->setName(s_NORMALS_PASS);
 
                 // Vertex shader
-                normalsPass->setVertexProgram("Default/Normal_VP");
+                normalsPass->setVertexProgram("Normals_VP");
 
                 std::string gpName = depthOnly ? "DepthPeeling/depthMap/" : "";
                 gpName += (_optionsMode == ::fwData::Material::NORMALS) ?
-                          "VerticesNormalsDisplay_GP" :
-                          "CellsNormalsDisplay_GP";
+                          "VerticesNormals_GP" :
+                          "CellsNormals_GP";
 
                 normalsPass->setGeometryProgram(gpName);
 
@@ -169,7 +169,7 @@ void Material::updatePolygonMode(int _polygonMode)
                 edgePass->setName(s_EDGE_PASS);
 
                 // Then we switch the vertex shader...
-                edgePass->setVertexProgram("Default/Edge_VP");
+                edgePass->setVertexProgram("Edge_VP");
 
                 // ... and the fragment shader
                 std::string fpName = edgePass->getFragmentProgramName();
