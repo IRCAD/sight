@@ -81,7 +81,7 @@ public:
 
     /**
      * @brief Gets the user or equipment generated study identifier.
-     * @return The the identifier.
+     * @return The identifier.
      */
     const DicomValueType& getStudyID() const;
 
@@ -222,16 +222,16 @@ private:
     /// Defines the description of this study.
     DicomValueType m_description;
 
-    /// Defines the the patient's age during this study.
+    /// Defines the patient's age during this study.
     DicomValueType m_patientAge;
 
-    /// Defines the the patient's size during this study.
+    /// Defines the patient's size during this study.
     DicomValueType m_patientSize;
 
-    /// Defines the the patient's weight during this study.
+    /// Defines the patient's weight during this study.
     DicomValueType m_patientWeight;
 
-    /// Defines the the patient's body mass during this study.
+    /// Defines the patient's body mass during this study.
     DicomValueType m_patientBodyMassIndex;
 
 };

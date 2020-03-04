@@ -62,16 +62,16 @@ public:
 
     /**
      * @brief Defines shallow copy.
-     * @param _source the source object where find data.
+     * @param _source the source object to copy into this one.
      */
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
-     * @param _source the source object where find data.
+     * @param _source the source object to copy into this one.
      * @param _cache
      */
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache ) override;
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /**
      * @brief Gets the image.
@@ -80,8 +80,7 @@ public:
     SPTR(::fwData::Image) getImage() const;
 
     /**
-     * @brief Sets the image data..
-     * @param _source the source object where find data.
+     * @brief Sets the image data.
      * @param _image the image data container.
      */
     void setImage(const SPTR(::fwData::Image)& _image);
@@ -135,25 +134,25 @@ public:
     void setContrastVolume(const DicomValueType& _val);
 
     /**
-     * @brief Gets the time of start of injection.
+     * @brief Gets injection start time.
      * @return The time.
      */
     const DicomValueType& getContrastStartTime() const;
 
     /**
-     * @brief Sets the time of start of injection.
+     * @brief Sets the injection start time.
      * @param _val the time.
      */
     void setContrastStartTime(const DicomValueType& _val);
 
     /**
-     * @brief Gets the time of end of injection.
+     * @brief Gets the injection end time.
      * @return The time.
      */
     const DicomValueType& getContrastStopTime() const;
 
     /**
-     * @brief Sets the time of end of injection.
+     * @brief Sets injection end time.
      * @param _val the time.
      */
     void setContrastStopTime(const DicomValueType& _val);
@@ -219,25 +218,25 @@ public:
     void setContrastIngredientConcentration(const DicomValueType& _val);
 
     /**
-     * @brief Gets the date acquisition of data that resulted in this image started.
+     * @brief Gets the acquisition date of data that resulted in this image started.
      * @return The date.
      */
     const DicomValueType& getAcquisitionDate() const;
 
     /**
-     * @brief Sets the date acquisition of data that resulted in this image started.
+     * @brief Sets the acquisition date of data that resulted in this image started.
      * @param _val the date.
      */
     void setAcquisitionDate(const DicomValueType& _val);
 
     /**
-     * @brief Gets the time acquisition of data that resulted in this image started.
+     * @brief Gets the acquisition time of data that resulted in this image started.
      * @return The time.
      */
     const DicomValueType& getAcquisitionTime() const;
 
     /**
-     * @brief Sets the time acquisition of data that resulted in this image started.
+     * @brief Sets the acquisition time of data that resulted in this image started.
      * @param _val the time.
      */
     void setAcquisitionTime(const DicomValueType& _val);
@@ -259,10 +258,10 @@ protected:
     /// Defines the volume injected in milliliters of diluted contrast agent.
     DicomValueType m_contrastBolusVolume;
 
-    /// Defines the time of start of injection.
+    /// Defines the injection start time.
     DicomValueType m_contrastBolusStartTime;
 
-    /// Defines the time of end of injection.
+    /// Defines the injection end time.
     DicomValueType m_contrastBolusStopTime;
 
     /// Defines the total amount in milliliters of the undiluted contrast agent.

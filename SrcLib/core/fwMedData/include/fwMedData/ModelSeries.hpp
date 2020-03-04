@@ -69,13 +69,13 @@ public:
 
     /**
      * @brief Defines shallow copy.
-     * @param _source the source object where find data.
+     * @param _source the source object to copy into this one.
      */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
-     * @param _source the source object where find data.
+     * @param _source the source object to copy into this one.
      * @param _cache
      */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
@@ -108,11 +108,11 @@ public:
      * @name Signals
      * @{
      */
-    /// Defines the type of signal sent when a reconstructions are added.
+    /// Defines the type of signal sent when reconstructions are added.
     typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
 
-    /// Defines the type of signal sent when a reconstructions are removed.
+    /// Defines the type of signal sent when a reconstruction is added.
     typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
     FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
     /**

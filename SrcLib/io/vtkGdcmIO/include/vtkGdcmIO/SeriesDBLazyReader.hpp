@@ -101,7 +101,7 @@ private:
     /**
      * @brief Tries estimating Z spacing of an image DICOM, returns 0 if it is not a success.
      * @param _seriesFiles the sorted list of all series fiels.
-     * @return The estimated Z spacing.
+     * @return The estimated Z spacing, or 0 if it is not a success.
      */
     double computeZSpacing(const SeriesFilesType& _seriesFiles);
 
@@ -127,7 +127,7 @@ private:
      * @brief Searches and sets equipment information.
      * @param _scanner the gdcm scanner.
      * @param _dcmFile the main file.
-     * @param _equipment the equipment where fill data.
+     * @param _equipment the equipment where to fill data.
      */
     void fillEquipment(gdcm::Scanner& _scanner, const std::string& _dcmFile, SPTR(::fwMedData::Equipment) _equipment);
 

@@ -70,7 +70,7 @@ private:
 
     /**
      * @brief Creates a SeriesDB from the data contained in the given directory path.
-     * @param _dicomDir path from which data is read
+     * @param _dicomDir directory path from which data is read
      * @return a new SeriesDB object
      */
     SPTR(::fwMedData::SeriesDB) createSeriesDB(const std::filesystem::path& _dicomDir);

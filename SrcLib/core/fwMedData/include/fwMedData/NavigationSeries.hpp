@@ -64,13 +64,13 @@ public:
 
     /**
      * @brief Defines shallow copy.
-     * @param _source the source object where find data.
+     * @param _source the source object to copy into this one.
      */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy.
-     * @param _source the source object where find data.
+     * @param _source the source object to copy into this one.
      * @param _cache
      */
     FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
@@ -109,7 +109,7 @@ public:
     FWMEDDATA_API void eraseMove(TimestampType _time);
 
     /**
-     * @brief Removes thelookAt point (if one exists) associate with the specified timestamp.
+     * @brief Removes the lookAt point (if one exists) associate with the specified timestamp.
      * @param _time the timestamp.
      */
     FWMEDDATA_API void eraseLookAt(TimestampType _time);
