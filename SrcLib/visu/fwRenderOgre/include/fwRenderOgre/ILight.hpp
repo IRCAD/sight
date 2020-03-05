@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,6 @@ namespace fwRenderOgre
 
 /**
  * @brief Defines the service interface managing the light adaptor.
- *
  */
 class FWRENDEROGRE_CLASS_API ILight : public ::fwRenderOgre::IAdaptor,
                                       public ::fwRenderOgre::ITransformable
@@ -53,13 +52,11 @@ class FWRENDEROGRE_CLASS_API ILight : public ::fwRenderOgre::IAdaptor,
 
 public:
 
-    typedef ::fwRenderOgre::lightFactory::Key Key;
-
     /**
      * @brief Class used to register a class factory in factory registry.
-     * This class defines also the object factory ( 'create' )
+     * This class defines also the object factory ( 'create' ).
      *
-     * @tparam T Factory product type
+     * @tparam T Factory product type.
      */
     template <typename T>
     class Registrar
@@ -71,87 +68,173 @@ public:
         }
     };
 
+    /// Defines the key used for the factory.
+    FWRENDEROGRE_API static const std::string REGISTRY_KEY;
+
+    typedef ::fwRenderOgre::lightFactory::Key Key;
+
     fwCoreClassMacro(ILight, ::fwRenderOgre::IAdaptor)
 
-    typedef std::string FactoryRegistryKeyType;
-
-    FWRENDEROGRE_API static const FactoryRegistryKeyType REGISTRY_KEY;
-
+    /// Defines point type light.
     FWRENDEROGRE_API static const std::string s_POINT_LIGHT;
+
+    /// Defines directional type light.
     FWRENDEROGRE_API static const std::string s_DIRECTIONAL_LIGHT;
+
+    /// Defines spto type light.
     FWRENDEROGRE_API static const std::string s_SPOT_LIGHT;
 
+    /// Defines the range of the phi and theta value of directional lights.
     FWRENDEROGRE_API static const int s_OFFSET_RANGE;
 
-    /// ILight factory method.
+    /**
+     * @brief Creates a light adaptor.
+     * @param _diffuse diffuse color of the light.
+     * @param _specular specular color of the light.
+     * @return A new ligh adaptor with registered inputs.
+     * @deprecated This method have been moved to @ref createLightAdaptor(::fwData::Color::sptr, ::fwData::Color::sptr)
+     */
     [[deprecated("Deprecated constructor. Removed in sight 21.0")]]
     FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::TransformationMatrix3D::sptr,
                                                             ::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
 
-    /// ILight factory method.
+    /**
+     * @brief Creates a light adaptor.
+     * @param _diffuse diffuse color of the light.
+     * @param _specular specular color of the light.
+     * @return A new ligh adaptor with registered inputs.
+     */
     FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
 
-    /// ILight stopping and unregistrating method.
+    /**
+     * @brief Destroys a light adaptor.
+     * @param _lightManager the light adaptor to unregister.
+     */
     FWRENDEROGRE_API static void destroyLightAdaptor(ILight::sptr _lightManager);
 
-    /// Constructor. Do nothing.
+    /// Does nothing.
     FWRENDEROGRE_API ILight();
 
-    /// Destructor. Do nothing.
+    /// Does nothing.
     FWRENDEROGRE_API virtual ~ILight();
 
-    /// Light name getter.
+    /**
+     * @brief Gets the name of the light.
+     * @return The name of the light.
+     */
     FWRENDEROGRE_API virtual const std::string& getName() const = 0;
 
-    /// Light name setter.
+    /**
+     * @brief Sets the name of the light.
+     * @param _name the name of the light.
+     */
     FWRENDEROGRE_API virtual void setName(const std::string& _name) = 0;
 
-    /// Light type getter.
+    /**
+     * @brief Gets the Orge light type .
+     * @return The type of the light.
+     */
     FWRENDEROGRE_API virtual ::Ogre::Light::LightTypes getType() const = 0;
 
-    /// Light type setter.
+    /**
+     * @brief Sets the type of the light.
+     * @param _type the type of light.
+     */
     FWRENDEROGRE_API virtual void setType(::Ogre::Light::LightTypes _type) = 0;
 
-    /// Diffuse color getter.
+    /**
+     * @brief Gets the Ogre diffuse color of the light.
+     * @return The diffuse color of the light.
+     */
     FWRENDEROGRE_API virtual ::Ogre::ColourValue getDiffuseColor() const = 0;
 
-    /// Diffuse color setter using Ogre::ColourValue.
+    /**
+     * @brief Sets the diffuse color of the light.
+     * @param _diffuseColor the Ogre diffuse color of the light.
+     */
     FWRENDEROGRE_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) = 0;
 
-    /// Specular color getter.
+    /**
+     * @brief Gets the Ogre specular color of the light.
+     * @return The specular color of the light.
+     */
     FWRENDEROGRE_API virtual ::Ogre::ColourValue getSpecularColor() const = 0;
 
-    /// Specular color setter using Ogre::ColourValue.
+    /**
+     * @brief Sets the specular color of the light.
+     * @param _diffuseColor the Ogre specular color of the light.
+     */
     FWRENDEROGRE_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) = 0;
 
-    /// Parent tranform id setter.
+    /**
+     * @brief Sets the parent node transform ID.
+     * @param _parentTransformName the ID of the node.
+     * @deprecated This method is no longer supported.
+     */
     [[deprecated("Deprecated method. Removed in sight 21.0")]]
     FWRENDEROGRE_API virtual void setParentTransformName(
         const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) = 0;
 
-    /// Light activation flag getter.
+    /**
+     * @brief Indicates if the light is activated.
+     * @return True if the light is activated.
+     */
     FWRENDEROGRE_API virtual bool isSwitchedOn() const = 0;
 
-    /// Light activation flag setter.
+    /**
+     * @brief Sets the light activation status.
+     * @param _on set to true to enable the light.
+     */
     FWRENDEROGRE_API virtual void switchOn(bool _on) = 0;
 
-    /// Theta offset getter.
+    /**
+     * @brief Gets the angle in degrees defining the rotation of the light around x axis.
+     * @return The theta offset of the light.
+     */
     FWRENDEROGRE_API virtual float getThetaOffset() const = 0;
 
-    /// Theta offset setter.
-    FWRENDEROGRE_API virtual void setThetaOffset(float _theta) = 0;
+    /**
+     * @brief Sets the angle in degrees defining the rotation of the light around x axis.
+     * @param _thetaOffset the value of the thta offset.
+     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
+     */
+    FWRENDEROGRE_API virtual void setThetaOffset(float _thetaOffset) = 0;
 
-    /// Phi offset getter.
+    /**
+     * @brief Gets the angle in degrees defining the rotation of the light around y axis.
+     * @return The phi of the light.
+     */
     FWRENDEROGRE_API virtual float getPhiOffset() const = 0;
 
-    /// Phi offset setter.
-    FWRENDEROGRE_API virtual void setPhiOffset(float _phi) = 0;
+    /**
+     * @brief Sets the angle in degrees defining the rotation of the light around y axis.
+     * @param _phiOffset the phi of the thta offset.
+     * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
+     */
+    FWRENDEROGRE_API virtual void setPhiOffset(float _phiOffset) = 0;
 
-    /// Indicates if the light is attached to a parent node or not.
+    /**
+     * @brief Indicates if the light is attached to a parent node or not.
+     * @return True is the light is attached to a node.
+     * @deprecated This method is no longer supported.
+     */
     [[deprecated("Deprecated method. Removed in sight 21.0")]]
     FWRENDEROGRE_API virtual bool isOrphanNode() const = 0;
+
+    /**
+     * @brief Enables the light visual feedback.
+     * @param _enable the visual feedback visibility state.
+     */
+    FWRENDEROGRE_API virtual void enableVisualFeedback(bool _enable) = 0;
+
+    /**
+     * @brief Indicates if the visual feedback is enabled.
+     * @return True if the visual feedback is activated.
+     */
+    FWRENDEROGRE_API virtual bool isVisualFeedbackOn() const = 0;
+
 };
 
 } // namespace fwRenderOgre

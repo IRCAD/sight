@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,6 +65,8 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
+#include <iomanip>
+
 namespace uiMedDataQt
 {
 namespace widget
@@ -74,8 +76,8 @@ const int ActivityDataView::s_UID_ROLE = Qt::UserRole + 1;
 
 //-----------------------------------------------------------------------------
 
-ActivityDataView::ActivityDataView(QWidget* parent) :
-    QTabWidget(parent)
+ActivityDataView::ActivityDataView(QWidget* _parent) :
+    QTabWidget(_parent)
 {
 }
 
@@ -96,12 +98,12 @@ void ActivityDataView::clear()
 
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
+bool ActivityDataView::eventFilter(QObject* _obj, QEvent* _event)
 {
     // get dropped data in tree widget
-    if (event->type() == QEvent::Drop)
+    if (_event->type() == QEvent::Drop)
     {
-        QDropEvent* dropEvent = static_cast<QDropEvent*>(event);
+        QDropEvent* dropEvent = static_cast<QDropEvent*>(_event);
 
         size_t index = static_cast<size_t>(this->currentIndex());
         ::fwActivities::registry::ActivityRequirement requirement = m_activityInfo.requirements[index];
@@ -114,7 +116,7 @@ bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
         QDataStream stream(&encoded, QIODevice::ReadOnly);
 
         QList<QTreeWidgetItem* > itemList;
-        QTreeWidgetItem* item;
+        QTreeWidgetItem* item = nullptr;
 
         // Get the dropped item
         while (!stream.atEnd())
@@ -151,7 +153,7 @@ bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
             for (QTreeWidgetItem* itemToAdd: itemList)
             {
                 itemToAdd->setFlags(itemToAdd->flags() & ~Qt::ItemIsDropEnabled);
-                std::string uid = itemToAdd->data(int(ColumnType::NAME), s_UID_ROLE).toString().toStdString();
+                std::string uid = itemToAdd->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
                 if (!uid.empty())
                 {
                     // insert the object if it is in the required type
@@ -166,9 +168,9 @@ bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
         }
         return true;
     }
-    else if (event->type() == QEvent::KeyPress)
+    else if (_event->type() == QEvent::KeyPress)
     {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(_event);
         if (keyEvent->key() == Qt::Key_Delete)
         {
             this->removeSelectedObjects();
@@ -177,31 +179,31 @@ bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
     }
 
     // standard event processing
-    return QObject::eventFilter(obj, event);
+    return QObject::eventFilter(_obj, _event);
 
 }
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityInfo& info)
+void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityInfo& _info)
 {
     namespace ActReg = ::fwActivities::registry;
 
-    m_activityInfo = info;
+    m_activityInfo = _info;
     this->clear();
 
-    ActReg::ActivityInfo::RequirementsType reqVect = m_activityInfo.requirements;
+    const ActReg::ActivityInfo::RequirementsType& reqVect = m_activityInfo.requirements;
     for(const ActReg::ActivityRequirement& req :  reqVect)
     {
-        QVBoxLayout* layout = new QVBoxLayout();
-        QWidget* widget     = new QWidget();
+        QVBoxLayout* const layout = new QVBoxLayout();
+        QWidget* const widget     = new QWidget();
         widget->setLayout(layout);
 
-        QHBoxLayout* infoLayout = new QHBoxLayout();
+        QHBoxLayout* const infoLayout = new QHBoxLayout();
         layout->addLayout(infoLayout);
 
-        QVBoxLayout* typeLayout = new QVBoxLayout();
-        QVBoxLayout* txtLayout  = new QVBoxLayout();
+        QVBoxLayout* const typeLayout = new QVBoxLayout();
+        QVBoxLayout* const txtLayout  = new QVBoxLayout();
         infoLayout->addLayout(typeLayout);
         infoLayout->addSpacerItem(new QSpacerItem(20, 0));
         infoLayout->addLayout(txtLayout, 1);
@@ -209,10 +211,10 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
         ObjectIconMapType::iterator iter = m_objectIcons.find(req.type);
         if (iter != m_objectIcons.end())
         {
-            QString filename = QString::fromStdString(iter->second);
+            const QString filename = QString::fromStdString(iter->second);
 
             this->addTab(widget, QIcon(filename), QString::fromStdString(req.name));
-            QLabel* icon = new QLabel();
+            QLabel* const icon = new QLabel();
             icon->setAlignment(Qt::AlignHCenter);
             QPixmap pixmap(filename);
             icon->setPixmap(pixmap.scaled(100, 100, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -223,21 +225,21 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             this->addTab(widget, QString::fromStdString(req.name));
         }
 
-        QLabel* type = new QLabel(QString("<small>%1</small>").arg(QString::fromStdString(req.type)));
+        QLabel* const type = new QLabel(QString("<small>%1</small>").arg(QString::fromStdString(req.type)));
         type->setAlignment(Qt::AlignHCenter);
         typeLayout->addWidget(type);
 
-        QLabel* name = new QLabel(QString("<h2>%1</h2>").arg(QString::fromStdString(req.name)));
+        QLabel* const name = new QLabel(QString("<h2>%1</h2>").arg(QString::fromStdString(req.name)));
         name->setStyleSheet("QLabel { font: bold; }");
         txtLayout->addWidget(name);
 
-        QLabel* description = new QLabel(QString::fromStdString(req.description));
+        QLabel* const description = new QLabel(QString::fromStdString(req.description));
         description->setStyleSheet("QLabel { font: italic; }");
         txtLayout->addWidget(description);
 
         txtLayout->addStretch();
 
-        QLabel* nb = new QLabel();
+        QLabel* const nb = new QLabel();
         nb->setStyleSheet("QLabel { font: bold; }");
         layout->addWidget(nb);
 
@@ -266,34 +268,44 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             nb->setText(nbObj);
         }
 
-        QHBoxLayout* treeLayout   = new QHBoxLayout();
-        QVBoxLayout* buttonLayout = new QVBoxLayout();
+        QStringList headers;
+        headers << "" << "description";
+
+        QHBoxLayout* const treeLayout   = new QHBoxLayout();
+        QVBoxLayout* const buttonLayout = new QVBoxLayout();
         if (req.type == "::fwData::String" || req.type == "::fwData::Boolean"
             || req.type == "::fwData::Integer" || req.type == "::fwData::Float"
             || req.type == "::fwData::TransformationMatrix3D")
         {
-            QPushButton* buttonNew = new QPushButton("New");
+            QPushButton* const buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
             buttonLayout->addWidget(buttonNew);
             QObject::connect(buttonNew, &QPushButton::clicked, this, &ActivityDataView::createNewObject);
         }
 
-        QPushButton* buttonAdd    = new QPushButton("Load");
-        QPushButton* buttonRemove = new QPushButton("Remove");
-        QPushButton* buttonClear  = new QPushButton("Clear");
+        QPushButton* const buttonAdd    = new QPushButton("Load");
+        QPushButton* const buttonRemove = new QPushButton("Remove");
+        QPushButton* const buttonClear  = new QPushButton("Clear");
         buttonLayout->addWidget(buttonAdd);
         buttonAdd->setToolTip(QString("Load an object of type '%1'.").arg(QString::fromStdString(req.type)));
 
-        // If type is a series, we add a button to import the data from a SeriesDB
+        // If the type is a Series, we add a button to import the data from a SeriesDB,
+        // we also improve the tree header by adding more informations.
         ::fwData::Object::sptr newObject = ::fwData::factory::New(req.type);
         if (newObject && ::fwMedData::Series::dynamicCast(newObject))
         {
-            QPushButton* buttonAddFromSDB = new QPushButton("Import");
+            QPushButton* const buttonAddFromSDB = new QPushButton("Import");
             buttonLayout->addWidget(buttonAddFromSDB);
             buttonAddFromSDB->setToolTip(QString("Import a SeriesDB and extract the N first objects of type '%1', with "
                                                  "N the maximum number of required objects.").
                                          arg(QString::fromStdString(req.type)));
             QObject::connect(buttonAddFromSDB, &QPushButton::clicked, this, &ActivityDataView::importObjectFromSDB);
+
+            headers.clear();
+            headers << "" << "name" << "sex" << "birthdate"
+                    << "modality" << "description"
+                    << "study description" << "date" << "time"
+                    << "patient age";
         }
 
         buttonLayout->addWidget(buttonRemove);
@@ -304,14 +316,11 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
         QObject::connect(buttonAdd, &QPushButton::clicked, this, &ActivityDataView::importObject);
         QObject::connect(buttonRemove, &QPushButton::clicked, this, &ActivityDataView::removeSelectedObjects);
         QObject::connect(buttonClear, &QPushButton::clicked, this, &ActivityDataView::clearTree);
+
         treeLayout->addLayout(buttonLayout);
-
-        QStringList headers;
-        headers << "" << "object type" << "description" <<  "patient name" << "study description" << "" << "" << ""
-                << "" << "" << "" << "";
-        tree->setHeaderLabels(headers);
-
         treeLayout->addWidget(tree, 1);
+
+        tree->setHeaderLabels(headers);
         tree->setAlternatingRowColors(true);
         tree->setAcceptDrops(true);
         tree->setDragDropMode(QAbstractItemView::DropOnly);
@@ -333,14 +342,15 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& activitySeries)
+void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& _activitySeries)
 {
     namespace ActReg = ::fwActivities::registry;
     ::fwActivities::registry::ActivityInfo info;
-    info           = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    info =
+        ::fwActivities::registry::Activities::getDefault()->getInfo(_activitySeries->getActivityConfigId());
     m_activityInfo = info;
 
-    ::fwData::Composite::sptr data = activitySeries->getData();
+    ::fwData::Composite::sptr activitySeriesData = _activitySeries->getData();
 
     this->fillInformation(info);
 
@@ -348,7 +358,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
     {
         ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[i];
 
-        ::fwData::Object::sptr obj = data->at< ::fwData::Object >(req.name);
+        ::fwData::Object::sptr obj = activitySeriesData->at< ::fwData::Object >(req.name);
         if (obj)
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) ||
@@ -397,12 +407,12 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ActivityDataView::checkData(size_t index, std::string& errorMsg)
+::fwData::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _errorMsg)
 {
-    ::fwData::Object::sptr data;
+    ::fwData::Object::sptr object;
 
-    ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
-    QPointer<QTreeWidget> tree = m_treeWidgets[index];
+    ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[_index];
+    QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
     bool ok = true;
     if ((req.minOccurs == 1 && req.maxOccurs == 1) ||
@@ -414,29 +424,29 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
             QTreeWidgetItem* item = tree->topLevelItem(0);
 
             std::string uid =
-                item->data(int(ColumnType::NAME), ActivityDataView::s_UID_ROLE).toString().toStdString();
+                item->data(int(ColumnCommunType::ID), ActivityDataView::s_UID_ROLE).toString().toStdString();
 
             ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
             if (obj && obj->isA(req.type))
             {
-                data = obj;
+                object = obj;
             }
             else
             {
-                ok        = false;
-                errorMsg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
+                ok         = false;
+                _errorMsg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
             }
         }
         else
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
-                data = ::fwData::factory::New(req.type);
+                object = ::fwData::factory::New(req.type);
             }
             else
             {
-                ok        = false;
-                errorMsg += "\n - The parameter '" + req.name + "' is required but is not defined.";
+                ok         = false;
+                _errorMsg += "\n - The parameter '" + req.name + "' is required but is not defined.";
             }
         }
     }
@@ -446,15 +456,15 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
 
         if (nbObj < req.minOccurs)
         {
-            ok        = false;
-            errorMsg += "\n - The parameter '" + req.name + "' must contain at least " +
-                        std::to_string(req.minOccurs) + " elements.";
+            ok         = false;
+            _errorMsg += "\n - The parameter '" + req.name + "' must contain at least " +
+                         std::to_string(req.minOccurs) + " elements.";
         }
         else if (nbObj > req.maxOccurs)
         {
-            ok        = false;
-            errorMsg += "\n - The parameter '" + req.name + "' must contain at most " +
-                        std::to_string(req.maxOccurs) + " elements.";
+            ok         = false;
+            _errorMsg += "\n - The parameter '" + req.name + "' must contain at most " +
+                         std::to_string(req.maxOccurs) + " elements.";
         }
         else
         {
@@ -466,7 +476,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                 {
                     QTreeWidgetItem* itemData = tree->topLevelItem(int(i));
                     std::string uid           =
-                        itemData->data(int(ColumnType::NAME), s_UID_ROLE).toString().toStdString();
+                        itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
                     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
                     if (obj  && obj->isA(req.type))
@@ -475,13 +485,13 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     }
                     else
                     {
-                        ok        = false;
-                        errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
+                        ok         = false;
+                        _errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
                     }
                 }
                 if (ok)
                 {
-                    data = vector;
+                    object = vector;
                 }
             }
             else // container == composite
@@ -492,7 +502,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                 {
                     QTreeWidgetItem* itemData = tree->topLevelItem(int(i));
                     std::string uid           =
-                        itemData->data(int(ColumnType::NAME), s_UID_ROLE).toString().toStdString();
+                        itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
                     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
                     if (obj  && obj->isA(req.type))
@@ -510,35 +520,35 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                     }
                     else
                     {
-                        ok        = false;
-                        errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
+                        ok         = false;
+                        _errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
                     }
                 }
                 if (ok)
                 {
-                    data = composite;
+                    object = composite;
                 }
 
             }
         }
     }
 
-    if (data && !req.validator.empty())
+    if (object && !req.validator.empty())
     {
         /// Process object validator
         ::fwActivities::IValidator::sptr validator           = ::fwActivities::validator::factory::New(req.validator);
         ::fwActivities::IObjectValidator::sptr dataValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
         SLM_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
 
-        ::fwActivities::IValidator::ValidationType validation = dataValidator->validate(data);
+        ::fwActivities::IValidator::ValidationType validation = dataValidator->validate(object);
         if(!validation.first)
         {
-            errorMsg += "\n" + validation.second;
-            data      = nullptr;
+            _errorMsg += "\n" + validation.second;
+            object     = nullptr;
         }
     }
 
-    return data;
+    return object;
 }
 
 //-----------------------------------------------------------------------------
@@ -547,7 +557,7 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
 {
     namespace ActReg = ::fwActivities::registry;
 
-    ::fwData::Composite::sptr data = actSeries->getData();
+    ::fwData::Composite::sptr composite = actSeries->getData();
 
     bool ok = true;
     errorMsg += "The required data are not correct:";
@@ -560,7 +570,7 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
         ::fwData::Object::sptr obj = this->checkData(i, msg);
         if (obj)
         {
-            (*data)[req.name] = obj;
+            (*composite)[req.name] = obj;
         }
         else
         {
@@ -738,20 +748,20 @@ void ActivityDataView::importObjectFromSDB()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ActivityDataView::readObject(const std::string& classname,
-                                                    const std::string& ioSelectorSrvConfig)
+::fwData::Object::sptr ActivityDataView::readObject(const std::string& _classname,
+                                                    const std::string& _ioSelectorSrvConfig)
 {
     ::fwData::Object::sptr obj;
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add("::uiIO::editor::SIOSelector");
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(ioSelectorSrvConfig,
+    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::SIOSelector");
 
     auto ioConfig  = ::fwRuntime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
-    srvConfig.add("type.<xmlattr>.class", classname); // add the class of the output object
+    srvConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
 
     try
     {
@@ -782,57 +792,101 @@ void ActivityDataView::importObjectFromSDB()
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::csptr& obj)
+void ActivityDataView::addObjectItem(size_t _index, const ::fwData::Object::csptr& _obj)
 {
-    QPointer<QTreeWidget> tree = m_treeWidgets[index];
+    QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
-    QTreeWidgetItem* newItem = new QTreeWidgetItem();
+    QTreeWidgetItem* const newItem = new QTreeWidgetItem();
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
-    newItem->setData(int(ColumnType::NAME), s_UID_ROLE, QVariant(QString::fromStdString(obj->getID())));
-    newItem->setText(int(ColumnType::TYPE), QString::fromStdString(obj->getClassname()));
+    newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->getID())));
 
-    // TODO add more information about object
-    ::fwMedData::Series::csptr series           = ::fwMedData::Series::dynamicCast(obj);
-    ::fwData::String::csptr strObj              = ::fwData::String::dynamicCast(obj);
-    ::fwData::Integer::csptr intObj             = ::fwData::Integer::dynamicCast(obj);
-    ::fwData::Float::csptr floatObj             = ::fwData::Float::dynamicCast(obj);
-    ::fwData::Boolean::csptr boolObj            = ::fwData::Boolean::dynamicCast(obj);
-    ::fwData::TransformationMatrix3D::csptr trf = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+    const ::fwMedData::Series::csptr series           = ::fwMedData::Series::dynamicCast(_obj);
+    const ::fwData::String::csptr strObj              = ::fwData::String::dynamicCast(_obj);
+    const ::fwData::Integer::csptr intObj             = ::fwData::Integer::dynamicCast(_obj);
+    const ::fwData::Float::csptr floatObj             = ::fwData::Float::dynamicCast(_obj);
+    const ::fwData::Boolean::csptr boolObj            = ::fwData::Boolean::dynamicCast(_obj);
+    const ::fwData::TransformationMatrix3D::csptr trf = ::fwData::TransformationMatrix3D::dynamicCast(_obj);
     if (series)
     {
-        newItem->setText(int(ColumnType::NAME), QString::fromStdString(series->getModality()));
-        newItem->setText(int(ColumnType::DESC), QString::fromStdString(series->getDescription()));
-        newItem->setText(int(ColumnType::PATIENT), QString::fromStdString(series->getPatient()->getName()));
-        newItem->setText(int(ColumnType::STUDY), QString::fromStdString(series->getStudy()->getDescription()));
+        newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
+        newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatient()->getSex()));
+        std::string birthdate = series->getPatient()->getBirthdate();
+        if(!birthdate.empty() && birthdate != "unknown")
+        {
+            birthdate.insert(4, "-");
+            birthdate.insert(7, "-");
+        }
+        newItem->setText(int(ColumnSeriesType::BIRTHDATE), QString::fromStdString(birthdate));
+
+        newItem->setText(int(ColumnSeriesType::MODALITY), QString::fromStdString(series->getModality()));
+        newItem->setText(int(ColumnSeriesType::MODALITY_DESC), QString::fromStdString(series->getDescription()));
+
+        newItem->setText(int(ColumnSeriesType::STUDY_DESC),
+                         QString::fromStdString(series->getStudy()->getDescription()));
+        std::string date = series->getStudy()->getDate();
+        if(!date.empty() && date != "unknown")
+        {
+            date.insert(4, "-");
+            date.insert(7, "-");
+        }
+        newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
+
+        std::string time = series->getStudy()->getTime();
+        if(!time.empty() && time != "unknown")
+        {
+            time.insert(2, ":");
+            time.insert(5, ":");
+        }
+        newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(time));
+
+        std::string patientAge = series->getStudy()->getPatientAge();
+        if(!patientAge.empty() && patientAge != "unknown")
+        {
+            patientAge.insert(3, " ");
+            if(patientAge[0] == '0')
+            {
+                patientAge.erase(0, 1);
+            }
+        }
+        newItem->setText(int(ColumnSeriesType::PATIENT_AGE), QString::fromStdString(patientAge));
     }
     else if (strObj)
     {
-        newItem->setText(int(ColumnType::DESC), QString::fromStdString(strObj->value()));
+        std::string description = strObj->value();
+        if(description.empty())
+        {
+            description = _obj->getClassname();
+        }
+        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(description));
     }
     else if (intObj)
     {
-        newItem->setText(int(ColumnType::DESC), QString("%1").arg(intObj->value()));
+        newItem->setText(int(ColumnObjectType::DESC), QString("%1").arg(intObj->value()));
     }
     else if (floatObj)
     {
-        newItem->setText(int(ColumnType::DESC), QString("%1").arg(floatObj->value()));
+        newItem->setText(int(ColumnObjectType::DESC), QString("%1").arg(floatObj->value()));
     }
     else if (boolObj)
     {
-        newItem->setText(int(ColumnType::DESC), boolObj->value() ? "true" : "false");
+        newItem->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false");
     }
     else if (trf)
     {
         std::stringstream str;
         str << *trf;
-        newItem->setText(int(ColumnType::DESC), QString::fromStdString(str.str()));
+        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(str.str()));
+    }
+    else
+    {
+        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(_obj->getClassname()));
     }
 
     // set icon
-    ObjectIconMapType::iterator iter = m_objectIcons.find(obj->getClassname());
+    ObjectIconMapType::iterator iter = m_objectIcons.find(_obj->getClassname());
     if (iter != m_objectIcons.end())
     {
-        newItem->setIcon(int(ColumnType::NAME), QIcon(QString::fromStdString(iter->second)));
+        newItem->setIcon(int(ColumnCommunType::ID), QIcon(QString::fromStdString(iter->second)));
     }
 
     tree->addTopLevelItem(newItem);
@@ -844,11 +898,11 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::csptr
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
+void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
 {
-    if (item)
+    if (_item)
     {
-        std::string uid = item->data(int(ColumnType::NAME), s_UID_ROLE).toString().toStdString();
+        std::string uid = _item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
         if (!uid.empty())
         {
             ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
@@ -865,7 +919,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     if ( isOkClicked)
                     {
                         str->value() = value.toStdString();
-                        item->setText(int(ColumnType::DESC), value);
+                        _item->setText(int(ColumnObjectType::DESC), value);
                     }
                 }
                 else if (obj->isA("::fwData::Integer"))
@@ -879,7 +933,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     if (isOkClicked)
                     {
                         intObj->value() = value;
-                        item->setText(int(ColumnType::DESC), QString("%1").arg(value));
+                        _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
                 else if (obj->isA("::fwData::Float"))
@@ -893,7 +947,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     if (isOkClicked)
                     {
                         floatObj->value() = static_cast<float>(value);
-                        item->setText(int(ColumnType::DESC), QString("%1").arg(value));
+                        _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
                 else if (obj->isA("::fwData::Boolean"))
@@ -902,7 +956,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                     QMessageBox::StandardButton button = QMessageBox::question(
                         this, "Edition", "Defines the Boolean value");
                     boolObj->value() = (button == QMessageBox::Yes);
-                    item->setText(int(ColumnType::DESC), boolObj->value() ? "true" : "false" );
+                    _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false" );
                 }
                 else if (obj->isA("::fwData::TransformationMatrix3D"))
                 {
@@ -932,7 +986,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int)
                             }
                         }
                         trf->setCoefficients(coeffs);
-                        item->setText(int(ColumnType::DESC), value.trimmed() );
+                        _item->setText(int(ColumnObjectType::DESC), value.trimmed() );
                     }
                     else if (isOkClicked)
                     {

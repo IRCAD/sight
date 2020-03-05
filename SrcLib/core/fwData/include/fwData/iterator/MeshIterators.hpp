@@ -23,6 +23,7 @@
 #pragma once
 
 #include "fwData/config.hpp"
+#include "fwData/iterator/ImageIterator.hpp"
 
 #include <fwMemory/BufferObject.hpp>
 
@@ -45,19 +46,6 @@ struct Normal {
     float nx;
     float ny;
     float nz;
-};
-
-struct RGBA {
-    std::uint8_t r;
-    std::uint8_t g;
-    std::uint8_t b;
-    std::uint8_t a;
-};
-
-struct RGB {
-    std::uint8_t r;
-    std::uint8_t g;
-    std::uint8_t b;
 };
 
 struct TexCoords {
