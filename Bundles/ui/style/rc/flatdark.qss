@@ -1350,7 +1350,7 @@ QProgressBar::chunk
 /********************** Notification Popups *****************************/
 /************************************************************************/
 
-#Notification-Success
+#NotificationDialog_Success
 {
     background-color: rgb(119, 183, 103);
     color: rgb(255, 255, 255);
@@ -1359,7 +1359,7 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#Notification-Failure
+#NotificationDialog_Failure
 {
     background-color: rgb(255, 107, 104);
     color: rgb(255, 255, 255);
@@ -1368,11 +1368,47 @@ QProgressBar::chunk
     border-radius: 4px;
 }
 
-#Notification-Info
+#NotificationDialog_Info
 {
     background-color: rgb(104, 151, 187);
     color: rgb(255, 255, 255);
     font-weight: bold;
     font-size: 16px;
     border-radius: 4px;
+}
+
+/************************************************************************/
+/*************************** SQuestions *********************************/
+/************************************************************************/
+
+#SQuestions_Header
+{
+    background-color: rgb(54, 57, 62);
+}
+
+#SQuestions_Button
+{
+    font-size: 20px;
+    color: rgb(119, 183, 103);
+    background: rgba(119, 183, 103, 30%);
+    border-color: rgb(119, 183, 103);
+    padding: 10px;
+}
+
+#SQuestions_Button:hover
+{
+    background: rgba(119, 183, 103, 50%);
+}
+
+#SQuestions_Button:pressed,
+#SQuestions_Button:checked
+{
+    background: rgba(119, 183, 103, 70%);
+}
+
+#SQuestions_GroupBox
+{
+    border: none;
+    border-bottom: 4px solid rgb(86, 90, 94);
+    border-radius: 0px;
 }
