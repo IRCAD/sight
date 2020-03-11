@@ -1388,7 +1388,7 @@ QProgressBar::chunk
 
 #SQuestions_Button
 {
-    font-size: 20px;
+    font-size: 25pt;
     color: rgb(119, 183, 103);
     background: rgba(119, 183, 103, 30%);
     border-color: rgb(119, 183, 103);
@@ -1409,6 +1409,14 @@ QProgressBar::chunk
 #SQuestions_GroupBox
 {
     border: none;
-    border-bottom: 4px solid rgb(86, 90, 94);
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#SQuestions_Spacer
+{
+    margin: 0px 150px 0px 150px;
+    border: none;
+    border-bottom: 4px solid rgb(46, 48, 52);
     border-radius: 0px;
 }
