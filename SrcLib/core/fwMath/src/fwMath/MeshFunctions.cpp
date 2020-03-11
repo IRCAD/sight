@@ -400,8 +400,13 @@ fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& 
     const double d20 = ::fwMath::dot(v1, v0);
     const double d21 = ::fwMath::dot(v2, v1);
 
+    const double div = ((d00 * d11) - (d01 * d01));
+
+    // Don't test the case in release to avoid performance issue.
+    SLM_ASSERT("Degenerate triangle case leads to zero division.", div != 0.);
+
     // Inverse the denominator to speed up computation of v & w.
-    const double invdenom = 1. / ((d00 * d11) - (d01 * d01));
+    const double invdenom = 1. / div;
 
     // Barycentric coordinates
     const double v = ((d11 * d20) - (d01* d21)) * invdenom;
@@ -433,6 +438,12 @@ fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A, const
     const double u = _baryCoord[0];
     const double v = _baryCoord[1];
     const double w = _baryCoord[2];
+
+    [[maybe_unused]] const double sum = u + v + w; // Only used in the following assertion.
+
+    // Don't test in release to avoid performance issue.
+    SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
+               , sum < 1. + 10e-9 && sum > 1. - 10e-9);
 
     const double x = (u * _A[0] + v * _B[0] + w * _C[0]);
     const double y = (u * _A[1] + v * _B[1] + w * _C[1]);

@@ -74,21 +74,24 @@ FWMATH_API bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& 
 
 /**
  * @brief Converts an intersection point with a triangle from world coordinates to barycentric coordinates.
+ * Assert if the _A_B_C triangle is flat to avoid zero division.
+ * Note: no tests are performed in release mode to avoid performance issue.
  * @param _P world coordinates of the point (x, y, z), need to belongs to the ABC triangle.
- * @param _A first vertex of the triangle  (v1x, v1y, v1z) (can also be called A).
- * @param _B second vertex of the triangle  (v2x, v2y, v2z) (can also be called B).
- * @param _C third vertex of the triangle  (v3x, v3y, v3z) (can also be called C).
+ * @param _A first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _B second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
+ * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return barycentric coordinates (u, v, w).
  */
 FWMATH_API fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
                                       const fwVec3d& _B, const fwVec3d& _C);
 
 /**
- * @brief Converts from barycentric coordinates to world coordinates.
- * @param _baryCoord
- * @param _v1 first vertex of the triangle  (v1x, v1y, v1z) (can also be called A).
- * @param _v2 second vertex of the triangle  (v2x, v2y, v2z) (can also be called B).
- * @param _v3 third vertex of the triangle  (v3x, v3y, v3z) (can also be called C).
+ * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w isn't equal to 1.
+ * Note: no tests are performed in release mode to avoid performance issue.
+ * @param _baryCoord barycentric coordinates (u, v, w) that belongs to the _A_B_C triangle.
+ * @param _A first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _B second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
+ * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return world coordinates (x, y, z).
  */
 FWMATH_API fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A,

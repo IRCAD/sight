@@ -90,7 +90,7 @@ void MeshFunctionsTest::computeBarrycenterABC2D()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u+ v + w = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
@@ -123,7 +123,7 @@ void MeshFunctionsTest::computeBarrycenterABC3D()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u+ v + w = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
@@ -157,7 +157,7 @@ void MeshFunctionsTest::computeBarrycenterOutsideABC()
 
     const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u+ v + w = 1", 1., sum, s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
@@ -165,19 +165,6 @@ void MeshFunctionsTest::computeBarrycenterOutsideABC()
     CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", !(barycentric[W] >= 0. && barycentric[W] <= 1. ));
     CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", !((barycentric[V] + barycentric[W]) <= 1.) );
 
-}
-
-//-----------------------------------------------------------------------------
-
-void MeshFunctionsTest::computeBarrycenterABCinLoop()
-{
-    // Just for fun.
-    for(std::uint32_t i = 0; i < 10000; ++i)
-    {
-        this->computeBarrycenterABC2D();
-        this->computeBarrycenterABC3D();
-        this->computeBarrycenterOutsideABC();
-    }
 }
 
 //-----------------------------------------------------------------------------

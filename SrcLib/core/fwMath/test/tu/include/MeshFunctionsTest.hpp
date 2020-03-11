@@ -38,7 +38,6 @@ private:
     CPPUNIT_TEST( computeBarrycenterABC2D);
     CPPUNIT_TEST( computeBarrycenterABC3D);
     CPPUNIT_TEST( computeBarrycenterOutsideABC);
-    CPPUNIT_TEST( computeBarrycenterABCinLoop);
     CPPUNIT_TEST_SUITE_END();
 
     /// Compare value of 2 fwVec3d.
@@ -56,8 +55,6 @@ public:
     void computeBarrycenterABC3D();
     /// Computes barrycentric coordinates on a point outside a ABC triangle.
     void computeBarrycenterOutsideABC();
-    /// Calls previous method in a loop.
-    void computeBarrycenterABCinLoop();
 
 };
 
