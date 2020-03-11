@@ -107,15 +107,15 @@ void NotificationDialog::show()
     {
         if(m_notificationType == INotificationDialog::Type::SUCCESS)
         {
-            m_msgBox->setObjectName("Notification-Success");
+            m_msgBox->setObjectName("NotificationDialog_Success");
         }
         else if(m_notificationType == INotificationDialog::Type::FAILURE)
         {
-            m_msgBox->setObjectName("Notification-Failure");
+            m_msgBox->setObjectName("NotificationDialog_Failure");
         }
         else // INFO by default.
         {
-            m_msgBox->setObjectName("Notification-Info");
+            m_msgBox->setObjectName("NotificationDialog_Info");
         }
     }
 
