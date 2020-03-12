@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -124,15 +124,15 @@ struct ThresholdFilter
         ::fwDataTools::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
 
         // Get image buffers
-        auto it1          = imageIn->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
-        const auto it1End = imageIn->end< ::fwData::Image::Iteration<PIXELTYPE> >();
-        auto it2          = imageOut->begin< ::fwData::Image::Iteration<PIXELTYPE> >();
-        const auto it2End = imageOut->end< ::fwData::Image::Iteration<PIXELTYPE> >();
+        auto it1          = imageIn->begin<PIXELTYPE>();
+        const auto it1End = imageIn->end<PIXELTYPE>();
+        auto it2          = imageOut->begin<PIXELTYPE>();
+        const auto it2End = imageOut->end<PIXELTYPE>();
 
         // Fill the target buffer considering the thresholding
         for(; it1 != it1End && it2 != it2End; ++it1, ++it2 )
         {
-            * it2 = ( it1->value < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
+            * it2 = ( *it1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
         }
     }
 };
