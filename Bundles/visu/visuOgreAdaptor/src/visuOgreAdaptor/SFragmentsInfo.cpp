@@ -112,7 +112,7 @@ void SFragmentsInfo::configuring()
     m_height = config.get<int>("height", m_height);
 
     // If Both width & height are found we fix the size.
-    if(m_width != -1 && m_height != -1)
+    if(m_width > 0 && m_height > 0)
     {
         m_fixedSize = true;
     }
@@ -152,7 +152,7 @@ void SFragmentsInfo::starting()
         const auto h = this->getLayer()->getViewport()->getActualHeight();
         const auto w = this->getLayer()->getViewport()->getActualWidth();
 
-        this->createCompositor(h, w);
+        this->createCompositor(w, h);
 
         m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                   this->getSptr(), s_RESIZE_RENDER_TARGET_SLOT);

@@ -203,7 +203,7 @@ void SMaterial::configuring()
 
         if(it == m_representationDict.end())
         {
-            SLM_ERROR("Value: " + m_representationMode + " is not valable for 'representationMode'."
+            SLM_ERROR("Value: " + m_representationMode + " is not valid for 'representationMode'."
                       " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
                       "'representationMode' is reset to default value (SURFACE). ");
             m_representationMode = "SURFACE";

@@ -34,16 +34,19 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor take a snapshot of layer fragments informations and output it as a fwData::Image.
  *
+ * @section Slots Slots:
+ * -\b resizeRenderTarget(int _width, int _height): resize the output texture with _width * _height.
+ * If width & height are not present in <config /> this slot is connected to the resize signal of the layer.
+ *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SFragmentsInfo">
         <config layer="default  width="1280" height="720"/>
+        <inout key="image" uid="..." />
+        <inout key="depth" uid="..." />
+        <inout key="primitiveID" uid="..." />
     </service>
    @endcode
- *
- * @subsection Slots Slots:
- * -\b resizeRenderTarget(int _width, int _height): resize the output texture with _width * height.
- * If width & height are not present in <config /> this slot is connected to the resize signal of the layer.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the mesh's layer.
@@ -84,7 +87,7 @@ private:
     virtual void stopping() final;
 
     /**
-     * @brief Creates the compositor witch copy the layer color buffer to a global render target.
+     * @brief Creates the compositor which copy the layer color buffer to a global render target.
      * @param _width width of the global render target (color and depth).
      * @param _height height of the global render target (color and depth).
      */

@@ -78,7 +78,7 @@ namespace visuOgreAdaptor
  * managed by an another ::visuOgreAdaptor::STexture.
  *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
  *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
- *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE default= SURFACE):
+ *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default= SURFACE):
  *  representation mode as in ::fwData::Material.
  */
 class VISUOGREADAPTOR_CLASS_API SMaterial : public ::fwRenderOgre::IAdaptor
