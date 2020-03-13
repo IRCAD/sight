@@ -32,7 +32,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor take a snapshot of layer fragments informations and output it as a fwData::Image.
+ * @brief This adaptor take a snapshot of layer fragments information and output it as a ::fwData::Image.
  *
  * @section Slots Slots:
  * -\b resizeRenderTarget(int _width, int _height): resize the output texture with _width * _height.
@@ -80,7 +80,7 @@ private:
     /// Intializes adaptor and connection to layer signals.
     virtual void starting() final;
 
-    /// Updates the service. Convert render target texture to fwData::Image.
+    /// Updates the service. Convert render target texture to ::fwData::Image.
     virtual void updating() noexcept final;
 
     /// Destroys adaptor, only calls @ref ::visuOgreAdaptor::destroyCompositor().
