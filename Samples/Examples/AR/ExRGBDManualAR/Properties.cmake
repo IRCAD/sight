@@ -18,6 +18,7 @@ set( REQUIREMENTS
     preferences
     servicesReg
     videoQt
+    videoRealSense
     videoTools
     visuVTK
     visuVTKAdaptor
@@ -30,6 +31,7 @@ set( REQUIREMENTS
     ioAtoms
     uiMedDataQt
     dataManagerConfig
+    depthSegmentation
     colourSegmentation
 
     )
