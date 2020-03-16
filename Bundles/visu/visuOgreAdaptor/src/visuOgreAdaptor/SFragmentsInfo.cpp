@@ -317,7 +317,6 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
 
     if(retrievePrimitiveID)
     {
-        std::cout << "generate primitive ID" << std::endl;
         ::Ogre::CompositionTechnique::TextureDefinition* globalTargetPrimitiveID;
         globalTargetPrimitiveID        = technique->createTextureDefinition(m_targetPrimitiveIDName);
         globalTargetPrimitiveID->scope = ::Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;

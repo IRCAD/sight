@@ -32,7 +32,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor take a snapshot of layer fragments information and output it as a ::fwData::Image.
+ * @brief This adaptor takes a snapshot of layer fragments information and output it as a ::fwData::Image.
  *
  * @section Slots Slots:
  * -\b resizeRenderTarget(int _width, int _height): resize the output texture with _width * _height.
