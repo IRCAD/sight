@@ -79,7 +79,7 @@ build:debug-linux:
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
-    - git clone --depth 1 https://git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - ctest --timeout 240 --output-on-failure -O ctest.log -j4
   artifacts:
@@ -106,7 +106,7 @@ build:release-linux:
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
-    - git clone --depth 1 https://git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
@@ -130,7 +130,7 @@ build:debug-windows:
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
     - ninja
-    - git clone --depth 1 https://git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
     - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
@@ -154,7 +154,7 @@ build:release-windows:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
     - ninja
-    - git clone --depth 1 https://git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
     - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
