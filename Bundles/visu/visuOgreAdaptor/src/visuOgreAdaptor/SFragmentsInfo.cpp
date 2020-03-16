@@ -170,7 +170,7 @@ void SFragmentsInfo::updating() noexcept
         const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
         {
             ::fwData::mt::ObjectWriteLock lock(image);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(text, image, false);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(text, image, true);
         }
 
         auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
@@ -184,7 +184,7 @@ void SFragmentsInfo::updating() noexcept
         const ::Ogre::TexturePtr depthText = m_compositor->getTextureInstance(m_targetName, 1);
         {
             ::fwData::mt::ObjectWriteLock lock(depth);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth, false);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth, true);
         }
 
         auto depthSig = depth->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
@@ -198,7 +198,7 @@ void SFragmentsInfo::updating() noexcept
         const ::Ogre::TexturePtr primitiveIDText = m_compositor->getTextureInstance(m_targetPrimitiveIDName, 0);
         {
             ::fwData::mt::ObjectWriteLock lock(primitiveID);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(primitiveIDText, primitiveID, false);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(primitiveIDText, primitiveID, true);
         }
 
         auto primitiveIDSig = primitiveID->signal< ::fwData::Object::ModifiedSignalType >(
