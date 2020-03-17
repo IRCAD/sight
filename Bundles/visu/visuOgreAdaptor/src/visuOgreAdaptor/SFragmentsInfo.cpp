@@ -364,8 +364,12 @@ void SFragmentsInfo::destroyCompositor()
 
 void SFragmentsInfo::resizeRenderTarget(int _width, int _height)
 {
-    this->destroyCompositor();
-    this->createCompositor(_width, _height);
+    // Sometimes, the layer sends a null size, we need to avoid resizing since a global texture needs absolute values.
+    if(_width != 0 && _height != 0)
+    {
+        this->destroyCompositor();
+        this->createCompositor(_width, _height);
+    }
 }
 
 //-----------------------------------------------------------------------------
