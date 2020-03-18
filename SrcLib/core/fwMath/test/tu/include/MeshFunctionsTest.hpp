@@ -35,9 +35,9 @@ class MeshFunctionsTest : public CPPUNIT_NS::TestFixture
 {
 private:
     CPPUNIT_TEST_SUITE( MeshFunctionsTest );
-    CPPUNIT_TEST( computeBarrycenterABC2D);
-    CPPUNIT_TEST( computeBarrycenterABC3D);
-    CPPUNIT_TEST( computeBarrycenterOutsideABC);
+    CPPUNIT_TEST( computeBarycenterABC2D);
+    CPPUNIT_TEST( computeBarycenterABC3D);
+    CPPUNIT_TEST( computeBarycenterOutsideABC);
     CPPUNIT_TEST_SUITE_END();
 
     /// Compare value of 2 fwVec3d.
@@ -50,11 +50,11 @@ public:
 
     void checkBarycentricCoords();
     /// Computes barrycentric coordinates on a point inside a ABC triangle in 2D (same value for Z).
-    void computeBarrycenterABC2D();
+    void computeBarycenterABC2D();
     /// Computes barrycentric coordinates on a point inside a ABC triangle in 3D.
-    void computeBarrycenterABC3D();
+    void computeBarycenterABC3D();
     /// Computes barrycentric coordinates on a point outside a ABC triangle.
-    void computeBarrycenterOutsideABC();
+    void computeBarycenterOutsideABC();
 
 };
 

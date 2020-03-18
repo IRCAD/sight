@@ -43,7 +43,7 @@ FWMATH_API bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertex
                                  const fwVec3d& _p );
 
 /**
- * @brief Compute the intersection between triangle(define by threes vertex vert1, vert2, vert3) and the Oz parallel
+ * @brief Compute the intersection between triangle(defined by three vertices vert1, vert2, vert3) and the Oz parallel
  * line and cross by the point P.
  * The function return true if intersection is found (false otherwise).
  * t is the oriented distance of P to the intersection point.

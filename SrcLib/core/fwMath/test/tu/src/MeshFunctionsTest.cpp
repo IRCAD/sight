@@ -72,7 +72,7 @@ void MeshFunctionsTest::compare(const fwVec3d& _expected, const fwVec3d& _actual
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarrycenterABC2D()
+void MeshFunctionsTest::computeBarycenterABC2D()
 {
     // With the same Z it correspond to a 2d case
 
@@ -107,7 +107,7 @@ void MeshFunctionsTest::computeBarrycenterABC2D()
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarrycenterABC3D()
+void MeshFunctionsTest::computeBarycenterABC3D()
 {
     // Second test in 3d.
     const fwVec3d A {1., 0., 0.};
@@ -140,7 +140,7 @@ void MeshFunctionsTest::computeBarrycenterABC3D()
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::computeBarrycenterOutsideABC()
+void MeshFunctionsTest::computeBarycenterOutsideABC()
 {
     // Test with a point outside of the triangle.
 
