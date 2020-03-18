@@ -399,12 +399,12 @@
                 <slot>extractModelSeries/update</slot>
             </connect>
 
-            <!-- <connect>
+            <connect>
                 <signal>cameraRGB/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
-            </connect> -->
+            </connect>
 
-            <!-- <connect>
+            <connect>
                 <signal>thresholdSlider/intChanged</signal>
                 <slot>extractForeground/setThreshold</slot>
             </connect>
@@ -422,7 +422,7 @@
             <connect>
                 <signal>fgComponents/intChanged</signal>
                 <slot>extractForeground/setForegroundComponents</slot>
-            </connect> -->
+            </connect>
 
             <!-- start services -->
             <start uid="mainFrame" />
@@ -437,7 +437,7 @@
             <start uid="genericScene" />
             <start uid="offscreenRender" />
             <start uid="extractSkin" />
-            <!-- <start uid="extractForeground" /> -->
+            <start uid="extractForeground" />
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />

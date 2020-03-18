@@ -24,9 +24,10 @@
 
 #include "depthSegmentation/config.hpp"
 
-#include <opencv2/opencv.hpp>
-
 #include <fwServices/IOperator.hpp>
+
+#include <opencv2/core.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace depthSegmentation
 {
@@ -43,7 +44,7 @@ namespace depthSegmentation
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::depthSegmentaion::SDepthImageMasking" >
+        <service uid="..." type="::depthSegmentation::SDepthImageMasking" >
             <in key="videoTL" uid="..." autoConnect="yes" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
@@ -62,14 +63,7 @@ namespace depthSegmentation
 class DEPTHSEGMENTATION_CLASS_API SDepthImageMasking : public ::fwServices::IOperator
 {
 public:
-    fwCoreServiceMacro(SDepthImageMasking, ::fwServices::IOperator);
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    DEPTHSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
-    ///@}
+    fwCoreServiceMacro(SDepthImageMasking, ::fwServices::IOperator)
 
     ///Constructor
     DEPTHSEGMENTATION_CLASS_API SDepthImageMasking() noexcept;
@@ -96,10 +90,10 @@ protected:
 
 private:
 
-    /// Slot: Set background image and learn background model
-    void setBackground();
+    void create_mask_from_depth(::cv::Mat& _depth, int _thresh, ::cv::ThresholdTypes _type);
 
-    ::cv::Mat m_mask;
+    ::cv::Mat m_elemLess;
+    ::cv::Mat m_elemMore;
 };
 
 } // namespace colourSegmentation

@@ -31,7 +31,6 @@ set( REQUIREMENTS
     ioAtoms
     uiMedDataQt
     dataManagerConfig
-    depthSegmentation
     colourSegmentation
 
     )
