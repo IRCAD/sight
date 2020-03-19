@@ -53,7 +53,7 @@ namespace uiTF
        <in key="currentTF" uid="..." optional="yes" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
-       <config useDefaultPath="yes">
+       <config useDefaultPath="true">
            <path>....</path>
            <path>....</path>
            <path>....</path>
@@ -78,6 +78,7 @@ namespace uiTF
 class UITF_CLASS_API STransferFunction final : public QObject,
                                                public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
 
 public:

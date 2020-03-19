@@ -26,8 +26,8 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
@@ -60,9 +60,13 @@
 namespace uiTF
 {
 
-static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
-static const ::fwServices::IService::KeyType s_TF_OUTPUT        = "tf";
+static const std::string s_USE_DEFAULT_PATH_CONFIG = "useDefaultPath";
+static const std::string s_PATH_CONFIG             = "path";
+
 static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
+
+static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -86,21 +90,20 @@ void STransferFunction::configuring()
 {
     this->initialize();
 
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType tree = this->getConfigTree();
+    const auto config     = tree.get_child_optional("config.<xmlattr>");
 
     bool useDefaultPath = true;
-    if(srvConfig.count("config"))
+    if(config)
     {
-        const ConfigType config = srvConfig.get_child("config");
-
-        const auto pathCfg = config.equal_range("path");
+        const auto pathCfg = config->equal_range(s_PATH_CONFIG);
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
             const auto path = ::fwRuntime::getBundleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
-        useDefaultPath = config.get<bool>("<xmlattr>.useDefaultPath", useDefaultPath);
+        useDefaultPath = config->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
     }
 
     if(useDefaultPath)
