@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -230,7 +230,7 @@ void SVector::updateVisibility(bool _isVisible)
         m_sceneNode->setVisible(m_isVisible);
     }
 
-    this->updating();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
