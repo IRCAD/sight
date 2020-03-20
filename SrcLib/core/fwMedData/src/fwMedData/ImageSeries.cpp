@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,13 +26,13 @@
 #include <fwData/Image.hpp>
 #include <fwData/registry/macros.hpp>
 
-fwDataRegisterMacro( ::fwMedData::ImageSeries );
+fwDataRegisterMacro( ::fwMedData::ImageSeries )
 
 namespace fwMedData
 {
 
-ImageSeries::ImageSeries(::fwData::Object::Key key) :
-    Series(key)
+ImageSeries::ImageSeries(::fwData::Object::Key _key) :
+    Series(_key)
 {
 }
 
@@ -59,14 +59,14 @@ void ImageSeries::shallowCopy(const ::fwData::Object::csptr& _source)
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
+void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache)
 {
     ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
 
-    this->::fwMedData::Series::cachedDeepCopy(_source, cache);
+    this->::fwMedData::Series::cachedDeepCopy(_source, _cache);
 
     m_image          = ::fwData::Object::copy(other->m_image);
     m_dicomReference = ::fwData::Object::copy(other->m_dicomReference);

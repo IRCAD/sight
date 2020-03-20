@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 fwCampImplementDataMacro((fwMedData)(AttachmentSeries))
 {
     builder
-    .tag("object_version", "1")
+    .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
     .property("attachment_availability", &::fwMedData::AttachmentSeries::m_attachmentAvailability)
@@ -40,7 +40,6 @@ fwCampImplementDataMacro((fwMedData)(AttachmentSeries))
     .property("buffer", &::fwMedData::AttachmentSeries::m_buffer)
     ;
 }
-
 
 fwCampImplementEnumMacro((fwMedData)(AttachmentSeries)(AttachmentAvailability))
 {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/registry/macros.hpp>
 
-fwDataRegisterMacro( ::fwMedData::ModelSeries );
+fwDataRegisterMacro( ::fwMedData::ModelSeries )
 
 namespace fwMedData
 {
@@ -39,8 +39,8 @@ namespace fwMedData
 const ::fwCom::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG   = "reconstructionsAdded";
 const ::fwCom::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG = "reconstructionsRemoved";
 
-ModelSeries::ModelSeries(::fwData::Object::Key key) :
-    Series(key)
+ModelSeries::ModelSeries(::fwData::Object::Key _key) :
+    Series(_key)
 {
     m_sigReconstructionsAdded   = ReconstructionsAddedSignalType::New();
     m_sigReconstructionsRemoved = ReconstructionsRemovedSignalType::New();

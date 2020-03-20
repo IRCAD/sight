@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,6 @@
 #include <fwVtkIO/helper/vtkLambdaCommand.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <filesystem>
 #include <gdcmDicts.h>
 #include <gdcmFilenameGenerator.h>
 #include <gdcmGlobal.h>
@@ -53,9 +52,10 @@
 #include <vtkSmartPointer.h>
 #include <vtkStringArray.h>
 
+#include <filesystem>
 #include <iostream>
 
-fwDataIOWriterRegisterMacro( ::vtkGdcmIO::ImageSeriesWriter );
+fwDataIOWriterRegisterMacro( ::vtkGdcmIO::ImageSeriesWriter )
 
 namespace vtkGdcmIO
 {
@@ -77,7 +77,7 @@ void setValue(vtkMedicalImageProperties* medprop,
 
 //------------------------------------------------------------------------------
 
-ImageSeriesWriter::ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+ImageSeriesWriter::ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("VTK Image writer")),
     m_compressionTypes(CompressionTypes::RAW)
@@ -121,61 +121,16 @@ void ImageSeriesWriter::write()
     // Medical informations
     auto medprop = vtkSmartPointer<vtkMedicalImageProperties>::New();
 
-    // Patient name
-    // tagkey = "0010|0010";
-    medprop->SetPatientName(patient->getName().c_str());
-
-    // Patient sex
-    // tagkey = "0010|0040";
-    medprop->SetPatientSex(patient->getSex().c_str());
-
-    // Modality
-    // tagkey = "0008|0060";
     std::string modality = imgSeries->getModality();
     if(modality.empty())
     {
         modality = "OT";
     }
     medprop->SetModality(modality.c_str());
-
-    // Zone
-    // tagkey = "0008|1030";
-    medprop->SetStudyDescription(study->getDescription().c_str());
-    medprop->SetSeriesDescription(imgSeries->getDescription().c_str());
-
-    // ID
-    // tagkey =  "0010|0020";
-    medprop->SetPatientID(patient->getPatientId().c_str());
-
-    // Birthdate
-    // tagkey = "0010|0030";
-    medprop->SetPatientBirthDate(patient->getBirthdate().c_str());
-
-    // Hospital
-    // tagkey = "0008|0080";
-    medprop->SetInstitutionName(equipment->getInstitutionName().c_str());
-
-    // Patient age
-    // Format: nnnD, nnW, nnnM or nnnY (eventually nnD, nnW, nnY)
-    //         with D (day), M (month), W (week), Y (year)
-    // For ex: DICOM (0010,1010) = 031Y
-    medprop->SetPatientAge(study->getPatientAge().c_str());
-
-    // Study Date
-    // tagkey = "0008|0020";
-    medprop->SetStudyDate(study->getDate().c_str());
-
-    // Study Time
-    // tagkey = "0008|0030";
-//    medprop->SetStudyTime(study->getTime().c_str()); // Do not work (write current time)
-    setValue(medprop, 0x0008, 0x0030, study->getTime());
-
-    //Series Date
+    setValue(medprop, 0x0020, 0x0011, imgSeries->getNumber());
+    setValue(medprop, 0x0020, 0x0060, imgSeries->getLaterality());
     setValue(medprop, 0x0008, 0x0021, imgSeries->getDate());
-
-    // Series Time
     setValue(medprop, 0x0008, 0x0031, imgSeries->getTime());
-
     ::fwMedData::DicomValuesType performingPhysicians = imgSeries->getPerformingPhysiciansName();
     std::stringstream physicians;
     if (!performingPhysicians.empty())
@@ -190,13 +145,50 @@ void ImageSeriesWriter::write()
 
     }
     setValue(medprop, 0x0008, 0x1050, physicians.str());
+    setValue(medprop, 0x0018, 0x1030, imgSeries->getProtocolName());
+    medprop->SetSeriesDescription(imgSeries->getDescription().c_str());
+    setValue(medprop, 0x0018, 0x0015, imgSeries->getBodyPartExamined());
+    setValue(medprop, 0x0018, 0x5100, imgSeries->getPatientPosition());
+    setValue(medprop, 0x0010, 0x2210, imgSeries->getAnatomicalOrientationType());
+    setValue(medprop, 0x0040, 0x0253, imgSeries->getPerformedProcedureStepID());
+    setValue(medprop, 0x0040, 0x0244, imgSeries->getPerformedProcedureStepStartDate());
+    setValue(medprop, 0x0040, 0x0245, imgSeries->getPerformedProcedureStepStartTime());
+    setValue(medprop, 0x0040, 0x0250, imgSeries->getPerformedProcedureStepEndDate());
+    setValue(medprop, 0x0040, 0x0251, imgSeries->getPerformedProcedureStepEndTime());
+    setValue(medprop, 0x0040, 0x0254, imgSeries->getPerformedProcedureStepDescription());
+    setValue(medprop, 0x0040, 0x0280, imgSeries->getPerformedProcedureComments());
 
+    medprop->SetPatientName(patient->getName().c_str());
+    medprop->SetPatientID(patient->getPatientId().c_str());
+    medprop->SetPatientBirthDate(patient->getBirthdate().c_str());
+    medprop->SetPatientSex(patient->getSex().c_str());
+
+    medprop->SetStudyID(study->getStudyID().c_str());
+    medprop->SetStudyDate(study->getDate().c_str());
+    setValue(medprop, 0x0008, 0x0030, study->getTime());
     setValue(medprop, 0x0008, 0x0090, study->getReferringPhysicianName());
+    setValue(medprop, 0x0008, 0x009C, study->getConsultingPhysicianName());
+    medprop->SetStudyDescription(study->getDescription().c_str());
+    medprop->SetPatientAge(study->getPatientAge().c_str());
+    setValue(medprop, 0x0010, 0x1020, study->getPatientSize());
+    setValue(medprop, 0x0010, 0x1030, study->getPatientWeight());
+    setValue(medprop, 0x0010, 0x1022, study->getPatientBodyMassIndex());
 
-    // Center and Width
-    // Center = tagkey = "0028|1050";
-    // Width = "0028|1051";
-    medprop->AddWindowLevelPreset( dataImage->getWindowWidth(), dataImage->getWindowCenter() );
+    medprop->SetInstitutionName(equipment->getInstitutionName().c_str());
+
+    setValue(medprop, 0x0018, 0x0010, imgSeries->getContrastAgent());
+    setValue(medprop, 0x0018, 0x1040, imgSeries->getContrastRoute());
+    setValue(medprop, 0x0018, 0x1041, imgSeries->getContrastVolume());
+    setValue(medprop, 0x0018, 0x1042, imgSeries->getContrastStartTime());
+    setValue(medprop, 0x0018, 0x1043, imgSeries->getContrastStopTime());
+    setValue(medprop, 0x0018, 0x1044, imgSeries->getContrastTotalDose());
+    setValue(medprop, 0x0018, 0x1046, imgSeries->getContrastFlowRate());
+    setValue(medprop, 0x0018, 0x1047, imgSeries->getContrastFlowDuration());
+    setValue(medprop, 0x0018, 0x1048, imgSeries->getContrastIngredient());
+    setValue(medprop, 0x0018, 0x1049, imgSeries->getContrastIngredientConcentration());
+    medprop->SetAcquisitionDate(imgSeries->getAcquisitionDate().c_str());
+    medprop->SetAcquisitionTime(imgSeries->getAcquisitionTime().c_str());
+    medprop->AddWindowLevelPreset(dataImage->getWindowWidth(), dataImage->getWindowCenter() );
 
     // Spacing
     // tagkey = "0028|0030";
@@ -213,7 +205,7 @@ void ImageSeriesWriter::write()
     origin                              += '\\';
     origin                               = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[1]);
 
-    if (dataImage->getNumberOfDimensions() > 2)
+    if(dataImage->getNumberOfDimensions() > 2)
     {
         // Thickness
         // tagkey = "0018|0050";

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,18 @@
  *
  ***********************************************************************/
 
-#include <fwCamp/UserObject.hpp>
+#include "arDataCamp/CameraSeries.hpp"
 
 #include <arData/CameraSeries.hpp>
 
-#include "arDataCamp/CameraSeries.hpp"
+#include <fwCamp/UserObject.hpp>
 
 //------------------------------------------------------------------------------
 
 fwCampImplementDataMacro((arData)(CameraSeries))
 {
     builder
-    .tag("object_version", "2")
+    .tag("object_version", "3")
     .tag("lib_name", "arData")
     .base< ::fwMedData::Series>()
     .property("cameras", &::arData::CameraSeries::m_cameras)

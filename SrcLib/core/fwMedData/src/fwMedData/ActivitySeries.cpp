@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,13 +26,13 @@
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
 
-fwDataRegisterMacro( ::fwMedData::ActivitySeries );
+fwDataRegisterMacro( ::fwMedData::ActivitySeries )
 
 namespace fwMedData
 {
 
-ActivitySeries::ActivitySeries(::fwData::Object::Key key) :
-    Series(key),
+ActivitySeries::ActivitySeries(::fwData::Object::Key _key) :
+    Series(_key),
     m_data(::fwData::Composite::New())
 {
 }
@@ -75,4 +75,3 @@ void ActivitySeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, Deep
 //------------------------------------------------------------------------------
 
 } // namespace fwMedData
-

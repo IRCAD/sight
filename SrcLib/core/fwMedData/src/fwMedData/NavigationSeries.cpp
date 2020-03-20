@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,13 +25,13 @@
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
 
-fwDataRegisterMacro( ::fwMedData::NavigationSeries );
+fwDataRegisterMacro( ::fwMedData::NavigationSeries )
 
 namespace fwMedData
 {
 
-NavigationSeries::NavigationSeries(::fwData::Object::Key key) :
-    Series(key)
+NavigationSeries::NavigationSeries(::fwData::Object::Key _key) :
+    Series(_key)
 {
 }
 
@@ -75,44 +75,44 @@ void NavigationSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, De
 
 //------------------------------------------------------------------------------
 
-void NavigationSeries::addPosition(TimestampType time, const CoordinateType& pos)
+void NavigationSeries::addPosition(TimestampType _time, const CoordinateType& _pos)
 {
-    m_position[time] = pos;
+    m_position[_time] = _pos;
 }
 
 //------------------------------------------------------------------------------
 
-void NavigationSeries::addMove(TimestampType time, const CoordinateType& dir)
+void NavigationSeries::addMove(TimestampType _time, const CoordinateType& _dir)
 {
-    m_move[time] = dir;
+    m_move[_time] = _dir;
 }
 
 //------------------------------------------------------------------------------
 
-void NavigationSeries::addLookAt(TimestampType time, const CoordinateType& point)
+void NavigationSeries::addLookAt(TimestampType _time, const CoordinateType& _point)
 {
-    m_lookAt[time] = point;
+    m_lookAt[_time] = _point;
 }
 
 //------------------------------------------------------------------------------
 
-void NavigationSeries::erasePosition(TimestampType time)
+void NavigationSeries::erasePosition(TimestampType _time)
 {
-    m_position.erase(time);
+    m_position.erase(_time);
 }
 
 //------------------------------------------------------------------------------
 
-void NavigationSeries::eraseMove(TimestampType time)
+void NavigationSeries::eraseMove(TimestampType _time)
 {
-    m_move.erase(time);
+    m_move.erase(_time);
 }
 
 //------------------------------------------------------------------------------
 
-void NavigationSeries::eraseLookAt(TimestampType time)
+void NavigationSeries::eraseLookAt(TimestampType _time)
 {
-    m_lookAt.erase(time);
+    m_lookAt.erase(_time);
 }
 
 //------------------------------------------------------------------------------
@@ -158,4 +158,3 @@ const NavigationSeries::ContainerType& NavigationSeries::getLookAtMap() const
 }
 
 } // namespace fwMedData
-

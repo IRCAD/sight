@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 
 #include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
@@ -67,33 +68,26 @@ void Series::readGeneralSeriesModule()
     // Retrieve dataset
     ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
-    // Serie's instance UID - Type 1
-    const std::string& instanceUID = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000e >(dataset);
-    m_object->setInstanceUID(instanceUID);
-
-    // Series's modality - Type 1
-    const std::string& modality = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0060 >(dataset);
+    const std::string& modality = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0060>(dataset);
     m_object->setModality(modality);
 
-    // Serie's date - Type 3
-    const std::string& date = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0021 >(dataset);
+    const std::string& uid = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x000e>(dataset);
+    m_object->setInstanceUID(uid);
+
+    const std::string& number = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x0011>(dataset);
+    m_object->setNumber(number);
+
+    const std::string& laterality = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x0060>(dataset);
+    m_object->setLaterality(laterality);
+
+    const std::string& date = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0021>(dataset);
     m_object->setDate(date);
 
-    // Serie's time - Type 3
-    const std::string& time = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0031 >(dataset);
+    const std::string& time = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0031>(dataset);
     m_object->setTime(time);
 
-    // Serie's description
-    const std::string& description = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x103e >(dataset);
-    m_object->setDescription(description);
-
-    // Serie's number - Type 2
-    // NOTE: Not used in Sight
-
-    // Performing physicians name - Type 3
-    const std::string& performingPhysicianNamesStr =
-        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x1050 >(dataset);
-
+    const std::string& performingPhysicianNamesStr
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x1050 >(dataset);
     if(!performingPhysicianNamesStr.empty())
     {
         ::fwMedData::DicomValuesType performingPhysicianNames;
@@ -101,11 +95,101 @@ void Series::readGeneralSeriesModule()
         m_object->setPerformingPhysiciansName(performingPhysicianNames);
     }
 
-    // Laterality - Type 2C
-    // NOTE: Not used in Sight
+    const std::string& protocolName = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1030>(dataset);
+    m_object->setProtocolName(protocolName);
 
-    // Patient Position - Type 2C
-    // NOTE: Not used in Sight
+    const std::string& description = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x103e>(dataset);
+    m_object->setDescription(description);
+
+    const std::string& bodyPartExamined = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x0015>(dataset);
+    m_object->setBodyPartExamined(bodyPartExamined);
+
+    const std::string& patientPosition = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x5100>(dataset);
+    m_object->setPatientPosition(patientPosition);
+
+    const std::string& anatomicalOrientationType
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0010, 0x2210>(dataset);
+    m_object->setAnatomicalOrientationType(anatomicalOrientationType);
+
+    const std::string& performdedProcedureStepID
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0253>(dataset);
+    m_object->setPerformedProcedureStepID(performdedProcedureStepID);
+
+    const std::string& performedProcedureStepStartDate
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0244>(dataset);
+    m_object->setPerformedProcedureStepStartDate(performedProcedureStepStartDate);
+
+    const std::string& performedProcedureStepStartTime
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0245>(dataset);
+    m_object->setPerformedProcedureStepStartTime(performedProcedureStepStartTime);
+
+    const std::string& performedProcedureStepEndDate
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0250>(dataset);
+    m_object->setPerformedProcedureStepEndDate(performedProcedureStepEndDate);
+
+    const std::string& performedProcedureStepEndTime
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0251>(dataset);
+    m_object->setPerformedProcedureStepEndTime(performedProcedureStepEndTime);
+
+    const std::string& performedProcedureStepDescription
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0254>(dataset);
+    m_object->setPerformedProcedureStepDescription(performedProcedureStepDescription);
+
+    const std::string& performedProcedureComments
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x0280>(dataset);
+    m_object->setPerformedProcedureComments(performedProcedureComments);
+
+    const ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(m_object);
+    if(imageSeries)
+    {
+        const std::string& imageContrastAgent =
+            ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x0010>(dataset);
+        imageSeries->setContrastAgent(imageContrastAgent);
+
+        const std::string& imageContrastRoute =
+            ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1040>(dataset);
+        imageSeries->setContrastRoute(imageContrastRoute);
+
+        const std::string& imageContrastVolume = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1041>(
+            dataset);
+        imageSeries->setContrastVolume(imageContrastVolume);
+
+        const std::string& imageContrastStartTime
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1042>(dataset);
+        imageSeries->setContrastStartTime(imageContrastStartTime);
+
+        const std::string& imageContrastStopTime
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1043>(dataset);
+        imageSeries->setContrastStopTime(imageContrastStopTime);
+
+        const std::string& imageContrastTotalDose
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1044>(dataset);
+        imageSeries->setContrastTotalDose(imageContrastTotalDose);
+
+        const std::string& imageContrastFlowRate
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1046>(dataset);
+        imageSeries->setContrastFlowRate(imageContrastFlowRate);
+
+        const std::string& imageContrastFlowDuration
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1047>(dataset);
+        imageSeries->setContrastFlowDuration(imageContrastFlowDuration);
+
+        const std::string& imageContrastIngredient
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1048>(dataset);
+        imageSeries->setContrastIngredient(imageContrastIngredient);
+
+        const std::string& imageContrastIngredientConcentration
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1049>(dataset);
+        imageSeries->setContrastIngredientConcentration(imageContrastIngredientConcentration);
+
+        const std::string& imageAcquisitionDate
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0022>(dataset);
+        imageSeries->setAcquisitionDate(imageAcquisitionDate);
+
+        const std::string& imageAcquisitionTime
+            = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0032>(dataset);
+        imageSeries->setAcquisitionTime(imageAcquisitionTime);
+    }
 }
 
 } // namespace ie

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,26 +59,16 @@ void Study::writeGeneralStudyModule()
     // Retrieve dataset
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    // Study's date - Type 2
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0020 >(m_object->getDate(), dataset);
-
-    // Study's time - Type 2
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0030 >(m_object->getTime(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0020, 0x000d>(m_object->getInstanceUID(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0020, 0x0010>(m_object->getStudyID(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0020>(m_object->getDate(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0030>(m_object->getTime(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0090>(m_object->getReferringPhysicianName(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x009C>(m_object->getConsultingPhysicianName(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x1030>(m_object->getDescription(), dataset);
 
     // Study 's accession number - Type 2
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0050 >("", dataset);
-
-    // Study's description - Type 3
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1030 >(m_object->getDescription(), dataset);
-
-    // Study's UID - Type 1
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000d >(m_object->getInstanceUID(), dataset);
-
-    // Study's ID - Type 2
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x0010 >("Unknown", dataset);
-
-    // Study's referring physician name
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0090 >(m_object->getReferringPhysicianName(), dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -88,8 +78,13 @@ void Study::writePatientStudyModule()
     // Retrieve dataset
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    // PatientAge
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0010, 0x1010 >(m_object->getPatientAge(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0010, 0x1010>(m_object->getPatientAge(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0010, 0x1020>(
+        std::stoi(m_object->getPatientSize()), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0010, 0x1030>(
+        std::stoi(m_object->getPatientWeight()), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0010, 0x1022>(
+        std::stoi(m_object->getPatientBodyMassIndex()), dataset);
 }
 
 //------------------------------------------------------------------------------
