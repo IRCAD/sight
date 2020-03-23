@@ -25,6 +25,7 @@
 #include <cvIO/Image.hpp>
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
@@ -35,16 +36,21 @@
 namespace depthSegmentation
 {
 
+const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
+
 fwServicesRegisterMacro( ::fwServices::IOperator, ::depthSegmentation::SDepthImageMasking)
 
 const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY = "maskImage";
-const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY = "videoImage";
-const ::fwServices::IService::KeyType s_DEPTH_IMAGE_KEY = "depthImage";
+const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
+const ::fwServices::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
+const ::fwServices::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
 
 // ------------------------------------------------------------------------------
 
 SDepthImageMasking::SDepthImageMasking() noexcept
 {
+    newSlot( s_SET_BACKGROUND_SLOT, &SDepthImageMasking::setBackground, this );
+
     m_elemLess = ::cv::getStructuringElement(::cv::MORPH_RECT, ::cv::Size(4, 4), ::cv::Point(3, 3));
     m_elemMore = ::cv::getStructuringElement(::cv::MORPH_RECT, ::cv::Size(7, 7), ::cv::Point(6, 6));
 }
@@ -89,45 +95,55 @@ void SDepthImageMasking::stopping()
 
 void SDepthImageMasking::updating()
 {
-    ::fwData::Image::sptr videoImage = this->getInOut< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
-    ::fwData::Image::sptr depthImage = this->getInOut< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+    if(!m_cvDepthMaskImage.empty())
+    {
+        ::fwData::Image::sptr videoImage = this->getInOut< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
+        ::fwData::Image::sptr depthImage = this->getInOut< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
 
-    ::cv::Mat cvNearDepthImage = ::cvIO::Image::moveToCv(depthImage);
-    ::cv::Mat cvVideoImage     = ::cvIO::Image::moveToCv(videoImage);
-    ::cv::cvtColor(cvVideoImage, cvVideoImage, CV_BGRA2BGR);
+        ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
+        //::cv::cvtColor(cvVideoImage, cvVideoImage, cv::COLOR_BGRA2RGB);
+        ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
 
-    ::cv::Mat cvNearDepthImage8u;
-    cvNearDepthImage.convertTo(cvNearDepthImage8u, CV_8UC1);
+        ::cv::Mat cvMaskedDepth;
+        cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
 
-    ::cv::Mat cvFarDepthImage8u = cvNearDepthImage8u.clone();
+        // PARAMETRIZ THIS HARDCODED VALUE PLZ
+        ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage-5));
 
-    create_mask_from_depth(cvNearDepthImage8u, 180, ::cv::THRESH_BINARY);
-    create_mask_from_depth(cvFarDepthImage8u, 100, ::cv::THRESH_BINARY_INV);
+        ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
+        cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
 
-    ::cv::Mat mask(cvNearDepthImage.size(), CV_8UC1);
-    mask.setTo(::cv::Scalar::all(::cv::GC_BGD));
-    mask.setTo(::cv::GC_PR_BGD, cvFarDepthImage8u == 0);
-    mask.setTo(::cv::GC_PR_FGD, cvNearDepthImage8u == 0);
+        ::fwData::Image::sptr foregroundImage = this->getInOut< ::fwData::Image >(s_FOREGROUND_IMAGE_KEY);
+        ::cvIO::Image::copyFromCv(foregroundImage, cvMaskedVideo);
 
-    ::cv::Mat bgModel, fgModel;
-    //::cv::grabCut(cvVideoImage, mask, ::cv::Rect(), bgModel, fgModel, 1, ::cv::GC_INIT_WITH_MASK);
-
-    //::cv::Mat3b foreground = ::cv::Mat3b::zeros(cvVideoImage.rows, cvVideoImage.cols);
-    //cvVideoImage.copyTo(foreground, (mask == ::cv::GC_FGD) | (mask == ::cv::GC_PR_FGD));
-
-    ::fwData::Image::sptr maskImage = this->getInOut< ::fwData::Image >(s_MASK_IMAGE_KEY);
-    ::cv::Mat cvMaskImage    = ::cvIO::Image::moveToCv(maskImage);
-
-    ::cv::imshow("mask", cvMaskImage);
+        auto sig = foregroundImage->signal< ::fwData::Image::BufferModifiedSignalType >(
+            ::fwData::Image::s_BUFFER_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 }
 
 // ------------------------------------------------------------------------------
 
-void SDepthImageMasking::create_mask_from_depth(::cv::Mat& _depth, int _thresh, ::cv::ThresholdTypes _type)
+void SDepthImageMasking::setBackground()
 {
-    ::cv::threshold(_depth, _depth, _thresh, 255, _type);
-    //::cv::dilate(_depth, _depth, m_elemLess);
-    //::cv::erode(_depth, _depth, m_elemMore);
+    ::fwData::Image::sptr maskImage  = this->getInOut< ::fwData::Image >(s_MASK_IMAGE_KEY);
+    ::fwData::Image::sptr depthImage = this->getInOut< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+    if(maskImage && depthImage)
+    {
+        ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
+        m_cvMaskImage          = ::cvIO::Image::moveToCv(maskImage);
+        ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
+
+        m_cvMaskImage = (m_cvMaskImage > 0);
+
+        if(m_cvDepthMaskImage.empty())
+        {
+            m_cvDepthMaskImage = ::cv::Mat::zeros(cvDepthImage.rows, cvDepthImage.cols, cvDepthImage.type());
+        }
+        cvDepthImage.copyTo(m_cvDepthMaskImage, m_cvMaskImage);
+    }
 }
+
+// ------------------------------------------------------------------------------
 
 } // namespace depthSegmentation

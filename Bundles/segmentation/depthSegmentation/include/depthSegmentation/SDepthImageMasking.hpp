@@ -65,6 +65,13 @@ class DEPTHSEGMENTATION_CLASS_API SDepthImageMasking : public ::fwServices::IOpe
 public:
     fwCoreServiceMacro(SDepthImageMasking, ::fwServices::IOperator)
 
+    /**
+     * @name Slots API
+     * @{
+     */
+    DEPTHSEGMENTATION_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
+    ///@}
+
     ///Constructor
     DEPTHSEGMENTATION_CLASS_API SDepthImageMasking() noexcept;
 
@@ -90,10 +97,16 @@ protected:
 
 private:
 
+    /// Slot: Set background image and learn background model
+    void setBackground();
+
     void create_mask_from_depth(::cv::Mat& _depth, int _thresh, ::cv::ThresholdTypes _type);
 
     ::cv::Mat m_elemLess;
     ::cv::Mat m_elemMore;
+
+    ::cv::Mat m_cvMaskImage;
+    ::cv::Mat m_cvDepthMaskImage;
 };
 
 } // namespace colourSegmentation
