@@ -54,7 +54,7 @@ class PointList;
  * The buffer type is defined by ::fwTools::Type that provides the basic types ([u]int8, [u]int16, [u]int32, [u]int64,
  * float and double).
  *
- * The image image size is an 3D size_t array but the third dimension can be 0 for a 2D image.
+ * The image size is a 3D size_t array but the third dimension can be 0 for a 2D image.
  *
  * The image PixelFormat represents the buffer organization in components (GRAY_SCALE: 1 component, RGB and BGR: 3
  * components, RGBA and BGRA: 4 components).
@@ -63,11 +63,11 @@ class PointList;
  *
  * @subsection Allocation Allocation
  *
- * The image buffer is allocated using resize() method.
+ * The image buffer is allocated using the resize() method.
  * You can get the allocated size using getSizeInBytes() and getAllocatedSizeInBytes().
  *
- * @warning The allocated size can be different than the image size: it can appears if you called setSize() without
- * calling resize(). It may be useful when you don't want to reallocate the image too offen, but you need to be sure to
+ * @warning The allocated size can be different from the image size: it can happen if you called setSize() without
+ * calling resize(). It may be useful when you don't want to reallocate the image too often, but you need to be sure to
  * allocate enough memory.
  *
  * @section Access Buffer access
@@ -75,16 +75,16 @@ class PointList;
  * You can access voxel values using at<type>(IndexType id) or at<type>(IndexType x, IndexType y, IndexType z)
  * methods. These methods are slow and should not be used to parse the entire buffer (see iterators).
  *
- * You can also use getPixelAsString() to retrive the value as a string (useful for displaying information).
+ * You can also use getPixelAsString() to retrieve the value as a string (useful for displaying information).
  *
- * @warning The image must be locked for dump before to access the buffer. It prevent the buffer to be dumped on the
+ * @warning The image must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
  * disk.
  *
  * @subsection Iterators Iterators
  *
- * To parse the buffer from begin to end, the iterator can be used (::fwData::iterator::ImageIteratorBase).
+ * To parse the buffer from beginning to end, the iterator can be used (::fwData::iterator::ImageIteratorBase).
  *
- * The iteration depends to the given format. The format can be the buffer type ([u]int[8|16|32|64], double, float), but
+ * The iteration depends on the given format. The format can be the buffer type ([u]int[8|16|32|64], double, float), but
  * can also be a simple struct like:
  *
  * @code{.cpp}
@@ -100,7 +100,7 @@ class PointList;
  *
  * To get an iterator on the image, use begin<FORMAT>() and end<FORMAT>() methods.
  *
- * @warning The iterator does not assert that the image type is the same as the given format. It only assert (in debug)
+ * @warning The iterator does not assert that the image type is the same as the given format. It only asserts (in debug)
  * that the iterator does not iterate outside of the buffer bounds).
  *
  * Example :
@@ -347,7 +347,7 @@ public:
         ::fwData::Image::sptr img = ::fwData::Image::New();
         img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
         ::fwData::Image::Iterator< RGBA > iter    = img->begin< RGBA >();
-        const ::fwData::Image::Iterator< ::fwData::iterator::RGBA > iterEnd = img->end< ::fwData::iterator::RGBA >();
+        const ::fwData::Image::Iterator< RGBA > iterEnd = img->end< RGBA >();
 
         for (; iter != iterEnd; ++iter)
         {
@@ -358,7 +358,7 @@ public:
         }
        @endcode
      *
-     * @warning The iterator does not assert that the buffer type is the same as the given format. It only assert
+     * @warning The iterator does not assert that the buffer type is the same as the given format. It only asserts
      * (in debug) that the iterator does not iterate outside of the buffer bounds).
      * @note These functions lock the buffer
      * @{

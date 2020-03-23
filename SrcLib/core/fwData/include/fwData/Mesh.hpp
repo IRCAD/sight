@@ -103,7 +103,7 @@ namespace fwData
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
     mesh->resize(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
-    const auto lock = mesh->lock(); // prevent the buffers to be dumped on the disk
+    const auto lock = mesh->lock(); // prevents the buffers from being dumped on the disk
 
     for (size_t i = 0; i < NB_POINTS; ++i)
     {
