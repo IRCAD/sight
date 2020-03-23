@@ -79,7 +79,7 @@
                         <separator/>
                         <menuItem name="Learn background" icon="media-0.1/icons/icon-blend.png" />
                         <separator/>
-                        <editor />
+                        <menuItem name="Settings" icon="media-0.1/icons/Settings.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -88,7 +88,7 @@
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="learnBackground" start="yes" />
-                    <editor sid="enableHoleFillingFilterParams" start="yes" />
+                    <menuItem sid="showSettings" start="yes" />
                 </registry>
             </service>
 
@@ -98,17 +98,27 @@
                         <orientation value="vertical" />
                         <view proportion="1" />
                     </layout>
+                    <slideView align="top" size="50" opacity="1">
+                        <styleSheet>
+                            <![CDATA[
+                            #SlideBar{
+                                background-color: #dddddd;
+                                border: 0;
+                            }
+                            #SlideBar QGroupBox {
+                                background-color: #eeeeee;
+                                border-radius: 10px;
+                                margin-left: 10;
+                                margin-right: 10;
+                            }
+                            ]]>
+                        </styleSheet>
+                    </slideView>
                 </gui>
                 <registry>
                     <view sid="genericScene" />
+                    <slideView sid="settings" start="yes" />
                 </registry>
-            </service>
-
-            <service uid="enableHoleFillingFilterParams" type="::guiQt::editor::SParameters">
-                <parameters>
-                    <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
-                    <param type="int" name="Threshold" key="threshold" defaultValue="10" min="0" max="50" />
-                </parameters>
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit" />
@@ -157,6 +167,39 @@
                 <slots>
                     <slot>masker/setBackground</slot>
                 </slots>
+            </service>
+
+            <service uid="showSettings" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>settings/setVisible</slot>
+                </slots>
+            </service>
+
+            <service uid="settings" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="enableHoleFillingFilterParam" start="yes" />
+                    <view sid="maskerThresholdParam" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="enableHoleFillingFilterParam" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
+                </parameters>
+            </service>
+
+            <service uid="maskerThresholdParam" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Threshold" key="threshold" defaultValue="10" min="0" max="50" />
+                </parameters>
             </service>
 
             <!-- Scene in which the video and the 3D will be rendered -->
@@ -318,12 +361,12 @@
             </connect>
 
             <connect>
-                 <signal>enableHoleFillingFilterParams/boolChanged</signal>
+                 <signal>enableHoleFillingFilterParam/boolChanged</signal>
                  <slot>frameGrabber/setBoolParameter</slot>
             </connect>
 
             <connect>
-                 <signal>enableHoleFillingFilterParams/intChanged</signal>
+                 <signal>maskerThresholdParam/intChanged</signal>
                  <slot>masker/setThreshold</slot>
             </connect>
 
@@ -355,7 +398,7 @@
             <update uid="extractSkin" />
             <update uid="extractor" />
             <update uid="concatenate" />
-            <update uid="enableHoleFillingFilterParams" />
+            <update uid="enableHoleFillingFilterParam" />
 
         </config>
     </extension>
