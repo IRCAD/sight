@@ -8,6 +8,7 @@ set( REQUIREMENTS
     fwlauncher
     arDataReg
     dataReg
+    dataManagerConfig
     servicesReg
     ctrlCamp
     gui

@@ -79,6 +79,8 @@
                         <separator/>
                         <menuItem name="Learn background" icon="media-0.1/icons/icon-blend.png" />
                         <separator/>
+                        <menuItem name="Manage organs color" icon="media-0.1/icons/ManageOrgan.png" style="check" />
+                        <spacer/>
                         <menuItem name="Settings" icon="media-0.1/icons/Settings.svg" style="check" />
                     </layout>
                 </gui>
@@ -88,6 +90,7 @@
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="learnBackground" start="yes" />
+                    <menuItem sid="organManager" start="no" />
                     <menuItem sid="showSettings" start="yes" />
                 </registry>
             </service>
@@ -169,6 +172,12 @@
                 </slots>
             </service>
 
+            <service uid="organManager" type="::gui::action::SConfigLauncher">
+                <appConfig id="ModelSeriesManagerWindow" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <parameter replace="ICON_PATH" by="ExRGBDImageMaking-0.1/app.ico" />
+            </service>
+
             <service uid="showSettings" type="::gui::action::SBooleanSlotCaller">
                 <slots>
                     <slot>settings/setVisible</slot>
@@ -198,7 +207,7 @@
 
             <service uid="maskerThresholdParam" type="::guiQt::editor::SParameters">
                 <parameters>
-                    <param type="int" name="Threshold" key="threshold" defaultValue="10" min="0" max="50" />
+                    <param type="int" name="Masking threshold" key="threshold" defaultValue="10" min="0" max="50" />
                 </parameters>
             </service>
 
@@ -372,6 +381,7 @@
 
             <!-- start services -->
             <start uid="mainFrame" />
+            <start uid="organManager" />
             <start uid="synchronizer" />
             <start uid="frameGrabber" />
             <start uid="extractor" />
@@ -399,6 +409,7 @@
             <update uid="extractor" />
             <update uid="concatenate" />
             <update uid="enableHoleFillingFilterParam" />
+            <update uid="meshAdpt" />
 
         </config>
     </extension>
