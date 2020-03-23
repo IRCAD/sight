@@ -36,8 +36,6 @@ static const ::fwServices::IService::KeyType s_TF_INOUT      = "tf";
 
 static const ::fwCom::Slots::SlotKeyType s_MERGE_SLOT = "merge";
 
-fwServicesRegisterMacro(::fwServices::IController, ::ctrlTF::SMergeTF)
-
 //------------------------------------------------------------------------------
 
 SMergeTF::SMergeTF() noexcept

@@ -58,10 +58,6 @@ static const ::fwServices::IService::KeyType s_TF_POOL_OUTPUT = "tfPool";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiTF::SMultipleTF)
-
-//------------------------------------------------------------------------------
-
 SMultipleTF::SMultipleTF()
 {
 }
