@@ -37,6 +37,7 @@ namespace depthSegmentation
 {
 
 const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
+const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_THRESHOLD_SLOT  = "setThreshold";
 
 fwServicesRegisterMacro( ::fwServices::IOperator, ::depthSegmentation::SDepthImageMasking)
 
@@ -50,9 +51,7 @@ const ::fwServices::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage"
 SDepthImageMasking::SDepthImageMasking() noexcept
 {
     newSlot( s_SET_BACKGROUND_SLOT, &SDepthImageMasking::setBackground, this );
-
-    m_elemLess = ::cv::getStructuringElement(::cv::MORPH_RECT, ::cv::Size(4, 4), ::cv::Point(3, 3));
-    m_elemMore = ::cv::getStructuringElement(::cv::MORPH_RECT, ::cv::Size(7, 7), ::cv::Point(6, 6));
+    newSlot( s_SET_THRESHOLD_SLOT, &SDepthImageMasking::setThreshold, this );
 }
 
 // ------------------------------------------------------------------------------
@@ -101,14 +100,16 @@ void SDepthImageMasking::updating()
         ::fwData::Image::sptr depthImage = this->getInOut< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
 
         ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
-        //::cv::cvtColor(cvVideoImage, cvVideoImage, cv::COLOR_BGRA2RGB);
         ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
 
         ::cv::Mat cvMaskedDepth;
         cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
 
-        // PARAMETRIZ THIS HARDCODED VALUE PLZ
-        ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage-5));
+        ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
+
+        ::cv::Mat morphElem = ::cv::getStructuringElement(::cv::MORPH_ELLIPSE, ::cv::Size(7, 7));
+        ::cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
+        ::cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
 
         ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
         cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
@@ -142,6 +143,13 @@ void SDepthImageMasking::setBackground()
         }
         cvDepthImage.copyTo(m_cvDepthMaskImage, m_cvMaskImage);
     }
+}
+
+// ------------------------------------------------------------------------------
+
+void SDepthImageMasking::setThreshold(int _threshold)
+{
+    m_threshold = _threshold;
 }
 
 // ------------------------------------------------------------------------------

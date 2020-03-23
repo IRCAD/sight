@@ -78,6 +78,8 @@
                         <menuItem name="pause" icon="media-0.1/icons/pause-cam.svg" />
                         <separator/>
                         <menuItem name="Learn background" icon="media-0.1/icons/icon-blend.png" />
+                        <separator/>
+                        <editor />
                     </layout>
                 </gui>
                 <registry>
@@ -86,6 +88,7 @@
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="learnBackground" start="yes" />
+                    <editor sid="enableHoleFillingFilterParams" start="yes" />
                 </registry>
             </service>
 
@@ -99,6 +102,13 @@
                 <registry>
                     <view sid="genericScene" />
                 </registry>
+            </service>
+
+            <service uid="enableHoleFillingFilterParams" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
+                    <param type="int" name="Threshold" key="threshold" defaultValue="10" min="0" max="50" />
+                </parameters>
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit" />
@@ -307,6 +317,16 @@
                 <slot>extractor/update</slot>
             </connect>
 
+            <connect>
+                 <signal>enableHoleFillingFilterParams/boolChanged</signal>
+                 <slot>frameGrabber/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                 <signal>enableHoleFillingFilterParams/intChanged</signal>
+                 <slot>masker/setThreshold</slot>
+            </connect>
+
             <!-- start services -->
             <start uid="mainFrame" />
             <start uid="synchronizer" />
@@ -335,6 +355,7 @@
             <update uid="extractSkin" />
             <update uid="extractor" />
             <update uid="concatenate" />
+            <update uid="enableHoleFillingFilterParams" />
 
         </config>
     </extension>

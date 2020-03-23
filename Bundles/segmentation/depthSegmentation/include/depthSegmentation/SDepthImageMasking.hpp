@@ -70,6 +70,7 @@ public:
      * @{
      */
     DEPTHSEGMENTATION_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
+    DEPTHSEGMENTATION_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
     ///@}
 
     ///Constructor
@@ -97,16 +98,18 @@ protected:
 
 private:
 
-    /// Slot: Set background image and learn background model
+    /// Slot: Set
     void setBackground();
+
+    /// Slot: Set
+    void setThreshold(int _threshold);
 
     void create_mask_from_depth(::cv::Mat& _depth, int _thresh, ::cv::ThresholdTypes _type);
 
-    ::cv::Mat m_elemLess;
-    ::cv::Mat m_elemMore;
-
     ::cv::Mat m_cvMaskImage;
     ::cv::Mat m_cvDepthMaskImage;
+
+    int m_threshold{10};
 };
 
 } // namespace colourSegmentation
