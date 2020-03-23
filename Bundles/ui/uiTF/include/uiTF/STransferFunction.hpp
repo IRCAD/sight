@@ -96,13 +96,13 @@ private:
     /// Configures the transfer function editor.
     virtual void configuring() override;
 
-    /// Starts the service, create Container, place in Buttons, ComboBox, Layout, and connect them.
+    /// Starts the service, creates container, place in buttons, comboBox, layout, and connect them.
     virtual void starting() override;
 
     /// Does nothing.
     virtual void updating() override;
 
-    /// Stops the service, disconnect Buttons and Combo Box, delete them and clean the container.
+    /// Stops the service, disconnect buttons and combo box, delete them and clean the container.
     virtual void stopping() override;
 
     /**
@@ -130,21 +130,21 @@ private:
     void initTransferFunctions();
 
     /**
-     * @brief Checks if the image contain the specified TF.
-     * @param _sName the name used to search the TF.
-     * @return True if the TF named _sName is founded.
+     * @brief Checks if the composite contain the specified TF.
+     * @param _name the name used to search the TF.
+     * @return True if the TF named _sName is found.
      */
-    bool hasTransferFunctionName(const std::string& _sName) const;
+    bool hasTransferFunctionName(const std::string& _name) const;
 
     /**
      * @brief Create a string that represents a TF name not already present in the composite.
      *
      * For example, if blabla is already used, it will return blabla_1.
      *
-     * @param _sBasename the name of the TF to create.
+     * @param _basename the name of the TF to create.
      * @return The new name of the TF.
      */
-    std::string createTransferFunctionName( const std::string& _sBasename ) const;
+    std::string createTransferFunctionName( const std::string& _basename) const;
 
     /// Updates the output transferFunction with the selected TF in the ComboBox.
     void updateTransferFunction();

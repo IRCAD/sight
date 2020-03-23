@@ -33,6 +33,27 @@
 namespace ctrlTF
 {
 
+/**
+ * @brief Controller that merge all TF from a composite into one TF.
+ *
+ * @section Slots Slots
+ * - \b merge(): merge all TF from the composite into one TF.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ctrlTF::SMergeTF">
+       <in key="tfPool" uid="..." />
+       <inout key="tf" uid="..." />
+   </service>
+   @endcode
+ *
+ * @subsection Input Input
+ * - \b tfPool [::fwData::Composite]: composite where looking for TF.
+ *
+ * @subsection In-Out In-Out
+ * - \b tf [::fwData::TransferFunction]: the merged TF.
+ */
 class CTRLTF_CLASS_API SMergeTF final : public ::fwServices::IController
 {
 

@@ -73,7 +73,7 @@ namespace adaptor
  * * @subsection Output Output
  * - \b tf [::fwData::TransferFunction]: selected transfer function.
  *
- * @subsection Configuration Configuration:
+ * @subsection Configuration Configuration
  * - \b config (mandatory): contains the adaptor configuration.
  *    - \b xAxis (optional): x axis associated to the adaptor.
  *    - \b yAxis (optional): y axis associated to the adaptor.

@@ -600,25 +600,25 @@ void STransferFunction::updateTransferFunctionPreset()
 
 //------------------------------------------------------------------------------
 
-bool STransferFunction::hasTransferFunctionName(const std::string& _sName) const
+bool STransferFunction::hasTransferFunctionName(const std::string& _name) const
 {
     const ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", poolTF);
     const ::fwData::mt::ObjectReadLock poolTFLock(poolTF);
-    return poolTF->find(_sName) != poolTF->end();
+    return poolTF->find(_name) != poolTF->end();
 }
 
 //------------------------------------------------------------------------------
 
-std::string STransferFunction::createTransferFunctionName(const std::string& _sBasename) const
+std::string STransferFunction::createTransferFunctionName(const std::string& _basename) const
 {
     bool bHasTransferFunctionName = true;
-    std::string newName           = _sBasename;
+    std::string newName           = _basename;
     int cpt                       = 1;
     while(bHasTransferFunctionName)
     {
         std::stringstream tmpStr;
-        tmpStr <<  _sBasename <<  "_" <<  cpt;
+        tmpStr <<  _basename <<  "_" <<  cpt;
         newName                  = tmpStr.str();
         bHasTransferFunctionName = this->hasTransferFunctionName(newName);
         cpt++;
