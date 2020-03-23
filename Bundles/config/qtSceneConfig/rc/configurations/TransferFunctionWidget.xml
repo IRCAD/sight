@@ -1,3 +1,14 @@
+<!--
+Example:
+
+<service uid="..." type="::fwServices::SConfigController">
+    <appConfig id="TransferFunctionWidget" />
+    <inout key="image" uid="..."/>
+    <inout key="histogram" uid="..."/>
+    <inout key="transferFunction" uid="..." />
+    <parameter replace="WID_PARENT" by="..."/>
+</service>
+-->
 <extension implements="::fwServices::registry::AppConfig">
     <id>TransferFunctionWidget</id>
     <parameters>
