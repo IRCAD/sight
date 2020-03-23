@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,6 +47,8 @@ namespace visuOgreAdaptor
  * -\b updateVisibility(bool): Sets whether the vector is shown or not.
  * -\b toggleVisibility(): Toggle whether the vector is shown or not.
  * -\b updateLength(float): set the length of the vector.
+ * -\b show(): Shows the vector.
+ * -\b hide(): Hides the vector.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -77,6 +79,12 @@ public:
 
     /// Slot used to update length of the line.
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
+
+    /// Slot used to show the vector.
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+
+    /// Slot used to hide the vector.
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
@@ -124,6 +132,12 @@ private:
 
     /// Delete resources.
     void deleteVector();
+
+    /// Show the vector.
+    void show();
+
+    /// Hide the vector.
+    void hide();
 
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material {nullptr};

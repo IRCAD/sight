@@ -43,6 +43,8 @@ namespace visuOgreAdaptor
 const ::fwCom::Slots::SlotKeyType SVector::s_UPDATE_LENGTH_SLOT     = "updateLength";
 const ::fwCom::Slots::SlotKeyType SVector::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SVector::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const ::fwCom::Slots::SlotKeyType SVector::s_SHOW_SLOT              = "show";
+const ::fwCom::Slots::SlotKeyType SVector::s_HIDE_SLOT              = "hide";
 
 static const std::string s_COLOR_CONFIG  = "color";
 static const std::string s_LENGTH_CONFIG = "length";
@@ -54,6 +56,8 @@ SVector::SVector() noexcept
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVector::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SVector::toggleVisibility, this);
     newSlot(s_UPDATE_LENGTH_SLOT, &SVector::updateLength, this);
+    newSlot(s_SHOW_SLOT, &SVector::show, this);
+    newSlot(s_HIDE_SLOT, &SVector::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -167,6 +171,7 @@ void SVector::createVector()
     const float coneLength     = m_length - cylinderLength;
     const float coneRadius     = cylinderRadius*2;
     const unsigned sample      = 64;
+    m_isVisible = true;
 
     // Color
     std::uint8_t color[4];
@@ -247,6 +252,19 @@ void SVector::updateLength(float _length)
     m_length = _length;
 
     this->update();
+}
+
+//-----------------------------------------------------------------------------
+void SVector::show()
+{
+    this->updateVisibility(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void SVector::hide()
+{
+    this->updateVisibility(false);
 }
 
 //-----------------------------------------------------------------------------
