@@ -56,11 +56,13 @@ static const std::string s_POINT_COLOR_CONFIG   = "pointColor";
 static const std::string s_POINT_SIZE_CONFIG    = "pointSize";
 static const std::string s_INTERACTIVE_CONFIG   = "interactive";
 
-static int s_LEFT_RAMP_INDEX_COUNTER  = 0;
-static int s_RIGHT_RAMP_INDEX_COUNTER = 0;
-static int s_TRAPEZE_INDEX_COUNTER    = 0;
+static int s_left_ramp_index_counter  = 0;
+static int s_right_ramp_index_counter = 0;
+static int s_trapeze_index_counter    = 0;
 
 fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SMultipleTF)
+
+//-----------------------------------------------------------------------------
 
 SMultipleTF::SMultipleTF() noexcept
 {
@@ -1685,10 +1687,10 @@ void SMultipleTF::addNewTF(const ::fwData::TransferFunction::sptr _tf)
 void SMultipleTF::addLeftRamp(const ::fwRenderQt::data::Event& _event)
 {
     // Creates the new TF.
-    ::fwData::Composite::KeyType name = "CT-LeftRamp_" + std::to_string(s_LEFT_RAMP_INDEX_COUNTER++);
+    ::fwData::Composite::KeyType name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
     while(this->hasTFName(name))
     {
-        name = "CT-LeftRamp_" + std::to_string(s_LEFT_RAMP_INDEX_COUNTER++);
+        name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
     }
     const ::fwData::TransferFunction::sptr leftRamp = ::fwData::TransferFunction::New();
     leftRamp->setName(name);
@@ -1713,10 +1715,10 @@ void SMultipleTF::addLeftRamp(const ::fwRenderQt::data::Event& _event)
 void SMultipleTF::addRightRamp(const ::fwRenderQt::data::Event& _event)
 {
     // Creates the new TF.
-    ::fwData::Composite::KeyType name = "CT-RightRamp_" + std::to_string(s_LEFT_RAMP_INDEX_COUNTER++);
+    ::fwData::Composite::KeyType name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
     while(this->hasTFName(name))
     {
-        name = "CT-RightRamp_" + std::to_string(s_LEFT_RAMP_INDEX_COUNTER++);
+        name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
     }
     const ::fwData::TransferFunction::sptr rightRamp = ::fwData::TransferFunction::New();
     rightRamp->setName(name);
@@ -1741,10 +1743,10 @@ void SMultipleTF::addRightRamp(const ::fwRenderQt::data::Event& _event)
 void SMultipleTF::addTrapeze(const ::fwRenderQt::data::Event& _event)
 {
     // Creates the new TF.
-    ::fwData::Composite::KeyType name = "CT-Trapeze_" + std::to_string(s_LEFT_RAMP_INDEX_COUNTER++);
+    ::fwData::Composite::KeyType name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
     while(this->hasTFName(name))
     {
-        name = "CT-Trapeze_" + std::to_string(s_LEFT_RAMP_INDEX_COUNTER++);
+        name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
     }
     const ::fwData::TransferFunction::sptr trapeze = ::fwData::TransferFunction::New();
     trapeze->setName(name);
