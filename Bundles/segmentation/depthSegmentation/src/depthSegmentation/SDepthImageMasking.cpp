@@ -28,6 +28,7 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -36,12 +37,12 @@
 namespace depthSegmentation
 {
 
-const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
-const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_THRESHOLD_SLOT  = "setThreshold";
-
 fwServicesRegisterMacro( ::fwServices::IOperator, ::depthSegmentation::SDepthImageMasking)
 
-const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY = "maskImage";
+const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
+const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_THRESHOLD_SLOT = "setThreshold";
+
+const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
 const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
 const ::fwServices::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
 const ::fwServices::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
@@ -98,27 +99,36 @@ void SDepthImageMasking::updating()
         ::fwData::Image::csptr videoImage = this->getInput< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
         ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
 
-        ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
-        ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
+        if(videoImage && depthImage)
+        {
+            ::fwData::mt::ObjectReadLock lockVideoImage(videoImage);
+            ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);
 
-        ::cv::Mat cvMaskedDepth;
-        cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
+            ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
+            ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
 
-        ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
+            ::cv::Mat cvMaskedDepth;
+            cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
 
-        ::cv::Mat morphElem = ::cv::getStructuringElement(::cv::MORPH_ELLIPSE, ::cv::Size(7, 7));
-        ::cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
-        ::cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
+            ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
 
-        ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
-        cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
+            ::cv::Mat morphElem = ::cv::getStructuringElement(::cv::MORPH_ELLIPSE, ::cv::Size(7, 7));
+            ::cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
+            ::cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
 
-        ::fwData::Image::sptr foregroundImage = this->getInOut< ::fwData::Image >(s_FOREGROUND_IMAGE_KEY);
-        ::cvIO::Image::copyFromCv(foregroundImage, cvMaskedVideo);
+            ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
+            cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
 
-        auto sig = foregroundImage->signal< ::fwData::Image::BufferModifiedSignalType >(
-            ::fwData::Image::s_BUFFER_MODIFIED_SIG);
-        sig->asyncEmit();
+            ::fwData::Image::sptr foregroundImage = this->getInOut< ::fwData::Image >(s_FOREGROUND_IMAGE_KEY);
+
+            ::fwData::mt::ObjectWriteLock lockForegroundImage(foregroundImage);
+
+            ::cvIO::Image::copyFromCv(foregroundImage, cvMaskedVideo);
+
+            auto sig = foregroundImage->signal< ::fwData::Image::BufferModifiedSignalType >(
+                ::fwData::Image::s_BUFFER_MODIFIED_SIG);
+            sig->asyncEmit();
+        }
     }
 }
 
@@ -130,6 +140,9 @@ void SDepthImageMasking::setBackground()
     ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
     if(maskImage && depthImage)
     {
+        ::fwData::mt::ObjectReadLock lockMaskImage(maskImage);
+        ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);
+
         ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
         m_cvMaskImage          = ::cvIO::Image::moveToCv(maskImage);
         ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
