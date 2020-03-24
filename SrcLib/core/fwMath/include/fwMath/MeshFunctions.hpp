@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __FWMATH_MESHFUNCTIONS_HPP__
-#define __FWMATH_MESHFUNCTIONS_HPP__
+#pragma once
 
-#include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/config.hpp"
+#include "fwMath/IntrasecTypes.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <boost/unordered_map.hpp>
+
 #include <cmath>
 #include <utility>
 #include <vector>
@@ -39,11 +39,12 @@ namespace fwMath
 /**
  * @brief
  */
-FWMATH_API bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex,
-                                 const fwVec3d &_p );
+FWMATH_API bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertexIndex,
+                                 const fwVec3d& _p );
 
 /**
- * @brief Compute the intersection between triangle(define by threes vertex vert1, vert2, vert3) and the Oz parallel line and cross by the point P.
+ * @brief Compute the intersection between triangle(defined by three vertices vert1, vert2, vert3) and the Oz parallel
+ * line and cross by the point P.
  * The function return true if intersection is found (false otherwise).
  * t is the oriented distance of P to the intersection point.
  * u and v is the coordinate of the intersection point in the (O, u, v) triangle coordinate system with :
@@ -52,24 +53,49 @@ FWMATH_API bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertex
  *
  */
 FWMATH_API bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _vert1, fwVec3d _vert2,
-                                   double &_t, double &_u, double &_v);
+                                   double& _t, double& _u, double& _v);
 
 /// test whatever a vertex is duplicated or not
-FWMATH_API bool isBorderlessSurface( const fwVertexIndex &_vertexIndex);
+FWMATH_API bool isBorderlessSurface( const fwVertexIndex& _vertexIndex);
 
-FWMATH_API void findBorderEdges( const fwVertexIndex &_vertexIndex, std::vector< std::vector<  std::pair< int,
-                                                                                                          int  > > > &contours);
+FWMATH_API void findBorderEdges( const fwVertexIndex& _vertexIndex, std::vector< std::vector<  std::pair< int,
+                                                                                                          int  > > >& contours);
 
 /**
  * @brief Closes the surface if necessary
  * @return True if container mesh is changed
  */
-FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
+FWMATH_API bool closeSurface( fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex );
 
 /**
  * remove orphan vertices (i.e not used in _vertexIndex), _vertexIndex is reordered according to vertex suppressions
  */
-FWMATH_API bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
+FWMATH_API bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex );
+
+/**
+ * @brief Converts an intersection point with a triangle from world coordinates to barycentric coordinates.
+ * Assert if the _A_B_C triangle is flat to avoid zero division.
+ * Note: no tests are performed in release mode to avoid performance issue.
+ * @param _P world coordinates of the point (x, y, z), need to belongs to the ABC triangle.
+ * @param _A first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _B second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
+ * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
+ * @return barycentric coordinates (u, v, w).
+ */
+FWMATH_API fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
+                                      const fwVec3d& _B, const fwVec3d& _C);
+
+/**
+ * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w isn't equal to 1.
+ * Note: no tests are performed in release mode to avoid performance issue.
+ * @param _baryCoord barycentric coordinates (u, v, w) that belongs to the _A_B_C triangle.
+ * @param _A first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _B second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
+ * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
+ * @return world coordinates (x, y, z).
+ */
+FWMATH_API fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A,
+                                        const fwVec3d& _B, const fwVec3d& _C);
 
 //-----------------------------------------------------------------------------
 
@@ -128,7 +154,7 @@ bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBeg
         }
     }
 
-    for(const typename EdgeHistogram::value_type &histo : edgesHistogram)
+    for(const typename EdgeHistogram::value_type& histo : edgesHistogram)
     {
         if (histo.second != 2)
         {
@@ -141,5 +167,3 @@ bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBeg
 }
 
 }
-
-#endif /* __FWMATH_MESHFUNCTIONS_HPP__ */

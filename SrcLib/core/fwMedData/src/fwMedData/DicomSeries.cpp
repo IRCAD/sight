@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,13 +29,13 @@
 
 #include <filesystem>
 
-fwDataRegisterMacro( ::fwMedData::DicomSeries );
+fwDataRegisterMacro( ::fwMedData::DicomSeries )
 
 namespace fwMedData
 {
 
-DicomSeries::DicomSeries(::fwData::Object::Key key) :
-    Series(key),
+DicomSeries::DicomSeries(::fwData::Object::Key _key) :
+    Series(_key),
     m_numberOfInstances(0),
     m_firstInstanceNumber(0)
 {
@@ -105,49 +105,49 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCop
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addDicomPath(std::size_t instanceIndex, const std::filesystem::path& path)
+void DicomSeries::addDicomPath(std::size_t _instanceIndex, const std::filesystem::path& _path)
 {
     ::fwMemory::BufferObject::sptr buffer = ::fwMemory::BufferObject::New();
-    const size_t buffSize = std::filesystem::file_size(path);
-    buffer->setIStreamFactory( std::make_shared< ::fwMemory::stream::in::Raw >(path),
-                               buffSize, path, ::fwMemory::RAW);
-    m_dicomContainer[instanceIndex] = buffer;
+    const size_t buffSize = std::filesystem::file_size(_path);
+    buffer->setIStreamFactory( std::make_shared< ::fwMemory::stream::in::Raw >(_path),
+                               buffSize, _path, ::fwMemory::RAW);
+    m_dicomContainer[_instanceIndex] = buffer;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addBinary(std::size_t instanceIndex, const ::fwMemory::BufferObject::sptr& buffer)
+void DicomSeries::addBinary(std::size_t _instanceIndex, const ::fwMemory::BufferObject::sptr& _buffer)
 {
-    m_dicomContainer[instanceIndex] = buffer;
+    m_dicomContainer[_instanceIndex] = _buffer;
 }
 
 //------------------------------------------------------------------------------
 
-bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex) const
+bool DicomSeries::isInstanceAvailable(std::size_t _instanceIndex) const
 {
-    const auto& dicomContainerIter = m_dicomContainer.find(instanceIndex);
+    const auto& dicomContainerIter = m_dicomContainer.find(_instanceIndex);
     return (dicomContainerIter != m_dicomContainer.end());
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addSOPClassUID(const std::string& sopClassUID)
+void DicomSeries::addSOPClassUID(const std::string& _sopClassUID)
 {
-    m_SOPClassUIDs.insert(sopClassUID);
+    m_SOPClassUIDs.insert(_sopClassUID);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addComputedTagValue(const std::string& tagName, const std::string& value)
+void DicomSeries::addComputedTagValue(const std::string& _tagName, const std::string& _value)
 {
-    m_computedTagValues[tagName] = value;
+    m_computedTagValues[_tagName] = _value;
 }
 
 //------------------------------------------------------------------------------
 
-bool DicomSeries::hasComputedValues(const std::string& tagName) const
+bool DicomSeries::hasComputedValues(const std::string& _tagName) const
 {
-    return m_computedTagValues.find(tagName) != m_computedTagValues.end();
+    return m_computedTagValues.find(_tagName) != m_computedTagValues.end();
 }
 
 } // namespace fwMedData

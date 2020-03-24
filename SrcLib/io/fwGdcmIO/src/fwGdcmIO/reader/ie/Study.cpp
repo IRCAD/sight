@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,34 +61,28 @@ void Study::readGeneralStudyModule()
     // Retrieve dataset
     const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
-    // Study's date - Type 2
-    const std::string& studyDate = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0020 >(dataset);
+    const std::string& studyUID = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x000d>(dataset);
+    m_object->setInstanceUID(studyUID);
+
+    const std::string& studyID = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x0010>(dataset);
+    m_object->setStudyID(studyID);
+
+    const std::string& studyDate = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0020>(dataset);
     m_object->setDate(studyDate);
 
-    // Study's time - Type 2
-    const std::string& studyTime = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0030 >(dataset);
+    const std::string& studyTime = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0030>(dataset);
     m_object->setTime(studyTime);
 
-    // Study's accession number - Type 2
-    // NOTE: Not used in Sight
+    const std::string& studyReferringPhysicianName
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0090>(dataset);
+    m_object->setReferringPhysicianName(studyReferringPhysicianName);
 
-    // Study's description - Type 3
-    const std::string& description =
-        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x1030 >(dataset);
-    m_object->setDescription(description);
+    const std::string& studyConsultingPhysicianName
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x009C>(dataset);
+    m_object->setConsultingPhysicianName(studyConsultingPhysicianName);
 
-    // Study's UID - Type 1
-    const std::string& instanceUID =
-        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000d >(dataset);
-    m_object->setInstanceUID(instanceUID);
-
-    // Study's ID - Type 2
-    // NOTE: Not used in Sight
-
-    // Study's referring physician name
-    const std::string& referringPhysicianName =
-        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0090 >(dataset);
-    m_object->setReferringPhysicianName(referringPhysicianName);
+    const std::string& studyDescription = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x1030>(dataset);
+    m_object->setDescription(studyDescription);
 }
 
 //------------------------------------------------------------------------------
@@ -98,10 +92,18 @@ void Study::readPatientStudyModule()
     // Retrieve dataset
     const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
-    // PatientAge - Type 3
-    const std::string& patientAge =
-        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0010, 0x1010 >(dataset);
-    m_object->setPatientAge(patientAge);
+    const std::string& studyPatientAge = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0010, 0x1010>(dataset);
+    m_object->setPatientAge(studyPatientAge);
+
+    const std::string& studyPatientSize = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0010, 0x1020>(dataset);
+    m_object->setPatientSize(studyPatientSize);
+
+    const std::string& studyPatientWeight = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0010, 0x1030>(dataset);
+    m_object->setPatientWeight(studyPatientWeight);
+
+    const std::string& studyPatientBodyMassIndex
+        = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0010, 0x1022>(dataset);
+    m_object->setPatientBodyMassIndex(studyPatientBodyMassIndex);
 }
 
 //------------------------------------------------------------------------------

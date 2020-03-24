@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -281,6 +281,42 @@ ImageStorageReader::~ImageStorageReader()
 
     // Add the image to the series
     imageSeries->setImage(image);
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusAgent, data);
+    imageSeries->setContrastAgent(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusRoute, data);
+    imageSeries->setContrastRoute(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusVolume, data);
+    imageSeries->setContrastVolume(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusStartTime, data);
+    imageSeries->setContrastStartTime(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusStopTime, data);
+    imageSeries->setContrastStopTime(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusTotalDose, data);
+    imageSeries->setContrastTotalDose(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastFlowRate, data);
+    imageSeries->setContrastFlowRate(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastFlowDuration, data);
+    imageSeries->setContrastFlowDuration(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusIngredient, data);
+    imageSeries->setContrastIngredient(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_ContrastBolusIngredientConcentration, data);
+    imageSeries->setContrastIngredientConcentration(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_AcquisitionDate, data);
+    imageSeries->setAcquisitionDate(data.c_str());
+
+    dataset->findAndGetOFStringArray(DCM_AcquisitionTime, data);
+    imageSeries->setAcquisitionTime(data.c_str());
 
     return imageSeries;
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -205,29 +205,16 @@ void SInrSeriesDBReader::updating()
 
 void SInrSeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
 {
-    const std::string unknown = "unknown";
     series->setModality("OT");
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
     const std::string date = ::fwTools::getDate(now);
     const std::string time = ::fwTools::getTime(now);
     series->setDate(date);
     series->setTime(time);
-    //series->setDescription(??);
-    //series->setPerformingPhysiciansName(??);
-
-    series->getEquipment()->setInstitutionName(unknown);
-
-    series->getPatient()->setName(unknown);
-    series->getPatient()->setPatientId(unknown);
-    series->getPatient()->setBirthdate(unknown);
-    series->getPatient()->setSex(unknown);
 
     series->getStudy()->setInstanceUID(instanceUID);
     series->getStudy()->setDate(date);
     series->getStudy()->setTime(time);
-    series->getStudy()->setReferringPhysicianName(unknown);
-    series->getStudy()->setDescription(unknown);
-    series->getStudy()->setPatientAge(unknown);
 }
 
 //------------------------------------------------------------------------------

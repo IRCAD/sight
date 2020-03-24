@@ -365,8 +365,8 @@ void MeshTest::testMeshUpdateNormals()
 
     ::fwDataTools::Mesh::generatePointNormals(mesh1);
     ::fwDataTools::Mesh::generateCellNormals(mesh1);
-    ::fwDataTools::Mesh::shakeNormals(mesh1->getPointNormalsArray());
-    ::fwDataTools::Mesh::shakeNormals(mesh1->getCellNormalsArray());
+    ::fwDataTools::Mesh::shakePointNormals(mesh1);
+    ::fwDataTools::Mesh::shakeCellNormals(mesh1);
 
     ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(poly_source, mesh1);
     ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(poly_source, mesh1);
@@ -466,8 +466,6 @@ void MeshTest::testGridUpdateNormals()
 
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
-    CPPUNIT_ASSERT( mesh1->getPointNormalsArray()->getSize()[0] );
-    CPPUNIT_ASSERT( mesh1->getCellNormalsArray()->getSize()[0] );
 
     vtkSmartPointer< vtkUnstructuredGrid > vtkGrid = vtkSmartPointer< vtkUnstructuredGrid >::New();
     ::fwVtkIO::helper::Mesh::toVTKGrid( mesh1, vtkGrid);

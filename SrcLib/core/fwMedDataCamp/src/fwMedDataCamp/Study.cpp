@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,14 +29,19 @@
 fwCampImplementDataMacro((fwMedData)(Study))
 {
     builder
-    .tag("object_version", "1")
+    .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
     .base< ::fwData::Object>()
     .property("instance_uid", &::fwMedData::Study::m_instanceUID)
+    .property("study_id", &::fwMedData::Study::m_studyID)
     .property("date", &::fwMedData::Study::m_date)
     .property("time", &::fwMedData::Study::m_time)
     .property("referring_physician_name", &::fwMedData::Study::m_referringPhysicianName)
+    .property("consulting_physician_name", &::fwMedData::Study::m_consultingPhysicianName)
     .property("description", &::fwMedData::Study::m_description)
     .property("patient_age", &::fwMedData::Study::m_patientAge)
+    .property("patient_size", &::fwMedData::Study::m_patientSize)
+    .property("patient_weight", &::fwMedData::Study::m_patientWeight)
+    .property("patient_body_mass_index", &::fwMedData::Study::m_patientBodyMassIndex)
     ;
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,12 @@
  *
  ***********************************************************************/
 
-#include "DataCampHelper.hpp"
 #include "CameraSeriesTest.hpp"
 
-#include <arData/CameraSeries.hpp>
+#include "DataCampHelper.hpp"
+
 #include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arDataCamp::ut::CameraSeriesTest );
@@ -34,10 +35,14 @@ namespace arDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void CameraSeriesTest::setUp()
 {
     // Set up context before running a test.
 }
+
+//------------------------------------------------------------------------------
 
 void CameraSeriesTest::tearDown()
 {
@@ -51,9 +56,9 @@ void CameraSeriesTest::propertiesTest()
     ::arData::CameraSeries::sptr series = ::arData::CameraSeries::New();
 
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
-    for (int i = 0; i<4; ++i)
+    for (int i = 0; i < 4; ++i)
     {
-        for (int j = 0; j<4; ++j)
+        for (int j = 0; j < 4; ++j)
         {
             mat->setCoefficient(i, j, 2*i+j);
         }
@@ -77,23 +82,37 @@ void CameraSeriesTest::propertiesTest()
     camera2->setSkew(0.19);
     camera2->setDistortionCoefficient(2.4, 5.1, 66., 4.1, 6.4);
 
-
     series->addCamera(camera1);
     series->addCamera(camera2);
     series->setExtrinsicMatrix(1, mat);
 
-    const DataCampHelper::PropertiesNameType dataProperties = {"fields",
-                                                               "patient",
-                                                               "study",
-                                                               "equipment",
-                                                               "instance_uid",
-                                                               "modality",
-                                                               "date",
-                                                               "time",
-                                                               "performing_physicians_name",
-                                                               "description",
-                                                               "cameras",
-                                                               "extrinsic_matrices"};
+    const DataCampHelper::PropertiesNameType dataProperties = {
+        { "fields" },
+        { "patient" },
+        { "study" },
+        { "equipment" },
+        { "modality" },
+        { "instance_uid" },
+        { "number" },
+        { "laterality" },
+        { "date" },
+        { "time" },
+        { "performing_physicians_name" },
+        { "protocolName" },
+        { "description" },
+        { "body_part_examined" },
+        { "patient_position" },
+        { "anatomical_orientation_type" },
+        { "performded_procedure_step_id" },
+        { "performed_procedure_step_start_date" },
+        { "performed_procedure_step_start_time" },
+        { "performed_procedure_step_end_date" },
+        { "performed_procedure_step_end_time" },
+        { "performed_procedure_step_description" },
+        { "performed_procedure_comments" },
+        { "cameras" },
+        { "extrinsic_matrices"}
+    };
 
     DataCampHelper::visitProperties(series->getClassname(), dataProperties);
     DataCampHelper::compareObjectPropertyValue(series, "@cameras.0", camera1);

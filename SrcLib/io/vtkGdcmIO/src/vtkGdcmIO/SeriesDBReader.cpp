@@ -66,10 +66,75 @@
 #include <exception>
 #include <filesystem>
 
-fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBReader );
+fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBReader )
 
 namespace vtkGdcmIO
 {
+
+static const ::gdcm::Tag s_SERIES_MODALITY_TAG(0x0008, 0x0060);
+static const ::gdcm::Tag s_SERIES_UID_TAG(0x0020, 0x000e);
+static const ::gdcm::Tag s_SERIES_NUMBER_TAG(0x0020, 0x0011);
+static const ::gdcm::Tag s_SERIES_LATERALITY_TAG(0x0020, 0x0060);
+static const ::gdcm::Tag s_SERIES_DATE_TAG(0x0008, 0x0021);
+static const ::gdcm::Tag s_SERIES_TIME_TAG(0x0008, 0x0031);
+static const ::gdcm::Tag s_SERIES_PHYSICIAN_NAMES_TAG(0x0008, 0x1050);
+static const ::gdcm::Tag s_SERIES_PROTOCOL_NAME_TAG(0x0018, 0x1030);
+static const ::gdcm::Tag s_SERIES_DESCRIPTION_TAG(0x0008, 0x103e);
+static const ::gdcm::Tag s_SERIES_BODY_PART_EXAMINED_TAG(0x0018, 0x0015);
+static const ::gdcm::Tag s_SERIES_PATIENT_POSITION_TAG(0x0018, 0x5100);
+static const ::gdcm::Tag s_SERIES_ANATOMICAL_ORIENTATION_TYPE_TAG(0x0010, 0x2210);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_ID_TAG(0x0040, 0x0253);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_START_DATE_TAG(0x0040, 0x0244);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_START_TIME_TAG(0x0040, 0x0245);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_END_DATE_TAG(0x0040, 0x0250);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_END_TIME_TAG(0x0040, 0x0251);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_STEP_DESCRIPTION_TAG(0x0040, 0x0254);
+static const ::gdcm::Tag s_SERIES_PERFORMED_PROCEDURE_COMMENTS_TAG(0x0040, 0x0280);
+
+static const ::gdcm::Tag s_PATIENT_NAME_TAG(0x0010, 0x0010);
+static const ::gdcm::Tag s_PATIENT_ID_TAG(0x0010, 0x0020);
+static const ::gdcm::Tag s_PATIENT_BIRTHDATE_TAG(0x0010, 0x0030);
+static const ::gdcm::Tag s_PATIENT_SEX_TAG(0x0010, 0x0040);
+
+static const ::gdcm::Tag s_STUDY_UID_TAG(0x0020, 0x000d);
+static const ::gdcm::Tag s_STUDY_ID_TAG(0x0020, 0x0010);
+static const ::gdcm::Tag s_STUDY_DATE_TAG(0x0008, 0x0020);
+static const ::gdcm::Tag s_STUDY_TIME_TAG(0x0008, 0x0030);
+static const ::gdcm::Tag s_STUDY_REFERRING_PHYSICIAN_NAME_TAG(0x0008, 0x0090);
+static const ::gdcm::Tag s_STUDY_CONSULTING_PHYSICIAN_NAME_TAG(0x0008, 0x009C);
+static const ::gdcm::Tag s_STUDY_DESCRIPTION_TAG(0x0008, 0x1030);
+static const ::gdcm::Tag s_STUDY_PATIENT_AGE_TAG(0x0010, 0x1010);
+static const ::gdcm::Tag s_STUDY_PATIENT_SIZE_TAG(0x0010, 0x1020);
+static const ::gdcm::Tag s_STUDY_PATIENT_WEIGHT_TAG(0x0010, 0x1030);
+static const ::gdcm::Tag s_STUDY_PATIENT_BODY_MASS_INDEX_TAG(0x0010, 0x1022);
+
+static const ::gdcm::Tag s_EQUIPMENT_INSTITUTION_NAME_TAG(0x0008, 0x0080);
+
+static const ::gdcm::Tag s_IMAGE_CONTRAST_AGENT_TAG(0x0018, 0x0010);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_ROUTE_TAG(0x0018, 0x1040);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_VOLUME_TAG(0x0018, 0x1041);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_START_TIME_TAG(0x0018, 0x1042);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_STOP_TIME_TAG(0x0018, 0x1043);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_TOTAL_DOSE_TAG(0x0018, 0x1044);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_FLOW_RATE_TAG(0x0018, 0x1046);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_FLOW_DURATION_TAG(0x0018, 0x1047);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_INGREDIENT_TAG(0x0018, 0x1048);
+static const ::gdcm::Tag s_IMAGE_CONTRAST_INGREDIENT_CONCENTRATION_TAG(0x0018, 0x1049);
+static const ::gdcm::Tag s_IMAGE_TYPE_TAG(0x0008, 0x0008);
+static const ::gdcm::Tag s_IMAGE_ACQUISITION_DATE_TAG(0x0008, 0x0022);
+static const ::gdcm::Tag s_IMAGE_ACQUISITION_TIME_TAG(0x0008, 0x0032);
+
+//------------------------------------------------------------------------------
+
+// Defines a custom sorter based on the InstanceNumber DICOM tag.
+bool sortByInstanceNumber(const ::gdcm::DataSet& ds1, const ::gdcm::DataSet& ds2 )
+{
+    ::gdcm::Attribute<0x0020, 0x0013> at1;
+    at1.Set( ds1 );
+    ::gdcm::Attribute<0x0020, 0x0013> at2;
+    at2.Set( ds2 );
+    return at1 < at2;
+}
 
 //------------------------------------------------------------------------------
 
@@ -90,118 +155,141 @@ SeriesDBReader::~SeriesDBReader()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB( const std::filesystem::path& dicomDir )
+void SeriesDBReader::read()
+{
+    SLM_TRACE_FUNC();
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    std::vector<std::string> filenames;
+    if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
+    {
+        helper::GdcmHelper::searchRecursivelyFiles(this->getFolder(), filenames);
+    }
+    else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
+    {
+        for(std::filesystem::path file :  this->getFiles())
+        {
+            filenames.push_back(file.string());
+        }
+    }
+    this->addSeries( seriesDB, filenames);
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr SeriesDBReader::getJob() const
+{
+    return m_job;
+}
+
+//------------------------------------------------------------------------------
+
+::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB(const std::filesystem::path& _dicomDir)
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     std::vector<std::string> filenames;
-    ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(dicomDir, filenames);
+    helper::GdcmHelper::searchRecursivelyFiles(_dicomDir, filenames);
 
-    this->addSeries( seriesDB, filenames);
+    this->addSeries(seriesDB, filenames);
     return seriesDB;
-}
-
-//------------------------------------------------------------------------------
-
-// Define a custom sorter based on the InstanceNumber DICOM tag.
-bool sortByInstanceNumber(const ::gdcm::DataSet& ds1, const ::gdcm::DataSet& ds2 )
-{
-    ::gdcm::Attribute<0x0020, 0x0013> at1;
-    at1.Set( ds1 );
-    ::gdcm::Attribute<0x0020, 0x0013> at2;
-    at2.Set( ds2 );
-    return at1 < at2;
 }
 
 //----------------------------------------------------------------------------------------
 
-void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
-                                const std::vector< std::string >& filenames)
+void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& _seriesDB,
+                                const std::vector< std::string >& _filenames)
 {
     //gdcm::Trace::SetDebug( 1 );
     //gdcm::Trace::SetWarning( 1 );
     //gdcm::Trace::SetError( 1 );
 
     ::gdcm::Scanner scanner;
-    const ::gdcm::Tag seriesUIDTag(0x0020, 0x000e);
-    const ::gdcm::Tag seriesDateTag(0x0008, 0x0021);
-    const ::gdcm::Tag seriesTimeTag(0x0008, 0x0031);
-    const ::gdcm::Tag seriesTypeTag(0x0008, 0x0060);
-    const ::gdcm::Tag seriesDescriptionTag(0x0008, 0x103e);
-    const ::gdcm::Tag seriesPhysicianNamesTag(0x0008, 0x1050);
+    scanner.AddTag(s_SERIES_MODALITY_TAG);
+    scanner.AddTag(s_SERIES_UID_TAG);
+    scanner.AddTag(s_SERIES_NUMBER_TAG);
+    scanner.AddTag(s_SERIES_LATERALITY_TAG);
+    scanner.AddTag(s_SERIES_DATE_TAG);
+    scanner.AddTag(s_SERIES_TIME_TAG);
+    scanner.AddTag(s_SERIES_PHYSICIAN_NAMES_TAG);
+    scanner.AddTag(s_SERIES_PROTOCOL_NAME_TAG);
+    scanner.AddTag(s_SERIES_DESCRIPTION_TAG);
+    scanner.AddTag(s_SERIES_BODY_PART_EXAMINED_TAG);
+    scanner.AddTag(s_SERIES_PATIENT_POSITION_TAG);
+    scanner.AddTag(s_SERIES_ANATOMICAL_ORIENTATION_TYPE_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_ID_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_START_DATE_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_START_TIME_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_END_DATE_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_END_TIME_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_STEP_DESCRIPTION_TAG);
+    scanner.AddTag(s_SERIES_PERFORMED_PROCEDURE_COMMENTS_TAG);
 
-    const ::gdcm::Tag equipmentInstitutionNameTag(0x0008, 0x0080);
+    scanner.AddTag(s_PATIENT_NAME_TAG);
+    scanner.AddTag(s_PATIENT_ID_TAG);
+    scanner.AddTag(s_PATIENT_BIRTHDATE_TAG);
+    scanner.AddTag(s_PATIENT_SEX_TAG);
 
-    const ::gdcm::Tag patientNameTag(0x0010, 0x0010);
-    const ::gdcm::Tag patientIDTag(0x0010, 0x0020);
-    const ::gdcm::Tag patientBirthdateTag(0x0010, 0x0030);
-    const ::gdcm::Tag patientSexTag(0x0010, 0x0040);
-    const ::gdcm::Tag studyUIDTag(0x0020, 0x000d);
-    const ::gdcm::Tag studyDateTag(0x0008, 0x0020);
-    const ::gdcm::Tag studyTimeTag(0x0008, 0x0030);
-    const ::gdcm::Tag studyReferingPhysicianNameTag(0x0008, 0x0090);
-    const ::gdcm::Tag studyDescriptionTag(0x0008, 0x1030);
-    const ::gdcm::Tag studyPatientAgeTag(0x0010, 0x1010);
+    scanner.AddTag(s_STUDY_UID_TAG);
+    scanner.AddTag(s_STUDY_ID_TAG);
+    scanner.AddTag(s_STUDY_DATE_TAG);
+    scanner.AddTag(s_STUDY_TIME_TAG);
+    scanner.AddTag(s_STUDY_REFERRING_PHYSICIAN_NAME_TAG);
+    scanner.AddTag(s_STUDY_CONSULTING_PHYSICIAN_NAME_TAG);
+    scanner.AddTag(s_STUDY_DESCRIPTION_TAG);
+    scanner.AddTag(s_STUDY_PATIENT_AGE_TAG);
+    scanner.AddTag(s_STUDY_PATIENT_SIZE_TAG);
+    scanner.AddTag(s_STUDY_PATIENT_WEIGHT_TAG);
+    scanner.AddTag(s_STUDY_PATIENT_BODY_MASS_INDEX_TAG);
 
-    const ::gdcm::Tag imageTypeTag(0x0008, 0x0008);
-    const ::gdcm::Tag acquisitionDateTag(0x0008, 0x0022);
-    const ::gdcm::Tag acquisitionTimeTag(0x0008, 0x0032);
+    scanner.AddTag(s_EQUIPMENT_INSTITUTION_NAME_TAG);
 
-    scanner.AddTag( seriesUIDTag );
-    scanner.AddTag( seriesDateTag );
-    scanner.AddTag( seriesTimeTag );
-    scanner.AddTag( seriesTypeTag );
-    scanner.AddTag( seriesDescriptionTag );
-    scanner.AddTag( seriesPhysicianNamesTag );
-    scanner.AddTag( equipmentInstitutionNameTag );
-    scanner.AddTag( studyUIDTag );
-    scanner.AddTag( patientNameTag );
-    scanner.AddTag( patientIDTag );
-    scanner.AddTag( patientBirthdateTag );
-    scanner.AddTag( patientSexTag );
-    scanner.AddTag( studyUIDTag );
-    scanner.AddTag( studyDateTag );
-    scanner.AddTag( studyTimeTag );
-    scanner.AddTag( studyReferingPhysicianNameTag );
-    scanner.AddTag( studyDescriptionTag );
-    scanner.AddTag( studyPatientAgeTag );
-    scanner.AddTag( imageTypeTag );
-    scanner.AddTag( acquisitionDateTag );
-    scanner.AddTag( acquisitionTimeTag );
+    scanner.AddTag(s_IMAGE_CONTRAST_AGENT_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_ROUTE_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_VOLUME_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_START_TIME_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_STOP_TIME_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_TOTAL_DOSE_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_FLOW_RATE_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_FLOW_DURATION_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_INGREDIENT_TAG);
+    scanner.AddTag(s_IMAGE_CONTRAST_INGREDIENT_CONCENTRATION_TAG);
+    scanner.AddTag(s_IMAGE_TYPE_TAG);
+    scanner.AddTag(s_IMAGE_ACQUISITION_DATE_TAG);
+    scanner.AddTag(s_IMAGE_ACQUISITION_TIME_TAG);
 
     try
     {
-        const bool isScanned = scanner.Scan( filenames );
-        if( !isScanned )
+        const bool isScanned = scanner.Scan(_filenames);
+        if(!isScanned)
         {
-            SLM_ERROR("Scanner failed");
+            SLM_ERROR("Scanner failed to read files");
             return;
         }
-        const ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
 
         typedef std::map< std::string, std::vector< std::string > > MapSeriesType;
         MapSeriesType mapSeries;
 
+        const ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
         for(const std::string& filename : keys)
         {
             SLM_ASSERT("'"+filename+"' is not a key in the mapping table", scanner.IsKey(filename.c_str()));
 
-            const char* seriesUID = scanner.GetValue( filename.c_str(), seriesUIDTag );
-            const char* acqDate   = scanner.GetValue( filename.c_str(), acquisitionDateTag );
-
-            if (seriesUID)
+            const std::string seriesUID = helper::GdcmHelper::getValue(scanner, filename, s_SERIES_UID_TAG);
+            if(!seriesUID.empty())
             {
                 std::string fileSetId = seriesUID;
 
-                if (acqDate)
+                const std::string imageAcquisitionDate = helper::GdcmHelper::getValue(scanner, filename,
+                                                                                      s_IMAGE_ACQUISITION_DATE_TAG);
+                if(!imageAcquisitionDate.empty())
                 {
                     fileSetId += "_";
-                    fileSetId += acqDate;
+                    fileSetId += imageAcquisitionDate;
                 }
 
-                const char* imageType = scanner.GetValue(filename.c_str(), imageTypeTag);
-                if(imageType)
+                const std::string imageType = helper::GdcmHelper::getValue(scanner, filename, s_IMAGE_TYPE_TAG);
+                if(!imageType.empty())
                 {
                     // Treatment of secondary capture dicom file.
                     SLM_TRACE("Image Type : " + std::string(imageType));
@@ -212,23 +300,32 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
             }
             else
             {
-                SLM_ERROR("No series name found in : " + filename );
+                SLM_ERROR("Unique identifier is require for all series and was not found in the file: " + filename);
             }
         }
 
         for(const auto& elt : mapSeries)
         {
-
             SLM_TRACE( "Processing: '" + elt.first + "' file set.");
             const MapSeriesType::mapped_type& files = elt.second;
             if ( !files.empty() )
             {
                 // The modality attribute is mandatory for all DICOM,
                 // so we can read it to check if the type is supported by this reader.
-                if(std::string(scanner.GetValue(files[0].c_str(), seriesTypeTag)) == "SR")
+                const std::string seriesModality =
+                    helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_MODALITY_TAG);
+                SLM_ASSERT("The modality is required for all series", !seriesModality.empty());
+                if(seriesModality == "SR" || seriesModality == "AU" || seriesModality == "DOC")
                 {
-                    SLM_INFO("Structured report document can't be read with `::vtkGdcmIO::SeriesDBReader`");
+                    SLM_WARN(
+                        "The modality " + seriesModality +
+                        " can't be read with this reader and will be not added to the seriesDB`");
                     continue;
+                }
+
+                if(seriesModality != "CT" && seriesModality != "MR" && seriesModality != "US")
+                {
+                    SLM_WARN("The modality " + seriesModality + " is maybe not support be this reader`");
                 }
 
                 ::fwMedData::ImageSeries::sptr series  = ::fwMedData::ImageSeries::New();
@@ -236,17 +333,12 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
                 ::fwMedData::Study::sptr study         = series->getStudy();
                 ::fwMedData::Equipment::sptr equipment = series->getEquipment();
 
-                seriesDB->getContainer().push_back(series);
-
-                vtkSmartPointer< vtkStringArray > fileArray  = vtkSmartPointer< vtkStringArray >::New();
-                vtkSmartPointer< vtkGDCMImageReader > reader = vtkSmartPointer< vtkGDCMImageReader >::New();
-                reader->FileLowerLeftOn();
+                _seriesDB->getContainer().push_back(series);
 
                 ::gdcm::IPPSorter ippSorter;
                 ippSorter.SetComputeZSpacing( true );
                 ippSorter.SetZSpacingTolerance( 1e-3 );
                 bool isSorted = ippSorter.Sort( files );
-
                 std::vector<std::string> sorted;
                 double zspacing = 0.;
                 if(isSorted)
@@ -262,7 +354,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
                     SLM_WARN("IPP Sorting failed. Falling back to Instance Number sorting.");
                     ::gdcm::Sorter sorter;
                     sorter.SetSortFunction(sortByInstanceNumber);
-                    isSorted = sorter.StableSort( filenames);
+                    isSorted = sorter.StableSort(_filenames);
                     if(isSorted)
                     {
                         // If the custom sorted returns true, it worked
@@ -276,6 +368,9 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
                     }
                 }
 
+                vtkSmartPointer< vtkGDCMImageReader > reader = vtkSmartPointer< vtkGDCMImageReader >::New();
+                vtkSmartPointer< vtkStringArray > fileArray  = vtkSmartPointer< vtkStringArray >::New();
+                reader->FileLowerLeftOn();
                 fileArray->Initialize();
                 if(isSorted)
                 {
@@ -367,49 +462,118 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
 
                 if (res)
                 {
-
                     SLM_ASSERT("No file to read", !files.empty());
 
-                    // Read medical info
                     vtkMedicalImageProperties* medprop = reader->GetMedicalImageProperties();
 
-                    const std::string patientName      = medprop->GetPatientName(); //"0010|0010"
-                    const std::string patientId        = medprop->GetPatientID();
-                    const std::string patientBirthdate = medprop->GetPatientBirthDate(); //"0010|0030"
-                    const std::string patientSex       = medprop->GetPatientSex(); //"0010|0040"
-
-                    const ::gdcm::Scanner::ValuesType gdcmPhysicianNames = scanner.GetValues( seriesPhysicianNamesTag );
-
-                    const char* seriesUIDStr  = scanner.GetValue( files[0].c_str(), seriesUIDTag );
-                    const char* seriesTimeStr = scanner.GetValue( files[0].c_str(), seriesTimeTag );
-                    const char* seriesDateStr = scanner.GetValue( files[0].c_str(), seriesDateTag );
-
-                    const std::string seriesModality    = medprop->GetModality(); //"0008|0060"
-                    const std::string seriesDescription = medprop->GetSeriesDescription();
-                    const std::string seriesDate        = ( seriesDateStr ? seriesDateStr : "" );
-                    const std::string seriesTime        = ( seriesTimeStr ? seriesTimeStr : "" );
-
+                    const std::string seriesUID
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_UID_TAG);
+                    const std::string seriesNumber
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_NUMBER_TAG);
+                    const std::string seriesLaterality
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_LATERALITY_TAG);
+                    const std::string seriesDate = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_DATE_TAG);
+                    const std::string seriesTime = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_TIME_TAG);
+                    const ::gdcm::Scanner::ValuesType physicianNames
+                        = scanner.GetValues( s_SERIES_PHYSICIAN_NAMES_TAG);
                     ::fwMedData::DicomValuesType seriesPhysicianNames;
-                    for(const std::string& name :  gdcmPhysicianNames)
+                    for(const std::string& name :  physicianNames)
                     {
                         ::fwMedData::DicomValuesType result;
                         ::boost::split( result, name, ::boost::is_any_of("\\"));
                         seriesPhysicianNames.reserve(seriesPhysicianNames.size() + result.size());
                         seriesPhysicianNames.insert(seriesPhysicianNames.end(), result.begin(), result.end());
                     }
+                    const std::string seriesProtocolName
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_PROTOCOL_NAME_TAG);
+                    const std::string seriesDescription
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_DESCRIPTION_TAG);
+                    const std::string seriesBodypartExamined
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_PROTOCOL_NAME_TAG);
+                    const std::string seriesPatientPosition
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_PATIENT_POSITION_TAG);
+                    const std::string seriesAnatomicalOrientationType
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_ANATOMICAL_ORIENTATION_TYPE_TAG);
+                    const std::string seriesPerformedProcedureStepID
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_PERFORMED_PROCEDURE_STEP_ID_TAG);
+                    const std::string seriesPerformedProcedureStepStartDate
+                        = helper::GdcmHelper::getValue(scanner, files[0],
+                                                       s_SERIES_PERFORMED_PROCEDURE_STEP_START_DATE_TAG);
+                    const std::string seriesPerformedProcedureStepStartTime
+                        = helper::GdcmHelper::getValue(scanner, files[0],
+                                                       s_SERIES_PERFORMED_PROCEDURE_STEP_START_TIME_TAG);
+                    const std::string seriesPerformedProcedureStepEndDate
+                        = helper::GdcmHelper::getValue(scanner, files[0],
+                                                       s_SERIES_PERFORMED_PROCEDURE_STEP_END_DATE_TAG);
+                    const std::string seriesPerformedProcedureStepEndTime
+                        = helper::GdcmHelper::getValue(scanner, files[0],
+                                                       s_SERIES_PERFORMED_PROCEDURE_STEP_END_TIME_TAG);
+                    const std::string seriesPerformedProcedureStepDescription
+                        = helper::GdcmHelper::getValue(scanner, files[0],
+                                                       s_SERIES_PERFORMED_PROCEDURE_STEP_DESCRIPTION_TAG);
+                    const std::string seriesPerformedProcedureComments
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_SERIES_PERFORMED_PROCEDURE_COMMENTS_TAG);
 
-                    const char* studyUIDStr                   = scanner.GetValue( files[0].c_str(), studyUIDTag );
-                    const char* studyReferingPhysicianNameStr =
-                        scanner.GetValue( files[0].c_str(), studyReferingPhysicianNameTag );
+                    const std::string patientName
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_PATIENT_NAME_TAG);
+                    const std::string patientId
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_PATIENT_ID_TAG);
+                    const std::string patientBirthdate
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_PATIENT_BIRTHDATE_TAG);
+                    const std::string patientSex
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_PATIENT_SEX_TAG);
 
-                    const std::string studyDate             = medprop->GetStudyDate();
-                    const std::string studyTime             = medprop->GetStudyTime();
-                    const std::string studyDescription      = medprop->GetStudyDescription();  //"0008|1030"
-                    const std::string studyPatientAge       = medprop->GetPatientAge();
-                    const std::string equipementInstitution = medprop->GetInstitutionName(); //"0008|0080"
+                    const std::string studyUID
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_UID_TAG);
+                    const std::string studyID
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_ID_TAG);
+                    const std::string studyDate
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_DATE_TAG);
+                    const std::string studyTime
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_TIME_TAG);
+                    const std::string studyReferringPhysicianName
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_REFERRING_PHYSICIAN_NAME_TAG);
+                    const std::string studyConsultingPhysicianName
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_CONSULTING_PHYSICIAN_NAME_TAG);
+                    const std::string studyDescription
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_DESCRIPTION_TAG);
+                    const std::string studyPatientAge
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_PATIENT_AGE_TAG);
+                    const std::string studyPatientSize
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_PATIENT_SIZE_TAG);
+                    const std::string studyPatientWeight
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_PATIENT_WEIGHT_TAG);
+                    const std::string studyPatientBodyMassIndex
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_STUDY_PATIENT_BODY_MASS_INDEX_TAG);
 
-                    const std::string studyReferingPhysicianName =
-                        ( studyReferingPhysicianNameStr ? studyReferingPhysicianNameStr : "" );
+                    const std::string equipmentInstitutionName
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_EQUIPMENT_INSTITUTION_NAME_TAG);
+
+                    const std::string imageContrastAgent
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_AGENT_TAG);
+                    const std::string imageContrastRoute
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_ROUTE_TAG);
+                    const std::string imageContrastVolume
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_VOLUME_TAG);
+                    const std::string imageContrastStartTime
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_START_TIME_TAG);
+                    const std::string imageContrastStopTime
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_STOP_TIME_TAG);
+                    const std::string imageContrastTotalDose
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_TOTAL_DOSE_TAG);
+                    const std::string imageContrastFlowRate
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_FLOW_RATE_TAG);
+                    const std::string imageContrastFlowDuration
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_FLOW_DURATION_TAG);
+                    const std::string imageContrastIngredient
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_CONTRAST_INGREDIENT_TAG);
+                    const std::string imageContrastIngredientConcentration
+                        = helper::GdcmHelper::getValue(scanner, files[0],
+                                                       s_IMAGE_CONTRAST_INGREDIENT_CONCENTRATION_TAG);
+                    const std::string imageAcquisitionDate
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_ACQUISITION_DATE_TAG);
+                    const std::string imageAcquisitionTime
+                        = helper::GdcmHelper::getValue(scanner, files[0], s_IMAGE_ACQUISITION_TIME_TAG);
 
                     const double thickness = medprop->GetSliceThicknessAsDouble();//"0018|0050"
                     double center          = 0.0;
@@ -422,89 +586,88 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
                     // Image must have 3 dimensions
                     if(pDataImage->getNumberOfDimensions() == 2)
                     {
-                        ::fwData::Image::SizeType imgSize = pDataImage->getSize();
-                        imgSize.resize(3);
-                        imgSize[2] = 1;
-                        pDataImage->setSize(imgSize);
+                        ::fwData::Image::Size imgSize = pDataImage->getSize2();
+                        imgSize[2]                    = 1;
+                        pDataImage->setSize2(imgSize);
 
-                        ::fwData::Image::OriginType imgOrigin = pDataImage->getOrigin();
-                        imgOrigin.resize(3);
-                        imgOrigin[2] = 0.;
-                        pDataImage->setOrigin(imgOrigin);
+                        ::fwData::Image::Origin imgOrigin = pDataImage->getOrigin2();
+                        imgOrigin[2]                      = 0.;
+                        pDataImage->setOrigin2(imgOrigin);
                     }
 
-                    ::fwData::Image::SpacingType vPixelSpacing = pDataImage->getSpacing();
-                    vPixelSpacing.resize(3);
+                    ::fwData::Image::Spacing vPixelSpacing = pDataImage->getSpacing2();
                     // assume z-spacing = 1 if not guessed
                     vPixelSpacing[2] = zspacing ? zspacing : (thickness ? thickness : 1.);
-                    pDataImage->setSpacing(vPixelSpacing);
+                    pDataImage->setSpacing2(vPixelSpacing);
                     pDataImage->setWindowCenter(center);
                     pDataImage->setWindowWidth(width);
 
-                    // Get the series instance UID.
-                    SLM_ASSERT("No series UID", seriesUIDStr);
-                    series->setInstanceUID(( seriesUIDStr ? seriesUIDStr : "UNKNOWN-UID" ));
-                    series->setModality( seriesModality );
-                    series->setDescription( seriesDescription );
-                    series->setDate( seriesDate );
-                    series->setTime( seriesTime );
-                    series->setPerformingPhysiciansName( seriesPhysicianNames );
-                    series->setImage(pDataImage);
-
-                    SLM_ASSERT("No study UID",  studyUIDStr);
-                    study->setInstanceUID(( studyUIDStr ? studyUIDStr : "UNKNOWN-UID" ));
-                    study->setDate(studyDate);
-                    study->setTime(studyTime);
-                    study->setDescription(studyDescription);
-                    study->setPatientAge(studyPatientAge);
-                    study->setReferringPhysicianName(studyReferingPhysicianName);
+                    series->setModality(seriesModality);
+                    SLM_ASSERT("No series UID", !seriesUID.empty());
+                    series->setInstanceUID(seriesUID);
+                    series->setNumber(seriesNumber);
+                    series->setLaterality(seriesLaterality);
+                    series->setDate(seriesDate);
+                    series->setTime(seriesTime);
+                    series->setPerformingPhysiciansName(seriesPhysicianNames);
+                    series->setProtocolName(seriesProtocolName);
+                    series->setDescription(seriesDescription);
+                    series->setBodyPartExamined(seriesBodypartExamined);
+                    series->setPatientPosition(seriesPatientPosition);
+                    series->setAnatomicalOrientationType(seriesAnatomicalOrientationType);
+                    series->setPerformedProcedureStepID(seriesPerformedProcedureStepID);
+                    series->setPerformedProcedureStepStartDate(seriesPerformedProcedureStepStartDate);
+                    series->setPerformedProcedureStepStartTime(seriesPerformedProcedureStepStartTime);
+                    series->setPerformedProcedureStepEndDate(seriesPerformedProcedureStepEndDate);
+                    series->setPerformedProcedureStepEndTime(seriesPerformedProcedureStepEndTime);
+                    series->setPerformedProcedureStepDescription(seriesPerformedProcedureStepDescription);
+                    series->setPerformedProcedureComments(seriesPerformedProcedureComments);
 
                     patient->setName(patientName);
                     patient->setPatientId(patientId);
                     patient->setBirthdate(patientBirthdate);
                     patient->setSex(patientSex);
 
-                    equipment->setInstitutionName(equipementInstitution);
-                } // if res
-            } // if !files.empty()
+                    SLM_ASSERT("No study UID", !studyUID.empty());
+                    study->setInstanceUID(studyUID);
+                    study->setStudyID(studyID);
+                    study->setDate(studyDate);
+                    study->setTime(studyTime);
+                    study->setReferringPhysicianName(studyReferringPhysicianName);
+                    study->setConsultingPhysicianName(studyConsultingPhysicianName);
+                    study->setDescription(studyDescription);
+                    study->setPatientAge(studyPatientAge);
+                    study->setPatientSize(studyPatientSize);
+                    study->setPatientWeight(studyPatientWeight);
+                    study->setPatientBodyMassIndex(studyPatientBodyMassIndex);
+
+                    equipment->setInstitutionName(equipmentInstitutionName);
+
+                    series->setImage(pDataImage);
+                    series->setContrastAgent(imageContrastAgent);
+                    series->setContrastRoute(imageContrastRoute);
+                    series->setContrastVolume(imageContrastVolume);
+                    series->setContrastStartTime(imageContrastStartTime);
+                    series->setContrastStopTime(imageContrastStopTime);
+                    series->setContrastTotalDose(imageContrastTotalDose);
+                    series->setContrastFlowRate(imageContrastFlowRate);
+                    series->setContrastFlowDuration(imageContrastFlowDuration);
+                    series->setContrastIngredient(imageContrastIngredient);
+                    series->setContrastIngredientConcentration(imageContrastIngredientConcentration);
+                    series->setAcquisitionDate(imageAcquisitionDate);
+                    series->setAcquisitionTime(imageAcquisitionTime);
+                }
+            }
         }
-    } // try
+    }
     catch (std::exception& e)
     {
         OSLM_ERROR( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
-        for(const auto filename : filenames)
+        for(const auto filename : _filenames)
         {
             SLM_ERROR("file error : " + filename );
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SeriesDBReader::read()
-{
-    SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    std::vector<std::string> filenames;
-    if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
-    {
-        ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
-    }
-    else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
-    {
-        for(std::filesystem::path file :  this->getFiles())
-        {
-            filenames.push_back(file.string());
-        }
-    }
-    this->addSeries( seriesDB, filenames);
-}
-
-//------------------------------------------------------------------------------
-
-::fwJobs::IJob::sptr SeriesDBReader::getJob() const
-{
-    return m_job;
 }
 
 } //namespace vtkGdcmIO

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(Series), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(Series), FWMEDDATA_API)
 
 namespace fwMedData
 {
@@ -44,122 +44,232 @@ class FWMEDDATA_CLASS_API Series : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(Series, ::fwData::Object);
+    fwCoreClassMacro(Series, ::fwData::Object)
 
-    fwCampMakeFriendDataMacro((fwMedData)(Series));
+    fwCampMakeFriendDataMacro((fwMedData)(Series))
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the series.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API Series(::fwData::Object::Key key);
+    FWMEDDATA_API Series(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the series.
     FWMEDDATA_API virtual ~Series();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object to copy into this one.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
-
     /**
-     * @name Getters / Setters
-     * @{ */
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Referring Patient
-     * @{ */
+    /// Gets the referring patient.
     SPTR(::fwMedData::Patient) getPatient() const;
-    void setPatient(const SPTR(::fwMedData::Patient)& val);
-    /**  @} */
 
-    /**
-     * @brief Referring Study
-     * @{ */
+    /// Sets the referring patient.
+    void setPatient(const SPTR(::fwMedData::Patient)& _val);
+
+    /// Gets the referring study.
     SPTR(::fwMedData::Study) getStudy() const;
-    void setStudy(const SPTR(::fwMedData::Study)& val);
-    /**  @} */
 
-    /**
-     * @brief Related Equipment
-     * @{ */
+    /// Sets the referring study.
+    void setStudy(const SPTR(::fwMedData::Study)& _val);
+
+    /// Gets the related equipment.
     SPTR(::fwMedData::Equipment) getEquipment() const;
-    void setEquipment(const SPTR(::fwMedData::Equipment)& val);
-    /**  @} */
 
-    /**
-     * @brief Unique identifier of the Series (0020,000E)
-     * @{ */
-    const DicomValueType& getInstanceUID () const;
-    void setInstanceUID (const DicomValueType& val);
-    /**  @} */
+    /// Sets the related equipment.
+    void setEquipment(const SPTR(::fwMedData::Equipment)& _val);
 
-    /**
-     * @brief Type of equipment that originally acquired the data used to create this Series (0008,0060)
-     * @{ */
+    /// Gets the type of equipment that originally acquired the data used to create this series.
     const DicomValueType& getModality () const;
-    void setModality (const DicomValueType& val);
-    /**  @} */
 
-    /**
-     * @brief Date the Series started (0008,0021)
-     * @{ */
+    /// Sets the type of equipment that originally acquired the data used to create this series.
+    void setModality (const DicomValueType& _val);
+
+    /// Gets the unique identifier of the series.
+    const DicomValueType& getInstanceUID () const;
+
+    /// Sets the unique identifier of the series.
+    void setInstanceUID (const DicomValueType& _val);
+
+    // Gets the number that identify this series.
+    DicomValueType getNumber() const;
+
+    /// Sets the number that identify this series.
+    void setNumber(const DicomValueType& _val);
+
+    /// Gets the laterality of body part examined.
+    DicomValueType getLaterality() const;
+
+    /// Sets the laterality of body part examined.
+    void setLaterality(const DicomValueType& _val);
+
+    /// Gets the date the series started.
     const DicomValueType& getDate () const;
-    void setDate (const DicomValueType& val);
-    /**  @} */
 
-    /**
-     * @brief Time the Series started (0008,0031)
-     * @{ */
+    /// Sets the date the series started.
+    void setDate (const DicomValueType& _val);
+
+    /// Gets the time the series started.
     const DicomValueType& getTime () const;
-    void setTime (const DicomValueType& val);
-    /**  @} */
 
-    /**
-     * @brief Description of the Series (0008,103E)
-     * @{ */
-    const DicomValueType& getDescription () const;
-    void setDescription (const DicomValueType& val);
-    /**  @} */
+    /// Sets the time the series started.
+    void setTime (const DicomValueType& _val);
 
-    /**
-     * @brief Name of the physician(s) administering the Series (0008,1050)
-     * @{ */
-    const DicomValuesType& getPerformingPhysiciansName () const;
-    void setPerformingPhysiciansName (const DicomValuesType& val);
-    /**  @} */
+    /// Gets the name of the physician(s) administering the series.
+    const DicomValuesType& getPerformingPhysiciansName() const;
 
-    /**  @} */
+    /// Sets the name of the physician(s) administering the series.
+    void setPerformingPhysiciansName(const DicomValuesType& _val);
+
+    /// Gets the description of the conditions under which the Series was performed.
+    const DicomValueType& getProtocolName() const;
+
+    /// Sets description of the conditions under which the Series was performed.
+    void setProtocolName(const DicomValueType& _val);
+
+    /// Gets the description of the series.
+    const DicomValueType& getDescription() const;
+
+    /// Sets the description of the series.
+    void setDescription(const DicomValueType& _val);
+
+    /// Gets the body part examined.
+    const DicomValueType& getBodyPartExamined() const;
+
+    /// Sets the body part examined.
+    void setBodyPartExamined(const DicomValueType& _val);
+
+    /// Gets the patient position descriptor.
+    const DicomValueType& getPatientPosition() const;
+
+    /// Sets the patient position descriptor.
+    void setPatientPosition(const DicomValueType& _val);
+
+    /// Gets the anatomical orientation type.
+    const DicomValueType& getAnatomicalOrientationType() const;
+
+    /// Sets the anatomical orientation type.
+    void setAnatomicalOrientationType(const DicomValueType& _val);
+
+    /// Gets the user or equipment generated identifier.
+    const DicomValueType& getPerformedProcedureStepID() const;
+
+    /// Sets the user or equipment generated identifier.
+    void setPerformedProcedureStepID(const DicomValueType& _val);
+
+    /// Gets the date on which the performed procedure step started.
+    const DicomValueType& getPerformedProcedureStepStartDate() const;
+
+    /// Sets the date on which the performed procedure step started.
+    void setPerformedProcedureStepStartDate(const DicomValueType& _val);
+
+    /// Gets the time on which the performed procedure step started.
+    const DicomValueType& getPerformedProcedureStepStartTime() const;
+
+    /// Sets the time on which the performed procedure step started.
+    void setPerformedProcedureStepStartTime(const DicomValueType& _val);
+
+    /// Gets the date on which the performed procedure step end.
+    const DicomValueType& getPerformedProcedureStepEndDate() const;
+
+    /// Sets the date on which the performed procedure step end.
+    void setPerformedProcedureStepEndDate(const DicomValueType& _val);
+
+    /// Gets the time on which the performed procedure step end.
+    const DicomValueType& getPerformedProcedureStepEndTime() const;
+
+    /// Sets the time on which the performed procedure step end.
+    void setPerformedProcedureStepEndTime(const DicomValueType& _val);
+
+    /// Gets the institution-generated description or classification of the procedure step that was performed.
+    const DicomValueType& getPerformedProcedureStepDescription() const;
+
+    /// Sets the institution-generated description or classification of the procedure step that was performed.
+    void setPerformedProcedureStepDescription(const DicomValueType& _val);
+
+    /// Gets the user-defined comments on the performed procedure step.
+    const DicomValueType& getPerformedProcedureComments() const;
+
+    /// Sets the user-defined comments on the performed procedure step.
+    void setPerformedProcedureComments(const DicomValueType& _va);
 
 protected:
 
-    /// Referring Patient
+    /// Stores the referring patient.
     SPTR(Patient) m_patient;
 
-    /// Referring Study
+    /// Stores the referring study.
     SPTR(Study) m_study;
 
-    /// Related Equipment
+    /// Stores the related equipment.
     SPTR(Equipment) m_equipment;
 
-    /// Series unique identifier
-    DicomValueType m_instanceUID;
-
-    /// Modality
+    /// Defines the modality.
     DicomValueType m_modality;
 
-    /// Date
+    /// Defines the series unique identifier.
+    DicomValueType m_instanceUID;
+
+    /// Defines the series number.
+    DicomValueType m_number;
+
+    /// Defines the lateriality of body part examined (L, R).
+    DicomValueType m_laterality;
+
+    /// Defines the date.
     DicomValueType m_date;
 
-    /// Time
+    /// Defines the time.
     DicomValueType m_time;
 
-    /// Description
+    /// Defines performing physicians name.
+    DicomValuesType m_performingPhysiciansName;
+
+    /// Defines the description of the conditions under which the Series was performed.
+    DicomValueType m_protocolName;
+
+    /// Defines the description.
     DicomValueType m_description;
 
-    /// Performing physicians name
-    DicomValuesType m_performingPhysiciansName;
+    /// Defines the description of the part of the body examined.
+    DicomValueType m_bodyPartExamined;
+
+    /// Defines the patient position descriptor.
+    DicomValueType m_patientPosition;
+
+    /// Defines the anatomical orientation type (BIPED, QUADRUPED).
+    DicomValueType m_anatomicalOrientationType;
+
+    /// Defines the user or equipment generated identifier.
+    DicomValueType m_performdedProcedureStepID;
+
+    /// Defines the date on which the performed procedure step started.
+    DicomValueType m_performedProcedureStepStartDate;
+
+    /// Defines the time on which the performed procedure step started.
+    DicomValueType m_performedProcedureStepStartTime;
+
+    /// Defines the date on which the performed procedure step end.
+    DicomValueType m_performedProcedureStepEndDate;
+
+    /// Defines the time on which the performed procedure step end.
+    DicomValueType m_performedProcedureStepEndTime;
+
+    /// Defines the institution-generated description or classification of the procedure step that was performed.
+    DicomValueType m_performedProcedureStepDescription;
+
+    /// Defines the user-defined comments on the performed procedure step.
+    DicomValueType m_performedProcedureComments;
+
 };
 
 //-----------------------------------------------------------------------------
@@ -171,9 +281,9 @@ inline SPTR(::fwMedData::Patient) Series::getPatient() const
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setPatient(const SPTR(::fwMedData::Patient)& val)
+inline void Series::setPatient(const SPTR(::fwMedData::Patient)& _val)
 {
-    m_patient = val;
+    m_patient = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -185,9 +295,9 @@ inline SPTR(::fwMedData::Study) Series::getStudy() const
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setStudy(const SPTR(::fwMedData::Study)& val)
+inline void Series::setStudy(const SPTR(::fwMedData::Study)& _val)
 {
-    m_study = val;
+    m_study = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -199,9 +309,23 @@ inline SPTR(::fwMedData::Equipment) Series::getEquipment() const
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setEquipment(const SPTR(::fwMedData::Equipment)& val)
+inline void Series::setEquipment(const SPTR(::fwMedData::Equipment)& _val)
 {
-    m_equipment = val;
+    m_equipment = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getModality() const
+{
+    return m_modality;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setModality(const DicomValueType& _val)
+{
+    m_modality = _val;
 }
 
 //-----------------------------------------------------------------------------
@@ -213,81 +337,249 @@ inline const DicomValueType& Series::getInstanceUID () const
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setInstanceUID (const DicomValueType& val)
+inline void Series::setInstanceUID(const DicomValueType& _val)
 {
-    m_instanceUID = val;
+    m_instanceUID = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Series::getModality () const
+inline DicomValueType Series::getNumber() const
 {
-    return m_modality;
+    return m_number;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setModality (const DicomValueType& val)
+inline void Series::setNumber(const DicomValueType& _val)
 {
-    m_modality = val;
+    m_number = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Series::getDate () const
+inline DicomValueType Series::getLaterality() const
+{
+    return m_laterality;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setLaterality(const DicomValueType& _val)
+{
+    m_laterality = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getDate() const
 {
     return m_date;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setDate (const DicomValueType& val)
+inline void Series::setDate(const DicomValueType& _val)
 {
-    m_date = val;
+    m_date = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Series::getTime () const
+inline const DicomValueType& Series::getTime() const
 {
     return m_time;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setTime (const DicomValueType& val)
+inline void Series::setTime(const DicomValueType& _val)
 {
-    m_time = val;
+    m_time = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Series::getDescription () const
-{
-    return m_description;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Series::setDescription (const DicomValueType& val)
-{
-    m_description = val;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const DicomValuesType& Series::getPerformingPhysiciansName () const
+inline const DicomValuesType& Series::getPerformingPhysiciansName() const
 {
     return m_performingPhysiciansName;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Series::setPerformingPhysiciansName (const DicomValuesType& val)
+inline void Series::setPerformingPhysiciansName(const DicomValuesType& _val)
 {
-    m_performingPhysiciansName = val;
+    m_performingPhysiciansName = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+inline const DicomValueType& Series::getProtocolName() const
+{
+    return m_protocolName;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setProtocolName(const DicomValueType& _val)
+{
+    m_protocolName = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getDescription() const
+{
+    return m_description;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setDescription(const DicomValueType& _val)
+{
+    m_description = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getBodyPartExamined() const
+{
+    return m_bodyPartExamined;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setBodyPartExamined(const DicomValueType& _val)
+{
+    m_bodyPartExamined = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPatientPosition() const
+{
+    return m_patientPosition;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPatientPosition(const DicomValueType& _val)
+{
+    m_patientPosition = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getAnatomicalOrientationType() const
+{
+    return m_anatomicalOrientationType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setAnatomicalOrientationType(const DicomValueType& _val)
+{
+    m_anatomicalOrientationType = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPerformedProcedureStepID() const
+{
+    return m_performdedProcedureStepID;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPerformedProcedureStepID(const DicomValueType& _val)
+{
+    m_performdedProcedureStepID = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPerformedProcedureStepStartDate() const
+{
+    return m_performedProcedureStepStartDate;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPerformedProcedureStepStartDate(const DicomValueType& _val)
+{
+    m_performedProcedureStepStartDate = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPerformedProcedureStepStartTime() const
+{
+    return m_performedProcedureStepStartTime;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPerformedProcedureStepStartTime(const DicomValueType& _val)
+{
+    m_performedProcedureStepStartTime = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPerformedProcedureStepEndDate() const
+{
+    return m_performedProcedureStepEndDate;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPerformedProcedureStepEndDate(const DicomValueType& _val)
+{
+    m_performedProcedureStepEndDate = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPerformedProcedureStepEndTime() const
+{
+    return m_performedProcedureStepEndTime;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPerformedProcedureStepEndTime(const DicomValueType& _val)
+{
+    m_performedProcedureStepEndTime = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPerformedProcedureStepDescription() const
+{
+    return m_performedProcedureStepDescription;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPerformedProcedureStepDescription(const DicomValueType& _val)
+{
+    m_performedProcedureStepDescription = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType& Series::getPerformedProcedureComments() const
+{
+    return m_performedProcedureComments;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Series::setPerformedProcedureComments(const DicomValueType& _val)
+{
+    m_performedProcedureComments = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+} // Namespace fwMedData.
