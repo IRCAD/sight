@@ -32,6 +32,8 @@
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <QAction>
 #include <QApplication>
 #include <QColorDialog>
