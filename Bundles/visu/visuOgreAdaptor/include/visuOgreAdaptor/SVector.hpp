@@ -72,19 +72,19 @@ public:
     fwCoreServiceMacro(SVector, ::fwRenderOgre::IAdaptor)
 
     /// Slot used to set visibility.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
     /// Slot used to toggle visibility.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
 
     /// Slot used to update length of the line.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
 
     /// Slot used to show the vector.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
 
     /// Slot used to hide the vector.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
@@ -114,12 +114,6 @@ private:
 
     /// Toogle the vector visibility.
     void toggleVisibility();
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals.
-     * @return An empty connection map.
-     */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Update the length of the vector.

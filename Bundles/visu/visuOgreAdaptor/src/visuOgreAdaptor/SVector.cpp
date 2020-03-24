@@ -68,14 +68,6 @@ SVector::~SVector() noexcept
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SVector::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    return connections;
-}
-
-//-----------------------------------------------------------------------------
-
 void SVector::configuring()
 {
     this->configureParams();
@@ -171,7 +163,6 @@ void SVector::createVector()
     const float coneLength     = m_length - cylinderLength;
     const float coneRadius     = cylinderRadius*2;
     const unsigned sample      = 64;
-    m_isVisible = true;
 
     // Color
     std::uint8_t color[4];
