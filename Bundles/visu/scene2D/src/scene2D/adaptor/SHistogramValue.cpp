@@ -71,7 +71,7 @@ void SHistogramValue::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    const std::string color = config.get(s_COLOR_CONFIG, "white");
+    const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
     ::fwRenderQt::data::InitQtPen::setPenColor(m_color, color);
 
     m_fontSize = config.get< float >(s_FONT_SIZE_CONFIG, m_fontSize);

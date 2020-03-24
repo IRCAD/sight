@@ -58,10 +58,10 @@ namespace adaptor
  * - \b config (mandatory): contains the adaptor configuration.
  *    - \b xAxis (optional): x axis associated to the adaptor.
  *    - \b yAxis (optional): y axis associated to the adaptor.
- *    - \b zValue (optional, default=0): z value of the layer.
- *    - \b opacity (optional, default=1.0): adaptor opacity.
- *    - \b color (optional, default white): color of the text
- *    - \b fontSize (optional, default 8): size of the font used to display the current value.
+ *    - \b zValue (optional, default="0"): z value of the layer.
+ *    - \b opacity (optional, default="1.0"): adaptor opacity.
+ *    - \b color (optional, default="#FFFFFF"): color of the text
+ *    - \b fontSize (optional, default="8"): size of the font used to display the current value.
  */
 class SHistogramValue : public ::fwRenderQt::IAdaptor
 {

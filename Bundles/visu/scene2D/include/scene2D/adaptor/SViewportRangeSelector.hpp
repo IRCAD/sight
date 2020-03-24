@@ -62,11 +62,11 @@ namespace adaptor
  * - \b config (mandatory): contains the adaptor configuration.
  *    - \b xAxis (optional): x axis associated to the adaptor.
  *    - \b yAxis (optional): y axis associated to the adaptor.
- *    - \b zValue (optional, default=0): z value of the layer.
- *    - \b initialPos (optional, default 0.): initial position of the shutter on the X axis.
- *    - \b initialWidth (optional, default 0.): initial width of the shutter.
- *    - \b color (optional, default black): inner color.
- *    - \b opacity (optional, default=1.0): opacity of the gradient.
+ *    - \b zValue (optional, default="0"): z value of the layer.
+ *    - \b initialPos (optional, default="0."): initial position of the shutter on the X axis.
+ *    - \b initialWidth (optional, default="0"."): initial width of the shutter.
+ *    - \b color (optional, default="#FFFFFF"): inner color.
+ *    - \b opacity (optional, default="1.0"): opacity of the gradient.
  *
  * @pre This adaptor is intended to be used with a ::scene2D::adaptor::ViewportUpdater adaptor.
  */

@@ -78,7 +78,7 @@ void SViewportRangeSelector::configuring()
 
     m_initialX = config.get<float>(s_INITIAL_POS_CONFIG, m_initialX);
 
-    const std::string color = config.get(s_COLOR_CONFIG, "white");
+    const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
     ::fwRenderQt::data::InitQtPen::setPenColor(m_color, color, m_opacity);
 }
 
