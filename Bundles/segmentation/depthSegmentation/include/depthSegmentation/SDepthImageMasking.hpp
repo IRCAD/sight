@@ -26,39 +26,43 @@
 
 #include <fwServices/IOperator.hpp>
 
-#include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 
 namespace depthSegmentation
 {
 
 /**
- * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
- * image using an Eexpectation Maximization algorithm
+ * @brief   Service that learns a background depth image in a mask to perform a depth difference and output a foregroud
+ * image.
  *
  * @see ::fwServices::IOperator
  *
  * @section Slots Slots
- * - \b todo() : Slot todo
+ * - \b setBackground() : Slot to learn the background depth image.
+ * - \b setThreshold() : Slot to change the difference value tolerance between the larned depth image and the current.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::depthSegmentation::SDepthImageMasking" >
-            <in key="videoTL" uid="..." autoConnect="yes" />
-            <inout key="mask" uid="..." />
-            <inout key="videoMaskTL" uid="..." />
-        </service>
+    <service uid="..." type="::depthSegmentation::SDepthImageMasking" worker="...">
+        <in key="maskImage" uid="..." />
+        <in key="videoImage" uid="..." />
+        <in key="depthImage" uid="..." autoConnect="yes" />
+        <inout key="foregroundImage" uid="..." />
+    </service>
    @endcode
  *
  * @subsection Input Input
- * - \b todo [::todo::todo] : todo
+ * - \b maskImage [::fwData::Image] : Mask image comming from an offscreen renderer to perform the difference inside
+ * this mask only.
+ * - \b videoImage [::fwData::Image] : RGB image on which the foreground part will be extract from the depth difference
+ * image.
+ * - \b depthImage [::fwData::Image] : Depth image on which the difference will be performed with the learned depth
+ * background image.
  *
  * @subsection In-Out In-Out
- * - \b todo [::todo::todo] : todo
- *
- * @subsection Configuration Configuration
- * - \b todo (optional)(default: 1.0) : todo
+ * - \b foregroundImage [::fwData::Image] : Image containing the foreground pixels and background pixels are
+ * transparent.
  */
 class DEPTHSEGMENTATION_CLASS_API SDepthImageMasking : public ::fwServices::IOperator
 {
@@ -73,43 +77,44 @@ public:
     DEPTHSEGMENTATION_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
     ///@}
 
-    ///Constructor
+    /// Initializes slots
     DEPTHSEGMENTATION_CLASS_API SDepthImageMasking() noexcept;
 
-    /// Destructor
+    /// Does nothing
     DEPTHSEGMENTATION_CLASS_API virtual ~SDepthImageMasking() noexcept;
 
-    /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
+    /// Defines auto connection for this service (update slot) to the depth image (objectModified)
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    /// todo
+    /// Does nothing
     DEPTHSEGMENTATION_CLASS_API virtual void configuring() override;
 
-    /// todo
+    /// Does nothing
     DEPTHSEGMENTATION_CLASS_API virtual void starting() override;
 
-    /// todo
+    /// Does nothing
     DEPTHSEGMENTATION_CLASS_API virtual void stopping() override;
 
-    /// todo
+    /// Performs difference on depth images and fills foreground image
     DEPTHSEGMENTATION_CLASS_API virtual void updating() override;
 
 private:
 
-    /// Slot: Set
+    /// Slot: Set background depth image on which the difference will be performed to compute what pixels of a new depth
+    // image are in front of this learned background image.
     void setBackground();
 
-    /// Slot: Set
+    /// Slot: Set the threshold tolerance value when performing the depth images difference.
     void setThreshold(int _threshold);
 
-    void create_mask_from_depth(::cv::Mat& _depth, int _thresh, ::cv::ThresholdTypes _type);
-
+    /// Mask image to perform computation only inside this mask.
     ::cv::Mat m_cvMaskImage;
+    /// Depth image inside the mask to compute the depth difference with the current image.
     ::cv::Mat m_cvDepthMaskImage;
-
+    /// Threshold value to manage a tolerance when performing the depth difference because of noise in such images.
     int m_threshold{10};
 };
 
-} // namespace colourSegmentation
+} // namespace depthSegmentation

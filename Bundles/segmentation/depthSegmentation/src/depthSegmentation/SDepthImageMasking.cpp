@@ -64,7 +64,6 @@ SDepthImageMasking::~SDepthImageMasking() noexcept
 
 void SDepthImageMasking::configuring()
 {
-    const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 }
 
 // ------------------------------------------------------------------------------
@@ -96,8 +95,8 @@ void SDepthImageMasking::updating()
 {
     if(!m_cvDepthMaskImage.empty())
     {
-        ::fwData::Image::sptr videoImage = this->getInOut< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
-        ::fwData::Image::sptr depthImage = this->getInOut< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+        ::fwData::Image::csptr videoImage = this->getInput< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
+        ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
 
         ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
         ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
@@ -127,8 +126,8 @@ void SDepthImageMasking::updating()
 
 void SDepthImageMasking::setBackground()
 {
-    ::fwData::Image::sptr maskImage  = this->getInOut< ::fwData::Image >(s_MASK_IMAGE_KEY);
-    ::fwData::Image::sptr depthImage = this->getInOut< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+    ::fwData::Image::csptr maskImage  = this->getInput< ::fwData::Image >(s_MASK_IMAGE_KEY);
+    ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
     if(maskImage && depthImage)
     {
         ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
