@@ -77,12 +77,14 @@ namespace adaptor
  * - \b config (mandatory): contains the adaptor configuration.
  *    - \b xAxis (optional): x axis associated to the adaptor.
  *    - \b yAxis (optional): y axis associated to the adaptor.
- *    - \b zValue (optional, default=0): z value of the layer.
- *    - \b lineColor (optional, default="lightGray"): color of the lines between the TF points.
- *    - \b pointColor (optional, default="lightGray"): outline color of the circles representing the TF points.
- *    - \b pointSize (optional, default=0.03): size of TF points in a ratio relative to the window.
- *    - \b opacity (optional, default=1.0): opacity of the gradient.
- *    - \b interactive (optional, true/false, default=false): enables interactions.
+ *    - \b zValue (optional, default="0"): z value of the layer.
+ *    - \b lineColor (optional, default="#FFFFFF"): color of the lines between the points.
+ *    - \b pointColor (optional, default="#FFFFFF"): outline color of circles representing the TF points.
+ *    - \b currentLineColor (optional, default="#FFFFFF"): color of the lines between TF points of the current TF.
+ *    - \b currentPointColor (optional, default="#FFFFFF"): outline color of circles of the current TF.
+ *    - \b pointSize (optional, default="0.03"): size of TF points in a ratio relative to the window.
+ *    - \b opacity (optional, default="1.0"): opacity of the gradient.
+ *    - \b interactive (optional, true/false, default="false"): enables interactions.
  */
 class SCENE2D_CLASS_API SMultipleTF :
     public QObject,
@@ -394,6 +396,12 @@ private:
 
     /// Defines the pen used by TF points.
     QPen m_pointsPen;
+
+    /// Defines the pen used by the current TF gradients.
+    QPen m_currentPolygonsPen;
+
+    /// Defines the pen used by the current TF points.
+    QPen m_currentPointsPen;
 
     /// Sets if interactions are enable or not.
     bool m_interactive { true };

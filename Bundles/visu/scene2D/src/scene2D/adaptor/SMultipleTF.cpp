@@ -53,10 +53,12 @@ static const ::fwServices::IService::KeyType s_TF_POOL_INOUT = "tfPool";
 
 static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
 
-static const std::string s_POLYGON_COLOR_CONFIG = "lineColor";
-static const std::string s_POINT_COLOR_CONFIG   = "pointColor";
-static const std::string s_POINT_SIZE_CONFIG    = "pointSize";
-static const std::string s_INTERACTIVE_CONFIG   = "interactive";
+static const std::string s_POLYGON_COLOR_CONFIG         = "lineColor";
+static const std::string s_POINT_COLOR_CONFIG           = "pointColor";
+static const std::string s_CURRENT_POLYGON_COLOR_CONFIG = "currentLineColor";
+static const std::string s_CURRENT_POINT_COLOR_CONFIG   = "currentPointColor";
+static const std::string s_POINT_SIZE_CONFIG            = "pointSize";
+static const std::string s_INTERACTIVE_CONFIG           = "interactive";
 
 static int s_left_ramp_index_counter  = 0;
 static int s_right_ramp_index_counter = 0;
@@ -87,11 +89,17 @@ void SMultipleTF::configuring()
     const ConfigType tree = this->getConfigTree();
     const auto config     = tree.get_child("config.<xmlattr>");
 
-    const std::string polygonColor = config.get(s_POLYGON_COLOR_CONFIG, "lightGray");
+    const std::string polygonColor = config.get(s_POLYGON_COLOR_CONFIG, "#FFFFFF");
     ::fwRenderQt::data::InitQtPen::setPenColor(m_polygonsPen, polygonColor);
 
-    const std::string pointColor = config.get(s_POINT_COLOR_CONFIG, "lightGray");
+    const std::string pointColor = config.get(s_POINT_COLOR_CONFIG, "#FFFFFF");
     ::fwRenderQt::data::InitQtPen::setPenColor(m_pointsPen, pointColor);
+
+    const std::string currentPolygonColor = config.get(s_CURRENT_POLYGON_COLOR_CONFIG, "#FFFFFF");
+    ::fwRenderQt::data::InitQtPen::setPenColor(m_currentPolygonsPen, currentPolygonColor);
+
+    const std::string currentPointColor = config.get(s_CURRENT_POINT_COLOR_CONFIG, "#FFFFFF");
+    ::fwRenderQt::data::InitQtPen::setPenColor(m_currentPointsPen, currentPointColor);
 
     m_pointSize   = config.get< float >(s_POINT_SIZE_CONFIG, m_pointSize);
     m_interactive = config.get< bool >(s_INTERACTIVE_CONFIG, m_interactive);
@@ -351,7 +359,14 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const ::fwData::TransferFunction::s
                      static_cast< int >(tfColor.b*255));
         point->setBrush(QBrush(color));
         point->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        point->setPen(m_pointsPen);
+        if(isCurrent)
+        {
+            point->setPen(m_currentPointsPen);
+        }
+        else
+        {
+            point->setPen(m_pointsPen);
+        }
         point->setZValue(subTF->m_zIndex*2+1);
 
         // Pushs it back into the point vector
@@ -461,6 +476,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     // If the z-index is not the highest, it's not the current one, the gradient is only displayed on the current TF.
     if(_subTF->m_zIndex == m_subTF.size())
     {
+        poly->setPen(m_currentPolygonsPen);
         poly->setBrush(QBrush(grad));
     }
 
@@ -575,13 +591,19 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
     // Sets the new current TF.
     SLM_ASSERT("The current TF mustn't be null", m_currentTF);
 
-    // Removes the gradient of the old subTF.
+    // Find the old subTF.
     SubTF* const currentSubTF = *(std::find_if(m_subTF.begin(), m_subTF.end(), [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
             }));
 
+    // Updates color of the old subTF.
+    currentSubTF->m_TFPolygon->setPen(m_polygonsPen);
     currentSubTF->m_TFPolygon->setBrush(QBrush());
+    for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : currentSubTF->m_TFPoints)
+    {
+        tfPoint.second->setPen(m_pointsPen);
+    }
 
     // Changes the current subTF.
     m_currentTF = _subTF->m_tf;
@@ -599,8 +621,16 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
     }
 
     // Re-draw polygons since the current TF as changed.
+    this->destroyTFPolygon(currentSubTF);
+    this->createTFPolygon(currentSubTF);
     this->destroyTFPolygon(_subTF);
     this->createTFPolygon(_subTF);
+
+    // Updates points color of the new subTF since only the polygon is re-draw.
+    for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : _subTF->m_TFPoints)
+    {
+        tfPoint.second->setPen(m_currentPointsPen);
+    }
     this->buildLayer();
 }
 
@@ -937,9 +967,12 @@ void SMultipleTF::leftButtonClickOnPointEvent(SubTF* const _subTF,
     _TFPoint.second->setPen(tfPointPen);
 
     // Sets the new current TF.
-    this->setCurrentTF(_subTF);
-    // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
-    this->setOutput(s_TF_OUTPUT, _subTF->m_tf);
+    if(_subTF->m_tf != m_currentTF)
+    {
+        this->setCurrentTF(_subTF);
+        // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
+        this->setOutput(s_TF_OUTPUT, _subTF->m_tf);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1097,7 +1130,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
 void SMultipleTF::leftButtonReleaseEvent()
 {
     // Removes the hightlighting of the captured point.
-    m_capturedTFPoint->second->setPen(m_pointsPen);
+    m_capturedTFPoint->second->setPen(m_currentPointsPen);
     m_capturedTFPoint = nullptr;
 }
 
@@ -1543,7 +1576,12 @@ void SMultipleTF::removeCurrenTF()
     }
 
     // Sends the signal.
-    compositeHelper.notify();
+    auto sig = tfPool->signal< ::fwData::Composite::RemovedObjectsSignalType >(
+        ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+    {
+        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        compositeHelper.notify();
+    }
 
     // Re-draw all the scene here since swapping method as not been called.
     this->updating();
@@ -1670,7 +1708,12 @@ void SMultipleTF::addNewTF(const ::fwData::TransferFunction::sptr _tf)
     compositeHelper.add(_tf->getName(), _tf);
 
     // Sends the signal.
-    compositeHelper.notify();
+    auto sig = tfPool->signal< ::fwData::Composite::AddedObjectsSignalType >(
+        ::fwData::Composite::s_ADDED_OBJECTS_SIG);
+    {
+        const ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        compositeHelper.notify();
+    }
 
     // Creates the new SubTF.
     SubTF* newSubTF = this->createSubTF(_tf, 0);
