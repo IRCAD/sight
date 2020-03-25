@@ -142,23 +142,68 @@ void SMergeTF::merge() const
         const ::fwData::TransferFunction::TFValueType window           = tf->getWindow();
         const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
+        const auto addTFPoint = [&](::fwData::TransferFunction::TFValueType _value, double _delta)
+                                {
+                                    ::fwData::TransferFunction::TFValueType value;
+                                    value  = (_value - minMaxValues.first) / width;
+                                    value  = value * window + minWL;
+                                    value += _delta;
+
+                                    outTF->addTFColor(value, this->mergeColors(tfPool, value));
+                                    if(value < min)
+                                    {
+                                        min = value;
+                                    }
+                                    if(value > max)
+                                    {
+                                        max = value;
+                                    }
+                                };
+
         // Add new TF value to the output.
+        bool first = true;
+        ::fwData::TransferFunction::TFValueType previousValue = 0;
         for(const ::fwData::TransferFunction::TFDataType::value_type& elt : tf->getTFData())
         {
-            // Computes TF value from TF space to window/level space.
-            ::fwData::TransferFunction::TFValueType value;
-            value = (elt.first - minMaxValues.first) / width;
-            value = value * window + minWL;
+            // If the TF interpolation mode is not linear, we create new point in the merged TF.
+            if(!first && tf->getInterpolationMode() == ::fwData::TransferFunction::NEAREST)
+            {
+                ::fwData::TransferFunction::TFValueType middleValue = previousValue + (elt.first - previousValue) / 2.;
+                addTFPoint(middleValue, -1.);
+                addTFPoint(middleValue, 1.);
+            }
 
-            outTF->addTFColor(value, this->mergeColors(tfPool, value));
-            if(value < min)
+            // If the TF is clamped, we create new point in the merged TF.
+            if(first && tf->getIsClamped())
             {
-                min = value;
+                addTFPoint(elt.first, -1.);
             }
-            if(value > max)
+
+            // Computes TF value from TF space to window/level space.
+            if(tf->getIsClamped())
             {
-                max = value;
+                // This avoid precision error due to the TF clamp.
+                if(first)
+                {
+                    addTFPoint(elt.first, 1.);
+                }
+                else
+                {
+                    addTFPoint(elt.first, -1.);
+                }
             }
+            else
+            {
+                addTFPoint(elt.first, 0.);
+            }
+
+            first         = false;
+            previousValue = elt.first;
+        }
+
+        if(tf->getIsClamped())
+        {
+            addTFPoint(previousValue, 1.);
         }
     }
 
