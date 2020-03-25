@@ -115,9 +115,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect Composite::s_ADDED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
-     * Connect Composite::s_CHANGED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
+     * Connect ::fwData::Composite::s_ADDED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
+     * Connect ::fwData::Composite::s_CHANGED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
+     * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -131,7 +131,7 @@ private:
     /**
      * @brief Create a string that represents a TF pool name not already present in the composite.
      *
-     * For example, if blabla is already used, it will return blabla_1.
+     * For example, if CT-GreyLevel is already used, it will return CT-GreyLevel_1.
      *
      * @param _basename the name of the TF pool to create.
      * @return The new name of the TF pool.

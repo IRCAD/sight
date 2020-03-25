@@ -79,11 +79,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TF_POOL_INOUT to ::ctrlTF::adaptor::SMultipleTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
-     * ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
-     * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
-     * ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
+     * Connect ::fwData::Composite::s_ADDED_OBJECTS_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
+     * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INPUT to ::ctrlTF::SMergeTF::s_UPDATE_SLOT.
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 

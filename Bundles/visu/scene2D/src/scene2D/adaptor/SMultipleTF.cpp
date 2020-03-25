@@ -249,7 +249,7 @@ void SMultipleTF::createTFPoints()
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
 
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least one TF inside.", tfPool->size() > 0);
 
     int zIndex = 0;
     for(::fwData::Composite::value_type poolElt : *tfPool)
@@ -428,7 +428,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     grad.setStart( xBegin, 0);
     grad.setFinalStop( xEnd, 0 );
 
-    double distanceMax = xEnd - xBegin;
+    const double distanceMax = xEnd - xBegin;
 
     // Iterates on TF points vector to add line and polygon items to the polygons vector.
     if(_subTF->m_tf->getInterpolationMode() == ::fwData::TransferFunction::LINEAR)

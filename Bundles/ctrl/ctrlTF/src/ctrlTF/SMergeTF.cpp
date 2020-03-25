@@ -175,9 +175,7 @@ void SMergeTF::merge() const
     // Sends the modification signal.
     const auto sig = outTF->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
-    {
-        sig->asyncEmit();
-    }
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
