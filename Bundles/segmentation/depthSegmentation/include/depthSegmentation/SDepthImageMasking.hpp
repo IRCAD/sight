@@ -103,7 +103,7 @@ protected:
 private:
 
     /// Slot: Set background depth image on which the difference will be performed to compute what pixels of a new depth
-    // image are in front of this learned background image.
+    /// image are in front of this learned background image.
     void setBackground();
 
     /// Slot: Set the threshold tolerance value when performing the depth images difference.

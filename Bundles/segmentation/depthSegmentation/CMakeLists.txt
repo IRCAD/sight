@@ -2,10 +2,4 @@ fwLoadProperties()
 
 find_package(realsense2 QUIET REQUIRED)
 
-fwInclude(
-    ${REALSENSE2_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${realsense2_LIBRARY}
-)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${realsense2_LIBRARY})

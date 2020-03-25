@@ -104,8 +104,8 @@ void SDepthImageMasking::updating()
             ::fwData::mt::ObjectReadLock lockVideoImage(videoImage);
             ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);
 
-            ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
-            ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
+            const ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
+            const ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
 
             ::cv::Mat cvMaskedDepth;
             cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
@@ -125,7 +125,7 @@ void SDepthImageMasking::updating()
 
             ::cvIO::Image::copyFromCv(foregroundImage, cvMaskedVideo);
 
-            auto sig = foregroundImage->signal< ::fwData::Image::BufferModifiedSignalType >(
+            const auto sig = foregroundImage->signal< ::fwData::Image::BufferModifiedSignalType >(
                 ::fwData::Image::s_BUFFER_MODIFIED_SIG);
             sig->asyncEmit();
         }
@@ -143,9 +143,16 @@ void SDepthImageMasking::setBackground()
         ::fwData::mt::ObjectReadLock lockMaskImage(maskImage);
         ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);
 
-        ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
-        m_cvMaskImage          = ::cvIO::Image::moveToCv(maskImage);
-        ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
+        const ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
+        m_cvMaskImage = ::cvIO::Image::moveToCv(maskImage);
+        if(m_cvMaskImage.channels() == 4)
+        {
+            ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);
+        }
+        else if(m_cvMaskImage.channels() == 3)
+        {
+            ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGR2GRAY);
+        }
 
         m_cvMaskImage = (m_cvMaskImage > 0);
 
