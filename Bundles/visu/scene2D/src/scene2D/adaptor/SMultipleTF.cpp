@@ -53,12 +53,11 @@ static const ::fwServices::IService::KeyType s_TF_POOL_INOUT = "tfPool";
 
 static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
 
-static const std::string s_POLYGON_COLOR_CONFIG         = "lineColor";
-static const std::string s_POINT_COLOR_CONFIG           = "pointColor";
-static const std::string s_CURRENT_POLYGON_COLOR_CONFIG = "currentLineColor";
-static const std::string s_CURRENT_POINT_COLOR_CONFIG   = "currentPointColor";
-static const std::string s_POINT_SIZE_CONFIG            = "pointSize";
-static const std::string s_INTERACTIVE_CONFIG           = "interactive";
+static const std::string s_POLYGON_COLOR_CONFIG  = "lineColor";
+static const std::string s_POINT_COLOR_CONFIG    = "pointColor";
+static const std::string s_SECOND_OPACITY_CONFIG = "secondOpacity";
+static const std::string s_POINT_SIZE_CONFIG     = "pointSize";
+static const std::string s_INTERACTIVE_CONFIG    = "interactive";
 
 static int s_left_ramp_index_counter  = 0;
 static int s_right_ramp_index_counter = 0;
@@ -95,14 +94,9 @@ void SMultipleTF::configuring()
     const std::string pointColor = config.get(s_POINT_COLOR_CONFIG, "#FFFFFF");
     ::fwRenderQt::data::InitQtPen::setPenColor(m_pointsPen, pointColor);
 
-    const std::string currentPolygonColor = config.get(s_CURRENT_POLYGON_COLOR_CONFIG, "#FFFFFF");
-    ::fwRenderQt::data::InitQtPen::setPenColor(m_currentPolygonsPen, currentPolygonColor);
-
-    const std::string currentPointColor = config.get(s_CURRENT_POINT_COLOR_CONFIG, "#FFFFFF");
-    ::fwRenderQt::data::InitQtPen::setPenColor(m_currentPointsPen, currentPointColor);
-
-    m_pointSize   = config.get< float >(s_POINT_SIZE_CONFIG, m_pointSize);
-    m_interactive = config.get< bool >(s_INTERACTIVE_CONFIG, m_interactive);
+    m_secondOpacity = config.get< float >(s_SECOND_OPACITY_CONFIG, m_secondOpacity);
+    m_pointSize     = config.get< float >(s_POINT_SIZE_CONFIG, m_pointSize);
+    m_interactive   = config.get< bool >(s_INTERACTIVE_CONFIG, m_interactive);
 }
 
 //------------------------------------------------------------------------------
@@ -359,14 +353,7 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const ::fwData::TransferFunction::s
                      static_cast< int >(tfColor.b*255));
         point->setBrush(QBrush(color));
         point->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        if(isCurrent)
-        {
-            point->setPen(m_currentPointsPen);
-        }
-        else
-        {
-            point->setPen(m_pointsPen);
-        }
+        point->setPen(m_pointsPen);
         point->setZValue(subTF->m_zIndex*2+1);
 
         // Pushs it back into the point vector
@@ -468,16 +455,19 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
 
     QGraphicsPolygonItem* const poly = new QGraphicsPolygonItem(QPolygonF(position));
     // Sets gradient, opacity and pen to the polygon
-    poly->setOpacity(m_opacity);
+    poly->setBrush(QBrush(grad));
     poly->setPen(m_polygonsPen);
     poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
     poly->setZValue(_subTF->m_zIndex*2);
 
-    // If the z-index is not the highest, it's not the current one, the gradient is only displayed on the current TF.
+    // If the z-index is the highest, it's the current one.
     if(_subTF->m_zIndex == m_subTF.size())
     {
-        poly->setPen(m_currentPolygonsPen);
-        poly->setBrush(QBrush(grad));
+        poly->setOpacity(m_opacity);
+    }
+    else
+    {
+        poly->setOpacity(m_secondOpacity);
     }
 
     // Pushs the polygon back into the polygons vector
@@ -597,14 +587,6 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
                 return _subTF->m_tf == m_currentTF;
             }));
 
-    // Updates color of the old subTF.
-    currentSubTF->m_TFPolygon->setPen(m_polygonsPen);
-    currentSubTF->m_TFPolygon->setBrush(QBrush());
-    for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : currentSubTF->m_TFPoints)
-    {
-        tfPoint.second->setPen(m_pointsPen);
-    }
-
     // Changes the current subTF.
     m_currentTF = _subTF->m_tf;
 
@@ -625,12 +607,6 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
     this->createTFPolygon(currentSubTF);
     this->destroyTFPolygon(_subTF);
     this->createTFPolygon(_subTF);
-
-    // Updates points color of the new subTF since only the polygon is re-draw.
-    for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : _subTF->m_TFPoints)
-    {
-        tfPoint.second->setPen(m_currentPointsPen);
-    }
     this->buildLayer();
 }
 
@@ -1130,7 +1106,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const ::fwRenderQt:
 void SMultipleTF::leftButtonReleaseEvent()
 {
     // Removes the hightlighting of the captured point.
-    m_capturedTFPoint->second->setPen(m_currentPointsPen);
+    m_capturedTFPoint->second->setPen(m_pointsPen);
     m_capturedTFPoint = nullptr;
 }
 

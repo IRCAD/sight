@@ -80,8 +80,7 @@ namespace adaptor
  *    - \b zValue (optional, default="0"): z value of the layer.
  *    - \b lineColor (optional, default="#FFFFFF"): color of the lines between the points.
  *    - \b pointColor (optional, default="#FFFFFF"): outline color of circles representing the TF points.
- *    - \b currentLineColor (optional, default="#FFFFFF"): color of the lines between TF points of the current TF.
- *    - \b currentPointColor (optional, default="#FFFFFF"): outline color of circles of the current TF.
+ *    - \b secondOpacity (optional, default="0.0"): opacity of TF that not the current one.
  *    - \b pointSize (optional, default="0.03"): size of TF points in a ratio relative to the window.
  *    - \b opacity (optional, default="1.0"): opacity of the gradient.
  *    - \b interactive (optional, true/false, default="false"): enables interactions.
@@ -397,11 +396,8 @@ private:
     /// Defines the pen used by TF points.
     QPen m_pointsPen;
 
-    /// Defines the pen used by the current TF gradients.
-    QPen m_currentPolygonsPen;
-
-    /// Defines the pen used by the current TF points.
-    QPen m_currentPointsPen;
+    /// Defines the opacity used for TF exepted the current one.
+    float m_secondOpacity { 0.0f };
 
     /// Sets if interactions are enable or not.
     bool m_interactive { true };
