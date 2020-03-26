@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,7 @@
 #include <fwItkIO/itk.hpp>
 
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkAffineTransform.h>
 #include <itkBoundingBox.h>
@@ -82,10 +81,10 @@ struct Resampling
             for(std::uint8_t i = 0; i < 3; ++i)
             {
                 // ITK uses unsigned long to store sizes.
-                size[i] = static_cast<typename ImageType::SizeType::SizeValueType>(params.i_targetImage->getSize()[i]);
+                size[i] = static_cast<typename ImageType::SizeType::SizeValueType>(params.i_targetImage->getSize2()[i]);
 
-                origin[i]  = params.i_targetImage->getOrigin()[i];
-                spacing[i] = params.i_targetImage->getSpacing()[i];
+                origin[i]  = params.i_targetImage->getOrigin2()[i];
+                spacing[i] = params.i_targetImage->getSpacing2()[i];
 
                 SLM_ASSERT("Output spacing can't be null along any axis.", spacing[i] > 0);
             }
@@ -141,8 +140,8 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
     params.i_trf         = transf.GetPointer();
     params.i_targetImage = _targetImg;
 
-    const ::fwTools::DynamicType type = _inImage->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Resampling >::invoke(type, params);
+    const ::fwTools::Type type = _inImage->getType();
+    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, Resampling >::invoke(type, params);
 }
 
 //-----------------------------------------------------------------------------
@@ -151,13 +150,23 @@ fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
                                         const ::fwData::TransformationMatrix3D::csptr& _trf,
                                         const ::fwData::Image::SpacingType& _outputSpacing)
 {
+    ::fwData::Image::Spacing spacing = {_outputSpacing[0], _outputSpacing[1], _outputSpacing[2]};
+    return Resampler::resample(_img, _trf, spacing);
+}
+
+//-----------------------------------------------------------------------------
+
+fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
+                                        const ::fwData::TransformationMatrix3D::csptr& _trf,
+                                        const ::fwData::Image::Spacing& _outputSpacing)
+{
     using PointType           = ::itk::Point<double, 3>;
     using VectorContainerType = ::itk::VectorContainer<int, PointType>;
     using BoundingBoxType     = ::itk::BoundingBox<int, 3, double, VectorContainerType>;
 
-    const auto& inputSize    = _img->getSize();
-    const auto& inputOrigin  = _img->getOrigin();
-    const auto& inputSpacing = _img->getSpacing();
+    const auto& inputSize    = _img->getSize2();
+    const auto& inputOrigin  = _img->getOrigin2();
+    const auto& inputSpacing = _img->getSpacing2();
 
     SLM_ASSERT("Image dimension must be 3.",
                inputOrigin.size() == 3 && inputSpacing.size() == 3 && inputSize.size() == 3);
@@ -195,8 +204,8 @@ fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
 
     // Compute output size and origin.
     ::fwData::Image::sptr output = ::fwData::Image::New();
-    ::fwData::Image::OriginType outputOrigin(3);
-    ::fwData::Image::SizeType outputSize(3);
+    ::fwData::Image::Origin outputOrigin;
+    ::fwData::Image::Size outputSize;
 
     for(std::uint8_t i = 0; i < 3; ++i)
     {
@@ -204,9 +213,9 @@ fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
         outputSize[i]   = size_t((outputBB->GetMaximum()[i] - outputOrigin[i]) / _outputSpacing[i]);
     }
 
-    output->setSize(outputSize);
-    output->setSpacing(_outputSpacing);
-    output->setOrigin(outputOrigin);
+    output->setSize2(outputSize);
+    output->setSpacing2(_outputSpacing);
+    output->setOrigin2(outputOrigin);
 
     resample(_img, output, _trf, output);
     return output;
