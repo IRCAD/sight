@@ -113,9 +113,27 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                         list(APPEND EXTENSION_LIST "         <object key=\"${OBJECT_KEY}\">${OBJECT_IMPL}</object>")
                         list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, ${OBJECT_IMPL} )\n")
 
-                        set(OBJECT_INCLUDE_REGEX "::([a-zA-Z0-9_]*)::([a-zA-Z0-9_]*)")
+                        set(OBJECT_INCLUDE_REGEX "(::([a-zA-Z0-9_]*))*")
+                        # check if the object implementaion match the regex.
                         if("${OBJECT_IMPL}" MATCHES ${OBJECT_INCLUDE_REGEX})
-                            list(APPEND INCLUDE_SERVICES "#include <${CMAKE_MATCH_1}/${CMAKE_MATCH_2}.hpp>")
+                            # Split the object implementation with "::" to get a list of namespace.
+                            string(REPLACE "::" ";" OBJECT_SUB_IMPL ${OBJECT_IMPL})
+
+                            # Create the include directive.
+                            set(INCLUDE_DIRECTIVE "#include <")
+                            foreach(SUB_IMPL ${OBJECT_SUB_IMPL})
+                                string(APPEND INCLUDE_DIRECTIVE ${SUB_IMPL}/)
+                            endforeach()
+
+                            # Remove the last "/" from the include directive.
+                            string(LENGTH ${INCLUDE_DIRECTIVE} INCLUDE_LENGTH)
+                            math(EXPR INCLUDE_LENGTH "${INCLUDE_LENGTH}-1")
+                            string(SUBSTRING ${INCLUDE_DIRECTIVE} 0 ${INCLUDE_LENGTH} INCLUDE_DIRECTIVE)
+
+                            # Add the last hpp extension.
+                            string(APPEND INCLUDE_DIRECTIVE .hpp>)
+
+                            list(APPEND INCLUDE_SERVICES ${INCLUDE_DIRECTIVE})
                         else()
                             message(FATAL_ERROR "Can't split namespace from object type: " ${OBJECT_IMPL})
                         endif()
