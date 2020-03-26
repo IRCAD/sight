@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,6 @@
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -48,7 +47,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, ::fwData::Image )
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -123,8 +122,8 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {
-            const double* point                  = info.m_worldPos;
-            const ::fwData::Image::SizeType size = image->getSize();
+            const double* point              = info.m_worldPos;
+            const ::fwData::Image::Size size = image->getSize2();
 
             if (point[0] < 0 || point[1] < 0 || point[2] < 0)
             {
@@ -133,10 +132,10 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
                 return;
             }
 
-            const ::fwData::Image::SizeType coords =
-            {{ static_cast< ::fwData::Image::SizeType::value_type >(point[0]),
-               static_cast< ::fwData::Image::SizeType::value_type >(point[1]),
-               static_cast< ::fwData::Image::SizeType::value_type >(point[2])}};
+            const ::fwData::Image::Size coords =
+            {{ static_cast< ::fwData::Image::Size::value_type >(point[0]),
+               static_cast< ::fwData::Image::Size::value_type >(point[1]),
+               static_cast< ::fwData::Image::Size::value_type >(point[2])}};
 
             bool isInside = (coords[0] < size[0] && coords[1] < size[1]);
             if (image->getNumberOfDimensions() < 3)
@@ -155,9 +154,9 @@ void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
                 return;
             }
 
-            ::fwDataTools::helper::ImageGetter imageHelper(image);
+            const auto dumpLock = image->lock();
 
-            const std::string intensity = imageHelper.getPixelAsString(coords[0], coords[1], coords[2] );
+            const std::string intensity = image->getPixelAsString(coords[0], coords[1], coords[2] );
             m_valueText->setText(QString::fromStdString(intensity));
         }
     }
