@@ -297,9 +297,9 @@ void* Image::getBuffer() const
 
 void* Image::getPixelBuffer( IndexType index )
 {
-    size_t imagePixelSize    = m_type.sizeOf() * m_numberOfComponents;
-    BufferType* buf          = static_cast < BufferType* > (this->getBuffer());
-    BufferIndexType bufIndex = index * imagePixelSize;
+    const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
+    BufferType* buf             = static_cast < BufferType* >(this->getBuffer());
+    IndexType bufIndex          = index * imagePixelSize;
     return buf + bufIndex;
 }
 
@@ -307,12 +307,21 @@ void* Image::getPixelBuffer( IndexType index )
 
 void* Image::getPixelBuffer( IndexType index ) const
 {
-    size_t imagePixelSize    = m_type.sizeOf() * m_numberOfComponents;
-    BufferType* buf          = static_cast < BufferType* > (this->getBuffer());
-    BufferIndexType bufIndex = index * imagePixelSize;
+    const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
+    BufferType* buf             = static_cast < BufferType* >(this->getBuffer());
+    IndexType bufIndex          = index * imagePixelSize;
     return buf + bufIndex;
 }
 
+//------------------------------------------------------------------------------
+
+void Image::setPixelBuffer( IndexType index, Image::BufferType* pixBuf)
+{
+    const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
+    BufferType* buf             = static_cast < BufferType* >(this->getPixelBuffer(index));
+
+    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
+}
 //------------------------------------------------------------------------------
 
 const std::string Image::getPixelAsString(IndexType x,
