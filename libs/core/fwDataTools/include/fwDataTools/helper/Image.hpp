@@ -37,7 +37,7 @@ namespace helper
  *
  * @deprecated will be removed in sight 22.0, please use ::fwData::Image.
  */
-class FWDATATOOLS_CLASS_API Image
+class FWDATATOOLS_DEPRECATED_CLASS_API Image
 {
 
 public:

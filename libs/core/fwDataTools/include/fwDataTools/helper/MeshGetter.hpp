@@ -41,7 +41,7 @@ namespace helper
  * @brief   Helper to manage Mesh. Lock the mesh buffer before to modify it.
  * @deprecated The helper is no longer required to access the buffers. It will be removed in sight 22.0
  */
-class FWDATATOOLS_CLASS_API MeshGetter
+class FWDATATOOLS_DEPRECATED_CLASS_API MeshGetter
 {
 public:
     [[deprecated("will be removed in sight 22.0, please use ::fwData::Mesh")]]

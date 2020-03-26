@@ -38,7 +38,7 @@ namespace helper
  * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
  * @deprecated The helper is no longer required to access array buffer. It will be removed in sight 22.0
  */
-class FWDATATOOLS_CLASS_API Array
+class FWDATATOOLS_DEPRECATED_CLASS_API Array
 {
 
 public:
