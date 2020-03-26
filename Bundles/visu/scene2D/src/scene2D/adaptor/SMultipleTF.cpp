@@ -1289,6 +1289,17 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
     {
         const ::fwData::mt::ObjectWriteLock tfLock(tf);
 
+        // Gets window/level informations to change TF value from TF space to window/level space.
+        const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
+        const ::fwData::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
+        const ::fwData::TransferFunction::TFValueType window           = tf->getWindow();
+        const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
+
+        // Computes TF value from window/level space to TF space.
+        ::fwData::TransferFunction::TFValueType tfValue = newCoord.getX();
+        tfValue                                         = (tfValue - minWL) / window;
+        tfValue                                         = (tfValue * width) + minMaxValues.first;
+
         ::fwData::TransferFunction::TFColor newColor;
 
         // The new coord becomes the new first TF point, get the current first color in the list.
@@ -1314,20 +1325,9 @@ void SMultipleTF::leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _e
         // Gets an interpolate color since the new point is between two ohers.
         else
         {
-            newColor   = tf->getInterpolatedColor(newCoord.getX());
+            newColor   = tf->getInterpolatedColor(tfValue);
             newColor.a = -newCoord.getY();
         }
-
-        // Gets window/level informations to change TF value from TF space to window/level space.
-        const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
-        const ::fwData::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
-        const ::fwData::TransferFunction::TFValueType window           = tf->getWindow();
-        const ::fwData::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
-
-        // Computes TF value from window/level space to TF space.
-        ::fwData::TransferFunction::TFValueType tfValue = newCoord.getX();
-        tfValue                                         = (tfValue - minWL) / window;
-        tfValue                                         = (tfValue * width) + minMaxValues.first;
 
         // Adds the new TF point.
         tf->addTFColor(tfValue, newColor);

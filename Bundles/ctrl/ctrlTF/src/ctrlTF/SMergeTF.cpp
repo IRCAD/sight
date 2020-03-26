@@ -245,7 +245,7 @@ void SMergeTF::merge() const
         ::fwData::TransferFunction::TFValueType value = (_value - minWL) / window;
         value                                         = value * width + minMaxValues.first;
 
-        // The value need to be in the TF sapce, that why it's converted before.
+        // The value need to be in the TF space, that why it's converted before.
         ::fwData::TransferFunction::TFColor currentColor = tf->getInterpolatedColor(value);
 
         result.r += currentColor.r;
