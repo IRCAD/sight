@@ -108,8 +108,9 @@ void SFragmentsInfo::configuring()
     this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-    m_width  = config.get<int>("width", m_width);
-    m_height = config.get<int>("height", m_height);
+    m_width     = config.get<int>("width", m_width);
+    m_height    = config.get<int>("height", m_height);
+    m_flipImage = config.get<bool>("flip", m_flipImage);
 
     // If Both width & height are found we fix the size.
     if(m_width > 0 && m_height > 0)
@@ -170,7 +171,7 @@ void SFragmentsInfo::updating() noexcept
         const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
         {
             ::fwData::mt::ObjectWriteLock lock(image);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(text, image, true);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(text, image, m_flipImage);
         }
 
         auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
@@ -184,7 +185,7 @@ void SFragmentsInfo::updating() noexcept
         const ::Ogre::TexturePtr depthText = m_compositor->getTextureInstance(m_targetName, 1);
         {
             ::fwData::mt::ObjectWriteLock lock(depth);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth, true);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth, m_flipImage);
         }
 
         auto depthSig = depth->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
@@ -198,7 +199,7 @@ void SFragmentsInfo::updating() noexcept
         const ::Ogre::TexturePtr primitiveIDText = m_compositor->getTextureInstance(m_targetPrimitiveIDName, 0);
         {
             ::fwData::mt::ObjectWriteLock lock(primitiveID);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(primitiveIDText, primitiveID, true);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(primitiveIDText, primitiveID, m_flipImage);
         }
 
         auto primitiveIDSig = primitiveID->signal< ::fwData::Object::ModifiedSignalType >(

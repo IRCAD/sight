@@ -54,6 +54,7 @@ namespace visuOgreAdaptor
  * - \b height (optional): fixed height of snaphot.
  * NOTE: if width & height are missing (or one of them), size of the snapshot will be connected to the layer:
  * if the layer is resized the snaphot will be resized.
+ * - \b flip (optional): flip result images, default: false.
  *
  * @subsection InOut InOut:
  * - \b image [::fwData::Image] (optional): image containing the snapshot of the layer color buffer.
@@ -131,6 +132,9 @@ private:
 
     /// Fixed height.
     int m_height { -1 };
+
+    /// Flip Ogre texture when converting to sight, can be useful when using VTK to save images.
+    bool m_flipImage { false };
 
 };
 

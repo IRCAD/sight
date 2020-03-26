@@ -295,7 +295,7 @@
 
         <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
             <inout key="image" uid="snaphotImg" />
-            <config layer="default" />
+            <config layer="default" flip="true" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
