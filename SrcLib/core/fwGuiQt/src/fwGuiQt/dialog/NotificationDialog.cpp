@@ -65,8 +65,6 @@ void NotificationDialog::show()
 
     // Creates the clikable label.
     m_msgBox = new ClickableQLabel();
-    m_msgBox->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
-    m_msgBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
     m_msgBox->setWordWrap(true);
     m_msgBox->setScaledContents(true);
     m_msgBox->setText(QString::fromStdString(m_message));
@@ -215,6 +213,8 @@ void NotificationDialog::show()
     container->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint| Qt::NoDropShadowWindowHint);
     container->setAttribute(Qt::WA_TranslucentBackground);
     container->setContentsMargins(0, 0, 0, 0);
+    container->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
+    container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
     // Moves the container when the main window is moved or is resized.
     qApp->activeWindow()->installEventFilter(container);
