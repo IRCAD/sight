@@ -1,3 +1,5 @@
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Define some paths whether we are building Sight or using it
 if(FW_BUILD_EXTERNAL)
     set(FWCMAKE_BUILD_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/build)
@@ -142,15 +144,23 @@ endmacro()
 macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     string(TOUPPER ${FWPROJECT_NAME} PROJECT_NAME_UPCASE)
 
-    setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
+    get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
+
+    message("${FWPROJECT_NAME} : ${TARGET_TYPE}")
+    if (${TARGET_TYPE} MATCHES "OBJECT_LIBRARY")
+        set(TARGET_NAME ${FWPROJECT_NAME}_SHARED_LIB)
+    else()
+        set(TARGET_NAME ${FWPROJECT_NAME})
+    endif()
+
+    setVersion(${TARGET_NAME} ${PROJECT_VERSION})
     string(REGEX MATCH "^[^.]+" API_VERSION ${PROJECT_VERSION})
 
     if(SET_API_VERSION)
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION})
+        set_target_properties(${TARGET_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION})
     endif()
 
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES DEFINE_SYMBOL ${PROJECT_NAME_UPCASE}_EXPORTS)
-
+    set_target_properties(${TARGET_NAME} PROPERTIES DEFINE_SYMBOL ${PROJECT_NAME_UPCASE}_EXPORTS)
     target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_VER="${PROJECT_VERSION}")
 
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
@@ -421,8 +431,6 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE "LIBRARY")
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
 
-    setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
-
     if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
@@ -430,18 +438,21 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    add_library(${FWPROJECT_NAME} SHARED ${ARGN}
+    add_library(${FWPROJECT_NAME} OBJECT ${ARGN}
         ${${FWPROJECT_NAME}_HEADERS}
         ${${FWPROJECT_NAME}_SOURCES}
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES}
         ${${FWPROJECT_NAME}_PCH_LIB})
 
+    add_library(${FWPROJECT_NAME}_SHARED_LIB SHARED $<TARGET_OBJECTS:${FWPROJECT_NAME}>)
+    set_target_properties(${FWPROJECT_NAME}_SHARED_LIB PROPERTIES LIBRARY_OUTPUT_NAME ${FWPROJECT_NAME})
+
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     # Set interface properties
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${API_VERSION})
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
+    set_target_properties(${FWPROJECT_NAME}_SHARED_LIB PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${API_VERSION})
+    set_target_properties(${FWPROJECT_NAME}_SHARED_LIB PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
@@ -463,6 +474,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
       $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
     )
+    target_link_libraries(${FWPROJECT_NAME}_SHARED_LIB INTERFACE ${FWPROJECT_NAME})
 
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR ${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME} PARENT_SCOPE)
 
@@ -779,7 +791,7 @@ endmacro()
 
 # Defines project's linked dependencies on others projects
 # example :
-#     fwUse( fwCore fwData )
+#     fwDefineDependencies( fwCore fwData )
 # WARNING : some part of this cmake file relies on this macro signature
 
 macro(fwDefineDependencies)
@@ -803,7 +815,15 @@ endmacro()
 # WARNING : some part of this cmake file relies on this macro signature
 
 macro(fwUse)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
+    foreach(PROJECT ${ARGV})
+        set(TARGET_TO_LINK ${PROJECT})
+        if(${${PROJECT}_TYPE} MATCHES "LIBRARY")
+            if(NOT "${${NAME}_TYPE}" MATCHES "TEST" OR NOT ${NAME} MATCHES ${PROJECT})
+                set(TARGET_TO_LINK ${PROJECT}_SHARED_LIB)
+            endif()
+        endif()
+        target_link_libraries(${FWPROJECT_NAME} PUBLIC ${TARGET_TO_LINK})
+    endforeach()
 endmacro()
 
 

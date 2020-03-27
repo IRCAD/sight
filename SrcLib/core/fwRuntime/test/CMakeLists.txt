@@ -6,4 +6,4 @@ target_compile_definitions(${FWPROJECT_NAME} PRIVATE BUNDLE_RC_PREFIX="${FWBUNDL
 find_package(CppUnit QUIET REQUIRED)
 
 fwInclude(${CPPUNIT_INCLUDE_DIR})
-fwLink(${CPPUNIT_LIBRARY})
+fwLink(${CPPUNIT_LIBRARY} ${CMAKE_DL_LIBS})
