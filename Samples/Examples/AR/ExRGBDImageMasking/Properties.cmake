@@ -16,8 +16,8 @@ set( REQUIREMENTS
     media
     ioAtoms
     ioData
+    material
     maths
-    uiTools
     uiIO
     visuOgre
     visuOgreQt

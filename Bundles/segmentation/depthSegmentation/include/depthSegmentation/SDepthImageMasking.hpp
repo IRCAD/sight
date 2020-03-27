@@ -53,7 +53,7 @@ namespace depthSegmentation
    @endcode
  *
  * @subsection Input Input
- * - \b maskImage [::fwData::Image] : Mask image comming from an offscreen renderer to perform the difference inside
+ * - \b maskImage [::fwData::Image] : Mask image to perform the difference inside. Background value should be set to 0.
  * this mask only.
  * - \b videoImage [::fwData::Image] : RGB image on which the foreground part will be extract from the depth difference
  * image.
@@ -73,8 +73,8 @@ public:
      * @name Slots API
      * @{
      */
-    DEPTHSEGMENTATION_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
-    DEPTHSEGMENTATION_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
     ///@}
 
     /// Initializes slots
@@ -102,11 +102,12 @@ protected:
 
 private:
 
-    /// Slot: Set background depth image on which the difference will be performed to compute what pixels of a new depth
+    /// Slot: Sets background depth image on which the difference will be performed to compute what pixels of a new
+    /// depth.
     /// image are in front of this learned background image.
     void setBackground();
 
-    /// Slot: Set the threshold tolerance value when performing the depth images difference.
+    /// Slot: Sets the threshold tolerance value when performing the depth images difference.
     void setThreshold(int _threshold);
 
     /// Mask image to perform computation only inside this mask.

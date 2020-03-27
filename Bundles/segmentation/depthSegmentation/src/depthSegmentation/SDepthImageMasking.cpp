@@ -37,15 +37,15 @@
 namespace depthSegmentation
 {
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::depthSegmentation::SDepthImageMasking)
-
 const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
-const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_THRESHOLD_SLOT = "setThreshold";
+const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_THRESHOLD_SLOT  = "setThreshold";
 
-const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
-const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
-const ::fwServices::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
-const ::fwServices::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
+static const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
+static const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
+static const ::fwServices::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
+static const ::fwServices::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
+
+fwServicesRegisterMacro( ::fwServices::IOperator, ::depthSegmentation::SDepthImageMasking)
 
 // ------------------------------------------------------------------------------
 
@@ -96,8 +96,8 @@ void SDepthImageMasking::updating()
 {
     if(!m_cvDepthMaskImage.empty())
     {
-        ::fwData::Image::csptr videoImage = this->getInput< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
-        ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+        const ::fwData::Image::csptr videoImage = this->getInput< ::fwData::Image >(s_VIDEO_IMAGE_KEY);
+        const ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
 
         if(videoImage && depthImage)
         {
@@ -128,6 +128,8 @@ void SDepthImageMasking::updating()
             const auto sig = foregroundImage->signal< ::fwData::Image::BufferModifiedSignalType >(
                 ::fwData::Image::s_BUFFER_MODIFIED_SIG);
             sig->asyncEmit();
+
+            m_sigComputed->asyncEmit();
         }
     }
 }
@@ -136,8 +138,8 @@ void SDepthImageMasking::updating()
 
 void SDepthImageMasking::setBackground()
 {
-    ::fwData::Image::csptr maskImage  = this->getInput< ::fwData::Image >(s_MASK_IMAGE_KEY);
-    ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
+    const ::fwData::Image::csptr maskImage  = this->getInput< ::fwData::Image >(s_MASK_IMAGE_KEY);
+    const ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
     if(maskImage && depthImage)
     {
         ::fwData::mt::ObjectReadLock lockMaskImage(maskImage);
