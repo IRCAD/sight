@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace fwRuntime
  *
  * This class provides a default implementation of the ::fwRuntime::IExecutable
  * interface and is intended to be used as base class for user defined executable
- * classes being exported by bundles.
+ * classes being exported by modules.
  *
  */
 struct Executable : public IExecutable
@@ -45,31 +45,31 @@ struct Executable : public IExecutable
      * @return  a shared pointer to the configuration element being the initialization data of the executable
      *          or null when none
      */
-    const std::shared_ptr< ConfigurationElement > getInitializationData() const noexcept;
+    const std::shared_ptr< ConfigurationElement > getInitializationData() const;
 
     /**
      * @name    Overrides.
      */
     /// @{
 
-    virtual std::shared_ptr<Bundle> getBundle() const noexcept;
+    [[deprecated]] virtual std::shared_ptr<Module> getBundle() const override;
+    virtual std::shared_ptr<Module> getModule() const override;
 
-    virtual void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration )
-    noexcept;
+    virtual void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration ) override;
 
     /// @}
 
     protected:
 
         // Overrides
-        virtual void setBundle( std::shared_ptr< Bundle > bundle );
+        virtual void setModule( std::shared_ptr< Module > module ) override;
 
     private:
 
         /**
-         * @brief   a pointer to the bundle that owns the executable instance
+         * @brief   a pointer to the module that owns the executable instance
          */
-        std::shared_ptr< Bundle > m_bundle;
+        std::shared_ptr< Module > m_module;
 
         /**
          * @brief   the initialization data of the executable instance

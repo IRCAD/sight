@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "fwRuntime/impl/dl/Native.hpp"
 
-#include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Module.hpp"
 #include "fwRuntime/Runtime.hpp"
 
 #include <limits.h>
@@ -43,7 +43,7 @@ namespace dl
 
 Native::Native( const std::filesystem::path& modulePath ) noexcept :
     m_modulePath( modulePath ),
-    m_bundle( 0 )
+    m_module( 0 )
 {
 }
 
@@ -55,9 +55,9 @@ Native::~Native() noexcept
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path Native::getBundleLocation() const
+const std::filesystem::path Native::getModuleLocation() const
 {
-    return m_bundle->getLibraryLocation();
+    return m_module->getLibraryLocation();
 }
 
 //------------------------------------------------------------------------------
@@ -65,16 +65,16 @@ const std::filesystem::path Native::getBundleLocation() const
 const std::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
 {
     // Pre-condition
-    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
+    SLM_ASSERT("module not initialized", m_module != 0 );
 
     std::filesystem::path result;
 
-    result = this->getBundleLocation() / this->getPath();
+    result = this->getModuleLocation() / this->getPath();
 
     // Test that the result path exists.
     if(result.empty())
     {
-        throw RuntimeException("Unable to find a native library for the bundle.");
+        throw RuntimeException("Unable to find a native library for the module.");
     }
     if( !std::filesystem::exists(result) )
     {
@@ -91,7 +91,7 @@ const std::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
 
 const std::regex Native::getNativeName() const
 {
-    const std::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
+    const std::filesystem::path fullModulePath( this->getModuleLocation() / m_modulePath );
     std::regex nativeName;
 
 #if defined(linux) || defined(__linux)
@@ -114,11 +114,11 @@ const std::regex Native::getNativeName() const
 const std::filesystem::path Native::getPath() const
 {
     // Pre-condition
-    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
+    SLM_ASSERT("module not initialized", m_module != 0 );
 
     std::filesystem::path result;
 
-    const std::filesystem::path fullModulePath( this->getBundleLocation() / m_modulePath );
+    const std::filesystem::path fullModulePath( this->getModuleLocation() / m_modulePath );
     const std::regex nativeFileRegex( this->getNativeName() );
 
     // Walk through the module directory, seeking for a matching file.
@@ -139,13 +139,13 @@ const std::filesystem::path Native::getPath() const
 
 //------------------------------------------------------------------------------
 
-void Native::setBundle( const Bundle* bundle ) noexcept
+void Native::setModule( const Module* module ) noexcept
 {
     // Pre-condition
-    SLM_ASSERT("bundle already initialized", m_bundle == 0 );
-    m_bundle = bundle;
+    SLM_ASSERT("module already initialized", m_module == 0 );
+    m_module = module;
     // Post-condition
-    SLM_ASSERT("bundle not correctly attached", m_bundle == bundle );
+    SLM_ASSERT("module not correctly attached", m_module == module );
 }
 
 //------------------------------------------------------------------------------

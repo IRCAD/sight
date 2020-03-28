@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,8 @@
 
 #include "fwCore/base.hpp"
 
-#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/impl/dl/Library.hpp"
+#include "fwRuntime/Module.hpp"
 
 #include <filesystem>
 #include <map>
@@ -41,11 +41,11 @@ namespace impl
 class ExtensionPoint;
 
 /**
- * @brief   Defines the bundle class.
+ * @brief   Defines the module class.
  *
  */
-class Bundle :  public ::fwRuntime::Bundle,
-                public std::enable_shared_from_this< Bundle >
+class Module :  public ::fwRuntime::Module,
+                public std::enable_shared_from_this< Module >
 {
 public:
     static const char s_VERSION_DELIMITER = '-';
@@ -77,15 +77,15 @@ public:
     /**
      * @brief       Constructor.
      *
-     * @param[in]   location        a path to the directory containing the bundle
-     * @param[in]   id              a string containing the bundle identifier
-     * @param[in]   version         a string containing the bundler version
-     * @param[in]   pluginClass     a string containing the bundle's pugin class name
+     * @param[in]   location        a path to the directory containing the module
+     * @param[in]   id              a string containing the module identifier
+     * @param[in]   version         a string containing the moduler version
+     * @param[in]   pluginClass     a string containing the module's pugin class name
      *
      * @todo        test parameters validity
      *
      */
-    Bundle( const std::filesystem::path& location,
+    Module( const std::filesystem::path& location,
             const std::string& id,
             const std::string& version,
             const std::string& pluginClass = "");
@@ -96,55 +96,55 @@ public:
      */
 
     /**
-     * @brief   Starts the bundle.
-     * @remark  The bundle must be enabled to be able to start.
+     * @brief   Starts the module.
+     * @remark  The module must be enabled to be able to start.
      */
     virtual void start() final;
     virtual void stop() final;
 
     /**
-     * @brief   Retrieves the bundle identifier.
+     * @brief   Retrieves the module identifier.
      *
-     * @return  a string containing the bundle identifier
+     * @return  a string containing the module identifier
      */
     virtual const std::string& getIdentifier() const final;
 
     /**
-     * @brief   Retrieves the bundle location.
+     * @brief   Retrieves the module location.
      *
-     * @return  a path representing the bundle location
+     * @return  a path representing the module location
      */
     virtual const std::filesystem::path& getLibraryLocation() const final;
 
     /**
-     * @brief   Retrieves the bundle location.
+     * @brief   Retrieves the module location.
      *
-     * @return  a path representing the bundle location
+     * @return  a path representing the module location
      */
     virtual const std::filesystem::path& getResourcesLocation() const final;
 
     /**
-     * @brief   Retrieves the class representing the bundle executable part.
+     * @brief   Retrieves the class representing the module executable part.
      *
-     * @return  a string containing the bundle's plugin class
+     * @return  a string containing the module's plugin class
      */
     virtual const std::string getClass() const final;
 
     /**
-     * @brief   Retrieves the version of the bundle.
+     * @brief   Retrieves the version of the module.
      *
-     * @return  the bundle version
+     * @return  the module version
      */
     virtual const Version& getVersion() const final;
 
     /**
-     * @brief   Retrieves the plugin instance for the specified bundle identifier.
+     * @brief   Retrieves the plugin instance for the specified module identifier.
      *
-     * @return  a shared pointer to a plugin instance or null if the bundle has not been started.
+     * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
     virtual SPTR( IPlugin ) getPlugin() const final;
 
-    /** @copydoc ::fwRuntime::Bundle */
+    /** @copydoc ::fwRuntime::Module */
     virtual const std::string getParameterValue( const std::string& identifier ) const final;
 
     /**
@@ -153,24 +153,24 @@ public:
      */
     virtual bool hasParameter( const std::string& name ) const final;
 
-    /// @copydoc ::fwRuntime::Bundle::getExtensions
+    /// @copydoc ::fwRuntime::Module::getExtensions
     virtual ExtensionContainer getExtensions( ) const final;
 
-    /// @copydoc ::fwRuntime::Bundle::isEnable
+    /// @copydoc ::fwRuntime::Module::isEnable
     virtual bool isEnable() const final;
     //@}
 
     /**
-     * @brief   Retrieves the pointer to the bundle that is currently loading its dynamic libraries
+     * @brief   Retrieves the pointer to the module that is currently loading its dynamic libraries
      */
-    static SPTR( Bundle ) getLoadingBundle();
+    static SPTR( Module ) getLoadingModule();
 
     /**
      * @name    Dynamic Libraries
      */
     //@{
     /**
-     * @brief       Adds the specified library to the bundle.
+     * @brief       Adds the specified library to the module.
      *
      * @param[in]   library a shared pointer to the library to add
      */
@@ -182,7 +182,7 @@ public:
      */
     //@{
     /**
-     * @brief       Adds an executable factory instance to the bundle.
+     * @brief       Adds an executable factory instance to the module.
      *
      * @param[in]   factory a shared pointer to the executable factory instance to add
      */
@@ -230,7 +230,7 @@ public:
      */
     //@{
     /**
-     * @brief       Adds the specified extension to the bundle.
+     * @brief       Adds the specified extension to the module.
      *
      * @param[in]   extension   a shared pointer to the extension to add
      */
@@ -246,7 +246,7 @@ public:
     bool hasExtension(const std::string& identifier) const;
 
     /**
-     * @brief       Search a specific extension in the bundle to enable or
+     * @brief       Search a specific extension in the module to enable or
      *              disable it
      *
      * @remark      if the extension is not found, the method do nothing.
@@ -278,7 +278,7 @@ public:
      */
     //@{
     /**
-     * @brief       Adds the specified extension point to the bundle.
+     * @brief       Adds the specified extension point to the module.
      *
      * @param[in]   extension   a shared pointer to the extension point to add
      */
@@ -303,7 +303,7 @@ public:
     bool hasExtensionPoint(const std::string& identifier) const;
 
     /**
-     * @brief       Search a specific extension point in the bundle to enable or
+     * @brief       Search a specific extension point in the module to enable or
      *              disable it
      *
      * @remark      if the extension point is not found, the method do nothing.
@@ -335,9 +335,9 @@ public:
      */
     //@{
     /**
-     * @brief       Adds a requirement to the bundle.
+     * @brief       Adds a requirement to the module.
      *
-     * @param[in]   requirement a string containing a bundle identifier that is required
+     * @param[in]   requirement a string containing a module identifier that is required
      */
     void addRequirement( const std::string& requirement );
     //@}
@@ -347,18 +347,18 @@ public:
      */
     //@{
     /**
-     * @brief   Changes the enable state of the bundle.
+     * @brief   Changes the enable state of the module.
      *
-     * @remark  It is possible to disable a started bundle but this
+     * @remark  It is possible to disable a started module but this
      *          will have no effect.
      */
     void setEnable( const bool state );
     //@}
 
     /**
-     * @brief   Initialize the bundle.
+     * @brief   Initialize the module.
      *
-     * @remark  The bundle and it's own dependencies must be started to be able to be initialized.
+     * @remark  The module and it's own dependencies must be started to be able to be initialized.
      */
     void initialize();
 
@@ -370,7 +370,7 @@ public:
      */
     //@{
     /**
-     * @brief       Adds a parameter to the bundle.
+     * @brief       Adds a parameter to the module.
      *
      * @param[in]   identifier  a string containing the parameter identifier
      * @param[in]   value       a string containing the parameter value
@@ -390,7 +390,7 @@ public:
         return m_initialized;
     }
 
-    static std::string getBundleStr(const std::string& identifier, const Version& version);
+    static std::string getModuleStr(const std::string& identifier, const Version& version);
 
 private:
 
@@ -398,23 +398,23 @@ private:
                                                                              // type.
     typedef std::map< std::string, std::string >    ParameterContainer;     ///< defines the parameter container type
 
-    static SPTR( Bundle )           m_loadingBundle;        ///< a pointer to the bundle that is currently loading its
-                                                            // dynamic libaries
+    static SPTR( Module )           m_loadingModule;        ///< a pointer to the module that is currently loading its
+                                                            // dynamic libraries
 
-    std::filesystem::path m_libraryLocation;            ///< the path to the bundle libraries
-    const std::filesystem::path m_resourcesLocation;    ///< the path to the bundle resources
-    const std::string m_identifier;                     ///< a string containing the bundle identifier
-    const Version m_version;                            ///< defines the version of the bundle
-    const std::string m_class;                          ///< a string containing the bundle's plugin class name
+    std::filesystem::path m_libraryLocation;            ///< the path to the module libraries
+    const std::filesystem::path m_resourcesLocation;    ///< the path to the module resources
+    const std::string m_identifier;                     ///< a string containing the module identifier
+    const Version m_version;                            ///< defines the version of the module
+    const std::string m_class;                          ///< a string containing the module's plugin class name
     ExtensionContainer m_extensions;                    ///< all extensions
     ExtensionPointContainer m_extensionPoints;          ///< all extension points
     ExecutableFactoryContainer m_executableFactories;   ///< all executable factories
-    LibraryContainer m_libraries;                       ///< all libaries that are part of the bundle
-    RequirementContainer m_requirements;                ///< all requirements of the bundle
+    LibraryContainer m_libraries;                       ///< all libaries that are part of the module
+    RequirementContainer m_requirements;                ///< all requirements of the module
     SPTR( IPlugin )                 m_plugin;           ///< a shared pointer to the plugin instance
     ParameterContainer m_parameters;                    ///< all parameters
 
-    bool m_enable { false };                            ///< a boolean telling if the bundle is enabled or not
+    bool m_enable { false };                            ///< a boolean telling if the module is enabled or not
     bool m_started { false };
     bool m_initialized { false };
 
@@ -423,20 +423,20 @@ private:
      *
      * @remark  Assignement is forbidden for this class.
      */
-    void operator= (const Bundle& );
+    void operator= (const Module& );
 
     /**
-     * @brief   Load bundle's library in the current process.
+     * @brief   Load module's library in the current process.
      */
     void loadLibraries();
 
     /**
-     * @brief   load all requirement needed by the bundle to work
+     * @brief   load all requirement needed by the module to work
      */
     void loadRequirements();
 
     /**
-     * @brief   Starts the plugin associated to the bundle.
+     * @brief   Starts the plugin associated to the module.
      */
     void startPlugin();
 };

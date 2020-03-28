@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,9 +26,9 @@
 #include "fwRuntime/ExecutableFactory.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/IExecutable.hpp"
-#include "fwRuntime/impl/Bundle.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
 #include "fwRuntime/impl/io/ModuleDescriptorReader.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/IPlugin.hpp"
 
 #include <boost/dll/runtime_symbol_info.hpp>
@@ -67,43 +67,51 @@ Runtime::~Runtime()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addBundle( std::shared_ptr< Bundle > bundle )
+void Runtime::addModule( std::shared_ptr< Module > module )
 {
-    m_bundles.insert( bundle );
-    std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(),
+    m_modules.insert( module );
+    std::for_each( module->extensionsBegin(), module->extensionsEnd(),
                    std::bind(&Runtime::addExtension, this, std::placeholders::_1));
-    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(),
+    std::for_each( module->extensionPointsBegin(), module->extensionPointsEnd(),
                    std::bind(&Runtime::addExtensionPoint, this, std::placeholders::_1));
-    std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(),
+    std::for_each( module->executableFactoriesBegin(), module->executableFactoriesEnd(),
                    std::bind(&Runtime::addExecutableFactory, this, std::placeholders::_1));
 }
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterBundle( std::shared_ptr< Bundle > bundle )
+void Runtime::unregisterModule( std::shared_ptr< Module > module )
 {
-    std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(),
+    std::for_each( module->executableFactoriesBegin(), module->executableFactoriesEnd(),
                    std::bind(&Runtime::unregisterExecutableFactory, this, std::placeholders::_1));
-    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(),
+    std::for_each( module->extensionPointsBegin(), module->extensionPointsEnd(),
                    std::bind(&Runtime::unregisterExtensionPoint, this, std::placeholders::_1));
-    std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(),
+    std::for_each( module->extensionsBegin(), module->extensionsEnd(),
                    std::bind(&Runtime::unregisterExtension, this, std::placeholders::_1));
-    m_bundles.erase( bundle );
+    m_modules.erase( module );
 }
 
 //------------------------------------------------------------------------------
 
 void Runtime::addBundles( const std::filesystem::path& repository )
 {
+    FW_DEPRECATED_MSG("addBundles", "22.0");
+    this->addModules(repository);
+}
+
+//------------------------------------------------------------------------------
+
+void Runtime::addModules( const std::filesystem::path& repository )
+{
     try
     {
         using ::fwRuntime::impl::io::ModuleDescriptorReader;
-        const ModuleDescriptorReader::BundleContainer bundles = ModuleDescriptorReader::createBundles( repository );
-        std::for_each( bundles.begin(), bundles.end(), std::bind(&Runtime::addBundle, this, std::placeholders::_1) );
+        const ModuleDescriptorReader::ModuleContainer modules = ModuleDescriptorReader::createModules( repository );
+        std::for_each( modules.begin(), modules.end(), std::bind(&Runtime::addModule, this, std::placeholders::_1) );
     }
     catch(const std::exception& exception)
     {
-        throw RuntimeException( std::string("Error while adding bundles. ") + exception.what() );
+        throw RuntimeException( std::string("Error while adding modules. ") + exception.what() );
     }
 }
 
@@ -111,14 +119,22 @@ void Runtime::addBundles( const std::filesystem::path& repository )
 
 void Runtime::addDefaultBundles()
 {
-    // Bundles location
+    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
+    this->addDefaultModules();
+}
+
+//------------------------------------------------------------------------------
+
+void Runtime::addDefaultModules()
+{
+    // Modules location
     const auto location = this->getWorkingPath() / BUNDLE_RC_PREFIX;
 
-    SLM_ASSERT("Default Bundles location not found: " + location.string(), std::filesystem::exists(location));
+    SLM_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
 
-    // Read bundles
+    // Read modules
     this->addBundles(location);
-    SLM_ASSERT("Couldn't load any bundle from path: " + location.string(), !this->getBundles().empty());
+    SLM_ASSERT("Couldn't load any module from path: " + location.string(), !this->getModules().empty());
 }
 
 //------------------------------------------------------------------------------
@@ -236,35 +252,45 @@ void Runtime::unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< ::fwRuntime::Bundle >
+std::shared_ptr< ::fwRuntime::Module >
 Runtime::findBundle( const std::string& identifier, const Version& version ) const
 {
-    std::shared_ptr<Bundle> resBundle;
-    for(const std::shared_ptr<Bundle>& bundle :  m_bundles)
-    {
-        if(bundle->getIdentifier() == identifier && bundle->getVersion() == version)
-        {
-            resBundle = bundle;
-            break;
-        }
-    }
-    return std::move(resBundle);
+    FW_DEPRECATED_MSG("findBundle", "22.0");
+
+    return findModule(identifier, version);
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Bundle > Runtime::findEnabledBundle( const std::string& identifier, const Version& version ) const
+std::shared_ptr< ::fwRuntime::Module >
+Runtime::findModule( const std::string& identifier, const Version& version ) const
 {
-    std::shared_ptr<Bundle> resBundle;
-    for(const std::shared_ptr<Bundle>& bundle :  m_bundles)
+    std::shared_ptr<Module> resModule;
+    for(const std::shared_ptr<Module>& module :  m_modules)
     {
-        if(bundle->getIdentifier() == identifier && bundle->getVersion() == version && bundle->isEnable())
+        if(module->getIdentifier() == identifier && module->getVersion() == version)
         {
-            resBundle = bundle;
+            resModule = module;
             break;
         }
     }
-    return resBundle;
+    return std::move(resModule);
+}
+
+//------------------------------------------------------------------------------
+
+std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identifier, const Version& version ) const
+{
+    std::shared_ptr<Module> resModule;
+    for(const std::shared_ptr<Module>& module :  m_modules)
+    {
+        if(module->getIdentifier() == identifier && module->getVersion() == version && module->isEnable())
+        {
+            resModule = module;
+            break;
+        }
+    }
+    return resModule;
 }
 
 //------------------------------------------------------------------------------
@@ -307,11 +333,19 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::Runtime::BundleContainer Runtime::getBundles()
+::fwRuntime::Runtime::ModuleContainer Runtime::getBundles()
 {
-    ::fwRuntime::Runtime::BundleContainer bundles;
-    std::copy(m_bundles.begin(), m_bundles.end(), std::inserter(bundles, bundles.begin()));
-    return bundles;
+    FW_DEPRECATED_MSG("getBundles", "22.0");
+    return this->getModules();
+}
+
+//------------------------------------------------------------------------------
+
+::fwRuntime::Runtime::ModuleContainer Runtime::getModules()
+{
+    ::fwRuntime::Runtime::ModuleContainer modules;
+    std::copy(m_modules.begin(), m_modules.end(), std::inserter(modules, modules.begin()));
+    return modules;
 }
 
 //------------------------------------------------------------------------------
@@ -361,12 +395,12 @@ IExecutable* Runtime::createExecutableInstance( const std::string& type,
     factory = this->findExecutableFactory( type );
 
     // If there is no factory has been found, it is possible that
-    // it has not been registered since the bundle of the given configuration element
+    // it has not been registered since the module of the given configuration element
     // is not started.
-    // So we start that bundle and look for the executable factory one more type.
+    // So we start that module and look for the executable factory one more type.
     if( factory == nullptr)
     {
-        configurationElement->getBundle()->start();
+        configurationElement->getModule()->start();
         factory = this->findExecutableFactory( type );
     }
 
@@ -380,7 +414,7 @@ IExecutable* Runtime::createExecutableInstance( const std::string& type,
     IExecutable* result( nullptr );
     try
     {
-        factory->getBundle()->start();
+        factory->getModule()->start();
         result = factory->createExecutable();
         result->setInitializationData( configurationElement );
     }

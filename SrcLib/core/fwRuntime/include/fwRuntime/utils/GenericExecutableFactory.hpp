@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/ExecutableFactory.hpp"
 #include "fwRuntime/IExecutable.hpp"
+#include "fwRuntime/Module.hpp"
 
 #include <sstream>
 #include <string>
@@ -69,7 +69,7 @@ public:
         try
         {
             result = new E();
-            result->setBundle(this->getBundle());
+            result->setModule(this->getModule());
         }
         catch( std::exception& exception )
         {

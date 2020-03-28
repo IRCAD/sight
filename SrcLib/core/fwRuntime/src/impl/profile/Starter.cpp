@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "fwRuntime/impl/profile/Starter.hpp"
 
-#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/impl/Runtime.hpp"
 
 #include <fwCore/base.hpp>
@@ -51,23 +51,23 @@ Starter::Starter( const std::string& identifier, const Version& version) :
 
 void Starter::apply()
 {
-    auto bundle = impl::Runtime::get().findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to start bundle " + Bundle::getBundleStr(m_identifier, m_version) + ": not found.",
-                 bundle == nullptr);
+    auto module = impl::Runtime::get().findEnabledModule(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to start module " + Module::getModuleStr(m_identifier, m_version) + ": not found.",
+                 module == nullptr);
     try
     {
-        if(!bundle->isStarted())
+        if(!module->isStarted())
         {
-            bundle->start();
+            module->start();
         }
         else
         {
-            SLM_WARN("bundle " + Bundle::getBundleStr(m_identifier, m_version) + " already started");
+            SLM_WARN("module " + Module::getModuleStr(m_identifier, m_version) + " already started");
         }
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to start bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". " +
+        SLM_FATAL("Unable to start module " + Module::getModuleStr(m_identifier, m_version) + ". " +
                   e.what());
     }
 }

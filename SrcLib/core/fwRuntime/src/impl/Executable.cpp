@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,28 +29,35 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Bundle> Executable::getBundle() const noexcept
+std::shared_ptr<Module> Executable::getBundle() const
 {
-    return m_bundle;
+    FW_DEPRECATED_MSG("getBundle", "22.0");
+    return this->getModule();
+}
+//------------------------------------------------------------------------------
+
+std::shared_ptr<Module> Executable::getModule() const
+{
+    return m_module;
 }
 
 //------------------------------------------------------------------------------
 
-const ConfigurationElement::sptr Executable::getInitializationData() const noexcept
+const ConfigurationElement::sptr Executable::getInitializationData() const
 {
     return m_initializationData;
 }
 
 //------------------------------------------------------------------------------
 
-void Executable::setBundle( std::shared_ptr< Bundle > bundle )
+void Executable::setModule( std::shared_ptr< Module > module )
 {
-    m_bundle = bundle;
+    m_module = module;
 }
 
 //------------------------------------------------------------------------------
 
-void Executable::setInitializationData( const ConfigurationElement::sptr element ) noexcept
+void Executable::setInitializationData( const ConfigurationElement::sptr element )
 {
     m_initializationData = element;
 }

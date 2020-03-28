@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@ namespace impl
 {
 
 /**
- * @brief   Implements a default plugin for bundles that don't provide a
+ * @brief   Implements a default plugin for modules that don't provide a
  *          ::fwRuntime::IPlugin interface implementation. This plugin does nothing
  *          by default. It has not been design to be subclassed, but subclassing
  *          is neither forbidden.

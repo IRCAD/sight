@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,7 @@ namespace fwRuntime
 namespace impl
 {
 /**
- * @brief       The namespace fwRuntime::profile contains classes to manage bundle declares in profile.xml file
- *(activate/start/stop).
+ * @brief   Contains classes to manage module declarations in profile.xml (activate/start/stop).
  */
 namespace profile
 {

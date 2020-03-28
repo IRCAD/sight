@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@
 
 namespace fwRuntime
 {
-class Bundle;
+class Module;
 
 namespace impl
 {
@@ -58,15 +58,15 @@ public:
     /**
      * @brief       constructor
      *
-     * @param[in]   bundle  a shared pointer to the bundle where the extension
+     * @param[in]   module  a shared pointer to the module where the extension
      *                      point is declared
      * @param[in]   id      a string containing the extension point identifier
      * @param[in]   schema  a path to a file containing an XML schema used to
      *                      validate extensions contributed to the point.
      */
     ExtensionPoint(
-        const std::shared_ptr<Bundle>       bundle,
-        const std::string&              id,
+        const std::shared_ptr<Module> module,
+        const std::string&            id,
         const std::filesystem::path&  schema);
 
     /**

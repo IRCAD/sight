@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 namespace fwRuntime
 {
 
-class Bundle;
+class Module;
 
 namespace impl
 {
@@ -44,7 +44,7 @@ namespace dl
  */
 struct Native
 {
-    friend class ::fwRuntime::Bundle;
+    friend class ::fwRuntime::Module;
 
     /**
      * @brief       Constructor
@@ -85,9 +85,9 @@ struct Native
     virtual void unload() = 0;
 
     /**
-     * @brief       Retrieves the file path of the library including the owning bundle's path.
+     * @brief       Retrieves the file path of the library including the owning module's path.
      *
-     * @param[in]   _bMustBeFile  if true : bundle is a dynamic library and we want return an exception if is not a file
+     * @param[in]   _bMustBeFile  if true : module is a dynamic library and we want return an exception if is not a file
      *
      * @return      a file path
      *
@@ -98,18 +98,18 @@ struct Native
     /**
      * @brief   Retrieves the file path of the native library.
      *
-     * @note  This path is relative to the owning bundle's path.
+     * @note  This path is relative to the owning module's path.
      *
      * @return  a string containing the native module file path
      */
     const std::filesystem::path getPath() const;
 
     /**
-     * @brief       Set the bundle the library is attached to.
+     * @brief       Set the module the library is attached to.
      *
-     * @param[in]   bundle  a pointer to a bundle instance
+     * @param[in]   module  a pointer to a module instance
      */
-    void setBundle( const ::fwRuntime::Bundle* bundle ) noexcept;
+    void setModule( const ::fwRuntime::Module* module ) noexcept;
 
     /**
      * @brief  Retrieves the pattern of the dynamic library file name given the host OS
@@ -120,10 +120,10 @@ struct Native
     private:
 
         /**
-         * @brief  Returns the location of bundle library
-         * @return The path of bundle library.
+         * @brief  Returns the location of module library
+         * @return The path of module library.
          */
-        const std::filesystem::path getBundleLocation() const;
+        const std::filesystem::path getModuleLocation() const;
 
         /**
          * @brief   The path to the module to load.
@@ -131,9 +131,9 @@ struct Native
         const std::filesystem::path m_modulePath;
 
         /**
-         * @brief   A pointer to the bundle the library is attached to.
+         * @brief   A pointer to the module the library is attached to.
          */
-        const Bundle* m_bundle;
+        const Module* m_module;
 
         /**
          * @brief   Assignment operator.

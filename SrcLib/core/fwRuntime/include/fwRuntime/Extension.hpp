@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@
 namespace fwRuntime
 {
 
-class Bundle;
+class Module;
 
 namespace io
 {
@@ -109,14 +109,14 @@ struct FWRUNTIME_CLASS_API Extension : public ModuleElement,
     /**
      * @brief       Constructor.
      *
-     * @param[in]   bundle  a pointer to the bundle the extension is attached to
+     * @param[in]   module  a pointer to the module the extension is attached to
      * @param[in]   id      a string containing the extension identifier
      * @param[in]   point   a string containing the extension point identifier
      * @param[in]   xmlNode a pointer to the xml node that represents the extension
      *
      * @todo        test parameters validity
      */
-    Extension( std::shared_ptr<Bundle> bundle, const std::string& id, const std::string& point,
+    Extension( std::shared_ptr<Module> module, const std::string& id, const std::string& point,
                const xmlNodePtr xmlNode );
 
     private:

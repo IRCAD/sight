@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@ namespace impl
 {
 
 class ExtensionPoint;
-class Bundle;
+class Module;
 
 /**
  * @brief   Defines the runtime class.
@@ -41,8 +41,8 @@ class Bundle;
 class Runtime : public ::fwRuntime::Runtime
 {
 public:
-    /// Defines the bundle container type.
-    typedef std::set< std::shared_ptr<Bundle> >     BundleContainer;
+    /// Defines the module container type.
+    typedef std::set< std::shared_ptr<Module> >     ModuleContainer;
 
     /**
      * @brief   Retrieves the default runtime instance.
@@ -57,7 +57,7 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~Runtime();
+    virtual ~Runtime() override;
 
     /**
      * @name    Public API implementation
@@ -65,28 +65,54 @@ public:
      */
 
     /**
-     * @brief       Adds all bundle found in the given path.
+     * @brief       Adds all module found in the given path.
      *
-     * @param[in]   repository  a path that may containing bundles
+     * @param[in]   repository  a path that may containing modules
      */
-    virtual void addBundles( const std::filesystem::path& repository );
+    virtual void addBundles( const std::filesystem::path& repository ) override;
 
     /**
-     * @brief       Adds all bundle found at the default location.
+     * @brief       Adds all module found in the given path.
      *
-     * @remark      The given bundle state will be altered according to the current configuration rules.
+     * @param[in]   repository  a path that may containing modules
      */
-    virtual void addDefaultBundles();
+    virtual void addModules( const std::filesystem::path& repository ) override;
 
     /**
-     * @brief       Retrieves the bundle for the specified idenfier.
+     * @brief       Adds all module found at the default location.
      *
-     * @param[in]   identifier  a string containing a bundle identifier
-     * @param[in]   version     the version of the bundle (undefined by default)
-     *
-     * @return      a shared pointer to the found bundle or null if none
+     * @remark      The given module state will be altered according to the current configuration rules.
      */
-    virtual SPTR( ::fwRuntime::Bundle ) findBundle( const std::string& identifier,
+    virtual void addDefaultBundles() override;
+
+    /**
+     * @brief       Adds all module found at the default location.
+     *
+     * @remark      The given module state will be altered according to the current configuration rules.
+     */
+    virtual void addDefaultModules() override;
+
+    /**
+     * @brief       Retrieves the module for the specified idenfier.
+     *
+     * @param[in]   identifier  a string containing a module identifier
+     * @param[in]   version     the version of the module (undefined by default)
+     *
+     * @return      a shared pointer to the found module or null if none
+     * @deprecated  Module has been renamed to Module, please use findModule() instead
+     */
+    [[deprecated]] virtual SPTR( ::fwRuntime::Module ) findBundle( const std::string& identifier,
+                                                                   const Version& version = Version() ) const final;
+
+    /**
+     * @brief       Retrieves the module for the specified idenfier.
+     *
+     * @param[in]   identifier  a string containing a module identifier
+     * @param[in]   version     the version of the module (undefined by default)
+     *
+     * @return      a shared pointer to the found module or null if none
+     */
+    virtual SPTR( ::fwRuntime::Module ) findModule( const std::string& identifier,
                                                     const Version& version = Version() ) const final;
 
     /**
@@ -95,19 +121,19 @@ public:
      * An attempt is made to retrieve a registered executable factory. If none
      * is found, the creation will fail.
      *
-     * @remark      This method will not try to load any bundle.
+     * @remark      This method will not try to load any module.
      *
      * @param[in]   type    a string containing an executable type
      *
      * @return      a pointer to the created executable instance
      */
-    virtual IExecutable* createExecutableInstance( const std::string& type );
+    virtual IExecutable* createExecutableInstance( const std::string& type ) override;
 
     /**
      * @brief   Create an instance of the given executable object type and configuration element.
      *
      * An attempt is made to find a registered executable factory. If none
-     * is found, the bundle of the given configuration element is started in the
+     * is found, the module of the given configuration element is started in the
      * hope it will register a executable factory for the given type. Then an
      * executable factory for the given type is searched once again and the
      * instantiation procedure goes further.
@@ -119,7 +145,7 @@ public:
      * @return  a pointer to the created executable instance
      */
     virtual IExecutable* createExecutableInstance( const std::string& type,
-                                                   SPTR(ConfigurationElement) configurationElement );
+                                                   SPTR(ConfigurationElement) configurationElement ) override;
 
     /**
      * @brief   Retrieves the iterator on the end of the extension collection.
@@ -134,42 +160,45 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const;
+    virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const override;
 
     /// @copydoc ::fwRuntime::Runtime::getBundles
-    virtual ::fwRuntime::Runtime::BundleContainer getBundles() final;
+    [[deprecated]] virtual ::fwRuntime::Runtime::ModuleContainer getBundles() final;
+
+    /// @copydoc ::fwRuntime::Runtime::getBundles
+    virtual ::fwRuntime::Runtime::ModuleContainer getModules() final;
     //@}
 
     /**
-     * @name    Bundles
+     * @name    Modules
      *
      * @{
      */
 
     /**
-     * @brief       Adds a new bundle instance to the runtime system.
+     * @brief       Adds a new module instance to the runtime system.
      *
-     * @remark      The given bundle state will be altered according to the current configuration rules.
-     * @param[in]   bundle  a shared pointer to the bundle instance to add
+     * @remark      The given module state will be altered according to the current configuration rules.
+     * @param[in]   module  a shared pointer to the module instance to add
      */
-    void addBundle( std::shared_ptr< impl::Bundle > bundle );
+    void addModule( std::shared_ptr< impl::Module > module );
 
     /**
-     * @brief       Unregister a bundle instance to the runtime system.
+     * @brief       Unregister a module instance to the runtime system.
      *
-     * @param[in]   bundle  a shared pointer to the bundle instance to unregister
+     * @param[in]   module  a shared pointer to the module instance to unregister
      */
-    void unregisterBundle( std::shared_ptr< impl::Bundle > bundle );
+    void unregisterModule( std::shared_ptr< impl::Module > module );
 
     /**
-     * @brief       Retrieves the enabled bundle for the specified idenfier.
+     * @brief       Retrieves the enabled module for the specified idenfier.
      *
-     * @param[in]   identifier  a string containing a bundle identifier
-     * @param[in]   version     the version of the bundle (undefined by default)
+     * @param[in]   identifier  a string containing a module identifier
+     * @param[in]   version     the version of the module (undefined by default)
      *
-     * @return      a shared pointer to the found bundle or null if none
+     * @return      a shared pointer to the found module or null if none
      */
-    std::shared_ptr< Bundle > findEnabledBundle( const std::string& identifier,
+    std::shared_ptr< Module > findEnabledModule( const std::string& identifier,
                                                  const Version& version = Version() ) const;
 
     //@}
@@ -204,13 +233,13 @@ public:
     std::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string& type ) const;
 
     /**
-     * @brief       Retrieves the plugin instance for the specified bundle.
+     * @brief       Retrieves the plugin instance for the specified module.
      *
-     * @param[in]   bundle  a shared pointer to a bundle instance
+     * @param[in]   module  a shared pointer to a module instance
      *
      * @return      a shared pointer to a plugin instance or null if none
      */
-    std::shared_ptr< IPlugin > getPlugin( const std::shared_ptr< Bundle > bundle ) const;
+    std::shared_ptr< IPlugin > getPlugin( const std::shared_ptr< Module > module ) const;
 
     //@}
 
@@ -266,7 +295,7 @@ public:
      * @brief   Retrieves the extension collection.
      * @return  the extension collection.
      */
-    ExtensionContainer getExtensions();
+    ExtensionContainer getExtensions() override;
 
     /**
      * @brief   Retrieves the iterator on the beginning of the extension collection.
@@ -291,10 +320,10 @@ private:
     ExecutableFactoryContainer m_executableFactories;     ///< Contains all executable factories.
     ExtensionContainer m_extensions;                      ///< Contains all registered extensions.
     ExtensionPointContainer m_extensionPoints;            ///< Contains all registered extension points.
-    BundleContainer m_bundles;                            ///< Contains all bundles.
+    ModuleContainer m_modules;                            ///< Contains all modules.
     PluginContainer m_plugins;                            ///< Contains all plugins.
 
-    std::filesystem::path m_workingPath;     ///< Path where Bundles and share folder are located.
+    std::filesystem::path m_workingPath;     ///< Path where Modules and share folder are located.
 };
 
 } // namespace impl

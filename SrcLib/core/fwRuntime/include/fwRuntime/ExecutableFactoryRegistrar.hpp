@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@ struct FWRUNTIME_CLASS_API ExecutableFactoryRegistrar
      * @brief       Constructor
      *
      * @param[in]   factory a shared pointer to an executable factory instance to manage
-     * @pre         Loading bundle exists.
+     * @pre         Loading module exists.
      */
     FWRUNTIME_API ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory );
 

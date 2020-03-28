@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ namespace profile
 {
 
 /**
- * @brief   Stops a given bundle.
+ * @brief   Stops a given module.
  */
 class Stopper :  public boost::noncopyable
 {
@@ -49,7 +49,7 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   _identifier  a string containing a bundle identifier
+     * @param[in]   _identifier  a string containing a module identifier
      */
     Stopper( const std::string& _identifier, const Version& version = Version() );
 
@@ -62,8 +62,8 @@ public:
 
 private:
 
-    const std::string m_identifier;     ///< the bundle identifier
-    const Version m_version;            ///< the bundle version
+    const std::string m_identifier;     ///< the module identifier
+    const Version m_version;            ///< the module version
 };
 
 } // namespace profile

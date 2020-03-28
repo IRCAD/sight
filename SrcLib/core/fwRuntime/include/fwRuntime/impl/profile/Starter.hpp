@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ namespace profile
 {
 
 /**
- * @brief   Starts a given bundle.
+ * @brief   Starts a given module.
  */
 class Starter : public boost::noncopyable
 {
@@ -49,7 +49,7 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   identifier  a string containing a bundle identifier
+     * @param[in]   identifier  a string containing a module identifier
      */
     Starter( const std::string& identifier, const Version& version = Version()  );
 
@@ -62,8 +62,8 @@ public:
 
 protected:
 
-    const std::string m_identifier;     ///< the bundle identifier
-    const Version m_version;            ///< the bundle version
+    const std::string m_identifier;     ///< the module identifier
+    const Version m_version;            ///< the module version
 
 };
 

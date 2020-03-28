@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Module.hpp>
 
 //------------------------------------------------------------------------------
 
-fwRuntime::Bundle::~Bundle()
+fwRuntime::Module::~Module()
 {
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,18 +39,19 @@ namespace fwRuntime
 class FWRUNTIME_CLASS_API Plugin : public IPlugin
 {
 public:
-    FWRUNTIME_API std::shared_ptr<Bundle> getBundle() const noexcept override;
+    [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> getBundle() const noexcept override;
+    FWRUNTIME_API std::shared_ptr<Module> getModule() const noexcept override;
     FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) noexcept
     override;
 
 protected:
-    FWRUNTIME_API void setBundle( std::shared_ptr<Bundle> bundle) noexcept override;
+    FWRUNTIME_API void setModule( std::shared_ptr<Module> module) noexcept override;
 
 private:
     /**
-     * @brief Pointer to the bundle the plugin is attached to.
+     * @brief Pointer to the module the plugin is attached to.
      */
-    std::weak_ptr<Bundle> m_bundle;
+    std::weak_ptr<Module> m_module;
 };
 
 } // namespace fwRuntime

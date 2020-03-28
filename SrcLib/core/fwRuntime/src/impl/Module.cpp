@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/Module.hpp"
 
 #include "fwRuntime/ExecutableFactory.hpp"
 #include "fwRuntime/Extension.hpp"
@@ -48,18 +48,18 @@ namespace impl
 
 //------------------------------------------------------------------------------
 
-SPTR( Bundle ) Bundle::m_loadingBundle;
+SPTR( Module ) Module::m_loadingModule;
 
 //------------------------------------------------------------------------------
 
-SPTR( Bundle ) Bundle::getLoadingBundle()
+SPTR( Module ) Module::getLoadingModule()
 {
-    return m_loadingBundle;
+    return m_loadingModule;
 }
 
 //------------------------------------------------------------------------------
 
-Bundle::Bundle( const std::filesystem::path& location,
+Module::Module( const std::filesystem::path& location,
                 const std::string& id,
                 const std::string& version,
                 const std::string& c ) :
@@ -69,46 +69,46 @@ Bundle::Bundle( const std::filesystem::path& location,
     m_class( c )
 {
     // Post-condition.
-    SLM_ASSERT( "Invalid bundle location.",  m_resourcesLocation.is_absolute() == true );
+    SLM_ASSERT( "Invalid module location.",  m_resourcesLocation.is_absolute() == true );
 
     // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
     std::string strLocation           = location.string();
     std::filesystem::path strRCPrefix = BUNDLE_RC_PREFIX;
     strRCPrefix = std::filesystem::weakly_canonical(strRCPrefix);
-    const auto itBundle = strLocation.find(strRCPrefix.string());
-    if(itBundle != std::string::npos)
+    const auto itModule = strLocation.find(strRCPrefix.string());
+    if(itModule != std::string::npos)
     {
-        strLocation.replace(itBundle, strRCPrefix.string().length(), std::string(BUNDLE_LIB_PREFIX));
+        strLocation.replace(itModule, strRCPrefix.string().length(), std::string(BUNDLE_RC_PREFIX));
     }
 
-    // This may fail is the bundle does not contain any library, so we ignore the returned error
+    // This may fail is the module does not contain any library, so we ignore the returned error
     m_libraryLocation = std::filesystem::weakly_canonical(std::filesystem::path(strLocation));
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::addExecutableFactory( SPTR( ExecutableFactory )factory )
+void Module::addExecutableFactory( SPTR( ExecutableFactory )factory )
 {
     m_executableFactories.insert( factory );
 }
 
 //------------------------------------------------------------------------------
 
-Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesBegin() const
+Module::ExecutableFactoryConstIterator Module::executableFactoriesBegin() const
 {
     return m_executableFactories.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesEnd() const
+Module::ExecutableFactoryConstIterator Module::executableFactoriesEnd() const
 {
     return m_executableFactories.end();
 }
 
 //------------------------------------------------------------------------------
 
-SPTR( ExecutableFactory ) Bundle::findExecutableFactory( const std::string& type ) const
+SPTR( ExecutableFactory ) Module::findExecutableFactory( const std::string& type ) const
 {
     std::shared_ptr<ExecutableFactory> resExecutableFactory;
     for(const ExecutableFactoryContainer::value_type& factory : m_executableFactories)
@@ -124,14 +124,14 @@ SPTR( ExecutableFactory ) Bundle::findExecutableFactory( const std::string& type
 
 //------------------------------------------------------------------------------
 
-void Bundle::addExtension( SPTR( Extension )extension )
+void Module::addExtension( SPTR( Extension )extension )
 {
     m_extensions.insert( extension );
 }
 
 //------------------------------------------------------------------------------
 
-bool Bundle::hasExtension(const std::string& identifier) const
+bool Module::hasExtension(const std::string& identifier) const
 {
     bool hasExtension = false;
     for(const ExtensionContainer::value_type& extension : m_extensions)
@@ -147,7 +147,7 @@ bool Bundle::hasExtension(const std::string& identifier) const
 
 //------------------------------------------------------------------------------
 
-void Bundle::setEnableExtension(const std::string& identifier, const bool enable)
+void Module::setEnableExtension(const std::string& identifier, const bool enable)
 {
     for(const ExtensionContainer::value_type& extension : m_extensions)
     {
@@ -161,27 +161,27 @@ void Bundle::setEnableExtension(const std::string& identifier, const bool enable
 
 //------------------------------------------------------------------------------
 
-Bundle::ExtensionConstIterator Bundle::extensionsBegin() const
+Module::ExtensionConstIterator Module::extensionsBegin() const
 {
     return m_extensions.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Bundle::ExtensionConstIterator Bundle::extensionsEnd() const
+Module::ExtensionConstIterator Module::extensionsEnd() const
 {
     return m_extensions.end();
 }
 //------------------------------------------------------------------------------
 
-void Bundle::addExtensionPoint( SPTR( ExtensionPoint )extensionPoint )
+void Module::addExtensionPoint( SPTR( ExtensionPoint )extensionPoint )
 {
     m_extensionPoints.insert( extensionPoint );
 }
 
 //------------------------------------------------------------------------------
 
-SPTR( ExtensionPoint ) Bundle::findExtensionPoint( const std::string& identifier ) const
+SPTR( ExtensionPoint ) Module::findExtensionPoint( const std::string& identifier ) const
 {
     std::shared_ptr<ExtensionPoint> resExtensionPoint;
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
@@ -197,7 +197,7 @@ SPTR( ExtensionPoint ) Bundle::findExtensionPoint( const std::string& identifier
 
 //------------------------------------------------------------------------------
 
-bool Bundle::hasExtensionPoint(const std::string& identifier) const
+bool Module::hasExtensionPoint(const std::string& identifier) const
 {
     bool hasExtensionPoint = false;
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
@@ -213,7 +213,7 @@ bool Bundle::hasExtensionPoint(const std::string& identifier) const
 
 //------------------------------------------------------------------------------
 
-void Bundle::setEnableExtensionPoint(const std::string& identifier, const bool enable)
+void Module::setEnableExtensionPoint(const std::string& identifier, const bool enable)
 {
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
     {
@@ -227,92 +227,92 @@ void Bundle::setEnableExtensionPoint(const std::string& identifier, const bool e
 
 //------------------------------------------------------------------------------
 
-Bundle::ExtensionPointConstIterator Bundle::extensionPointsBegin() const
+Module::ExtensionPointConstIterator Module::extensionPointsBegin() const
 {
     return m_extensionPoints.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Bundle::ExtensionPointConstIterator Bundle::extensionPointsEnd() const
+Module::ExtensionPointConstIterator Module::extensionPointsEnd() const
 {
     return m_extensionPoints.end();
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::addLibrary( SPTR(dl::Library)library )
+void Module::addLibrary( SPTR(dl::Library)library )
 {
-    library->setBundle(this);
+    library->setModule(this);
     m_libraries.insert(library);
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::addRequirement(const std::string& requirement)
+void Module::addRequirement(const std::string& requirement)
 {
     m_requirements.insert(requirement);
 }
 
 //------------------------------------------------------------------------------
 
-const std::string Bundle::getClass() const
+const std::string Module::getClass() const
 {
     return m_class;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string& Bundle::getIdentifier() const
+const std::string& Module::getIdentifier() const
 {
     return m_identifier;
 }
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path& Bundle::getLibraryLocation() const
+const std::filesystem::path& Module::getLibraryLocation() const
 {
     return m_libraryLocation;
 }
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path& Bundle::getResourcesLocation() const
+const std::filesystem::path& Module::getResourcesLocation() const
 {
     return m_resourcesLocation;
 }
 
 //------------------------------------------------------------------------------
 
-SPTR( IPlugin ) Bundle::getPlugin() const
+SPTR( IPlugin ) Module::getPlugin() const
 {
     return m_plugin;
 }
 
 //------------------------------------------------------------------------------
 
-const Version& Bundle::getVersion() const
+const Version& Module::getVersion() const
 {
     return m_version;
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::loadLibraries()
+void Module::loadLibraries()
 {
-    // Ensure the bundle is enabled.
+    // Ensure the module is enabled.
     if( m_enable == false )
     {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": bundle is not enabled." );
+        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": module is not enabled." );
     }
 
     // Pre-condition
-    SLM_ASSERT("Bundle is already loaded", m_loadingBundle == nullptr );
+    SLM_ASSERT("Module is already loaded", m_loadingModule == nullptr );
 
     SLM_TRACE( "Loading " + this->getIdentifier() + s_VERSION_DELIMITER + this->getVersion().string() + " library...");
 
-    // References the current bundle as the loading bundle.
-    m_loadingBundle = shared_from_this();
+    // References the current module as the loading module.
+    m_loadingModule = shared_from_this();
 
     // Loads all libraries.
     for(const LibraryContainer::value_type& library : m_libraries)
@@ -333,24 +333,24 @@ void Bundle::loadLibraries()
                 message += e.what();
 
                 SLM_ERROR(message);
-                m_loadingBundle.reset();
+                m_loadingModule.reset();
 
                 throw RuntimeException( message );
             }
         }
     }
 
-    // Unreferences the current bundle from the loading bundle.
-    m_loadingBundle.reset();
+    // Unreferences the current module from the loading module.
+    m_loadingModule.reset();
 
     // Post-condition
-    assert( m_loadingBundle == 0 );
-    SLM_TRACE("Library " + getBundleStr(m_identifier, m_version) + " loaded");
+    assert( m_loadingModule == 0 );
+    SLM_TRACE("Library " + getModuleStr(m_identifier, m_version) + " loaded");
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::loadRequirements()
+void Module::loadRequirements()
 {
     try
     {
@@ -358,17 +358,17 @@ void Bundle::loadRequirements()
         RequirementContainer::const_iterator iter;
         for(const RequirementContainer::value_type& requirement : m_requirements)
         {
-            SPTR( Bundle ) bundle( rntm.findEnabledBundle(requirement) );
+            SPTR( Module ) module( rntm.findEnabledModule(requirement) );
 
-            // Ensure that a bundle has been retrieved.
-            if( bundle == 0 )
+            // Ensure that a module has been retrieved.
+            if( module == 0 )
             {
-                throw RuntimeException( requirement + ": required bundle not found or not enabled." );
+                throw RuntimeException( requirement + ": required module not found or not enabled." );
             }
-            // Starts the bundle (loads its libraries and requirements bundle).
-            if ( !bundle->isStarted() )
+            // Starts the module (loads its libraries and requirements module).
+            if ( !module->isStarted() )
             {
-                bundle->start();
+                module->start();
             }
         }
     }
@@ -376,7 +376,7 @@ void Bundle::loadRequirements()
     {
         std::string message;
 
-        message += "Bundle " + getBundleStr(m_identifier, m_version) + " was not able to load requirements. ";
+        message += "Module " + getModuleStr(m_identifier, m_version) + " was not able to load requirements. ";
         message += e.what();
         throw RuntimeException( message );
     }
@@ -384,12 +384,12 @@ void Bundle::loadRequirements()
 
 //------------------------------------------------------------------------------
 
-void Bundle::start()
+void Module::start()
 {
-    SLM_ASSERT("Bundle " + getBundleStr(m_identifier, m_version) + " already started.", !m_started );
+    SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " already started.", !m_started );
     if( m_enable == false )
     {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": bundle is not enabled." );
+        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": module is not enabled." );
     }
 
     if( m_plugin == nullptr )
@@ -399,11 +399,11 @@ void Bundle::start()
         try
         {
             startPlugin();
-            SLM_TRACE(getBundleStr(m_identifier, m_version) + " Started");
+            SLM_TRACE(getModuleStr(m_identifier, m_version) + " Started");
         }
         catch( std::exception& e )
         {
-            throw RuntimeException( getBundleStr(m_identifier, m_version) +
+            throw RuntimeException( getModuleStr(m_identifier, m_version) +
                                     ": start plugin error (after load requirement) :" + e.what() );
         }
     }
@@ -411,9 +411,9 @@ void Bundle::start()
 
 //------------------------------------------------------------------------------
 
-void Bundle::startPlugin()
+void Module::startPlugin()
 {
-    SLM_ASSERT("Bundle " + getBundleStr(m_identifier, m_version) + " plugin is already started.",
+    SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " plugin is already started.",
                !m_started );
     // Retrieves the type of the plugin.
     const std::string pluginType( getClass() );
@@ -437,17 +437,17 @@ void Bundle::startPlugin()
     // Ensures that a plugin has been created.
     if( plugin == 0 )
     {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": unable to create a plugin instance." );
+        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": unable to create a plugin instance." );
     }
 
     if(::fwRuntime::getCurrentProfile())
     {
-        SLM_TRACE("Starting " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
+        SLM_TRACE("Starting " + getModuleStr(m_identifier, m_version) + " Module's plugin.");
         // Stores and start the plugin.
         try
         {
             auto prof = std::dynamic_pointer_cast< impl::profile::Profile>(::fwRuntime::getCurrentProfile());
-            SLM_TRACE("Register stopper for " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
+            SLM_TRACE("Register stopper for " + getModuleStr(m_identifier, m_version) + " Module's plugin.");
             prof->add(SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
 
             m_plugin = plugin;
@@ -459,33 +459,33 @@ void Bundle::startPlugin()
         }
         catch( std::exception& e )
         {
-            throw RuntimeException( getBundleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
+            throw RuntimeException( getModuleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::stop()
+void Module::stop()
 {
-    SLM_ASSERT("Bundle "+ getBundleStr(m_identifier, m_version) + " not started.", m_started );
-    SLM_ASSERT(getBundleStr(m_identifier, m_version) + " : m_plugin not an intance.", m_plugin != nullptr );
-    SLM_ASSERT("Bundle " + getBundleStr(m_identifier, m_version) + " not uninitialized.", !m_initialized );
+    SLM_ASSERT("Module "+ getModuleStr(m_identifier, m_version) + " not started.", m_started );
+    SLM_ASSERT(getModuleStr(m_identifier, m_version) + " : m_plugin not an intance.", m_plugin != nullptr );
+    SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " not uninitialized.", !m_initialized );
 
-    SLM_TRACE("Stopping " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
+    SLM_TRACE("Stopping " + getModuleStr(m_identifier, m_version) + " Module's plugin.");
     try
     {
         m_plugin->stop();
         m_started = false;
-        OSLM_TRACE(getBundleStr(m_identifier, m_version) << " Stopped");
+        OSLM_TRACE(getModuleStr(m_identifier, m_version) << " Stopped");
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": stop plugin error : " + e.what() );
+        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": stop plugin error : " + e.what() );
     }
 
     impl::Runtime& runtime = impl::Runtime::get();
-    runtime.unregisterBundle(this->shared_from_this());
+    runtime.unregisterModule(this->shared_from_this());
 
     //Unloads all libraries.
 //    LibraryContainer::iterator curEntry;
@@ -501,30 +501,30 @@ void Bundle::stop()
 }
 
 //------------------------------------------------------------------------------
-void Bundle::initialize()
+void Module::initialize()
 {
-    SLM_ASSERT("Bundle '" + getBundleStr(m_identifier, m_version) + "' not started.", m_started );
-    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' already initialized.", !m_initialized );
+    SLM_ASSERT("Module '" + getModuleStr(m_identifier, m_version) + "' not started.", m_started );
+    SLM_ASSERT("Module '"+ getModuleStr(m_identifier, m_version) + "' already initialized.", !m_initialized );
     try
     {
         m_initialized = true;
-        SLM_TRACE("Initializing " + getBundleStr(m_identifier, m_version) + " ...");
+        SLM_TRACE("Initializing " + getModuleStr(m_identifier, m_version) + " ...");
         m_plugin->initialize();
-        SLM_TRACE("             " + getBundleStr(m_identifier, m_version) + " Initialized");
+        SLM_TRACE("             " + getModuleStr(m_identifier, m_version) + " Initialized");
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
+        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::uninitialize()
+void Module::uninitialize()
 {
-    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' has not been started.",
+    SLM_ASSERT("Module '"+ getModuleStr(m_identifier, m_version) + "' has not been started.",
                m_plugin != nullptr);
-    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' not initialized.", m_initialized );
+    SLM_ASSERT("Module '"+ getModuleStr(m_identifier, m_version) + "' not initialized.", m_initialized );
     try
     {
         SLM_TRACE("Uninitializing " + this->getIdentifier() + " ...");
@@ -534,34 +534,34 @@ void Bundle::uninitialize()
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
+        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool Bundle::isEnable() const
+bool Module::isEnable() const
 {
     return m_enable;
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::setEnable( const bool state )
+void Module::setEnable( const bool state )
 {
     m_enable = state;
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::addParameter( const std::string& identifier, const std::string& value )
+void Module::addParameter( const std::string& identifier, const std::string& value )
 {
     m_parameters[identifier] = value;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string Bundle::getParameterValue( const std::string& identifier ) const
+const std::string Module::getParameterValue( const std::string& identifier ) const
 {
     ParameterContainer::const_iterator found = m_parameters.find(identifier);
 
@@ -570,28 +570,28 @@ const std::string Bundle::getParameterValue( const std::string& identifier ) con
 
 //------------------------------------------------------------------------------
 
-bool Bundle::hasParameter( const std::string& identifier ) const
+bool Module::hasParameter( const std::string& identifier ) const
 {
     return (m_parameters.find(identifier) != m_parameters.end());
 }
 
 //------------------------------------------------------------------------------
 
-fwRuntime::Bundle::ExtensionContainer fwRuntime::impl::Bundle::getExtensions() const
+fwRuntime::Module::ExtensionContainer fwRuntime::impl::Module::getExtensions() const
 {
     return m_extensions;
 }
 
 //------------------------------------------------------------------------------
 
-std::string Bundle::getBundleStr(const std::string& identifier, const fwRuntime::Version& version)
+std::string Module::getModuleStr(const std::string& identifier, const fwRuntime::Version& version)
 {
     return identifier + s_VERSION_DELIMITER + version.string();
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::operator= ( const Bundle& )
+void Module::operator= ( const Module& )
 {
 }
 

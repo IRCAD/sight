@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,7 @@
 #include "fwRuntime/impl/profile/Profile.hpp"
 
 #include "fwRuntime/Extension.hpp"
-#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/impl/profile/Activater.hpp"
 #include "fwRuntime/impl/profile/Initializer.hpp"
 #include "fwRuntime/impl/profile/Starter.hpp"
@@ -117,9 +117,9 @@ void Profile::start()
     impl::Runtime& runtime = impl::Runtime::get();
     for( auto& extension : runtime.getExtensions() )
     {
-        auto bundle = std::dynamic_pointer_cast< impl::Bundle >(extension->getBundle());
+        auto bundle = std::dynamic_pointer_cast< impl::Module >(extension->getModule());
 
-        OSLM_FATAL_IF( "Validation not ok for bundle = '" << extension->getBundle()->getIdentifier() <<
+        OSLM_FATAL_IF( "Validation not ok for bundle = '" << extension->getModule()->getIdentifier() <<
                        "'  (extension id = '" << extension->getIdentifier() << "' )",
                        bundle->isEnable() && extension->validate() == Extension::Invalid );
     }

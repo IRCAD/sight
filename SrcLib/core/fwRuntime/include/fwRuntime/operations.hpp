@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,11 +39,11 @@
 
 namespace fwRuntime
 {
-class Bundle;
+class Module;
 class Profile;
 
 /**
- * @brief   Initializes Sight runtime and discovers default bundles. To be used when building an external application
+ * @brief   Initializes Sight runtime and discovers default modules. To be used when building an external application
  *          with Sight.
  *
  * @param   directory   a path to the directory where Sight is installed
@@ -182,35 +182,70 @@ FWRUNTIME_API std::shared_ptr< ConfigurationElement > findConfigurationElement( 
 FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string& identifier );
 
 /**
- * @brief   Retrieve the filesystem valid path of resources of a bundle.
+ * @brief   Retrieve the filesystem valid path of resources of a module.
  *
- * @param   bundleIdentifier    a string containing a bundle identifier
+ * @param   moduleIdentifier    a string containing a module identifier
  *
  * @return  a system valid path
+ * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
  */
-FWRUNTIME_API std::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept;
+[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath(const std::string& moduleIdentifier) noexcept;
 
 /**
- * @brief   Retrieve a filesystem valid path for a path relative to the bundle having the specified identifier.
+ * @brief   Retrieve the filesystem valid path of resources of a module.
  *
- * @param   bundleIdentifier    a string containing a bundle identifier
- * @param   path                a bundle relative path
+ * @param   moduleIdentifier    a string containing a module identifier
  *
  * @return  a system valid path
  */
-FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
+FWRUNTIME_API std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
+ *
+ * @param   moduleIdentifier    a string containing a module identifier
+ * @param   path                a module relative path
+ *
+ * @return  a system valid path
+ * @deprecated  Bundle has been renamed to Module, please use getModuleResourceFilePath() instead
+ */
+[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(const std::string& moduleIdentifier,
+                                                                             const std::filesystem::path& path) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
+ *
+ * @param   moduleIdentifier    a string containing a module identifier
+ * @param   path                a module relative path
+ *
+ * @return  a system valid path
+ */
+FWRUNTIME_API std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentifier,
                                                               const std::filesystem::path& path) noexcept;
 
 /**
- * @brief   Retrieve a filesystem valid path for a resource path whose first element is a bundle identifier.
- * For instance for "bundle-0.2/dir/file.txt", the function returns
- * "/home/login/sight/build/share/bundle-0.2/dir/file.txt"
+ * @brief   Retrieve a filesystem valid path for a resource path whose first element is a module identifier.
+ * For instance for "module-0.2/dir/file.txt", the function returns
+ * "/home/login/sight/build/share/module-0.2/dir/file.txt"
  *
- * @param   path                relative path whose first element is a bundle identifier
+ * @param   path                relative path whose first element is a module identifier
+ *
+ * @return  a system valid path
+ * @deprecated  module has been renamed to Module, please use getModuleResourceFilePath() instead
+ */
+[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(
+    const std::filesystem::path& path) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a resource path whose first element is a module identifier.
+ * For instance for "module-0.2/dir/file.txt", the function returns
+ * "/home/login/sight/build/share/module-0.2/dir/file.txt"
+ *
+ * @param   path                relative path whose first element is a module identifier
  *
  * @return  a system valid path
  */
-FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& path) noexcept;
+FWRUNTIME_API std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a library identifier.
@@ -225,45 +260,81 @@ FWRUNTIME_API std::filesystem::path getLibraryResourceFilePath(const std::filesy
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path
- *  whose first element is a library or a bundle identifier.
+ *  whose first element is a library or a module identifier.
  *
  * For instance for a library:
  *  - "fwLib-0.2/dir/file.txt"
  * the function returns:
  *  - "/home/login/sight/build/share/fwLib-0.2/dir/file.txt"
  *
- * For instance for a bundle:
- *  - "bundle-0.2/dir/file.txt"
+ * For instance for a module:
+ *  - "module-0.2/dir/file.txt"
  *  the function returns:
- * - "/home/login/sight/build/share/bundle-0.2/dir/file.txt"
+ * - "/home/login/sight/build/share/module-0.2/dir/file.txt"
  *
- * @param   path   relative path whose first element is a bundle or library identifier
+ * @param   path   relative path whose first element is a module or library identifier
  *
  * @return  a system valid path or an empty path if nothing is found
  */
 FWRUNTIME_API std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noexcept;
 
 /**
- * @brief   Retrieve a filesystem valid path for a path relative to the specified bundle.
+ * @brief   Retrieve a filesystem valid path for a path relative to the specified module.
  *
- * @param   bundle  a pointer to a bundle instance
- * @param   path    a path relative to the bundle
+ * @param   module  a pointer to a module instance
+ * @param   path    a path relative to the module
+ *
+ * @return  a system valid path
+ * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
+ */
+[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<Module> module,
+                                                                          const std::filesystem::path& path) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a path relative to the specified module.
+ *
+ * @param   module  a pointer to a module instance
+ * @param   path    a path relative to the module
  *
  * @return  a system valid path
  */
-FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
+FWRUNTIME_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> module,
                                                            const std::filesystem::path& path) noexcept;
 
 /**
- * @brief   Retrieve a filesystem valid path for a path relative to the bundle of the specified configuration element.
+ * @brief   Retrieve a filesystem valid path for a path relative to the module of the specified configuration element.
  *
  * @param   element a shared pointer to a configuration element instance
- * @param   path    a path relative to the bundle
+ * @param   path    a path relative to the module
+ *
+ * @return  a system valid path
+ * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
+ */
+[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
+                                                                          const std::filesystem::path& path) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a path relative to the module of the specified configuration element.
+ *
+ * @param   element a shared pointer to a configuration element instance
+ * @param   path    a path relative to the module
  *
  * @return  a system valid path
  */
-FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
+FWRUNTIME_API std::filesystem::path getModuleResourcePath( std::shared_ptr<ConfigurationElement> element,
                                                            const std::filesystem::path& path) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
+ *
+ * @param   executable  a pointer to an executable instance
+ * @param   path        a path relative to the module
+ *
+ * @return  a system valid path
+ * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
+ */
+[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath(const IExecutable* executable,
+                                                                         const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
@@ -273,15 +344,35 @@ FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<Confi
  *
  * @return  a system valid path
  */
-FWRUNTIME_API std::filesystem::path getBundleResourcePath(const IExecutable* executable,
+FWRUNTIME_API std::filesystem::path getModuleResourcePath(const IExecutable* executable,
                                                           const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Loads all bundles that can be found in the specified directory.
  *
  * @param   directory   a path to the directory to explore for bundles
+ * @deprecated  Bundle has been renamed to Module, please use addModules() instead
  */
-FWRUNTIME_API void addBundles( const std::filesystem::path& directory );
+[[deprecated]] FWRUNTIME_API void addBundles( const std::filesystem::path& directory );
+
+/**
+ * @brief   Loads all bundles that can be found in the specified directory.
+ *
+ * @param   directory   a path to the directory to explore for bundles
+ */
+FWRUNTIME_API void addModules( const std::filesystem::path& directory );
+
+/**
+ * @brief   Load a bundle.
+ *
+ * @param   identifier  a string containing a bundle identifier
+ * @param   version     a version (none by default)
+ *
+ * @return  a shared pointer to the found bundle, or empty when it is not found
+ * @deprecated  Bundle has been renamed to Module, please use loadModule() instead
+ */
+[[deprecated]] FWRUNTIME_API std::shared_ptr<Module> loadBundle( const std::string& identifier,
+                                                                 const Version& version = Version() );
 
 /**
  * @brief   Load a bundle.
@@ -291,7 +382,7 @@ FWRUNTIME_API void addBundles( const std::filesystem::path& directory );
  *
  * @return  a shared pointer to the found bundle, or empty when it is not found
  */
-FWRUNTIME_API std::shared_ptr<Bundle> loadBundle( const std::string& identifier, const Version& version = Version() );
+FWRUNTIME_API std::shared_ptr<Module> loadModule( const std::string& identifier, const Version& version = Version() );
 
 /**
  * @brief   Starts the given bundle set profile.
@@ -309,14 +400,34 @@ FWRUNTIME_API std::shared_ptr< ::fwRuntime::Profile > startProfile( const std::f
  * @param   version     a version (none by default)
  *
  * @return  a shared pointer to the found bundle, or empty when none
+ * @deprecated  Bundle has been renamed to Module, please use findModule() instead
  */
-FWRUNTIME_API std::shared_ptr<Bundle> findBundle( const std::string& identifier, const Version& version = Version() );
+[[deprecated]] FWRUNTIME_API std::shared_ptr<Module> findBundle( const std::string& identifier,
+                                                                 const Version& version = Version() );
+
+/**
+ * @brief   Retrieves the bundle with the given identifier and version
+ *
+ * @param   identifier  a string containing a bundle identifier
+ * @param   version     a version (none by default)
+ *
+ * @return  a shared pointer to the found bundle, or empty when none
+ */
+FWRUNTIME_API std::shared_ptr<Module> findModule( const std::string& identifier, const Version& version = Version() );
+
+/**
+ * @brief   Starts the bundle specified by the given identifier.
+ *
+ * @param   identifier  a string containing a bundle identifier
+ * @deprecated  Bundle has been renamed to Module, please use startBundle() instead
+ */
+[[deprecated]] FWRUNTIME_API void startBundle(const std::string& identifier);
 
 /**
  * @brief   Starts the bundle specified by the given identifier.
  *
  * @param   identifier  a string containing a bundle identifier
  */
-FWRUNTIME_API void startBundle(const std::string& identifier);
+FWRUNTIME_API void startModule(const std::string& identifier);
 
 } // namespace fwRuntime

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,13 +22,13 @@
 
 #include "fwRuntime/EConfigurationElement.hpp"
 
-#include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Module.hpp"
 
 namespace fwRuntime
 {
 
 EConfigurationElement::EConfigurationElement(const std::string& name) :
-    ::fwRuntime::ConfigurationElement( std::shared_ptr< ::fwRuntime::Bundle >(), name )
+    ::fwRuntime::ConfigurationElement( std::shared_ptr< ::fwRuntime::Module >(), name )
 {
 }
 

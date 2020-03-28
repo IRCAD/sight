@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,8 @@
 #include "RuntimeTest.hpp"
 
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/impl/Bundle.hpp>
 #include <fwRuntime/impl/ExtensionPoint.hpp>
+#include <fwRuntime/impl/Module.hpp>
 #include <fwRuntime/impl/Runtime.hpp>
 #include <fwRuntime/operations.hpp>
 
@@ -67,14 +67,14 @@ void RuntimeTest::testRuntime()
     ::fwRuntime::impl::Runtime& runtime = ::fwRuntime::impl::Runtime::get();
 
     // Test bundle dataReg
-    CPPUNIT_ASSERT(runtime.findBundle("dataReg"));
-    auto bundle = std::dynamic_pointer_cast< ::fwRuntime::impl::Bundle >(runtime.findBundle("dataReg"));
+    CPPUNIT_ASSERT(runtime.findModule("dataReg"));
+    auto bundle = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("dataReg"));
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnable());
 
     // Test bundle servicesReg
-    CPPUNIT_ASSERT(runtime.findBundle("servicesReg"));
-    auto bundle2 = std::dynamic_pointer_cast< ::fwRuntime::impl::Bundle >(runtime.findBundle("servicesReg"));
+    CPPUNIT_ASSERT(runtime.findModule("servicesReg"));
+    auto bundle2 = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("servicesReg"));
     bundle2->setEnable(true);
     CPPUNIT_ASSERT(bundle2->isEnable());
 
@@ -91,23 +91,23 @@ void RuntimeTest::testOperations()
     const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX;
 
     // Bundle location prototype
-    auto path = ::fwRuntime::getBundleResourcePath(std::string("servicesReg"));
+    auto path = ::fwRuntime::getModuleResourcePath(std::string("servicesReg"));
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1", path);
 
-    path = ::fwRuntime::getBundleResourcePath("notExistingBundle");
+    path = ::fwRuntime::getModuleResourcePath("notExistingBundle");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     // Full path prototype
-    path = ::fwRuntime::getBundleResourceFilePath("servicesReg-0.1/plugin.xml");
+    path = ::fwRuntime::getModuleResourceFilePath("servicesReg-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("servicesReg-0.1/not_existing.file");
+    path = ::fwRuntime::getModuleResourceFilePath("servicesReg-0.1/not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle-0.1/plugin.xml");
+    path = ::fwRuntime::getModuleResourceFilePath("notExistingBundle-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("wrong_version_format-0.1/plugin.xml");
+    path = ::fwRuntime::getModuleResourceFilePath("wrong_version_format-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     path = ::fwRuntime::getLibraryResourceFilePath("fwLibrary-0.1/plugin.xml");
@@ -120,13 +120,13 @@ void RuntimeTest::testOperations()
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
 
     // (Bundle, path) prototype
-    path = ::fwRuntime::getBundleResourceFilePath("servicesReg", "plugin.xml");
+    path = ::fwRuntime::getModuleResourceFilePath("servicesReg", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("servicesReg", "not_existing.file");
+    path = ::fwRuntime::getModuleResourceFilePath("servicesReg", "not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle", "plugin.xml");
+    path = ::fwRuntime::getModuleResourceFilePath("notExistingBundle", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 }
 

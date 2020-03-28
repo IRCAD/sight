@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "fwRuntime/impl/profile/Uninitializer.hpp"
 
-#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/impl/Runtime.hpp"
 
 #include <fwCore/base.hpp>
@@ -48,16 +48,16 @@ Uninitializer::Uninitializer( const std::string& identifier, const Version& vers
 
 void Uninitializer::apply()
 {
-    auto bundle = impl::Runtime::get().findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to start bundle " + Bundle::getBundleStr(m_identifier, m_version) + ": not found.",
-                 bundle == nullptr);
+    auto module = impl::Runtime::get().findEnabledModule(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to start module " + Module::getModuleStr(m_identifier, m_version) + ": not found.",
+                 module == nullptr);
     try
     {
-        bundle->uninitialize();
+        module->uninitialize();
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to uninitialize bundle " + impl::Bundle::getBundleStr(m_identifier,
+        SLM_FATAL("Unable to uninitialize module " + impl::Module::getModuleStr(m_identifier,
                                                                                 m_version) + ". " + e.what());
     }
 }

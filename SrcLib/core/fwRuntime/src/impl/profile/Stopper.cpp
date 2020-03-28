@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "fwRuntime/impl/profile/Stopper.hpp"
 
-#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/impl/Runtime.hpp"
 
 #include <fwCore/base.hpp>
@@ -51,17 +51,17 @@ Stopper::Stopper( const std::string& identifier, const Version& version) :
 
 void Stopper::apply()
 {
-    auto bundle = impl::Runtime::get().findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to stop bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". Not found.",
-                 bundle == nullptr);
+    auto module = impl::Runtime::get().findEnabledModule(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to stop module " + Module::getModuleStr(m_identifier, m_version) + ". Not found.",
+                 module == nullptr);
     try
     {
-        SLM_INFO("Stopping bundle : " + Bundle::getBundleStr(m_identifier, m_version));
-        bundle->stop();
+        SLM_INFO("Stopping module : " + Module::getModuleStr(m_identifier, m_version));
+        module->stop();
     }
     catch( const std::exception& e )
     {
-        SLM_ERROR("Unable to stop bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". " + e.what());
+        SLM_ERROR("Unable to stop module " + Module::getModuleStr(m_identifier, m_version) + ". " + e.what());
     }
 }
 

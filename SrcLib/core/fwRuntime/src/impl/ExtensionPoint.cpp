@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,8 @@
 
 #include "fwRuntime/impl/ExtensionPoint.hpp"
 
-#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/impl/io/Validator.hpp"
+#include "fwRuntime/Module.hpp"
 #include "fwRuntime/operations.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
@@ -35,7 +35,7 @@ namespace impl
 
 //------------------------------------------------------------------------------
 
-ExtensionPoint::ExtensionPoint( const std::shared_ptr< Bundle > bundle, const std::string& id,
+ExtensionPoint::ExtensionPoint( const std::shared_ptr< Module > bundle, const std::string& id,
                                 const std::filesystem::path& schema ) :
     ModuleElement( bundle ),
     m_id( id ),
@@ -58,7 +58,7 @@ std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
     {
         try
         {
-            std::filesystem::path schemaPath = getBundle()->getResourcesLocation() / m_schema;
+            std::filesystem::path schemaPath = getModule()->getResourcesLocation() / m_schema;
             OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
             if(!std::filesystem::exists(schemaPath))
             {

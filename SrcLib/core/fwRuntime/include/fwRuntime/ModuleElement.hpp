@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,33 +28,40 @@
 
 namespace fwRuntime
 {
-class Bundle;
+class Module;
 }
 
 namespace fwRuntime
 {
 
 /**
- * @brief   Implements the base class for all element managed by a bundle.
+ * @brief   Implements the base class for all element managed by a module.
  */
 class FWRUNTIME_CLASS_API ModuleElement
 {
 public:
     /**
-     * @brief   Retrieves the bundle that owns the extension.
+     * @brief   Retrieves the module that owns the extension.
      *
-     * @return  a pointer to a bundle instance
+     * @return  a pointer to a module instance
      */
-    FWRUNTIME_API std::shared_ptr<Bundle> getBundle() const;
+    [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> getBundle() const;
+
+    /**
+     * @brief   Retrieves the module that owns the extension.
+     *
+     * @return  a pointer to a module instance
+     */
+    FWRUNTIME_API std::shared_ptr<Module> getModule() const;
 
     /**
      * @brief   Tells if the element is enabled or not.
      *
-     * @remark  The element will asks its bundle enable state. if the bundle
-     *          element is enabled then the program verifies if the bundle
+     * @remark  The element will asks its module enable state. if the module
+     *          element is enabled then the program verifies if the module
      *          element is enabled too.
      *
-     * @pre     The bundle must not be null.
+     * @pre     The module must not be null.
      *
      * @return  true or false
      */
@@ -65,7 +72,7 @@ public:
      *
      * @see         isEnable
      *
-     * @param[in]   enable To know if bundle element is enabled
+     * @param[in]   enable To know if module element is enabled
      */
     FWRUNTIME_API void setEnable(const bool enable);
 
@@ -74,26 +81,26 @@ protected:
     /**
      * @brief   Constructor
      *
-     * @remark  The instance will try to guess the bundle that is being loaded and
-     *          consider that bundle as its owning bundle
+     * @remark  The instance will try to guess the module that is being loaded and
+     *          consider that module as its owning module
      *
-     * @post    The bundle isn't null.
-     * @see     ::fwRuntime::Bundle::getLoadingBundle()
+     * @post    The module isn't null.
+     * @see     ::fwRuntime::Module::getLoadingmodule()
      */
     FWRUNTIME_API ModuleElement();
 
     /**
      * @brief       Constructor
      *
-     * @post        The bundle isn't null.
-     * @param[in]   bundle  a shared pointer to the managing bundle
+     * @post        The module isn't null.
+     * @param[in]   module  a shared pointer to the managing module
      */
-    FWRUNTIME_API ModuleElement( std::shared_ptr< Bundle > bundle );
+    FWRUNTIME_API ModuleElement( std::shared_ptr< Module > module );
 
 private:
 
-    std::weak_ptr< Bundle >  m_bundle;    ///< Weak pointer to the bundle managing the element
-    bool m_enable;                              ///< to know if bundle element is enabled
+    std::weak_ptr< Module >  m_module;    ///< Weak pointer to the module managing the element
+    bool m_enable;                              ///< to know if module element is enabled
 
 };
 

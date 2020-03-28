@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,8 @@
 
 #include "fwRuntime/ConfigurationElement.hpp"
 
-#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/IExecutable.hpp"
+#include "fwRuntime/Module.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <fwCore/base.hpp>
@@ -55,17 +55,24 @@ std::ostream& operator<<(std::ostream& _sstream, ConfigurationElement& _configur
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::ConfigurationElement( const std::shared_ptr< Bundle > bundle, const std::string& name ) :
+ConfigurationElement::ConfigurationElement( const std::shared_ptr< Module > module, const std::string& name ) :
     m_name(name),
-    m_bundle(bundle)
+    m_module(module)
 {
 }
 
 //------------------------------------------------------------------------------
 
-const std::shared_ptr<Bundle> ConfigurationElement::getBundle() const noexcept
+const std::shared_ptr<Module> ConfigurationElement::getBundle() const noexcept
 {
-    return m_bundle.lock();
+    return this->getModule();
+}
+
+//------------------------------------------------------------------------------
+
+const std::shared_ptr<Module> ConfigurationElement::getModule() const noexcept
+{
+    return m_module.lock();
 }
 
 //------------------------------------------------------------------------------
@@ -192,6 +199,13 @@ std::vector < ConfigurationElement::sptr > ConfigurationElement::find(
 //-----------------------------------------------------------------------------
 
 ConfigurationElement::~ConfigurationElement()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+ConfigurationElement::NoSuchAttribute::NoSuchAttribute(const std::string& attr) :
+    ::fwCore::Exception(std::string("No such attribute: ") + attr)
 {
 }
 

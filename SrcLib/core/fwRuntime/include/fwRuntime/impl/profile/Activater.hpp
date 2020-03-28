@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@ namespace profile
 {
 
 /**
- * @brief   Activates a given bundle with optional parameters.
+ * @brief   Activates a given module with optional parameters.
  */
 class Activater : public boost::noncopyable
 {
@@ -50,8 +50,8 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   identifier  a string containing a bundle identifier
-     * @param[in]   version     a string a bundle version
+     * @param[in]   identifier  a string containing a module identifier
+     * @param[in]   version     a string a module version
      */
     Activater( const std::string& identifier, const std::string& version );
 
@@ -90,8 +90,8 @@ private:
     typedef std::vector< std::string >              DisableExtensionPointContainer;
     typedef std::vector< std::string >              DisableExtensionContainer;
 
-    const std::string m_identifier;                             ///< a bundle identifier
-    const Version m_version;                                    ///< a bundle version
+    const std::string m_identifier;                             ///< a module identifier
+    const Version m_version;                                    ///< a module version
 
     ParameterContainer m_parameters;                            ///< all parameters
     DisableExtensionPointContainer m_disableExtensionPoints;    ///< all disable extension points

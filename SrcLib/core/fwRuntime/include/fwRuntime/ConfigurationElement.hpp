@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,9 @@
 
 namespace fwRuntime
 {
-class Bundle;
+class Module;
+// Deprecated, kept for compatibility
+typedef Module Bundle;
 
 /**
  * @brief   Defines the configuration element class.
@@ -50,12 +52,12 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
     /**
      * @brief       ConfigurationElement factory.
      *
-     * @param[in]   bundle  a shared pointer to the bundle to the configuration element is attached to
+     * @param[in]   module  a shared pointer to the module to the configuration element is attached to
      * @param[in]   name    a string containing the configuration element name
      */
-    static sptr New(const std::shared_ptr<Bundle>& bundle, const std::string& name)
+    static sptr New(const std::shared_ptr<Module>& module, const std::string& name)
     {
-        return sptr(new ConfigurationElement(bundle, name));
+        return sptr(new ConfigurationElement(module, name));
     }
 
     /**
@@ -68,18 +70,22 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      */
     struct NoSuchAttribute : public ::fwCore::Exception
     {
-        NoSuchAttribute(const std::string& attr) :
-            ::fwCore::Exception(std::string("No such attribute: ") + attr)
-        {
-        }
+        NoSuchAttribute(const std::string& attr);
     };
 
     /**
-     * @brief   Retrieves the bundle the configuration element is attached to.
+     * @brief   Retrieves the module the configuration element is attached to.
      *
-     * @return  a shared pointer to a bundle instance
+     * @return  a shared pointer to a module instance
      */
-    FWRUNTIME_API const std::shared_ptr< Bundle > getBundle() const noexcept;
+    [[deprecated]] FWRUNTIME_API const std::shared_ptr< Module > getBundle() const noexcept;
+
+    /**
+     * @brief   Retrieves the module the configuration element is attached to.
+     *
+     * @return  a shared pointer to a module instance
+     */
+    FWRUNTIME_API const std::shared_ptr< Module > getModule() const noexcept;
 
     /**
      * @brief       Retrieves the value of an attribute for the specified name.
@@ -194,12 +200,12 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
     /**
      * @brief       Constructor.
      *
-     * @param[in]   bundle  a shared pointer to the bundle to the configuration element is attached to
+     * @param[in]   module  a shared pointer to the module to the configuration element is attached to
      * @param[in]   name    a string containing the configuration element name
      *
      * @todo        test parameters validity
      */
-    FWRUNTIME_API ConfigurationElement(const std::shared_ptr<Bundle> bundle, const std::string& name);
+    FWRUNTIME_API ConfigurationElement(const std::shared_ptr<Module> module, const std::string& name);
 
     /**
      * @brief       Sets an attribute with the specified name and value.
@@ -248,9 +254,9 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
         void operator=(const ConfigurationElement&) noexcept;
 
         /**
-         * @brief   A pointer to the bundle the configuration element is attached to.
+         * @brief   A pointer to the module the configuration element is attached to.
          */
-        const std::weak_ptr<Bundle> m_bundle;
+        const std::weak_ptr<Module> m_module;
 };
 
 } // namespace fwRuntime

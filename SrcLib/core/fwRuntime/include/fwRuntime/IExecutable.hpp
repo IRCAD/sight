@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace utils
 template<typename E> class GenericExecutableFactory;
 }
 
-class Bundle;
+class Module;
 struct ConfigurationElement;
 class Runtime;
 
@@ -56,11 +56,18 @@ public:
     FWRUNTIME_API virtual ~IExecutable();
 
     /**
-     * @brief   Retrieves the bundle the executable originates from.
+     * @brief   Retrieves the module the executable originates from.
      *
-     * @return  a pointer to the originating bundle.
+     * @return  a pointer to the originating module.
      */
-    virtual std::shared_ptr<Bundle> getBundle() const noexcept = 0;
+    [[deprecated]] virtual std::shared_ptr<Module> getBundle() const = 0;
+
+    /**
+     * @brief   Retrieves the module the executable originates from.
+     *
+     * @return  a pointer to the originating module.
+     */
+    virtual std::shared_ptr<Module> getModule() const = 0;
 
     /**
      * @brief       Initializes the executable instance with the specified
@@ -69,16 +76,16 @@ public:
      * @param[in]   configuration   a shared pointer to the configuration element used to
      *              trigger this execution
      */
-    virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) noexcept = 0;
+    virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) = 0;
 
 protected:
 
     /**
-     * @brief       Updates the bundle the executable originates from.
+     * @brief       Updates the module the executable originates from.
      *
-     * @param[in]   bundle  a pointer to the bundle the executable originates from
+     * @param[in]   module  a pointer to the module the executable originates from
      */
-    virtual void setBundle( std::shared_ptr< Bundle > bundle ) = 0;
+    virtual void setModule( std::shared_ptr< Module > module ) = 0;
 
 };
 

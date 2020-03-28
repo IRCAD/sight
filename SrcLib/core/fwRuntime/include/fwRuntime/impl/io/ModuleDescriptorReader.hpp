@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,91 +40,91 @@
 namespace fwRuntime
 {
 
-class Bundle;
+class Module;
 struct ConfigurationElement;
 struct Extension;
 
 namespace impl
 {
 
-class Bundle;
+class Module;
 class ExtensionPoint;
 
 namespace io
 {
 
 /**
- * @brief   Defines the bundle descriptor reader class.
+ * @brief   Defines the module descriptor reader class.
  */
 class ModuleDescriptorReader
 {
 public:
-    typedef std::vector< std::shared_ptr<Bundle> >  BundleContainer;
+    typedef std::vector< std::shared_ptr<Module> >  ModuleContainer;
     /// Pair of created extension point associated with extensions
     typedef std::pair< SPTR(ExtensionPoint), std::vector< SPTR(Extension) > > PointExtensionsPairType;
 
     /**
-     * @brief       Creates all bundles that are found at the given location.
+     * @brief       Creates all modules that are found at the given location.
      *
-     * @param[in]   location    a path to a directory containing bundles
+     * @param[in]   location    a path to a directory containing modules
      *
-     * @return      a container with all created bundles
+     * @return      a container with all created modules
      */
-    static const BundleContainer createBundles(const std::filesystem::path& location);
+    static const ModuleContainer createModules(const std::filesystem::path& location);
 
     /**
      * @brief       Look for a descriptor at the specified location,
-     *              reads it and creates a bundle with it.
+     *              reads it and creates a module with it.
      *
-     * @param[in]   location    a path to a directory that should contain a bundle description
+     * @param[in]   location    a path to a directory that should contain a module description
      *
-     * @return      a shared pointer to the created bundle
+     * @return      a shared pointer to the created module
      */
-    static std::shared_ptr<Bundle> createBundle(const std::filesystem::path& location);
+    static std::shared_ptr<Module> createModule(const std::filesystem::path& location);
 
     /**
      * @brief   Processes a configuration element XML node.
      *
      * @param   node    a pointer to the XML node that represents a configuration element
-     * @param   bundle  a pointer to the bundle the extension will be attached to
+     * @param   module  a pointer to the module the extension will be attached to
      *
      * @return  a pointer to the created configuration element
      */
     static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
-                                                                             const std::shared_ptr<Bundle> bundle)
+                                                                             const std::shared_ptr<Module> module)
     ;
 
     /**
      * @brief   Processes an extension XML node.
      *
      * @param   node    a pointer to the XML node that represents an extension
-     * @param   bundle  a pointer to the bundle the extension will be attached to
+     * @param   module  a pointer to the module the extension will be attached to
      *
      * @return  a pointer to the created extension
      */
     static std::shared_ptr<Extension> processExtension(xmlNodePtr node,
-                                                       const std::shared_ptr<Bundle> bundle);
+                                                       const std::shared_ptr<Module> module);
 
     /**
      * Processes a node that is a point
      *
      * @param   node    a pointer to the xml document node that represents a requirement
-     * @param   bundle  a pointer to the bundle the extension will be attached to
+     * @param   module  a pointer to the module the extension will be attached to
      * @return  a pair with the created extension point and extensions
      */
     static PointExtensionsPairType processPoint(xmlNodePtr node,
-                                                const std::shared_ptr<Bundle> bundle);
+                                                const std::shared_ptr<Module> module);
 
     /**
      * @brief   Processes an extension point XML node.
      *
      * @param   node    a pointer to the XML node that represents an extension point
-     * @param   bundle  a pointer to the bundle declaring the extension point
+     * @param   module  a pointer to the module declaring the extension point
      *
      * @return  a pointer to the created extension point
      */
     static std::shared_ptr<ExtensionPoint> processExtensionPoint(xmlNodePtr node,
-                                                                 const std::shared_ptr<Bundle> bundle);
+                                                                 const std::shared_ptr<Module> module);
 
     /**
      * @brief   Processes a library XML node.
@@ -138,12 +138,12 @@ public:
     /**
      * Processes a node that is a plugin element.
      *
-     * @param   node        a pointer to the xml document node that represents a bundle
-     * @param   location    a path to a directory containing the bundle
+     * @param   node        a pointer to the xml document node that represents a module
+     * @param   location    a path to a directory containing the module
      *
-     * @return  a pointer to the created bundle
+     * @return  a pointer to the created module
      */
-    static std::shared_ptr<impl::Bundle> processPlugin(xmlNodePtr node,
+    static std::shared_ptr<impl::Module> processPlugin(xmlNodePtr node,
                                                        const std::filesystem::path& location);
 
     /**

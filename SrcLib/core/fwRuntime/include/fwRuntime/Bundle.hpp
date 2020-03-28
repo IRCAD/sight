@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,114 +22,10 @@
 
 #pragma once
 
-#include "fwCore/base.hpp"
-
-#include "fwRuntime/config.hpp"
-#include "fwRuntime/Version.hpp"
-
-#include <filesystem>
-#include <set>
-#include <string>
+#include "fwRuntime/Module.hpp"
 
 namespace fwRuntime
 {
-struct Extension;
-struct ExtensionRegistry;
-class IExecutable;
-struct ExecutableFactory;
-struct IPlugin;
-class Runtime;
-
-/**
- * @brief   Defines the bundle class.
- *
- */
-class FWRUNTIME_CLASS_API Bundle
-{
-public:
-    /// Defines the extension container type.
-    typedef std::set< SPTR( Extension ) >      ExtensionContainer;
-
-    virtual ~Bundle();
-
-    /**
-     * @brief   Retrieves the bundle identifier.
-     *
-     * @return  a string containing the bundle identifier
-     */
-    FWRUNTIME_API virtual const std::string& getIdentifier() const = 0;
-
-    /**
-     * @brief   Retrieves the bundle location.
-     *
-     * @return  a path representing the bundle location
-     */
-    FWRUNTIME_API virtual const std::filesystem::path& getLibraryLocation() const = 0;
-
-    /**
-     * @brief   Retrieves the bundle location.
-     *
-     * @return  a path representing the bundle location
-     */
-    FWRUNTIME_API virtual const std::filesystem::path& getResourcesLocation() const = 0;
-
-    /**
-     * @brief   Retrieves the class representing the bundle executable part.
-     *
-     * @return  a string containing the bundle's plugin class
-     */
-    FWRUNTIME_API virtual const std::string getClass() const = 0;
-
-    /**
-     * @brief   Retrieves the version of the bundle.
-     *
-     * @return  the bundle version
-     */
-    FWRUNTIME_API virtual const Version& getVersion() const = 0;
-
-    /**
-     * @brief   Retrieves the plugin instance for the specified bundle identifier.
-     *
-     * @return  a shared pointer to a plugin instance or null if the bundle has not been started.
-     */
-    FWRUNTIME_API virtual SPTR( IPlugin ) getPlugin() const = 0;
-
-    /**
-     * @brief       Retrieves the value of the given parameter
-     * @remark      When no such parameter has been found, an empty string is returned.
-     * @param[in]   identifier  a string containing a parameter identifier
-     * @return      a string containing the parameter value
-     */
-    FWRUNTIME_API virtual const std::string getParameterValue( const std::string& identifier ) const = 0;
-
-    /**
-     * @brief   Tells if a parameter exists.
-     * @return  true or false
-     */
-    FWRUNTIME_API virtual bool hasParameter( const std::string& name ) const = 0;
-    /**
-     * @brief   Returns the list of extensions contained in this bundle.
-     */
-    FWRUNTIME_API virtual ExtensionContainer getExtensions( ) const = 0;
-
-    /**
-     * @name        State Management
-     */
-    //@{
-    /**
-     * @brief   Starts the bundle.
-     *
-     * @remark  The bundle must be enabled to be able to start.
-     */
-    FWRUNTIME_API virtual void start()     = 0;
-    FWRUNTIME_API virtual void stop()      = 0;
-    FWRUNTIME_API virtual bool isStarted() = 0;
-    /**
-     * @brief   Tells if the bundle is enabled.
-     */
-    FWRUNTIME_API virtual bool isEnable() const = 0;
-    //@}
-
-};
-
-} // namespace fwRuntime
+// Deprecated, kept for compatibility
+typedef Module Bundle;
+}

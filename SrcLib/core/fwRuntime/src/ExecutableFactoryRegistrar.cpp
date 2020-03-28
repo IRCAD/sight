@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "fwRuntime/ExecutableFactoryRegistrar.hpp"
 
-#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/impl/Runtime.hpp"
 
 namespace fwRuntime
@@ -31,13 +31,13 @@ namespace fwRuntime
 ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
 {
     // Pre-condition
-    SLM_ASSERT("No bundle bundle currently loaded", impl::Bundle::getLoadingBundle() != nullptr);
+    SLM_ASSERT("No module module currently loaded", impl::Module::getLoadingModule() != nullptr);
 
-    // Retrieves the bundle that is currently loading.
-    std::shared_ptr< impl::Bundle >  loadingBundle( impl::Bundle::getLoadingBundle() );
+    // Retrieves the module that is currently loading.
+    std::shared_ptr< impl::Module >  loadingModule( impl::Module::getLoadingModule() );
 
-    // Stores the factory into that bundle and the default runtime instance.
-    loadingBundle->addExecutableFactory( factory );
+    // Stores the factory into that module and the default runtime instance.
+    loadingModule->addExecutableFactory( factory );
 
     impl::Runtime& runtime = impl::Runtime::get();
     runtime.addExecutableFactory( factory );

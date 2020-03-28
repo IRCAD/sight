@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,10 +24,10 @@
 
 #include "fwRuntime/ConfigurationElement.hpp"
 #include "fwRuntime/Extension.hpp"
-#include "fwRuntime/impl/Bundle.hpp"
 #include "fwRuntime/impl/dl/Library.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
 #include "fwRuntime/impl/io/Validator.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/operations.hpp"
 
 #include <libxml/parser.h>
@@ -62,7 +62,7 @@ std::string ModuleDescriptorReader::POINT("point");
 
 //------------------------------------------------------------------------------
 
-const ModuleDescriptorReader::BundleContainer ModuleDescriptorReader::createBundles(
+const ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModules(
     const std::filesystem::path& location)
 {
     // Normalizes the path.
@@ -76,7 +76,7 @@ const ModuleDescriptorReader::BundleContainer ModuleDescriptorReader::createBund
     }
 
     // Walk through the repository entries.
-    BundleContainer bundles;
+    ModuleContainer modules;
     std::filesystem::directory_iterator currentEntry(normalizedPath);
     std::filesystem::directory_iterator endEntry;
     for(; currentEntry != endEntry; ++currentEntry)
@@ -87,10 +87,10 @@ const ModuleDescriptorReader::BundleContainer ModuleDescriptorReader::createBund
         {
             try
             {
-                SPTR( Bundle ) bundle = ModuleDescriptorReader::createBundle(entryPath);
-                if(bundle)
+                SPTR( Module ) module = ModuleDescriptorReader::createModule(entryPath);
+                if(module)
                 {
-                    bundles.push_back( bundle );
+                    modules.push_back( module );
                 }
             }
             catch(const RuntimeException& runtimeException)
@@ -109,14 +109,14 @@ const ModuleDescriptorReader::BundleContainer ModuleDescriptorReader::createBund
             }
         }
     }
-    return bundles;
+    return modules;
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Bundle> ModuleDescriptorReader::createBundle(const std::filesystem::path& location)
+std::shared_ptr< Module> ModuleDescriptorReader::createModule(const std::filesystem::path& location)
 {
-    std::shared_ptr<impl::Bundle> bundle;
+    std::shared_ptr<impl::Module> module;
 
     std::filesystem::path descriptorLocation(location / "plugin.xml");
     if(std::filesystem::exists(descriptorLocation) == false)
@@ -130,14 +130,14 @@ std::shared_ptr< Bundle> ModuleDescriptorReader::createBundle(const std::filesys
     Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
     {
-        throw RuntimeException("Invalid bundle descriptor file. " + validator.getErrorLog());
+        throw RuntimeException("Invalid module descriptor file. " + validator.getErrorLog());
     }
 
     // Get the document.
     xmlDocPtr document = xmlParseFile( descriptorLocation.string().c_str() );
     if(document == nullptr)
     {
-        throw RuntimeException("Unable to read the bundle descriptor file.");
+        throw RuntimeException("Unable to read the module descriptor file.");
     }
 
     try
@@ -164,7 +164,7 @@ std::shared_ptr< Bundle> ModuleDescriptorReader::createBundle(const std::filesys
             completeLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
         }
 
-        bundle = processPlugin(rootNode, completeLocation);
+        module = processPlugin(rootNode, completeLocation);
 
         // Job's done!
         xmlFreeDoc(document);
@@ -174,18 +174,18 @@ std::shared_ptr< Bundle> ModuleDescriptorReader::createBundle(const std::filesys
         xmlFreeDoc(document);
         throw exception;
     }
-    return bundle;
+    return module;
 }
 
 //-----------------------------------------------------------------------------
 
 ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(xmlNodePtr node,
-                                                                               const std::shared_ptr<Bundle> bundle)
+                                                                               const std::shared_ptr<Module> module)
 
 {
     // Creates the configuration element.
     const std::string nodeName((const char*) node->name);
-    ConfigurationElement::sptr configurationElement(ConfigurationElement::New(bundle, nodeName));
+    ConfigurationElement::sptr configurationElement(ConfigurationElement::New(module, nodeName));
 
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -206,7 +206,7 @@ ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(x
             std::string value((const char*) curChild->content);
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
             OSLM_WARN_IF(
-                "Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << nodeName << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
+                "Module : " << ( module ? module->getIdentifier() : "<None>" ) << ", node: " << nodeName << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
                 (value.find("\n") != std::string::npos || value.find("\t") != std::string::npos));
 
             configurationElement->setValue( configurationElement->getValue() + value );
@@ -221,7 +221,7 @@ ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(x
 
         else if(curChild->type == XML_ELEMENT_NODE)
         {
-            ConfigurationElement::sptr element(processConfigurationElement(curChild, bundle));
+            ConfigurationElement::sptr element(processConfigurationElement(curChild, module));
             configurationElement->addConfigurationElement(element);
             continue;
         }
@@ -234,7 +234,7 @@ ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(x
 //------------------------------------------------------------------------------
 
 std::shared_ptr<Extension> ModuleDescriptorReader::processExtension(xmlNodePtr node,
-                                                                    const std::shared_ptr<Bundle> bundle)
+                                                                    const std::shared_ptr<Module> module)
 {
     // Processes all extension attributes.
     xmlAttrPtr curAttr;
@@ -256,7 +256,7 @@ std::shared_ptr<Extension> ModuleDescriptorReader::processExtension(xmlNodePtr n
     }
 
     // Creates the extension instance.
-    std::shared_ptr<Extension> extension(new Extension(bundle, identifier, point, node));
+    std::shared_ptr<Extension> extension(new Extension(module, identifier, point, node));
 
     // Processes child nodes which are configuration elements.
     xmlNodePtr curChild;
@@ -264,7 +264,7 @@ std::shared_ptr<Extension> ModuleDescriptorReader::processExtension(xmlNodePtr n
     {
         if(curChild->type == XML_ELEMENT_NODE)
         {
-            ConfigurationElement::sptr element(processConfigurationElement(curChild, bundle));
+            ConfigurationElement::sptr element(processConfigurationElement(curChild, module));
             extension->addConfigurationElement(element);
         }
     }
@@ -276,7 +276,7 @@ std::shared_ptr<Extension> ModuleDescriptorReader::processExtension(xmlNodePtr n
 //------------------------------------------------------------------------------
 
 ModuleDescriptorReader::PointExtensionsPairType ModuleDescriptorReader::processPoint(xmlNodePtr node,
-                                                                                     const std::shared_ptr<Bundle> bundle)
+                                                                                     const std::shared_ptr<Module> module)
 {
     // Creates the extension instance.
     xmlAttrPtr curAttr;
@@ -296,7 +296,7 @@ ModuleDescriptorReader::PointExtensionsPairType ModuleDescriptorReader::processP
             continue;
         }
     }
-    std::shared_ptr<ExtensionPoint> extensionPoint(new ExtensionPoint(bundle, identifier, schema));
+    std::shared_ptr<ExtensionPoint> extensionPoint(new ExtensionPoint(module, identifier, schema));
 
     // Processes child nodes which declare identifier as extensions.
     std::vector< std::shared_ptr<Extension> > extensionContainer;
@@ -308,7 +308,7 @@ ModuleDescriptorReader::PointExtensionsPairType ModuleDescriptorReader::processP
             if( xmlStrcmp(curChild->name, (const xmlChar*) IMPLEMENTS.c_str()) == 0 )
             {
                 std::string extensionId = (const char*) curChild->children->content;
-                std::shared_ptr<Extension> extension(new Extension(bundle, identifier, extensionId, curChild));
+                std::shared_ptr<Extension> extension(new Extension(module, identifier, extensionId, curChild));
                 extensionContainer.push_back( extension );
             }
         }
@@ -320,7 +320,7 @@ ModuleDescriptorReader::PointExtensionsPairType ModuleDescriptorReader::processP
 //------------------------------------------------------------------------------
 
 std::shared_ptr<ExtensionPoint> ModuleDescriptorReader::processExtensionPoint(xmlNodePtr node,
-                                                                              const std::shared_ptr<Bundle> bundle)
+                                                                              const std::shared_ptr<Module> module)
 
 {
     // Processes all extension attributes.
@@ -342,7 +342,7 @@ std::shared_ptr<ExtensionPoint> ModuleDescriptorReader::processExtensionPoint(xm
         }
     }
     // Creates the extension instance.
-    std::shared_ptr<ExtensionPoint> point(new ExtensionPoint(bundle, identifier, schema));
+    std::shared_ptr<ExtensionPoint> point(new ExtensionPoint(module, identifier, schema));
 
     // Job's done.
     return point;
@@ -371,21 +371,21 @@ std::shared_ptr<dl::Library> ModuleDescriptorReader::processLibrary(xmlNodePtr n
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<impl::Bundle> ModuleDescriptorReader::processPlugin(xmlNodePtr node,
+std::shared_ptr<impl::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr node,
                                                                     const std::filesystem::path& location)
 {
-    // Creates the bundle.
-    std::shared_ptr< impl::Bundle > bundle;
+    // Creates the module.
+    std::shared_ptr< impl::Module > module;
     // Processes all plugin attributes.
     xmlAttrPtr curAttr;
-    std::string bundleIdentifier;
+    std::string moduleIdentifier;
     std::string version;
     std::string pluginClass;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)
         {
-            bundleIdentifier = (const char*) curAttr->children->content;
+            moduleIdentifier = (const char*) curAttr->children->content;
             continue;
         }
 
@@ -401,19 +401,19 @@ std::shared_ptr<impl::Bundle> ModuleDescriptorReader::processPlugin(xmlNodePtr n
             continue;
         }
     }
-    SLM_ASSERT("bundle identifier is empty", !bundleIdentifier.empty());
+    SLM_ASSERT("module identifier is empty", !moduleIdentifier.empty());
 
-    if( ::fwRuntime::Runtime::getDefault()->findBundle(bundleIdentifier, Version(version)))
+    if( ::fwRuntime::Runtime::getDefault()->findModule(moduleIdentifier, Version(version)))
     {
-        return bundle;
+        return module;
     }
     if(pluginClass.empty() == true)
     {
-        bundle = std::shared_ptr<Bundle>( new Bundle(location, bundleIdentifier, version) );
+        module = std::shared_ptr<Module>( new Module(location, moduleIdentifier, version) );
     }
     else
     {
-        bundle = std::shared_ptr<Bundle>( new Bundle(location, bundleIdentifier, version, pluginClass) );
+        module = std::shared_ptr<Module>( new Module(location, moduleIdentifier, version, pluginClass) );
     }
 
     // Processes all child nodes.
@@ -429,16 +429,16 @@ std::shared_ptr<impl::Bundle> ModuleDescriptorReader::processPlugin(xmlNodePtr n
         // Extension declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) EXTENSION.c_str()) == 0)
         {
-            std::shared_ptr<Extension> extension(processExtension(curChild, bundle));
-            bundle->addExtension(extension);
+            std::shared_ptr<Extension> extension(processExtension(curChild, module));
+            module->addExtension(extension);
             continue;
         }
 
         // Extension point declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) EXTENSION_POINT.c_str()) == 0)
         {
-            std::shared_ptr<ExtensionPoint> point(processExtensionPoint(curChild, bundle));
-            bundle->addExtensionPoint(point);
+            std::shared_ptr<ExtensionPoint> point(processExtensionPoint(curChild, module));
+            module->addExtensionPoint(point);
             continue;
         }
 
@@ -446,7 +446,7 @@ std::shared_ptr<impl::Bundle> ModuleDescriptorReader::processPlugin(xmlNodePtr n
         if(xmlStrcmp(curChild->name, (const xmlChar*) LIBRARY.c_str()) == 0)
         {
             std::shared_ptr<dl::Library> library(processLibrary(curChild));
-            bundle->addLibrary(library);
+            module->addLibrary(library);
             continue;
         }
 
@@ -454,7 +454,7 @@ std::shared_ptr<impl::Bundle> ModuleDescriptorReader::processPlugin(xmlNodePtr n
         if(xmlStrcmp(curChild->name, (const xmlChar*) REQUIREMENT.c_str()) == 0)
         {
             const std::string requirement(processRequirement(curChild));
-            bundle->addRequirement(requirement);
+            module->addRequirement(requirement);
         }
 
         // Point declaration.
@@ -465,7 +465,7 @@ std::shared_ptr<impl::Bundle> ModuleDescriptorReader::processPlugin(xmlNodePtr n
     }
 
     // Job's done.
-    return bundle;
+    return module;
 }
 
 //------------------------------------------------------------------------------

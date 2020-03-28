@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,8 @@
 #include "fwRuntime/impl/profile/Activater.hpp"
 
 #include "fwRuntime/Extension.hpp"
-#include "fwRuntime/impl/Bundle.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/Runtime.hpp"
 
 namespace fwRuntime
@@ -69,49 +69,49 @@ void Activater::addDisableExtension( const std::string& identifier )
 
 void Activater::apply()
 {
-    auto bundle = std::dynamic_pointer_cast< impl::Bundle >(Runtime::get().findBundle(m_identifier, m_version));
+    auto module = std::dynamic_pointer_cast< impl::Module >(Runtime::get().findModule(m_identifier, m_version));
 
-    SLM_FATAL_IF("Unable to activate Bundle " + m_identifier + "-" + m_version.string() + ". Not found.", bundle == 0);
-    bundle->setEnable( true );
+    SLM_FATAL_IF("Unable to activate Module " + m_identifier + "-" + m_version.string() + ". Not found.", module == 0);
+    module->setEnable( true );
 
     // Managment of parameter configuration
     for( ParameterContainer::const_iterator i = m_parameters.begin();
          i != m_parameters.end();
          ++i )
     {
-        bundle->addParameter( i->first, i->second );
+        module->addParameter( i->first, i->second );
     }
 
-    // Disable extension point for this bundle
+    // Disable extension point for this module
     for( DisableExtensionPointContainer::const_iterator id = m_disableExtensionPoints.begin();
          id != m_disableExtensionPoints.end();
          ++id )
     {
-        if( bundle->hasExtensionPoint(*id) )
+        if( module->hasExtensionPoint(*id) )
         {
-            bundle->setEnableExtensionPoint( *id, false );
+            module->setEnableExtensionPoint( *id, false );
         }
         else
         {
             OSLM_ERROR(
-                "Unable to disable Extension Point " << *id << " defined in the Bundle " << m_identifier <<
+                "Unable to disable Extension Point " << *id << " defined in the Module " << m_identifier <<
                     ". Not found.");
         }
     }
 
-    // Disable extension for this bundle
+    // Disable extension for this module
     for( DisableExtensionContainer::const_iterator id = m_disableExtensions.begin();
          id != m_disableExtensions.end();
          ++id )
     {
-        if( bundle->hasExtension(*id) )
+        if( module->hasExtension(*id) )
         {
-            bundle->setEnableExtension( *id, false );
+            module->setEnableExtension( *id, false );
         }
         else
         {
             OSLM_ERROR(
-                "Unable to disable Extension " << *id << " defined in the Bundle " << m_identifier <<
+                "Unable to disable Extension " << *id << " defined in the Module " << m_identifier <<
                     ". Not found.");
         }
     }

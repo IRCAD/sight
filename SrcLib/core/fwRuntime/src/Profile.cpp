@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,13 +23,13 @@
 #include "fwRuntime/impl/profile/Profile.hpp"
 #include "fwRuntime/Profile.hpp"
 
-#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/impl/profile/Activater.hpp"
 #include "fwRuntime/impl/profile/Initializer.hpp"
 #include "fwRuntime/impl/profile/Starter.hpp"
 #include "fwRuntime/impl/profile/Stopper.hpp"
 #include "fwRuntime/impl/profile/Uninitializer.hpp"
+#include "fwRuntime/Module.hpp"
 #include "fwRuntime/Runtime.hpp"
 
 #include <algorithm>

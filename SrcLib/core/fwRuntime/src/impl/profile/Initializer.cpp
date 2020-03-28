@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #include "fwRuntime/impl/profile/Initializer.hpp"
 
-#include "fwRuntime/impl/Bundle.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/impl/profile/Profile.hpp"
 #include "fwRuntime/impl/profile/Uninitializer.hpp"
 #include "fwRuntime/impl/Runtime.hpp"
@@ -50,20 +50,20 @@ Initializer::Initializer( const std::string& identifier, const Version& version)
 
 void Initializer::apply()
 {
-    auto bundle = impl::Runtime::get().findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to initialize bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". Not found.",
-                 bundle == nullptr);
+    auto module = impl::Runtime::get().findEnabledModule(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to initialize module " + Module::getModuleStr(m_identifier, m_version) + ". Not found.",
+                 module == nullptr);
     try
     {
-        if (!bundle->isInitialized())
+        if (!module->isInitialized())
         {
-            bundle->initialize();
+            module->initialize();
             getCurrentProfile()->add( SPTR(Uninitializer) (new Uninitializer(m_identifier, m_version)));
         }
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to initialize bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". " + e.what());
+        SLM_FATAL("Unable to initialize module " + Module::getModuleStr(m_identifier, m_version) + ". " + e.what());
     }
 }
 
