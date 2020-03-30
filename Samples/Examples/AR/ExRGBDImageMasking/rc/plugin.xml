@@ -6,6 +6,9 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
+    <requirement id="arPatchMedicalData" />
+    <requirement id="patchMedicalData" />
+    <requirement id="ioActivity" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExRGBDImageMasking</id>
         <config>
@@ -295,9 +298,8 @@
             </service>
 
             <!-- Reader to open seriesDB data (.jsonz format) -->
-            <service uid="modelReader" type="::uiIO::editor::SIOSelector">
+            <service uid="modelReader" type="::uiIO::editor::SIOSelector" config="FullSDBReaderIOSelectorConfig">
                 <inout key="data" uid="seriesDB" />
-                <type mode="reader" />
             </service>
 
             <!-- Extract the modelSeries from the loaded seriesDB -->

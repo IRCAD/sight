@@ -7,6 +7,8 @@ set( REQUIREMENTS
     appXml
     fwlauncher
     arDataReg
+    arPatchMedicalData
+    patchMedicalData
     dataReg
     dataManagerConfig
     servicesReg
@@ -14,6 +16,7 @@ set( REQUIREMENTS
     gui
     guiQt
     media
+    ioActivity
     ioAtoms
     ioData
     material
