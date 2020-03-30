@@ -140,7 +140,8 @@ void SDepthImageMasking::setBackground()
 {
     const ::fwData::Image::csptr maskImage  = this->getInput< ::fwData::Image >(s_MASK_IMAGE_KEY);
     const ::fwData::Image::csptr depthImage = this->getInput< ::fwData::Image >(s_DEPTH_IMAGE_KEY);
-    if(maskImage && depthImage)
+    if(maskImage && depthImage && (maskImage->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE) &&
+       (depthImage->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE))
     {
         ::fwData::mt::ObjectReadLock lockMaskImage(maskImage);
         ::fwData::mt::ObjectReadLock lockDepthImage(depthImage);
