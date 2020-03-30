@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWVTKIO_UT_IMAGETEST_HPP__
-#define __FWVTKIO_UT_IMAGETEST_HPP__
+#pragma once
+
+#include <fwData/Array.hpp>
+#include <fwData/Image.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwData/Image.hpp>
-#include <fwData/Array.hpp>
 
 namespace fwVtkIO
 {
@@ -42,6 +41,7 @@ CPPUNIT_TEST_SUITE( ImageTest );
 CPPUNIT_TEST( testImageToVtk );
 CPPUNIT_TEST( testFromVtk );
 
+CPPUNIT_TEST( fromToVtkTest );
 CPPUNIT_TEST( mhdReaderTest );
 CPPUNIT_TEST( mhdWriterTest );
 CPPUNIT_TEST( vtiReaderTest );
@@ -59,6 +59,7 @@ public:
     void testImageToVtk();
     void testFromVtk();
 
+    void fromToVtkTest();
     void mhdReaderTest();
     void mhdWriterTest();
     void vtiReaderTest();
@@ -70,5 +71,3 @@ public:
 
 } // namespace ut
 } // namespace fwVtkIO
-
-#endif //__FWVTKIO_UT_IMAGETEST_HPP__
