@@ -108,7 +108,7 @@ void NotificationDialog::show()
     // Fade in effect.
     QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
     QPropertyAnimation* const a          = new QPropertyAnimation(effect, "opacity");
-    a->setDuration(200);  // in miliseconds
+    a->setDuration(200);  // In milliseconds
     a->setStartValue(0); // Full transparent.
     a->setEndValue(0.9); // 90% of opacity, to see through the popup.
     a->setEasingCurve(QEasingCurve::InBack);

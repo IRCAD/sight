@@ -49,7 +49,7 @@ public:
 
     /**
      * @brief Creates a Container.
-     * @param _position a function that allow to this container to compute it's own position fromn it's parent.
+     * @param _position a function that allows this container to compute its own position from its parent.
      * @param _parent the parent of this container.
      */
     explicit Container(std::function< QPoint(QWidget*) > _position, QWidget* _parent) :
@@ -59,7 +59,7 @@ public:
         this->move(m_position(this->parentWidget()));
     }
 
-    /// Destroyes the Container.
+    /// Destroys the Container.
     virtual ~Container()
     {
 
@@ -82,7 +82,7 @@ public:
 
 private:
 
-    /// Defines a function that compute a position relativly to a parent widget.
+    /// Defines a function that computes a position relatively to a parent widget.
     std::function< QPoint(QWidget*) > m_position;
 
 };
@@ -101,7 +101,7 @@ public:
     {
     }
 
-    /// Destroyes the clickable QLabel.
+    /// Destroys the clickable QLabel.
     virtual ~ClickableQLabel()
     {
 
@@ -109,7 +109,7 @@ public:
 
 public Q_SLOTS:
 
-    /// Creates a fade out effect then close the parent widget (Must be the Container).
+    /// Creates a fade out effect then closes the parent widget (Must be the Container).
     void fadeout()
     {
         QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
@@ -188,7 +188,7 @@ public:
     /// Initializes members.
     FWGUIQT_API NotificationDialog(::fwGui::GuiBaseObject::Key key);
 
-    /// Destroyes the dialog.
+    /// Destroys the dialog.
     FWGUIQT_API virtual ~NotificationDialog() override;
 
     /// Shows the notification relative to the active window.
