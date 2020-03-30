@@ -69,13 +69,10 @@ void Image::generateImage(::fwData::Image::sptr image,
                           ::fwTools::Type type,
                           ::fwData::Image::PixelFormat format)
 {
-    image->setSize2(size);
+    image->resize(size, type, format);
     image->setSpacing2(spacing);
     image->setOrigin2(origin);
-    image->setType(type);
-    image->setPixelFormat(format);
 
-    image->resize();
     auto lock = image->lock();
     std::fill(image->begin(), image->end(), 0);
 }
