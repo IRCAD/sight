@@ -263,7 +263,7 @@ std::filesystem::path getBundleResourcePath(const IExecutable* executable,
                                             const std::filesystem::path& path) noexcept
 {
     FW_DEPRECATED_MSG("getBundleResourcePath", "22.0");
-    return getModuleResourcePath(executable->getModule(), path);
+    return getModuleResourcePath(executable, path);
 }
 
 //------------------------------------------------------------------------------

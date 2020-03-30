@@ -61,7 +61,7 @@ public:
      */
     Profile();
 
-    virtual ~Profile();
+    virtual ~Profile() override;
 
     /**
      * @brief       Adds a new activator.
@@ -118,6 +118,36 @@ public:
 
     int defaultRun();
 
+    /// Get profile m_filePath
+    std::filesystem::path getFilePath() const
+    {
+        return m_filePath;
+    }
+
+    /// Set profile m_filePath
+    void setFilePath(const std::filesystem::path& _filePath)
+    {
+        m_filePath = _filePath;
+    }
+
+    /**
+     * @brief   Return profile CheckSingleInstance.
+     */
+    bool getCheckSingleInstance() const
+    {
+        return m_checkSingleInstance;
+    }
+
+    /**
+     * @brief       Set profile CheckSingleInstance.
+     *
+     * @param[in]   _checkSingleInstance    profile CheckSingleInstance
+     */
+    void setCheckSingleInstance(bool _checkSingleInstance)
+    {
+        m_checkSingleInstance = _checkSingleInstance;
+    }
+
 private:
 
     typedef std::vector< SPTR(Activater) >     ActivaterContainer;
@@ -132,7 +162,11 @@ private:
     InitializerContainer m_initializers;        ///< all managed initializers
     UninitializerContainer m_uninitializers;    ///< all managed uninitializers
 
+    std::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
+
     RunCallbackType m_run;
+
+    bool m_checkSingleInstance;
 };
 
 /**

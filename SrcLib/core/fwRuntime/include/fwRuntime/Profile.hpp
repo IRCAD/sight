@@ -86,18 +86,6 @@ public:
         m_sName = _sName;
     }
 
-    /// Get profile m_filePath
-    std::filesystem::path getFilePath() const
-    {
-        return m_filePath;
-    }
-
-    /// Set profile m_filePath
-    void setFilePath(const std::filesystem::path& _filePath)
-    {
-        m_filePath = _filePath;
-    }
-
     /**
      * @brief   Return profile version.
      */
@@ -114,24 +102,6 @@ public:
     void setVersion(std::string _sVersion)
     {
         m_sVersion = _sVersion;
-    }
-
-    /**
-     * @brief   Return profile CheckSingleInstance.
-     */
-    bool getCheckSingleInstance() const
-    {
-        return m_checkSingleInstance;
-    }
-
-    /**
-     * @brief       Set profile CheckSingleInstance.
-     *
-     * @param[in]   _checkSingleInstance    profile CheckSingleInstance
-     */
-    void setCheckSingleInstance(bool _checkSingleInstance)
-    {
-        m_checkSingleInstance = _checkSingleInstance;
     }
 
     //------------------------------------------------------------------------------
@@ -175,9 +145,6 @@ private:
 
     std::string m_sName;                    ///< name profile
     std::string m_sVersion;                 ///< profile app version
-    std::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
-
-    bool m_checkSingleInstance;
 
     ParamsContainer m_params;
     int m_argc;

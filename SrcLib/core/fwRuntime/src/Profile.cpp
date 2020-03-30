@@ -63,7 +63,6 @@ Profile::sptr Profile::New()
 //------------------------------------------------------------------------------
 
 Profile::Profile() :
-    m_checkSingleInstance(false),
     m_argc(0),
     m_argv(nullptr)
 {

@@ -150,45 +150,6 @@ public:
     //@}
 
     /**
-     * @name    Executable, Executable Factories & Dynamic Executable Instanciation
-     *
-     * @{
-     */
-
-    /**
-     * @brief   Create an instance of the given executable object type.
-     *
-     * An attempt is made to retrieve a registered executable factory. If none
-     * is found, the creation will fail.
-     *
-     * @remark      This method will not try to load any module.
-     *
-     * @param[in]   type    a string containing an executable type
-     *
-     * @return      a pointer to the created executable instance
-     */
-    FWRUNTIME_API virtual IExecutable* createExecutableInstance( const std::string& type ) = 0;
-
-    /**
-     * @brief   Create an instance of the given executable object type and configuration element.
-     *
-     * An attempt is made to find a registered executable factory. If none
-     * is found, the module of the given configuration element is started in the
-     * hope it will register a executable factory for the given type. Then an
-     * executable factory for the given type is searched once again and the
-     * instantiation procedure goes further.
-     *
-     * @param[in]   type                    a string containing an executable type
-     * @param[in]   configurationElement    a shared pointer to the configuration element to use for the executable
-     * initialization
-     *
-     * @return  a pointer to the created executable instance
-     */
-    FWRUNTIME_API virtual IExecutable* createExecutableInstance( const std::string& type,
-                                                                 SPTR(ConfigurationElement) configurationElement ) = 0;
-    //@}
-
-    /**
      * @name    Extensions
      *
      * @{

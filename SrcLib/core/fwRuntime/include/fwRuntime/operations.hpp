@@ -79,44 +79,6 @@ T* createExecutableInstance(
 }
 
 /**
- * @brief       Creates an executable instance for the specifed configuration element.
- *
- * @param[in]   element     a shared pointer to a configuration element
- * @param[in]   attribute   a string containing an element attribute name to use as
- *                      the executable type
- *
- * @return      a shared pointer to the built executable object
- */
-template<typename T>
-T* createExecutableInstance(
-    const std::shared_ptr<ConfigurationElement> element,
-    const std::string& attribute = "class" )
-{
-
-    // Retrieves the executable type.
-    if( element->hasAttribute( attribute ) == false )
-    {
-        throw RuntimeException( "Configuration element has no attribute '" + attribute + "'." );
-    }
-    const std::string type( element->getExistingAttributeValue(attribute) );
-
-    // Creates the executable instance.
-    Runtime* rntm( Runtime::getDefault()                         );
-    std::unique_ptr< IExecutable > executable( rntm->createExecutableInstance(type, element) );
-
-    // Converts the executable instance to the right type.
-    T* result = dynamic_cast<T*>( executable.get() );
-    if( result == 0 )
-    {
-        throw RuntimeException( "Executable creation failed. Bad cast" );
-    }
-    executable.release();
-
-    // That's all folks !
-    return result;
-}
-
-/**
  * @brief   Retrieves all configuration elements for the point having the
  *          specified identifier.
  * @return  a vector containing shared pointers to all found configuration elements

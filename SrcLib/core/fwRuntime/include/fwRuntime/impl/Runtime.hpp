@@ -127,7 +127,7 @@ public:
      *
      * @return      a pointer to the created executable instance
      */
-    virtual IExecutable* createExecutableInstance( const std::string& type ) override;
+    IExecutable* createExecutableInstance( const std::string& type );
 
     /**
      * @brief   Create an instance of the given executable object type and configuration element.
@@ -144,8 +144,8 @@ public:
      *
      * @return  a pointer to the created executable instance
      */
-    virtual IExecutable* createExecutableInstance( const std::string& type,
-                                                   SPTR(ConfigurationElement) configurationElement ) override;
+    IExecutable* createExecutableInstance( const std::string& type,
+                                           SPTR(ConfigurationElement) configurationElement );
 
     /**
      * @brief   Retrieves the iterator on the end of the extension collection.

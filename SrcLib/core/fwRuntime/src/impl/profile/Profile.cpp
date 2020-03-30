@@ -60,7 +60,8 @@ struct Apply
 
 //------------------------------------------------------------------------------
 
-Profile::Profile()
+Profile::Profile() :
+    m_checkSingleInstance(false)
 {
     m_run = std::bind(&Profile::defaultRun, this);
 }
