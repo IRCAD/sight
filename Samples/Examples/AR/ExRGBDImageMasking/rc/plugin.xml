@@ -210,7 +210,7 @@
             <service uid="organManager" type="::gui::action::SConfigLauncher">
                 <appConfig id="ModelSeriesManagerWindow" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
-                <parameter replace="ICON_PATH" by="ExRGBDImageMaking-0.1/app.ico" />
+                <parameter replace="ICON_PATH" by="ExRGBDImageMasking-0.1/app.ico" />
             </service>
 
             <service uid="showSettings" type="::gui::action::SBooleanSlotCaller">

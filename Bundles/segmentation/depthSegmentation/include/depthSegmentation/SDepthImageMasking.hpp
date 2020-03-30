@@ -69,14 +69,6 @@ class DEPTHSEGMENTATION_CLASS_API SDepthImageMasking : public ::fwServices::IOpe
 public:
     fwCoreServiceMacro(SDepthImageMasking, ::fwServices::IOperator)
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
-    static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
-    ///@}
-
     /// Initializes slots
     DEPTHSEGMENTATION_CLASS_API SDepthImageMasking() noexcept;
 

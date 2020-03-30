@@ -37,8 +37,8 @@
 namespace depthSegmentation
 {
 
-const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
-const ::fwCom::Slots::SlotKeyType SDepthImageMasking::s_SET_THRESHOLD_SLOT  = "setThreshold";
+static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
+static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT  = "setThreshold";
 
 static const ::fwServices::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
 static const ::fwServices::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
