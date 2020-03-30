@@ -18,7 +18,6 @@ set( REQUIREMENTS
     preferences
     servicesReg
     videoQt
-    videoRealSense
     videoTools
     visuVTK
     visuVTKAdaptor
