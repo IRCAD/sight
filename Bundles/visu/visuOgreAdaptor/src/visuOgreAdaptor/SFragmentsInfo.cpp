@@ -22,12 +22,12 @@
 
 #include "visuOgreAdaptor/SFragmentsInfo.hpp"
 
-#include "fwRenderOgre/helper/Technique.hpp"
-
 #include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwRenderOgre/helper/Technique.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -261,9 +261,9 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
             }
        }*/
 
-    bool retrieveDepth = this->getInOut< ::fwData::Image>(s_DEPTH_INOUT) != nullptr;
+    const bool retrieveDepth = this->getInOut< ::fwData::Image>(s_DEPTH_INOUT) != nullptr;
 
-    bool retrievePrimitiveID = this->getInOut< ::fwData::Image>(s_PRIMITIVE_ID_INOUT) != nullptr;
+    const bool retrievePrimitiveID = this->getInOut< ::fwData::Image>(s_PRIMITIVE_ID_INOUT) != nullptr;
 
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 
