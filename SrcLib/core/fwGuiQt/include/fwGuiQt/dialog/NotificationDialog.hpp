@@ -39,20 +39,69 @@
 namespace fwGuiQt
 {
 
-/// Create a clickable QLabel.
-class FWGUIQT_CLASS_API ClickableQLabel : public QLabel
+/// Creates an auto-movable container.
+class FWGUIQT_CLASS_API Container : public QWidget
 {
+
 Q_OBJECT
 
 public:
-    /// Constructor, construct a QLabel.
-    explicit ClickableQLabel(QWidget* parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
-        QLabel(parent)
+
+    /**
+     * @brief Creates a Container.
+     * @param _position a function that allows this container to compute its own position from its parent.
+     * @param _parent the parent of this container.
+     */
+    explicit Container(std::function< QPoint(QWidget*) > _position, QWidget* _parent) :
+        QWidget(_parent),
+        m_position(_position)
     {
-        FwCoreNotUsedMacro(f);
+        this->move(m_position(this->parentWidget()));
     }
 
-    /// Destructor, does nothing.
+    /// Destroys the Container.
+    virtual ~Container()
+    {
+
+    }
+
+    /**
+     * @brief Moves the container according to the parent movement.
+     * @param _object updated widget.
+     * @param _event event type, only care about QEvent::Move and QEvent::Resize
+     * @return
+     */
+    virtual bool eventFilter(QObject* _object, QEvent* _event) override
+    {
+        if(_event->type() == QEvent::Move || _event->type() == QEvent::Resize)
+        {
+            this->move(m_position(this->parentWidget()));
+        }
+        return QWidget::eventFilter(_object, _event);
+    }
+
+private:
+
+    /// Defines a function that computes a position relatively to a parent widget.
+    std::function< QPoint(QWidget*) > m_position;
+
+};
+
+/// Creates a clickable QLabel.
+class FWGUIQT_CLASS_API ClickableQLabel : public QLabel
+{
+
+Q_OBJECT
+
+public:
+
+    /// Creates a clickable QLabel.
+    explicit ClickableQLabel() :
+        QLabel(nullptr)
+    {
+    }
+
+    /// Destroys the clickable QLabel.
     virtual ~ClickableQLabel()
     {
 
@@ -60,29 +109,35 @@ public:
 
 public Q_SLOTS:
 
-    /// Fade out effect launched when closing the Widget.
+    /// Creates a fade out effect then closes the parent widget (Must be the Container).
     void fadeout()
     {
         QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
         this->setGraphicsEffect(effect);
         QPropertyAnimation* a = new QPropertyAnimation(effect, "opacity");
-        a->setDuration(500); // it will took 500ms to fade out
+        a->setDuration(500);
         a->setStartValue(0.9);
         a->setEndValue(0);
         a->setEasingCurve(QEasingCurve::OutBack);
         a->start(QPropertyAnimation::DeleteWhenStopped);
-        QObject::connect(a, &QPropertyAnimation::finished, this, &ClickableQLabel::close);
+        // When the animation is finished, we kill the parent since it must be the Container (the main widget).
+        QObject::connect(a, &QPropertyAnimation::finished, this->parentWidget(), &QWidget::deleteLater);
     }
 
 Q_SIGNALS:
+
     /// Clicked signal, emited when mousePressEvent occurs.
     void clicked();
 
-protected:
-    /// Emit clicked signal.
-    void mousePressEvent(QMouseEvent* _event)
+private:
+
+    /**
+     * @brief Handles event related to the mouse buttons.
+     *
+     * Send the signal @ref clicked().
+     */
+    void mousePressEvent(QMouseEvent*) override
     {
-        FwCoreNotUsedMacro(_event);
         Q_EMIT clicked();
     }
 };
@@ -96,7 +151,7 @@ namespace dialog
  * Example of how to customize the style of the popups (You need to refers to their names):
  *
  * @code{.qss}
- #Notification-Success
+ #NotificationDialog_Success
     {
         background-color:#58D68D;
         color:white;
@@ -104,7 +159,7 @@ namespace dialog
         font-size: 16px;
     }
 
- #Notification-Failure
+ #NotificationDialog_Failure
     {
         background-color:#E74C3C;
         color:white;
@@ -112,7 +167,7 @@ namespace dialog
         font-size: 16px;
     }
 
- #Notification-Info
+ #NotificationDialog_Info
     {
         background-color:#5DADE2;
         color:white;
@@ -130,36 +185,28 @@ public:
     fwCoreClassMacro(NotificationDialog, ::fwGui::dialog::INotificationDialog,
                      ::fwGui::factory::New< NotificationDialog > )
 
-    /// Constructor, does nothing.
+    /// Initializes members.
     FWGUIQT_API NotificationDialog(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor, does nothing.
-    FWGUIQT_API virtual ~NotificationDialog() override final;
+    /// Destroys the dialog.
+    FWGUIQT_API virtual ~NotificationDialog() override;
 
-    /// Show the notification relative to the active window.
-    FWGUIQT_API void show() override;
+    /// Shows the notification relative to the active window.
+    FWGUIQT_API virtual void show() override;
 
     /**
      * @brief Returns whether the popup is displayed or not.
      * @return boolean (true is visible, false otherwise).
      */
-    FWGUIQT_API bool isVisible() const override final;
+    FWGUIQT_API virtual bool isVisible() const override;
 
-    /**
-     * @brief Closes the popup (use a fadeout effect).
-     */
-    FWGUIQT_API void close() const override final;
+    /// Closes the popup (use a fadeout effect).
+    FWGUIQT_API virtual void close() const override;
 
 private:
 
-    /**
-     * @brief Computes the position using the active window boundings.
-     * @return the position in pixel as a QPoint.
-     */
-    QPoint computePosition(const QWidget* _parent) const;
-
     /// Pointer to the Popup QLabel.
-    QPointer< ClickableQLabel > m_msgBox;
+    QPointer< ClickableQLabel > m_msgBox { nullptr };
 
 };
 

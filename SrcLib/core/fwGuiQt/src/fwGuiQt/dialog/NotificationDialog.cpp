@@ -27,14 +27,16 @@
 #include <fwGui/registry/macros.hpp>
 
 #include <QApplication>
+#include <QBoxLayout>
 #include <QTimer>
 
-fwGuiRegisterMacro( ::fwGuiQt::dialog::NotificationDialog, ::fwGui::dialog::INotificationDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(::fwGuiQt::dialog::NotificationDialog, ::fwGui::dialog::INotificationDialog::REGISTRY_KEY);
 
 namespace fwGuiQt
 {
 namespace dialog
 {
+
 NotificationDialog::NotificationDialog(::fwGui::GuiBaseObject::Key )
 {
 }
@@ -49,43 +51,27 @@ NotificationDialog::~NotificationDialog()
 
 void NotificationDialog::show()
 {
-    // Check if we have a Parent widget.
+    // Checks if we have a Parent widget.
     QWidget* parent = qApp->activeWindow();
 
-    ::fwGuiQt::container::QtContainer::csptr parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        m_parentContainer);
+    ::fwGuiQt::container::QtContainer::csptr parentContainer =
+        ::fwGuiQt::container::QtContainer::dynamicCast(m_parentContainer);
 
-    // Replace the activeWindow by the parentContainer if exists.
+    // Replaces the activeWindow by the parentContainer if exists.
     if(parentContainer)
     {
         parent = parentContainer->getQtContainer();
     }
 
-    const QPoint position = computePosition(parent);
-
-    QTimer fadeOutTime;
-    fadeOutTime.setSingleShot(true);
-    fadeOutTime.setInterval(m_duration);
-
-    // Fade in effect.
-    QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
-    QPropertyAnimation* const a          = new QPropertyAnimation(effect, "opacity");
-    a->setDuration(500);  // in miliseconds
-    a->setStartValue(0); // Full transparent.
-    a->setEndValue(0.9); // 90% of opacity, to see through the popup.
-    a->setEasingCurve(QEasingCurve::InBack);
-    a->start(QPropertyAnimation::DeleteWhenStopped);
-
-    m_msgBox = new ClickableQLabel(parent);
-    m_msgBox->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
-    m_msgBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+    // Creates the clikable label.
+    m_msgBox = new ClickableQLabel();
     m_msgBox->setWordWrap(true);
     m_msgBox->setScaledContents(true);
     m_msgBox->setText(QString::fromStdString(m_message));
+    m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-    m_msgBox->move(position);
-
-    if(qApp->styleSheet().isEmpty()) // If no styleSheet is used.
+    // If no styleSheet is used.
+    if(qApp->styleSheet().isEmpty())
     {
         if(m_notificationType == INotificationDialog::Type::SUCCESS)
         {
@@ -119,20 +105,134 @@ void NotificationDialog::show()
         }
     }
 
-    // fade in effect.
-    m_msgBox->setGraphicsEffect(effect);
-    // Align text at center.
-    m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    // Remove Title & Status bar, and display always on top.
-    m_msgBox->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    // Fade in effect.
+    QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
+    QPropertyAnimation* const a          = new QPropertyAnimation(effect, "opacity");
+    a->setDuration(200);  // In milliseconds
+    a->setStartValue(0); // Full transparent.
+    a->setEndValue(0.9); // 90% of opacity, to see through the popup.
+    a->setEasingCurve(QEasingCurve::InBack);
+    a->start(QPropertyAnimation::DeleteWhenStopped);
 
-    /// Close when clicked.
-    QObject::connect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::close);
+    // Creates the getPosition function
+    std::function< QPoint(QWidget*) > position;
+    const int margin = 5;
 
-    /// Display it.
-    m_msgBox->show();
+    if(m_position == Position::CENTERED )
+    {
+        position = [ = ](QWidget* _parent) -> QPoint
+                   {
+                       const auto parentPosCenter = _parent->mapToGlobal(_parent->rect().center());
 
-    /// Launch Timer and fadeout before closing.
+                       return QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
+                                     parentPosCenter.y() - static_cast<int>(m_size[1] / 2));
+                   };
+
+    }
+    else if (m_position == Position::CENTERED_TOP)
+    {
+        position = [ = ](QWidget* _parent) -> QPoint
+                   {
+                       const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
+                       const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
+                       const int height  = static_cast<int>(m_size[0]/2) + margin;
+
+                       return QPoint(parentX - static_cast<int>(m_size[0] / 2),
+                                     parentY + margin + (height * m_index));
+                   };
+
+    }
+    else if (m_position == Position::CENTERED_BOTTOM)
+    {
+        position = [ = ](QWidget* _parent) -> QPoint
+                   {
+                       const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
+                       const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
+                       const int height  = static_cast<int>(m_size[0]/2) + margin;
+
+                       return QPoint(parentX - static_cast<int>(m_size[0] / 2),
+                                     parentY - margin - (height * (m_index+1)));
+                   };
+    }
+    else if(m_position == Position::TOP_LEFT)
+    {
+        position = [ = ](QWidget* _parent) -> QPoint
+                   {
+                       const auto parrentTopLeft = _parent->mapToGlobal(_parent->rect().topLeft());
+                       const int parentX         = parrentTopLeft.x();
+                       const int parentY         = parrentTopLeft.y();
+                       const int height          = static_cast<int>(m_size[0]/2) + margin;
+
+                       return QPoint(parentX + margin,
+                                     parentY + margin + (height * m_index));
+                   };
+    }
+    else if(m_position == Position::TOP_RIGHT)
+    {
+        position = [ = ](QWidget* _parent) -> QPoint
+                   {
+                       const auto parrentTopRight = _parent->mapToGlobal(_parent->rect().topRight());
+                       const int parentX          = parrentTopRight.x();
+                       const int parentY          = parrentTopRight.y();
+                       const int height           = static_cast<int>(m_size[0]/2) + margin;
+
+                       return QPoint(parentX - margin - static_cast<int>(m_size[0]),
+                                     parentY + margin + (height * m_index));
+                   };
+    }
+    else if(m_position == Position::BOTTOM_LEFT)
+    {
+        position = [ = ](QWidget* _parent) -> QPoint
+                   {
+                       const auto parrentBottomLeft = _parent->mapToGlobal(_parent->rect().bottomLeft());
+                       const int parentX            = parrentBottomLeft.x();
+                       const int parentY            = parrentBottomLeft.y();
+                       const int height             = static_cast<int>(m_size[0]/2) + margin;
+
+                       return QPoint(parentX + margin,
+                                     parentY - (height * (m_index+1)));
+                   };
+    }
+    else if(m_position == Position::BOTTOM_RIGHT)
+    {
+        position = [ = ](QWidget* _parent) -> QPoint
+                   {
+                       const auto parrentBottomRight = _parent->mapToGlobal(_parent->rect().bottomRight());
+                       const int parentX             = parrentBottomRight.x();
+                       const int parentY             = parrentBottomRight.y();
+                       const int height              = static_cast<int>(m_size[0]/2) + margin;
+
+                       return QPoint(parentX - margin - static_cast<int>(m_size[0]),
+                                     parentY - (height * (m_index+1)));
+                   };
+    }
+
+    // Creates the main translucent auto-movable container.
+    Container* const container = new Container(position, parent);
+    container->setGraphicsEffect(effect);
+    container->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint| Qt::NoDropShadowWindowHint);
+    container->setAttribute(Qt::WA_TranslucentBackground);
+    container->setContentsMargins(0, 0, 0, 0);
+    container->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
+    container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+
+    // Moves the container when the main window is moved or is resized.
+    qApp->activeWindow()->installEventFilter(container);
+
+    // Gives it a layout with the clickable label.
+    QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    container->setLayout(layout);
+    layout->addWidget(m_msgBox);
+
+    // Fadeout when clicked.
+    QObject::connect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::fadeout);
+
+    // Displays it.
+    container->show();
+
+    // Launchs a timer and fadeout before closing.
     QTimer::singleShot(m_duration, m_msgBox, &ClickableQLabel::fadeout);
 }
 
@@ -157,91 +257,6 @@ void NotificationDialog::close() const
         // Closing after a fade out effect.
         m_msgBox->fadeout();
     }
-}
-
-//------------------------------------------------------------------------------
-
-QPoint NotificationDialog::computePosition(const QWidget* _parent) const
-{
-    QPoint position;
-
-    const QPoint margins(5, 5); // keep margins from border of active window.
-
-    // Use _parent containter as basis.
-    if(_parent)
-    {
-        if(m_position == Position::CENTERED )
-        {
-            const auto parentPosCenter = _parent->rect().center();
-
-            position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
-                              parentPosCenter.y() - static_cast<int>(m_size[1] / 2));
-
-        }
-        else if (m_position == Position::CENTERED_TOP)
-        {
-            const auto parentPosCenter = _parent->rect().center();
-            const auto parentPosTop    = _parent->rect().top();
-
-            position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
-                              parentPosTop + margins.y() +
-                              ((parentPosTop + margins.y() + static_cast<int>(m_size[1])) *
-                               static_cast<int>(m_index)));
-
-        }
-        else if (m_position == Position::CENTERED_BOTTOM)
-        {
-            const auto parentPosCenter = _parent->rect().center();
-            const auto parentPosBottom = _parent->rect().bottom();
-
-            position = QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
-                              parentPosBottom - margins.y()- static_cast<int>(m_size[1]));
-
-            position.setY( position.y() - (static_cast<int>(m_index) * (static_cast<int>(m_size[1]) + margins.y())) );
-        }
-        else if(m_position == Position::TOP_LEFT)
-        {
-            const auto parentPosTopLeft = _parent->rect().topLeft();
-
-            position = QPoint((parentPosTopLeft.x() + margins.x()),
-                              parentPosTopLeft.y() + margins.y() +
-                              (  (parentPosTopLeft.y() + margins.y() + static_cast<int>(m_size[1])) *
-                                 static_cast<int>(m_index)));
-        }
-        else if(m_position == Position::TOP_RIGHT)
-        {
-            const auto parentPosTopRight = _parent->rect().topRight();
-
-            position = QPoint((parentPosTopRight.x() - margins.x()) - static_cast<int>(m_size[0]),
-                              parentPosTopRight.y() + margins.y() +
-                              (  (parentPosTopRight.y() + margins.y() + static_cast<int>(m_size[1])) *
-                                 static_cast<int>(m_index)));
-        }
-        else if(m_position == Position::BOTTOM_LEFT)
-        {
-            const auto parentPosBottomLeft = _parent->rect().bottomLeft();
-
-            position = QPoint(parentPosBottomLeft.x() + margins.x(),
-                              parentPosBottomLeft.y() - margins.y() - static_cast<int>(m_size[1]));
-
-            position.setY( position.y() - (static_cast<int>(m_index) * (static_cast<int>(m_size[1]) + margins.y())) );
-        }
-        else if(m_position == Position::BOTTOM_RIGHT)
-        {
-            const auto parentPosBottomRight = _parent->rect().bottomRight();
-
-            position = QPoint((parentPosBottomRight.x() - margins.x()) - static_cast<int>(m_size[0]),
-                              parentPosBottomRight.y() - margins.y() - static_cast<int>(m_size[1]));
-
-            position.setY( position.y() - (static_cast<int>(m_index) * (static_cast<int>(m_size[1]) + margins.y())) );
-        }
-    }
-    else // FIXME: if no active window where to pop the notification ?
-    {
-        position = margins;
-    }
-
-    return position;
 }
 
 //------------------------------------------------------------------------------
