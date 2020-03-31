@@ -114,7 +114,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                         list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, ${OBJECT_IMPL} )\n")
 
                         set(OBJECT_INCLUDE_REGEX "(::([a-zA-Z0-9_]*))*")
-                        # check if the object implementaion match the regex.
+                        # check if the object implementation matches the regex.
                         if("${OBJECT_IMPL}" MATCHES ${OBJECT_INCLUDE_REGEX})
                             # Split the object implementation with "::" to get a list of namespace.
                             string(REPLACE "::" ";" OBJECT_SUB_IMPL ${OBJECT_IMPL})
