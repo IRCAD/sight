@@ -53,7 +53,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SVector">
-        <config layer="..." transform="..." length="30" color="#FFFFFF" />
+        <config layer="..." transform="..." length="30" color="#FFFFFF" visible="true"/>
     </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -62,6 +62,7 @@ namespace visuOgreAdaptor
  * in the STransform adaptor.
  * - \b length (optional, default=1.f): axis length in mm.
  * - \b color (optional, default=#FFFFFF): color of the vector.
+ * - \b visible (optional, default=true): visibility of the vector.
  *
  */
 class VISUOGREADAPTOR_CLASS_API SVector : public ::fwRenderOgre::IAdaptor,
