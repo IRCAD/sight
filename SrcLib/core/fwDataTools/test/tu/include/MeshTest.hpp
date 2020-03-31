@@ -41,6 +41,8 @@ CPPUNIT_TEST( colorizePointsTest );
 CPPUNIT_TEST( colorizeCellsTest );
 CPPUNIT_TEST( transformTest );
 CPPUNIT_TEST( isClosedTest );
+CPPUNIT_TEST( cellNormalTest );
+CPPUNIT_TEST( pointNormalTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,6 +54,8 @@ public:
     void colorizeCellsTest();
     void transformTest();
     void isClosedTest();
+    void cellNormalTest();
+    void pointNormalTest();
 
 };
 

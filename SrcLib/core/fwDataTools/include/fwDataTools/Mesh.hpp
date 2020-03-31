@@ -72,8 +72,10 @@ public:
      * will do nothing.
      *
      * @param[out]  array mesh's array containing normals.
+     * @deprecated This method will be removed because mesh arrays can no longer be accessed.
      */
-    FWDATATOOLS_API static void shakeNormals(::fwData::Array::sptr array);
+    [[deprecated("will be removed in sight 22.0")]] FWDATATOOLS_API static void shakeNormals(
+        ::fwData::Array::sptr array);
 
     /**
      * @brief Shake point Normals.
