@@ -401,10 +401,6 @@ void ImageTest::fromToVtkTest()
     fromToTest<std::uint32_t>(::fwData::Image::RGB);
     fromToTest<std::uint32_t>(::fwData::Image::RGBA);
 
-    fromToTest<std::uint64_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::uint64_t>(::fwData::Image::RGB);
-    fromToTest<std::uint64_t>(::fwData::Image::RGBA);
-
     fromToTest<std::int8_t>(::fwData::Image::GRAY_SCALE);
     fromToTest<std::int8_t>(::fwData::Image::RGB);
     fromToTest<std::int8_t>(::fwData::Image::RGBA);
@@ -417,9 +413,7 @@ void ImageTest::fromToVtkTest()
     fromToTest<std::int32_t>(::fwData::Image::RGB);
     fromToTest<std::int32_t>(::fwData::Image::RGBA);
 
-    fromToTest<std::int64_t>(::fwData::Image::GRAY_SCALE);
-    fromToTest<std::int64_t>(::fwData::Image::RGB);
-    fromToTest<std::int64_t>(::fwData::Image::RGBA);
+    // uint64 and int64 are not recognized on Windows for VTK conversion.
 }
 
 // ------------------------------------------------------------------------------
