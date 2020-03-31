@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -70,7 +70,7 @@ class UICALIBRATION_CLASS_API SDisplayCalibrationInfo : public ::fwServices::ICo
 
 public:
 
-    fwCoreServiceMacro(SDisplayCalibrationInfo, ::fwServices::IController);
+    fwCoreServiceMacro(SDisplayCalibrationInfo, ::fwServices::IController)
 
     /// Constructor. Does nothing.
     UICALIBRATION_API SDisplayCalibrationInfo() noexcept;
@@ -91,9 +91,6 @@ protected:
 
     /// Does nothing
     virtual void configuring() override;
-
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

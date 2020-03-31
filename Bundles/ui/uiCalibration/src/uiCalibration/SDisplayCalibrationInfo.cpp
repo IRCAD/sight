@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,10 +43,10 @@ namespace uiCalibration
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwServices::IController, ::uiCalibration::SDisplayCalibrationInfo, ::fwData::Object);
+fwServicesRegisterMacro(::fwServices::IController, ::uiCalibration::SDisplayCalibrationInfo, ::fwData::Object)
 
 static const ::fwCom::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
-static const ::fwCom::Slots::SlotKeyType s_STOP_CONFIG_SLOT   = "stopConfig";
+static const ::fwCom::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
@@ -111,12 +111,6 @@ void SDisplayCalibrationInfo::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::info(std::ostream& _sstream)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SDisplayCalibrationInfo::displayImage(size_t idx)
 {
     if( !m_configMgr )
@@ -166,4 +160,3 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
 
 //------------------------------------------------------------------------------
 } // uiCalibration
-
