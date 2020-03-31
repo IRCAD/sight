@@ -132,6 +132,8 @@ void STransferFunction::updating()
 
 void STransferFunction::stopping()
 {
+    this->destroyTFPolygon();
+    this->destroyTFPoints();
 }
 
 //------------------------------------------------------------------------------
@@ -719,16 +721,13 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType
         const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
-        // If the window is negative, the TF point list is reversed compared to the TF data.
-        ::fwData::mt::ObjectReadLock tfLock(tf);
-        if(tf->getWindow() < 0)
         {
-            pointIndex = m_TFPoints.size() - 1 - pointIndex;
-        }
-        tfLock.unlock();
-
-        {
-            const ::fwData::mt::ObjectWriteLock tfLock(tf);
+            // If the window is negative, the TF point list is reversed compared to the TF data.
+            const ::fwData::mt::ObjectReadLock tfLock(tf);
+            if(tf->getWindow() < 0)
+            {
+                pointIndex = m_TFPoints.size() - 1 - pointIndex;
+            }
 
             // Retrieves the TF point.
             ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
@@ -788,17 +787,14 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
     const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
-    // If the window is negative, the TF point list is reversed compared to the TF data.
-    ::fwData::mt::ObjectReadLock tfLock(tf);
-    const double window = tf->getWindow();
-    if(window <= 0)
     {
-        pointIndex = m_TFPoints.size() - 1 - pointIndex;
-    }
-    tfLock.unlock();
-
-    {
-        const ::fwData::mt::ObjectWriteLock tfLock(tf);
+        // If the window is negative, the TF point list is reversed compared to the TF data.
+        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        const double window = tf->getWindow();
+        if(window <= 0)
+        {
+            pointIndex = m_TFPoints.size() - 1 - pointIndex;
+        }
 
         // Retrieves the TF point.
         ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();

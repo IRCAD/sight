@@ -53,7 +53,7 @@ namespace adaptor
         <inout key="tf" uid="..." />
         <inout key="viewport" uid="..." />
         <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
-   0    </service>
+    </service>
    @endcode
  *
  * @subsection In-Out In-Out

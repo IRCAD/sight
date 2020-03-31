@@ -1121,16 +1121,16 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
     SLM_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
     size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
-    // If the window is negative, the TF point list is reversed compared to the TF data.
-    const double window = _subTF->m_tf->getWindow();
-    if(window <= 0)
-    {
-        pointIndex = _subTF->m_TFPoints.size() - 1 - pointIndex;
-    }
-
     const ::fwData::TransferFunction::sptr tf = _subTF->m_tf;
     {
         const ::fwData::mt::ObjectWriteLock tfLock(tf);
+
+        // If the window is negative, the TF point list is reversed compared to the TF data.
+        const double window = tf->getWindow();
+        if(window <= 0)
+        {
+            pointIndex = _subTF->m_TFPoints.size() - 1 - pointIndex;
+        }
 
         // Retrieves the TF point.
         ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
@@ -1209,15 +1209,15 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
         SLM_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
         size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
-        // If the window is negative, the TF point list is reversed compared to the TF data.
-        if(_subTF->m_tf->getWindow() < 0)
-        {
-            pointIndex = _subTF->m_TFPoints.size() - 1 - pointIndex;
-        }
-
         const ::fwData::TransferFunction::sptr tf = _subTF->m_tf;
         {
             const ::fwData::mt::ObjectWriteLock tfLock(tf);
+
+            // If the window is negative, the TF point list is reversed compared to the TF data.
+            if(tf->getWindow() < 0)
+            {
+                pointIndex = _subTF->m_TFPoints.size() - 1 - pointIndex;
+            }
 
             // Retrieves the TF point.
             ::fwData::TransferFunction::TFDataType tfData = tf->getTFData();
