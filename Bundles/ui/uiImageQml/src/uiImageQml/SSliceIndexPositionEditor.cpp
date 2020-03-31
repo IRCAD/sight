@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -151,13 +151,13 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
         OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
-        const int index = image->getField< ::fwData::Integer >( fieldID )->value();
+        const int index = static_cast<int>(image->getField< ::fwData::Integer >( fieldID )->value());
 
         // Update QSlider
         int max = 0;
         if(image->getNumberOfDimensions() > m_orientation)
         {
-            max = static_cast<int>(image->getSize()[m_orientation]-1);
+            max = static_cast<int>(image->getSize2()[m_orientation]-1);
         }
         this->setSliceRange( 0, max );
         this->setSliceValue( index );
@@ -182,14 +182,15 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
+    const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
     auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
         ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
     ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
-    sig->asyncEmit(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
+    sig->asyncEmit(static_cast<int>(m_axialIndex->value()), static_cast<int>(m_frontalIndex->value()),
+                   static_cast<int>(m_sagittalIndex->value()));
 }
 
 //------------------------------------------------------------------------------
