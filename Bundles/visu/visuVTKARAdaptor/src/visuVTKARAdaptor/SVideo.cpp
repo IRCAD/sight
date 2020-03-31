@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideo);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideo)
 
 namespace visuVTKARAdaptor
 {
@@ -155,10 +155,10 @@ void SVideo::updating()
     ::fwData::mt::ObjectReadLock inputLock(image);
     ::fwVtkIO::toVTKImage(image, m_imageData);
 
-    // If we the image buffer has changed since the last time, consider we need to reinit the texture
+    // If we the image size has changed since the last time, consider we need to reinit the texture
     // This might happened if a service forgets to send the correct signal, of if it is caught too late
     // (e.g. regular buffer updates were queued before)
-    if(image->getDataArray() != m_imageBuffer)
+    if(image->getAllocatedSizeInBytes() != m_imageSize)
     {
         m_isTextureInit = false;
     }
@@ -191,7 +191,7 @@ void SVideo::updating()
 
         m_actor->SetInterpolate(m_interpolate);
 
-        m_imageBuffer = image->getDataArray();
+        m_imageSize = image->getAllocatedSizeInBytes();
 
         m_isTextureInit = true;
     }
@@ -200,7 +200,7 @@ void SVideo::updating()
     {
         if(m_actor->GetVisibility())
         {
-            const ::fwData::Image::SizeType size = image->getSize();
+            const ::fwData::Image::Size size = image->getSize2();
             this->getRenderer()->InteractiveOff();
             this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
             this->getRenderer()->ResetCamera();
