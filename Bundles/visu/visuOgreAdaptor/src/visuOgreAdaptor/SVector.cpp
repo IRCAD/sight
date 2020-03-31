@@ -46,8 +46,9 @@ const ::fwCom::Slots::SlotKeyType SVector::s_TOGGLE_VISIBILITY_SLOT = "toggleVis
 const ::fwCom::Slots::SlotKeyType SVector::s_SHOW_SLOT              = "show";
 const ::fwCom::Slots::SlotKeyType SVector::s_HIDE_SLOT              = "hide";
 
-static const std::string s_COLOR_CONFIG  = "color";
-static const std::string s_LENGTH_CONFIG = "length";
+static const std::string s_COLOR_CONFIG   = "color";
+static const std::string s_LENGTH_CONFIG  = "length";
+static const std::string s_VISIBLE_CONFIG = "visible";
 
 //-----------------------------------------------------------------------------
 
@@ -87,6 +88,8 @@ void SVector::configuring()
             m_color[0] == '#'
             && ( m_color.length() == 7 || m_color.length() == 9)
         );
+
+    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
