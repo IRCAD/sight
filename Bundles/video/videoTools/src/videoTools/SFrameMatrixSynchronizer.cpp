@@ -33,8 +33,6 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwMath/Compare.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
