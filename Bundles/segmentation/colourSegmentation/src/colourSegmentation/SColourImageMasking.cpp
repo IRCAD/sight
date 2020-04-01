@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,9 +41,9 @@
 namespace colourSegmentation
 {
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::colourSegmentation::SColourImageMasking);
+fwServicesRegisterMacro( ::fwServices::IOperator, ::colourSegmentation::SColourImageMasking)
 
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_SLOT            = "setBackground";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_SLOT            = "setForeground";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_THRESHOLD_SLOT             = "setThreshold";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
@@ -176,7 +176,7 @@ void SColourImageMasking::updating()
         OSLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
         OSLM_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
         OSLM_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
-        const auto maskSize = mask->getSize();
+        const auto maskSize = mask->getSize2();
         if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
         {
             OSLM_ERROR("Reference mask (" << maskSize[0] << ", " << maskSize[1]

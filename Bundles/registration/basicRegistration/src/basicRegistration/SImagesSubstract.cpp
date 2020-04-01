@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,7 @@
 
 #include <itkSubtractImageFilter.h>
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::basicRegistration::SImagesSubstract );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::basicRegistration::SImagesSubstract )
 
 namespace basicRegistration
 {
@@ -104,14 +104,12 @@ void SImagesSubstract::updating()
     ::fwData::Image::sptr imageResult = this->getInOut< ::fwData::Image>("result");
 
     // Test if the both images have the same type and it is signed short.
-    bool isSameType =
-        ( ((image1->getDataArray())->getType() == (image2->getDataArray())->getType())&&
-          ((image1->getDataArray())->getType() == REQUESTED_TYPE));
+    bool isSameType = ( image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
 
     if(isSameType)
     {
         // test if the both images have the same size.
-        bool isSameSize = (image1->getSize() == image2->getSize());
+        bool isSameSize = (image1->getSize2() == image2->getSize2());
         if(isSameSize)
         {
             typedef itk::Image< std::int16_t, 3 > ImageType;
