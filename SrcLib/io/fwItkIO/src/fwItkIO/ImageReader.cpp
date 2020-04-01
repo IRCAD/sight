@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,9 +37,10 @@
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/TypeInfoKeyTypeMapping.hpp>
 
-#include <filesystem>
 #include <itkImageFileReader.h>
 #include <itkImageIOFactory.h>
+
+#include <filesystem>
 
 fwDataIOReaderRegisterMacro( ::fwItkIO::ImageReader );
 
@@ -48,7 +49,7 @@ namespace fwItkIO
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key)  :
+ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key )  :
     ::fwData::location::enableSingleFile<
         IObjectReader >(this)
 {
@@ -146,9 +147,10 @@ void ImageReader::read()
 
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
 
-    assert( m_object.lock() ); // verify that ::fwData::Image is well produced
+    SLM_ASSERT("::fwData::Image is not well produced", m_object.lock() ); // verify that ::fwData::Image is well
+                                                                          // produced
     // Post Condition image with a pixel type
-    SLM_ASSERT("Image has an unspecified type", getConcreteObject()->getPixelType() != ::fwTools::DynamicType() );
+    SLM_ASSERT("Image has an unspecified type", getConcreteObject()->getType() != ::fwTools::Type::s_UNSPECIFIED_TYPE );
 }
 
 //------------------------------------------------------------------------------
