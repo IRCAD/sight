@@ -63,8 +63,6 @@ static int s_left_ramp_index_counter  = 0;
 static int s_right_ramp_index_counter = 0;
 static int s_trapeze_index_counter    = 0;
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SMultipleTF)
-
 //-----------------------------------------------------------------------------
 
 SMultipleTF::SMultipleTF() noexcept
