@@ -70,9 +70,16 @@ namespace uiTF
  * - \b tfPool [::fwData::Composite]: selected transfer function pool.
  *
  * @subsection Configuration Configuration
- * - \b useDefaultPath (optional, default=true): if true, load tf files from uiTF bundle.
+ * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF bundle.
  * - \b path (optional): path to a directory containing tf files.
- * - \b tfPerPath (optional, default=false): if true, merge all TF contains in each path to a new composite.
+ * - \b tfPerPath (optional, default="false"): if true, merge all TF contains in each path to a new composite.
+ * - \b deleteIcon (optional): path of the delete button icon.
+ * - \b newIcon (optional): path of the new button icon.
+ * - \b copyIcon (optional): path of the copy button icon.
+ * - \b reinitializeIcon (optional): path of the reinitialize button icon.
+ * - \b renameIcon (optional): path of the rename button icon.
+ * - \b iconWidth (optional, default="16"): icon width.
+ * - \b iconHeight (optional, default="16"): icon height.
  */
 class UITF_CLASS_API SMultipleTF final :
     public QObject,
@@ -173,7 +180,7 @@ private:
     void renamePool();
 
     /// If true, all TF contains in each path will be merged in a TF pool, else, one TF pool will be create for each
-    // files.
+    /// files.
     bool m_tfPerPath { false };
 
     /// Stores path were looking for TF presets.
@@ -200,6 +207,26 @@ private:
     /// Contains the current selected TF pool.
     ::fwData::Composite::sptr m_currentTFPool;
 
+    /// Defines the path of the delete button icon.
+    std::filesystem::path m_deleteIcon;
+
+    /// Defines the path of the new button icon.
+    std::filesystem::path m_newIcon;
+
+    /// Defines the path of the copy button icon.
+    std::filesystem::path m_copyIcon;
+
+    /// Defines the path of the reinitialize button icon.
+    std::filesystem::path m_reinitializeIcon;
+
+    /// Defines the path of the rename button icon.
+    std::filesystem::path m_renameIcon;
+
+    /// Defines icons width.
+    unsigned int m_iconWidth { 16 };
+
+    /// Defines icons height.
+    unsigned int m_iconHeight { 16 };
 };
 
 }

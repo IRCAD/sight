@@ -72,8 +72,16 @@ namespace uiTF
  * @subsection Output Output
  * - \b tf [::fwData::TransferFunction]: selected transfer function.
  * @subsection Configuration Configuration
- * - \b useDefaultPath (optional, default=true): if true, load tf files from uiTF bundle.
+ * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF bundle.
  * - \b path (optional): path to a directory containing tf files.
+ * - \b deleteIcon (optional): path of the delete button icon.
+ * - \b newIcon (optional): path of the new button icon.
+ * - \b reinitializeIcon (optional): path of the reinitialize button icon.
+ * - \b renameIcon (optional): path of the rename button icon.
+ * - \b importIcon (optional): path of the import button icon.
+ * - \b exportIcon (optional): path of the export button icon.
+ * - \b iconWidth (optional, default="16"): icon width.
+ * - \b iconHeight (optional, default="16"): icon height.
  */
 class UITF_CLASS_API STransferFunction final : public QObject,
                                                public ::fwGui::editor::IEditor
@@ -204,6 +212,30 @@ private:
     /// Stores path were looking for TF presets.
     typedef std::vector< std::filesystem::path > PathContainerType;
     PathContainerType m_paths;
+
+    /// Defines the path of the delete button icon.
+    std::filesystem::path m_deleteIcon;
+
+    /// Defines the path of the new button icon.
+    std::filesystem::path m_newIcon;
+
+    /// Defines the path of the reinitialize button icon.
+    std::filesystem::path m_reinitializeIcon;
+
+    /// Defines the path of the rename button icon.
+    std::filesystem::path m_renameIcon;
+
+    /// Defines the path of the import button icon.
+    std::filesystem::path m_importIcon;
+
+    /// Defines the path of the export button icon.
+    std::filesystem::path m_exportIcon;
+
+    /// Defines icons width.
+    unsigned int m_iconWidth { 16 };
+
+    /// Defines icons height.
+    unsigned int m_iconHeight { 16 };
 };
 
 }

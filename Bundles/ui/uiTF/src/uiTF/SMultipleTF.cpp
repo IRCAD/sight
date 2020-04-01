@@ -46,9 +46,16 @@
 namespace uiTF
 {
 
-static const std::string s_USE_DEFAULT_PATH_CONFIG = "useDefaultPath";
-static const std::string s_PATH_CONFIG             = "path";
-static const std::string s_TF_PER_PATH_CONFIG      = "tfPerPath";
+static const std::string s_USE_DEFAULT_PATH_CONFIG  = "useDefaultPath";
+static const std::string s_PATH_CONFIG              = "path";
+static const std::string s_TF_PER_PATH_CONFIG       = "tfPerPath";
+static const std::string s_DELETE_ICON_CONFIG       = "deleteIcon";
+static const std::string s_NEW_ICON_CONFIG          = "newIcon";
+static const std::string s_COPY_ICON_CONFIG         = "copyIcon";
+static const std::string s_REINITIALIZE_ICON_CONFIG = "reinitializeIcon";
+static const std::string s_RENAME_ICON_CONFIG       = "renameIcon";
+static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
+static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
 static const ::fwServices::IService::KeyType s_CURRENT_TF_POOL_INPUT = "currentTFPool";
 
@@ -60,6 +67,13 @@ static const ::fwServices::IService::KeyType s_TF_POOL_OUTPUT = "tfPool";
 
 SMultipleTF::SMultipleTF()
 {
+    const std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+
+    m_deleteIcon       = bundlePath / "delete.png";
+    m_newIcon          = bundlePath / "new.png";
+    m_copyIcon         = bundlePath / "new.png";
+    m_renameIcon       = bundlePath / "rename.png";
+    m_reinitializeIcon = bundlePath / "reinitialize.png";
 }
 
 //------------------------------------------------------------------------------
@@ -89,6 +103,16 @@ void SMultipleTF::configuring()
 
         useDefaultPath = config->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
         m_tfPerPath    = config->get<bool>(s_TF_PER_PATH_CONFIG, m_tfPerPath);
+
+        m_deleteIcon       = ::fwRuntime::getBundleResourceFilePath(config->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
+        m_newIcon          = ::fwRuntime::getBundleResourceFilePath(config->get(s_NEW_ICON_CONFIG, m_newIcon));
+        m_copyIcon         = ::fwRuntime::getBundleResourceFilePath(config->get(s_COPY_ICON_CONFIG, m_copyIcon));
+        m_reinitializeIcon =
+            ::fwRuntime::getBundleResourceFilePath(config->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
+        m_renameIcon = ::fwRuntime::getBundleResourceFilePath(config->get(s_RENAME_ICON_CONFIG, m_renameIcon));
+
+        m_iconWidth  = config->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
+        m_iconHeight = config->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
     }
 
     if(useDefaultPath)
@@ -111,27 +135,29 @@ void SMultipleTF::starting()
     // Buttons creation
     m_tfPoolsPreset = new QComboBox();
 
-    const std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
-
-    const auto deletePath = bundlePath / "delete.png";
-    m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");
+    m_deleteButton = new QPushButton(QIcon(m_deleteIcon.string().c_str()), "");
     m_deleteButton->setToolTip(QString("Delete"));
 
-    const auto newPath = bundlePath / "new.png";
-    m_newButton = new QPushButton(QIcon(newPath.string().c_str()), "");
+    m_newButton = new QPushButton(QIcon(m_newIcon.string().c_str()), "");
     m_newButton->setToolTip(QString("New"));
 
-    const auto copyPath = bundlePath / "new.png";
-    m_copyButton = new QPushButton(QIcon(copyPath.string().c_str()), "");
-    m_copyButton->setToolTip(QString("New"));
+    m_copyButton = new QPushButton(QIcon(m_copyIcon.string().c_str()), "");
+    m_copyButton->setToolTip(QString("Copy"));
 
-    const auto reinitializePath = bundlePath / "reinitialize.png";
-    m_reinitializeButton = new QPushButton(QIcon(reinitializePath.string().c_str()), "");
+    m_reinitializeButton = new QPushButton(QIcon(m_reinitializeIcon.string().c_str()), "");
     m_reinitializeButton->setToolTip(QString("Reinitialize"));
 
-    const auto renamePath = bundlePath / "rename.png";
-    m_renameButton = new QPushButton(QIcon(renamePath.string().c_str()), "");
+    m_renameButton = new QPushButton(QIcon(m_renameIcon.string().c_str()), "");
     m_renameButton->setToolTip(QString("Rename"));
+
+    if(m_iconWidth > 0 && m_iconHeight > 0)
+    {
+        m_deleteButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_newButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_copyButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_reinitializeButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_renameButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+    }
 
     // Layout management
     QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
@@ -519,16 +545,6 @@ void SMultipleTF::newPool()
             messageBox.show();
         }
     }
-
-    if(newName.empty())
-    {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage("You have to give a name to your TF pool.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -586,16 +602,6 @@ void SMultipleTF::copyPool()
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
-    }
-
-    if(newName.empty())
-    {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage("You have to give a name to your TF pool.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
     }
 }
 
@@ -679,16 +685,6 @@ void SMultipleTF::renamePool()
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
-    }
-
-    if(newName.empty())
-    {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage("You have to give a name to your TF pool.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
     }
 }
 
