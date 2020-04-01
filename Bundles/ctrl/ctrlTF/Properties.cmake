@@ -7,3 +7,5 @@ set(DEPENDENCIES
     fwRuntime
     fwServices
 )
+
+set(WARNINGS_AS_ERRORS ON)
