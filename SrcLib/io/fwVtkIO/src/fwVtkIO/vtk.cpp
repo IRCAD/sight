@@ -156,7 +156,7 @@ void* newBuffer(size_t size)
     catch (std::exception& e)
     {
         OSLM_ERROR("No enough memory to allocate an image of type "
-                   << fwTools::makeDynamicType<IMAGETYPE>().string()
+                   << fwTools::Type::create<IMAGETYPE>().string()
                    << " and of size "<< size << "." << std::endl
                    << e.what() );
         throw;

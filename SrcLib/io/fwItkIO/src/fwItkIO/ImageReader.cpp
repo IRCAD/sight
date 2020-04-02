@@ -80,7 +80,7 @@ struct ITKLoaderFunctor
     void operator()(Parameter& param)
     {
         OSLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
-                   ::fwTools::DynamicType::string<PIXELTYPE>() );
+                   ::fwTools::Type::create<PIXELTYPE>().string());
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre

@@ -88,7 +88,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
+        OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
 
         ::fwData::Image::csptr image = param.m_dataImage;
 
