@@ -53,13 +53,13 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::scene2D::adaptor::SMultipleTF" >
-        <in key="viewport" uid="..." />
-        <in key="currentTF" uid="..." optional="yes" />
-        <inout key="tfPool" uid="..." />
-        <out key="tf" uid="..." />
-        <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
-    </service>
+   <service uid="..." type="::scene2D::adaptor::SMultipleTF" >
+       <in key="viewport" uid="..." />
+       <in key="currentTF" uid="..." optional="yes" />
+       <inout key="tfPool" uid="..." />
+       <out key="tf" uid="..." />
+       <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
+   </service>
    @endcode
  *
  * @subsection Input Input

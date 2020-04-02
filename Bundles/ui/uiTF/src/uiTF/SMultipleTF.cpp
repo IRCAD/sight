@@ -260,7 +260,7 @@ void SMultipleTF::initializePools()
 
     ::fwDataTools::helper::Composite compositeHelper(tfPools);
 
-    // Add the default TF if it not exist.
+    // Add the default TF if it not exists.
     const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
     if(!this->hasPoolName(defaultTFName))
     {
