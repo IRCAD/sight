@@ -120,7 +120,7 @@ private:
         QGraphicsPolygonItem* m_TFPolygon;
     };
 
-    /// Configures the adaptor
+    /// Configures the adaptor.
     virtual void configuring() override;
 
     /**
@@ -196,7 +196,7 @@ private:
 
     /**
      * @brief Creates lines and linear gradient polygons of a subTF.
-     * @param _subTF the subTF used to create the gradient
+     * @param _subTF the subTF used to create the gradient.
      * @param _position the position vector to fill.
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
@@ -208,7 +208,7 @@ private:
 
     /**
      * @brief Creates lines and nearest gradient polygons of a subTF.
-     * @param _subTF the subTF used to create the gradient
+     * @param _subTF the subTF used to create the gradient.
      * @param _position the position vector to fill.
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
@@ -352,7 +352,7 @@ private:
 
     /**
      * @brief Check if the name is already used in the composite.
-     * @param _name the name to check
+     * @param _name the name to check.
      * @return True if the name is already used.
      */
     bool hasTFName(const std::string& _name) const;

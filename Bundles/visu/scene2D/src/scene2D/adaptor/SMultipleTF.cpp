@@ -692,7 +692,7 @@ void SMultipleTF::processInteraction(::fwRenderQt::data::Event& _event)
     {
         for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : subTF->m_TFPoints)
         {
-            // If a point as already been captured.
+            // If a point has already been captured.
             if(m_capturedTFPoint == &tfPoint)
             {
                 if(_event.getType() == ::fwRenderQt::data::Event::MouseMove)

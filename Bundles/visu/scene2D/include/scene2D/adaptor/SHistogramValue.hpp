@@ -40,12 +40,12 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-    <service uid="histogram" type="::scene2D::adaptor::SHistogramValue" autoConnect="yes">
+   <service uid="histogram" type="::scene2D::adaptor::SHistogramValue" autoConnect="yes">
        <in key="histogram" uid="..." />
        <in key="point" uid="..." />
        <in key="viewport"  uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" fontSize="8"/>
-    </service>
+   </service>
    @endcode
  *
  * @subsection In In
@@ -78,7 +78,7 @@ public:
 
 private:
 
-    /// Configures the adaptor
+    /// Configures the adaptor.
     virtual void configuring() override;
 
     /// Initializes the layer and the font.
@@ -89,9 +89,9 @@ private:
      * @return A map of each proposed connection.
      *
      * Connect ::fwRenderQt::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     *::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
+     * ::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
      * Connect ::fwData::Histogram::s_MODIFIED_SIG of s_HISTOGRAM_INPUT to
-     *::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
+     * ::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
      */
     virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 

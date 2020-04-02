@@ -260,7 +260,7 @@ void SMultipleTF::initializePools()
 
     ::fwDataTools::helper::Composite compositeHelper(tfPools);
 
-    // Add the default TF if it's not exist.
+    // Add the default TF if it not exist.
     const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
     if(!this->hasPoolName(defaultTFName))
     {
@@ -338,7 +338,7 @@ void SMultipleTF::initializePools()
                 }
             }
 
-            // If it's requested to have on TF per path, add the composite and create a new one.
+            // If it's requested to have one TF per path, add the composite and create a new one.
             if(m_tfPerPath)
             {
                 if(composite->size() > 0)
@@ -385,10 +385,9 @@ void SMultipleTF::updatePoolsPreset()
     tfPoolsLock.unlock();
 
     // Find the current composite.
-    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
-    std::string currentPoolName     = defaultTFName;
+    std::string currentPoolName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
 
-    // If the current TF pool exist, find it.
+    // If the current TF pool exists, find it.
     const ::fwData::Composite::csptr tfPool = this->getInput< ::fwData::Composite >(s_CURRENT_TF_POOL_INPUT);
     if(tfPool)
     {
@@ -404,8 +403,7 @@ void SMultipleTF::updatePoolsPreset()
         tfPoolsLock.unlock();
     }
 
-    int index = m_tfPoolsPreset->findText(QString::fromStdString(currentPoolName));
-    index = std::max(index, 0);
+    const int index = m_tfPoolsPreset->findText(QString::fromStdString(currentPoolName));
 
     // Set the current composite
     this->presetChoice(index);

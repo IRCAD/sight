@@ -85,7 +85,7 @@ public:
 
 private:
 
-    /// Configures the adaptor
+    /// Configures the adaptor.
     void configuring() override;
 
     /// Creates graphic items.
@@ -124,10 +124,10 @@ private:
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border.
     bool mouseOnShutterLeft(::fwRenderQt::data::Coord _coord);
 
-    /// Tells if the mouse cursor is at the good position to start interacting on shutter's right border
+    /// Tells if the mouse cursor is at the good position to start interacting on shutter's right border.
     bool mouseOnShutterRight(::fwRenderQt::data::Coord _coord);
 
-    /// Tells if the mouse cursor is at the good position to start interacting on shutter's middle part
+    /// Tells if the mouse cursor is at the good position to start interacting on shutter's middle part.
     bool mouseOnShutterMiddle(::fwRenderQt::data::Coord _coord);
 
     /// Stores the graphic item that represents the shutter.

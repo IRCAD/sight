@@ -90,7 +90,7 @@ public:
 
 private:
 
-    /// Configures the adaptor
+    /// Configures the adaptor.
     virtual void configuring() override;
 
     /**
@@ -201,7 +201,7 @@ private:
     void leftButtonDoubleClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
 
     /**
-     * @brief Removes a TF point from the TF .
+     * @brief Removes a TF point from the TF.
      * @param _TFPoint the selected TF point.
      */
     void rightButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
