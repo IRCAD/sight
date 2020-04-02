@@ -33,7 +33,6 @@
 
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/TypeKeyTypeMapping.hpp>
 
 namespace opImageFilter
