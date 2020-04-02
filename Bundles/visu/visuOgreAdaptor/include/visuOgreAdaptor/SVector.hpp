@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,11 +47,13 @@ namespace visuOgreAdaptor
  * -\b updateVisibility(bool): Sets whether the vector is shown or not.
  * -\b toggleVisibility(): Toggle whether the vector is shown or not.
  * -\b updateLength(float): set the length of the vector.
+ * -\b show(): Shows the vector.
+ * -\b hide(): Hides the vector.
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SVector">
-        <config layer="..." transform="..." length="30" color="#FFFFFF" />
+        <config layer="..." transform="..." length="30" color="#FFFFFF" visible="true"/>
     </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -60,6 +62,7 @@ namespace visuOgreAdaptor
  * in the STransform adaptor.
  * - \b length (optional, default=1.f): axis length in mm.
  * - \b color (optional, default=#FFFFFF): color of the vector.
+ * - \b visible (optional, default=true): visibility of the vector.
  *
  */
 class VISUOGREADAPTOR_CLASS_API SVector : public ::fwRenderOgre::IAdaptor,
@@ -70,13 +73,19 @@ public:
     fwCoreServiceMacro(SVector, ::fwRenderOgre::IAdaptor)
 
     /// Slot used to set visibility.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
     /// Slot used to toggle visibility.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
 
     /// Slot used to update length of the line.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
+
+    /// Slot used to show the vector.
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+
+    /// Slot used to hide the vector.
+    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
@@ -108,12 +117,6 @@ private:
     void toggleVisibility();
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals.
-     * @return An empty connection map.
-     */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    /**
      * @brief Update the length of the vector.
      * @param _length Length of the vector
      */
@@ -124,6 +127,12 @@ private:
 
     /// Delete resources.
     void deleteVector();
+
+    /// Show the vector.
+    void show();
+
+    /// Hide the vector.
+    void hide();
 
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material {nullptr};

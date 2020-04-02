@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,9 +43,12 @@ namespace visuOgreAdaptor
 const ::fwCom::Slots::SlotKeyType SVector::s_UPDATE_LENGTH_SLOT     = "updateLength";
 const ::fwCom::Slots::SlotKeyType SVector::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SVector::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const ::fwCom::Slots::SlotKeyType SVector::s_SHOW_SLOT              = "show";
+const ::fwCom::Slots::SlotKeyType SVector::s_HIDE_SLOT              = "hide";
 
-static const std::string s_COLOR_CONFIG  = "color";
-static const std::string s_LENGTH_CONFIG = "length";
+static const std::string s_COLOR_CONFIG   = "color";
+static const std::string s_LENGTH_CONFIG  = "length";
+static const std::string s_VISIBLE_CONFIG = "visible";
 
 //-----------------------------------------------------------------------------
 
@@ -54,20 +57,14 @@ SVector::SVector() noexcept
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVector::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SVector::toggleVisibility, this);
     newSlot(s_UPDATE_LENGTH_SLOT, &SVector::updateLength, this);
+    newSlot(s_SHOW_SLOT, &SVector::show, this);
+    newSlot(s_HIDE_SLOT, &SVector::hide, this);
 }
 
 //-----------------------------------------------------------------------------
 
 SVector::~SVector() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SVector::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -91,6 +88,8 @@ void SVector::configuring()
             m_color[0] == '#'
             && ( m_color.length() == 7 || m_color.length() == 9)
         );
+
+    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -230,7 +229,7 @@ void SVector::updateVisibility(bool _isVisible)
         m_sceneNode->setVisible(m_isVisible);
     }
 
-    this->updating();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -247,6 +246,19 @@ void SVector::updateLength(float _length)
     m_length = _length;
 
     this->update();
+}
+
+//-----------------------------------------------------------------------------
+void SVector::show()
+{
+    this->updateVisibility(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void SVector::hide()
+{
+    this->updateVisibility(false);
 }
 
 //-----------------------------------------------------------------------------
