@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,6 +56,7 @@ public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
+    /// Defines the texture filtering mode.
     typedef enum FilteringEnum
     {
         NONE,
@@ -65,10 +66,19 @@ public:
 
     using sptr = std::shared_ptr<Plane>;
 
-    /// Creates a plane, instantiates its material. Call @ref Plane::initializePlane() to create its geometry.
+    /**
+     * @brief Creates a plane, instantiates its material. Call @ref Plane::initializePlane() to create its geometry.
+     * @param _negatoId unique identifier of the negato.
+     * @param _parentSceneNode parent node where attach the plane.
+     * @param _sceneManager the Ogre scene manager.
+     * @param _orientation the direction of the plane.
+     * @param _tex texture to apply on the plane.
+     * @param _filtering filtering methode used to apply the texture.
+     * @param _entityOpacity opacity of the entity.
+     */
     FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
                            ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
-                           FilteringEnumType _filtering, float _entityOpacity = 1.0f);
+                           FilteringEnumType _filtering, float _entityOpacity = 1.0f, bool _displayBorder = true);
 
     /// @deprecated removed in sight 21.0
     [[deprecated("Deprecated constructor. Removed in sight 21.0")]]
@@ -79,63 +89,95 @@ public:
     {
     }
 
-    /// Destructor, cleans ogre resources.
+    /// Cleans ogre resources.
     FWRENDEROGRE_API virtual ~Plane();
 
     /// Instantiates the plane mesh and entity.
     FWRENDEROGRE_API void initializePlane();
 
-    /// Slot handling slice plane move:
-    ///     - in 2D, it will convert the position in unit floating value and call the fragment shader
-    ///     - in 3D, it will also move the scene node in space
-    FWRENDEROGRE_API void changeSlice( float _sliceIndex );
+    /**
+     * @brief Handles the slice plane move.
+     *     - in 2D, it will convert the position in unit floating value and call the fragment shader.
+     *     - in 3D, it will also move the scene node in space.
+     * @param _sliceIndex the image slice index used to move the plane.
+     */
+    FWRENDEROGRE_API void changeSlice(float _sliceIndex);
 
-    /// Sets the image axis orthogonal to the plane.
+    /**
+     * @brief Sets the image axis orthogonal to the plane.
+     * @param _newMode the new orientation.
+     */
     FWRENDEROGRE_API void setOrientationMode(OrientationMode _newMode);
 
-    /// Sets whether the negato's opacity is taken into account.
-    FWRENDEROGRE_API void enableAlpha(bool);
+    /**
+     * @brief Sets whether the negato's opacity is taken into account.
+     * @param _enable used true to enable the opacity.
+     */
+    FWRENDEROGRE_API void enableAlpha(bool _enable);
 
-    /// Sets the real world image's origin .
+    /**
+     * @brief Sets the real world image's origin.
+     * @param _origPos the image origin.
+     */
     FWRENDEROGRE_API void setOriginPosition(const ::Ogre::Vector3& _origPos);
 
-    /// Sets the real world size of a voxel.
+    /**
+     * @brief Sets the real world size of a voxel.
+     * @param _spacing the image spacing.
+     */
     FWRENDEROGRE_API void setVoxelSpacing(const ::Ogre::Vector3& _spacing);
 
-    /// Sets the plane's opacity.
-    FWRENDEROGRE_API void setEntityOpacity( float _f );
+    /**
+     * @brief Sets the plane's opacity.
+     * @param _f the opacity value
+     *
+     * @pre _f must fit between 0 and 1.
+     */
+    FWRENDEROGRE_API void setEntityOpacity(float _f);
 
-    /// Shows/hides the plane in the scene.
-    FWRENDEROGRE_API void setVisible( bool _visible );
+    /**
+     * @brief Shows/hides the plane in the scene.
+     * @param _visible use true to show the plane.
+     */
+    FWRENDEROGRE_API void setVisible(bool _visible);
 
-    /// Adds or updates the texture containing the transfer function data in the negato passes
+    /**
+     * @brief Adds or updates the texture containing the transfer function data in the negato passes.
+     * @param _tfTexture the TF texture.
+     */
     FWRENDEROGRE_API void setTFData(const ::fwRenderOgre::TransferFunction& _tfTexture);
 
-    /// Sets whether or not the transfer function uses thresholding.
+    /**
+     * @brief Sets whether or not the transfer function uses thresholding.
+     * @param _threshold use true to enable the treshold.
+     */
     FWRENDEROGRE_API void switchThresholding(bool _threshold);
 
-    /// Retrieves the plane's width in model space.
+    /// Gets the plane's width in model space.
     FWRENDEROGRE_API ::Ogre::Real getWidth() const;
 
-    /// Retrieves the plane's height in model space.
+    /// Gets the plane's height in model space.
     FWRENDEROGRE_API ::Ogre::Real getHeight() const;
 
     /// Moves the scene node to m_originPosition point
     FWRENDEROGRE_API void moveToOriginPosition();
 
-    /// Returns the x, y or z world position of the plane scene node according to the current orientation mode
+    /// Gets the x, y or z world position of the plane scene node according to the current orientation mode
     FWRENDEROGRE_API double getSliceWorldPosition() const;
 
-    /// Retrieves the image axis orthogonal to the plane.
+    /// Gets the image axis orthogonal to the plane.
     FWRENDEROGRE_API OrientationMode getOrientationMode() const;
 
-    /// Retrieves the material used to render the plane.
+    /// Gets the material used to render the plane.
     FWRENDEROGRE_API ::Ogre::MaterialPtr getMaterial();
 
-    /// Retrieves the movable object created by this class.
+    /// Gets the movable object created by this class.
     FWRENDEROGRE_API const ::Ogre::MovableObject* getMovableObject() const;
 
-    /// Sets the picking flags.
+    /**
+     * @brief Sets the picking flags.
+     * @param _flags the flags use for the picking.
+     */
     FWRENDEROGRE_API void setQueryFlags(std::uint32_t _flags);
 
     /// Sets this object's render queue group and render priority.
@@ -146,10 +188,10 @@ private:
     /// Sets the plane's original position.
     void initializePosition();
 
-    /// Creates a material for the mesh plane with the negato texture
+    /// Creates a material for the mesh plane with the negato texture.
     void initializeMaterial();
 
-    /// Sets the relativePosition, then
+    /// Sets the relativePosition.
     void setRelativePosition(float _relativePosition);
 
     /// Moves plane along its Normal.
@@ -158,57 +200,74 @@ private:
     /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
     ::Ogre::MovablePlane setDimensions();
 
-    /// Indicates whether whe want to threshold instead of windowing
+    /// Indicates whether whe want to threshold instead of windowing.
     bool m_threshold { false };
 
-    /// Defines the filtering type for this plane
+    /// Defines the filtering type for this plane.
     FilteringEnumType m_filtering { FilteringEnum::ANISOTROPIC };
 
-    /// Orientation mode of the plane
+    /// Defines the orientation mode of the plane.
     OrientationMode m_orientation;
 
-    /// The plane on wich we will apply a texture
+    /// Contains the plane on wich we will apply a texture.
     ::Ogre::MeshPtr m_slicePlane;
-    /// The origin position of the slice plane according to the source image's origin
+
+    /// Contains the manual object that represent borders.
+    ::Ogre::ManualObject* m_border { nullptr };
+
+    /// Defines the origin position of the slice plane according to the source image's origin.
     ::Ogre::Vector3 m_originPosition { ::Ogre::Vector3::ZERO };
-    /// Pointer to the material
-    ::Ogre::MaterialPtr m_texMaterial;
-    /// Pointer to the texture
+
+    /// Contains the plane material.
+    ::Ogre::MaterialPtr m_texMaterial { nullptr };
+
+    /// Contains the material used to display borders.
+    ::Ogre::MaterialPtr m_borderMaterial { nullptr };
+
+    /// Contains the texture.
     ::Ogre::TexturePtr m_texture;
-    /// Points to the scenemanager containing the plane
+
+    /// Contains the scenemanager containing the plane.
     ::Ogre::SceneManager* m_sceneManager { nullptr };
 
-    /// Strings needed to initialize mesh, scenenode, etc.
+    /// Defines a strings needed to initialize mesh, scenenode, etc.
     std::string m_slicePlaneName;
-    /// Entity name. used to recover this from the Ogre entityManager
+
+    /// Defines the entity name. used to recover this from the Ogre entityManager.
     std::string m_entityName;
-    /// Used to recover the scenenode from it's name.
+
+    /// Defines the scene node name used to recover the scene node from it's name.
     std::string m_sceneNodeName;
 
-    /// The scene node on which we will attach the mesh
+    /// Contains the scene node on which we will attach the mesh.
     ::Ogre::SceneNode* m_planeSceneNode { nullptr };
-    /// The parent scene node.
+
+    /// Contains the parent scene node.
     ::Ogre::SceneNode* m_parentSceneNode { nullptr };
 
     /// Entity's width.
     ::Ogre::Real m_width { 0.f };
-    /// Entity's height.
+
+    /// Defines the entity's height.
     ::Ogre::Real m_height { 0.f };
-    /// Entity's depth.
+
+    /// Defines the entity's depth.
     ::Ogre::Real m_depth { 0.f };
 
-    /// Spacing in the texture 3d image file.
+    /// Defines the spacing in the texture 3d image file.
     ::Ogre::Vector3 m_spacing { ::Ogre::Vector3::ZERO };
 
-    /// Where are we insite the depth range?
+    /// Defines the depth range.
     float m_relativePosition { 0.8f };
 
-    /// Opacity applied to the entity.
+    /// Defines the opacity applied to the entity.
     float m_entityOpacity { 1.f };
+
+    /// Defines if the border is displayed.
+    bool m_displayBorder { true };
 };
 
 //------------------------------------------------------------------------------
-// Inline functions
 
 inline void Plane::setOriginPosition(const ::Ogre::Vector3& _origPos)
 {

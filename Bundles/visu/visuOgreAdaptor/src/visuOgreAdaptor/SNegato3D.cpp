@@ -32,6 +32,7 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwDataTools/Color.hpp>
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -63,12 +64,19 @@ static const ::fwCom::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
+static const std::string s_AUTORESET_CONFIG   = "autoresetcamera";
+static const std::string s_TRANSFORM_CONFIG   = "transform";
+static const std::string s_FILTERING_CONFIG   = "filtering";
+static const std::string s_TF_ALPHA_CONFIG    = "tfAlpha";
+static const std::string s_INTERACTIVE_CONFIG = "interactive";
+static const std::string s_PRIORITY_CONFIG    = "priority";
+static const std::string s_QUERY_CONFIG       = "queryFlags";
+static const std::string s_BORDER_CONFIG      = "border";
+
 static const std::string s_TRANSPARENCY_FIELD = "TRANSPARENCY";
 static const std::string s_VISIBILITY_FIELD   = "VISIBILITY";
 
 static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID - 1;
-
-static const std::string s_QUERY_CONFIG = "queryFlags";
 
 //------------------------------------------------------------------------------
 
@@ -91,20 +99,6 @@ SNegato3D::~SNegato3D() noexcept
 {
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
 void SNegato3D::configuring()
@@ -113,17 +107,17 @@ void SNegato3D::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count("autoresetcamera"))
+    if(config.count(s_AUTORESET_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CONFIG) == "yes";
     }
-    if(config.count("transform"))
+    if(config.count(s_TRANSFORM_CONFIG))
     {
-        this->setTransformId(config.get<std::string>("transform"));
+        this->setTransformId(config.get<std::string>(s_TRANSFORM_CONFIG));
     }
-    if(config.count("filtering"))
+    if(config.count(s_FILTERING_CONFIG))
     {
-        const std::string filteringValue = config.get<std::string>("filtering");
+        const std::string filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
         ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
 
         if(filteringValue == "none")
@@ -135,7 +129,7 @@ void SNegato3D::configuring()
             filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
         }
 
-        this->setFiltering(filtering);
+        m_filtering = filtering;
     }
     if(config.count(s_QUERY_CONFIG))
     {
@@ -148,9 +142,10 @@ void SNegato3D::configuring()
         m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 
-    m_enableAlpha         = config.get<bool>("tfalpha", m_enableAlpha);
-    m_interactive         = config.get<bool>("interactive", m_interactive);
-    m_interactionPriority = config.get<int>("priority", m_interactionPriority);
+    m_enableAlpha         = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
+    m_interactive         = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
+    m_interactionPriority = config.get<int>(s_PRIORITY_CONFIG, m_interactionPriority);
+    m_border              = config.get<bool>(s_TF_ALPHA_CONFIG, m_border);
 
     const std::string transformId =
         config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
@@ -194,7 +189,7 @@ void SNegato3D::starting()
         plane = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
                                                           this->getSceneManager(),
                                                           imgOrientation, m_3DOgreTexture,
-                                                          m_filtering);
+                                                          m_filtering, m_border);
     }
 
     if (m_autoResetCamera)
@@ -227,6 +222,20 @@ void SNegato3D::starting()
         m_pickingCross->setRenderQueueGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 1);
         m_negatoSceneNode->attachObject(m_pickingCross);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -708,4 +717,4 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
     }
 }
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.
