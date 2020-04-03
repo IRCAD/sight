@@ -161,9 +161,9 @@ void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr& src, const ::
     const auto srcDumpLock  = src->lock();
     const auto destDumpLock = dest->lock();
 
-    auto srcItr  = src->begin< ::fwData::iterator::ConstPointIterator >();
-    auto srcEnd  = src->end< ::fwData::iterator::ConstPointIterator >();
-    auto destItr = dest->begin< ::fwData::iterator::PointIterator >();
+    auto srcItr       = src->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto srcEnd = src->end< ::fwData::iterator::ConstPointIterator >();
+    auto destItr      = dest->begin< ::fwData::iterator::PointIterator >();
 
     for (; srcItr != srcEnd; ++srcItr, ++destItr)
     {
@@ -197,7 +197,7 @@ void SSimpleMeshDeformation::computeDeformation (
     const auto transformDumpLock = transformMesh->lock();
 
     auto refItr       = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
-    const auto refEnd = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto refEnd = refMesh->end< ::fwData::iterator::ConstPointIterator >();
     auto transformItr = transformMesh->begin< ::fwData::iterator::PointIterator >();
 
     // Compute limits

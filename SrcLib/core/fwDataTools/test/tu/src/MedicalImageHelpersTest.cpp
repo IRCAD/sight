@@ -69,9 +69,9 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         ::fwData::Image::sptr image = ::fwData::Image::New();
 
-        ::fwData::Image::Size size       = {125, 110, 45};
-        ::fwData::Image::Spacing spacing = { 1., 1., 1.};
-        ::fwData::Image::Origin origin   = {0., 0., 0.};
+        const ::fwData::Image::Size size       = {125, 110, 45};
+        const ::fwData::Image::Spacing spacing = { 1., 1., 1.};
+        const ::fwData::Image::Origin origin   = {0., 0., 0.};
         ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
                                                   ::fwData::Image::PixelFormat::GRAY_SCALE);
 
@@ -104,16 +104,16 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         ::fwData::Image::sptr image = ::fwData::Image::New();
 
-        ::fwData::Image::Size size       = {42, 34, 75};
-        ::fwData::Image::Spacing spacing = { 1., 1., 1.};
-        ::fwData::Image::Origin origin   = {0., 0., 0.};
+        const ::fwData::Image::Size size       = {42, 34, 75};
+        const ::fwData::Image::Spacing spacing = { 1., 1., 1.};
+        const ::fwData::Image::Origin origin   = {0., 0., 0.};
         ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
                                                   ::fwData::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 
-        auto itr    = image->begin<Type>();
-        auto itrEnd = image->end<Type>();
+        auto itr          = image->begin<Type>();
+        const auto itrEnd = image->end<Type>();
 
         for (; itr != itrEnd; ++itr)
         {
@@ -143,16 +143,16 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         ::fwData::Image::sptr image = ::fwData::Image::New();
 
-        ::fwData::Image::Size size       = {156, 208, 0};
-        ::fwData::Image::Spacing spacing = { 1., 1., 0.};
-        ::fwData::Image::Origin origin   = {0., 0., 0.};
+        const ::fwData::Image::Size size       = {156, 208, 0};
+        const ::fwData::Image::Spacing spacing = { 1., 1., 0.};
+        const ::fwData::Image::Origin origin   = {0., 0., 0.};
         ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
                                                   ::fwData::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
 
-        auto itr    = image->begin<Type>();
-        auto itrEnd = image->end<Type>();
+        auto itr          = image->begin<Type>();
+        const auto itrEnd = image->end<Type>();
 
         for (; itr != itrEnd; ++itr)
         {
@@ -206,7 +206,7 @@ void getPixelBufferTestHelper(const P& pixelValue)
     using SubPixel = typename P::value_type;
     constexpr size_t N_COMPONENTS = std::tuple_size<P>::value;
     ::fwData::Image::sptr image = createImageFromPixelBuffer<P>();
-    auto size = image->getSize2();
+    const auto size = image->getSize2();
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
@@ -274,8 +274,8 @@ template <class P>
 void setPixelBufferTestHelper(P& pixelValue)
 {
     using SubPixel = typename P::value_type;
-    auto image = createImageFromPixelBuffer<P>();
-    auto size  = image->getSize2();
+    auto image      = createImageFromPixelBuffer<P>();
+    const auto size = image->getSize2();
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
@@ -286,7 +286,7 @@ void setPixelBufferTestHelper(P& pixelValue)
 
     // Test that the helper returned pixel value is correct
     ::fwData::Image::csptr constImage = image;
-    P value = constImage->at<P>(coords[0], coords[1], coords[2]);
+    const P value = constImage->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
         for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
