@@ -1,4 +1,3 @@
-
 set( NAME visuOgreAdaptor )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
@@ -7,9 +6,7 @@ set( DEPENDENCIES
     fwCom
     fwCore
     fwData
-    fwDataCamp
     fwGui
-    fwMath
     fwMedData
     fwRenderOgre
     fwRuntime
@@ -18,5 +15,5 @@ set( DEPENDENCIES
     fwDataTools
     arData
 )
-set( REQUIREMENTS visuOgre )
+set( REQUIREMENTS )
 set( WARNINGS_AS_ERRORS ON )
