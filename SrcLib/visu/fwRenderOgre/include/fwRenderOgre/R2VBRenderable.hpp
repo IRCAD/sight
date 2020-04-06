@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,10 +47,18 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
+    [[deprecated("Will be removed in sight 22.0")]]
     FWRENDEROGRE_API static R2VBRenderable* New(const std::string& _name, ::Ogre::SubEntity* _sourceObject,
                                                 ::Ogre::SceneManager* _sceneManager,
                                                 ::fwData::Mesh::CellTypesEnum _primitiveType,
                                                 const std::string& _mtlName );
+
+    /// Create a new instance of R2VBRenderable
+    FWRENDEROGRE_API static R2VBRenderable* New(const std::string& _name, ::Ogre::SubEntity* _sourceObject,
+                                                ::Ogre::SceneManager* _sceneManager,
+                                                ::fwData::Mesh::CellType _primitiveType,
+                                                const std::string& _mtlName );
+
     FWRENDEROGRE_API R2VBRenderable(const ::Ogre::String& name);
     virtual FWRENDEROGRE_API ~R2VBRenderable();
 
@@ -88,7 +96,10 @@ public:
 
     ::fwRenderOgre::IAdaptor::wptr m_materialAdaptor;
 
+    [[deprecated("Will be removed in sight 22.0")]]
     ::fwData::Mesh::CellTypesEnum getInputPrimitiveType() const;
+
+    ::fwData::Mesh::CellType getInputPrimitiveType2() const;
 
 protected:
     /// Source object of the r2vb process
@@ -102,7 +113,7 @@ protected:
     bool m_dirty;
 
     /// Primitive type used as input
-    ::fwData::Mesh::CellTypesEnum m_inputPrimitiveType;
+    ::fwData::Mesh::CellType m_inputPrimitiveType;
 
     /// Maximum number of vertices in output buffer
     size_t m_maxOutputVertexCount;
@@ -156,6 +167,13 @@ inline void R2VBRenderable::setRenderToBufferMaterial(const std::string& _mtlNam
 //------------------------------------------------------------------------------
 
 inline ::fwData::Mesh::CellTypesEnum R2VBRenderable::getInputPrimitiveType() const
+{
+    return static_cast< ::fwData::Mesh::CellTypesEnum >(m_inputPrimitiveType);
+}
+
+//------------------------------------------------------------------------------
+
+inline ::fwData::Mesh::CellType R2VBRenderable::getInputPrimitiveType2() const
 {
     return m_inputPrimitiveType;
 }

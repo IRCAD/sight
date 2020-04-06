@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ const unsigned int Mesh::s_maxTextureSize;
 
 template <typename T>
 void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
-                 ::fwDataTools::helper::MeshGetter& _meshHelper, size_t _uiNumCells)
+                 const ::fwData::Mesh::csptr& _mesh)
 {
     FW_PROFILE_AVG("copyIndices", 5);
 
@@ -62,37 +62,36 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     T* pEdges     = static_cast<T*>(_pEdges);
     T* pTetras    = static_cast<T*>(_pTetras);
 
-    ::fwData::Mesh::ConstCellDataMultiArrayType cells                  = _meshHelper.getCellData();
-    ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = _meshHelper.getCellDataOffsets();
-    ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType             = _meshHelper.getCellTypes();
+    auto cellItr       = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto cellEnd = _mesh->end< ::fwData::iterator::ConstCellIterator >();
 
-    for (unsigned int i = 0; i < _uiNumCells; ++i)
+    for (; cellItr != cellEnd; ++cellItr)
     {
-        long offset = static_cast<long>(cellDataOffsets[static_cast<int>(i)]);
-        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
+        const auto type = *cellItr->type;
+        if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE) )
         {
-            *pTriangles++ = static_cast<T>(cells[offset]);
-            *pTriangles++ = static_cast<T>(cells[offset + 1]);
-            *pTriangles++ = static_cast<T>(cells[offset + 2]);
+            *pTriangles++ = static_cast<T>(cellItr->pointIdx[0]);
+            *pTriangles++ = static_cast<T>(cellItr->pointIdx[1]);
+            *pTriangles++ = static_cast<T>(cellItr->pointIdx[2]);
         }
-        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::QUAD )
+        else if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD) )
         {
-            *pQuads++ = static_cast<T>(cells[offset]);
-            *pQuads++ = static_cast<T>(cells[offset + 1]);
-            *pQuads++ = static_cast<T>(cells[offset + 2]);
-            *pQuads++ = static_cast<T>(cells[offset + 3]);
+            *pQuads++ = static_cast<T>(cellItr->pointIdx[0]);
+            *pQuads++ = static_cast<T>(cellItr->pointIdx[1]);
+            *pQuads++ = static_cast<T>(cellItr->pointIdx[2]);
+            *pQuads++ = static_cast<T>(cellItr->pointIdx[3]);
         }
-        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::EDGE )
+        else if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE) )
         {
-            *pEdges++ = static_cast<T>(cells[offset]);
-            *pEdges++ = static_cast<T>(cells[offset + 1]);
+            *pEdges++ = static_cast<T>(cellItr->pointIdx[0]);
+            *pEdges++ = static_cast<T>(cellItr->pointIdx[1]);
         }
-        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TETRA )
+        else if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA) )
         {
-            *pTetras++ = static_cast<T>(cells[offset]);
-            *pTetras++ = static_cast<T>(cells[offset + 1]);
-            *pTetras++ = static_cast<T>(cells[offset + 2]);
-            *pTetras++ = static_cast<T>(cells[offset + 3]);
+            *pTetras++ = static_cast<T>(cellItr->pointIdx[0]);
+            *pTetras++ = static_cast<T>(cellItr->pointIdx[1]);
+            *pTetras++ = static_cast<T>(cellItr->pointIdx[2]);
+            *pTetras++ = static_cast<T>(cellItr->pointIdx[3]);
         }
     }
 }
@@ -197,7 +196,7 @@ void Mesh::setVisible(bool _visible)
 
 void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 {
-    ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
+    const auto dumpLock = _mesh->lock();
 
     /// The values in this table refer to vertices in the above table
     const size_t numVertices = _mesh->getNumberOfPoints();
@@ -205,15 +204,7 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 
     // Check if the mesh has normals - we assume we should have as many normals as points
     // If this is not the case, normals will be ignored or regenerated if needed and if the number of vertices changed
-    m_hasNormal = false;
-    if( auto normals = _mesh->getPointNormalsArray() )
-    {
-        const auto numNormals = normals->getNumberOfElements() / normals->getNumberOfComponents();
-        if(numNormals >= numVertices)
-        {
-            m_hasNormal = true;
-        }
-    }
+    m_hasNormal = _mesh->hasPointNormals();
 
     //------------------------------------------
     // Create vertex arrays
@@ -240,12 +231,13 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
         {
             // Verify if mesh contains Tetra, Edge or Point
             // If not, generate normals
-            ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
+            auto cellItr        = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
+            const auto cellEnd  = _mesh->end< ::fwData::iterator::ConstCellIterator >();
             bool computeNormals = true;
 
-            for(unsigned int i = 0; i < cellsType.size(); ++i)
+            for(; cellItr != cellEnd; ++cellItr)
             {
-                auto cellType = cellsType[static_cast<int>(i)];
+                auto cellType = *cellItr->type;
                 if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA
                    || cellType == ::fwData::Mesh::POINT)
                 {
@@ -305,35 +297,36 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
     //------------------------------------------
 
     // 1 - Count number of primitives for each type
-    ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
+    auto cellItr       = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto cellEnd = _mesh->end< ::fwData::iterator::ConstCellIterator >();
     unsigned int numIndices[ s_numPrimitiveTypes ];
 
     memset(numIndices, 0, sizeof(numIndices));
 
-    for(unsigned int i = 0; i < cellsType.size(); ++i)
+    for(; cellItr != cellEnd; ++cellItr)
     {
         auto cellType = _pointsOnly ?
-                        ::fwData::Mesh::POINT :
-                        static_cast< ::fwData::Mesh::CellTypesEnum>(cellsType[static_cast<int>(i)]);
-        if(cellType == ::fwData::Mesh::POINT)
+                        ::fwData::Mesh::CellType::POINT :
+                        static_cast< ::fwData::Mesh::CellType>(*cellItr->type);
+        if(cellType == ::fwData::Mesh::CellType::POINT)
         {
-            numIndices[::fwData::Mesh::POINT] += 1;
+            numIndices[static_cast<unsigned int>(::fwData::Mesh::CellType::POINT)] += 1;
         }
-        else if(cellType == ::fwData::Mesh::EDGE)
+        else if(cellType == ::fwData::Mesh::CellType::EDGE)
         {
-            numIndices[::fwData::Mesh::EDGE] += 2;
+            numIndices[static_cast<unsigned int>(::fwData::Mesh::CellType::EDGE)] += 2;
         }
-        else if(cellType == ::fwData::Mesh::TRIANGLE)
+        else if(cellType == ::fwData::Mesh::CellType::TRIANGLE)
         {
-            numIndices[::fwData::Mesh::TRIANGLE] += 3;
+            numIndices[static_cast<unsigned int>(::fwData::Mesh::CellType::TRIANGLE)] += 3;
         }
-        else if(cellType == ::fwData::Mesh::QUAD)
+        else if(cellType == ::fwData::Mesh::CellType::QUAD)
         {
-            numIndices[::fwData::Mesh::QUAD] += 4;
+            numIndices[static_cast<unsigned int>(::fwData::Mesh::CellType::QUAD)] += 4;
         }
-        else if(cellType == ::fwData::Mesh::TETRA)
+        else if(cellType == ::fwData::Mesh::CellType::TETRA)
         {
-            numIndices[::fwData::Mesh::TETRA] += 4;
+            numIndices[static_cast<unsigned int>(::fwData::Mesh::CellType::TETRA)] += 4;
         }
         else
         {
@@ -347,22 +340,22 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 
     const bool indices32Bits     = numVertices >= (1 << 16);
     const bool indicesPrev32Bits = prevNumVertices >= (1 << 16);
-    const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
+    const bool hasPrimitiveColor = _mesh->hasCellColors();
 
     {
         FW_PROFILE_AVG("REALLOC INDEX", 5);
 
         for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
         {
-            const ::fwData::Mesh::CellTypesEnum cellType = static_cast< ::fwData::Mesh::CellTypesEnum>(i);
+            const ::fwData::Mesh::CellType cellType = static_cast< ::fwData::Mesh::CellType>(i);
 
             if(numIndices[i] > 0)
             {
                 if(!m_subMeshes[i])
                 {
                     // Create one submesh
-                    const std::string name = std::to_string(cellType);
-                    if ( cellType == ::fwData::Mesh::TRIANGLE )
+                    const std::string name = std::to_string(static_cast<int>(cellType));
+                    if ( cellType == ::fwData::Mesh::CellType::TRIANGLE )
                     {
                         if(hasPrimitiveColor)
                         {
@@ -376,17 +369,17 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
 
                         m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST;
                     }
-                    else if(cellType == ::fwData::Mesh::EDGE )
+                    else if(cellType == ::fwData::Mesh::CellType::EDGE )
                     {
                         m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
                         m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_LINE_LIST;
                     }
-                    else if(cellType == ::fwData::Mesh::POINT )
+                    else if(cellType == ::fwData::Mesh::CellType::POINT )
                     {
                         m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
                         m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
                     }
-                    else if(cellType == ::fwData::Mesh::QUAD || cellType == ::fwData::Mesh::TETRA )
+                    else if(cellType == ::fwData::Mesh::CellType::QUAD || cellType == ::fwData::Mesh::CellType::TETRA )
                     {
                         // Use r2vb pipeline to generate quads or tetrahedrons
                         m_subMeshes[i]                = m_r2vbMesh->createSubMesh(name);
@@ -397,7 +390,7 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
                     m_subMeshes[i]->indexData->indexStart = 0;
                 }
 
-                if(cellType != ::fwData::Mesh::POINT)
+                if(cellType != ::fwData::Mesh::CellType::POINT)
                 {
                     ::Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMeshes[i]->indexData->indexBuffer;
 
@@ -435,9 +428,9 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
                 // Destroy the submesh if it has been created before - a submesh with 0 index would be invalid
                 if(m_subMeshes[i])
                 {
-                    std::string name = std::to_string(cellType);
-                    if ( (cellType == ::fwData::Mesh::TRIANGLE && hasPrimitiveColor) ||
-                         (cellType == ::fwData::Mesh::TETRA || cellType == ::fwData::Mesh::QUAD))
+                    std::string name = std::to_string(static_cast<int>(cellType));
+                    if ( (cellType == ::fwData::Mesh::CellType::TRIANGLE && hasPrimitiveColor) ||
+                         (cellType == ::fwData::Mesh::CellType::TETRA || cellType == ::fwData::Mesh::CellType::QUAD))
                     {
                         m_r2vbMesh->destroySubMesh(name);
                     }
@@ -459,13 +452,13 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
         {
             copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                           indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
-                                          meshHelper, _mesh->getNumberOfCells() );
+                                          _mesh );
         }
         else
         {
             copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                           indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
-                                          meshHelper, _mesh->getNumberOfCells() );
+                                          _mesh );
         }
     }
 
@@ -569,8 +562,9 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::
     std::vector<R2VBRenderable*> r2vbRenderables;
     bool add = true;
 
-    const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
-    if( (m_subMeshes[::fwData::Mesh::QUAD] || m_subMeshes[::fwData::Mesh::TETRA]) || hasPrimitiveColor)
+    const bool hasPrimitiveColor = _mesh->hasCellColors();
+    if( (m_subMeshes[static_cast<unsigned int>(::fwData::Mesh::CellType::QUAD)]
+         || m_subMeshes[static_cast<unsigned int>(::fwData::Mesh::CellType::TETRA)]) || hasPrimitiveColor)
     {
         if(!m_r2vbMesh->sharedVertexData)
         {
@@ -601,13 +595,13 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::
             const bool bQuad  = (subMesh == m_subMeshes[::fwData::Mesh::QUAD]);
             const bool bTetra = (subMesh == m_subMeshes[::fwData::Mesh::TETRA]);
 
-            const ::fwData::Mesh::CellTypesEnum cellType = bQuad ? ::fwData::Mesh::QUAD :
-                                                           bTetra ? ::fwData::Mesh::TETRA :
-                                                           ::fwData::Mesh::TRIANGLE;
+            const ::fwData::Mesh::CellType cellType = bQuad ? ::fwData::Mesh::CellType::QUAD :
+                                                      bTetra ? ::fwData::Mesh::CellType::TETRA :
+                                                      ::fwData::Mesh::CellType::TRIANGLE;
 
             if(m_r2vbObject.find(cellType) == m_r2vbObject.end())
             {
-                const std::string name           = std::to_string(cellType);
+                const std::string name           = std::to_string(static_cast<int>(cellType));
                 const std::string r2vbObjectName = m_ogreMesh->getName() + "_r2vbObject_" + name;
                 m_r2vbObject[cellType] = ::fwRenderOgre::R2VBRenderable::New(r2vbObjectName, subEntity, &_sceneMgr,
                                                                              cellType, _materialName);
@@ -654,8 +648,10 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
     void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with ::fwData::Mesh
-    ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
-    ::fwData::Mesh::ConstPointsMultiArrayType points = meshHelper.getPoints();
+    const auto dumpLock = _mesh->lock();
+
+    auto pointsItr       = _mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto pointsEnd = _mesh->end< ::fwData::iterator::ConstPointIterator >();
 
     size_t uiStrideFloat = 3;
     if(m_hasNormal)
@@ -675,44 +671,45 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
     PointValueType yMax = std::numeric_limits<PointValueType>::lowest();
     PointValueType zMax = std::numeric_limits<PointValueType>::lowest();
 
-    const unsigned int numPoints = static_cast<unsigned int>(_mesh->getNumberOfPoints());
-
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
-        for (unsigned int i = 0; i < numPoints; ++i)
+        for (; pointsItr != pointsEnd; ++pointsItr)
         {
-            const auto& pt0 = points[static_cast<int>(i)][0];
+            const auto& pt0 = pointsItr->point->x;
             xMin = std::min(xMin, pt0);
             xMax = std::max(xMax, pt0);
 
-            const auto& pt1 = points[static_cast<int>(i)][1];
+            const auto& pt1 = pointsItr->point->y;
             yMin = std::min(yMin, pt1);
             yMax = std::max(yMax, pt1);
 
-            const auto& pt2 = points[static_cast<int>(i)][2];
+            const auto& pt2 = pointsItr->point->z;
             zMin = std::min(zMin, pt2);
             zMax = std::max(zMax, pt2);
         }
     }
     {
+        pointsItr = _mesh->begin< ::fwData::iterator::ConstPointIterator >();
         PointValueType* __restrict pPos = static_cast< PointValueType* >( pVertex );
-        FW_PROFILE_AVG("UPDATE POS", 5);
-        for (unsigned int i = 0; i < numPoints; ++i)
-        {
-            memcpy(pPos, &points[static_cast<int>(i)][0], 3 * sizeof(PointValueType) );
-            pPos += uiStrideFloat;
-        }
-    }
+        FW_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
 
-    if(m_hasNormal)
-    {
-        FW_PROFILE_AVG("UPDATE NORMALS", 5);
-        ::fwData::Mesh::ConstPointNormalsMultiArrayType normals = meshHelper.getPointNormals();
-        NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
-        for (unsigned int i = 0; i < numPoints; ++i)
+        NormalValueType* __restrict pNormal = nullptr;
+
+        if (m_hasNormal)
         {
-            memcpy(pNormal, &normals[static_cast<int>(i)][0], 3 * sizeof(NormalValueType) );
-            pNormal += uiStrideFloat;
+            pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
+        }
+
+        for (; pointsItr != pointsEnd; ++pointsItr)
+        {
+            memcpy(pPos, pointsItr->point, 3 * sizeof(PointValueType) );
+            pPos += uiStrideFloat;
+
+            if (m_hasNormal)
+            {
+                memcpy(pNormal, pointsItr->normal, 3 * sizeof(NormalValueType) );
+                pNormal += uiStrideFloat;
+            }
         }
     }
 
@@ -878,8 +875,8 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SLM_ASSERT("Invalid vertex buffer binding", bind);
 
-    const bool hasVertexColor    = (_mesh->getPointColorsArray() != nullptr);
-    const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
+    const bool hasVertexColor    = _mesh->hasPointColors();
+    const bool hasPrimitiveColor = _mesh->hasCellColors();
 
     // 1 - Initialization
     if(hasVertexColor)
@@ -903,8 +900,8 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
         {
             if(m_subMeshes[i])
             {
-                const ::fwData::Mesh::CellTypesEnum cellType = static_cast< ::fwData::Mesh::CellTypesEnum>(i);
-                if ( cellType == ::fwData::Mesh::TRIANGLE)
+                const ::fwData::Mesh::CellType cellType = static_cast< ::fwData::Mesh::CellType>(i);
+                if ( cellType == ::fwData::Mesh::CellType::TRIANGLE)
                 {
                     numIndicesTotal += static_cast<unsigned int>(m_subMeshes[i]->indexData->indexCount / 3);
                 }
@@ -948,10 +945,10 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
         m_perPrimitiveColorTextureName = "";
     }
 
+    const auto lock = _mesh->lock();
     // 2 - Copy of vertices
     if (hasVertexColor)
     {
-        ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
 
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
@@ -959,18 +956,17 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
             static_cast< ::Ogre::RGBA* >( cbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD) );
 
         // Destination
-        const auto colors           = meshHelper.getPointColors();
-        const std::uint8_t* icolors = reinterpret_cast<const std::uint8_t*>(colors.data());
+        const std::uint8_t* colors = _mesh->getPointColorsBuffer();
 
         // Copy points
-        ::fwRenderOgre::helper::Mesh::copyColors(pColor, icolors, _mesh->getNumberOfPoints(), colors.shape()[1]);
+        const size_t nbComponents = _mesh->hasRGBPointColors() ? 3 : 4;
+        ::fwRenderOgre::helper::Mesh::copyColors(pColor, colors, _mesh->getNumberOfPoints(), nbComponents);
 
         cbuf->unlock();
     }
 
     if(hasPrimitiveColor)
     {
-        ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
 
         // Source cells
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
@@ -979,11 +975,11 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
         ::Ogre::RGBA* pColorDest = reinterpret_cast< ::Ogre::RGBA* >( pixelBox.data );
 
         // Destination
-        auto colors                 = meshHelper.getCellColors();
-        const std::uint8_t* icolors = reinterpret_cast<const std::uint8_t*>(colors.data());
+        const std::uint8_t* colors = _mesh->getCellColorsBuffer();
 
         // Copy cells
-        ::fwRenderOgre::helper::Mesh::copyColors(pColorDest, icolors, _mesh->getNumberOfCells(), colors.shape()[1]);
+        const size_t nbComponents = _mesh->hasRGBCellColors() ? 3 : 4;
+        ::fwRenderOgre::helper::Mesh::copyColors(pColorDest, colors, _mesh->getNumberOfCells(), nbComponents);
 
         pixelBuffer->unlock();
     }
@@ -1001,7 +997,7 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
 
 void Mesh::updateTexCoords(const ::fwData::Mesh::csptr& _mesh)
 {
-    m_hasUV = (_mesh->getPointTexCoordsArray() != nullptr);
+    m_hasUV = _mesh->hasPointTexCoords();
 
     // . UV Buffer - By now, we just use one UV coordinates set for each mesh
     if (m_hasUV)
@@ -1010,20 +1006,18 @@ void Mesh::updateTexCoords(const ::fwData::Mesh::csptr& _mesh)
 
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
 
-        ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
-
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
         void* pBuf = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 
-        ::fwData::Mesh::ConstPointTexCoordsMultiArrayType uvCoord = meshHelper.getPointTexCoords();
+        auto itr = _mesh->begin< ::fwData::iterator::ConstPointIterator >();
 
         // Copy UV coordinates for each mesh point
-        for (unsigned int i = 0; i < _mesh->getNumberOfPoints(); ++i)
+        for (unsigned int i = 0; i < _mesh->getNumberOfPoints(); ++i, ++itr)
         {
-            pUV[2 * i]     = uvCoord[static_cast<int>(i)][0];
-            pUV[2 * i + 1] = uvCoord[static_cast<int>(i)][1];
+            pUV[2 * i]     = itr->tex->u;
+            pUV[2 * i + 1] = itr->tex->v;
         }
 
         uvbuf->unlock();
@@ -1041,10 +1035,10 @@ void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
     {
         if(m_subMeshes[i])
         {
-            const ::fwData::Mesh::CellTypesEnum cellType = static_cast< ::fwData::Mesh::CellTypesEnum>(i);
-            const std::string name                       = std::to_string(cellType);
-            if ( (cellType == ::fwData::Mesh::TRIANGLE && m_hasPrimitiveColor) ||
-                 (cellType == ::fwData::Mesh::TETRA || cellType == ::fwData::Mesh::QUAD))
+            const ::fwData::Mesh::CellType cellType = static_cast< ::fwData::Mesh::CellType>(i);
+            const std::string name                  = std::to_string(static_cast<int>(cellType));
+            if ( (cellType == ::fwData::Mesh::CellType::TRIANGLE && m_hasPrimitiveColor) ||
+                 (cellType == ::fwData::Mesh::CellType::TETRA || cellType == ::fwData::Mesh::CellType::QUAD))
             {
                 m_r2vbMesh->destroySubMesh(name);
             }
@@ -1096,8 +1090,8 @@ void Mesh::updateMaterial(Material* _material, bool _isR2VB) const
 
 bool Mesh::hasColorLayerChanged(const fwData::Mesh::csptr& _mesh)
 {
-    const bool hasVertexColor    = (_mesh->getPointColorsArray() != nullptr);
-    const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
+    const bool hasVertexColor    = _mesh->hasPointColors();
+    const bool hasPrimitiveColor = _mesh->hasCellColors();
 
     return hasVertexColor != m_hasVertexColor || hasPrimitiveColor != m_hasPrimitiveColor;
 }

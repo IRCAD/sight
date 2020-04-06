@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -347,7 +347,7 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
 {
     ::glm::vec4* satBuffer = new ::glm::vec4[m_satSize[0] * m_satSize[1] * m_satSize[2]];
 
-    ::fwDataTools::helper::Image imageHelper(_image);
+    const auto dumpLock = _image->lock();
 
     ::glm::vec4 satVal;
 
@@ -357,11 +357,11 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
         {
             for(int x = 0; x < static_cast<int>(m_satSize[0]); ++x)
             {
-                int16_t* imgValue =
-                    static_cast<int16_t*>(imageHelper.getPixelBuffer(static_cast<size_t>(x), static_cast<size_t>(y),
-                                                                     static_cast<size_t>(z)));
+                std::int16_t imgValue =
+                    _image->at<std::int16_t>(static_cast<size_t>(x), static_cast<size_t>(y),
+                                             static_cast<size_t>(z));
 
-                satVal = applyTf(_tf, *imgValue)
+                satVal = applyTf(_tf, imgValue)
                          + getSatValue(satBuffer, x-1, y-1, z-1)
                          + getSatValue(satBuffer, x, y, z-1)
                          + getSatValue(satBuffer, x, y-1, z  )

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -125,7 +125,7 @@ private:
     /// Mesh data for r2vb input - contains only line lists with adjacency information primitives
     ::Ogre::MeshPtr m_r2vbMesh;
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
-    std::map< ::fwData::Mesh::CellTypesEnum, ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
+    std::map< ::fwData::Mesh::CellType, ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
 
     /// Defines if there is a normal layer
     bool m_hasNormal { false };

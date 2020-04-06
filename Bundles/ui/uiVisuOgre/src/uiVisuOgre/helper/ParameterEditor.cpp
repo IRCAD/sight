@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 #include "fwData/Color.hpp"
 #include "fwData/Float.hpp"
 #include "fwData/Integer.hpp"
-
-#include <fwDataTools/helper/ArrayGetter.hpp>
 
 namespace uiVisuOgre
 {
@@ -153,10 +151,10 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
     }
     else if(objType == "::fwData::Array")
     {
-        auto arrayObject = ::fwData::Array::dynamicCast(shaderObj);
-        if(arrayObject->getNumberOfComponents() <= 3)
+        auto arrayObject         = ::fwData::Array::dynamicCast(shaderObj);
+        const auto numComponents = arrayObject->getSize()[0];
+        if(numComponents <= 3)
         {
-            auto numComponents  = arrayObject->getNumberOfComponents();
             std::string strSize = std::to_string(numComponents);
 
             if( arrayObject->getType() == ::fwTools::Type::s_FLOAT ||
@@ -167,16 +165,16 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
 
                 // We can't give a default value for each component to SParameters :/
                 // For now fill it with the first one
-                ::fwDataTools::helper::ArrayGetter arrayHelper(arrayObject);
+                const auto dumpLock = arrayObject->lock();
 
                 double defaultValue;
                 if(arrayObject->getType() == ::fwTools::Type::s_FLOAT)
                 {
-                    defaultValue = static_cast<double>(arrayHelper.getItem< float >({0})[0]);
+                    defaultValue = static_cast<double>(arrayObject->at< float >(0));
                 }
                 else
                 {
-                    defaultValue = arrayHelper.getItem< double >({0})[0];
+                    defaultValue = arrayObject->at< double >(0);
                 }
                 const auto minmax = getRange(defaultValue);
                 const double min  = minmax.first;
@@ -193,9 +191,9 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
             {
                 _connections.connect(_paramSrv, "int" + strSize + "Changed",
                                      _adaptor, "setInt" + strSize + "Parameter");
+                const auto dumpLock = arrayObject->lock();
 
-                ::fwDataTools::helper::ArrayGetter arrayHelper(arrayObject);
-                const int defaultValue = arrayHelper.getItem< int >({0})[0];
+                const int defaultValue = arrayObject->at< std::int32_t >(0);
                 const auto minmax      = getRange(defaultValue);
                 const int min          = minmax.first;
                 const int max          = minmax.second;
@@ -214,7 +212,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderO
         }
         else
         {
-            OSLM_ERROR("Array size not handled: " << arrayObject->getNumberOfComponents());
+            OSLM_ERROR("Array size not handled: " << numComponents);
         }
     }
     else
