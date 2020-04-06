@@ -30,17 +30,21 @@
 
 #include <tuple>
 
+namespace visuOgreAdaptor
+{
+
 static const ::fwCom::Slots::SlotKeyType s_REVERT_SLOT = "revert";
 static const ::fwCom::Slots::SlotKeyType s_RESIZE_SLOT = "resize";
 
-namespace visuOgreAdaptor
-{
+//------------------------------------------------------------------------------
 
 SResizeViewport::SResizeViewport() noexcept
 {
     newSlot(s_REVERT_SLOT, &SResizeViewport::revert, this);
     newSlot(s_RESIZE_SLOT, &SResizeViewport::resize, this);
 }
+
+//------------------------------------------------------------------------------
 
 SResizeViewport::~SResizeViewport() noexcept
 {
@@ -144,4 +148,4 @@ void SResizeViewport::revert()
     this->resizeViewport(false);
 }
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

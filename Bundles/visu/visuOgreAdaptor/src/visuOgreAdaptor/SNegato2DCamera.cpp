@@ -390,4 +390,4 @@ void SNegato2DCamera::updateWindowing( double _dw, double _dl )
 
 //-----------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

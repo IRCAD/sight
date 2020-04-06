@@ -113,6 +113,15 @@ void SText::starting()
     this->updateText();
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_OBJECT_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
+
 //----------------------------------------------------------------------------
 
 void SText::updating()
@@ -131,17 +140,6 @@ void SText::stopping()
     m_text->detachFromParent();
     sm->destroyMovableObject(m_text);
     m_text = nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-
-    connections.push(s_OBJECT_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
 }
 
 //----------------------------------------------------------------------------
@@ -214,4 +212,4 @@ void SText::updateText()
     this->setText(textString);
 }
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

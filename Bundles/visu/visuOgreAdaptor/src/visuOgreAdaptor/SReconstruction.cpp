@@ -22,8 +22,6 @@
 
 #include "visuOgreAdaptor/SReconstruction.hpp"
 
-#include <visuOgreAdaptor/defines.hpp>
-
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
@@ -37,10 +35,8 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SReconstruction, ::fwData::Reconstruction)
-
-const ::fwCom::Slots::SlotKeyType SReconstruction::s_CHANGE_MESH_SLOT = "changeMesh";
-const ::fwCom::Slots::SlotKeyType SReconstruction::s_VISIBILITY_SLOT = "modifyVisibility";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
+static const ::fwCom::Slots::SlotKeyType s_VISIBILITY_SLOT  = "modifyVisibility";
 
 static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
 
@@ -99,6 +95,48 @@ void SReconstruction::starting()
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SReconstruction::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
+    connections.push(s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT );
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SReconstruction::updating()
+{
+    if (!m_meshAdaptor.expired())
+    {
+        auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+        ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
+
+        // Do nothing if the mesh is identical
+        auto mesh = ::fwServices::OSR::getRegistered("mesh", ::fwServices::IService::AccessType::INOUT, meshAdaptor);
+        if(mesh != reconstruction->getMesh())
+        {
+            // Updates the mesh adaptor according to the reconstruction
+            meshAdaptor->setMaterial(reconstruction->getMaterial());
+            meshAdaptor->updateVisibility(reconstruction->getIsVisible());
+        }
+    }
+    else
+    {
+        // If m_meshService does not exists, we have to create it
+        this->createMeshService();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SReconstruction::stopping()
+{
+    this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
 void SReconstruction::createMeshService()
 {
     // Retrieves the associated Reconstruction object
@@ -133,38 +171,6 @@ void SReconstruction::createMeshService()
         OSLM_TRACE("Mesh is visible : " << reconstruction->getIsVisible());
         OSLM_TRACE("Mesh nb points : " << mesh->getNumberOfPoints());
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SReconstruction::updating()
-{
-    if (!m_meshAdaptor.expired())
-    {
-        auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
-        ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
-
-        // Do nothing if the mesh is identical
-        auto mesh = ::fwServices::OSR::getRegistered("mesh", ::fwServices::IService::AccessType::INOUT, meshAdaptor);
-        if(mesh != reconstruction->getMesh())
-        {
-            // Updates the mesh adaptor according to the reconstruction
-            meshAdaptor->setMaterial(reconstruction->getMaterial());
-            meshAdaptor->updateVisibility(reconstruction->getIsVisible());
-        }
-    }
-    else
-    {
-        // If m_meshService does not exists, we have to create it
-        this->createMeshService();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SReconstruction::stopping()
-{
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
@@ -225,14 +231,4 @@ void SReconstruction::modifyVisibility()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SReconstruction::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
-    connections.push( s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT );
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

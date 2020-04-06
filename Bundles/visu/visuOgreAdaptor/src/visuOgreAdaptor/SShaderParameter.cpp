@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 
-#include "visuOgreAdaptor/defines.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwServices/macros.hpp>
@@ -35,8 +34,6 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IParameter, ::visuOgreAdaptor::SShaderParameter, ::fwData::Object);
-
 //------------------------------------------------------------------------------
 
 SShaderParameter::SShaderParameter() noexcept
@@ -47,13 +44,6 @@ SShaderParameter::SShaderParameter() noexcept
 
 SShaderParameter::~SShaderParameter() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SShaderParameter::setMaterialName(const std::string& matName)
-{
-    m_materialName = matName;
 }
 
 //------------------------------------------------------------------------------
@@ -104,4 +94,4 @@ void SShaderParameter::swapping()
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

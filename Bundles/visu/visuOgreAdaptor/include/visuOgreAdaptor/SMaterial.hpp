@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Adapt a ::fwData::Material, allowing to tweak material parameters.
+ * @brief This adaptor adapt a ::fwData::Material, allowing to tweak material parameters.
  *
  * @section Slots Slots
  * - \b updateField(::fwData::Object::FieldsContainerType) : Listen to the fields in the ::fwData::Material.
@@ -67,140 +67,159 @@ namespace visuOgreAdaptor
                 shadingMode="gouraud" normalLength="0.1" />
     </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b material [::fwData::Material]: adapted material. The material may be modified to comply to the configuration
  * of the adaptor.
+ *
  * @subsection Configuration Configuration:
- *  - \b materialTemplate (optional) : name of the base Ogre material
- *  - \b materialName (optional) : name of the Ogre material. This is necessary to bind a ::visuOgreAdaptor:SMesh or a
+ * - \b materialTemplate (optional, string, default="") : name of the base Ogre material
+ * - \b materialName (optional, string, default="") : name of the Ogre material. This is necessary to bind a
+ *::visuOgreAdaptor:SMesh or a
  * ::visuOgreAdaptor:SModelSeries to this material; simply specify the same Ogre material in its configuration.
- *  - \b textureName (optional) : the Ogre texture name used the material. Use it if you want to reference a texture
+ * - \b textureName (optional, string, default="") : the Ogre texture name used the material. Use it if you want to
+ * reference a texture
  * managed by an another ::visuOgreAdaptor::STexture.
- *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
- *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
+ * - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
+ * - \b normalLength (optional, float, default=0.1) : factor defining the length of the normals
  */
-class VISUOGREADAPTOR_CLASS_API SMaterial : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SMaterial final : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
-    fwCoreServiceMacro(SMaterial, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SMaterial, ::fwRenderOgre::IAdaptor)
 
     /**
      * @name Slots API
      * @{
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_FIELD_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_FIELD_SLOT;
-
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SWAP_TEXTURE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_TEXTURE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_TEXTURE_SLOT;
     /** @} */
 
-    /// Constructor
+    /**
+     * @name In-Out In-Out API
+     * @{
+     */
+    VISUOGREADAPTOR_API static const std::string s_MATERIAL_INOUT;
+    /** @} */
+
+    /// Initializes slots.
     VISUOGREADAPTOR_API SMaterial() noexcept;
 
-    /// Destructor
+    /// Does nothing.
     VISUOGREADAPTOR_API virtual ~SMaterial() noexcept;
 
-    /// Get Ogre associated material
+    /// Gets Ogre associated material.
     VISUOGREADAPTOR_API ::Ogre::MaterialPtr getMaterial();
 
-    /// Get material name
+    /// Gets material name.
     VISUOGREADAPTOR_API std::string getMaterialName() const;
 
-    /// Retrieves the associated texture name
-    VISUOGREADAPTOR_API void setTextureName(const std::string& textureName);
+    /// Retrieves the associated texture name.
+    VISUOGREADAPTOR_API void setTextureName(const std::string& _textureName);
 
-    /// Set material name
-    void setMaterialName(const std::string& materialName);
+    /// Sets material name.
+    VISUOGREADAPTOR_API void setMaterialName(const std::string& _materialName);
 
-    /// Set material template name
-    void setMaterialTemplateName(const std::string& materialName);
+    /// Sets material template name.
+    VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string& _materialName);
 
-    /// Tells if there is a texture currently bound
-    bool hasDiffuseTexture() const;
+    /// Tells if there is a texture currently bound.
+    VISUOGREADAPTOR_API bool hasDiffuseTexture() const;
 
-    const std::string& getShadingMode() const;
-    void setShadingMode(const std::string& _shadingMode);
+    /// Gets the shading mode.
+    VISUOGREADAPTOR_API const std::string& getShadingMode() const;
 
-    void setR2VBObject(::fwRenderOgre::R2VBRenderable* _r2vbObject);
+    /// Sets the shading mode.
+    VISUOGREADAPTOR_API void setShadingMode(const std::string& _shadingMode);
 
-    // Return the internal material code
-    fwRenderOgre::Material* getMaterialFw() const;
+    /// Set the renderable object.
+    VISUOGREADAPTOR_API void setR2VBObject(::fwRenderOgre::R2VBRenderable* _r2vbObject);
 
-    /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    VISUOGREADAPTOR_API static const std::string s_MATERIAL_INOUT;
-
-protected:
-
-    /// Configure the parameters
-    VISUOGREADAPTOR_API void configuring() override;
-
-    /// Starting method under fixed function pipeline
-    VISUOGREADAPTOR_API void starting() override;
-
-    /// Stopping method
-    VISUOGREADAPTOR_API void stopping() override;
-
-    /// Updating method, updates fixed function pipeline parameters
-    VISUOGREADAPTOR_API void updating() override;
+    /// Gets the internal material code.
+    VISUOGREADAPTOR_API fwRenderOgre::Material* getMaterialFw() const;
 
 private:
 
-    /// Slot: called when the material's field changed
-    void updateField( ::fwData::Object::FieldsContainerType fields);
+    /// Configures the adaptor.
+    virtual void configuring() override;
 
-    /// Slot: called when the texture is swapped in the texture adaptor
+    /// Creates the material.
+    virtual void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Material::s_MODIFIED_SIG of s_MATERIAL_INOUT to s_UPDATE_SLOT
+     * Connect ::fwData::Material::s_ADDED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
+     * Connect ::fwData::Material::s_CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
+     * Connect ::fwData::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT
+     * Connect ::fwData::Material::s_REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to s_REMOVE_TEXTURE_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Updates fixed function pipeline parameters.
+    virtual void updating() override;
+
+    /// Release Ogre resources.
+    virtual void stopping() override;
+
+    /**
+     * @brief SLOT: updates the material from the input data fields.
+     * @param _fields fields to update, only "ogreMaterial" is taken into account.
+     */
+    void updateField(::fwData::Object::FieldsContainerType _fields);
+
+    /// SLOT: swaps the texture of the material.
     void swapTexture();
 
-    /// Slot: called to create a texture adaptor when a texture is added to the material.
+    /// SLOT: creates a texture adaptor when a texture is added to the material.
     /// This method is also called from the starting in order to create the texture adaptor if the material has a
     /// default texture.
     void createTextureAdaptor();
 
-    /// Slot: called to remove the texture adaptor when the texture is removed from the material
+    /// SLOT: removes the texture adaptor when the texture is removed from the material.
     void removeTextureAdaptor();
 
-    /// Creates a new object from loaded shader
-    ::fwData::Object::sptr createObjectFromShaderParameter(::Ogre::GpuConstantType type,
-                                                           std::string paramName);
-
-    /// create shader parameters adaptors from ressources
+    /// Creates shader parameters adaptors from ressources.
     void createShaderParameterAdaptors();
 
-    /// Material name. It is auto generated.
+    /// Defines the material name. It is auto generated.
     std::string m_materialName;
 
-    /// Default template name, given by xml configuration.
+    /// Defines the default template name, given by xml configuration.
     /// It must refer an existing Ogre material which will be used in order to instanciate m_material
     std::string m_materialTemplateName;
 
-    /// The texture adaptor the material adaptor is listening to
+    /// Contains the texture adaptor the material adaptor is listening to.
     ::visuOgreAdaptor::STexture::sptr m_texAdaptor;
+
+    /// Defines the texture name.
     std::string m_textureName;
 
+    /// Stores supported schemes.
     std::vector< Ogre::String > m_schemesSupported;
 
-    /// Signal/Slot connections with texture adaptor
+    /// Handles connections with texture adaptor.
     ::fwCom::helper::SigSlotConnection m_textureConnection;
 
-    /// The configured shading mode
+    /// Defines the configured shading mode.
     std::string m_shadingMode;
 
-    /// Current number of lights in the scene.
+    /// Defines the current number of lights in the scene..
     int m_lightsNumber;
 
+    /// Contains the Ogre material.
     ::fwRenderOgre::Material::uptr m_materialFw;
+
+    /// Contains the renderable object.
     ::fwRenderOgre::R2VBRenderable* m_r2vbObject { nullptr };
 };
-
-//------------------------------------------------------------------------------
-// Inline functions
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
@@ -267,4 +286,4 @@ inline ::fwRenderOgre::Material* SMaterial::getMaterialFw() const
 
 //------------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

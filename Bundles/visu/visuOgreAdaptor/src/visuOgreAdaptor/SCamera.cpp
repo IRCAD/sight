@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,16 +44,12 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCamera, ::fwData::TransformationMatrix3D)
+static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformation";
 
-//------------------------------------------------------------------------------
-
-const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
-const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformation";
-
-const ::fwServices::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
-const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
-const ::fwServices::IService::KeyType s_TRANSFORM_INOUT     = "transform";
+static const ::fwServices::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
+static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
+static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT     = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -67,19 +63,6 @@ SCamera::SCamera() noexcept
 
 SCamera::~SCamera() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_CALIBRATION_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
-    connections.push( s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push( s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -108,13 +91,17 @@ void SCamera::starting()
     this->updating();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void SCamera::stopping()
+::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
 {
-    m_layerConnection.disconnect();
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_CALIBRATION_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
+    connections.push(s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CAMERA_SERIES_INPUT, ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
-    this->unregisterServices();
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -161,6 +148,15 @@ void SCamera::updating()
     parent->translate(position);
 
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SCamera::stopping()
+{
+    m_layerConnection.disconnect();
+
+    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
@@ -365,4 +361,4 @@ void SCamera::calibrateCameraSeries(const arData::CameraSeries::csptr& _cs)
 
 //------------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

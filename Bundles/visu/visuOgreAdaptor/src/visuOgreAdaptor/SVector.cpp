@@ -40,11 +40,11 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SVector::s_UPDATE_LENGTH_SLOT     = "updateLength";
-const ::fwCom::Slots::SlotKeyType SVector::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType SVector::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-const ::fwCom::Slots::SlotKeyType SVector::s_SHOW_SLOT              = "show";
-const ::fwCom::Slots::SlotKeyType SVector::s_HIDE_SLOT              = "hide";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT     = "updateLength";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT              = "show";
+static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
 
 static const std::string s_COLOR_CONFIG   = "color";
 static const std::string s_LENGTH_CONFIG  = "length";
@@ -263,4 +263,4 @@ void SVector::hide()
 
 //-----------------------------------------------------------------------------
 
-} //visuOgreAdaptor
+} // namespace visuOgreAdaptor.

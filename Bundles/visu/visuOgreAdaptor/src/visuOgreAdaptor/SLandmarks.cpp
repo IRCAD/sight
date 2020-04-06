@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,8 +36,6 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLandmarks)
-
 static const std::string s_LANDMARKS_INPUT = "landmarks";
 
 static const std::string s_TEXT_SIZE_CONFIG = "textSize";
@@ -52,27 +50,6 @@ SLandmarks::SLandmarks() noexcept
 
 SLandmarks::~SLandmarks() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-
-    connections.push(s_TRANSFORM_CONFIG, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_INSERTED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_UPDATE_SLOT );
-
-    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -119,6 +96,27 @@ void SLandmarks::starting()
     m_text = this->getLayer()->getOverlayTextPanel();
 
     this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+
+    connections.push(s_TRANSFORM_CONFIG, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_INSERTED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -232,4 +230,4 @@ void SLandmarks::clearData()
     m_labels.clear();
 }
 
-} //visuOgreAdaptor
+} // namespace visuOgreAdaptor.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -73,8 +73,6 @@ private:
     std::uint8_t m_frameCount {100}; // Start at 100 to trigger text creation after the first frame.
 
 };
-
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SRenderStats)
 
 //------------------------------------------------------------------------------
 
@@ -164,4 +162,4 @@ void SRenderStats::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

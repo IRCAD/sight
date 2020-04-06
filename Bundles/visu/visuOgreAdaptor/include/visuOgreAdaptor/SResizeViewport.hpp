@@ -31,7 +31,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Resizes and moves viewports.
+ * @brief This adaptor resizes and moves viewports.
  *
  * @section Slots Slots
  * - \b resize(): resizes the viewport to the new size.
@@ -43,10 +43,11 @@ namespace visuOgreAdaptor
         <config layer="default" hOffset="0" vOffset="0" width="1" height="1" hAlign="left" vAlign="top"/>
     </service>
    @endcode
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): layer whose viewport is resized
- * - \b hAlign (optional, values=left|center|right, default=left): defines the horizontal origin of the new viewport.
- * - \b vAlign (optional, values=top|center|bottom, default=top): defines the vertical origin of the new viewport.
+ * - \b layer (mandatory, string): layer whose viewport is resized
+ * - \b hAlign (optional, left|center|right, default=left): defines the horizontal origin of the new viewport.
+ * - \b vAlign (optional, top|center|bottom, default=top): defines the vertical origin of the new viewport.
  * - \b hOffset (optional, float, default=0.f): horizontal offset from the origin relatively to the window.
  * - \b vOffset (optional, float, default=0.f): vertical offset from the origin relatively to the window.
  * - \b width (optional, float, default=1.f): new viewport width relatively to the window.
@@ -58,41 +59,41 @@ public:
 
     fwCoreServiceMacro(SResizeViewport, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor.
+    /// Initializes slots.
     VISUOGREADAPTOR_API SResizeViewport() noexcept;
 
-    /// Destructor.
+    /// Does nothing.
     VISUOGREADAPTOR_API virtual ~SResizeViewport() noexcept final;
 
 private:
 
     /// Configures the new viewport's dimensions.
-    virtual void configuring() final;
+    virtual void configuring() override;
 
     /// Starts the adaptor, records the initial viewport dimensions.
-    virtual void starting() final;
+    virtual void starting() override;
 
     /// Updates the adaptor. Unused here.
-    virtual void updating() noexcept final;
+    virtual void updating() noexcept override;
 
     /// Stops the adaptor. Unused here.
-    virtual void stopping() noexcept final;
+    virtual void stopping() noexcept override;
 
     /// Switches to the initial/new viewport depending on the input.
     void resizeViewport(bool _resize);
 
-    /// Sets the configured viewports dimensions on the layer.
+    /// Defines the configured viewports dimensions on the layer.
     void resize();
 
-    /// Sets the original viewports dimensions on the layer.
+    /// Defines the original viewports dimensions on the layer.
     void revert();
 
-    /// Initial viewport dimensions.
+    /// Defines the initial viewport dimensions.
     ::fwRenderOgre::Layer::ViewportConfigType m_previousViewportDimensions { 0.f, 0.f, 1.f, 1.f };
 
-    /// Configured viewport dimensions.
+    /// Defines the configured viewport dimensions.
     ::fwRenderOgre::Layer::ViewportConfigType m_newViewportDimensions { 0.f, 0.f, 1.f, 1.f };
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

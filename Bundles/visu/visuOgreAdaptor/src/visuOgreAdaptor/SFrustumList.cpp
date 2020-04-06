@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,19 +40,17 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustumList);
+static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT             = "clear";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT       = "addFrustum";
 
-const ::fwCom::Slots::SlotKeyType SFrustumList::s_CLEAR_SLOT             = "clear";
-const ::fwCom::Slots::SlotKeyType SFrustumList::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType SFrustumList::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-const ::fwCom::Slots::SlotKeyType SFrustumList::s_ADD_FRUSTUM_SLOT       = "addFrustum";
-
-const std::string s_CAMERA_NAME_INPUT = "camera";
-const std::string s_NEAR_CONFIG       = "near";
-const std::string s_FAR_CONFIG        = "far";
-const std::string s_COLOR_CONFIG      = "color";
-const std::string s_TRANSFORM_INPUT   = "transform";
-const std::string s_NB_MAX_CONFIG     = "nbMax";
+static const std::string s_CAMERA_NAME_INPUT = "camera";
+static const std::string s_NEAR_CONFIG       = "near";
+static const std::string s_FAR_CONFIG        = "far";
+static const std::string s_COLOR_CONFIG      = "color";
+static const std::string s_TRANSFORM_INPUT   = "transform";
+static const std::string s_NB_MAX_CONFIG     = "nbMax";
 
 //-----------------------------------------------------------------------------
 
@@ -68,15 +66,6 @@ SFrustumList::SFrustumList() noexcept
 
 SFrustumList::~SFrustumList() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-fwServices::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT );
-    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -118,14 +107,44 @@ void SFrustumList::starting()
     m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
     m_materialAdaptor->start();
     m_materialAdaptor->update();
-
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrustumList::updateVisibility(bool isVisible)
+fwServices::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 {
-    m_visibility = isVisible;
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_TRANSFORM_INPUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT);
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrustumList::updating()
+{
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    m_sceneNode                      = this->getTransformNode(rootSceneNode);
+    m_sceneNode->attachObject(m_frustumList.front());
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrustumList::stopping()
+{
+    this->unregisterServices();
+    this->clear();
+    m_materialAdaptor.reset();
+    m_materialAdaptor = nullptr;
+    m_material        = nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrustumList::updateVisibility(bool _isVisible)
+{
+    m_visibility = _isVisible;
     this->updateAllVisibility();
 }
 
@@ -236,26 +255,4 @@ void SFrustumList::clear()
 
 //-----------------------------------------------------------------------------
 
-void SFrustumList::updating()
-{
-    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode                      = this->getTransformNode(rootSceneNode);
-    m_sceneNode->attachObject(m_frustumList.front());
-
-    this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SFrustumList::stopping()
-{
-    this->unregisterServices();
-    this->clear();
-    m_materialAdaptor.reset();
-    m_materialAdaptor = nullptr;
-    m_material        = nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-}
+} // namespace visuOgreAdaptor.

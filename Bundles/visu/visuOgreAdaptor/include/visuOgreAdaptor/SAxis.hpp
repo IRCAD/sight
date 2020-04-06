@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,20 +54,23 @@ namespace visuOgreAdaptor
         <config layer="default" transform="transformUID" length="30" label="true" />
     </service>
    @endcode
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory) : defines the mesh's layer.
- * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
+ * - \b layer (mandatory, string) : defines the mesh's layer.
+ * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
+ * was specified
  * in the STransform adaptor.
  * - \b visible (optional, bool, default=true): the visibility of the axis.
  * - \b origin (optional, bool, default=false): the origin visibility.
- * - \b originColor (optional, string, default=#FFFFFF): the color of the axis origin.
+ * - \b originColor (optional, hexadecimal, default=#FFFFFF): the color of the axis origin.
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
- * - \b fontSize (optional, default=16): label font size in points.
+ * - \b fontSize (optional, unsigned int, default=16): label font size in points.
  *
  */
-class VISUOGREADAPTOR_CLASS_API SAxis : public ::fwRenderOgre::IAdaptor,
-                                        public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SAxis final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 public:
 
@@ -75,72 +78,81 @@ public:
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
+
     /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SAxis() noexcept;
 
 private:
 
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
     /// Configures the adaptor.
-    void configuring() final;
-    /// Manually creates a Mesh in the Default Ogre Ressource group.
-    void starting() final;
-    /// Send a render request.
-    void updating() final;
+    virtual void configuring() override;
+
+    /// Creates manual objects in the default ogre ressource group.
+    virtual void starting() override;
+
+    /// Sends a render request.
+    virtual void updating() override;
+
     /// Deletes ogre's resources.
-    void stopping() final;
+    virtual void stopping() override;
 
     /**
-     * @brief Sets the visibility of the axis.
+     * @brief SLOT: sets the visibility of the axis.
      * @param _isVisible the visibility status.
      */
     void updateVisibility(bool _isVisible);
-    /// Toggle the visibility of the axis.
+
+    /// SLOT: toggles the visibility of the axis.
     void toggleVisibility();
 
-    /// Pointer to the Material data.
+    /// Contains the material data.
     ::fwData::Material::sptr m_material { nullptr };
-    /// Axis length in scene units.
+
+    /// Defines the axis length in scene units.
     float m_length { 50.f };
-    /// Handles axis visibility.
+
+    /// Enables axis visibility.
     bool m_isVisible { true };
-    /// Handles the visibility of axis labels.
+
+    /// Enables the visibility of axis labels.
     bool m_enableLabel { true };
 
-    /// Origin of the axis.
+    /// Contains the origin of the axis.
     ::Ogre::ManualObject* m_origin { nullptr };
-    /// Origin visibility.
+
+    /// Enables the origin visibility.
     bool m_originVisibility { false };
-    /// Origin color.
+
+    /// Defines the origin color.
     std::string m_originColor { "#FFFFFF" };
 
-    /// Line along the x axis.
+    /// Contains the line along the x axis.
     ::Ogre::ManualObject* m_xLine { nullptr };
-    /// Line along the y axis.
+
+    /// Contains the line along the y axis.
     ::Ogre::ManualObject* m_yLine { nullptr };
-    /// Line along the z axis.
+
+    /// Contains the line along the z axis.
     ::Ogre::ManualObject* m_zLine { nullptr };
 
-    /// Arrow of the x axis.
+    /// Contains the arrow of the x axis.
     ::Ogre::ManualObject* m_xCone { nullptr };
-    /// Arrow of the y axis.
+
+    /// Contains the arrow of the y axis.
     ::Ogre::ManualObject* m_yCone { nullptr };
-    /// Arrow of the z axis.
+
+    /// Contains the arrow of the z axis.
     ::Ogre::ManualObject* m_zCone { nullptr };
 
-    /// Scene node where all of our manual objects are attached.
+    /// Contains the scene node where all of manual objects are attached.
     ::Ogre::SceneNode* m_sceneNode { nullptr };
 
-    /// Labels attached to each axis.
+    /// Stores labels attached to each axis.
     std::array< ::fwRenderOgre::Text*, 3> m_axisLabels {{ nullptr, nullptr, nullptr }};
 
-    /// Label font size in points.
+    /// Defines labels font size in points.
     size_t m_fontSize { 16 };
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

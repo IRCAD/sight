@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 
 #include "visuOgreAdaptor/SCompositorParameter.hpp"
 
-#include "visuOgreAdaptor/defines.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwRenderOgre/compositor/ChainManager.hpp>
@@ -43,14 +42,12 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IParameter, ::visuOgreAdaptor::SCompositorParameter, ::fwData::Object)
-
-//------------------------------------------------------------------------------
-
 class CompositorListener : public ::Ogre::CompositorInstance::Listener
 {
+
 public:
-    CompositorListener(::Ogre::Viewport* /*_vp*/, SCompositorParameter::sptr _adaptor) :
+
+    CompositorListener(::Ogre::Viewport*, SCompositorParameter::sptr _adaptor) :
         m_adaptor(_adaptor)
     {
     }
@@ -60,7 +57,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void notifyMaterialRender(::Ogre::uint32 /*pass_id*/, ::Ogre::MaterialPtr& mat)
+    void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mat)
     {
         auto adaptor = m_adaptor.lock();
         SLM_ASSERT("Adaptor has expired.", adaptor);
@@ -91,21 +88,6 @@ SCompositorParameter::SCompositorParameter() noexcept
 
 SCompositorParameter::~SCompositorParameter() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SCompositorParameter::updateValue(::Ogre::MaterialPtr& _mat)
-{
-    this->setMaterial(_mat);
-    this->IParameter::updating();
-}
-
-//------------------------------------------------------------------------------
-
-const std::string& SCompositorParameter::getCompositorName() const
-{
-    return m_compositorName;
 }
 
 //------------------------------------------------------------------------------
@@ -143,6 +125,16 @@ void SCompositorParameter::starting()
 
 //------------------------------------------------------------------------------
 
+void SCompositorParameter::updating()
+{
+    // This is typically called when the data has changed through autoconnect
+    // So set the parameter as dirty and perform the update
+    this->setDirty();
+    this->IParameter::updating();
+}
+
+//------------------------------------------------------------------------------
+
 void SCompositorParameter::stopping()
 {
     this->getRenderService()->makeCurrent();
@@ -156,14 +148,12 @@ void SCompositorParameter::stopping()
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::updating()
+void SCompositorParameter::updateValue(::Ogre::MaterialPtr& _mat)
 {
-    // This is typically called when the data has changed through autoconnect
-    // So set the parameter as dirty and perform the update
-    this->setDirty();
+    this->setMaterial(_mat);
     this->IParameter::updating();
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

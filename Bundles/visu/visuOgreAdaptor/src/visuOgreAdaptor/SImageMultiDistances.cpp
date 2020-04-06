@@ -65,8 +65,6 @@ static const std::string s_DISTANCE_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
 
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID;
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
-
 //------------------------------------------------------------------------------
 
 ::Ogre::ColourValue SImageMultiDistances::generateColor(::fwTools::fwID::IDType _id)
@@ -144,18 +142,6 @@ SImageMultiDistances::SImageMultiDistances() noexcept
 
 SImageMultiDistances::~SImageMultiDistances() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -251,6 +237,18 @@ void SImageMultiDistances::starting()
         auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
         layer->addInteractor(interactor, m_priority);
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -790,38 +788,4 @@ void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::focusInEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::focusOutEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::wheelEvent(int, int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::resizeEvent(int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::keyPressEvent(int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::keyReleaseEvent(int)
-{
-}
-
-}
+} // namespace visuOgreAdaptor.

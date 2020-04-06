@@ -36,7 +36,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Lets the user move an orthographic camera to visualize medical images in 2D.
+ * @brief This adaptor lets the user move an orthographic camera to visualize medical images in 2D.
  *
  * The camera can be moved along its screen plane and zoom on a precise scene location.
  * For more convenience this adaptor can make use of an optional input image to reset the camera's orientation
@@ -44,7 +44,8 @@ namespace visuOgreAdaptor
  * Although this service was designed with negato visualization in mind, it could be used to render regular scenes
  * from a 2D orthographic perspective.
  *
- * @warning may not work as intended when used with another camera adaptor on the same layer.
+ * @warning may not work as intended when used with another camera adaptor on the same layer and must be started
+ * after all others one.
  *
  * @section Slots Slots
  * - \b resetCamera(): zooms out the camera to see the whole scene.
@@ -54,9 +55,9 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuOgreAdaptor::SNegato2DCamera" >
-            <config layer="..." priority="0" orientation="sagittal" />
             <inout key="image" uid="..." autoConnect="yes" />
             <inout key="tf" uid="..." optional="yes" />
+            <config layer="..." priority="0" orientation="sagittal" />
        </service>
    @endcode
  *
@@ -65,8 +66,9 @@ namespace visuOgreAdaptor
  * Modification signals can be used to reset the camera's position and orientation. Useless without autoConnect="yes".
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): layer on which the negato camera interactions are added.
+ * - \b layer (mandatory, string): layer on which the negato camera interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.
  */
@@ -82,32 +84,30 @@ public:
     VISUOGREADAPTOR_API SNegato2DCamera() noexcept;
 
     /// Destroyes the service.
-    VISUOGREADAPTOR_API virtual ~SNegato2DCamera() noexcept final;
+    VISUOGREADAPTOR_API virtual ~SNegato2DCamera() noexcept;
 
 private:
 
     using Orientation = ::fwDataTools::helper::MedicalImage::Orientation;
 
     /// Configures the layer, interaction priority and camera orientation.
-    virtual void configuring() final;
+    virtual void configuring() override;
 
     /// Adds negato camera interactions to the layer.
-    virtual void starting() final;
+    virtual void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to ::visuOgreAdaptor::STransform::s_RESET_CAMERA_SLOT
-     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to
-     * ::visuOgreAdaptor::STransform::s_CHANGE_ORIENTATION_SLOT
-     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to
-     * ::visuOgreAdaptor::STransform::s_MOVE_BACK_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_RESET_CAMERA_SLOT
+     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_CHANGE_ORIENTATION_SLOT
+     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_MOVE_BACK_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Does nothing.
-    virtual void updating() noexcept final;
+    virtual void updating() noexcept override;
 
     /**
      * @brief Retrieves the current transfer function.
@@ -116,7 +116,7 @@ private:
     virtual void swapping(const KeyType& _key) override;
 
     /// Removes negato camera interactions from the layer.
-    virtual void stopping() final;
+    virtual void stopping() override;
 
     /**
      * @brief Zooms in the scene at the current cursor position.
@@ -187,21 +187,21 @@ private:
     /// Defines the image current orientation.
     Orientation m_currentNegatoOrientation {  ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS };
 
-    /// Sets the interaction priority.
+    /// Defines the interaction priority.
     int m_priority { 0 };
 
     /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
 
-    /// Sets the transfer function window value at the time the interaction started.
+    /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };
 
-    /// Sets the transfer function level value at the time the interaction started.
+    /// Defines the transfer function level value at the time the interaction started.
     double m_initialLevel { 0.f };
 
-    /// Sets the mouse position at the time the windowing interaction started.
+    /// Defines the mouse position at the time the windowing interaction started.
     ::Ogre::Vector2i m_initialPos { -1, -1 };
 
 };
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

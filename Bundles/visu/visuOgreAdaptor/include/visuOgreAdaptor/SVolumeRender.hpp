@@ -46,7 +46,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor for volume rendering.
+ * @brief This adaptor displays a volume rendering.
  *
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
@@ -94,15 +94,15 @@ namespace visuOgreAdaptor
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  *
  * @subsection Configuration Configuration
- * - \b layer (mandatory): id of the layer where this adaptor applies.
- * - \b samples (optional, default=512): maximum number of samples per ray or number of slices.
+ * - \b layer (mandatory, string): id of the layer where this adaptor applies.
+ * - \b samples (optional, unsigned int, default=512): maximum number of samples per ray or number of slices.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
- * - \b dynamic (optional, true/false, default=false): enables background buffering for dynamic images.
+ * - \b dynamic (optional, bool, default=false): enables background buffering for dynamic images.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b widgetPriority (optional, int, default=2): interaction priority of the widget.
- * - \b ao (optional, true/false, default=false): Ambient occlusion usage.
- * - \b colorBleeding (optional, true/false, default=false): Color bleeding usage.
- * - \b shadows (optional, true/false, default=false): Soft shadows usage.
+ * - \b ao (optional, bool, default=false): Ambient occlusion usage.
+ * - \b colorBleeding (optional, bool, default=false): Color bleeding usage.
+ * - \b shadows (optional, bool, default=false): Soft shadows usage.
  * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
  *      associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
@@ -113,7 +113,7 @@ namespace visuOgreAdaptor
  * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
- * - \b transform (optional): transform applied to the adaptor's scene node.
+ * - \b transform (optional, string, default=""): transform applied to the adaptor's scene node.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender final : public ::fwRenderOgre::IAdaptor,
                                                       public ::fwRenderOgre::ITransformable
@@ -139,25 +139,23 @@ private:
     } VREffectType;
 
     /// Configures the service.
-    virtual void configuring() override final;
+    virtual void configuring() override;
 
     /// Starts the service and initializes scene objects.
-    virtual void starting() override final;
+    virtual void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::SVolumeRender::s_NEW_IMAGE_SLOT
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to
-     * ::visuOgreAdaptor::SVolumeRender::s_BUFFER_IMAGE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to
-     * ::visuOgreAdaptor::SVolumeRender::s_UPDATE_CLIPPING_BOX_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEW_IMAGE_SLOT
+     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_BUFFER_IMAGE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to s_UPDATE_CLIPPING_BOX_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Does nothing.
-    virtual void updating() override final;
+    virtual void updating() override;
 
     /**
      * @brief Notifies that the TF is swapped.
@@ -406,13 +404,13 @@ private:
     /// Enables background buffering for dynamic images.
     bool m_dynamic { false };
 
-    /// Sets usage of ambient occlusion.
+    /// Defines the usage of ambient occlusion.
     bool m_ambientOcclusion { false };
 
-    /// Sets usage of color bleeding.
+    /// Defines the usage of color bleeding.
     bool m_colorBleeding { false };
 
-    /// Sets usage of soft shadows.
+    /// Defines the usage of soft shadows.
     bool m_shadows { false };
 
     /// Toggles widget visibility.
@@ -447,4 +445,4 @@ private:
 
 };
 
-} // visuOgreAdaptor
+} // namespace visuOgreAdaptor.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief SFrustumList displays a new Frustum each times the transform is updated.
+ * @brief This adaptor displays a new Frustum each times the transform is updated.
  * The number of Frustum is fixed, if the maximum number of Frustum is reached the oldest one will be replaced.
  *
  * @section Slots Slots
@@ -52,90 +52,102 @@ namespace visuOgreAdaptor
             <config layer="default" near="0.1" far="300" color="#f8e119" transform="..." />
        </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b camera [::arData::Camera]: ::arData::Camera that handles calibration parameters
  * - \b transform [::fwData::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
- * -\b layer (mandatory): defines the frustum's layer
- * -\b near (optional): near clipping distance of the ::Ogre::Camera
- * -\b far (optional): far clipping distance of the ::Ogre::Camera
- * -\b color (optional): color of frustums
- * -\b transform (optional): transform applied to the frustumList's scene node
+ * - \b layer (mandatory, string): defines the frustum's layer
+ * - \b near (optional, float, default=1.0): near clipping distance of the ::Ogre::Camera
+ * - \b far (optional, float, default=20.0): far clipping distance of the ::Ogre::Camera
+ * - \b color (optional, hexadecimal, default=0x0000FF): frustum's color
+ * - \b transform (optional, string, default=""): transform applied to the frustumList's scene node
  */
-class VISUOGREADAPTOR_CLASS_API SFrustumList : public ::fwRenderOgre::IAdaptor,
-                                               public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SFrustumList final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 public:
 
-    fwCoreServiceMacro(SFrustumList, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SFrustumList, ::fwRenderOgre::IAdaptor)
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    /// Clear all frustums slot.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT;
-    /// Adds a frustum in the list and displays it.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT;
-    /// Enable/disable visibility
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-    /// Toggle visibility
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
-    /** @} */
-
-    /// Constructor.
+    /// Creates slots.
     VISUOGREADAPTOR_API SFrustumList() noexcept;
-    /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SFrustumList() noexcept;
 
-    /// Connects ::fwData::TransformationMatrix3D::s_MODIFIED_SIG to the s_ADD_FRUSTUM_SLOT slot.
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    /// Does nothing.
+    VISUOGREADAPTOR_API virtual ~SFrustumList() noexcept;
 
 private:
 
-    /// configures the adaptor.
-    VISUOGREADAPTOR_API void configuring() override;
-    /// starts the adaptor and initializes material.
-    VISUOGREADAPTOR_API void starting() override;
-    /// stops the adaptor and clears data.
-    VISUOGREADAPTOR_API void stopping() override;
-    /// updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot).
-    VISUOGREADAPTOR_API void updating() override;
+    /// Configures.
+    virtual void configuring() override;
 
-    /// Slot: Clears frustum list.
+    /// Initializes the material.
+    virtual void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot).
+    virtual void updating() override;
+
+    /// Clears data.
+    virtual void stopping() override;
+
+    /// SLOT: clears frustum list.
     void clear();
-    /// Slot: Shows/hides all frustums.
-    void updateVisibility(bool);
-    /// Slot: Switches visibilty of frustums.
+
+    /**
+     * @brief SLOT: sets the visibility of the frustum list.
+     * @param _isVisible the visibility status.
+     */
+    void updateVisibility(bool _isVisible);
+
+    /// SLOT: toggles the visibility of the frustum list.
     void toggleVisibility();
-    /// Slot: Adds a frustum in the list and displays it.
+
+    /// SLOT: adds a frustum in the list and displays it.
     void addFrustum();
 
     /// Iterates over frustums to change their visibility.
     void updateAllVisibility();
 
-    /// Handles current visibilty.
-    bool m_visibility {true};
-    /// Near clipping distance.
-    float m_near {1.f};
-    /// Far clipping distance.
-    float m_far {20.f};
-    /// Frustums color (default blue).
-    std::string m_color {"#0000ffff"};
-    /// Maximum capacity of frustum list.
+    /// Enables the frustum visibility.
+    bool m_visibility { true };
+
+    /// Defines the near clipping distance.
+    float m_near { 1.f };
+
+    /// Defines the far clipping distance.
+    float m_far { 20.f };
+
+    /// Defines the color of frustum.
+    std::string m_color { "#0000FF" };
+
+    /// Defines the maximum capacity of frustum list.
     unsigned int m_capacity {50};
-    /// Circular list of frustum adaptors.
+
+    /// Stores a circular list of frustum adaptors.
     ::boost::circular_buffer< ::Ogre::Camera* > m_frustumList {};
-    /// Used to generate unique ID for each ::Ogre::Camera.
+
+    /// Uses to generate unique ID for each ::Ogre::Camera.
     size_t m_currentCamIndex {0};
-    /// Adaptor to create an ogre ::Ogre::Material from ::fwData::Material.
+
+    /// Contains the Ogre material adaptor.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
-    /// Pointer to the Material data.
+
+    /// Contains the material data.
     ::fwData::Material::sptr m_material {nullptr};
-    /// The scene node where all frustums are attached.
+
+    /// Contains the scene node where all frustums are attached.
     ::Ogre::SceneNode* m_sceneNode { nullptr };
 
 };
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

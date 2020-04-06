@@ -49,8 +49,6 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image)
-
 //-----------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
@@ -953,4 +951,4 @@ void SVolumeRender::updateVisibility(bool _visibility)
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace visuOgreAdaptor.

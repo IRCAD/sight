@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,15 +38,12 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::STexture,
-                        ::fwData::Image);
-
 namespace visuOgreAdaptor
 {
 
 const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG = "textureSwapped";
 
-const std::string STexture::DEFAULT_TEXTURE_FILENAME = "default.png";
+static const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
 
 static const std::string s_TEXTURE_INOUT = "image";
 
@@ -67,21 +64,6 @@ STexture::STexture() noexcept :
 STexture::~STexture() noexcept
 {
 
-}
-
-//------------------------------------------------------------------------------
-
-bool STexture::isValid() const
-{
-    if(m_texture)
-    {
-        if(m_texture->getFormat() != ::Ogre::PF_UNKNOWN)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -141,14 +123,23 @@ void STexture::starting()
     this->updating();
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STexture::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_TEXTURE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TEXTURE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
+
 //------------------------------------------------------------------------------
 
 void STexture::updating()
 {
     // Retrieves associated Sight image
     ::fwData::Image::csptr imageSight = this->getInput< ::fwData::Image>(s_TEXTURE_INOUT);
-
-    SLM_ASSERT("Failed object dynamic cast", imageSight);
+    SLM_ASSERT("input '" + s_TEXTURE_INOUT + "' does not exist.", imageSight);
 
     if(imageSight->getAllocatedSizeInBytes() != 0)
     {
@@ -175,16 +166,20 @@ void STexture::stopping()
     m_texture.reset();
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap STexture::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_TEXTURE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_TEXTURE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+bool STexture::isValid() const
+{
+    if(m_texture)
+    {
+        if(m_texture->getFormat() != ::Ogre::PF_UNKNOWN)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+//------------------------------------------------------------------------------
+
+} // namespace visuOgreAdaptor.

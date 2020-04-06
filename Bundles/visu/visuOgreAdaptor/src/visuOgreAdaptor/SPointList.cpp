@@ -21,20 +21,18 @@
  ***********************************************************************/
 
 #include "visuOgreAdaptor/SPointList.hpp"
-#include <fwRenderOgre/helper/Font.hpp>
+
 #include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
-
-#define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
+#include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
@@ -48,9 +46,6 @@
 #include <OGRE/OgreTextureManager.h>
 
 #include <cstdint>
-
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SPointList, ::fwData::PointList )
-//-----------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
 {
@@ -220,6 +215,21 @@ void SPointList::starting()
             OSLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    connections.push(s_MESH_INPUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_MESH_INPUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -556,26 +566,4 @@ void SPointList::detachAndDestroyEntity()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push( s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push( s_POINTLIST_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );
-
-    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
-
-    return connections;
-}
-
-//-----------------------------------------------------------------------------
-
-void SPointList::requestRender()
-{
-    ::fwRenderOgre::IAdaptor::requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

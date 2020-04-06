@@ -42,18 +42,8 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
-//------------------------------------------------------------------------------
-
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight)
-
-fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
-
-//------------------------------------------------------------------------------
-
 namespace visuOgreAdaptor
 {
-
-//------------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
 static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
@@ -61,6 +51,8 @@ static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform";
 static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
 static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
+
+fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
 
 //------------------------------------------------------------------------------
 
@@ -82,18 +74,6 @@ SLight::SLight(::fwRenderOgre::ILight::Key /*key*/)
 
 SLight::~SLight() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SLight::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_DIFFUSE_COLOR_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_SPECULAR_COLOR_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -226,6 +206,18 @@ void SLight::starting()
     }
 
     updating();
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SLight::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_DIFFUSE_COLOR_INOUT, ::fwData::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_SPECULAR_COLOR_INOUT, ::fwData::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -389,4 +381,4 @@ void SLight::setType(::Ogre::Light::LightTypes _type)
 
 //------------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

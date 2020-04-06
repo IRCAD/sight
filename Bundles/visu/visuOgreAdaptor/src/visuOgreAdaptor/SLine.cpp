@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,11 +38,9 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_LENGTH_SLOT     = "updateLength";
-const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType SLine::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLine);
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT     = "updateLength";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
 static const std::string s_LENGTH_CONFIG     = "length";
 static const std::string s_DASHED_CONFIG     = "dashed";
@@ -77,13 +75,6 @@ void SLine::toggleVisibility()
 {
     m_isVisible = !m_isVisible;
     this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-bool SLine::getVisibility() const
-{
-    return m_isVisible;
 }
 
 //-----------------------------------------------------------------------------
@@ -195,9 +186,9 @@ void SLine::attachNode(::Ogre::MovableObject* object)
 
 //-----------------------------------------------------------------------------
 
-void SLine::drawLine(bool existingLine)
+void SLine::drawLine(bool _existingLine)
 {
-    if (existingLine == false)
+    if(_existingLine == false)
     {
         m_line->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
     }
@@ -227,11 +218,11 @@ void SLine::drawLine(bool existingLine)
 
 //-----------------------------------------------------------------------------
 
-void SLine::updateLength(float length)
+void SLine::updateLength(float _length)
 {
     this->getRenderService()->makeCurrent();
 
-    m_length = length;
+    m_length = _length;
 
     // Draw
     this->drawLine(true);
@@ -245,4 +236,4 @@ void SLine::updateLength(float length)
     this->requestRender();
 }
 
-} //visuOgreAdaptor
+} // namespace visuOgreAdaptor.

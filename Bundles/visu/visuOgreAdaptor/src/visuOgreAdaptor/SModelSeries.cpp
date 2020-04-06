@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 
 #include "visuOgreAdaptor/SMesh.hpp"
 #include "visuOgreAdaptor/SReconstruction.hpp"
-#include <visuOgreAdaptor/defines.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -41,17 +40,12 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SModelSeries, ::fwMedData::ModelSeries)
-
 namespace visuOgreAdaptor
 {
 //-----------------------------------------------------------------------------
 
-// Private slots
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
-
-// Public slot
-const ::fwCom::Slots::SlotKeyType SModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT         = "changeField";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
 static const std::string s_MODEL_INPUT = "model";
 
@@ -114,6 +108,20 @@ void SModelSeries::starting()
     this->initialize();
 
     this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -193,20 +201,6 @@ void SModelSeries::showReconstructionsOnFieldChanged()
     }
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

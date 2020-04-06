@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include "visuOgreAdaptor/defines.hpp"
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
 
@@ -47,8 +46,6 @@
 #include <fwServices/op/Get.hpp>
 
 #include <string>
-
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material )
 
 namespace visuOgreAdaptor
 {
@@ -76,84 +73,6 @@ SMaterial::SMaterial() noexcept :
 
 SMaterial::~SMaterial() noexcept
 {
-
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::createShaderParameterAdaptors()
-{
-    auto material = this->getMaterial();
-
-    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
-
-    const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*material);
-    for(const auto& constant : constants)
-    {
-        const std::string& constantName = std::get<0>(constant);
-        const auto& constantType        = std::get<1>(constant);
-        const auto& constantValue       = std::get<3>(constant);
-
-        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(constantType, constantValue);
-        if(obj != nullptr)
-        {
-            const auto shaderType           = std::get<2>(constant);
-            const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
-                                              shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
-                                              "geometry";
-            const fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
-
-            // Creates an Ogre adaptor and associates it with the Sight object
-            auto srv =
-                this->registerService< ::visuOgreAdaptor::SShaderParameter>( "::visuOgreAdaptor::SShaderParameter", id);
-            srv->registerInOut(obj, "parameter", true);
-
-            // Naming convention for shader parameters
-            srv->setRenderService(this->getRenderService());
-
-            ::fwServices::IService::ConfigType config;
-            config.add("config.<xmlattr>.layer", m_layerID);
-            config.add("config.<xmlattr>.parameter", constantName);
-            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
-            config.add("config.<xmlattr>.materialName", m_materialName);
-
-            srv->setConfiguration(config);
-            srv->configure();
-            srv->start();
-
-            // Add the object to the shaderParameter composite of the Material to keep the object alive
-            ::fwData::Material::sptr materialInOut = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
-            ::fwData::Composite::sptr composite    = materialInOut->setDefaultField("shaderParameters",
-                                                                                    ::fwData::Composite::New());
-            (*composite)[constantName] = obj;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setTextureName(const std::string& textureName)
-{
-    if(textureName.empty())
-    {
-        m_texAdaptor = nullptr;
-    }
-    else
-    {
-        auto textureAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::STexture>();
-        auto result          =
-            std::find_if(textureAdaptors.begin(), textureAdaptors.end(),
-                         [textureName](const ::visuOgreAdaptor::STexture::sptr& srv)
-            {
-                return srv->getTextureName() == textureName;
-            });
-
-        SLM_ASSERT("STexture adaptor managing texture '" + textureName + "' is not found",
-                   result != textureAdaptors.end());
-        m_texAdaptor = *result;
-    }
-
-    m_textureName = textureName;
 }
 
 //------------------------------------------------------------------------------
@@ -266,19 +185,15 @@ void SMaterial::starting()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::stopping()
+::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
-    m_materialFw.reset();
-    m_textureConnection.disconnect();
-    this->unregisterServices();
-
-    ::Ogre::MaterialManager::getSingleton().remove(m_materialName);
-
-    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
-    if(material->getField("shaderParameters"))
-    {
-        material->removeField("shaderParameters");
-    }
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
+    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
+    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT);
+    connections.push(s_MATERIAL_INOUT, ::fwData::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT);
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -303,9 +218,103 @@ void SMaterial::updating()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
+void SMaterial::stopping()
 {
-    for (auto elt : fields)
+    m_materialFw.reset();
+    m_textureConnection.disconnect();
+    this->unregisterServices();
+
+    ::Ogre::MaterialManager::getSingleton().remove(m_materialName);
+
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    if(material->getField("shaderParameters"))
+    {
+        material->removeField("shaderParameters");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterial::createShaderParameterAdaptors()
+{
+    auto material = this->getMaterial();
+
+    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
+
+    const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*material);
+    for(const auto& constant : constants)
+    {
+        const std::string& constantName = std::get<0>(constant);
+        const auto& constantType        = std::get<1>(constant);
+        const auto& constantValue       = std::get<3>(constant);
+
+        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(constantType, constantValue);
+        if(obj != nullptr)
+        {
+            const auto shaderType           = std::get<2>(constant);
+            const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
+                                              shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
+                                              "geometry";
+            const fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
+
+            // Creates an Ogre adaptor and associates it with the Sight object
+            auto srv =
+                this->registerService< ::visuOgreAdaptor::SShaderParameter>( "::visuOgreAdaptor::SShaderParameter", id);
+            srv->registerInOut(obj, "parameter", true);
+
+            // Naming convention for shader parameters
+            srv->setRenderService(this->getRenderService());
+
+            ::fwServices::IService::ConfigType config;
+            config.add("config.<xmlattr>.layer", m_layerID);
+            config.add("config.<xmlattr>.parameter", constantName);
+            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
+            config.add("config.<xmlattr>.materialName", m_materialName);
+
+            srv->setConfiguration(config);
+            srv->configure();
+            srv->start();
+
+            // Add the object to the shaderParameter composite of the Material to keep the object alive
+            ::fwData::Material::sptr materialInOut = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+            ::fwData::Composite::sptr composite    = materialInOut->setDefaultField("shaderParameters",
+                                                                                    ::fwData::Composite::New());
+            (*composite)[constantName] = obj;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterial::setTextureName(const std::string& _textureName)
+{
+    if(_textureName.empty())
+    {
+        m_texAdaptor = nullptr;
+    }
+    else
+    {
+        auto textureAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::STexture>();
+        auto result          =
+            std::find_if(textureAdaptors.begin(), textureAdaptors.end(),
+                         [_textureName](const ::visuOgreAdaptor::STexture::sptr& srv)
+            {
+                return srv->getTextureName() == _textureName;
+            });
+
+        SLM_ASSERT("STexture adaptor managing texture '" + _textureName + "' is not found",
+                   result != textureAdaptors.end());
+        m_texAdaptor = *result;
+    }
+
+    m_textureName = _textureName;
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterial::updateField( ::fwData::Object::FieldsContainerType _fields)
+{
+    for(auto elt : _fields)
     {
         if (elt.first == "ogreMaterial")
         {
@@ -399,19 +408,6 @@ void SMaterial::removeTextureAdaptor()
     this->requestRender();
 }
 
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
-    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
-    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT );
-    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT );
-    return connections;
-}
-
 //-----------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,92 +52,96 @@ namespace visuOgreAdaptor
         <config layer="default" transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode
- * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the line's layer
- * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
- * in the STransform adaptor
- * - \b length (optional): (float) length of the line in mm (default 50)
- * - \b dashLength (optional): (float) length of a dash
- * - \b color (optional): (string) color of the line
- * - \b dashed (optional): (bool) display a dashed line instead of a solid line
  *
+ * @subsection Configuration Configuration:
+ * - \b layer (mandatory, string): defines the line's layer
+ * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
+ * was specified
+ * in the STransform adaptor
+ * - \b length (optional, float, default=50.0): length of the line in mm (default 50)
+ * - \b dashLength (optional, float, default=2.5): length of a dash
+ * - \b color (optional, hexadecimal, default=#FFFFFF): color of the line
+ * - \b dashed (optional, bool, default=false): display a dashed line instead of a solid line
  */
-
-class VISUOGREADAPTOR_CLASS_API SLine : public ::fwRenderOgre::IAdaptor,
-                                        public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SLine final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceMacro(SLine, ::fwRenderOgre::IAdaptor);
 
-    /// Constructor: Sets default parameters and initializes necessary members.
+    fwCoreServiceMacro(SLine, ::fwRenderOgre::IAdaptor)
+
+    /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SLine() noexcept;
-    /// Destructor: Does nothing
+
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SLine() noexcept;
 
-    /// Slot to set visibility
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
-
-    /// Slot to toggle visibility
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
-    typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
-
-    /// Returns if the line is visible in the scene or not.
-    VISUOGREADAPTOR_API bool getVisibility() const;
-
-    /// Slot to set the line length
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
-    typedef ::fwCom::Slot<void (float)> UpdateLengthSlotType;
-
-    /// Slot: update length of the line
-    VISUOGREADAPTOR_API void updateLength(float length);
-
-protected:
-    /// Configures the adaptor
-    void configuring() override;
-    /// Manually creates a Mesh in the Default Ogre Ressource group
-    void starting() override;
-    /// Deletes the mesh after unregistering the service, and shutting connections.
-    void stopping() override;
-    /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void updating() override;
-
 private:
-    /// Attach a node in the scene graph
-    void attachNode(::Ogre::MovableObject* _node);
 
-    /// Draw a line
-    void drawLine(bool);
+    /// Configures the adaptor
+    virtual void configuring() override;
+
+    /// Creates a mesh in the Default Ogre Ressource group
+    virtual void starting() override;
+
+    /// Checks if the fwData::Mesh has changed, and updates it if it has.
+    virtual void updating() override;
+
+    /// Deletes the mesh after unregistering the service, and shutting connections.
+    virtual void stopping() override;
 
     /**
-     * @name Slots methods
-     * @{
+     * @brief Attachs a node in the scene graph.
+     * @param _node node to attach.
      */
-    /// Slot: sets visibility of the line
-    void updateVisibility(bool isVisible);
-    /// Slot: toggles visibility of line
+    void attachNode(::Ogre::MovableObject* _node);
+
+    /**
+     * @brief Draws a line.
+     * @param _existingLine use true if the line already exist.
+     */
+    void drawLine(bool _existingLine);
+
+    /**
+     * @brief SLOT: updates length of the line.
+     * @param _length length of the line (in mm).
+     */
+    void updateLength(float _length);
+
+    /**
+     * @brief SLOT: sets the visibility of the frustum.
+     * @param _isVisible the visibility status.
+     */
+    void updateVisibility(bool _isVisible);
+
+    /// SLOT: toggles the visibility of the frustum.
     void toggleVisibility();
-    /** @} */
 
-    /// Pointer to the Material data
-    ::fwData::Material::sptr m_material {nullptr};
+    /// Contains the Ogre material adaptor.
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
-    /// Material Adaptor
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
+    /// Contains the material data.
+    ::fwData::Material::sptr m_material { nullptr };
 
-    /// ManualObject defining the SLine
-    ::Ogre::ManualObject* m_line {nullptr};
-    /// Handles the length of the line (in mm)
-    float m_length {50.f};
-    /// Handles the color of the line
+    /// Contains the manual object of the line.
+    ::Ogre::ManualObject* m_line { nullptr };
+
+    /// Defines the length of the line (in mm).
+    float m_length { 50.f };
+
+    /// Defines the color of the line.
     ::Ogre::ColourValue m_color;
-    /// Handles the visibility of the line
-    bool m_isVisible {true};
-    /// Display a dashed line instead of a solid line
-    bool m_dashed {false};
-    /// Length of a dash
-    float m_dashLength {2.5f};
+
+    /// Enables the visibility of the line.
+    bool m_isVisible {true };
+
+    /// Enables if the line is dashed or not.
+    bool m_dashed { false };
+
+    /// Defines the length of one dash.
+    float m_dashLength { 2.5f };
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

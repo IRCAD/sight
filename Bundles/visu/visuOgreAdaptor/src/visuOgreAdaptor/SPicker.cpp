@@ -98,4 +98,4 @@ void SPicker::stopping()
 
 //-----------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

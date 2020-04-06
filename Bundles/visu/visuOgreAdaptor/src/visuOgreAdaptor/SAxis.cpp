@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,8 +50,6 @@ static const std::string s_FONT_SIZE_CONFIG    = "fontSize";
 static const std::string s_ORIGIN_CONFIG       = "origin";
 static const std::string s_ORIGIN_COLOR_CONFIG = "originColor";
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis)
-
 //-----------------------------------------------------------------------------
 
 SAxis::SAxis() noexcept
@@ -64,14 +62,6 @@ SAxis::SAxis() noexcept
 
 SAxis::~SAxis() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SAxis::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -360,4 +350,4 @@ void SAxis::toggleVisibility()
 
 //-----------------------------------------------------------------------------
 
-} //visuOgreAdaptor
+} // namespace visuOgreAdaptor.

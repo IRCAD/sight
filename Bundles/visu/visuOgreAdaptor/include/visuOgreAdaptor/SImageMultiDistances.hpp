@@ -61,18 +61,19 @@ namespace visuOgreAdaptor
  * - \b image [::fwData::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory) : Defines distance's layer.
- * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
+ * - \b layer (mandatory, string) : Defines distance's layer.
+ * - \b fontSource (optional, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, default=16): Font size in points.
  * - \b radius (optional, default=4.5): Size of the distances spheres.
- * - \b interactive (optional, true/false, default=true): Enables interactions with distances.
+ * - \b interactive (optional, bool, default=true): Enables interactions with distances.
  * - \b priority (optional, default=3): Priority of the interactor.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): Mask used to filter out entities when the distance is auto
  * snapped.
  * - \b distanceQueryFlags (optional, uint32, default=0x40000000): Mask apply to distances spheres.
  */
-class SImageMultiDistances final : public ::fwRenderOgre::IAdaptor,
-                                   public ::fwRenderOgre::interactor::IInteractor
+class SImageMultiDistances final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::interactor::IInteractor
 {
 public:
 
@@ -82,7 +83,7 @@ public:
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~SImageMultiDistances() noexcept override final;
+    VISUOGREADAPTOR_API virtual ~SImageMultiDistances() noexcept override;
 
 private:
 
@@ -145,27 +146,27 @@ private:
      */
     static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const);
 
+    /// Configures the service.
+    virtual void configuring() override;
+
+    /// Adds the interactor to the layer and creates the material.
+    virtual void starting() override;
+
     /**
      * @brief Proposals to connect service slots to associated object signals.
      *
-     * Connect ::fwData::Image::s_DISTANCE_ADDED_SIG to SImageMultiDistances::s_ADD_DISTANCE_SLOT
-     * Connect ::fwData::Image::s_DISTANCE_REMOVED_SIG to SImageMultiDistances::s_REMOVE_DISTANCE_SLOT
-     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG to SImageMultiDistances::s_UPDATE_VISIBILITY_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG to SImageMultiDistances::s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
+     * Connect ::fwData::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
-    /// Configures the service.
-    virtual void configuring() override final;
-
-    /// Adds the interactor to the layer and creates the material.
-    virtual void starting() override final;
-
     /// Updates materials and all distances.
-    virtual void updating() override final;
+    virtual void updating() override;
 
     /// Removes the interactor from the layer and destroys Ogre resources.
-    virtual void stopping() override final;
+    virtual void stopping() override;
 
     /// Retrieves distances from the image and adds them to the scene.
     void addDistances();
@@ -228,66 +229,54 @@ private:
      */
     void destroyDistance(::fwTools::fwID::IDType _id);
 
-    /// Radius of distances spheres.
-    float m_distanceSphereRadius {3.5f};
+    /// Defines the radius of distances spheres.
+    float m_distanceSphereRadius { 3.5f };
 
-    /// Visibility of distances.
-    bool m_visibility {true};
+    /// Enables the visibility of distances.
+    bool m_visibility { true };
 
-    /// True type font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    /// Defines the TrueType font source file.
+    std::string m_fontSource { "DejaVuSans.ttf" };
 
-    /// Font size in points.
-    size_t m_fontSize {16};
+    /// Defines the font size in points.
+    size_t m_fontSize { 16 };
 
-    /// Sets whether or not interactions are enabled with distances.
-    bool m_interactive {true};
+    /// Defines whether or not interactions are enabled with distances.
+    bool m_interactive { true };
 
-    /// Priority of the interactor
-    int m_priority {2};
+    /// Defines the priority of the interactor
+    int m_priority { 2 };
 
-    /// Current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
-    PickedData m_pickedData {nullptr, true};
+    /// Defines the current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
+    PickedData m_pickedData { nullptr, true };
 
-    /// Mask used to filter out entities when the distance is auto snapped.
-    std::uint32_t m_queryMask {0xFFFFFFFF};
+    /// Defines the mask used to filter out entities when the distance is auto snapped.
+    std::uint32_t m_queryMask { 0xFFFFFFFF };
 
-    /// Mask used to filter distances, it optimizes the ray launched to retrive the picked distance.
-    std::uint32_t m_distanceQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    /// Defines the mask used to filter distances, it optimizes the ray launched to retrive the picked distance.
+    std::uint32_t m_distanceQueryFlag { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
 
-    /// Material name with no depth check for spheres.
+    /// Defines the material name with no depth check for spheres.
     std::string m_sphereMaterialName;
 
-    /// Material name with depth check for lines.
+    /// Defines the material name with depth check for lines.
     std::string m_lineMaterialName;
 
-    /// Material name with no depth check for dashed lines.
+    /// Defines the material name with no depth check for dashed lines.
     std::string m_dashedLineMaterialName;
 
-    /// Material with no depth check for spheres.
+    /// Contains the material with no depth check for spheres.
     ::fwRenderOgre::Material::uptr m_sphereMaterial {nullptr};
 
-    /// Material with depth check for lines.
+    /// Contains the material with depth check for lines.
     ::fwRenderOgre::Material::uptr m_lineMaterial {nullptr};
 
-    /// Material with no depth check for dashed lines.
+    /// Contains the material with no depth check for dashed lines.
     ::fwRenderOgre::Material::uptr m_dashedLineMaterial {nullptr};
 
     /// Stores all generatesd distances.
     DistanceMap m_distances;
 
-    /** Unused IInteractor API
-     *@{
-     */
-    virtual void focusInEvent() override final;
-    virtual void focusOutEvent() override final;
-    virtual void wheelEvent(int, int, int) override final;
-    virtual void resizeEvent(int, int) override final;
-    virtual void keyPressEvent(int) override final;
-    virtual void keyReleaseEvent(int) override final;
-    /**
-     *@}
-     */
-
 };
-}
+
+} // namespace visuOgreAdaptor.
