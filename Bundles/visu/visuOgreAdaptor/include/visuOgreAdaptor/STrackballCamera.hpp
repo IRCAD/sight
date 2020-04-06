@@ -61,7 +61,7 @@ public:
     VISUOGREADAPTOR_API STrackballCamera() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~STrackballCamera() noexcept final;
+    VISUOGREADAPTOR_API virtual ~STrackballCamera() noexcept;
 
 private:
 

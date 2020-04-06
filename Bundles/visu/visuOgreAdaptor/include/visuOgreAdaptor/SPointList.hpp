@@ -198,7 +198,7 @@ private:
     void destroyLabel();
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera;
+    bool m_autoResetCamera { true };
 
     /// Defines whether the material was set by the user or not.
     bool m_customMaterial { false };

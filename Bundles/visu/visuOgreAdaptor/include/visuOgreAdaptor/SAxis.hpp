@@ -66,7 +66,6 @@ namespace visuOgreAdaptor
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, unsigned int, default=16): label font size in points.
- *
  */
 class VISUOGREADAPTOR_CLASS_API SAxis final :
     public ::fwRenderOgre::IAdaptor,
@@ -152,6 +151,9 @@ private:
 
     /// Defines labels font size in points.
     size_t m_fontSize { 16 };
+
+    /// Defines the TrueType font source file.
+    std::string m_fontSource { "DejaVuSans.ttf" };
 
 };
 

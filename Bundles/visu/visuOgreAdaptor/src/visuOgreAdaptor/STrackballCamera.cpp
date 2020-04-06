@@ -25,6 +25,8 @@
 namespace visuOgreAdaptor
 {
 
+static const std::string s_PRIORITY_CONFIG = "priority";
+
 //-----------------------------------------------------------------------------
 
 STrackballCamera::STrackballCamera() noexcept
@@ -45,9 +47,10 @@ void STrackballCamera::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_priority = config.get<int>("priority", m_priority);
+    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
 }
 
 //-----------------------------------------------------------------------------

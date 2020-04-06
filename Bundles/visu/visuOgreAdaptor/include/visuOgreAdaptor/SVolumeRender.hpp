@@ -99,7 +99,7 @@ namespace visuOgreAdaptor
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b dynamic (optional, bool, default=false): enables background buffering for dynamic images.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
- * - \b widgetPriority (optional, int, default=2): interaction priority of the widget.
+ * - \b priority (optional, int, default=2): interaction priority of the widget.
  * - \b ao (optional, bool, default=false): Ambient occlusion usage.
  * - \b colorBleeding (optional, bool, default=false): Color bleeding usage.
  * - \b shadows (optional, bool, default=false): Soft shadows usage.
@@ -393,7 +393,7 @@ private:
     std::shared_ptr< ::fwRenderOgre::interactor::ClippingBoxInteractor > m_widget;
 
     /// Stores the priority of the widget interactor.
-    int m_widgetPriority { 2 };
+    int m_priority { 2 };
 
     /// Stores the sampling rate.
     std::uint16_t m_nbSamples { 512 };

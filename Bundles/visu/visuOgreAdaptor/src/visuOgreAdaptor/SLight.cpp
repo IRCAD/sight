@@ -52,6 +52,11 @@ static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform
 static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
 static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
 
+static const std::string s_NAME_CONFIG         = "name";
+static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
+static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
+static const std::string s_PHI_OFFSET_CONFIG   = "thetaOffset";
+
 fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
 
 //------------------------------------------------------------------------------
@@ -82,27 +87,17 @@ void SLight::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_lightName = config.get<std::string>("name");
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    if(config.count("switchedOn"))
-    {
-        m_switchedOn = config.get<std::string>("switchedOn") == "yes";
-    }
-
-    if(config.count("thetaOffset"))
-    {
-        m_thetaOffset = config.get<float>("thetaOffset");
-    }
-
-    if(config.count("phiOffset"))
-    {
-        m_phiOffset = config.get<float>("phiOffset");
-    }
+    m_switchedOn  = config.get<bool>(s_SWITCHED_ON_CONFIG, m_switchedOn);
+    m_thetaOffset = config.get<float>(s_THETA_OFFSET_CONFIG, m_thetaOffset);
+    m_phiOffset   = config.get<float>(s_PHI_OFFSET_CONFIG, m_phiOffset);
 }
 
 //------------------------------------------------------------------------------

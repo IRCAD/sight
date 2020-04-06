@@ -63,7 +63,7 @@ public:
     VISUOGREADAPTOR_API SResizeViewport() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SResizeViewport() noexcept final;
+    VISUOGREADAPTOR_API virtual ~SResizeViewport() noexcept;
 
 private:
 

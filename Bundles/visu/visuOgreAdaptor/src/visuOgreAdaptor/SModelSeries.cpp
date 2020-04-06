@@ -75,15 +75,13 @@ void SModelSeries::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    if (config.count(s_AUTORESET_CAMERA_CONFIG))
-    {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
-    }
+    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
 
     m_materialTemplateName = config.get<std::string>(s_MATERIAL_CONFIG, m_materialTemplateName);
     m_isDynamic            = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);

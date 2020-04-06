@@ -94,6 +94,9 @@ private:
     /// Defiens the text's font height in points.
     size_t m_fontSize { 12 };
 
+    /// Defines the TrueType font source file.
+    std::string m_fontSource { "DejaVuSans.ttf" };
+
 };
 
 } // namespace visuOgreAdaptor.

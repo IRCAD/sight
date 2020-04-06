@@ -194,10 +194,10 @@ private:
 
     /// Defines the default template name, given by xml configuration.
     /// It must refer an existing Ogre material which will be used in order to instanciate m_material
-    std::string m_materialTemplateName;
+    std::string m_materialTemplateName { ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME };
 
     /// Contains the texture adaptor the material adaptor is listening to.
-    ::visuOgreAdaptor::STexture::sptr m_texAdaptor;
+    ::visuOgreAdaptor::STexture::sptr m_texAdaptor { nullptr };
 
     /// Defines the texture name.
     std::string m_textureName;
@@ -212,7 +212,7 @@ private:
     std::string m_shadingMode;
 
     /// Defines the current number of lights in the scene..
-    int m_lightsNumber;
+    int m_lightsNumber { 1 };
 
     /// Contains the Ogre material.
     ::fwRenderOgre::Material::uptr m_materialFw;

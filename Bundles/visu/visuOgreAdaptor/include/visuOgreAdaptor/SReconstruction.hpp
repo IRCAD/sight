@@ -145,19 +145,19 @@ private:
     ::fwRenderOgre::IAdaptor::wptr m_meshAdaptor;
 
     /// Defines if the camera has to be reset automatically.
-    bool m_autoResetCamera {true};
+    bool m_autoResetCamera { true };
 
     /// Defines the material name.
-    std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME };
 
     /// Defines if the mesh changes dynamically.
-    bool m_isDynamic {false};
+    bool m_isDynamic { false };
 
     /// Defines if the vertices change dynamically.
-    bool m_isDynamicVertices {false};
+    bool m_isDynamicVertices { false };
 
     /// Defines the mask used for picking request.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
 };
 
 //------------------------------------------------------------------------------

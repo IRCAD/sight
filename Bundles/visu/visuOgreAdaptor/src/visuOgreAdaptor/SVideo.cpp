@@ -81,7 +81,9 @@ void SVideo::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
+
     m_reverse = config.get<bool>(s_REVERSE_CONFIG, m_reverse);
 }
 

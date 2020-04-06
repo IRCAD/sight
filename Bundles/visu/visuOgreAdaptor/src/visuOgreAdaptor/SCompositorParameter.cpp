@@ -78,6 +78,8 @@ private:
     ::visuOgreAdaptor::SCompositorParameter::wptr m_adaptor;
 };
 
+static const std::string s_COMPOSITOR_NAME_CONFIG = "compositorName";
+
 //------------------------------------------------------------------------------
 
 SCompositorParameter::SCompositorParameter() noexcept
@@ -96,10 +98,11 @@ void SCompositorParameter::configuring()
 {
     this->IParameter::configuring();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_compositorName = config.get<std::string>("compositorName", "");
-    OSLM_ERROR_IF("'compositorName' attribute not set", m_compositorName.empty());
+    m_compositorName = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
+    OSLM_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
 }
 
 //------------------------------------------------------------------------------

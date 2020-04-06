@@ -85,7 +85,7 @@ public:
     VISUOGREADAPTOR_API SText() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SText() noexcept final;
+    VISUOGREADAPTOR_API virtual ~SText() noexcept;
 
 private:
 

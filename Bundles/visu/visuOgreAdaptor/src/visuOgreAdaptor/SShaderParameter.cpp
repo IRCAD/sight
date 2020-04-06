@@ -34,6 +34,8 @@
 namespace visuOgreAdaptor
 {
 
+static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
+
 //------------------------------------------------------------------------------
 
 SShaderParameter::SShaderParameter() noexcept
@@ -52,10 +54,11 @@ void SShaderParameter::configuring()
 {
     this->IParameter::configuring();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_materialName = config.get<std::string>("materialName", "");
-    OSLM_ERROR_IF("material attribute not set", m_materialName.empty());
+    m_materialName = config.get<std::string>(s_MATERIAL_NAME_CONFIG, "");
+    OSLM_ERROR_IF("'" + s_MATERIAL_NAME_CONFIG + "' attribute not set", m_materialName.empty());
 }
 
 //------------------------------------------------------------------------------

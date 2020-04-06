@@ -197,17 +197,17 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override final;
+    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override;
 
     /**
      * @brief Moves a distance stores in m_pickedData.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    virtual void mouseMoveEvent(MouseButton, int _x, int _y, int, int) override final;
+    virtual void mouseMoveEvent(MouseButton, int _x, int _y, int, int) override;
 
     /// Resets m_pickedData.
-    virtual void buttonReleaseEvent(MouseButton, int, int) override final;
+    virtual void buttonReleaseEvent(MouseButton, int, int) override;
 
     /**
      * @brief Creates a distance and add it into m_distances.
@@ -244,7 +244,7 @@ private:
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive { true };
 
-    /// Defines the priority of the interactor
+    /// Defines the priority of the interactor.
     int m_priority { 2 };
 
     /// Defines the current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).

@@ -57,11 +57,14 @@ const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeText
 
 const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
+static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = "materialTemplate";
+static const std::string s_MATERIAL_NAME_CONFIG          = "materialName";
+static const std::string s_TEXTURE_NAME_CONFIG           = "textureName";
+static const std::string s_SHADING_MODE_CONFIG           = "shadingMode";
+
 //------------------------------------------------------------------------------
 
-SMaterial::SMaterial() noexcept :
-    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_lightsNumber(1)
+SMaterial::SMaterial() noexcept
 {
     newSlot(s_UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
     newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
@@ -81,32 +84,13 @@ void SMaterial::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    if(config.count("materialTemplate"))
-    {
-        m_materialTemplateName = config.get<std::string>("materialTemplate");
-    }
-
-    if(config.count("materialName"))
-    {
-        m_materialName = config.get<std::string>("materialName");
-    }
-    else
-    {
-        // Choose a default name if not provided
-        m_materialName = this->getID();
-    }
-
-    if(config.count("textureName"))
-    {
-        m_textureName = config.get<std::string>("textureName");
-    }
-
-    if(config.count("shadingMode"))
-    {
-        m_shadingMode = config.get<std::string>("shadingMode");
-    }
+    m_materialTemplateName = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_materialTemplateName);
+    m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->getID());
+    m_textureName          = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
+    m_shadingMode          = config.get(s_SHADING_MODE_CONFIG, m_shadingMode);
 }
 
 //------------------------------------------------------------------------------

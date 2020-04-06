@@ -38,7 +38,8 @@ namespace visuOgreAdaptor
 
 static const std::string s_LANDMARKS_INPUT = "landmarks";
 
-static const std::string s_TEXT_SIZE_CONFIG = "textSize";
+static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
+static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
 
 //-----------------------------------------------------------------------------
 
@@ -64,8 +65,8 @@ void SLandmarks::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_fontSource = config.get("fontSource", m_fontSource);
-    m_fontSize   = config.get<size_t>("fontSize", m_fontSize);
+    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
 
 //-----------------------------------------------------------------------------

@@ -64,14 +64,14 @@ static const ::fwCom::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
-static const std::string s_AUTORESET_CONFIG   = "autoresetcamera";
-static const std::string s_TRANSFORM_CONFIG   = "transform";
-static const std::string s_FILTERING_CONFIG   = "filtering";
-static const std::string s_TF_ALPHA_CONFIG    = "tfAlpha";
-static const std::string s_INTERACTIVE_CONFIG = "interactive";
-static const std::string s_PRIORITY_CONFIG    = "priority";
-static const std::string s_QUERY_CONFIG       = "queryFlags";
-static const std::string s_BORDER_CONFIG      = "border";
+static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
+static const std::string s_TRANSFORM_CONFIG        = "transform";
+static const std::string s_FILTERING_CONFIG        = "filtering";
+static const std::string s_TF_ALPHA_CONFIG         = "tfAlpha";
+static const std::string s_INTERACTIVE_CONFIG      = "interactive";
+static const std::string s_PRIORITY_CONFIG         = "priority";
+static const std::string s_QUERY_CONFIG            = "queryFlags";
+static const std::string s_BORDER_CONFIG           = "border";
 
 static const std::string s_TRANSPARENCY_FIELD = "TRANSPARENCY";
 static const std::string s_VISIBILITY_FIELD   = "VISIBILITY";
@@ -105,16 +105,11 @@ void SNegato3D::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    if(config.count(s_AUTORESET_CONFIG))
-    {
-        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CONFIG) == "yes";
-    }
-    if(config.count(s_TRANSFORM_CONFIG))
-    {
-        this->setTransformId(config.get<std::string>(s_TRANSFORM_CONFIG));
-    }
+    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
+
     if(config.count(s_FILTERING_CONFIG))
     {
         const std::string filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
@@ -131,9 +126,10 @@ void SNegato3D::configuring()
 
         m_filtering = filtering;
     }
-    if(config.count(s_QUERY_CONFIG))
+
+    const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
+    if(!hexaMask.empty())
     {
-        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
         SLM_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
@@ -142,10 +138,10 @@ void SNegato3D::configuring()
         m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 
-    m_enableAlpha         = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
-    m_interactive         = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
-    m_interactionPriority = config.get<int>(s_PRIORITY_CONFIG, m_interactionPriority);
-    m_border              = config.get<bool>(s_TF_ALPHA_CONFIG, m_border);
+    m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
+    m_interactive = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
+    m_priority    = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_border      = config.get<bool>(s_TF_ALPHA_CONFIG, m_border);
 
     const std::string transformId =
         config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
@@ -202,7 +198,7 @@ void SNegato3D::starting()
     if(m_interactive)
     {
         auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
-        this->getLayer()->addInteractor(interactor, m_interactionPriority);
+        this->getLayer()->addInteractor(interactor, m_priority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
         const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient");

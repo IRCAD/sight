@@ -66,7 +66,7 @@ namespace visuOgreAdaptor
  * - \b layer (mandatory, string): defines the light's layer.
  * - \b name (mandatory, string): defines a name for the associated Ogre light.
  * - \b transform (optional, string, default=""): transform applied to the frustum's scene node.
- * - \b switchedOn (optional, yes/no, default=yes): defines if the light is activated or not.
+ * - \b switchedOn (optional, bool, default=true): defines if the light is activated or not.
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
@@ -132,7 +132,7 @@ public:
      * @brief Sets the specular color of the light.
      * @param _specularColor the new light specular color.
      */
-    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override final;
+    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override;
 
     /**
      * @brief Gets the light activation state.

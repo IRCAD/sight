@@ -80,7 +80,7 @@ private:
     virtual void stopping() override;
 
     /// Determines the execution order of the picking interactor.
-    int m_pickingPriority { 2 };
+    int m_priority { 2 };
 
     /// Defines the mask used to filter out entities when picking.
     std::uint32_t m_queryMask { 0xFFFFFFFF };

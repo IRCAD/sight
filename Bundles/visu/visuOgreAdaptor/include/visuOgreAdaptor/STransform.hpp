@@ -66,15 +66,15 @@ public:
     VISUOGREADAPTOR_API STransform() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~STransform() noexcept final;
+    VISUOGREADAPTOR_API virtual ~STransform() noexcept;
 
 private:
 
     /// Retrieves id sets in the configurations.
-    virtual void configuring() final;
+    virtual void configuring();
 
     /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
-    virtual void starting() final;
+    virtual void starting();
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -82,13 +82,13 @@ private:
      *
      * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Updates m_transformNode from the ::fwData::TransformationMatrix3D.
-    virtual void updating() final;
+    virtual void updating();
 
     /// Does nothing.
-    virtual void stopping() final;
+    virtual void stopping();
 
     /// Defines the Parent transform identifier.
     ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId {""};

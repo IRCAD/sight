@@ -24,10 +24,13 @@
 
 #include <fwCom/Signals.hpp>
 
-static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG = "picked";
-
 namespace visuOgreAdaptor
 {
+
+static const ::fwCom::Signals::SignalKeyType s_PICKED_SIG = "picked";
+
+static const std::string s_PRIORITY_CONFIG   = "priority";
+static const std::string s_QUERY_MASK_CONFIG = "queryMask";
 
 //-----------------------------------------------------------------------------
 
@@ -49,11 +52,12 @@ void SPicker::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_pickingPriority = config.get<int>("priority", m_pickingPriority);
-    const std::string hexaMask = config.get<std::string>("queryMask", "");
+    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
 
+    const std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexaMask.empty())
     {
         SLM_ASSERT(
@@ -77,7 +81,7 @@ void SPicker::starting()
     m_interactor->setQueryMask(m_queryMask);
     m_interactor->setPointClickedSig(m_pickedSig);
 
-    layer->addInteractor(m_interactor, m_pickingPriority);
+    layer->addInteractor(m_interactor, m_priority);
 
 }
 

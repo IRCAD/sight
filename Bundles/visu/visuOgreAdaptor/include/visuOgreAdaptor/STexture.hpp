@@ -124,16 +124,16 @@ private:
     std::string m_textureName;
 
     /// Defines the filtering method.
-    std::string m_filtering;
+    std::string m_filtering { "linear" };
 
     /// Defines the wraping method.
-    std::string m_wrapping;
+    std::string m_wrapping { "repeat" };
 
     /// Defines if 1.0 is used as the alpha value (no transparency) or another value.
-    bool m_useAlpha;
+    bool m_useAlpha { true };
 
     /// Defines if the texture changes dynamically, defined in m_configuration.
-    bool m_isDynamic;
+    bool m_isDynamic { false };
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
     typedef ::fwCom::Signal< void () > TextureSwappedSignalType;

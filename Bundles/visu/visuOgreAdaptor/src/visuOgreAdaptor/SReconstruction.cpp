@@ -63,18 +63,16 @@ void SReconstruction::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     this->setTransformId(config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                  this->getID() + "_transform"));
-    if (config.count(s_AUTORESET_CAMERA_CONFIG))
-    {
-        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG) == "yes";
-    }
+    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
 
-    if(config.count(s_QUERY_CONFIG))
+    const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
+    if(!hexaMask.empty())
     {
-        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
         SLM_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,

@@ -55,13 +55,13 @@ static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT            
 static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
 static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT             = "updateVisibility";
 
-static const std::string s_FONT_SOURCE_CONFIG          = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG            = "fontSize";
-static const std::string s_RADIUS_CONFIG               = "radius";
-static const std::string s_INTERACTIVE_CONFIG          = "interactive";
-static const std::string s_PRIORITY_CONFIG             = "priority";
-static const std::string s_QUERY_MASK_CONFIG           = "queryMask";
-static const std::string s_DISTANCE_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
+static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
+static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
+static const std::string s_RADIUS_CONFIG      = "radius";
+static const std::string s_INTERACTIVE_CONFIG = "interactive";
+static const std::string s_PRIORITY_CONFIG    = "priority";
+static const std::string s_QUERY_MASK_CONFIG  = "queryMask";
+static const std::string s_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
 
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID;
 
@@ -159,7 +159,7 @@ void SImageMultiDistances::configuring()
     m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority             = config.get< int >(s_PRIORITY_CONFIG, m_priority);
 
-    std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG);
+    std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexaMask.empty())
     {
         SLM_ASSERT(
@@ -170,7 +170,7 @@ void SImageMultiDistances::configuring()
         m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 
-    hexaMask = config.get<std::string>(s_DISTANCE_QUERY_FLAGS_CONFIG);
+    hexaMask = config.get<std::string>(s_QUERY_FLAGS_CONFIG, "");
     if(!hexaMask.empty())
     {
         SLM_ASSERT(

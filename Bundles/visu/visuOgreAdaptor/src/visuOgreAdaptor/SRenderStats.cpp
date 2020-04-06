@@ -74,6 +74,10 @@ private:
 
 };
 
+static const std::string s_COLOR_CONFIG       = "color";
+static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
+static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
+
 //------------------------------------------------------------------------------
 
 SRenderStats::SRenderStats() noexcept
@@ -94,17 +98,17 @@ void SRenderStats::configuring()
 {
     this->configureParams();
 
-    auto configTree = this->getConfigTree();
-    auto config     = configTree.get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    std::string color = config.get<std::string>("color", "#ffffff");
-
+    std::string color = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     ::fwData::Color::sptr sightColor = ::fwData::Color::New();
     sightColor->setRGBA(color);
 
     m_textColor = ::Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
 
-    m_fontSize = config.get<size_t>("fontSize", m_fontSize);
+    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +127,7 @@ void SRenderStats::starting()
     m_statsText = ::fwRenderOgre::Text::New(this->getID() + "_fpsText",
                                             this->getSceneManager(),
                                             textContainer,
-                                            "DejaVuSans.ttf", m_fontSize, dpi,
+                                            m_fontSource, m_fontSize, dpi,
                                             this->getLayer()->getDefaultCamera());
 
     m_statsText->setPosition(0.01f, 0.01f);

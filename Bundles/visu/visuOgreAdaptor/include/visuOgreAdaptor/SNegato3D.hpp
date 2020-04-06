@@ -236,7 +236,7 @@ private:
     bool m_interactive { false };
 
     /// Sets the order in which interactions take place in the scene.
-    int m_interactionPriority { 1 };
+    int m_priority { 1 };
 
     /// Contains the ogre texture which will be displayed on the negato.
     ::Ogre::TexturePtr m_3DOgreTexture { nullptr };

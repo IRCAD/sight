@@ -45,6 +45,7 @@ static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 static const std::string s_LENGTH_CONFIG     = "length";
 static const std::string s_DASHED_CONFIG     = "dashed";
 static const std::string s_DASHLENGTH_CONFIG = "dashLength";
+static const std::string s_COLOR_CONFIG      = "color";
 
 //-----------------------------------------------------------------------------
 
@@ -83,7 +84,8 @@ void SLine::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     // parsing transform or create an "empty" one
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
@@ -91,11 +93,9 @@ void SLine::configuring()
 
     m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
 
-    const std::string color = config.get("color", "#FFFFFF");
-
+    const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
     std::uint8_t rgba[4];
     ::fwDataTools::Color::hexaStringToRGBA(color, rgba);
-
     m_color.r = static_cast<float>(rgba[0]) / 255.f;
     m_color.g = static_cast<float>(rgba[1]) / 255.f;
     m_color.b = static_cast<float>(rgba[2]) / 255.f;

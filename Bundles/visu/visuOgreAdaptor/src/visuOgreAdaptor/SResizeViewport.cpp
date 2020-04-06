@@ -36,6 +36,13 @@ namespace visuOgreAdaptor
 static const ::fwCom::Slots::SlotKeyType s_REVERT_SLOT = "revert";
 static const ::fwCom::Slots::SlotKeyType s_RESIZE_SLOT = "resize";
 
+static const std::string s_WIDTH_CONFIG    = "width";
+static const std::string s_HEIGHT_CONFIG   = "height";
+static const std::string s_H_OFFSET_CONFIG = "hOffset";
+static const std::string s_V_OFFSET_CONFIG = "vOffset";
+static const std::string s_H_ALIGN_CONFIG  = "hAlign";
+static const std::string s_V_ALIGN_CONFIG  = "vAlign";
+
 //------------------------------------------------------------------------------
 
 SResizeViewport::SResizeViewport() noexcept
@@ -57,40 +64,34 @@ void SResizeViewport::configuring()
 {
     this->configureParams();
 
-    const auto serviceCfg = this->getConfigTree();
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    const auto vpConfig = serviceCfg.get_child_optional("config.<xmlattr>");
+    float xPos = config.get<float>(s_H_OFFSET_CONFIG, 0.f);
+    float yPos = config.get<float>(s_V_OFFSET_CONFIG, 0.f);
 
-    if(vpConfig.has_value())
-    {
-        const auto cfg = vpConfig.value();
+    const float width  = config.get<float>(s_WIDTH_CONFIG, 1.f);
+    const float height = config.get<float>(s_HEIGHT_CONFIG, 1.f);
 
-        float xPos = cfg.get<float>("hOffset", 0.f);
-        float yPos = cfg.get<float>("vOffset", 0.f);
+    const std::map< std::string, float > horizAlignToX {
+        { "left", xPos },
+        { "center", 0.5f - width * 0.5f + xPos},
+        { "right", 1.f - width - xPos }
+    };
 
-        const float width  = cfg.get<float>("width", 1.f);
-        const float height = cfg.get<float>("height", 1.f);
+    const std::map< std::string, float > vertAlignToY {
+        { "bottom", 1.f -height - yPos },
+        { "center", 0.5f - height * 0.5f + yPos },
+        { "top", yPos }
+    };
 
-        const std::map< std::string, float > horizAlignToX {
-            { "left", xPos },
-            { "center", 0.5f - width * 0.5f + xPos},
-            { "right", 1.f - width - xPos }
-        };
+    const std::string hAlign = config.get(s_H_ALIGN_CONFIG, "left");
+    const std::string vAlign = config.get(s_V_ALIGN_CONFIG, "top");
 
-        const std::map< std::string, float > vertAlignToY {
-            { "bottom", 1.f -height - yPos },
-            { "center", 0.5f - height * 0.5f + yPos },
-            { "top", yPos }
-        };
+    xPos = horizAlignToX.at(hAlign);
+    yPos = vertAlignToY.at(vAlign);
 
-        const std::string hAlign = cfg.get("hAlign", "left");
-        const std::string vAlign = cfg.get("vAlign", "top");
-
-        xPos = horizAlignToX.at(hAlign);
-        yPos = vertAlignToY.at(vAlign);
-
-        m_newViewportDimensions = std::tie(xPos, yPos, width, height);
-    }
+    m_newViewportDimensions = std::tie(xPos, yPos, width, height);
 }
 
 //------------------------------------------------------------------------------

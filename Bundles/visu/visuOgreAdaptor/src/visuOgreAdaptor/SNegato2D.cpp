@@ -82,7 +82,8 @@ void SNegato2D::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string orientation = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
     if(orientation == "axial")
@@ -111,7 +112,6 @@ void SNegato2D::configuring()
         {
             filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
         }
-
         this->setFiltering(filtering);
     }
 
