@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 
 #include <fwTools/Type.hpp>
 
-fwDataRegisterMacro( ::fwData::TransferFunction );
+fwDataRegisterMacro( ::fwData::TransferFunction )
 
 namespace fwData
 {
@@ -43,12 +43,33 @@ const ::fwCom::Signals::SignalKeyType TransferFunction::s_WINDOWING_MODIFIED_SIG
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction(::fwData::Object::Key )
+fwData::TransferFunction::sptr TransferFunction::createDefaultTF()
+{
+    TransferFunction::sptr tf = TransferFunction::New();
+
+    tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
+    tf->addTFColor(0.0, TFColor());
+    tf->addTFColor(1.0, TFColor(1.0, 1.0, 1.0, 1.0));
+    tf->setIsClamped(false);
+    tf->setWindow( 500. );
+    tf->setLevel( 50. );
+    return tf;
+}
+
+//------------------------------------------------------------------------------
+
+TransferFunction::TransferFunction(::fwData::Object::Key)
 {
     newSignal< PointsModifiedSignalType >(s_POINTS_MODIFIED_SIG);
     newSignal< WindowingModifiedSignalType >(s_WINDOWING_MODIFIED_SIG);
 
     this->initTF();
+}
+
+//------------------------------------------------------------------------------
+
+TransferFunction::~TransferFunction()
+{
 }
 
 //------------------------------------------------------------------------------
@@ -68,23 +89,38 @@ void TransferFunction::initTF()
 
 //------------------------------------------------------------------------------
 
-fwData::TransferFunction::sptr TransferFunction::createDefaultTF()
+void TransferFunction::shallowCopy(const Object::csptr& _source)
 {
-    TransferFunction::sptr tf = TransferFunction::New();
-
-    tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
-    tf->addTFColor(0.0, TFColor());
-    tf->addTFColor(1.0, TFColor(1.0, 1.0, 1.0, 1.0));
-    tf->setIsClamped(false);
-    tf->setWindow( 500. );
-    tf->setLevel( 50. );
-    return tf;
+    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
+    this->fieldShallowCopy( _source );
+    this->m_level             = other->m_level;
+    this->m_window            = other->m_window;
+    this->m_name              = other->m_name;
+    this->m_backgroundColor   = other->m_backgroundColor;
+    this->m_tfData            = other->m_tfData;
+    this->m_interpolationMode = other->m_interpolationMode;
+    this->m_isClamped         = other->m_isClamped;
 }
 
 //------------------------------------------------------------------------------
 
-TransferFunction::~TransferFunction()
+void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
 {
+    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, _cache );
+    this->m_level             = other->m_level;
+    this->m_window            = other->m_window;
+    this->m_name              = other->m_name;
+    this->m_backgroundColor   = other->m_backgroundColor;
+    this->m_tfData            = other->m_tfData;
+    this->m_interpolationMode = other->m_interpolationMode;
+    this->m_isClamped         = other->m_isClamped;
 }
 
 //------------------------------------------------------------------------------
@@ -121,8 +157,7 @@ TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TFValuePairType
-TransferFunction::getMinMaxTFValues() const
+TransferFunction::TFValuePairType TransferFunction::getMinMaxTFValues() const
 {
     SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
     TFValuePairType minMax;
@@ -133,8 +168,7 @@ TransferFunction::getMinMaxTFValues() const
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TFValuePairType
-TransferFunction::getWLMinMax() const
+TransferFunction::TFValuePairType TransferFunction::getWLMinMax() const
 {
     TFValuePairType minMax;
     const double halfWindow = m_window/2.;
@@ -145,16 +179,16 @@ TransferFunction::getWLMinMax() const
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
+void TransferFunction::setWLMinMax(const TFValuePairType& _minMax)
 {
-    m_window = minMax.second - minMax.first;
+    m_window = _minMax.second - _minMax.first;
     const double halfWindow = m_window/2.;
-    m_level = halfWindow + minMax.first;
+    m_level = halfWindow + _minMax.first;
 }
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType value ) const
+TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _value) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
     const std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
@@ -164,7 +198,7 @@ TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType val
     TFValueType val;
     for(const TFDataType::value_type& data : m_tfData)
     {
-        if(value < data.first )
+        if(_value < data.first )
         {
             nextValue = data.first;
             break;
@@ -184,7 +218,7 @@ TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType val
     }
     else
     {
-        if((value - previousValue) < (nextValue - value))
+        if((_value - previousValue) < (nextValue - _value))
         {
             val = previousValue;
         }
@@ -198,38 +232,6 @@ TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType val
 
 //------------------------------------------------------------------------------
 
-const TransferFunction::TFDataType& TransferFunction::getTFData() const
-{
-    return m_tfData;
-}
-
-//------------------------------------------------------------------------------
-
-void TransferFunction::setTFData( const TFDataType& tfData )
-{
-    m_tfData = tfData;
-}
-
-//------------------------------------------------------------------------------
-
-void TransferFunction::addTFColor( TFValueType value, const TFColor& color )
-{
-    m_tfData[value] = color;
-}
-
-//------------------------------------------------------------------------------
-void TransferFunction::eraseTFValue( TFValueType value)
-{
-    m_tfData.erase(value);
-}
-
-//------------------------------------------------------------------------------
-void TransferFunction::clear()
-{
-    m_tfData.clear();
-}
-//------------------------------------------------------------------------------
-
 TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 {
     TFColorVectorType colors;
@@ -241,7 +243,7 @@ TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value ) const
+TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
@@ -258,7 +260,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
 
     for(const TFDataType::value_type& data : m_tfData)
     {
-        if(value < data.first )
+        if(_value < data.first )
         {
             nextValue = data.first;
             nextColor = data.second;
@@ -283,7 +285,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
     }
     else if(nextValue == max)
     {
-        if(m_isClamped && (value != previousValue))
+        if(m_isClamped && (_value != previousValue))
         {
             color = blackColor;
         }
@@ -294,7 +296,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
     }
     else
     {
-        if((value - previousValue) < (nextValue - value))
+        if((_value - previousValue) < (nextValue - _value))
         {
             color = previousColor;
         }
@@ -309,7 +311,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) const
+TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
@@ -325,7 +327,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
 
     for(const TFDataType::value_type& data : m_tfData)
     {
-        if(value < data.first )
+        if(_value < data.first )
         {
             nextValue = data.first;
             nextColor = data.second;
@@ -350,7 +352,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
     }
     else if(nextValue == max)
     {
-        if(m_isClamped && (value != previousValue))
+        if(m_isClamped && (_value != previousValue))
         {
             color = blackColor;
         }
@@ -362,8 +364,8 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
     else
     {
         // Interpolate the color.
-        const double distanceToNextValue     = nextValue - value;
-        const double distanceToPreviousValue = value - previousValue;
+        const double distanceToNextValue     = nextValue - _value;
+        const double distanceToPreviousValue = _value - previousValue;
         const double distance                = 1.0 / (nextValue - previousValue);
         const double coefPrevious            = 1.0 - (distanceToPreviousValue * distance);
         const double coefNext                = 1.0 - (distanceToNextValue * distance);
@@ -376,48 +378,30 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
     return color;
 }
 
+//-----------------------------------------------------------------------------
+
+TransferFunction::TFColor TransferFunction::getInterpolatedColor(TFValueType value) const
+{
+    TFColor color;
+
+    if(m_interpolationMode == LINEAR)
+    {
+        color = this->getLinearColor(value);
+    }
+    else if(m_interpolationMode == NEAREST)
+    {
+        color = this->getNearestColor(value);
+    }
+    return color;
+}
+
 //------------------------------------------------------------------------------
 
-const TransferFunction::TFColor& TransferFunction::getTFColor( TFValueType value ) const
+const TransferFunction::TFColor& TransferFunction::getTFColor(TFValueType _value) const
 {
-    TFDataType::const_iterator itr = m_tfData.find(value);
-    OSLM_ASSERT("The value "<< value <<" is not defined in the transfer function.", itr != m_tfData.end());
+    TFDataType::const_iterator itr = m_tfData.find(_value);
+    OSLM_ASSERT("The value "<< _value <<" is not defined in the transfer function.", itr != m_tfData.end());
     return itr->second;
-}
-//------------------------------------------------------------------------------
-
-void TransferFunction::shallowCopy(const Object::csptr& _source )
-{
-    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
-    this->m_level             = other->m_level;
-    this->m_window            = other->m_window;
-    this->m_name              = other->m_name;
-    this->m_backgroundColor   = other->m_backgroundColor;
-    this->m_tfData            = other->m_tfData;
-    this->m_interpolationMode = other->m_interpolationMode;
-    this->m_isClamped         = other->m_isClamped;
-}
-
-//------------------------------------------------------------------------------
-
-void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
-{
-    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
-    this->m_level             = other->m_level;
-    this->m_window            = other->m_window;
-    this->m_name              = other->m_name;
-    this->m_backgroundColor   = other->m_backgroundColor;
-    this->m_tfData            = other->m_tfData;
-    this->m_interpolationMode = other->m_interpolationMode;
-    this->m_isClamped         = other->m_isClamped;
 }
 
 //------------------------------------------------------------------------------
