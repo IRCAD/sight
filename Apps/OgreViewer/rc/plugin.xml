@@ -350,8 +350,7 @@
                 <parameter replace="VOLUME_VIEW_RECEIVE_CHANNEL" by="VOLUME_VIEW_SENDER_CHANNEL" />
                 <parameter replace="VR_BASIC_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_BOOL_SENDER_CHANNEL" />
                 <parameter replace="VR_BASIC_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_INT_SENDER_CHANNEL" />
-                <parameter replace="VR_ADVANCE_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_ADVANCED_INT_SENDER_CHANNEL" />
-                <parameter replace="VR_ADVANCE_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_ADVANCED_DOUBLE_SENDER_CHANNEL" />
+                <parameter replace="VR_BASIC_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_DOUBLE_SENDER_CHANNEL" />
                 <parameter replace="VR_VISIBILITY_RECEIVER_CHANNEL" by="VR_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" by="3DNEGATO_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="MESHES_VISIBILITY_RECEIVER_CHANNEL" by="MESHES_VISIBILITY_SENDER_CHANNEL" />
@@ -504,11 +503,7 @@
                 <signal>volumeParameterSrv/intChanged</signal>
             </connect>
 
-            <connect channel="VOLUME_ADVANCED_INT_SENDER_CHANNEL" >
-                <signal>volumeParameterSrv/intChanged</signal>
-            </connect>
-
-            <connect channel="VOLUME_ADVANCED_DOUBLE_SENDER_CHANNEL" >
+            <connect channel="VOLUME_BASIC_DOUBLE_SENDER_CHANNEL" >
                 <signal>volumeParameterSrv/doubleChanged</signal>
             </connect>
 

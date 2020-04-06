@@ -6,8 +6,7 @@
         <param name="VOLUME_VIEW_RECEIVE_CHANNEL" />
         <param name="VR_BASIC_BOOL_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_BASIC_INT_PARAM_RECEIVER_CHANNEL" />
-        <param name="VR_ADVANCE_INT_PARAM_RECEIVER_CHANNEL" />
-        <param name="VR_ADVANCE_DOUBLE_PARAM_RECEIVER_CHANNEL" />
+        <param name="VR_BASIC_DOUBLE_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="MESHES_VISIBILITY_RECEIVER_CHANNEL" />
@@ -267,11 +266,7 @@
             <slot>volumeAdp/setIntParameter</slot>
         </connect>
 
-        <connect channel="${VR_ADVANCE_INT_PARAM_RECEIVER_CHANNEL}" >
-            <slot>volumeAdp/setIntParameter</slot>
-        </connect>
-
-        <connect channel="${VR_ADVANCE_DOUBLE_PARAM_RECEIVER_CHANNEL}" >
+        <connect channel="${VR_BASIC_DOUBLE_PARAM_RECEIVER_CHANNEL}" >
             <slot>volumeAdp/setDoubleParameter</slot>
         </connect>
 
