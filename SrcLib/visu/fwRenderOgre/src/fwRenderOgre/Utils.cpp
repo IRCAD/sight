@@ -287,12 +287,13 @@ void Utils::destroyOgreRoot()
 
     const uint32_t width = static_cast<uint32_t>(imageSize[0]);
     uint32_t height = 1, depth = 1;
+    const auto dimensions = imageFw->getNumberOfDimensions();
 
-    if(imageSize.size() >= 2)
+    if(dimensions >= 2)
     {
         height = static_cast<uint32_t>(imageSize[1]);
 
-        if(imageSize.size() == 3)
+        if(dimensions == 3)
         {
             depth = static_cast<uint32_t>(imageSize[2]);
         }
