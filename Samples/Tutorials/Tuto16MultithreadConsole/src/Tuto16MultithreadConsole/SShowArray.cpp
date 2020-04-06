@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SShowArray, ::fwData::Array );
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SShowArray, ::fwData::Array )
 
 namespace Tuto16MultithreadConsole
 {
@@ -68,12 +68,14 @@ void SShowArray::updating()
     ::fwData::mt::ObjectReadLock readLock(array);
     SLM_ASSERT("No array.", array);
 
-    ::fwDataTools::helper::ArrayGetter arrayHelper(array);
-    const unsigned int* buffer = static_cast< const unsigned int* >( arrayHelper.getBuffer() );
+    const auto dumpLock = array->lock();
+
+    auto itr       = array->begin< unsigned int >();
+    const auto end = array->end< unsigned int >();
 
     std::stringstream str;
     std::ostream_iterator<unsigned int> coutIter(str, ", ");
-    std::copy(buffer, buffer+10, coutIter );
+    std::copy(itr, end, coutIter );
     SLM_INFO("Buffer : " + str.str());
 }
 
