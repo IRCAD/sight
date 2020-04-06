@@ -91,7 +91,7 @@ protected:
 private:
 
     /// Helper to copy quicly meshes ( only points, normals and point colors )
-    void copyMesh( const ::fwData::Mesh::sptr& src, const ::fwData::Mesh::sptr& dest ) const;
+    void copyMesh(const ::fwData::Mesh::csptr& src, const ::fwData::Mesh::sptr& dest ) const;
 
     /// Copy associated mesh to m_mesh and initialize m_transformMesh
     void initMeshBackup();

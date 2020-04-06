@@ -109,7 +109,7 @@ void SSimpleMeshDeformation::updating()
         lock.upgrade();
         m_hiRestimer.reset();
         m_hiRestimer.start();
-        copyMesh(m_transformMesh, mesh);
+        this->copyMesh(m_transformMesh, mesh);
         m_hiRestimer.stop();
         OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
         lock.downgrade();
@@ -156,7 +156,7 @@ void SSimpleMeshDeformation::stopDeformation()
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr& src, const ::fwData::Mesh::sptr& dest ) const
+void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::csptr& src, const ::fwData::Mesh::sptr& dest ) const
 {
     const auto srcDumpLock  = src->lock();
     const auto destDumpLock = dest->lock();
@@ -217,16 +217,16 @@ void SSimpleMeshDeformation::computeDeformation (
     }
 
     // Compute deformation
-    float sizeRef       = ymax-ymin;
-    float yref          = sizeRef * center + ymin;
-    float strafe        = maxDeformation * sizeRef;
-    float currentStrafe = deformationPercent * strafe;
+    const float sizeRef       = ymax-ymin;
+    const float yref          = sizeRef * center + ymin;
+    const float strafe        = maxDeformation * sizeRef;
+    const float currentStrafe = deformationPercent * strafe;
 
     refItr = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
 
     for (; refItr != refEnd; ++refItr, ++transformItr)
     {
-        float y = refItr->point->y;
+        const float y = refItr->point->y;
         if( y < yref )
         {
             float val = ( yref - y ) / ( yref - ymin ) * currentStrafe;
@@ -284,8 +284,9 @@ void SSimpleMeshDeformation::initMeshBackup()
         ::fwDataTools::Mesh::generatePointNormals(mesh);
         if (!mesh->hasPointColors())
         {
-            mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(),
-                         mesh->getCellDataSize(), ::fwData::Mesh::Attributes::POINT_COLORS);
+            mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(), mesh->getCellDataSize(),
+                         ::fwData::Mesh::Attributes::POINT_COLORS);
+            ::fwDataTools::Mesh::colorizeMeshPoints(mesh, 255, 255, 255);
         }
 
         m_mesh = ::fwData::Object::copy( mesh );
