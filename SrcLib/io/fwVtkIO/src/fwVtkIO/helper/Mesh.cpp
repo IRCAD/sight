@@ -893,39 +893,19 @@ void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 
     if(meshSrc->hasPointColors())
     {
-        const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
+        const auto dumpLock                              = meshSrc->lock();
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBPointColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfPoints() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getPointColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
 
-        size_t i = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
+        std::copy(meshColors, meshColors + size, newColors);
+
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetPointData()->SetScalars(colors);
@@ -950,38 +930,19 @@ void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 
     if(meshSrc->hasCellColors())
     {
-        const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
+        const auto dumpLock                              = meshSrc->lock();
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBCellColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfCells() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getCellColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        size_t i                 = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
+
+        std::copy(meshColors, meshColors + size, newColors);
+
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetScalars(colors);
@@ -1389,6 +1350,7 @@ void Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 }
 
 //------------------------------------------------------------------------------
+
 void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                 const ::fwData::Mesh::csptr& meshSrc )
 {
@@ -1397,38 +1359,18 @@ void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
     if(meshSrc->hasPointColors())
     {
         const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
+
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBPointColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfPoints() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getPointColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
+        std::copy(meshColors, meshColors + size, newColors);
 
-        size_t i = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetPointData()->SetScalars(colors);
@@ -1454,38 +1396,19 @@ void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 
     if(meshSrc->hasCellColors())
     {
-        const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
+        const auto dumpLock                              = meshSrc->lock();
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBCellColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfCells() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getCellColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        size_t i                 = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
+
+        std::copy(meshColors, meshColors + size, newColors);
+
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetCellData()->SetScalars(colors);
