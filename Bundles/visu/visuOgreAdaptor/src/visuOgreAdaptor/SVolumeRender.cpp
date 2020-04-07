@@ -168,7 +168,7 @@ void SVolumeRender::starting()
     m_gpuVolumeTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' does not exist..", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' does not exist.", image);
 
     const ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
     m_helperVolumeTF.setOrCreateTF(volumeTF, image);
