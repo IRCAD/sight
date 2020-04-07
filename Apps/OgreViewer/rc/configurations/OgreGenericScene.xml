@@ -30,12 +30,28 @@
         <object uid="clippingMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="pointList" type="::fwData::PointList" />
+        <object uid="background" type="::fwData::Image" />
+        <object uid="border" type="::fwData::Color" >
+            <value>#2E3034</value>
+        </object>
 
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
                 <slideView align="top" opacity="1" >
+                    <styleSheet>
+                        <![CDATA[
+                        #SlideBar {
+                            background-color: rgba(0, 0, 0, 0%);
+                        }
+                        #SlideBar QWidget {
+                            background-color: rgba(0, 0, 0, 0%);
+                        }
+                        ]]>
+                    </styleSheet>
+                </slideView>
+                <slideView align="top" opacity="1" size="10000000">
                     <styleSheet>
                         <![CDATA[
                         #SlideBar {
@@ -67,8 +83,9 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <slideView sid="topToolbarSliderView" start="yes" />
+                <slideView sid="topNegatoSlicerSliderView" start="yes" />
                 <view sid="genericSceneSrv" start="yes" />
-                <slideView sid="3DNegatoSlicerSliderView" start="yes" />
+                <slideView sid="bottomNegatoSlicerSliderView" start="yes" />
             </registry>
         </service>
 
@@ -87,7 +104,6 @@
         <service uid="topToolbarView" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <spacer />
                     <menuItem name="Fullscreen" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
                     <menuItem name="Windowed" icon="flatIcon-0.1/icons/YellowMinimize.svg" shortcut="Escape" />
                 </layout>
@@ -98,16 +114,57 @@
             </registry>
         </service>
 
-        <service uid="3DNegatoSlicerSliderView" type="::gui::view::SDefaultView">
+        <service uid="topNegatoSlicerSliderView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <spacer />
+                    <view proportion="0" backgroundColor="#00000000"/>
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="topNegatoSlicerView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="topNegatoSlicerView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <spacer />
+                    <view proportion="0" backgroundColor="#00000000" leftBorder="5" rightBorder="5" bottomBorder="50" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="axialNegatoSlicerSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="bottomNegatoSlicerSliderView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" backgroundColor="#00000000"/>
+                </layout>
+            </gui>
+            <registry>
+                <view sid="bottomNegatoSlicerView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="bottomNegatoSlicerView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" backgroundColor="#00000000" border="5" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
                 </layout>
             </gui>
             <registry>
-                <view sid="3DNegatoSlicerSrv" start="yes" />
+                <view sid="sagittalNegatoSlicerSrv" start="yes" />
+                <view sid="frontalNegatoSlicerSrv" start="yes" />
             </registry>
         </service>
 
@@ -117,7 +174,8 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="defaultLayer" depth="1" transparency="DepthPeeling" numPeels="4" />
+                <layer id="defaultLayer" depth="1" transparency="DepthPeeling" numPeels="4" compositors="ViewportBorder" />
+                <adaptor uid="compositorAdp" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -129,14 +187,56 @@
                 <adaptor uid="pickedVoxelTextAdp" />
                 <adaptor uid="resizeViewportAdp" />
 
-                <layer id="negatoLayer" depth="3">
+                <layer id="axialBackgroundNegatoLayer" depth="2" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
                 </layer>
-                <adaptor uid="negatoAdp" />
-                <adaptor uid="negatoMultiDistancesAdp" />
-                <adaptor uid="negatoCameraAdp" />
-                <adaptor uid="negatoResizeViewportAdp" />
+                <adaptor uid="axialBackgroundAdp" />
+                <adaptor uid="axialBackgroundResizeViewportAdp" />
+
+                <layer id="axialNegatoLayer" depth="3" compositors="ViewportBorder" >
+                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
+                </layer>
+                <adaptor uid="axialCompositorAdp" />
+                <adaptor uid="axialNegatoAdp" />
+                <adaptor uid="axialNegatoMultiDistancesAdp" />
+                <adaptor uid="axialNegatoCameraAdp" />
+                <adaptor uid="axialNegatoResizeViewportAdp" />
+
+                <layer id="sagittalBackgroundNegatoLayer" depth="4" >
+                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
+                </layer>
+                <adaptor uid="sagittalBackgroundAdp" />
+                <adaptor uid="sagittalBackgroundResizeViewportAdp" />
+
+                <layer id="sagittalNegatoLayer" depth="5" compositors="ViewportBorder" >
+                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="left" vAlign="bottom"/>
+                </layer>
+                <adaptor uid="sagittalCompositorAdp" />
+                <adaptor uid="sagittalNegatoAdp" />
+                <adaptor uid="sagittalNegatoMultiDistancesAdp" />
+                <adaptor uid="sagittalNegatoCameraAdp" />
+                <adaptor uid="sagittalNegatoResizeViewportAdp" />
+
+                <layer id="frontalBackgroundNegatoLayer" depth="6" >
+                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
+                </layer>
+                <adaptor uid="frontalBackgroundAdp" />
+                <adaptor uid="frontalBackgroundResizeViewportAdp" />
+
+                <layer id="frontalNegatoLayer" depth="7" compositors="ViewportBorder" >
+                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="bottom"/>
+                </layer>
+                <adaptor uid="frontalCompositorAdp" />
+                <adaptor uid="frontalNegatoAdp" />
+                <adaptor uid="frontalNegatoMultiDistancesAdp" />
+                <adaptor uid="frontalNegatoCameraAdp" />
+                <adaptor uid="frontalNegatoResizeViewportAdp" />
             </scene>
+        </service>
+
+        <service uid="compositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
+            <inout key="parameter" uid="border" />
+            <config layer="defaultLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
         <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
@@ -175,45 +275,146 @@
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x04000000" />
         </service>
 
+
         <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >
             <config layer="defaultLayer" visible="false" origin="true" label="false" />
         </service>
 
         <service uid="pickedVoxelTextAdp" type="::visuOgreAdaptor::SText">
             <text></text>
-            <config layer="defaultLayer" x="0.01" y="0.01" hAlign="left" vAlign="top" color="#D35151" />
+            <config layer="defaultLayer" x="0.01" y="0.01" hAlign="left" vAlign="bottom" color="#D35151" />
         </service>
 
         <service uid="resizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
-            <config layer="defaultLayer" hOffset="1" vOffset="1" width="1" height="1" hAlign="left" vAlign="top"/>
+            <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
         </service>
 
-        <service uid="negatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+        <!-- Axial -->
+
+        <service uid="axialBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="background" />
+            <config layer="axialBackgroundNegatoLayer" />
+        </service>
+
+        <service uid="axialBackgroundResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+            <config layer="axialBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
+        </service>
+
+        <service uid="axialCompositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
+            <inout key="parameter" uid="border" />
+            <config layer="axialNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
+        </service>
+
+        <service uid="axialNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
-            <config layer="negatoLayer" sliceIndex="axial" filtering="anisotropic" />
+            <config layer="axialNegatoLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="negatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="axialNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
-            <config layer="negatoLayer" fontSize="32" radius="3" queryFlags="0x04000000" />
+            <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x04000000" />
         </service>
 
-        <service uid="negatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="axialNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
-            <config layer="negatoLayer" priority="0" orientation="axial" />
+            <config layer="axialNegatoLayer" priority="0" orientation="axial" />
         </service>
 
-        <service uid="negatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
-            <config layer="negatoLayer" hOffset="0" vOffset="0" width="1" height="1" hAlign="left" vAlign="top"/>
+        <service uid="axialNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+            <config layer="axialNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
+        </service>
+
+        <!-- Sagittal -->
+
+        <service uid="sagittalBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="background" />
+            <config layer="sagittalBackgroundNegatoLayer" />
+        </service>
+
+        <service uid="sagittalBackgroundResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+            <config layer="sagittalBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom"/>
+        </service>
+
+        <service uid="sagittalCompositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
+            <inout key="parameter" uid="border" />
+            <config layer="sagittalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
+        </service>
+
+        <service uid="sagittalNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${volumeTF}" />
+            <config layer="sagittalNegatoLayer" sliceIndex="sagittal" filtering="anisotropic" />
+        </service>
+
+        <service uid="sagittalNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x04000000" />
+        </service>
+
+        <service uid="sagittalNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${volumeTF}" />
+            <config layer="sagittalNegatoLayer" priority="0" orientation="sagittal" />
+        </service>
+
+        <service uid="sagittalNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+            <config layer="sagittalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom"/>
+        </service>
+
+        <!-- Frontal -->
+
+        <service uid="frontalBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="background" />
+            <config layer="frontalBackgroundNegatoLayer" />
+        </service>
+
+        <service uid="frontalBackgroundResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+            <config layer="frontalBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
+        </service>
+
+        <service uid="frontalCompositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
+            <inout key="parameter" uid="border" />
+            <config layer="frontalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
+        </service>
+
+        <service uid="frontalNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${volumeTF}" />
+            <config layer="frontalNegatoLayer" sliceIndex="frontal" filtering="anisotropic" />
+        </service>
+
+        <service uid="frontalNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x04000000" />
+        </service>
+
+        <service uid="frontalNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${volumeTF}" />
+            <config layer="frontalNegatoLayer" priority="0" orientation="frontal" />
+        </service>
+
+        <service uid="frontalNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+            <config layer="frontalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="3DNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="axialNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Axial</sliceIndex>
+        </service>
+
+        <service uid="sagittalNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <sliceIndex>Sagittal</sliceIndex>
+        </service>
+
+        <service uid="frontalNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <inout key="image" uid="${image}" />
+            <sliceIndex>Frontal</sliceIndex>
         </service>
 
         <!-- Reset the clipping box matreix -->
@@ -225,6 +426,12 @@
         <!-- Add a point in the point list from picking informations -->
         <service uid="managePointsSrv" type="::ctrlPicking::SManagePointList">
             <inout key="pointList" uid="pointList" />
+        </service>
+
+        <!-- Load the background image -->
+        <service uid="backgroundReaderSrv" type="::ioVTK::SImageReader">
+            <inout key="data" uid="background" />
+            <resource>OgreViewer-@PROJECT_VERSION@/icons/background.png</resource>
         </service>
 
         <!-- ************************************* Action ************************************ -->
@@ -246,15 +453,27 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${NEGATO_VIEW_RECEIVE_CHANNEL}" >
-            <slot>negatoResizeViewportAdp/resize</slot>
+            <slot>axialBackgroundResizeViewportAdp/resize</slot>
+            <slot>axialNegatoResizeViewportAdp/resize</slot>
+            <slot>sagittalBackgroundResizeViewportAdp/resize</slot>
+            <slot>sagittalNegatoResizeViewportAdp/resize</slot>
+            <slot>frontalBackgroundResizeViewportAdp/resize</slot>
+            <slot>frontalNegatoResizeViewportAdp/resize</slot>
             <slot>resizeViewportAdp/resize</slot>
-            <slot>3DNegatoSlicerSliderView/show</slot>
+            <slot>topNegatoSlicerSliderView/show</slot>
+            <slot>bottomNegatoSlicerSliderView/show</slot>
         </connect>
 
         <connect channel="${VOLUME_VIEW_RECEIVE_CHANNEL}" >
-            <slot>negatoResizeViewportAdp/revert</slot>
+            <slot>axialBackgroundResizeViewportAdp/revert</slot>
+            <slot>axialNegatoResizeViewportAdp/revert</slot>
+            <slot>sagittalBackgroundResizeViewportAdp/revert</slot>
+            <slot>sagittalNegatoResizeViewportAdp/revert</slot>
+            <slot>frontalBackgroundResizeViewportAdp/revert</slot>
+            <slot>frontalNegatoResizeViewportAdp/revert</slot>
             <slot>resizeViewportAdp/revert</slot>
-            <slot>3DNegatoSlicerSliderView/hide</slot>
+            <slot>topNegatoSlicerSliderView/hide</slot>
+            <slot>bottomNegatoSlicerSliderView/hide</slot>
         </connect>
 
         <!-- Volume rendering parameters -->
@@ -346,7 +565,9 @@
         <start uid="mainView" />
         <start uid="clippingBoxResetSrv" />
         <start uid="managePointsSrv" />
+        <start uid="backgroundReaderSrv" />
 
+        <start uid="compositorAdp" />
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="modeSeriesAdp" />
@@ -357,9 +578,28 @@
         <start uid="axisAdp" />
         <start uid="pickedVoxelTextAdp" />
         <start uid="resizeViewportAdp" />
-        <start uid="negatoAdp" />
-        <start uid="negatoMultiDistancesAdp" />
-        <start uid="negatoCameraAdp" />
-        <start uid="negatoResizeViewportAdp" />
+        <start uid="axialBackgroundAdp" />
+        <start uid="axialBackgroundResizeViewportAdp" />
+        <start uid="axialCompositorAdp" />
+        <start uid="axialNegatoAdp" />
+        <start uid="axialNegatoMultiDistancesAdp" />
+        <start uid="axialNegatoCameraAdp" />
+        <start uid="axialNegatoResizeViewportAdp" />
+        <start uid="sagittalBackgroundAdp" />
+        <start uid="sagittalBackgroundResizeViewportAdp" />
+        <start uid="sagittalCompositorAdp" />
+        <start uid="sagittalNegatoAdp" />
+        <start uid="sagittalNegatoMultiDistancesAdp" />
+        <start uid="sagittalNegatoCameraAdp" />
+        <start uid="sagittalNegatoResizeViewportAdp" />
+        <start uid="frontalBackgroundAdp" />
+        <start uid="frontalBackgroundResizeViewportAdp" />
+        <start uid="frontalCompositorAdp" />
+        <start uid="frontalNegatoAdp" />
+        <start uid="frontalNegatoMultiDistancesAdp" />
+        <start uid="frontalNegatoCameraAdp" />
+        <start uid="frontalNegatoResizeViewportAdp" />
+
+        <update uid="backgroundReaderSrv" />
     </config>
 </extension>

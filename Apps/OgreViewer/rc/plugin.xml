@@ -271,7 +271,13 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="::gui::action::SSignal" />
+            <service uid="hideParameterAct" type="::gui::action::SSlotCaller" >
+                <sync>true</sync>
+                <slots>
+                    <slot>parameterView/hide</slot>
+                    <slot>showHideParameterAct/deactivate</slot>
+                </slots>
+             </service>
 
             <service uid="showHideParameterAct" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
@@ -394,6 +400,7 @@
                 <binsWidth>5.0</binsWidth>
             </service>
 
+            <!-- Parameters for the volume rendering -->
             <service uid="volumeParameterSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Samples" key="sampling" defaultValue="1024" min="128" max="8192" reset="false" />
@@ -410,6 +417,7 @@
                 <config sendAtStart="false" />
             </service>
 
+            <!-- Light editor -->
             <service uid="lightSelectorSrv" type="::uiVisuOgre::SLightSelector"  />
 
             <service uid="lightEditorSrv" type="::uiVisuOgre::SLightEditor" />
@@ -508,12 +516,6 @@
             </connect>
 
             <connect>
-                <signal>hideParameterAct/triggered</signal>
-                <slot>parameterView/hide</slot>
-                <slot>showHideParameterAct/deactivate</slot>
-            </connect>
-
-            <connect>
                 <signal>lightSelectorSrv/lightSelected</signal>
                 <slot>lightEditorSrv/editLight</slot>
             </connect>
@@ -552,6 +554,7 @@
             <start uid="lightEditorSrv" />
 
             <update uid="volumeManagerAct" />
+            <update uid="volumeParameterSrv" />
 
         </config>
     </extension>
