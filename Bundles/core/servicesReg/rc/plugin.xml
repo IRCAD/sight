@@ -19,6 +19,12 @@
     <!-- SPECIFIC SERVICES -->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
+        <service>::dataReg::parser::Color</service>
+        <object>::fwData::Color</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::Composite</service>
         <object>::fwData::Composite</object>
     </extension>
