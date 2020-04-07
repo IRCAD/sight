@@ -39,10 +39,10 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::visuOgreAdaptor::STransform">
-            <inout key="transform" uid="..." />
-            <config layer="default" transform="meshTFAdaptor" />
-       </service>
+    <service type="::visuOgreAdaptor::STransform">
+        <inout key="transform" uid="..." />
+        <config layer="default" transform="meshTFAdaptor" />
+   </service>
    @endcode
  *
  * @subsection In-Out In-Out:

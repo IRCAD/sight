@@ -46,10 +46,10 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::visuOgreAdaptor::STexture">
-            <in key="image" uid="..." />
-            <config layer="..." textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
-       </service>
+    <service type="::visuOgreAdaptor::STexture">
+        <in key="image" uid="..." />
+        <config layer="..." textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
+    </service>
    @endcode
  *
  * @subsection Input Input:

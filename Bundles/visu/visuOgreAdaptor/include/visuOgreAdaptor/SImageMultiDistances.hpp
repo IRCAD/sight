@@ -51,10 +51,10 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
-            <inout key="image" uid="..." />
-            <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
-        </service>
+    <service uid="..." type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+        <inout key="image" uid="..." />
+        <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
+    </service>
    @endcode
  *
  * @subsection In-Out In-Out:

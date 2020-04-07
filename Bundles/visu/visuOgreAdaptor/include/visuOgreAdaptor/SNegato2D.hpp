@@ -49,11 +49,11 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SNegato2D">
-            <inout key="image" uid="..." />
-            <inout key="tf" uid="..." optional="yes" />
-            <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
-       </service>
+    <service type="::visuOgreAdaptor::SNegato2D">
+        <inout key="image" uid="..." />
+        <inout key="tf" uid="..." optional="yes" />
+        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
+   </service>
    @endcode
  *
  * @subsection In-Out In-Out:

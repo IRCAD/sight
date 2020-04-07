@@ -46,11 +46,11 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SModelSeries">
-            <in key="model" uid="..." />
-            <config layer="..." transform="..." material="..." autoresetcamera="yes" dynamic="no" dynamicVertices="no"
-            queryFlags="0x40000000" />
-       </service>
+    <service type="::visuOgreAdaptor::SModelSeries">
+        <in key="model" uid="..." />
+        <config layer="..." transform="..." material="..." autoresetcamera="yes" dynamic="no" dynamicVertices="no"
+        queryFlags="0x40000000" />
+   </service>
    @endcode
  *
  * @subsection In-Out In-Out:

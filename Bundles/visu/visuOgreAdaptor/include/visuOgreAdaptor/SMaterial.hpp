@@ -73,6 +73,7 @@ namespace visuOgreAdaptor
  * of the adaptor.
  *
  * @subsection Configuration Configuration:
+ * - \b layer (mandatory, string) : defines the mesh's layer
  * - \b materialTemplate (optional, string, default="") : name of the base Ogre material
  * - \b materialName (optional, string, default="") : name of the Ogre material. This is necessary to bind a
  *::visuOgreAdaptor:SMesh or a

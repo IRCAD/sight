@@ -41,9 +41,9 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::visuOgreAdaptor::STrackballCamera">
-            <config layer="..." priority="0" />
-       </service>
+    <service type="::visuOgreAdaptor::STrackballCamera">
+        <config layer="..." priority="0" />
+   </service>
    @endcode
  *
  * @subsection Configuration Configuration:

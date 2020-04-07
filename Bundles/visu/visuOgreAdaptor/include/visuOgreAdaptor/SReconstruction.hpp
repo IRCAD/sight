@@ -48,10 +48,10 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SReconstruction">
-            <in key="reconstruction" uid="..." />
-            <config layer="..." transform="..." autoresetcamera="yes" queryFlags="0x40000000" />
-       </service>
+    <service type="::visuOgreAdaptor::SReconstruction">
+        <in key="reconstruction" uid="..." />
+        <config layer="..." transform="..." autoresetcamera="yes" queryFlags="0x40000000" />
+   </service>
    @endcode
  *
  * @subsection Input Input:

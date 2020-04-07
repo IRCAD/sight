@@ -54,11 +54,11 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SNegato2DCamera" >
-            <inout key="image" uid="..." autoConnect="yes" />
-            <inout key="tf" uid="..." optional="yes" />
-            <config layer="..." priority="0" orientation="sagittal" />
-       </service>
+    <service type="::visuOgreAdaptor::SNegato2DCamera" >
+        <inout key="image" uid="..." autoConnect="yes" />
+        <inout key="tf" uid="..." optional="yes" />
+        <config layer="..." priority="0" orientation="sagittal" />
+   </service>
    @endcode
  *
  * @subsection In-Out In-Out
