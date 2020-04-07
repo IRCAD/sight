@@ -417,7 +417,7 @@ public:
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
      */
-    template< typename T > T at(const ::fwData::Array::IndexType& id) const;
+    template< typename T > const T& at(const ::fwData::Array::IndexType& id) const;
 
     /**
      * @brief Get the value of an element
@@ -443,7 +443,7 @@ public:
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
      */
-    template< typename T > T& at(const size_t& offset) const;
+    template< typename T > const T& at(const size_t& offset) const;
 
     /**
      * @brief Getter for the array buffer
@@ -736,7 +736,7 @@ inline T& Array::at(const ::fwData::Array::IndexType& id)
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T Array::at(const ::fwData::Array::IndexType& id) const
+inline const T& Array::at(const ::fwData::Array::IndexType& id) const
 {
     const bool isIndexInBounds =
         std::equal(id.begin(), id.end(), m_size.begin(), std::less<IndexType::value_type>());
@@ -758,12 +758,12 @@ inline T& Array::at(const size_t& offset)
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T& Array::at(const size_t& offset) const
+inline const T& Array::at(const size_t& offset) const
 {
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
                                               + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
                           offset >= this->getSizeInBytes()/sizeof(T));
-    return *(reinterpret_cast<T*>(this->getBuffer()) + offset);
+    return *(reinterpret_cast<const T*>(this->getBuffer()) + offset);
 }
 
 //------------------------------------------------------------------------------

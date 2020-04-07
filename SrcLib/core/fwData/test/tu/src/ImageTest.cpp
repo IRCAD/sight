@@ -348,6 +348,7 @@ void ImageTest::testSetGetPixel()
         *iter = count++;
     }
 
+    ::fwData::Image::csptr constImg = img;
     for (size_t x = 0; x < SIZE[0]; ++x)
     {
         for (size_t y = 0; y < SIZE[1]; ++y)
@@ -357,8 +358,11 @@ void ImageTest::testSetGetPixel()
                 const ::fwData::Image::IndexType index = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
                 const std::int16_t val                 = static_cast<std::int16_t>(index);
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(x, y, z));
+                CPPUNIT_ASSERT_EQUAL(val, constImg->at<std::int16_t>(x, y, z));
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
+                CPPUNIT_ASSERT_EQUAL(val, constImg->at<std::int16_t>(index));
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<std::int16_t*>(img->getPixelBuffer(index)));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(constImg->getPixelBuffer(index)));
 
                 std::stringstream ss;
                 ss << val;
@@ -391,10 +395,12 @@ void ImageTest::testSetGetPixel()
     }
 
     count = 0;
-    auto iter2 = img->begin<std::int16_t>();
-    for (; iter2 != iterEnd; ++iter2)
+    auto iter2      = img->begin<std::int16_t>();
+    auto constIter2 = constImg->begin<std::int16_t>();
+    for (; iter2 != iterEnd; ++iter2, ++constIter2)
     {
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), *iter2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count *2), *iter2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), *constIter2);
     }
 
     ::fwData::Image::csptr img2 = ::fwData::Image::copy(img);
