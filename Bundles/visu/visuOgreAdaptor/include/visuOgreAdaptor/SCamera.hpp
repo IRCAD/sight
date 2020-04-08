@@ -48,7 +48,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor transform a Sight camera to an Ogre camera.
+ * @brief This adaptor transforms a Sight camera to an Ogre camera.
  *
  * @section Slots Slots
  * - \b updateTF3D(): Called when the Ogre transform matrix has been updated and updates the transform service

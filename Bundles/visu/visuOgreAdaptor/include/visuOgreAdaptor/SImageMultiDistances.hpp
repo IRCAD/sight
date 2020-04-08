@@ -40,7 +40,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Displays distances retrieved from an image.
+ * @brief This adaptor displays distances retrieved from an image fields.
  *
  * @section Slots Slots
  * - \b addDistance(): Adds distances contained in the image from the scene manager.

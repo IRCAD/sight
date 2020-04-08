@@ -91,7 +91,7 @@ private:
     /// Defines the text's color.
     ::Ogre::ColourValue m_textColor;
 
-    /// Defiens the text's font height in points.
+    /// Defines the text's font height in points.
     size_t m_fontSize { 12 };
 
     /// Defines the TrueType font source file.

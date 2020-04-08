@@ -32,7 +32,7 @@
 namespace visuOgreAdaptor
 {
 /**
- * @brief This adaptor render a video frame from a 2D-image.
+ * @brief This adaptor renders a video frame from a 2D-image.
  *
  * @section Slots Slots
  * - \b updateVisibility(bool): Sets whether the video is visible or not.
@@ -111,7 +111,7 @@ private:
     /// Cleans scene entities and associated mesh.
     void clearEntity();
 
-    /// Contains the Ogre texture used to store the fwImage.
+    /// Contains the Ogre texture used to store the image.
     ::Ogre::TexturePtr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
@@ -120,7 +120,7 @@ private:
     /// Contains the Ogre mesh used to display the video plane.
     ::Ogre::MeshPtr m_mesh;
 
-    /// Contains the Ogre material used to display the video plane.
+    /// Contains the node where the plane is attached.
     ::Ogre::SceneNode* m_sceneNode { nullptr };
 
     /// Contains the Ogre entity used to display the video plane.

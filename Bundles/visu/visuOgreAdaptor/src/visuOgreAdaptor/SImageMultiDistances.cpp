@@ -765,7 +765,7 @@ void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
     const DistanceMap::const_iterator it = m_distances.find(_id);
     SLM_ASSERT("The distance is not found", it != m_distances.end());
 
-    // Destroy Ogre ressource.
+    // Destroy Ogre resource.
     const DistanceData distanceData = it->second;
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 

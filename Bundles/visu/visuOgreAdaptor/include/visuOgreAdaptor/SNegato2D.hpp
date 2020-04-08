@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor to displays a 2D negato.
+ * @brief This adaptor displays a 2D negato.
  *
  * @section Signals Signals
  * - \b sliceIndexChanged(): emitted when the slice index changed.

@@ -193,7 +193,7 @@ private:
     /// Configures the adaptor.
     virtual void configuring() override;
 
-    /// Creates a Mesh in the Default Ogre Ressource group.
+    /// Creates a Mesh in the Default Ogre resource group.
     virtual void starting() override;
 
     /**

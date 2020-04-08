@@ -86,7 +86,7 @@ private:
     /// Configures the adaptor.
     virtual void configuring() override;
 
-    /// Creates manual objects in the default ogre ressource group.
+    /// Creates manual objects in the default ogre resource group.
     virtual void starting() override;
 
     /// Sends a render request.

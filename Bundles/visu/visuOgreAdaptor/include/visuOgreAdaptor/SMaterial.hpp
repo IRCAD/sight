@@ -51,7 +51,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor adapt a ::fwData::Material, allowing to tweak material parameters.
+ * @brief This adaptor adapts a ::fwData::Material, allowing to tweak material parameters.
  *
  * @section Slots Slots
  * - \b updateField(::fwData::Object::FieldsContainerType) : Listen to the fields in the ::fwData::Material.
@@ -187,7 +187,7 @@ private:
     /// SLOT: removes the texture adaptor when the texture is removed from the material.
     void removeTextureAdaptor();
 
-    /// Creates shader parameters adaptors from ressources.
+    /// Creates shader parameters adaptors from resources.
     void createShaderParameterAdaptors();
 
     /// Defines the material name. It is auto generated.

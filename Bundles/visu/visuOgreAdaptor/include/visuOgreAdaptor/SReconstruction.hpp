@@ -39,7 +39,7 @@ class Mesh;
 namespace visuOgreAdaptor
 {
 /**
- * @brief This adaptor display a reconstruction.
+ * @brief This adaptor displays a reconstruction.
  *
  * @section Slots Slots
  * - \b changeMesh(::fwData::Mesh::sptr) : called when the associated mesh changes.

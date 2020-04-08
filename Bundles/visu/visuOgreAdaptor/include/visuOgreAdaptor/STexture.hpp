@@ -120,7 +120,7 @@ private:
     /// Contains the Ogre texture.
     ::Ogre::TexturePtr m_texture;
 
-    /// Defines the texture's name in the Ogre Ressource manager.
+    /// Defines the texture's name in the Ogre resource manager.
     std::string m_textureName;
 
     /// Defines the filtering method.
