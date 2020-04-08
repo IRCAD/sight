@@ -17,6 +17,7 @@
         <id>OgreViewer_jsonReader_SrvCfg</id>
         <desc>JSON</desc>
         <config>
+            <patcher />
             <windowTitle>Open JSON file</windowTitle>
         </config>
     </extension>
