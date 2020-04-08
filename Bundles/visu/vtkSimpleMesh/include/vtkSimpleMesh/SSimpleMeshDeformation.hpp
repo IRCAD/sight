@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,7 @@ class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::ICon
 {
 public:
 
-    fwCoreServiceMacro(SSimpleMeshDeformation, ::fwServices::IController);
+    fwCoreServiceMacro(SSimpleMeshDeformation, ::fwServices::IController)
 
     // Key used to register the 'startDeformation' slot
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_START_DEFORMATION_SLOT;
@@ -91,17 +91,17 @@ protected:
 private:
 
     /// Helper to copy quicly meshes ( only points, normals and point colors )
-    void copyMesh( const ::fwData::Mesh::sptr& src, const ::fwData::Mesh::sptr& dest ) const;
+    void copyMesh(const ::fwData::Mesh::csptr& src, const ::fwData::Mesh::sptr& dest ) const;
 
     /// Copy associated mesh to m_mesh and initialize m_transformMesh
     void initMeshBackup();
 
     /// Helper to compute mesh deformation
-    void computeDeformation( const ::fwData::Mesh::sptr& refMesh, const ::fwData::Mesh::sptr& transformMesh );
+    void computeDeformation( const ::fwData::Mesh::csptr& refMesh, const ::fwData::Mesh::sptr& transformMesh );
 
     /// Helper to compute mesh deformation
     void computeDeformation(
-        const ::fwData::Mesh::sptr& refMesh,
+        const ::fwData::Mesh::csptr& refMesh,
         const ::fwData::Mesh::sptr& transformMesh,
         float deformationPercent );
 

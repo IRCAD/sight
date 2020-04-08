@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSlice );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSlice )
 
 namespace visuVTKAdaptor
 {
@@ -223,9 +223,9 @@ void SImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
 {
     int extent[6];
     std::fill(  extent, extent+6, 0);
-    extent[1]                             = static_cast<int>(image->getSize()[0]-1);
-    extent[3]                             = static_cast<int>(image->getSize()[1]-1);
-    extent[5]                             = static_cast<int>(image->getSize()[2]-1);
+    extent[1]                             = static_cast<int>(image->getSize2()[0]-1);
+    extent[3]                             = static_cast<int>(image->getSize2()[1]-1);
+    extent[5]                             = static_cast<int>(image->getSize2()[2]-1);
     extent[2*m_helper.getOrientation()]   = slice;
     extent[2*m_helper.getOrientation()+1] = slice;
 

@@ -341,7 +341,7 @@ void ImageTest::testSetGetPixel()
     auto iter          = img->begin<std::int16_t>();
     const auto iterEnd = img->end<std::int16_t>();
 
-    // test 1 : use getPixelBuffer
+    // test 1 : get pixel value
     std::int16_t count = 0;
     for (; iter != iterEnd; ++iter)
     {
@@ -358,7 +358,7 @@ void ImageTest::testSetGetPixel()
                 const std::int16_t val                 = static_cast<std::int16_t>(index);
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(x, y, z));
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
-                CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<std::int16_t*>(img->getPixelBuffer(index)));
 
                 std::stringstream ss;
                 ss << val;
@@ -367,16 +367,25 @@ void ImageTest::testSetGetPixel()
         }
     }
 
-    // test 2 : use setPixelBuffer
+    // test 2 : set pixel value
     for (size_t x = 0; x < SIZE[0]; ++x)
     {
         for (size_t y = 0; y < SIZE[1]; ++y)
         {
             for (size_t z = 0; z < SIZE[2]; ++z)
             {
-                const auto index       = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
-                const std::int16_t val = static_cast<std::int16_t>(index * 2);
-                img->at<std::int16_t>(index) = val;
+                const auto index = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
+
+                if (index % 2 == 0)
+                {
+                    const std::int16_t val = static_cast<std::int16_t>(index * 2);
+                    img->at<std::int16_t>(index) = val;
+                }
+                else
+                {
+                    std::int16_t val = static_cast<std::int16_t>(index * 2);
+                    img->setPixelBuffer(index, reinterpret_cast< ::fwData::Image::BufferType* >(&val));
+                }
             }
         }
     }

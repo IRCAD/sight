@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,11 +29,11 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
@@ -56,7 +56,7 @@
 #include <vtkTextProperty.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SProbeCursor);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SProbeCursor)
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_PROBE_EVENT  vtkCommand::LeftButtonReleaseEvent
@@ -330,17 +330,18 @@ void SProbeCursor::updateView( double world[3] )
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
+    const ::fwData::mt::ObjectReadLock lock(image);
     int index[3];
     m_helper.worldToImageSliceIndex( world, index );
     OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
 
     std::string txt;
 
-    if ( world[0] < image->getOrigin()[0] || world[1] < image->getOrigin()[1] || world[2] < image->getOrigin()[2]  ||
+    if ( world[0] < image->getOrigin2()[0] || world[1] < image->getOrigin2()[1] || world[2] < image->getOrigin2()[2]  ||
          index[0] < 0 || index[1] < 0 || index[2] < 0 ||
-         index[0] >= static_cast<int>(image->getSize()[0]) ||
-         index[1] >= static_cast<int>(image->getSize()[1]) ||
-         index[2] >= static_cast<int>(image->getSize()[2])
+         index[0] >= static_cast<int>(image->getSize2()[0]) ||
+         index[1] >= static_cast<int>(image->getSize2()[1]) ||
+         index[2] >= static_cast<int>(image->getSize2()[2])
          )
     {
         txt = "(---,---,---)";
@@ -348,11 +349,11 @@ void SProbeCursor::updateView( double world[3] )
     }
     else
     {
-        ::fwDataTools::helper::Image imageHelper(image);
+        const auto dumpLock         = image->lock();
         const size_t x              = static_cast<size_t>(index[0]);
         const size_t y              = static_cast<size_t>(index[1]);
         const size_t z              = static_cast<size_t>(index[2]);
-        const std::string greyLevel = imageHelper.getPixelAsString(x, y, z);
+        const std::string greyLevel = image->getPixelAsString(x, y, z);
         txt = (::boost::format("(% 4li,% 4li, % 4li) : %s ") % index[0] % index[1] % index[2] % greyLevel ).str();
 
         m_textMapper->SetInput(txt.c_str());
@@ -394,7 +395,7 @@ void SProbeCursor::computeCrossExtremity(::fwData::Image::csptr image, const int
         {
             m_helper.setOrientation(static_cast<int>(dim));
         }
-        probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
+        probeWorld[dim] = probeSlice[dim]*image->getSpacing2()[dim] + image->getOrigin2().at(dim);
     }
 
     for (unsigned int p = 0; p < 2; ++p )
@@ -405,10 +406,10 @@ void SProbeCursor::computeCrossExtremity(::fwData::Image::csptr image, const int
             worldCross[p+2][dim] = probeWorld[dim];
             if ( (dim + p + 1)%3 == m_helper.getOrientation() )
             {
-                worldCross[p][dim] = image->getOrigin().at(dim);
-                const ::fwData::Image::SizeType::value_type size       = image->getSize().at(dim)-1;
-                const ::fwData::Image::SpacingType::value_type spacing = image->getSpacing().at(dim);
-                worldCross[p+2][dim] = size * spacing + image->getOrigin().at(dim);
+                worldCross[p][dim] = image->getOrigin2().at(dim);
+                const ::fwData::Image::Size::value_type size       = image->getSize2().at(dim)-1;
+                const ::fwData::Image::Spacing::value_type spacing = image->getSpacing2().at(dim);
+                worldCross[p+2][dim] = size * spacing + image->getOrigin2().at(dim);
             }
         }
     }
