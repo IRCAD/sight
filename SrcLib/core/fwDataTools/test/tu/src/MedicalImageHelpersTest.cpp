@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,31 +69,26 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         ::fwData::Image::sptr image = ::fwData::Image::New();
 
-        ::fwData::Image::SizeType size(3);
-        size[0] = 125;
-        size[1] = 110;
-        size[2] = 45;
-        ::fwData::Image::SpacingType spacing(3, 1);
-        ::fwData::Image::OriginType origin(3, 0);
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>());
+        ::fwData::Image::Size size       = {125, 110, 45};
+        ::fwData::Image::Spacing spacing = { 1., 1., 1.};
+        ::fwData::Image::Origin origin   = {0., 0., 0.};
+        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
+                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
 
-        ::fwData::Array::sptr array = image->getDataArray();
-        ::fwDataTools::helper::Array helper(array);
+        const auto dumpLock = image->lock();
 
-        Type* buffer    = helper.begin<Type>();
-        Type* bufferEnd = helper.end<Type>();
+        auto itr    = image->begin<Type>();
+        auto itrEnd = image->end<Type>();
 
-        for (; buffer != bufferEnd; ++buffer)
+        for (; itr != itrEnd; ++itr)
         {
-            *buffer = MIN + rand()%RANGE;
+            *itr = MIN + rand()%RANGE;
         }
 
         Type resMin, resMax;
 
-        buffer = helper.begin<Type>();
-
-        buffer[156] = MIN;
-        buffer[245] = MAX;
+        image->at<Type>(156) = MIN;
+        image->at<Type>(245) = MAX;
 
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
@@ -109,31 +104,26 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         ::fwData::Image::sptr image = ::fwData::Image::New();
 
-        ::fwData::Image::SizeType size(3);
-        size[0] = 42;
-        size[1] = 34;
-        size[2] = 75;
-        ::fwData::Image::SpacingType spacing(3, 1);
-        ::fwData::Image::OriginType origin(3, 0);
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>());
+        ::fwData::Image::Size size       = {42, 34, 75};
+        ::fwData::Image::Spacing spacing = { 1., 1., 1.};
+        ::fwData::Image::Origin origin   = {0., 0., 0.};
+        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
+                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
 
-        ::fwData::Array::sptr array = image->getDataArray();
-        ::fwDataTools::helper::Array helper(array);
+        const auto dumpLock = image->lock();
 
-        Type* buffer    = helper.begin<Type>();
-        Type* bufferEnd = helper.end<Type>();
+        auto itr    = image->begin<Type>();
+        auto itrEnd = image->end<Type>();
 
-        for (; buffer != bufferEnd; ++buffer)
+        for (; itr != itrEnd; ++itr)
         {
-            *buffer = MIN + rand()%RANGE;
+            *itr = MIN + rand()%RANGE;
         }
 
         Type resMin, resMax;
 
-        buffer = helper.begin<Type>();
-
-        buffer[16]  = MIN;
-        buffer[286] = MAX;
+        image->at<Type>(16)  = MIN;
+        image->at<Type>(286) = MAX;
 
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("min values are not equal",
@@ -153,30 +143,26 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         ::fwData::Image::sptr image = ::fwData::Image::New();
 
-        ::fwData::Image::SizeType size(2);
-        size[0] = 156;
-        size[1] = 208;
-        ::fwData::Image::SpacingType spacing(2, 1);
-        ::fwData::Image::OriginType origin(2, 0);
-        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>());
+        ::fwData::Image::Size size       = {156, 208, 0};
+        ::fwData::Image::Spacing spacing = { 1., 1., 0.};
+        ::fwData::Image::Origin origin   = {0., 0., 0.};
+        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type::create<Type>(),
+                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
 
-        ::fwData::Array::sptr array = image->getDataArray();
-        ::fwDataTools::helper::Array helper(array);
+        const auto dumpLock = image->lock();
 
-        Type* buffer    = helper.begin<Type>();
-        Type* bufferEnd = helper.end<Type>();
+        auto itr    = image->begin<Type>();
+        auto itrEnd = image->end<Type>();
 
-        for (; buffer != bufferEnd; ++buffer)
+        for (; itr != itrEnd; ++itr)
         {
-            *buffer = MIN + rand()%RANGE;
+            *itr = MIN + rand()%RANGE;
         }
 
         Type resMin, resMax;
 
-        buffer = helper.begin<Type>();
-
-        buffer[5]    = MIN;
-        buffer[2155] = MAX;
+        image->at<Type>(5)    = MIN;
+        image->at<Type>(2155) = MAX;
 
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
@@ -197,17 +183,17 @@ template <class P>
 
     // Create a new image
     auto image = ::fwData::Image::New();
-    ::fwData::Image::SizeType size(3);
-    std::fill_n(size.begin(), 3, IMG_DIMENSIONS);
-    image->allocate(size, ::fwTools::Type::create<SubPixel>(), N_COMPONENTS);
-    image->setSpacing(::fwData::Image::SpacingType(3, 1));
-    image->setOrigin(::fwData::Image::OriginType(3, 0));
+    ::fwData::Image::Size size = {IMG_DIMENSIONS, IMG_DIMENSIONS, IMG_DIMENSIONS};
+    image->setSize2(size);
+    image->setType(::fwTools::Type::create<SubPixel>());
+    image->setNumberOfComponents(N_COMPONENTS);
+    image->resize();
+    image->setSpacing2({1., 1., 1.});
+    image->setOrigin2({0., 0., 0.});
 
     // Zero the buffer
-    auto array           = image->getDataArray();
-    const auto szArray   = image->getAllocatedSizeInBytes();
-    void* const arrayPtr = array->getBufferObject()->getBuffer();
-    std::fill_n(static_cast<uint8_t*>(arrayPtr), szArray, 0);
+    const auto dumpLock = image->lock();
+    std::fill(image->begin(), image->end(), 0);
 
     return image;
 }
@@ -219,33 +205,27 @@ void getPixelBufferTestHelper(const P& pixelValue)
 {
     using SubPixel = typename P::value_type;
     constexpr size_t N_COMPONENTS = std::tuple_size<P>::value;
-    auto image                    = createImageFromPixelBuffer<P>();
-    auto size                     = image->getSize();
+    ::fwData::Image::sptr image = createImageFromPixelBuffer<P>();
+    auto size = image->getSize2();
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
     std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % size[0]; });
-    auto imageBufferPtr = image->getDataArray()->getBufferObject()->getBuffer();
+    const auto dumpLock = image->lock();
+    auto imageBufferPtr = image->getBuffer();
     SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr) +
                           ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
     std::copy(pixelValue.begin(), pixelValue.end(), pixelPtr);
 
     // Test that the helper returned pixel value is correct
-    ::fwDataTools::helper::ImageGetter constHelper(image);
-    ::fwDataTools::helper::Image helper(image);
-    SubPixel* pixelHelperPtr1 = static_cast<SubPixel*>(constHelper.getPixelBuffer(coords[0], coords[1], coords[2]));
-    SubPixel* pixelHelperPtr2 = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
+    P value = image->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
         for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
-                                                 static_cast<double>(pixelHelperPtr1[i]),
                                                  static_cast<double>(pixelValue[i]),
-                                                 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
-                                                 static_cast<double>(pixelHelperPtr2[i]),
-                                                 static_cast<double>(pixelValue[i]),
+                                                 static_cast<double>(value[i]),
                                                  0.00001);
         }
     }
@@ -253,8 +233,7 @@ void getPixelBufferTestHelper(const P& pixelValue)
     {
         for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i]);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr2[i], pixelValue[i]);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
     }
 }
@@ -296,25 +275,25 @@ void setPixelBufferTestHelper(P& pixelValue)
 {
     using SubPixel = typename P::value_type;
     auto image = createImageFromPixelBuffer<P>();
-    auto size  = image->getSize();
+    auto size  = image->getSize2();
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
     std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % size[0]; });
-    size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
-    ::fwDataTools::helper::Image helper(image);
-    helper.setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
+    size_t pixelIndex   = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
+    const auto dumpLock = image->lock();
+    image->setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
     // Test that the helper returned pixel value is correct
-    ::fwDataTools::helper::ImageGetter constHelper(image);
-    SubPixel* pixelHelperPtr = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
+    ::fwData::Image::csptr constImage = image;
+    P value = constImage->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
         for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
-                                                 static_cast<double>(pixelHelperPtr[i]),
                                                  static_cast<double>(pixelValue[i]),
+                                                 static_cast<double>(value[i]),
                                                  0.00001);
         }
     }
@@ -322,7 +301,7 @@ void setPixelBufferTestHelper(P& pixelValue)
     {
         for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
         {
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr[i], pixelValue[i]);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
     }
 }
@@ -364,9 +343,9 @@ void fwDataTools::ut::MedicalImageHelpersTest::isBufNull()
     auto image = createImageFromPixelBuffer<std::array<uint8_t, 3> >();
 
     {
-        ::fwDataTools::helper::ImageGetter helper(image);
+        const auto dumpLock                       = image->lock();
         const ::fwData::Image::BufferType* pixBuf =
-            static_cast< ::fwData::Image::BufferType* >(helper.getPixelBuffer(0, 0, 0));
+            static_cast< ::fwData::Image::BufferType* >(image->getPixelBuffer(0));
 
         bool isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
@@ -375,20 +354,19 @@ void fwDataTools::ut::MedicalImageHelpersTest::isBufNull()
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
         {
-            ::fwDataTools::helper::Image helper(image);
             std::array<float, 3> pixelValue = {{ 42.0f, 1487.4f, 0.1445f }};
-            helper.setPixelBuffer(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
+            image->setPixelBuffer(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
             isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
 
             const ::fwData::Image::BufferType* pixBuf =
-                static_cast< ::fwData::Image::BufferType* >(helper.getPixelBuffer(10, 0, 0));
+                static_cast< ::fwData::Image::BufferType* >(image->getPixelBuffer(10));
 
             isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
 
-            helper.setPixelBuffer(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
+            image->setPixelBuffer(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
             isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 5*3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
             isNull = ::fwDataTools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 6*3);

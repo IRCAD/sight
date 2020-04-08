@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_IMAGE_HPP__
-#define __FWDATATOOLS_IMAGE_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -65,48 +63,42 @@ public:
      * @brief Merge mask in image imgDest: put value 'val' in imgDest when mask value != 0
      */
     template<typename IMG_DEST_TYPE, typename MASK_TYPE>
-    void mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask, IMG_DEST_TYPE val );
+    void mergeMask(const ::fwData::Image::sptr& imgDest, const ::fwData::Image::csptr& mask, IMG_DEST_TYPE val );
 
 };
 
 //------------------------------------------------------------------------------
 
 template<typename IMG_DEST_TYPE, typename MASK_TYPE>
-void Image::mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask, IMG_DEST_TYPE val )
+void Image::mergeMask(const ::fwData::Image::sptr& imgDest, const ::fwData::Image::csptr& mask, IMG_DEST_TYPE val )
 {
     typedef IMG_DEST_TYPE ImgDestType;
     typedef MASK_TYPE MaskType;
     SLM_ASSERT( "Image dest has not correct type", imgDest->getType().isOfType< ImgDestType >());
     SLM_ASSERT( "Image mask has not correct type", mask->getType().isOfType< MaskType >());
 
-    SLM_ASSERT( "Images have not the same size", imgDest->getSize() == mask->getSize() );
+    SLM_ASSERT( "Images have not the same size", imgDest->getSize2() == mask->getSize2() );
     SLM_ASSERT( "Images have not the same spacing",
-                ::fwMath::isContainerEqual(imgDest->getSpacing(), mask->getSpacing()) );
+                ::fwMath::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2()) );
     SLM_ASSERT( "Images have not the same origin",
-                ::fwMath::isContainerEqual(imgDest->getOrigin(), mask->getOrigin()) );
+                ::fwMath::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2()) );
 
-    ::fwData::Array::sptr imgData;
-    ::fwData::Array::sptr maskData;
-    imgData  = imgDest->getDataArray();
-    maskData = mask->getDataArray();
+    const auto imgDumpLock  = imgDest->lock();
+    const auto maskDumpLock = mask->lock();
 
-    ::fwDataTools::helper::Array imgHelper(imgData);
-    ::fwDataTools::helper::Array maskHelper(maskData);
+    auto imgItr          = imgDest->begin< ImgDestType >();
+    const auto imgItrEnd = imgDest->end< ImgDestType >();
 
-    ImgDestType* imgIt = imgHelper.begin<ImgDestType>();
-    MaskType* maskIt   = maskHelper.begin<MaskType>();
+    auto maskItr          = mask->begin< MaskType >();
+    const auto maskItrEnd = mask->end< MaskType >();
 
-    const ImgDestType* imgEnd = imgIt + maskData->getNumberOfElements();
-
-    for (; imgIt != imgEnd; ++imgIt, ++maskIt)
+    for (; imgItr != imgItrEnd && maskItr != maskItrEnd; ++imgItr, ++maskItr)
     {
-        if (*maskIt != 0)
+        if (*maskItr != 0)
         {
-            *imgIt = val;
+            *imgItr = val;
         }
     }
 }
 
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_IMAGE_HPP__

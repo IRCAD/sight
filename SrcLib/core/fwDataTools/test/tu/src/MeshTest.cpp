@@ -331,8 +331,6 @@ void MeshTest::transformTest()
 
     ::fwDataTools::Mesh::transform(meshOrig, mesh, trans);
 
-    const size_t numPts = mesh->getNumberOfPoints();
-
     const auto dumpLock = mesh->lock();
     {
 
