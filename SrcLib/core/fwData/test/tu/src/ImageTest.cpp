@@ -358,7 +358,7 @@ void ImageTest::testSetGetPixel()
                 const std::int16_t val                 = static_cast<std::int16_t>(index);
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(x, y, z));
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(img->getPixelBuffer(index)));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<std::int16_t*>(img->getPixelBuffer(index)));
 
                 std::stringstream ss;
                 ss << val;
