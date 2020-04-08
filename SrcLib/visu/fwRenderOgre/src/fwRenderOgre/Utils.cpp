@@ -486,7 +486,10 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_L8:
         case ::Ogre::PF_L16:
         case ::Ogre::PF_R16_UINT:
-        case ::Ogre::PF_FLOAT32_R: numComponents = 1; pixelFormat = ::fwData::Image::PixelFormat::GRAY_SCALE; break;
+        case ::Ogre::PF_FLOAT32_R:
+            numComponents = 1;
+            pixelFormat   = ::fwData::Image::PixelFormat::GRAY_SCALE;
+            break;
 
         case ::Ogre::PF_RG8:
         case ::Ogre::PF_R8G8_SNORM:  numComponents = 2; break;
@@ -499,7 +502,10 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_R16G16B16_SINT:
         case ::Ogre::PF_R32G32B32_SINT:
         case ::Ogre::PF_SHORT_RGB:
-        case ::Ogre::PF_FLOAT32_RGB:  numComponents = 3; pixelFormat = ::fwData::Image::PixelFormat::RGB; break;
+        case ::Ogre::PF_FLOAT32_RGB:
+            numComponents = 3;
+            pixelFormat   = ::fwData::Image::PixelFormat::RGB;
+            break;
 
         case ::Ogre::PF_BYTE_RGBA:
         case ::Ogre::PF_A8R8G8B8:
@@ -513,7 +519,10 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_R16G16B16A16_SINT:
         case ::Ogre::PF_R32G32B32A32_SINT:
         case ::Ogre::PF_SHORT_RGBA:
-        case ::Ogre::PF_FLOAT32_RGBA: numComponents = 4; pixelFormat = ::fwData::Image::PixelFormat::RGBA; break;
+        case ::Ogre::PF_FLOAT32_RGBA:
+            numComponents = 4;
+            pixelFormat   = ::fwData::Image::PixelFormat::RGBA;
+            break;
 
         default:
             OSLM_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
