@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSlicesCursor);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSlicesCursor)
 
 namespace visuVTKAdaptor
 {
@@ -343,9 +343,9 @@ void SSlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
         pos[1] = arr[1]->value();
         pos[0] = arr[0]->value();
 
-        const ::fwData::Image::SpacingType spacing = image->getSpacing();
-        const ::fwData::Image::OriginType origin   = image->getOrigin();
-        const ::fwData::Image::SizeType size       = image->getSize();
+        const ::fwData::Image::Spacing spacing = image->getSpacing2();
+        const ::fwData::Image::Origin origin   = image->getOrigin2();
+        const ::fwData::Image::Size size       = image->getSize2();
         double sliceWorld[3];
         for (unsigned int dim = 0; dim < 3; ++dim )
         {

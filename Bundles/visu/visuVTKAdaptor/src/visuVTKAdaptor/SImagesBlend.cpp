@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,7 @@
 
 #include <regex>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesBlend, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesBlend, ::fwData::Composite )
 
 namespace visuVTKAdaptor
 {
@@ -214,9 +214,9 @@ void SImagesBlend::swapping(const KeyType& key)
 
 bool SImagesBlend::checkImageInformations()
 {
-    ::fwData::Image::SizeType size;
-    ::fwData::Image::SpacingType spacing;
-    ::fwData::Image::OriginType origin;
+    ::fwData::Image::Size size;
+    ::fwData::Image::Spacing spacing;
+    ::fwData::Image::Origin origin;
 
     bool haveSameInfo = true;
 
@@ -230,9 +230,9 @@ bool SImagesBlend::checkImageInformations()
         {
             if (size.empty() && spacing.empty() && origin.empty())
             {
-                size    = img->getSize();
-                spacing = img->getSpacing();
-                origin  = img->getOrigin();
+                size    = img->getSize2();
+                spacing = img->getSpacing2();
+                origin  = img->getOrigin2();
 
                 if(size.size() < 3 || size[2] <= 1)
                 {
@@ -241,31 +241,31 @@ bool SImagesBlend::checkImageInformations()
             }
             else
             {
-                if (  size != img->getSize() ||
-                      !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing,
-                                                                                        img->getSpacing()) ||
-                      !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin,
-                                                                                       img->getOrigin()) )
+                if (  size != img->getSize2() ||
+                      !::fwMath::isContainerEqual< const ::fwData::Image::Spacing >(spacing,
+                                                                                    img->getSpacing2()) ||
+                      !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(origin,
+                                                                                   img->getOrigin2()) )
                 {
                     OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
                     OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
                     OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
 
                     OSLM_ERROR(
-                        "imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<<
-                            img->getSize()[2] );
+                        "imgB size : " << img->getSize2()[0] << " / " << img->getSize2()[1] << " / "<<
+                            img->getSize2()[2] );
                     OSLM_ERROR(
-                        "imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<<
-                            img->getSpacing()[2] );
+                        "imgB spacing : " << img->getSpacing2()[0] << " / " << img->getSpacing2()[1] << " / "<<
+                            img->getSpacing2()[2] );
                     OSLM_ERROR(
-                        "imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<<
-                            img->getOrigin()[2] );
+                        "imgB origin : " << img->getOrigin2()[0] << " / " << img->getOrigin2()[1] << " / "<<
+                            img->getOrigin2()[2] );
 
                     haveSameInfo = false;
                     std::string errorMsg = "Warning : images in blend have not the same";
-                    errorMsg += (size != img->getSize()) ? " size" : "";
-                    errorMsg += (spacing != img->getSpacing()) ? " spacing" : "";
-                    errorMsg += (origin != img->getOrigin()) ? " origin" : "";
+                    errorMsg += (size != img->getSize2()) ? " size" : "";
+                    errorMsg += (spacing != img->getSpacing2()) ? " spacing" : "";
+                    errorMsg += (origin != img->getOrigin2()) ? " origin" : "";
                     errorMsg += ".\n Background image size, spacing and origin are use.";
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
                                                                       errorMsg,

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,6 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -45,7 +44,7 @@
 
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageText);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageText)
 
 namespace visuVTKAdaptor
 {
@@ -108,9 +107,10 @@ void SImageText::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
+    const ::fwData::mt::ObjectReadLock imgLock(image);
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        ::fwDataTools::helper::Image imageHelper(image);
+        const auto dumpLock = image->lock();
         ::fwData::Integer::sptr indexesPtr[3];
         m_helperImg.getSliceIndex(indexesPtr);
         const size_t axialIndex    = static_cast<size_t>(indexesPtr[2]->value());
@@ -128,7 +128,7 @@ void SImageText::updating()
         ss <<  ( ::boost::format("[% 3li,% 3li]") % min % max ) << std::endl;
         ss <<  ( ::boost::format("W:% 3lg L:% 3lg") % window % level ) << std::endl;
         ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex %
-                 imageHelper.getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
+                 image->getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
     }
 
     this->setText(ss.str());
