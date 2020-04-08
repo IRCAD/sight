@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -283,16 +283,17 @@ void Utils::destroyOgreRoot()
     ::Ogre::Image imageOgre;
 
     // If image is flipped, try to switch image
-    const ::fwData::Image::SizeType imageSize = imageFw->getSize();
+    const ::fwData::Image::Size imageSize = imageFw->getSize2();
 
     const uint32_t width = static_cast<uint32_t>(imageSize[0]);
     uint32_t height = 1, depth = 1;
+    const auto dimensions = imageFw->getNumberOfDimensions();
 
-    if(imageSize.size() >= 2)
+    if(dimensions >= 2)
     {
         height = static_cast<uint32_t>(imageSize[1]);
 
-        if(imageSize.size() == 3)
+        if(dimensions == 3)
         {
             depth = static_cast<uint32_t>(imageSize[2]);
         }
@@ -300,9 +301,9 @@ void Utils::destroyOgreRoot()
 
     const ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
 
-    ::fwDataTools::helper::ImageGetter imageHelper(imageFw);
+    const auto dumpLock = imageFw->lock();
 
-    imageOgre.loadDynamicImage(static_cast<uint8_t*>(imageHelper.getBuffer()), width, height, depth, pixelFormat);
+    imageOgre.loadDynamicImage(static_cast<uint8_t*>(imageFw->getBuffer()), width, height, depth, pixelFormat);
 
     return imageOgre;
 }
@@ -314,37 +315,35 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
     SLM_ASSERT("Texture is null", _texture);
     SLM_ASSERT("Image is null", _imageFw);
 
-    ::fwData::Image::SizeType imageSize;
-
-    imageSize.push_back(_texture->getWidth());
+    ::fwData::Image::Size imageSize = {_texture->getWidth(), 0, 0};
 
     if(_texture->getHeight() > 1)
     {
-        imageSize.push_back(_texture->getHeight());
+        imageSize[1] = _texture->getHeight();
 
         if(_texture->getDepth() > 1)
         {
-            imageSize.push_back(_texture->getDepth());
+            imageSize[2] = _texture->getDepth();
         }
     }
-    _imageFw->setSize(imageSize);
+    _imageFw->setSize2(imageSize);
 
     Utils::setPixelFormatFromOgre(_imageFw, _texture->getFormat());
-    ::fwData::Image::SpacingType spacing(3, 1);
-    ::fwData::Image::OriginType origin(3, 0);
+    ::fwData::Image::Spacing spacing = {1., 1., 1.};
+    ::fwData::Image::Origin origin   = {0., 0., 0.};
 
-    _imageFw->setSpacing(spacing);
-    _imageFw->setOrigin(origin);
-    _imageFw->allocate();
+    _imageFw->setSpacing2(spacing);
+    _imageFw->setOrigin2(origin);
+    _imageFw->resize();
 
     // Get the pixel buffer
     ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
 
     // Lock the pixel buffer and copy it
     {
-        ::fwDataTools::helper::Image imageHelper(_imageFw);
+        const auto dumpLock = _imageFw->lock();
 
-        std::uint8_t* __restrict dstBuffer = reinterpret_cast< std::uint8_t* >(imageHelper.getBuffer());
+        std::uint8_t* __restrict dstBuffer = reinterpret_cast< std::uint8_t* >(_imageFw->getBuffer());
 
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
         const ::Ogre::PixelBox& pixelBox         = pixelBuffer->getCurrentLock();
@@ -480,12 +479,17 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
 {
     // Set the number of components;
     size_t numComponents;
+    ::fwData::Image::PixelFormat pixelFormat = ::fwData::Image::PixelFormat::UNDEFINED;
+
     switch(_format)
     {
         case ::Ogre::PF_L8:
         case ::Ogre::PF_L16:
         case ::Ogre::PF_R16_UINT:
-        case ::Ogre::PF_FLOAT32_R: numComponents = 1; break;
+        case ::Ogre::PF_FLOAT32_R:
+            numComponents = 1;
+            pixelFormat   = ::fwData::Image::PixelFormat::GRAY_SCALE;
+            break;
 
         case ::Ogre::PF_RG8:
         case ::Ogre::PF_R8G8_SNORM:  numComponents = 2; break;
@@ -498,7 +502,10 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_R16G16B16_SINT:
         case ::Ogre::PF_R32G32B32_SINT:
         case ::Ogre::PF_SHORT_RGB:
-        case ::Ogre::PF_FLOAT32_RGB:  numComponents = 3; break;
+        case ::Ogre::PF_FLOAT32_RGB:
+            numComponents = 3;
+            pixelFormat   = ::fwData::Image::PixelFormat::RGB;
+            break;
 
         case ::Ogre::PF_BYTE_RGBA:
         case ::Ogre::PF_A8R8G8B8:
@@ -512,13 +519,17 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_R16G16B16A16_SINT:
         case ::Ogre::PF_R32G32B32A32_SINT:
         case ::Ogre::PF_SHORT_RGBA:
-        case ::Ogre::PF_FLOAT32_RGBA: numComponents = 4; break;
+        case ::Ogre::PF_FLOAT32_RGBA:
+            numComponents = 4;
+            pixelFormat   = ::fwData::Image::PixelFormat::RGBA;
+            break;
 
         default:
             OSLM_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
             numComponents = 4;
     }
     _image->setNumberOfComponents(numComponents);
+    _image->setPixelFormat(pixelFormat);
 
     // Set the pixel type
 
@@ -587,9 +598,9 @@ void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::Textur
             _texture->getTextureType() != _texType ||
             _texture->getFormat() != pixelFormat )
         {
-            const auto& size = _image->getSize();
-            SLM_ASSERT("Only handle 2D and 3D textures", size.size() >= 2);
-            const size_t depth = size.size() == 2 ? 1 : size[2];
+            const auto& size = _image->getSize2();
+            SLM_ASSERT("Only handle 2D and 3D textures", _image->getNumberOfDimensions() >= 2);
+            const size_t depth = _image->getNumberOfDimensions() == 2 ? 1 : size[2];
 
             ::fwRenderOgre::Utils::allocateTexture(_texture.get(), size[0], size[1], depth,
                                                    pixelFormat, _texType, _dynamic);
@@ -610,10 +621,11 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
     // Lock the pixel buffer and copy it
     {
-        ::fwDataTools::helper::Image srcImageHelper(_image);
+        const auto dumpLock = _image->lock();
+
         typedef typename std::make_unsigned< DST_TYPE>::type unsignedType;
 
-        auto srcBuffer = static_cast< const SRC_TYPE* >(srcImageHelper.getBuffer());
+        auto srcBuffer = static_cast< const SRC_TYPE* >(_image->getBuffer());
 
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
@@ -646,12 +658,12 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
 
     if(srcType == ::fwTools::Type::s_INT16)
     {
-        if( _texture->getWidth() != _image->getSize()[0] ||
-            _texture->getHeight() != _image->getSize()[1] ||
-            _texture->getDepth() != _image->getSize()[2]    )
+        if( _texture->getWidth() != _image->getSize2()[0] ||
+            _texture->getHeight() != _image->getSize2()[1] ||
+            _texture->getDepth() != _image->getSize2()[2]    )
         {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
-                                                   _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
+            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
+                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
 
         }
 
@@ -659,12 +671,12 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
     }
     else if(srcType == ::fwTools::Type::s_INT32)
     {
-        if( _texture->getWidth() != _image->getSize()[0] ||
-            _texture->getHeight() != _image->getSize()[1] ||
-            _texture->getDepth() != _image->getSize()[2]    )
+        if( _texture->getWidth() != _image->getSize2()[0] ||
+            _texture->getHeight() != _image->getSize2()[1] ||
+            _texture->getDepth() != _image->getSize2()[2]    )
         {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
-                                                   _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D,
+            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
+                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D,
                                                    false);
 
         }
@@ -673,12 +685,12 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
     }
     else if(srcType == ::fwTools::Type::s_UINT8)
     {
-        if( _texture->getWidth() != _image->getSize()[0] ||
-            _texture->getHeight() != _image->getSize()[1] ||
-            _texture->getDepth() != _image->getSize()[2]    )
+        if( _texture->getWidth() != _image->getSize2()[0] ||
+            _texture->getHeight() != _image->getSize2()[1] ||
+            _texture->getDepth() != _image->getSize2()[2]    )
         {
-            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
-                                                   _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
+            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize2()[0], _image->getSize2()[1],
+                                                   _image->getSize2()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
 
         }
 

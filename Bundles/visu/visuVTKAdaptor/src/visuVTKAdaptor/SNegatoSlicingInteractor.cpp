@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@
 #include <vtkProp3DCollection.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoSlicingInteractor);
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoSlicingInteractor)
 
 namespace visuVTKAdaptor
 {
@@ -485,8 +485,8 @@ void SNegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
     for ( int i = 0; i < image->getNumberOfDimensions(); i++ )
     {
         OSLM_ASSERT("index["<< i <<"] = " << index[i]
-                            << " and image->getSize()[" << i << "] = " << image->getSize()[i],
-                    index[i] >= 0 && index[i] < image->getSize()[i]);
+                            << " and image->getSize()[" << i << "] = " << image->getSize2()[i],
+                    index[i] >= 0 && index[i] < image->getSize2()[i]);
     }
 #endif
 

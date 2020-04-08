@@ -47,7 +47,7 @@ struct RandFloat
 
     float operator()()
     {
-        return ((rand() % 101 - 50.f)) / 500.f;
+        return ((static_cast<float>(rand() % 101) - 50.f)) / 500.f;
     }
 };
 
@@ -472,7 +472,7 @@ void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh
 
     const ::glm::dmat4x4 matrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(t);
 
-    const size_t numPts = inMesh->getNumberOfPoints();
+    [[maybe_unused]] const size_t numPts = inMesh->getNumberOfPoints();
     SLM_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
 
     SLM_ASSERT("in and out meshes must have the same point normals attribute",

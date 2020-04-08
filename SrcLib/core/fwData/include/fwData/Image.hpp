@@ -446,6 +446,28 @@ public:
     /// @}
     ///
 
+    /**
+     * @brief Return a pointer on a image pixel
+     * @param index offset of the pixel
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void* getPixelBuffer( IndexType index );
+
+    /**
+     * @brief Return a pointer on a image pixel
+     * @param index offset of the pixel
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void* getPixelBuffer( IndexType index ) const;
+
+    /**
+     * @brief Set pixel value represented as a void* buffer
+     * @param index offset of the pixel
+     * @param pixBuf pixel value represented as a void* buffer
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void setPixelBuffer( IndexType index, BufferType* pixBuf);
+
     /// Return the pixel value in a std::string
     FWDATA_API const std::string getPixelAsString(IndexType x,
                                                   IndexType y,
@@ -465,19 +487,19 @@ public:
     /**
      * @brief Image size type
      */
-    typedef ::fwData::Array::SizeType SizeType;
+    [[deprecated("it will be removed in sight 22.0, use Size")]] typedef ::fwData::Array::SizeType SizeType;
 
-    typedef size_t BufferIndexType;
+    [[deprecated("it will be removed in sight 22.0")]] typedef size_t BufferIndexType;
 
     /**
      * @brief Image spacing type
      */
-    typedef std::vector< double > SpacingType;
+    [[deprecated("it will be removed in sight 22.0, use Spacing")]] typedef std::vector< double > SpacingType;
 
     /**
      * @brief Image origin type
      */
-    typedef std::vector< double > OriginType;
+    [[deprecated("it will be removed in sight 22.0, use Origin")]] typedef std::vector< double > OriginType;
     /** @{
      * @brief get/set image spacing
      * @deprecated Use getSizeSpacing2()/setSpacing2(), it will be removed in sight 22.0
@@ -551,10 +573,6 @@ public:
     FWDATA_API ::fwData::Array::sptr getDataArray() const;
 
 private:
-
-    /// Get Pixel buffer
-    FWDATA_API void* getPixelBuffer( IndexType index );
-    FWDATA_API void* getPixelBuffer( IndexType index ) const;
 
     /**
      * @brief Protected setter for the array buffer.
