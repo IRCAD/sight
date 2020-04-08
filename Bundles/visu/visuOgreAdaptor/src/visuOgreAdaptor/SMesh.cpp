@@ -182,6 +182,8 @@ void SMesh::starting()
     }
 
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
 
     this->updateMesh(mesh);
@@ -209,6 +211,8 @@ void SMesh::updating()
         return;
     }
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
 
     if(m_meshGeometry->hasColorLayerChanged(mesh))
@@ -470,6 +474,8 @@ void SMesh::modifyVertices()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
     m_meshGeometry->updateVertices(mesh);
 
@@ -501,6 +507,8 @@ void SMesh::modifyPointColors()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
 
     if(m_meshGeometry->hasColorLayerChanged(mesh))
@@ -531,6 +539,8 @@ void SMesh::modifyTexCoords()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Mesh::csptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
     m_meshGeometry->updateTexCoords(mesh);
 

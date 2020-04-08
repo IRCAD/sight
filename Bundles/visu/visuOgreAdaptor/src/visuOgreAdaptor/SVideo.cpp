@@ -117,7 +117,7 @@ void SVideo::updating()
 
     // Getting Sight Image
     ::fwData::Image::csptr imageSight = this->getInput< ::fwData::Image>(s_IMAGE_INPUT);
-    SLM_ASSERT("input '" + s_IMAGE_INPUT + "' is missing.", imageSight);
+    SLM_ASSERT("input '" + s_IMAGE_INPUT + "' does not exist.", imageSight);
 
     {
         ::fwData::mt::ObjectReadLock lock(imageSight);
@@ -275,7 +275,7 @@ void SVideo::toggleVisibility()
 void SVideo::updateTF()
 {
     ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
-    SLM_ASSERT("input '" + s_TF_INPUT + "' is missing.", tf);
+    SLM_ASSERT("input '" + s_TF_INPUT + "' does not exist.", tf);
 
     m_gpuTF->updateTexture(tf);
 

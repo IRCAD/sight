@@ -163,7 +163,7 @@ void SFrustumList::addFrustum()
 {
     //Get camera parameters
     const std::shared_ptr< const ::arData::Camera > fwCamera = this->getInput< ::arData::Camera >(s_CAMERA_NAME_INPUT);
-    SLM_ASSERT("Required input '" + s_CAMERA_NAME_INPUT + "' is not set", fwCamera);
+    SLM_ASSERT("input '" + s_CAMERA_NAME_INPUT + "' does not exist.", fwCamera);
 
     ::Ogre::Camera* camera;
     camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
@@ -192,6 +192,7 @@ void SFrustumList::addFrustum()
     // Set position
     ::Ogre::Affine3 ogreMat;
     const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+    SLM_ASSERT("input '" + s_TRANSFORM_INPUT + "' does not exist.", fwTransform);
 
     // Multithreaded lock
     {

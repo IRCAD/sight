@@ -173,7 +173,8 @@ void SFrustum::stopping()
 void SFrustum::setOgreCamFromData()
 {
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("Required input '" + s_CAMERA_INPUT + "' is not set", camera);
+    SLM_ASSERT("input '" + s_CAMERA_INPUT + "' does not exist.", camera);
+
     if(camera->getIsCalibrated())
     {
 

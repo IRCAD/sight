@@ -126,7 +126,7 @@ void SNegato2DCamera::swapping(const KeyType& _key)
     if(_key == s_TF_INOUT)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -265,7 +265,7 @@ void SNegato2DCamera::resetCamera()
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);

@@ -127,7 +127,7 @@ void SNegato2D::starting()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -183,7 +183,7 @@ void SNegato2D::swapping(const KeyType& _key)
     if (_key == s_TF_INOUT)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -204,7 +204,7 @@ void SNegato2D::newImage()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -254,7 +254,7 @@ void SNegato2D::newImageDeprecatedSlot()
 void SNegato2D::changeSliceType(int _from, int _to)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     const auto toOrientation   = static_cast<OrientationMode>(_to);
@@ -287,7 +287,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     this->getRenderService()->makeCurrent();

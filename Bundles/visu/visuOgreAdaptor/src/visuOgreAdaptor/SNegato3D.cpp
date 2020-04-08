@@ -157,7 +157,7 @@ void SNegato3D::starting()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -248,7 +248,7 @@ void SNegato3D::swapping(const KeyType& key)
     if (key == s_TF_INOUT)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -319,7 +319,7 @@ void SNegato3D::newImage()
     this->getRenderService()->makeCurrent();
     {
         const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -380,7 +380,7 @@ void SNegato3D::changeSliceType(int, int)
 void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     const auto& imgSize = image->getSize2();
@@ -429,7 +429,7 @@ void SNegato3D::setPlanesOpacity()
     if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
         const ::fwData::mt::ObjectReadLock imageLock(image);
 
         const auto transparency = image->setDefaultField(s_TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
@@ -453,7 +453,7 @@ void SNegato3D::setPlanesOpacity()
 void SNegato3D::setVisibility(bool _visibility)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
     const ::fwData::mt::ObjectReadLock imageLock(image);
 
     image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visibility));
@@ -563,7 +563,7 @@ void SNegato3D::moveSlices(int _x, int _y)
     if(pickRes.has_value())
     {
         const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
         const ::fwData::mt::ObjectReadLock imgLock(image);
 
         auto pickedPt = pickRes.value();
@@ -597,7 +597,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
         if(pickedPos.has_value())
         {
             const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
             const ::fwData::mt::ObjectReadLock imgLock(image);
 
             if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))

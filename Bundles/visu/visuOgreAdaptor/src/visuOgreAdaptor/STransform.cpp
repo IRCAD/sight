@@ -101,7 +101,7 @@ void STransform::starting()
 void STransform::updating()
 {
     const auto fwTransform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-    SLM_ASSERT("'" + s_TRANSFORM_INOUT + "' does not exist.", fwTransform);
+    SLM_ASSERT("inout '" + s_TRANSFORM_INOUT + "' does not exist.", fwTransform);
 
     {
         const ::fwData::mt::ObjectReadLock lock(fwTransform);

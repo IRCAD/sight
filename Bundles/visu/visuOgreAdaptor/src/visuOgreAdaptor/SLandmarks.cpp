@@ -134,7 +134,7 @@ void SLandmarks::updating()
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     const ::fwData::Landmarks::csptr landmarks = this->getInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-    SLM_ASSERT("Input '" + s_LANDMARKS_INPUT + "' is missing", landmarks);
+    SLM_ASSERT("input '" + s_LANDMARKS_INPUT + "' does not exist.", landmarks);
 
     const ::fwData::mt::ObjectReadLock lockLandmark(landmarks);
     {

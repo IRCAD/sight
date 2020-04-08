@@ -108,6 +108,8 @@ void SReconstruction::updating()
     if (!m_meshAdaptor.expired())
     {
         auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+        SLM_ASSERT("input '" + s_RECONSTRUCTION_INPUT + "' does not exist.", reconstruction);
+
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
@@ -139,7 +141,9 @@ void SReconstruction::createMeshService()
 {
     // Retrieves the associated Reconstruction object
     ::fwData::Reconstruction::csptr reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
-    ::fwData::Mesh::sptr mesh                      = reconstruction->getMesh();
+    SLM_ASSERT("input '" + s_RECONSTRUCTION_INPUT + "' does not exist.", reconstruction);
+
+    ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
 
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
@@ -182,6 +186,8 @@ void SReconstruction::setForceHide(bool _hide)
         if (meshAdaptor)
         {
             auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+            SLM_ASSERT("input '" + s_RECONSTRUCTION_INPUT + "' does not exist.", reconstruction);
+
             meshAdaptor->updateVisibility(_hide ? false : reconstruction->getIsVisible());
         }
     }
@@ -194,7 +200,8 @@ void SReconstruction::changeMesh(::fwData::Mesh::sptr)
     if (!m_meshAdaptor.expired())
     {
         auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
-        SLM_ASSERT("reconstruction not instantiated", reconstruction);
+        SLM_ASSERT("input '" + s_RECONSTRUCTION_INPUT + "' does not exist.", reconstruction);
+
         this->updating();
     }
     else
@@ -210,7 +217,7 @@ void SReconstruction::modifyVisibility()
     if (!m_meshAdaptor.expired())
     {
         auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
-        SLM_ASSERT("reconstruction not instantiated", reconstruction);
+        SLM_ASSERT("input '" + s_RECONSTRUCTION_INPUT + "' does not exist.", reconstruction);
 
         this->setForceHide(!reconstruction->getIsVisible());
     }

@@ -100,6 +100,7 @@ void SMaterial::starting()
     this->initialize();
 
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", material);
 
     if(!m_shadingMode.empty())
     {
@@ -185,6 +186,7 @@ void SMaterial::starting()
 void SMaterial::updating()
 {
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", material);
 
     if(m_r2vbObject)
     {
@@ -211,6 +213,8 @@ void SMaterial::stopping()
     ::Ogre::MaterialManager::getSingleton().remove(m_materialName);
 
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", material);
+
     if(material->getField("shaderParameters"))
     {
         material->removeField("shaderParameters");
@@ -261,8 +265,10 @@ void SMaterial::createShaderParameterAdaptors()
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
             ::fwData::Material::sptr materialInOut = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
-            ::fwData::Composite::sptr composite    = materialInOut->setDefaultField("shaderParameters",
-                                                                                    ::fwData::Composite::New());
+            SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", material);
+
+            ::fwData::Composite::sptr composite = materialInOut->setDefaultField("shaderParameters",
+                                                                                 ::fwData::Composite::New());
             (*composite)[constantName] = obj;
         }
     }
@@ -305,7 +311,9 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType _fields)
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
 
             ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
-            ::fwData::String::csptr string    = ::fwData::String::dynamicCast(elt.second);
+            SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", material);
+
+            ::fwData::String::csptr string = ::fwData::String::dynamicCast(elt.second);
             this->setMaterialTemplateName(string->getValue());
 
             m_materialFw->setTemplate(m_materialTemplateName);
@@ -333,6 +341,8 @@ void SMaterial::swapTexture()
 
     // Update the shaders
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", material);
+
     m_materialFw->updateShadingMode( material->getShadingMode(), this->getLayer()->getLightsNumber(),
                                      this->hasDiffuseTexture(), m_texAdaptor->getUseAlpha() );
 
@@ -346,6 +356,7 @@ void SMaterial::createTextureAdaptor()
     SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
     ::fwData::Material::sptr sightMaterial = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", sightMaterial);
 
     // If the associated material has a texture, we have to create a texture adaptor to handle it
     if(sightMaterial->getDiffuseTexture())
@@ -386,6 +397,8 @@ void SMaterial::removeTextureAdaptor()
 
     // Update the shaders
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    SLM_ASSERT("inout '" + s_MATERIAL_INOUT + "' does not exist.", material);
+
     m_materialFw->updateShadingMode( material->getShadingMode(), this->getLayer()->getLightsNumber(),
                                      this->hasDiffuseTexture(), false );
 

@@ -111,8 +111,8 @@ void SCamera::updating()
     ::Ogre::Affine3 ogreMatrix;
 
     auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    SLM_ASSERT("inout '" + s_TRANSFORM_INOUT + "' does not exist.", transform);
 
-    SLM_ASSERT("The '" + s_TRANSFORM_INOUT + "' inout was not set but is required by this adaptor.", transform);
     {
         ::fwData::mt::ObjectReadLock lock(transform);
 
@@ -204,6 +204,8 @@ void SCamera::updateTF3D()
     newTransMat = newTransMat * ::Ogre::Matrix4(rotate);
 
     auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    SLM_ASSERT("inout '" + s_TRANSFORM_INOUT + "' does not exist.", transform);
+
     {
         ::fwData::mt::ObjectWriteLock lock(transform);
 
