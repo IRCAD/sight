@@ -113,7 +113,7 @@ void Plane::initializeMaterial()
     auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
     ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato");
 
-    // If the texture material exist, delete it.
+    // If the texture material exists, delete it.
     if(m_texMaterial)
     {
         materialMgr.remove(m_texMaterial);

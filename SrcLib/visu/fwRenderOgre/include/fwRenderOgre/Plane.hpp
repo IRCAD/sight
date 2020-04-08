@@ -73,7 +73,7 @@ public:
      * @param _sceneManager the Ogre scene manager.
      * @param _orientation the direction of the plane.
      * @param _tex texture to apply on the plane.
-     * @param _filtering filtering methode used to apply the texture.
+     * @param _filtering filtering method used to apply the texture.
      * @param _entityOpacity opacity of the entity.
      */
     FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,

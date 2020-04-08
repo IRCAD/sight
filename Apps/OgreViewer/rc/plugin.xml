@@ -38,7 +38,7 @@
     </extension>
 
     <extension implements="::fwServices::registry::AppConfig" >
-        <id>OgreViewer_Extension</id>
+        <id>OgreViewer_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->

@@ -59,5 +59,5 @@ bundleParam(
     PARAM_LIST
         config
     PARAM_VALUES
-        OgreViewer_Extension
+        OgreViewer_AppCfg
 ) # Main application's configuration to launch
