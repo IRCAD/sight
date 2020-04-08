@@ -280,8 +280,8 @@ void setPixelBufferTestHelper(P& pixelValue)
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
     std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % size[0]; });
-    size_t pixelIndex   = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
-    const auto dumpLock = image->lock();
+    const size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
+    const auto dumpLock     = image->lock();
     image->setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
     // Test that the helper returned pixel value is correct
