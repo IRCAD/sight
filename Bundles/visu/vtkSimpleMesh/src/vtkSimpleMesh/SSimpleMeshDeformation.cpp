@@ -178,6 +178,7 @@ void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::csptr& src, const :
         destItr->rgba->r = srcItr->rgba->r;
         destItr->rgba->g = srcItr->rgba->g;
         destItr->rgba->b = srcItr->rgba->b;
+        destItr->rgba->a = srcItr->rgba->a;
     }
 }
 

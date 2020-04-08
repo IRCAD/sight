@@ -155,10 +155,10 @@ void SRenderer::refresh()
             updateVTKPipeline();
         }
 
-        const auto imgSize = img->getSize2();
-        int axialIndex     = static_cast<int>(imgSize[2]/2);
-        int frontalIndex   = static_cast<int>(imgSize[1]/2);
-        int sagittalIndex  = static_cast<int>(imgSize[0]/2);
+        const auto imgSize      = img->getSize2();
+        const int axialIndex    = static_cast<int>(imgSize[2]/2);
+        const int frontalIndex  = static_cast<int>(imgSize[1]/2);
+        const int sagittalIndex = static_cast<int>(imgSize[0]/2);
 
         m_negatoAxial->SetSliceIndex( axialIndex );
         m_negatoFrontal->SetSliceIndex( frontalIndex );
