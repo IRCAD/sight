@@ -11,8 +11,6 @@ set( DEPENDENCIES
     fwGuiQt
     fwRenderOgre
     fwRuntime
-    fwServices
-    fwTools
 )
 set( REQUIREMENTS visuOgre )
 set( CONAN_DEPS

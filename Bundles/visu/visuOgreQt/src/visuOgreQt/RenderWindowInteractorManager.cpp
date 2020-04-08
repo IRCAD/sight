@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ namespace visuOgreQt
 //-----------------------------------------------------------------------------
 
 RenderWindowInteractorManager::RenderWindowInteractorManager(
-    ::fwRenderOgre::IRenderWindowInteractorManager::Key /*key*/ )
+    ::fwRenderOgre::IRenderWindowInteractorManager::Key)
 {
 }
 
@@ -88,7 +88,8 @@ void RenderWindowInteractorManager::requestRender()
 //-----------------------------------------------------------------------------
 
 void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                     bool _renderOnDemand, bool _fullscreen)
+                                                     bool _renderOnDemand,
+                                                     bool _fullscreen)
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );

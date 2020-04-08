@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
  *
  * @brief The namespace visuOgreQt contains a Ogre Renderer window interactor manager using Qt.
  *
- *  It must be set in the application (or activity) \p \<requirement\> in order to use a Ogre scene in an application
+ * It must be set in the application (or activity) \p \<requirement\> in order to use a Ogre scene in an application
  * using Qt.
  */
 #pragma once

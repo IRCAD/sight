@@ -73,8 +73,8 @@ int Window::m_counter = 0;
 
 // ----------------------------------------------------------------------------
 
-Window::Window(QWindow* parent) :
-    QWindow(parent),
+Window::Window(QWindow* _parent) :
+    QWindow(_parent),
     m_id(Window::m_counter++)
 {
     connect(this,  &Window::screenChanged, this, &Window::onScreenChanged);
@@ -84,14 +84,25 @@ Window::Window(QWindow* parent) :
 
 Window::~Window()
 {
-    destroy();
+    this->QWindow::destroy();
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::render(QPainter* painter)
+void Window::render(QPainter*)
 {
-    Q_UNUSED(painter);
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::setAnimating(bool _animating)
+{
+    m_animating = _animating;
+
+    if(_animating)
+    {
+        renderLater();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -148,6 +159,20 @@ void Window::initialize()
     info.dx                  = 0;
     info.dy                  = 0;
     Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
+Ogre::RenderWindow* Window::getOgreRenderWindow()
+{
+    return m_ogreRenderWindow;
+}
+
+// ----------------------------------------------------------------------------
+
+int Window::getId()
+{
+    return m_id;
 }
 
 // ----------------------------------------------------------------------------
@@ -272,7 +297,7 @@ void Window::renderLater()
 
 // ----------------------------------------------------------------------------
 
-bool Window::event(QEvent* event)
+bool Window::event(QEvent* _event)
 {
     /*
        QWindow's "message pump". The base method that handles all QWindow events. As you will see there
@@ -282,7 +307,7 @@ bool Window::event(QEvent* event)
        before calling the render() function.
      */
 
-    switch (event->type())
+    switch (_event->type())
     {
         case QEvent::UpdateRequest:
             m_update_pending = false;
@@ -291,7 +316,7 @@ bool Window::event(QEvent* event)
 
         case QEvent::Resize:
         {
-            bool result = QWindow::event(event);
+            bool result = QWindow::event(_event);
 
             if(m_ogreRenderWindow != nullptr && m_ogreSize != this->size())
             {
@@ -305,7 +330,7 @@ bool Window::event(QEvent* event)
             break;
     }
 
-    return QWindow::event(event);
+    return QWindow::event(_event);
 }
 // ----------------------------------------------------------------------------
 
@@ -351,12 +376,12 @@ void Window::renderNow()
 
 // ----------------------------------------------------------------------------
 
-void Window::keyPressEvent(QKeyEvent* e)
+void Window::keyPressEvent(QKeyEvent* _e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
-    info.key             = e->key();
+    info.key             = _e->key();
 
     auto cursorPos = getCursorPosition(this);
     info.x = cursorPos ? cursorPos.value().x() : 0;
@@ -367,12 +392,12 @@ void Window::keyPressEvent(QKeyEvent* e)
 
 // ----------------------------------------------------------------------------
 
-void Window::keyReleaseEvent(QKeyEvent* e)
+void Window::keyReleaseEvent(QKeyEvent* _e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE;
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
-    info.key             = e->key();
+    info.key             = _e->key();
 
     auto cursorPos = getCursorPosition(this);
     info.x = cursorPos ? cursorPos.value().x() : 0;
@@ -427,11 +452,11 @@ Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
 
 // ----------------------------------------------------------------------------
 
-void Window::mouseMoveEvent( QMouseEvent* e )
+void Window::mouseMoveEvent(QMouseEvent* _e)
 {
-    if(e->buttons())
+    if(_e->buttons())
     {
-        const auto info = this->convertMouseEvent(e, InteractionInfo::MOUSEMOVE);
+        const auto info = this->convertMouseEvent(_e, InteractionInfo::MOUSEMOVE);
         m_lastMousePosition = QPoint(info.x, info.y);
 
         Q_EMIT interacted(info);
@@ -442,15 +467,15 @@ void Window::mouseMoveEvent( QMouseEvent* e )
 
 // ----------------------------------------------------------------------------
 
-void Window::wheelEvent(QWheelEvent* e)
+void Window::wheelEvent(QWheelEvent* _e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType     = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
-    info.delta               = e->angleDelta().y(); // Assume we only have a 1D mouse wheel scrolling vertically.
-    std::tie(info.x, info.y) = Window::getDeviceCoordinates(e->x(), e->y());
+    info.delta               = _e->angleDelta().y(); // Assume we only have a 1D mouse wheel scrolling vertically.
+    std::tie(info.x, info.y) = Window::getDeviceCoordinates(_e->x(), _e->y());
     info.dx                  = 0;
     info.dy                  = 0;
-    info.modifiers           = convertModifiers(e->modifiers());
+    info.modifiers           = convertModifiers(_e->modifiers());
 
     Q_EMIT interacted(info);
 
@@ -459,9 +484,9 @@ void Window::wheelEvent(QWheelEvent* e)
 
 // ----------------------------------------------------------------------------
 
-void Window::mousePressEvent( QMouseEvent* e )
+void Window::mousePressEvent(QMouseEvent* _e)
 {
-    const auto info = this->convertMouseEvent(e, InteractionInfo::BUTTONPRESS);
+    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONPRESS);
     Q_EMIT interacted(info);
 
     this->requestRender();
@@ -469,9 +494,9 @@ void Window::mousePressEvent( QMouseEvent* e )
 
 // ----------------------------------------------------------------------------
 
-void Window::mouseReleaseEvent( QMouseEvent* e )
+void Window::mouseReleaseEvent(QMouseEvent* _e)
 {
-    const auto info = this->convertMouseEvent(e, InteractionInfo::BUTTONRELEASE);
+    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONRELEASE);
     m_lastMousePosition.reset();
 
     Q_EMIT interacted(info);
@@ -481,14 +506,14 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 
 // ----------------------------------------------------------------------------
 
-void Window::ogreResize(const QSize& newSize)
+void Window::ogreResize(const QSize& _newSize)
 {
-    if(!newSize.isValid())
+    if(!_newSize.isValid())
     {
         return;
     }
 
-    m_ogreSize = newSize;
+    m_ogreSize = _newSize;
 
     int newWidth, newHeight;
     std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(m_ogreSize.width(), m_ogreSize.height());
@@ -545,32 +570,6 @@ void Window::onScreenChanged(QScreen*)
     {
         this->ogreResize(this->size());
     }
-}
-
-// ----------------------------------------------------------------------------
-
-void Window::setAnimating(bool animating)
-{
-    m_animating = animating;
-
-    if (animating)
-    {
-        renderLater();
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-Ogre::RenderWindow* Window::getOgreRenderWindow()
-{
-    return m_ogreRenderWindow;
-}
-
-// ----------------------------------------------------------------------------
-
-int Window::getId()
-{
-    return m_id;
 }
 
 // ----------------------------------------------------------------------------

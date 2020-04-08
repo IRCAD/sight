@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,9 +45,7 @@ class QtContainer;
 namespace visuOgreQt
 {
 
-/**
- * @brief   Defines a class to manage ogreRenderWindowInteractor in a window.
- */
+/// Defines a class to manage a render window.
 class VISUOGREQT_CLASS_API RenderWindowInteractorManager : public QObject,
                                                            public ::fwRenderOgre::IRenderWindowInteractorManager
 {
@@ -57,38 +55,44 @@ public:
 
     fwCoreClassMacro(RenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)
 
-    /// Constructor
+    /// Initialize members.
     VISUOGREQT_API RenderWindowInteractorManager(::fwRenderOgre::IRenderWindowInteractorManager::Key key);
-    /// Destructor
+
+    /// Destroys the window container.
     VISUOGREQT_API virtual ~RenderWindowInteractorManager() final;
 
-    /// Call Widget render immediately
+    /// Renders immediately the frame.
     VISUOGREQT_API virtual void renderNow() final;
 
-    /// Call Widget render as soon as possible
+    /// Renders the frame as soon as possible.
     VISUOGREQT_API virtual void requestRender() final;
 
-    /// Create the container that holds the QtWidget.
+    /**
+     * @brief Creates the container that holds the QtWidget.
+     * @param _parent the parent container of the widget.
+     * @param _renderOnDemand if true, the rendering will be done only when it's requested.
+     * @param _fullscreen enable the fullscreen.
+     */
     VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent,
-                                                bool renderOnDemand, bool fullscreen) final;
+                                                bool _renderOnDemand,
+                                                bool _fullscreen) final;
 
-    /// Connects widget and SRender signals and slots.
+    /// Connects the widget and the SRender signals and slots.
     VISUOGREQT_API virtual void connectToContainer() final;
 
-    /// Not implemented yet
-    /// Deletes interactor and manages correctly the window (removing layout).
+    /// Disconnects the widget and the SRender signals and slots.
     VISUOGREQT_API virtual void disconnectInteractor() final;
 
-    /// Returns Ogre widget
+    /// Returns the unique identifier of the widget.
     VISUOGREQT_API virtual int getWidgetId() const final;
 
-    /// Returns frame ID
+    /// Returns current frame number of the render window.
     VISUOGREQT_API virtual int getFrameId() const final;
 
-    /// Enables visuOgreQt's shared gl context on this thread against this window.
+    /// Makes the OpenGL context as current one on this thread against this window.
     VISUOGREQT_API virtual void makeCurrent() final;
 
-    /// Get Ogre RenderWindow
+    /// Gets the Ogre render target.
     VISUOGREQT_API virtual ::Ogre::RenderTarget* getRenderTarget() final;
 
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
@@ -103,7 +107,6 @@ public:
 
     /**
      * @brief Sets the fullscreen or windowed rendering mode.
-     *
      * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
      * @param _screenNumber index of the screen on which to render in fullscreen mode.
      */
@@ -111,23 +114,26 @@ public:
 
 private Q_SLOTS:
 
-    /// When the render window is created
+    /// Calls when the user interacts with the scene using the mouse and keyboard, connected to @ref m_qOgreWidget.
     void onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo _info);
 
-    /// When the clipping range has to match the last updating of the scene bounding box
+    /// Calls when the clipping range has to match the last updating of the scene bounding box
     void onCameraClippingComputation();
 
 private:
 
-    /// Disables fullscreen rendering. Linked to the
+    /// Disables fullscreen rendering.
     void disableFullscreen();
 
-    /// Pointers to the Qt element of the Widget
+    /// Contains Qt element of the Widget.
     QPointer< ::visuOgreQt::Window > m_qOgreWidget;
 
+    /// Contains the parent of the widget.
     SPTR(::fwGuiQt::container::QtContainer) m_parentContainer;
 
+    /// Contains the window container.
     QWidget* m_windowContainer {nullptr};
+
 };
 
 //-----------------------------------------------------------------------------
@@ -138,4 +144,4 @@ inline ::Ogre::TexturePtr RenderWindowInteractorManager::getRenderTexture()
     return ::Ogre::TexturePtr();
 }
 
-} // namespace visuOgreQt
+} // namespace visuOgreQt.
