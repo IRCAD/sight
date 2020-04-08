@@ -116,7 +116,7 @@ void SNegato2D::configuring()
     }
 
     m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
-    m_border      = config.get<bool>(s_TF_ALPHA_CONFIG, m_border);
+    m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
 }
 
 //------------------------------------------------------------------------------

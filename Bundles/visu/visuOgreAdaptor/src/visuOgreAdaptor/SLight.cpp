@@ -55,7 +55,7 @@ static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularC
 static const std::string s_NAME_CONFIG         = "name";
 static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
 static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
-static const std::string s_PHI_OFFSET_CONFIG   = "thetaOffset";
+static const std::string s_PHI_OFFSET_CONFIG   = "phiOffset";
 
 fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
 

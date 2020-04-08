@@ -101,7 +101,7 @@ void SRenderStats::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    std::string color = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
+    const std::string color = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     ::fwData::Color::sptr sightColor = ::fwData::Color::New();
     sightColor->setRGBA(color);
 

@@ -141,7 +141,7 @@ void SNegato3D::configuring()
     m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
     m_interactive = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority    = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_border      = config.get<bool>(s_TF_ALPHA_CONFIG, m_border);
+    m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
 
     const std::string transformId =
         config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
