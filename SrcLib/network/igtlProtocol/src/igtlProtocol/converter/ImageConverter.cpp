@@ -28,7 +28,6 @@
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -88,10 +87,9 @@ ImageConverter::~ImageConverter()
 ::fwData::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::ImageMessage::Pointer srcImg;
-    char* imgBuffer;
     char* igtlImageBuffer;
     ::fwData::Image::sptr destImg = ::fwData::Image::New();
-    ::fwDataTools::helper::Image imgHelper(destImg);
+    const auto dumpLock = destImg->lock();
     float igtlSpacing[3];
     float igtlOrigins[3];
     int igtlDimensions[3];
@@ -125,9 +123,9 @@ ImageConverter::~ImageConverter()
     }
 
     destImg->resize();
-    imgBuffer       = reinterpret_cast<char*>(imgHelper.getBuffer());
+    auto destIter = destImg->begin();
     igtlImageBuffer = reinterpret_cast<char*>(srcImg->GetScalarPointer());
-    std::copy(igtlImageBuffer, igtlImageBuffer + srcImg->GetImageSize(), imgBuffer);
+    std::copy(igtlImageBuffer, igtlImageBuffer + srcImg->GetImageSize(), destIter);
 
     return destImg;
 }
