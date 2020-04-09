@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,35 +50,36 @@ void ImageDiffCommandTest::tearDown()
 
 void ImageDiffCommandTest::undoredoTest()
 {
-    const ::fwData::Image::SizeType SIZE       = {{ 32, 32, 32 }};
-    const ::fwData::Image::SpacingType SPACING = {{ 1., 1., 1. }};
-    const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                 = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size SIZE          = {{ 32, 32, 32 }};
+    const ::fwData::Image::Spacing SPACING    = {{ 1., 1., 1. }};
+    const ::fwData::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
+    const ::fwTools::Type TYPE                = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE);
+    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
-    ::fwDataTools::helper::Image helper(image);
+    const auto dumpLock = image->lock();
 
-    ::fwDataTools::ImageDiff diff(image->getPixelType().sizeOf());
+    ::fwDataTools::ImageDiff diff(image->getType().sizeOf());
 
     std::uint8_t NEWVALUE = 1;
 
     ::fwData::Image::BufferType* newBufferValue = reinterpret_cast< ::fwData::Image::BufferType*>(&NEWVALUE);
 
-    const std::vector< ::fwData::Image::BufferIndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
+    const std::vector< ::fwData::Image::IndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
 
     // Add 8 elements to the diff. Write new values to the image.
     for(int i = 0; i < 8; ++i)
     {
-        const ::fwData::Image::BufferIndexType index = indices[i];
+        const ::fwData::Image::IndexType index = indices[i];
 
         const ::fwData::Image::BufferType* pixBuf =
-            reinterpret_cast< ::fwData::Image::BufferType* >(helper.getPixelBuffer(index));
+            reinterpret_cast< ::fwData::Image::BufferType* >(image->getPixelBuffer(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
-        helper.setPixelBuffer(index, newBufferValue);
+        image->setPixelBuffer(index, newBufferValue);
 
         CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
@@ -92,7 +93,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     for(size_t it = 0; it < image->getSizeInBytes(); ++it)
     {
-        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(helper.getPixelBuffer(it)));
+        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(it)));
     }
 
     // Apply diff. Ensure all values are zero except the ones at the selected indices.
@@ -105,11 +106,11 @@ void ImageDiffCommandTest::undoredoTest()
 
         if(indexIt != indices.end())
         {
-            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(helper.getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
         }
         else
         {
-            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(helper.getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
         }
     }
 }
@@ -118,35 +119,36 @@ void ImageDiffCommandTest::undoredoTest()
 
 void ImageDiffCommandTest::getSizeTest()
 {
-    const ::fwData::Image::SizeType SIZE       = {{ 32, 32, 32 }};
-    const ::fwData::Image::SpacingType SPACING = {{ 1., 1., 1. }};
-    const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                 = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size SIZE          = {{ 32, 32, 32 }};
+    const ::fwData::Image::Spacing SPACING    = {{ 1., 1., 1. }};
+    const ::fwData::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
+    const ::fwTools::Type TYPE                = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE);
+    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
-    ::fwDataTools::helper::Image helper(image);
+    const auto dumpLock = image->lock();
 
-    ::fwDataTools::ImageDiff diff(image->getPixelType().sizeOf()*64);
+    ::fwDataTools::ImageDiff diff(image->getType().sizeOf()*64);
 
     std::uint8_t NEWVALUE = 1;
 
     ::fwData::Image::BufferType* newBufferValue = reinterpret_cast< ::fwData::Image::BufferType*>(&NEWVALUE);
 
-    const std::vector< ::fwData::Image::BufferIndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
+    const std::vector< ::fwData::Image::IndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
 
     // Add 8 elements to the diff. Write new values to the image.
     for(size_t i = 0; i < 8; ++i)
     {
-        const ::fwData::Image::BufferIndexType index = indices[i];
+        const ::fwData::Image::IndexType index = indices[i];
 
         const ::fwData::Image::BufferType* pixBuf =
-            reinterpret_cast< ::fwData::Image::BufferType* >(helper.getPixelBuffer(index));
+            reinterpret_cast< ::fwData::Image::BufferType* >(image->getPixelBuffer(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
-        helper.setPixelBuffer(index, newBufferValue);
+        image->setPixelBuffer(index, newBufferValue);
 
         CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
