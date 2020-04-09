@@ -27,9 +27,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
