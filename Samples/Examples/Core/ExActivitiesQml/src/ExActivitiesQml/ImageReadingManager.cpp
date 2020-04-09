@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,6 @@
 #include <fwCom/Slot.hxx>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -143,11 +142,9 @@ void ImageReadingManager::openImage()
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers:: checkImageValidity(image))
     {
-        ::fwDataTools::helper::Image helper( image );
-
-        helper.createLandmarks();
-        helper.createTransferFunctionPool();
-        helper.createImageSliceIndex();
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(image);
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(image);
     }
     m_imageAdaptor->update();
 
