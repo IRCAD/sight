@@ -9,6 +9,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="scene2D" />
+    <requirement id="patchMedicalData" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -63,7 +64,7 @@
                     <frame>
                         <name>Ogre Viewer</name>
                         <icon>OgreViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg</icon>
-                        <minSize width="1100" height="700" />
+                        <minSize width="1150" height="700" />
                     </frame>
                 </gui>
                 <registry>
@@ -91,11 +92,49 @@
                         <view proportion="1" />
                         <view proportion="0" minWidth="500" backgroundColor="#36393E" />
                     </layout>
+                    <slideView align="right" opacity="1" size="50" >
+                        <styleSheet>
+                            <![CDATA[
+                            #SlideBar QWidget {
+                                background-color: none;
+                            }
+                            #SlideBar QToolBar {
+                                border-top-left-radius: 4px;
+                                border-bottom-left-radius: 4px;
+                            }
+                            ]]>
+                        </styleSheet>
+                    </slideView>
                 </gui>
                 <registry>
                     <toolBar sid="toolBarView" start="yes" />
                     <view wid="ogreSceneView" start="yes" />
                     <view sid="parameterView" start="yes" />
+                    <slideView sid="rightToolbarSliderView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="rightToolbarSliderView" type="::gui::view::SDefaultView">
+                <gui>
+                    <toolBar backgroundColor="#3E4453" />
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolBar sid="rightToolbarView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="rightToolbarView" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <spacer />
+                        <menuItem name="Show parameters" icon="flatIcon-0.1/icons/YellowLeftChevron.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="showParameterAct" start="yes" />
                 </registry>
             </service>
 
@@ -124,7 +163,7 @@
                         <menuItem name="Show organs manager" icon="flatIcon-0.1/icons/Stomach.svg" style="check" />
                         <menuItem name="Show light manager" icon="flatIcon-0.1/icons/Light.svg" style="check" />
                         <spacer/>
-                        <menuItem name="Close parameters" icon="flatIcon-0.1/icons/RedCross.svg" />
+                        <menuItem name="Close parameters" icon="flatIcon-0.1/icons/YellowRightChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -181,7 +220,7 @@
             <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load series" icon="flatIcon-0.1/icons/BlueFile.svg" />
+                        <menuItem name="Load series" icon="flatIcon-0.1/icons/BlueLoad.svg" />
                         <separator/>
                         <menuItem name="Negato view" icon="flatIcon-0.1/icons/Layers.svg" />
                         <menuItem name="Volume view" icon="flatIcon-0.1/icons/Volume.svg" />
@@ -203,8 +242,6 @@
                         <menuItem name="Reset points" icon="flatIcon-0.1/icons/RedResetPoints.svg" />
                         <separator/>
                         <menuItem name="Show/hide axis" icon="flatIcon-0.1/icons/Axis.svg" style="check" />
-                        <spacer/>
-                        <menuItem name="Show/hide parameters" icon="flatIcon-0.1/icons/IDVR.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -223,7 +260,6 @@
                     <menuItem sid="pointListVisibilityAct" start="yes" />
                     <menuItem sid="pointListResetAct" start="yes" />
                     <menuItem sid="axisVisibilityAct" start="yes" />
-                    <menuItem sid="showHideParameterAct" start="yes" />
                 </registry>
             </service>
 
@@ -276,13 +312,14 @@
                 <sync>true</sync>
                 <slots>
                     <slot>parameterView/hide</slot>
-                    <slot>showHideParameterAct/deactivate</slot>
+                    <slot>rightToolbarSliderView/show</slot>
                 </slots>
              </service>
 
-            <service uid="showHideParameterAct" type="::gui::action::SBooleanSlotCaller" >
+            <service uid="showParameterAct" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
-                    <slot>parameterView/setVisible</slot>
+                    <slot>parameterView/show</slot>
+                    <slot>rightToolbarSliderView/hide</slot>
                 </slots>
                 <state active="true" />
             </service>

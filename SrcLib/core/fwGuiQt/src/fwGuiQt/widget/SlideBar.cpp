@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,13 +24,8 @@
 
 #include "fwGuiQt/QtMainFrame.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-#include <QHBoxLayout>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
-#include <QPushButton>
-#include <QVBoxLayout>
 
 namespace fwGuiQt
 {
@@ -41,14 +36,13 @@ namespace widget
 //-----------------------------------------------------------------------------
 
 SlideBar::SlideBar(QWidget* parent, Aligment align, int buttonSize, double opacity, bool _animatable) :
-    QGroupBox(),
+    QWidget(parent),
     m_buttonSize(buttonSize),
     m_opacity(opacity),
     m_isShown(false),
     m_align(align),
     m_animatable(_animatable)
 {
-    this->setParent(parent);
     this->init();
 }
 
@@ -171,14 +165,14 @@ void SlideBar::setVisible(bool visible)
 
 void SlideBar::forceHide()
 {
-    this->QGroupBox::setVisible(false);
+    this->QWidget::setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
 
 void SlideBar::forceShow()
 {
-    this->QGroupBox::setVisible(true);
+    this->QWidget::setVisible(true);
 }
 
 //-----------------------------------------------------------------------------

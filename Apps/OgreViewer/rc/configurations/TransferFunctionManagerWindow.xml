@@ -10,7 +10,7 @@
         <param name="currentTFPool" />
         <param name="currentTF" />
         <param name="mergedTF" />
-</parameters>
+    </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->

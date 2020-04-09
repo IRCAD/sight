@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,6 @@
 #include "fwGuiQt/config.hpp"
 
 #include <QApplication>
-#include <QBoxLayout>
-#include <QGroupBox>
 #include <QWidget>
 
 namespace fwGuiQt
@@ -39,7 +37,7 @@ namespace widget
  * @brief This class allows to display a slide widget. The slide widget can be displayed over all the application
  *        widgets.
  */
-class FWGUIQT_CLASS_API SlideBar : public QGroupBox
+class FWGUIQT_CLASS_API SlideBar : public QWidget
 {
 Q_OBJECT
 
@@ -55,7 +53,7 @@ public:
 
     /// SlideBar constructor
     FWGUIQT_API SlideBar(QWidget* parent, Aligment align = LEFT, int buttonWidth = 200, double opacity = 0.8,
-                         bool _animatable = false);
+                         bool _animatable                = false);
 
     /// Destructor
     FWGUIQT_API virtual ~SlideBar();
