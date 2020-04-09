@@ -53,7 +53,7 @@ public:
 
     /// SlideBar constructor
     FWGUIQT_API SlideBar(QWidget* parent, Aligment align = LEFT, int buttonWidth = 200, double opacity = 0.8,
-                         bool _animatable                = false);
+                         bool _animatable = false);
 
     /// Destructor
     FWGUIQT_API virtual ~SlideBar();

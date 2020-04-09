@@ -24,6 +24,8 @@
 
 #include "fwGuiQt/QtMainFrame.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 
