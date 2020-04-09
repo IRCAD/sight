@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/ImageGetter.hpp>
-
 #include <zlib.h>
 
 #include <iostream>
@@ -42,7 +40,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
@@ -73,12 +71,12 @@ void GzBufferImageWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwDataTools::helper::ImageGetter imageHelper(image);
+    const auto dumpLock = image->lock();
 
     // file is OK : process now
     const size_t imageSizeInBytes = image->getSizeInBytes();
 
-    const char* ptr     = static_cast<char*>(imageHelper.getBuffer());
+    const char* ptr     = static_cast<char*>(image->getBuffer());
     size_t writtenBytes = 0;
 
     int uncompressedbyteswrited;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-
 #include <zlib.h>
 
 #include <iostream>
@@ -43,7 +41,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzBufferImageReader::GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key key) :
+GzBufferImageReader::GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::
     enableSingleFile< IObjectReader >(
         this)
@@ -68,9 +66,9 @@ void GzBufferImageReader::read()
     ::fwData::Image::sptr image = getConcreteObject();
     size_t imageSizeInBytes = image->getSizeInBytes();
 
-    image->allocate();
-    ::fwDataTools::helper::Image helper(image);
-    char* ptr = static_cast<char*>(helper.getBuffer());
+    image->resize();
+    const auto dumpLock = image->lock();
+    char* ptr           = static_cast<char*>(image->getBuffer());
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
 

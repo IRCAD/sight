@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwData/Image.hpp>
-
-#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <gdcmImageWriter.h>
 
@@ -88,8 +86,8 @@ void Image::writeImagePlaneModule()
 
     // Pixel Spacing - Type 1
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY Sight), but stuff like "Pixel Aspect Ratio"
-    const std::size_t dimension          = m_object->getNumberOfDimensions();
-    const std::vector< double >& spacing = m_object->getSpacing();
+    const std::size_t dimension = m_object->getNumberOfDimensions();
+    const auto& spacing         = m_object->getSpacing2();
     for (unsigned int i = 0; i < dimension; ++i)
     {
         gdcmImage.SetSpacing(i, spacing[i]);
@@ -114,8 +112,8 @@ void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::Image& gdcmImage              = imageWriter->GetImage();
 
     // Image Position (Patient) - Type 1
-    const std::vector< double >& origin  = m_object->getOrigin();
-    const std::vector< double >& spacing = m_object->getSpacing();
+    const auto& origin  = m_object->getOrigin2();
+    const auto& spacing = m_object->getSpacing2();
     gdcmImage.SetOrigin(0, origin[0]);
     gdcmImage.SetOrigin(1, origin[1]);
     gdcmImage.SetOrigin(2, origin[2] + spacing[2]*instanceNumber);
@@ -147,7 +145,7 @@ void Image::writeImagePixelModule()
     OSLM_TRACE("Image's number of dimensions : " << dimension);
 
     // Image's dimension
-    const ::fwData::Image::SizeType& size = m_object->getSize();
+    const ::fwData::Image::Size& size = m_object->getSize2();
     for (unsigned int i = 0; i < dimension; ++i)
     {
         gdcmImage.SetDimension(i, static_cast<unsigned int>(size[i]));
@@ -167,13 +165,13 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size
-    const ::fwData::Image::SizeType& size = m_object->getSize();
-    std::size_t bufferLength              = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
+    const ::fwData::Image::Size& size = m_object->getSize2();
+    std::size_t bufferLength          = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength*size[2]) : bufferLength;
 
     // Retrieve image buffer
-    ::fwDataTools::helper::ImageGetter imageHelper(m_object);
-    const char* imageBuffer = static_cast< char* >(imageHelper.getBuffer());
+    const auto dumpLock     = m_object->lock();
+    const char* imageBuffer = static_cast< char* >(m_object->getBuffer());
 
     // Pixel Data - Type 1C
     ::gdcm::DataElement pixeldata(::gdcm::Tag(0x7fe0, 0x0010));
