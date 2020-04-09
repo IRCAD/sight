@@ -29,7 +29,6 @@
 #define FW_PROFILING_DISABLED
 #include <fwCore/Profiling.hpp>
 
-#include <fwDataTools/helper/MeshGetter.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <OgreEntity.h>

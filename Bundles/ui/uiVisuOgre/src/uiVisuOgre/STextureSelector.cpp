@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwGui/editor/IDialogEditor.hpp>
 

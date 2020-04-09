@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,6 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
-
-#include <fwDataTools/helper/Image.hpp>
 
 #include <glm/glm.hpp>
 
