@@ -358,12 +358,17 @@ void Module::loadRequirements()
         RequirementContainer::const_iterator iter;
         for(const RequirementContainer::value_type& requirement : m_requirements)
         {
-            SPTR( Module ) module( rntm.findEnabledModule(requirement) );
+            auto module = rntm.findModule(requirement);
 
             // Ensure that a module has been retrieved.
-            if( module == 0 )
+            if( module == nullptr )
             {
-                throw RuntimeException( requirement + ": required module not found or not enabled." );
+                throw RuntimeException( requirement + ": required module not found." );
+            }
+            // Enable the required module if necessary.
+            if( !module->isEnable() )
+            {
+                std::dynamic_pointer_cast< impl::Module >(module)->setEnable(true);
             }
             // Starts the module (loads its libraries and requirements module).
             if ( !module->isStarted() )

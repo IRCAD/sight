@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,15 +46,15 @@ void AppConfigParametersTest::setUp()
     // Set up context before running a test.
     //Bundles location
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultBundles();
+    runtime->addDefaultModules();
 
     std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    runtime->addBundles(location);
+    runtime->addModules(location);
 
-    ::fwRuntime::loadBundle("servicesReg");
-    ::fwRuntime::loadBundle("AppConfigParametersTest");
+    ::fwRuntime::loadModule("servicesReg");
+    ::fwRuntime::loadModule("AppConfigParametersTest");
 
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
     appConfigParam = ::fwServices::registry::AppConfigParameters::getDefault();
