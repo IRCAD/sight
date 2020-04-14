@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -62,18 +61,15 @@ void MedicalImageSrv::convertImage()
 
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
-        ::fwDataTools::helper::Image helper( pImg );
-
         bool isModified = false;
-        isModified |= helper.createLandmarks();
-        isModified |= helper.createTransferFunctionPool();
-        isModified |= helper.createImageSliceIndex();
+        isModified |= ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(pImg);
+        isModified |= ::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(pImg);
+        isModified |= ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(pImg);
 
         if (isModified)
         {
             auto sig = pImg->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
             ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            helper.notify();
         }
     }
 }

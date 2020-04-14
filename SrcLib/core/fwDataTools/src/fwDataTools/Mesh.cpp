@@ -22,8 +22,6 @@
 
 #include "fwDataTools/Mesh.hpp"
 
-#include "fwDataTools/helper/ArrayGetter.hpp"
-#include "fwDataTools/helper/MeshGetter.hpp"
 #include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/TransformationMatrix3D.hpp"
 
@@ -49,7 +47,7 @@ struct RandFloat
 
     float operator()()
     {
-        return ((rand() % 101 - 50.f)) / 500.f;
+        return ((static_cast<float>(rand() % 101) - 50.f)) / 500.f;
     }
 };
 
@@ -82,13 +80,9 @@ bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTyp
 
 //------------------------------------------------------------------------------
 
-typedef boost::multi_array_ref<Point, 1> PointsMultiArrayType;
-
-//------------------------------------------------------------------------------
-
-Vector<float>& computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3, Vector<float>& n)
+Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3)
 {
-    n = Vector<float>(p1, p2);
+    Vector<float> n(p1, p2);
     Vector<float> v(p1, p3);
     n.crossWith(v);
     n.normalize();
@@ -97,78 +91,22 @@ Vector<float>& computeTriangleNormal(const Point& p1, const Point& p2, const Poi
 
 //------------------------------------------------------------------------------
 
-Vector<float>& computeTriangleNormal( const PointsMultiArrayType& points, const ::fwData::Mesh::CellValueType* cell,
-                                      Vector<float>& n)
-{
-    const Point& p1 = points[cell[0]];
-    const Point& p2 = points[cell[1]];
-    const Point& p3 = points[cell[2]];
-
-    computeTriangleNormal(p1, p2, p3, n);
-    return n;
-}
-
-//------------------------------------------------------------------------------
-
-Vector<float>& computeCellNormal( const PointsMultiArrayType& points, const ::fwData::Mesh::CellValueType* cell,
-                                  size_t cellSize, Vector<float>& n)
-{
-    n = Vector<float>();
-    Vector<float> v;
-
-    for (size_t i = 0; i < cellSize; ++i)
-    {
-        const Point& p1 = points[cell[i  ]];
-        const Point& p2 = points[cell[(i+1)% cellSize]];
-        const Point& p3 = points[cell[(i+2)% cellSize]];
-
-        computeTriangleNormal(p1, p2, p3, n);
-
-        n += v;
-    }
-
-    n /= ::fwTools::numericRoundCast<float>(cellSize);
-    n.normalize();
-    return n;
-}
-
-//------------------------------------------------------------------------------
-
-void generateRegionCellNormals(::fwDataTools::helper::Mesh::sptr meshHelper, const ::fwData::Mesh::Id regionMin,
+void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::Id regionMin,
                                const ::fwData::Mesh::Id regionMax)
 {
-    ::fwData::Mesh::csptr mesh = meshHelper->getMesh();
-    ::fwDataTools::helper::Array pointArrayHelper(mesh->getPointsArray());
-    ::fwDataTools::helper::Array cellNormalsArrayHelper(mesh->getCellNormalsArray());
 
-    PointsMultiArrayType point = PointsMultiArrayType(
-        static_cast<PointsMultiArrayType::element*>(pointArrayHelper.getBuffer()),
-        ::boost::extents[mesh->getNumberOfPoints()]
-        );
+    const auto pointBegin = mesh->begin< ::fwData::iterator::ConstPointIterator >();
 
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = meshHelper->getCellTypes();
-    ::fwData::Mesh::CellDataMultiArrayType cellData               = meshHelper->getCellData();
-    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = meshHelper->getCellDataOffsets();
+    auto cellItr          = mesh->begin< ::fwData::iterator::CellIterator >() + regionMin;
+    const auto cellItrEnd = mesh->begin< ::fwData::iterator::CellIterator >() + regionMax;
 
     const Vector<float> vZero;
-    ::fwData::Mesh::CellTypes type;
-    ::fwData::Mesh::CellDataOffsetType offset;
-    ::fwData::Mesh::CellValueType* cell;
-    ::fwData::Mesh::Id cellLen = 0;
 
-    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
-    const ::fwData::Mesh::Id cellDataSize  = mesh->getCellDataSize();
-
-    Vector< ::fwData::Mesh::NormalValueType >* normals =
-        cellNormalsArrayHelper.begin< Vector< ::fwData::Mesh::NormalValueType > >();
-
-    for(::fwData::Mesh::Id i = regionMin; i < regionMax; ++i)
+    for (; cellItr != cellItrEnd; ++cellItr)
     {
-        Vector<float>& n = normals[i];
+        Vector<float> n;
 
-        type   = cellTypes[i];
-        offset = cellDataOffsets[i];
-        cell   = &cellData[offset];
+        const ::fwData::Mesh::CellTypes type = *cellItr->type;
         switch (type)
         {
             case 0:
@@ -178,18 +116,41 @@ void generateRegionCellNormals(::fwDataTools::helper::Mesh::sptr meshHelper, con
                 break;
             case 3:
             {
-                computeTriangleNormal(point, cell, n);
+                auto pItr = pointBegin + cellItr->pointIdx[0];
+                const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
+                pItr = pointBegin + cellItr->pointIdx[1];
+                const Point p2(pItr->point->x, pItr->point->y, pItr->point->z);
+                pItr = pointBegin + cellItr->pointIdx[2];
+                const Point p3(pItr->point->x, pItr->point->y, pItr->point->z);
+                n = computeTriangleNormal(p1, p2, p3);
             }
             break;
             case 4:
             case 5:
             {
-                const ::fwData::Mesh::Id i1 = i+1;
-                cellLen = (( i1 < numberOfCells ) ? cellDataOffsets[i1] : cellDataSize) - cellDataOffsets[i];
+                const auto nbPoints = cellItr->nbPoints;
+                for (size_t i = 0; i < nbPoints; ++i)
+                {
+                    Vector<float> v;
+                    auto pItr = pointBegin + cellItr->pointIdx[i];
+                    const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
+                    pItr = pointBegin + cellItr->pointIdx[(i+1)% nbPoints];
+                    const Point p2(pItr->point->x, pItr->point->y, pItr->point->z);
+                    pItr = pointBegin + cellItr->pointIdx[(i+2)% nbPoints];
+                    const Point p3(pItr->point->x, pItr->point->y, pItr->point->z);
 
-                computeCellNormal(point, cell, cellLen, n);
+                    v = computeTriangleNormal(p1, p2, p3);
+
+                    n += v;
+                }
+
+                n /= ::fwTools::numericRoundCast<float>(nbPoints);
+                n.normalize();
             }
         }
+        cellItr->normal->nx = n.x;
+        cellItr->normal->ny = n.y;
+        cellItr->normal->nz = n.z;
     }
 }
 
@@ -224,113 +185,72 @@ void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
     const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
     if(numberOfCells > 0)
     {
-        mesh->allocateCellNormals();
-        ::fwDataTools::helper::Mesh::sptr meshHelper;
-        meshHelper = ::fwDataTools::helper::Mesh::New(mesh);
+        if (!mesh->hasCellNormals())
+        {
+            mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(), mesh->getCellDataSize(),
+                         ::fwData::Mesh::Attributes::CELL_NORMALS);
+        }
+
+        const auto dumpLock = mesh->lock();
 
         ::fwDataTools::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
-        rt( std::bind(&generateRegionCellNormals, meshHelper, std::placeholders::_1, std::placeholders::_2),
+        rt( std::bind(&generateRegionCellNormals, mesh, std::placeholders::_1, std::placeholders::_2),
             numberOfCells );
     }
 }
 
 //------------------------------------------------------------------------------
 
-typedef std::vector< std::vector< unsigned char > > CharVectors;
 typedef std::vector< std::vector< float > > FloatVectors;
 
 //------------------------------------------------------------------------------
 
-void generateRegionCellNormalsByPoints(FloatVectors& normalsData, CharVectors& normalCounts, size_t dataId,
-                                       ::fwDataTools::helper::Mesh::sptr meshHelper, const ::fwData::Mesh::Id regionMin,
+void generateRegionCellNormalsByPoints(FloatVectors& normalsData, size_t dataId,
+                                       const ::fwData::Mesh::sptr& mesh, const ::fwData::Mesh::Id regionMin,
                                        const ::fwData::Mesh::Id regionMax)
 {
-    ::fwData::Mesh::csptr mesh = meshHelper->getMesh();
     FloatVectors::value_type& normalsResults = normalsData[dataId];
-    CharVectors::value_type& normalCount     = normalCounts[dataId];
 
     const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
     normalsResults.resize(3*nbOfPoints, 0.f);
-    normalCount.resize(nbOfPoints, 0);
 
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = meshHelper->getCellTypes();
-    ::fwData::Mesh::CellDataMultiArrayType cellData               = meshHelper->getCellData();
-    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = meshHelper->getCellDataOffsets();
+    auto cellItr          = mesh->begin< ::fwData::iterator::ConstCellIterator >() + regionMin;
+    const auto cellItrEnd = mesh->begin< ::fwData::iterator::ConstCellIterator >() + regionMax;
 
-    ::fwData::Mesh::CellTypes type;
-    ::fwData::Mesh::CellDataOffsetType offset;
-    ::fwData::Mesh::CellValueType* cell;
-    ::fwData::Mesh::Id cellLen = 0;
+    const Vector<float> vZero;
 
-    const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
-    const ::fwData::Mesh::Id cellDataSize  = mesh->getCellDataSize();
-
-    ::fwDataTools::helper::Array arrayHelper(mesh->getCellNormalsArray());
-    Vector< ::fwData::Mesh::NormalValueType >* normals =
-        arrayHelper.begin< Vector< ::fwData::Mesh::NormalValueType > >();
-    Vector< ::fwData::Mesh::NormalValueType >* normalResults =
-        reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType >* >( &(*normalsResults.begin()));
-
-    ::fwData::Mesh::CellValueType* pointId;
-    ::fwData::Mesh::CellValueType* cellEnd;
-
-    for(::fwData::Mesh::Id i = regionMin; i < regionMax; ++i)
+    for (; cellItr != cellItrEnd; ++cellItr)
     {
-        type    = cellTypes[i];
-        offset  = cellDataOffsets[i];
-        cell    = &cellData[offset];
-        cellLen = type;
-
-        switch (type)
+        const auto normal = cellItr->normal;
+        for (size_t i = 0; i < cellItr->nbPoints; ++i)
         {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                cellLen = type;
-                break;
-            case 5:
-            {
-                const ::fwData::Mesh::Id i1 = i+1;
-                cellLen = (( i1 < numberOfCells ) ? cellDataOffsets[i1] : cellDataSize) - cellDataOffsets[i];
-            }
+            normalsData[dataId][3*cellItr->pointIdx[i]]   += normal->nx;
+            normalsData[dataId][3*cellItr->pointIdx[i]+1] += normal->ny;
+            normalsData[dataId][3*cellItr->pointIdx[i]+2] += normal->nz;
         }
-
-        cellEnd = cell + cellLen;
-
-        for(pointId = cell; pointId != cellEnd; ++pointId)
-        {
-            Vector< ::fwData::Mesh::NormalValueType >& res = normalResults[*pointId];
-            res                   += normals[i];
-            normalCount[*pointId] += 1;
-        }
-
     }
 }
 
 //------------------------------------------------------------------------------
 
-void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData, CharVectors::value_type& normalCount,
+void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData,
                                         ::fwData::Mesh::sptr mesh, const ::fwData::Mesh::Id regionMin,
                                         const ::fwData::Mesh::Id regionMax)
 {
     Vector< ::fwData::Mesh::NormalValueType >* normalSum =
         reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType >* >( &(*normalsData.begin()) );
 
-    ::fwDataTools::helper::Array arrayHelper(mesh->getPointNormalsArray());
-    Vector< ::fwData::Mesh::NormalValueType >* normals =
-        arrayHelper.begin< Vector< ::fwData::Mesh::NormalValueType > >();
+    auto pointItr          = mesh->begin< ::fwData::iterator::PointIterator >() + regionMin;
+    const auto pointItrEnd = mesh->begin< ::fwData::iterator::PointIterator >() + regionMax;
 
-    for ( ::fwData::Mesh::Id i = regionMin; i < regionMax; ++i)
+    for ( ::fwData::Mesh::Id i = regionMin; i < regionMax; ++i, ++pointItr)
     {
-        CharVectors::value_type::value_type count = normalCount[i];
-        normals[i] = normalSum[i];
+        Vector< ::fwData::Mesh::NormalValueType > normal = normalSum[i];
 
-        if(count > 1)
-        {
-            normals[i] /= count;
-        }
+        normal.normalize();
+        pointItr->normal->nx = normal.x;
+        pointItr->normal->ny = normal.y;
+        pointItr->normal->nz = normal.z;
     }
 }
 
@@ -342,26 +262,29 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
     if(nbOfPoints > 0)
     {
         const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
-        ::fwData::Array::sptr oldCellNormals = mesh->getCellNormalsArray();
-        mesh->clearCellNormals();
 
-        generateCellNormals(mesh);
+        // To generate point normals, we need to use the cell normals
+        if (!mesh->hasCellNormals())
+        {
+            generateCellNormals(mesh);
+        }
 
-        mesh->allocatePointNormals();
+        if (!mesh->hasPointNormals())
+        {
+            mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(), mesh->getCellDataSize(),
+                         ::fwData::Mesh::Attributes::POINT_NORMALS);
+        }
 
-        ::fwDataTools::helper::Mesh::sptr meshHelper;
-        meshHelper = ::fwDataTools::helper::Mesh::New(mesh);
+        const auto dumpLock = mesh->lock();
 
         ::fwDataTools::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
         FloatVectors normalsData(rt.numberOfThread());
-        CharVectors normalCounts(rt.numberOfThread());
 
         rt( std::bind(&generateRegionCellNormalsByPoints,
                       std::ref(normalsData),
-                      std::ref(normalCounts),
                       std::placeholders::_3,
-                      meshHelper,
+                      mesh,
                       std::placeholders::_1,
                       std::placeholders::_2),
             numberOfCells);
@@ -371,19 +294,10 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
                       std::placeholders::_1, std::placeholders::_2),
             nbOfPoints*3);
 
-        rt( std::bind(&vectorSum<CharVectors::value_type::value_type>,
-                      std::ref(normalCounts),
-                      std::placeholders::_1, std::placeholders::_2),
-            nbOfPoints);
-
         rt( std::bind( &normalizeRegionCellNormalsByPoints,
                        std::ref(normalsData[0]),
-                       std::ref(normalCounts[0]),
                        mesh, std::placeholders::_1, std::placeholders::_2),
             nbOfPoints);
-
-        meshHelper.reset();
-        mesh->setCellNormalsArray(oldCellNormals);
     }
 }
 
@@ -435,14 +349,46 @@ void Mesh::shakeNormals(::fwData::Array::sptr array)
 
 void Mesh::shakePointNormals(::fwData::Mesh::sptr mesh)
 {
-    shakeNormals(mesh->getPointNormalsArray());
+    const auto dumpLock = mesh->lock();
+
+    auto pointIter          = mesh->begin< ::fwData::iterator::PointIterator >();
+    const auto pointIterEnd = mesh->begin< ::fwData::iterator::PointIterator >();
+
+    RandFloat randFloat;
+
+    for (; pointIter != pointIterEnd; ++pointIter)
+    {
+        Vector<float> v(randFloat(), randFloat(), randFloat());
+        Vector<float> normal(pointIter->normal->nx, pointIter->normal->ny, pointIter->normal->nz);
+        normal += v;
+        normal.normalize();
+        pointIter->normal->nx = normal.x;
+        pointIter->normal->ny = normal.y;
+        pointIter->normal->nz = normal.z;
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::shakeCellNormals(::fwData::Mesh::sptr mesh)
 {
-    shakeNormals(mesh->getCellNormalsArray());
+    const auto dumpLock = mesh->lock();
+
+    auto cellIter          = mesh->begin< ::fwData::iterator::CellIterator >();
+    const auto cellIterEnd = mesh->begin< ::fwData::iterator::CellIterator >();
+
+    RandFloat randFloat;
+
+    for (; cellIter != cellIterEnd; ++cellIter)
+    {
+        Vector<float> v(randFloat(), randFloat(), randFloat());
+        Vector<float> normal(cellIter->normal->nx, cellIter->normal->ny, cellIter->normal->nz);
+        normal += v;
+        normal.normalize();
+        cellIter->normal->nx = normal.x;
+        cellIter->normal->ny = normal.y;
+        cellIter->normal->nz = normal.z;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -526,7 +472,7 @@ void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh
 
     const ::glm::dmat4x4 matrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(t);
 
-    const size_t numPts = inMesh->getNumberOfPoints();
+    [[maybe_unused]] const size_t numPts = inMesh->getNumberOfPoints();
     SLM_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
 
     SLM_ASSERT("in and out meshes must have the same point normals attribute",

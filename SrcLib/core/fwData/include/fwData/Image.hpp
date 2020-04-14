@@ -50,6 +50,74 @@ class PointList;
  * @brief This class defines an image
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
+ *
+ * The buffer type is defined by ::fwTools::Type that provides the basic types ([u]int8, [u]int16, [u]int32, [u]int64,
+ * float and double).
+ *
+ * The image size is a 3D size_t array but the third dimension can be 0 for a 2D image.
+ *
+ * The image PixelFormat represents the buffer organization in components (GRAY_SCALE: 1 component, RGB and BGR: 3
+ * components, RGBA and BGRA: 4 components).
+ *
+ * @section Usage Usage
+ *
+ * @subsection Allocation Allocation
+ *
+ * The image buffer is allocated using the resize() method.
+ * You can get the allocated size using getSizeInBytes() and getAllocatedSizeInBytes().
+ *
+ * @warning The allocated size can be different from the image size: it can happen if you called setSize() without
+ * calling resize(). It may be useful when you don't want to reallocate the image too often, but you need to be sure to
+ * allocate enough memory.
+ *
+ * @section Access Buffer access
+ *
+ * You can access voxel values using at<type>(IndexType id) or at<type>(IndexType x, IndexType y, IndexType z)
+ * methods. These methods are slow and should not be used to parse the entire buffer (see iterators).
+ *
+ * You can also use getPixelAsString() to retrieve the value as a string (useful for displaying information).
+ *
+ * @warning The image must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
+ * disk.
+ *
+ * @subsection Iterators Iterators
+ *
+ * To parse the buffer from beginning to end, the iterator can be used (::fwData::iterator::ImageIteratorBase).
+ *
+ * The iteration depends on the given format. The format can be the buffer type ([u]int[8|16|32|64], double, float), but
+ * can also be a simple struct like:
+ *
+ * @code{.cpp}
+    struct RGBA {
+        std::uint8_t r;
+        std::uint8_t g;
+        std::uint8_t b;
+        std::uint8_t a;
+    };
+    @endcode
+ *
+ * This struct allows to parse the image as an RGBA buffer (RGBARGBARGBA....).
+ *
+ * To get an iterator on the image, use begin<FORMAT>() and end<FORMAT>() methods.
+ *
+ * @warning The iterator does not assert that the image type is the same as the given format. It only asserts (in debug)
+ * that the iterator does not iterate outside of the buffer bounds).
+ *
+ * Example :
+ * @code{.cpp}
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+    img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+    auto iter    = img->begin<RGBA>();
+    const auto iterEnd = img->end<RGBA>();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        iter->r = val1;
+        iter->g = val2;
+        iter->b = val2;
+        iter->a = val4;
+    }
+   @endcode
  */
 class FWDATA_CLASS_API Image : public Object
 {
@@ -58,24 +126,27 @@ public:
     fwCoreAllowSharedFromThis()
     fwCampMakeFriendDataMacro((fwData)(Image))
 
+    /// Image size
+    typedef std::array<size_t, 3> Size;
+    /// Image origin
+    typedef std::array<double, 3> Origin;
+    /// Image spacing
+    typedef std::array<double, 3> Spacing;
+
+    typedef Size::value_type IndexType;
+    typedef std::uint8_t BufferType;
+    typedef ::boost::shared_array< BufferType > SharedArray;
+
     /// Image format
     enum PixelFormat
     {
-        UNDEFINED = 0,
+        UNDEFINED = 0, ///< Undefined pixel format
         RGB,           ///< Image with 3 component RGB.
         RGBA,          ///< Image with 4 component RGBA.
         BGR,           ///< Image with 3 component BGR.
         BGRA,          ///< Image with 4 component BGRA.
         GRAY_SCALE     ///< Image with 1 component.
     };
-
-    typedef std::array<size_t, 3> Size;
-    typedef std::array<double, 3> Origin;
-    typedef std::array<double, 3> Spacing;
-
-    typedef Size::value_type IndexType;
-    typedef std::uint8_t BufferType;
-    typedef ::boost::shared_array< BufferType > SharedArray;
 
     /**
      * @brief Constructor
@@ -126,6 +197,7 @@ public:
     const Size& getSize2() const;
     /**
      * @brief Set image size
+     * @warning This method does not resize the buffer. You must call resize for that.
      * @todo Rename to setSize when the deprecated API is removed
      */
     void setSize2(const Size& size);
@@ -161,6 +233,7 @@ public:
 
     /** @{
      * @brief get/set image type
+     * @warning This method does not resize the buffer with the new type. You must call resize for that.
      */
     FWDATA_API void setType(::fwTools::Type type);
     FWDATA_API void setType(const std::string& type);
@@ -257,14 +330,24 @@ public:
      * @brief Returns the begin/end iterators to the image buffer, cast to T
      *
      * Iterate through all the elements of the buffer.
-     * The format should be one of the formats defined by IterationBase (.
+     * The format can be the buffer type ([u]int[8|16|32|64], double, float), and can also be a simple struct like:
+     *
+     * @code{.cpp}
+        struct RGBA {
+            std::uint8_t r;
+            std::uint8_t g;
+            std::uint8_t b;
+            std::uint8_t a;
+        };
+        @endcode
+     * @see ::fwData::iterator::RGBA
      *
      * Example:
      * @code{.cpp}
         ::fwData::Image::sptr img = ::fwData::Image::New();
-        img->resize({1920, 1080}, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
-        ::fwData::Image:Iterator<RGBAIteration> iter    = img->begin<RGBAIteration>();
-        const ImageIteratorBase<RGBAIteration> iterEnd = img->end<RGBAIteration>();
+        img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+        ::fwData::Image::Iterator< RGBA > iter    = img->begin< RGBA >();
+        const ::fwData::Image::Iterator< RGBA > iterEnd = img->end< RGBA >();
 
         for (; iter != iterEnd; ++iter)
         {
@@ -275,7 +358,8 @@ public:
         }
        @endcode
      *
-     * @warning Print a warning if T is different from the array type
+     * @warning The iterator does not assert that the buffer type is the same as the given format. It only asserts
+     * (in debug) that the iterator does not iterate outside of the buffer bounds).
      * @note These functions lock the buffer
      * @{
      */
@@ -362,6 +446,28 @@ public:
     /// @}
     ///
 
+    /**
+     * @brief Return a pointer on a image pixel
+     * @param index offset of the pixel
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void* getPixelBuffer( IndexType index );
+
+    /**
+     * @brief Return a pointer on a image pixel
+     * @param index offset of the pixel
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void* getPixelBuffer( IndexType index ) const;
+
+    /**
+     * @brief Set pixel value represented as a void* buffer
+     * @param index offset of the pixel
+     * @param pixBuf pixel value represented as a void* buffer
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void setPixelBuffer( IndexType index, BufferType* pixBuf);
+
     /// Return the pixel value in a std::string
     FWDATA_API const std::string getPixelAsString(IndexType x,
                                                   IndexType y,
@@ -381,19 +487,19 @@ public:
     /**
      * @brief Image size type
      */
-    typedef ::fwData::Array::SizeType SizeType;
+    [[deprecated("it will be removed in sight 22.0, use Size")]] typedef ::fwData::Array::SizeType SizeType;
 
-    typedef size_t BufferIndexType;
+    [[deprecated("it will be removed in sight 22.0")]] typedef size_t BufferIndexType;
 
     /**
      * @brief Image spacing type
      */
-    typedef std::vector< double > SpacingType;
+    [[deprecated("it will be removed in sight 22.0, use Spacing")]] typedef std::vector< double > SpacingType;
 
     /**
      * @brief Image origin type
      */
-    typedef std::vector< double > OriginType;
+    [[deprecated("it will be removed in sight 22.0, use Origin")]] typedef std::vector< double > OriginType;
     /** @{
      * @brief get/set image spacing
      * @deprecated Use getSizeSpacing2()/setSpacing2(), it will be removed in sight 22.0
@@ -467,10 +573,6 @@ public:
     FWDATA_API ::fwData::Array::sptr getDataArray() const;
 
 private:
-
-    /// Get Pixel buffer
-    FWDATA_API void* getPixelBuffer( IndexType index );
-    FWDATA_API void* getPixelBuffer( IndexType index ) const;
 
     /**
      * @brief Protected setter for the array buffer.
@@ -619,37 +721,37 @@ inline void Image::setSize2(const Size& size)
 
 //------------------------------------------------------------------------------
 
-template< typename F >
-inline Image::Iterator<F> Image::begin()
+template< typename FORMAT >
+inline Image::Iterator<FORMAT> Image::begin()
 {
-    return Iterator<F>(this);
+    return Iterator<FORMAT>(this);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename F >
-inline Image::Iterator<F> Image::end()
+template< typename FORMAT >
+inline Image::Iterator<FORMAT> Image::end()
 {
-    auto itr = Iterator<F>(this);
-    itr += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/sizeof(F));
+    auto itr = Iterator<FORMAT>(this);
+    itr += static_cast< typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes()/sizeof(FORMAT));
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template< typename F >
-inline Image::ConstIterator<F> Image::begin() const
+template< typename FORMAT >
+inline Image::ConstIterator<FORMAT> Image::begin() const
 {
-    return ConstIterator<F>(this);
+    return ConstIterator<FORMAT>(this);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename F >
-inline Image::ConstIterator<F> Image::end() const
+template< typename FORMAT >
+inline Image::ConstIterator<FORMAT> Image::end() const
 {
-    auto itr = ConstIterator<F>(this);
-    itr += static_cast< typename Iterator<F>::difference_type>(this->getSizeInBytes()/sizeof(F));
+    auto itr = ConstIterator<FORMAT>(this);
+    itr += static_cast< typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes()/sizeof(FORMAT));
     return itr;
 }
 

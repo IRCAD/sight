@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ void SText::configuring()
     const ConfigType srvconfig = this->getConfigTree();
     const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
 
-    m_textString = srvconfig.get<std::string>("text", "");
+    m_textString = config.get<std::string>("text", "");
 
     m_fontSource = config.get("fontSource", m_fontSource);
     m_fontSize   = config.get<size_t>("fontSize", m_fontSize);

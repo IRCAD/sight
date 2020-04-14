@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, ::fwMedData::ImageSeries );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, ::fwMedData::ImageSeries )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -155,7 +155,6 @@ void SImageSeriesReader::info(std::ostream& _sstream )
 void initSeries(::fwMedData::Series::sptr series)
 {
     const std::string instanceUID        = ::fwTools::UUID::generateUUID();
-    const std::string unknown            = "unknown";
     const ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
     const std::string date               = ::fwTools::getDate(now);
     const std::string time               = ::fwTools::getTime(now);
@@ -171,19 +170,9 @@ void initSeries(::fwMedData::Series::sptr series)
         physicians.push_back(username);
     }
     series->setPerformingPhysiciansName(physicians);
-    series->getEquipment()->setInstitutionName(unknown);
-
-    series->getPatient()->setName(unknown);
-    series->getPatient()->setPatientId(unknown);
-    series->getPatient()->setBirthdate(unknown);
-    series->getPatient()->setSex(unknown);
-
     series->getStudy()->setInstanceUID(instanceUID);
     series->getStudy()->setDate(date);
     series->getStudy()->setTime(time);
-    series->getStudy()->setReferringPhysicianName(unknown);
-    series->getStudy()->setDescription(unknown);
-    series->getStudy()->setPatientAge(unknown);
 }
 
 //------------------------------------------------------------------------------

@@ -103,9 +103,9 @@ public:
     /// Destructor
     virtual ~PointIteratorBase();
     /// Copy constructor
-    PointIteratorBase(const PointIteratorBase& other) = default;
+    PointIteratorBase(const PointIteratorBase& other);
 
-    PointIteratorBase& operator=(const PointIteratorBase& other) = default;
+    PointIteratorBase& operator=(const PointIteratorBase& other);
 
     /// Comparison operators
     bool operator==(const PointIteratorBase& other) const;
@@ -127,8 +127,8 @@ public:
 
     difference_type operator+(const PointIteratorBase& other) const;
     difference_type operator-(const PointIteratorBase& other) const;
-    reference operator*();
-    pointer operator->();
+    reference operator*() const;
+    pointer operator->() const;
 
 protected:
 
@@ -136,7 +136,7 @@ protected:
     friend class PointIterator;
     friend class ConstPointIterator;
 
-    PointInfo m_pointInfo;
+    std::unique_ptr<PointInfo> m_pointInfo;
     std::vector< ::fwMemory::BufferObject::Lock > m_locks;
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};
@@ -268,8 +268,8 @@ public:
     /// Destructor
     virtual ~CellIteratorBase();
     /// Copy constructor
-    CellIteratorBase(const CellIteratorBase& other)            = default;
-    CellIteratorBase& operator=(const CellIteratorBase& other) = default;
+    CellIteratorBase(const CellIteratorBase& other);
+    CellIteratorBase& operator=(const CellIteratorBase& other);
 
     /// Comparison operators
     bool operator==(const CellIteratorBase& other) const;
@@ -304,7 +304,7 @@ protected:
     friend class CellIterator;
     friend class ConstCellIterator;
 
-    CellInfo m_cellInfo;
+    std::unique_ptr<CellInfo> m_cellInfo;
     std::vector< ::fwMemory::BufferObject::Lock > m_locks;
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};

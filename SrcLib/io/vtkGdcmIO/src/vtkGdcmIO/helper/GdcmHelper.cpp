@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-void DicomSearch::searchRecursivelyFiles(const std::filesystem::path& dirPath, std::vector<std::string>& dicomFiles)
+void GdcmHelper::searchRecursivelyFiles(const std::filesystem::path& dirPath, std::vector<std::string>& dicomFiles)
 {
     std::vector<std::string> vecStr;
     std::string strIgnoreFile = ".zip|.txt|.htm|.html|.xml|.exe|.gz|.dir|.gif|.jpeg|.jpg|dicomdir|.DS_Store";
@@ -64,7 +64,7 @@ void DicomSearch::searchRecursivelyFiles(const std::filesystem::path& dirPath, s
         {
             lowerFilename = filename = it->path().string();
             std::transform( lowerFilename.begin(), lowerFilename.end(), lowerFilename.begin(), tolower );
-            if(DicomSearch::compare( lowerFilename, &vecStr) )
+            if(GdcmHelper::compare( lowerFilename, &vecStr) )
             {
                 try
                 {
@@ -90,7 +90,7 @@ void DicomSearch::searchRecursivelyFiles(const std::filesystem::path& dirPath, s
 
 //------------------------------------------------------------------------------
 
-bool DicomSearch::compare(std::string& _strOrgin, std::vector<std::string>* vecStr)
+bool GdcmHelper::compare(std::string& _strOrgin, std::vector<std::string>* vecStr)
 {
     bool res = true;
     for (size_t i = 0; i < vecStr->size() && res; ++i)
@@ -98,6 +98,21 @@ bool DicomSearch::compare(std::string& _strOrgin, std::vector<std::string>* vecS
         res = !::boost::ends_with(_strOrgin, vecStr->at(i));
     }
     return res;
+}
+
+//------------------------------------------------------------------------------
+
+std::string GdcmHelper::getValue(::gdcm::Scanner& _scanner, const std::string& _dcmFile, const ::gdcm::Tag& _tag)
+{
+    const char* tagValue = _scanner.GetValue(_dcmFile.c_str(), _tag);
+    if(tagValue)
+    {
+        return std::string(tagValue);
+    }
+    else
+    {
+        return std::string("");
+    }
 }
 
 //------------------------------------------------------------------------------

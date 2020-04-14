@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,7 @@ void MedicalImage::getImageSpacing(double spacing[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::SpacingType& imSpacing = image->getSpacing();
+    const ::fwData::Image::Spacing& imSpacing = image->getSpacing2();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
@@ -64,7 +64,7 @@ void MedicalImage::getImageOrigin(double origin[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
-    std::copy(image->getOrigin().begin(), image->getOrigin().end(), origin);
+    std::copy(image->getOrigin2().begin(), image->getOrigin2().end(), origin);
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void MedicalImage::getImageDataSize(int size[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::SizeType& imSize = image->getSize();
+    const ::fwData::Image::Size& imSize = image->getSize2();
     std::copy(imSize.begin(), imSize.end(), size);
 }
 
@@ -84,7 +84,7 @@ void MedicalImage::getImageSize(double size[3]) const
     ::fwData::Image::sptr image = this->getImage();
     double spacing[3];
 
-    const ::fwData::Image::SizeType& imSize = image->getSize();
+    const ::fwData::Image::Size& imSize = image->getSize2();
     std::copy(imSize.begin(), imSize.end(), size);
     this->getImageSpacing(spacing);
 
@@ -151,10 +151,10 @@ void MedicalImage::getPlane( double points[4][3], int sliceNumber)
     for (unsigned char i = 0; i < 3; ++i )
     {
         extent[2*i]   = 0;
-        extent[2*i+1] = image->getSize()[i]*image->getSpacing()[i];
+        extent[2*i+1] = image->getSize2()[i]*image->getSpacing2()[i];
     }
-    extent[2*m_orientation]   = sliceNumber*image->getSpacing()[m_orientation];
-    extent[2*m_orientation+1] = sliceNumber*image->getSpacing()[m_orientation];
+    extent[2*m_orientation]   = sliceNumber*image->getSpacing2()[m_orientation];
+    extent[2*m_orientation+1] = sliceNumber*image->getSpacing2()[m_orientation];
 
     const int* extentIndex = indexSet[ m_orientation ];
     for (int p = 0; p < 4; ++p)

@@ -53,7 +53,7 @@ namespace uiTF
        <in key="currentTF" uid="..." optional="yes" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
-       <config useDefaultPath="yes">
+       <config useDefaultPath="true">
            <path>....</path>
            <path>....</path>
            <path>....</path>
@@ -72,12 +72,21 @@ namespace uiTF
  * @subsection Output Output
  * - \b tf [::fwData::TransferFunction]: selected transfer function.
  * @subsection Configuration Configuration
- * - \b useDefaultPath (optional, default=true): if true, load tf files from uiTF bundle.
+ * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF bundle.
  * - \b path (optional): path to a directory containing tf files.
+ * - \b deleteIcon (optional): path of the delete button icon.
+ * - \b newIcon (optional): path of the new button icon.
+ * - \b reinitializeIcon (optional): path of the reinitialize button icon.
+ * - \b renameIcon (optional): path of the rename button icon.
+ * - \b importIcon (optional): path of the import button icon.
+ * - \b exportIcon (optional): path of the export button icon.
+ * - \b iconWidth (optional, default="16"): icon width.
+ * - \b iconHeight (optional, default="16"): icon height.
  */
 class UITF_CLASS_API STransferFunction final : public QObject,
                                                public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
 
 public:
@@ -95,13 +104,13 @@ private:
     /// Configures the transfer function editor.
     virtual void configuring() override;
 
-    /// Starts the service, create Container, place in Buttons, ComboBox, Layout, and connect them.
+    /// Starts the service, creates container, place in buttons, comboBox, layout, and connect them.
     virtual void starting() override;
 
     /// Does nothing.
     virtual void updating() override;
 
-    /// Stops the service, disconnect Buttons and Combo Box, delete them and clean the container.
+    /// Stops the service, disconnect buttons and combo box, delete them and clean the container.
     virtual void stopping() override;
 
     /**
@@ -129,21 +138,21 @@ private:
     void initTransferFunctions();
 
     /**
-     * @brief Checks if the image contain the specified TF.
-     * @param _sName the name used to search the TF.
-     * @return True if the TF named _sName is founded.
+     * @brief Checks if the composite contain the specified TF.
+     * @param _name the name used to search the TF.
+     * @return True if the TF named _sName is found.
      */
-    bool hasTransferFunctionName(const std::string& _sName) const;
+    bool hasTransferFunctionName(const std::string& _name) const;
 
     /**
      * @brief Create a string that represents a TF name not already present in the composite.
      *
      * For example, if blabla is already used, it will return blabla_1.
      *
-     * @param _sBasename the name of the TF to create.
+     * @param _basename the name of the TF to create.
      * @return The new name of the TF.
      */
-    std::string createTransferFunctionName( const std::string& _sBasename ) const;
+    std::string createTransferFunctionName( const std::string& _basename) const;
 
     /// Updates the output transferFunction with the selected TF in the ComboBox.
     void updateTransferFunction();
@@ -203,6 +212,30 @@ private:
     /// Stores path were looking for TF presets.
     typedef std::vector< std::filesystem::path > PathContainerType;
     PathContainerType m_paths;
+
+    /// Defines the path of the delete button icon.
+    std::filesystem::path m_deleteIcon;
+
+    /// Defines the path of the new button icon.
+    std::filesystem::path m_newIcon;
+
+    /// Defines the path of the reinitialize button icon.
+    std::filesystem::path m_reinitializeIcon;
+
+    /// Defines the path of the rename button icon.
+    std::filesystem::path m_renameIcon;
+
+    /// Defines the path of the import button icon.
+    std::filesystem::path m_importIcon;
+
+    /// Defines the path of the export button icon.
+    std::filesystem::path m_exportIcon;
+
+    /// Defines icons width.
+    unsigned int m_iconWidth { 16 };
+
+    /// Defines icons height.
+    unsigned int m_iconHeight { 16 };
 };
 
 }

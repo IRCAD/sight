@@ -33,14 +33,14 @@ class Image;
 namespace iterator
 {
 
-/// Used to iterate through a RGB image
+/// Used to iterate through a RGB image of type 'uint8'
 struct RGB {
     std::uint8_t r;
     std::uint8_t g;
     std::uint8_t b;
 };
 
-/// Used to iterate through a RGBA image
+/// Used to iterate through a RGBA image of type 'uint8'
 struct RGBA {
     std::uint8_t r;
     std::uint8_t g;
@@ -48,14 +48,14 @@ struct RGBA {
     std::uint8_t a;
 };
 
-/// Used to iterate through a BGR image
+/// Used to iterate through a BGR image of type 'uint8'
 struct BGR {
     std::uint8_t b;
     std::uint8_t g;
     std::uint8_t r;
 };
 
-/// Used to iterate through a BGRA image
+/// Used to iterate through a BGRA image of type 'uint8'
 struct BGRA {
     std::uint8_t b;
     std::uint8_t g;
@@ -73,9 +73,9 @@ struct BGRA {
  * Example:
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    img->resize({1920, 1080}, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
-    ImageIteratorBase<RGBA> iter    = img->begin<RGBA>();
-    const ImageIteratorBase<RGBA> iterEnd = img->end<RGBA>();
+    img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+    auto iter    = img->begin<RGBA>();
+    const auto iterEnd = img->end<RGBA>();
 
     for (; iter != iterEnd; ++iter)
     {

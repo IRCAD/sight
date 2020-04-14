@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,9 +35,11 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwTools/TypeKeyTypeMapping.hpp>
+
 #include <boost/lexical_cast.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::scene2D::processing::SComputeHistogram);
+fwServicesRegisterMacro( ::fwServices::IController, ::scene2D::processing::SComputeHistogram)
 
 namespace scene2D
 {
@@ -96,8 +98,8 @@ void SComputeHistogram::updating()
         param.histogram = histogram;
         param.binsWidth = m_binsWidth;
 
-        ::fwTools::DynamicType type = image->getPixelType();
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ComputeHistogramFunctor >::invoke( type, param );
+        ::fwTools::Type type = image->getType();
+        ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ComputeHistogramFunctor >::invoke( type, param );
 
         auto sig = histogram->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
@@ -135,4 +137,3 @@ void SComputeHistogram::stopping()
 
 } // namespace processing
 } // namespace scene2D
-

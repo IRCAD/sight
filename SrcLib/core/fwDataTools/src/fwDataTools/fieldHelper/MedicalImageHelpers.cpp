@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,10 +69,6 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::csptr _pImg )
     {
         size_t nbDim = _pImg->getNumberOfDimensions();
         dataImageIsAllocated &= nbDim > 1;
-
-        // TMP: check if the image support the deprecated API (if old size, spacing and origin are supported)
-        SLM_ERROR_IF("The image '" + _pImg->getID() + "' does not support deprecated API",
-                     nbDim != _pImg->getSize().size())
 
         for ( size_t k = 0; dataImageIsAllocated && k < nbDim; ++k )
         {

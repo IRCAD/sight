@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __SCENE2D_PROCESSING_COMPUTEHISTOGRAMFUNCTOR_HXX__
-#define __SCENE2D_PROCESSING_COMPUTEHISTOGRAMFUNCTOR_HXX__
+#pragma once
 
 #include "scene2D/processing/SComputeHistogram.hpp"
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
 
 namespace scene2D
 {
@@ -55,7 +52,7 @@ struct ComputeHistogramFunctor
         ::fwData::Image::csptr image        = param.image;
         ::fwData::Histogram::sptr histogram = param.histogram;
 
-        ::fwDataTools::helper::ImageGetter imgHelper(image);
+        const auto dumpLock = image->lock();
 
         IMAGETYPE min = std::numeric_limits<IMAGETYPE>::max();
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
@@ -66,11 +63,8 @@ struct ComputeHistogramFunctor
         {
             histogram->initialize( min, max, param.binsWidth );
 
-            ::fwData::Array::sptr array = image->getDataArray();
-            ::fwDataTools::helper::Array arrayHelper(array);
-
-            IMAGETYPE* itr    = arrayHelper.begin<IMAGETYPE>();
-            IMAGETYPE* itrEnd = arrayHelper.end<IMAGETYPE>();
+            auto itr          = image->begin<IMAGETYPE>();
+            const auto itrEnd = image->end<IMAGETYPE>();
 
             for(; itr != itrEnd; ++itr)
             {
@@ -83,6 +77,3 @@ struct ComputeHistogramFunctor
 
 }   // namespace processing
 }   // namespace scene2D
-
-#endif  /* __SCENE2D_PROCESSING_COMPUTEHISTOGRAMFUNCTOR_HXX__ */
-

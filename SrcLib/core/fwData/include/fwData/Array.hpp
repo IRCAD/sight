@@ -39,10 +39,66 @@ namespace fwData
 /**
  * @brief   Provides a way to manage a view on a multidimentionnal array.
  *
- * If the array own his buffer, it will perform the allocation, reallocation,
- * destruction of the buffer. Else, this class will provide an array "view" of the
- * buffer
+ * If the array owns its buffer, it will perform the allocation, reallocation,
+ * destruction of the buffer. Else, this class will provide an array "view" of the buffer.
  *
+ * The array can be multi-dimensional, the number of dimensions is defined by the number of elements in the size vector
+ * (@see setSize()).
+ *
+ * @section Usage Usage
+ *
+ * @subsection Allocation Allocation
+ *
+ * The array buffer is allocated using the resize() method.
+ * You can get the allocated size using getSizeInBytes().
+ *
+ * @warning The allocated size can be different from the array size: it can happen if you called resize(..., false).
+ * It may be useful when you don't want to reallocate the image too often, but you need to be sure to allocate enough
+ * memory.
+ *
+ * @section Access Buffer access
+ *
+ * You can access buffer values using at<type>(const size_t& offset) or at<type>({x, y, z}) methods. These methods are
+ * slow and should not be used to parse the entire buffer (see iterators).
+ *
+ * @warning The array must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
+ * disk.
+ *
+ * @subsection Iterators Iterators
+ *
+ * To parse the buffer from beginning to end, the iterator can be used.
+ *
+ * The iteration depends on the given format. The format can be the buffer type ([u]int[8|16|32|64], double, float), but
+ * can also be a simple struct like:
+ *
+ * @code{.cpp}
+    struct RGBA {
+        std::uint8_t r;
+        std::uint8_t g;
+        std::uint8_t b;
+        std::uint8_t a;
+    };
+    @endcode
+ *
+ * This struct allows to parse the array as an RGBA buffer (RGBARGBARGBA....).
+ *
+ * To get an iterator on the array, use begin<FORMAT>() and end<FORMAT>() methods.
+ *
+ * @warning The iterator does not assert that the array type is the same as the given format. It only asserts (in debug)
+ * that the iterator does not iterate outside of the buffer bounds).
+ *
+ * Example :
+ * @code{.cpp}
+    ::fwData::Array::sptr array = ::fwData::Array::New();
+    array->resize({1920, 1080}, ::fwTools::Type::s_INT16);
+    auto iter          = array->begin<std::int16_t>();
+    const auto iterEnd = array->end<std::int16_t>();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        (*iter) = value;
+    }
+   @endcode
  */
 class FWDATA_CLASS_API Array : public ::fwData::Object
 {
@@ -64,10 +120,6 @@ public:
      * @brief Index type
      */
     typedef OffsetType IndexType;
-
-    /*
-     * public API
-     */
 
     /**
      * @brief Constructor
@@ -439,6 +491,36 @@ public:
     /**
      * @brief Returns the beginning/end iterators to the array buffer, cast to char*
      * @note These functions lock the buffer
+     *
+     * The iteration depends of the given format. The format can be the buffer type ([u]int[8|16|32|64], double, float),
+     * but
+     * can also be a simple struct like:
+     *
+     * @code{.cpp}
+        struct RGBA {
+            std::uint8_t r;
+            std::uint8_t g;
+            std::uint8_t b;
+            std::uint8_t a;
+        };
+        @endcode
+     *
+     * This struct allows to parse the array as an RGBA buffer (RGBARGBARGBA....).
+     *
+     * Example :
+     * @code{.cpp}
+        ::fwData::Array::sptr array = ::fwData::Array::New();
+        array->resize({1920, 1080}, ::fwTools::Type::s_INT16);
+        auto iter          = array->begin<std::int16_t>();
+        const auto iterEnd = array->end<std::int16_t>();
+
+        for (; iter != iterEnd; ++iter)
+        {
+     * iter = value;
+        }
+       @endcode
+     * @warning The iterator does not assert that the array type is the same as the given format. It only asserts (in
+     * debug) that the iterator does not iterate outside of the buffer bounds).
      * @{
      */
     Iterator<char> begin();

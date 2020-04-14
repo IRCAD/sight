@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,7 @@
 #include <fwItkIO/itk.hpp>
 
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkFlipImageFilter.h>
 
@@ -79,7 +78,7 @@ struct FlippingDimensionExtractor
     template<class PixelType>
     void operator()(Parameters& params)
     {
-        const ::fwData::Image::SizeType size = params.i_image->getSize();
+        const ::fwData::Image::Size size = params.i_image->getSize2();
         switch(size.size())
         {
             case 1:
@@ -118,8 +117,8 @@ void Flipper::flip(const ::fwData::Image::csptr& _inImage,
         params.i_flipAxes = _inFlipAxes;
         params.o_image    = _outImage;
 
-        const ::fwTools::DynamicType type = _inImage->getPixelType();
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, FlippingDimensionExtractor >::invoke(type, params);
+        const ::fwTools::Type type = _inImage->getType();
+        ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, FlippingDimensionExtractor >::invoke(type, params);
     }
     else
     {

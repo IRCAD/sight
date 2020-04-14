@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,9 +50,7 @@ enum class CompressionTypes
     RLE
 };
 
-/**
- * @brief Write an ImageSeries in DICOM format.
- */
+/// Writes an ImageSeries in DICOM format.
 class ImageSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ImageSeries >,
                           public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
 {
@@ -60,36 +58,49 @@ class ImageSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMe
 public:
 
     fwCoreClassMacro(ImageSeriesWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ImageSeries>,
-                     ::fwDataIO::writer::factory::New< ImageSeriesWriter >);
+                     ::fwDataIO::writer::factory::New< ImageSeriesWriter >)
+
     fwCoreAllowSharedFromThis()
 
-    /// Constructor. Does nothing
-    VTKGDCMIO_API ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    /// Creates the writer.
+    VTKGDCMIO_API ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key);
 
-    /// Write the image series in DICOM format.
+    /// Writes the image series in DICOM format.
     VTKGDCMIO_API void write() override;
 
-    /// Return an empty string
-    VTKGDCMIO_API std::string  extension() override;
+    /**
+     * @brief Gets the extension.
+     * @return An empty string.
+     */
+    VTKGDCMIO_API std::string extension() override;
 
-    /// @return internal job
+    /// Gets the internal job.
     VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
-    /// Get DICOM compression type (default RAW)
-    CompressionTypes getCompressionTypes() const
+    /**
+     * @brief Gets DICOM compression type (default RAW).
+     * @return The DICOM compression type.
+     */
+    inline CompressionTypes getCompressionTypes() const
     {
         return m_compressionTypes;
     }
 
-    /// Set DICOM compression type
-    void setCompressionTypes(CompressionTypes type)
+    /**
+     * @brief Sets DICOM compression type.
+     * @param _type the DICOM compression type.
+     */
+    inline void setCompressionTypes(CompressionTypes _type)
     {
-        m_compressionTypes = type;
+        m_compressionTypes = _type;
     }
+
 private:
 
-    ///Internal job
+    /// Contains the internal job.
     SPTR(::fwJobs::Observer) m_job;
+
+    /// Defines the DICOM compression type.
     CompressionTypes m_compressionTypes;
 };
 

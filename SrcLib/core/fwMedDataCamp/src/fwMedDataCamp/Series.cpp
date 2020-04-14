@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,17 +34,30 @@
 fwCampImplementDataMacro((fwMedData)(Series))
 {
     builder
-    .tag("object_version", "1")
+    .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
     .base< ::fwData::Object>()
     .property("patient", &::fwMedData::Series::m_patient)
     .property("study", &::fwMedData::Series::m_study)
     .property("equipment", &::fwMedData::Series::m_equipment)
-    .property("instance_uid", &::fwMedData::Series::m_instanceUID)
     .property("modality", &::fwMedData::Series::m_modality)
+    .property("instance_uid", &::fwMedData::Series::m_instanceUID)
+    .property("number", &::fwMedData::Series::m_number)
+    .property("laterality", &::fwMedData::Series::m_laterality)
     .property("date", &::fwMedData::Series::m_date)
     .property("time", &::fwMedData::Series::m_time)
     .property("performing_physicians_name", &::fwMedData::Series::m_performingPhysiciansName)
+    .property("protocolName", &::fwMedData::Series::m_protocolName)
     .property("description", &::fwMedData::Series::m_description)
+    .property("body_part_examined", &::fwMedData::Series::m_bodyPartExamined)
+    .property("patient_position", &::fwMedData::Series::m_patientPosition)
+    .property("anatomical_orientation_type", &::fwMedData::Series::m_anatomicalOrientationType)
+    .property("performded_procedure_step_id", &::fwMedData::Series::m_performdedProcedureStepID)
+    .property("performed_procedure_step_start_date", &::fwMedData::Series::m_performedProcedureStepStartDate)
+    .property("performed_procedure_step_start_time", &::fwMedData::Series::m_performedProcedureStepStartTime)
+    .property("performed_procedure_step_end_date", &::fwMedData::Series::m_performedProcedureStepEndDate)
+    .property("performed_procedure_step_end_time", &::fwMedData::Series::m_performedProcedureStepEndTime)
+    .property("performed_procedure_step_description", &::fwMedData::Series::m_performedProcedureStepDescription)
+    .property("performed_procedure_comments", &::fwMedData::Series::m_performedProcedureComments)
     ;
 }

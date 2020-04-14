@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,53 +28,54 @@
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
-fwCampAutoDeclareDataMacro((fwMedData)(Equipment), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(Equipment), FWMEDDATA_API)
 
 namespace fwMedData
 {
 
 /**
- * @brief Holds equipment information
+ * @brief Holds an equipment information.
  */
 class FWMEDDATA_CLASS_API Equipment : public ::fwData::Object
 {
 
 public:
-    fwCoreClassMacro(Equipment, ::fwData::Object, ::fwData::factory::New< Equipment >);
 
-    fwCampMakeFriendDataMacro((fwMedData)(Equipment));
+    fwCoreClassMacro(Equipment, ::fwData::Object, ::fwData::factory::New< Equipment >)
+
+    fwCampMakeFriendDataMacro((fwMedData)(Equipment))
 
     /**
-     * @brief Constructor
-     * @param key Private construction key
+     * @brief Creates the equipement.
+     * @param _key private construction key.
      */
-    FWMEDDATA_API Equipment(::fwData::Object::Key key);
+    FWMEDDATA_API Equipment(::fwData::Object::Key _key);
 
-    /// Destructor
+    /// Destroys the equipement.
     FWMEDDATA_API virtual ~Equipment();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object to copy into this one.
+     */
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
-    /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
-
     /**
-     * @name Getters / Setters
-     * @{ */
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
-    /**
-     * @brief Institution where the equipment that produced the composite instances is located (0008,0080)
-     * @{ */
+    /// Gets the institution where the equipment that produced the composite instances is located.
     const DicomValueType& getInstitutionName() const;
-    void setInstitutionName(const DicomValueType& val);
-    /**  @} */
 
-    /**  @} */
+    /// Sets the institution where the equipment that produced the composite instances is located.
+    void setInstitutionName(const DicomValueType& _val);
 
 protected:
 
-    /// Institution name
+    /// Defines the institution name.
     DicomValueType m_institutionName;
 };
 
@@ -87,11 +88,11 @@ inline const DicomValueType& Equipment::getInstitutionName() const
 
 //-----------------------------------------------------------------------------
 
-inline void Equipment::setInstitutionName(const DicomValueType& val)
+inline void Equipment::setInstitutionName(const DicomValueType& _val)
 {
-    m_institutionName = val;
+    m_institutionName = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-}   //end namespace fwMedData
+} // Namespace fwMedData.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 fwCampImplementDataMacro((fwMedData)(DicomSeries))
 {
     builder
-    .tag("object_version", "1")
+    .tag("object_version", "2")
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
     .property("number_of_instances", &::fwMedData::DicomSeries::m_numberOfInstances)

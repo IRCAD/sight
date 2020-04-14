@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,11 @@
  ***********************************************************************/
 
 #include "fwMath/MeshFunctions.hpp"
+
 #include "fwMath/VectorFunctions.hpp"
 
 #include <boost/unordered_map.hpp>
+
 #include <list>
 #include <map>
 #include <set>
@@ -35,7 +37,7 @@ namespace fwMath
 
 bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0,
                         fwVec3d _vert1, fwVec3d _vert2,
-                        double &_t, double &_u, double &_v)
+                        double& _t, double& _u, double& _v)
 {
     const double Epsilon = 0.000001;
 
@@ -84,9 +86,9 @@ bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0,
 
 //------------------------------------------------------------------------------
 
-bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex, const fwVec3d &_p)
+bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertexIndex, const fwVec3d& _p)
 {
-    const unsigned int X    = 0, Y = 1, Z = 2;
+    const unsigned int X = 0, Y = 1, Z = 2;
     const size_t ElementNbr = _vertexIndex.size();
     if ( ElementNbr == 0 )
     {
@@ -108,7 +110,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
         //on enleve les triangles s'ils sont situes au dessus du point
         OSLM_TRACE(
             "Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " <<
-            _p[Z] );
+                _p[Z] );
 
         if ( !(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z] ) ) //trianglePotentiallyWellPositionned
         {
@@ -139,12 +141,12 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 
                 fwVec3d orig = {_p[0], _p[1], _p[2]};
 
-                fwVec3d dir   = { 0.f, 0.f, 1.f};
+                fwVec3d dir = { 0.f, 0.f, 1.f};
                 fwVec3d vert0 = { P1[0], P1[1], P1[2]};
                 fwVec3d vert1 = { P2[0], P2[1], P2[2]};
                 fwVec3d vert2 = { P3[0], P3[1], P3[2]};
                 double t, u, v;
-                if ( intersect_triangle (orig, dir, vert0, vert1, vert2, t, u, v) )
+                if ( intersect_triangle(orig, dir, vert0, vert1, vert2, t, u, v) )
                 {
                     //on ne garde que les points situes en dessous du point _p selon l'axe (Oz)
                     if (t < 0.f)
@@ -162,24 +164,24 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 
 //-----------------------------------------------------------------------------
 
-bool isBorderlessSurface(const fwVertexIndex &_vertexIndex)
+bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 {
     typedef std::pair< int, int >  Edge; // always Edge.first < Edge.second !!
     typedef ::boost::unordered_map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
-    for(const fwVertexIndex::value_type &vertex :  _vertexIndex)
+    for(const fwVertexIndex::value_type& vertex :  _vertexIndex)
     {
         OSLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
-        ++edgesHistogram[std::make_pair(std::min(vertex[0],vertex[1]), std::max(vertex[0],vertex[1]) )];
-        ++edgesHistogram[std::make_pair(std::min(vertex[0],vertex[2]), std::max(vertex[0],vertex[2]) )];
-        ++edgesHistogram[std::make_pair(std::min(vertex[2],vertex[1]), std::max(vertex[2],vertex[1]) )];
+        ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[1]), std::max(vertex[0], vertex[1]) )];
+        ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[2]), std::max(vertex[0], vertex[2]) )];
+        ++edgesHistogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]) )];
     }
 
-    for(const EdgeHistogram::value_type &histo :  edgesHistogram)
+    for(const EdgeHistogram::value_type& histo :  edgesHistogram)
     {
-        if (histo.second<2)
+        if (histo.second < 2)
         {
             isBorderless = false;
             break;
@@ -192,8 +194,8 @@ bool isBorderlessSurface(const fwVertexIndex &_vertexIndex)
 //-----------------------------------------------------------------------------
 
 // container of connected component
-void findBorderEdges( const fwVertexIndex &_vertexIndex,
-                      std::vector< std::vector<  std::pair< int, int  > > > &contours)
+void findBorderEdges( const fwVertexIndex& _vertexIndex,
+                      std::vector< std::vector<  std::pair< int, int  > > >& contours)
 {
     typedef std::pair< int, int  >  Edge;
     typedef std::vector< Edge > Contour; // at Border
@@ -206,14 +208,14 @@ void findBorderEdges( const fwVertexIndex &_vertexIndex,
         int i1 = vertex[0];
         int i2 = vertex[1];
         int i3 = vertex[2];
-        edgesHistogram[std::make_pair(std::min(i1,i2), std::max(i1,i2) )]++;
-        edgesHistogram[std::make_pair(std::min(i1,i3), std::max(i1,i3) )]++;
-        edgesHistogram[std::make_pair(std::min(i3,i2), std::max(i3,i2) )]++;
+        edgesHistogram[std::make_pair(std::min(i1, i2), std::max(i1, i2) )]++;
+        edgesHistogram[std::make_pair(std::min(i1, i3), std::max(i1, i3) )]++;
+        edgesHistogram[std::make_pair(std::min(i3, i2), std::max(i3, i2) )]++;
     }
 
     for ( const std::map< Edge, int >::value_type& elt1 : edgesHistogram )
     {
-        if (elt1.second<2) // an orphan found
+        if (elt1.second < 2) // an orphan found
         {
             Contour contour;
             contour.reserve(1000);
@@ -252,7 +254,7 @@ void findBorderEdges( const fwVertexIndex &_vertexIndex,
 
 //-----------------------------------------------------------------------------
 
-bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
+bool closeSurface(  fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex )
 {
     typedef std::pair< int, int  >  Edge;
     typedef std::vector< Edge > Contour; // at Border
@@ -266,11 +268,11 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
     {
         size_t newVertexIndex = _vertex.size();
         // create gravity point & insert new triangle
-        std::vector< float > massCenter(3,0);
+        std::vector< float > massCenter(3, 0);
 
         for ( const Contour::value_type& edge : contour )
         {
-            for (int i = 0; i<3; ++i )
+            for (int i = 0; i < 3; ++i )
             {
                 massCenter[i] += _vertex[edge.first][i];
                 massCenter[i] += _vertex[edge.second][i];
@@ -282,7 +284,7 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
             triangleIndex[2] = newVertexIndex;
             _vertexIndex.push_back( triangleIndex ); // TEST
         }
-        for (int i = 0; i<3; ++i )
+        for (int i = 0; i < 3; ++i )
         {
             massCenter[i] /= contour.size()*2;
         }
@@ -293,7 +295,7 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
 
 //-----------------------------------------------------------------------------
 
-bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
+bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex )
 {
     fwVertexPosition newVertex;
     newVertex.reserve(  _vertex.size() );
@@ -332,5 +334,128 @@ bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexInde
     return orphanFound;
 }
 
+//-----------------------------------------------------------------------------
+
+fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& _B, const fwVec3d& _C)
+{
+
+    // From Christer Ericson Real-Time Collision Detection.
+
+    /*
+       In general, a point with barycentric coordinates (u, v, w) is inside (or on) the triangle(ABC) if and only if
+       0 ≤ u, v, w ≤ 1, or alternatively if and only if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1.
+
+       That barycentric coordinates actually parameterize the plane follows from P = uA + vB + wC really just being a
+       reformulation of _P = _A + v(_B − _A) + w(_C − _A), with v and w arbitrary, as
+
+       _P = _A + v(_B − _A) + w(_C − _A) = (1 − v − w)_A + v * _B + w * _C. [1].
+
+       In [1], the two independent direction vectors AB and AC form a coordinate system with origin _A,
+       allowing any point P in the plane to be parameterized in terms of v and w alone.
+
+       Clearly, barycentric  coordinates is a redundant representation in that the third component can be expressed in
+       terms of the first two. It is kept for reasons of symmetry.
+
+       To solve for the barycentric coordinates, the expression:
+       _P = _A + v(_B − _A) + w(_C − _A)
+
+       or equivalently:
+       v(_B − _A) + w(_C − _A) = _P − _A
+
+       can be written as:
+       v * v0 + w * v1 = v2
+
+       where:
+       v0 = B − A,
+       v1 = C − A,
+       and
+       v2 = P − A.
+
+       Now, a 2 × 2  system of linear equations can be formed by taking the dot product of both sides
+       with both v0 and v1:
+       (v v0 + w v1) · v0 = v2 dot·v0
+
+       and
+       (v v0 + w v1) · v1 = v2 dot·v1
+
+       Because the dot product is a linear operator, these expressions are equivalent to:
+       v (v0 dot v0) + w (v1 dot v0) = v2 dot v0
+
+       and
+       v (v0 dot v1) + w (v1 dot v1) = v2 dot v1.
+
+       This system can be solved using Cramer’s rule.
+     */
+
+    fwVec3d baryCoord;
+
+    const fwVec3d v0 = _B - _A; // AB Vector
+    const fwVec3d v1 = _C - _A; // AC Vector
+    const fwVec3d v2 = _P - _A; // AP Vector
+
+    // Precompute some dot products.
+    const double d00 = ::fwMath::dot(v0, v0);
+    const double d01 = ::fwMath::dot(v0, v1);
+    const double d11 = ::fwMath::dot(v1, v1);
+    const double d20 = ::fwMath::dot(v1, v0);
+    const double d21 = ::fwMath::dot(v2, v1);
+
+    const double div = ((d00 * d11) - (d01 * d01));
+
+    // Don't test the case in release to avoid performance issue.
+    SLM_ASSERT("Degenerate triangle case leads to zero division.", div != 0.);
+
+    // Inverse the denominator to speed up computation of v & w.
+    const double invdenom = 1. / div;
+
+    // Barycentric coordinates
+    const double v = ((d11 * d20) - (d01* d21)) * invdenom;
+    const double w = ((d00 * d21) - (d01 * d20)) * invdenom;
+    const double u = 1. - v - w; // deduce last coordinate from the two others.
+
+    baryCoord[0] = u;
+    baryCoord[1] = v;
+    baryCoord[2] = w;
+
+    return baryCoord;
+
+}
+
+//-----------------------------------------------------------------------------
+
+fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A, const fwVec3d& _B, const fwVec3d& _C)
+{
+    /*
+       General formula (if [u, v, w] is normalized).
+       x = (u * _A.x + v * _B.x + w * _C.x)
+       y = (u * _A.y + v * _B.y + w * _C.y)
+       z = (u * _A.z + v * _B.z + w * _C.z)
+     */
+
+    fwVec3d worldCoordinates;
+
+    // Use standard notation for clarity.
+    const double u = _baryCoord[0];
+    const double v = _baryCoord[1];
+    const double w = _baryCoord[2];
+
+    [[maybe_unused]] const double sum = u + v + w; // Only used in the following assertion.
+
+    // Don't test in release to avoid performance issue.
+    SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
+               , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+
+    const double x = (u * _A[0] + v * _B[0] + w * _C[0]);
+    const double y = (u * _A[1] + v * _B[1] + w * _C[1]);
+    const double z = (u * _A[2] + v * _B[2] + w * _C[2]);
+
+    worldCoordinates[0] = x;
+    worldCoordinates[1] = y;
+    worldCoordinates[2] = z;
+
+    return worldCoordinates;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwMath

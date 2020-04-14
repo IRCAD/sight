@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,35 +57,56 @@ void StudyTest::tearDown()
 
 void StudyTest::propertiesTest()
 {
-    const std::string instance_uid                            = "123456789";
-    const std::string date                                    = "20130214";
-    const std::string time                                    = "143328";
-    const std::string referring_physician_name                = "John Doe";
-    const std::string description                             = "description";
-    const std::string patient_age                             = "42";
+    const std::string instanceUID             = "123456789";
+    const std::string studyID                 = "2";
+    const std::string date                    = "20130214";
+    const std::string time                    = "143328";
+    const std::string referringPhysicianMame  = "John Doe";
+    const std::string consultingPhysicianMame = "John Doe 2";
+    const std::string description             = "description";
+    const std::string patientAge              = "42";
+    const std::string patientSize             = "175";
+    const std::string patientWeight           = "70";
+    const std::string patientBodyMassIndex    = "2";
+
     const ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
                                                                   { "instance_uid" },
+                                                                  { "study_id" },
                                                                   { "date" },
                                                                   { "time" },
                                                                   { "referring_physician_name" },
+                                                                  { "consulting_physician_name" },
                                                                   { "description" },
-                                                                  { "patient_age" } };
+                                                                  { "patient_age" },
+                                                                  { "patient_size" },
+                                                                  { "patient_weight" },
+                                                                  { "patient_body_mass_index" }};
 
     ::fwMedData::Study::sptr obj = ::fwMedData::Study::New();
-    obj->setInstanceUID(instance_uid);
+    obj->setInstanceUID(instanceUID);
+    obj->setStudyID(studyID);
     obj->setDate(date);
     obj->setTime(time);
-    obj->setReferringPhysicianName(referring_physician_name);
+    obj->setReferringPhysicianName(referringPhysicianMame);
+    obj->setConsultingPhysicianName(consultingPhysicianMame);
     obj->setDescription(description);
-    obj->setPatientAge(patient_age);
+    obj->setPatientAge(patientAge);
+    obj->setPatientSize(patientSize);
+    obj->setPatientWeight(patientWeight);
+    obj->setPatientBodyMassIndex(patientBodyMassIndex);
 
     ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@instance_uid", instance_uid);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@instance_uid", instanceUID);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@study_id", studyID);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@date", date);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@time", time);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@referring_physician_name", referring_physician_name);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@referring_physician_name", referringPhysicianMame);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@consulting_physician_name", consultingPhysicianMame);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@description", description);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_age", patient_age);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_age", patientAge);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_size", patientSize);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_weight", patientWeight);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_body_mass_index", patientBodyMassIndex);
 }
 
 //------------------------------------------------------------------------------

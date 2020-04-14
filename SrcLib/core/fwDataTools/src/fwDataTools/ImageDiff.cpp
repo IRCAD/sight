@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -150,11 +150,11 @@ void ImageDiff::addDiff(const ::fwData::Image::IndexType index, const ::fwData::
 
 void ImageDiff::applyDiff(const ::fwData::Image::sptr& img) const
 {
-    helper::Image imgHelper(img);
+    const auto dumpLock = img->lock();
 
     for(size_t i = 0; i < m_nbElts; ++i)
     {
-        applyDiffElt(imgHelper, i);
+        applyDiffElt(img, i);
     }
 }
 
@@ -162,11 +162,11 @@ void ImageDiff::applyDiff(const ::fwData::Image::sptr& img) const
 
 void ImageDiff::revertDiff(const ::fwData::Image::sptr& img) const
 {
-    helper::Image imgHelper(img);
+    const auto dumpLock = img->lock();
 
     for(size_t i = 0; i < m_nbElts; ++i)
     {
-        revertDiffElt(imgHelper, i);
+        revertDiffElt(img, i);
     }
 }
 
@@ -222,7 +222,7 @@ ImageDiff::ElementType ImageDiff::getElement(size_t index) const
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::applyDiffElt(helper::Image& img, size_t eltIndex) const
+void ImageDiff::applyDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const
 {
     std::uint8_t* eltPtr                   = m_buffer + eltIndex * m_eltSize;
     const ::fwData::Image::IndexType index = *reinterpret_cast< ::fwData::Image::IndexType* >(eltPtr);
@@ -231,12 +231,12 @@ void ImageDiff::applyDiffElt(helper::Image& img, size_t eltIndex) const
 
     ::fwData::Image::BufferType* newValue = reinterpret_cast< ::fwData::Image::BufferType* >(eltPtr + offset);
 
-    img.setPixelBuffer(index, newValue);
+    img->setPixelBuffer(index, newValue);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::revertDiffElt(helper::Image& img, size_t eltIndex) const
+void ImageDiff::revertDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const
 {
     std::uint8_t* eltPtr                   = m_buffer + eltIndex * m_eltSize;
     const ::fwData::Image::IndexType index = *reinterpret_cast< ::fwData::Image::IndexType* >(eltPtr);
@@ -245,7 +245,7 @@ void ImageDiff::revertDiffElt(helper::Image& img, size_t eltIndex) const
 
     ::fwData::Image::BufferType* oldValue = reinterpret_cast< ::fwData::Image::BufferType* >(eltPtr + offset);
 
-    img.setPixelBuffer(index, oldValue);
+    img->setPixelBuffer(index, oldValue);
 }
 
 } // namespace fwDataTools

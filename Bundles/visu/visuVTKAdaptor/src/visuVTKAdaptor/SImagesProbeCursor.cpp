@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,10 +25,10 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
@@ -52,7 +52,7 @@
 #include <vtkTextProperty.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesProbeCursor);
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesProbeCursor)
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_PROBE_EVENT  vtkCommand::LeftButtonReleaseEvent
@@ -134,6 +134,7 @@ void SImagesProbeCursor::updateView( double world[3] )
     ::fwData::Image::sptr firstImage = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, 0);
     if (firstImage)
     {
+        const ::fwData::mt::ObjectReadLock lock(firstImage);
         if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(firstImage))
         {
             m_helper.updateImageInfos(firstImage);
@@ -142,20 +143,19 @@ void SImagesProbeCursor::updateView( double world[3] )
             m_helper.worldToImageSliceIndex( world, index );
             OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] );
 
-            if (    world[0] < firstImage->getOrigin()[0] ||
-                    world[1] < firstImage->getOrigin()[1] ||
-                    world[2] < firstImage->getOrigin()[2] ||
+            if (    world[0] < firstImage->getOrigin2()[0] ||
+                    world[1] < firstImage->getOrigin2()[1] ||
+                    world[2] < firstImage->getOrigin2()[2] ||
                     index[0] < 0 || index[1] < 0 || index[2] < 0 ||
-                    static_cast<size_t>(index[0]) >= firstImage->getSize()[0] ||
-                    static_cast<size_t>(index[1]) >= firstImage->getSize()[1] ||
-                    static_cast<size_t>(index[2]) >= firstImage->getSize()[2]
+                    static_cast<size_t>(index[0]) >= firstImage->getSize2()[0] ||
+                    static_cast<size_t>(index[1]) >= firstImage->getSize2()[1] ||
+                    static_cast<size_t>(index[2]) >= firstImage->getSize2()[2]
                     )
             {
                 txt << "(---,---,---)" << std::endl;
             }
             else
             {
-                ::fwDataTools::helper::Image imageHelper(firstImage);
                 txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
 
                 // update polyData
@@ -178,27 +178,29 @@ void SImagesProbeCursor::updateView( double world[3] )
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
         if (image)
         {
+            const ::fwData::mt::ObjectReadLock lock(image);
+
             if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
             {
-                ::fwDataTools::helper::Image imageHelper(image);
+                const auto dumpLock = image->lock();
                 m_helper.updateImageInfos(image);
 
                 int index[3];
                 m_helper.worldToImageSliceIndex( world, index );
                 OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
 
-                if ( !( world[0] < image->getOrigin()[0] ||
-                        world[1] < image->getOrigin()[1] ||
-                        world[2] < image->getOrigin()[2]  ||
+                if ( !( world[0] < image->getOrigin2()[0] ||
+                        world[1] < image->getOrigin2()[1] ||
+                        world[2] < image->getOrigin2()[2]  ||
                         index[0] < 0 || index[1] < 0 || index[2] < 0 ||
-                        static_cast<size_t>(index[0]) >= image->getSize()[0] ||
-                        static_cast<size_t>(index[1]) >= image->getSize()[1] ||
-                        static_cast<size_t>(index[2]) >= image->getSize()[2])
+                        static_cast<size_t>(index[0]) >= image->getSize2()[0] ||
+                        static_cast<size_t>(index[1]) >= image->getSize2()[1] ||
+                        static_cast<size_t>(index[2]) >= image->getSize2()[2])
                      )
                 {
-                    std::string greyLevel = imageHelper.getPixelAsString(static_cast<size_t>(index[0]),
-                                                                         static_cast<size_t>(index[1]),
-                                                                         static_cast<size_t>(index[2]) );
+                    std::string greyLevel = image->getPixelAsString(static_cast<size_t>(index[0]),
+                                                                    static_cast<size_t>(index[1]),
+                                                                    static_cast<size_t>(index[2]) );
                     txt << m_imagesNames[i] << " : " << greyLevel << std::endl;
                 }
             }
