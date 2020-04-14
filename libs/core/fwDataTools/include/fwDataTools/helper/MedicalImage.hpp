@@ -23,9 +23,9 @@
 #pragma once
 
 #include "fwDataTools/config.hpp"
-#include "fwDataTools/helper/ImageGetter.hpp"
 
 #include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
 namespace fwDataTools

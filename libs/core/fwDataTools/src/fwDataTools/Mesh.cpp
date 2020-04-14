@@ -20,6 +20,7 @@
  *
  ***********************************************************************/
 
+#include "fwDataTools/helper/Mesh.hpp"
 #include "fwDataTools/Mesh.hpp"
 
 #include "fwDataTools/thread/RegionThreader.hpp"
