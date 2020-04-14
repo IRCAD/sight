@@ -32,7 +32,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwThread/ActiveWorkers.hpp>
 
 namespace fwDataTools
 {
@@ -45,7 +45,7 @@ namespace helper
 TransferFunction::TransferFunction(const std::function<void()>& _function) :
     m_updateTFPoints(_function)
 {
-    auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = ::fwThread::ActiveWorkers::getDefaultWorker();
     m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);
@@ -58,7 +58,7 @@ TransferFunction::TransferFunction(
     m_updateTFPoints(_functionPoints),
     m_updateTFWindowing(_functionWindow)
 {
-    auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = ::fwThread::ActiveWorkers::getDefaultWorker();
     m_slotUpdateTFPoints = ::fwCom::newSlot(&TransferFunction::updateTFPoints, this);
     m_slotUpdateTFPoints->setWorker(defaultWorker);
     m_slotUpdateTFWindowing = ::fwCom::newSlot(&TransferFunction::updateTFWindowing, this);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#include "fwServices/registry/ActiveWorkers.hpp"
+#include "fwThread/ActiveWorkers.hpp"
 
 #include "fwCore/util/LazyInstantiator.hpp"
 
-namespace fwServices
-{
-namespace registry
+namespace fwThread
 {
 
 //-----------------------------------------------------------------------------
@@ -72,15 +70,14 @@ ActiveWorkers::sptr ActiveWorkers::getDefault()
 
 void ActiveWorkers::setDefaultWorker(fwThread::Worker::sptr worker)
 {
-    ::fwServices::registry::ActiveWorkers::getDefault()->addWorker(
-        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, worker);
+    getDefault()->addWorker(s_DEFAULT_WORKER, worker);
 }
 
 //-----------------------------------------------------------------------------
 
 ::fwThread::Worker::sptr ActiveWorkers::getDefaultWorker()
 {
-    return ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER );
+    return ActiveWorkers::getDefault()->getWorker( s_DEFAULT_WORKER );
 }
 
 //-----------------------------------------------------------------------------
@@ -108,6 +105,4 @@ void ActiveWorkers::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
-} // namespace fwServices
-
+} // namespace fwThread
