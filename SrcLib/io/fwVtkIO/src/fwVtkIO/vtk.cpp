@@ -24,9 +24,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/ObjectLock.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
-
 #include <fwMath/MeshFunctions.hpp>
 
 #include <boost/cast.hpp>
