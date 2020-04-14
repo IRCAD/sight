@@ -112,6 +112,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     m_windowContainer = QWidget::createWindowContainer(m_qOgreWidget);
     layout->addWidget(m_windowContainer);
     m_windowContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
+    m_windowContainer->setMouseTracking(true);
 
     this->setFullscreen(_fullscreen, -1);
 

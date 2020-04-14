@@ -451,15 +451,12 @@ Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
 
 void Window::mouseMoveEvent(QMouseEvent* _e)
 {
-    if(_e->buttons())
-    {
-        const auto info = this->convertMouseEvent(_e, InteractionInfo::MOUSEMOVE);
-        m_lastMousePosition = QPoint(info.x, info.y);
+    const auto info = this->convertMouseEvent(_e, InteractionInfo::MOUSEMOVE);
+    m_lastMousePosition = QPoint(info.x, info.y);
 
-        Q_EMIT interacted(info);
+    Q_EMIT interacted(info);
 
-        this->requestRender();
-    }
+    this->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -484,6 +481,16 @@ void Window::wheelEvent(QWheelEvent* _e)
 void Window::mousePressEvent(QMouseEvent* _e)
 {
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONPRESS);
+    Q_EMIT interacted(info);
+
+    this->requestRender();
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::mouseDoubleClickEvent(QMouseEvent* _e)
+{
+    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONDOUBLEPRESS);
     Q_EMIT interacted(info);
 
     this->requestRender();

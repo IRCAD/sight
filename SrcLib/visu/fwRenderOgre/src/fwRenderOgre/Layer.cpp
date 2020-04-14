@@ -551,6 +551,14 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
                 });
             break;
         }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONDOUBLEPRESS:
+        {
+            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
+                {
+                    _i->buttonDoublePressEvent(info.button, info.modifiers, info.x, info.y);
+                });
+            break;
+        }
     }
 
     m_cancelFurtherInteraction = false;

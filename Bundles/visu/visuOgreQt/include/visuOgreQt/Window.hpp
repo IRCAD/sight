@@ -118,10 +118,13 @@ private:
     /// Manages wheel action.
     virtual void wheelEvent(QWheelEvent* _e) override;
 
-    /// Manages mouse clic.
+    /// Manages mouse click.
     virtual void mousePressEvent(QMouseEvent* _e) override;
 
-    /// Manages mouse clic on release.
+    /// Manages mouse double click.
+    virtual void mouseDoubleClickEvent(QMouseEvent* e ) override;
+
+    /// Manages mouse click on release.
     virtual void mouseReleaseEvent(QMouseEvent* _e) override;
 
     /// Manages when window visibility in the windowing system changes.
