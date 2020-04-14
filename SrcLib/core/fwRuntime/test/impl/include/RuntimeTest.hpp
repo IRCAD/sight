@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,36 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_UT_ECONFIGURATIONELEMENTTEST_HPP__
-#define __FWRUNTIME_UT_ECONFIGURATIONELEMENTTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwRuntime
 {
+namespace impl
+{
 namespace ut
 {
 
 /**
- * @brief   Test the creation of EConfigurationElement
+ * @brief   Test Runtime : read the bundles in CommonLib
  */
-class EConfigurationElementTest : public CPPUNIT_NS::TestFixture
+class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( EConfigurationElementTest );
-CPPUNIT_TEST( testConfiguration );
+CPPUNIT_TEST_SUITE( RuntimeTest );
+CPPUNIT_TEST( testRuntime );
 CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
+    RuntimeTest();
+
     // interface
     void setUp();
     void tearDown();
 
-    void testConfiguration();
+    void testRuntime();
 };
 
 } // namespace ut
-} // namespace fwTools
-
-#endif //__FWRUNTIME_UT_ECONFIGURATIONELEMENTTEST_HPP__
+} // namespace impl
+} // namespace fwRuntime

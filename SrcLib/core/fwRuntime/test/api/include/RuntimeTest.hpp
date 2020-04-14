@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_UT_RUNTIMETEST_HPP__
-#define __FWRUNTIME_UT_RUNTIMETEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -36,7 +35,6 @@ namespace ut
 class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( RuntimeTest );
-CPPUNIT_TEST( testRuntime );
 CPPUNIT_TEST( testOperations );
 CPPUNIT_TEST_SUITE_END();
 
@@ -47,11 +45,8 @@ public:
     void setUp();
     void tearDown();
 
-    void testRuntime();
     void testOperations();
 };
 
 } // namespace ut
 } // namespace fwTools
-
-#endif //__FWRUNTIME_UT_RUNTIMETEST_HPP__

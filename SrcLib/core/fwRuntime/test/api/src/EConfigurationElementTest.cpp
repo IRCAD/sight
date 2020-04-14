@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/EConfigurationElement.hpp>
-
 #include "EConfigurationElementTest.hpp"
+
+#include <fwRuntime/EConfigurationElement.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwRuntime::ut::EConfigurationElementTest );
@@ -32,15 +32,21 @@ namespace fwRuntime
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void EConfigurationElementTest::setUp()
 {
     // Set up context before running a test.
 }
 
+//------------------------------------------------------------------------------
+
 void EConfigurationElementTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void EConfigurationElementTest::testConfiguration()
 {

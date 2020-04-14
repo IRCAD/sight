@@ -44,7 +44,7 @@ RuntimeTest::RuntimeTest()
 {
     // Set up context before running a test.
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultBundles();
+    runtime->addDefaultModules();
 }
 
 //------------------------------------------------------------------------------
@@ -58,30 +58,6 @@ void RuntimeTest::setUp()
 void RuntimeTest::tearDown()
 {
     // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void RuntimeTest::testRuntime()
-{
-    ::fwRuntime::impl::Runtime& runtime = ::fwRuntime::impl::Runtime::get();
-
-    // Test bundle dataReg
-    CPPUNIT_ASSERT(runtime.findModule("dataReg"));
-    auto bundle = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("dataReg"));
-    bundle->setEnable(true);
-    CPPUNIT_ASSERT(bundle->isEnable());
-
-    // Test bundle servicesReg
-    CPPUNIT_ASSERT(runtime.findModule("servicesReg"));
-    auto bundle2 = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("servicesReg"));
-    bundle2->setEnable(true);
-    CPPUNIT_ASSERT(bundle2->isEnable());
-
-    // Test runtime extensions
-    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::ServiceFactory"));
-    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::ServiceConfig"));
-    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::AppConfig"));
 }
 
 //------------------------------------------------------------------------------
