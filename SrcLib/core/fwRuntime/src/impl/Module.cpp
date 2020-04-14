@@ -78,7 +78,7 @@ Module::Module( const std::filesystem::path& location,
     const auto itModule = strLocation.find(strRCPrefix.string());
     if(itModule != std::string::npos)
     {
-        strLocation.replace(itModule, strRCPrefix.string().length(), std::string(BUNDLE_RC_PREFIX));
+        strLocation.replace(itModule, strRCPrefix.string().length(), std::string(BUNDLE_LIB_PREFIX));
     }
 
     // This may fail is the module does not contain any library, so we ignore the returned error
