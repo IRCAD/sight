@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -104,9 +104,7 @@ void Mesh::generateQuadMesh(::fwData::Mesh::sptr mesh)
 
 void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t nbPointsByEdge, float edgeDim)
 {
-    ::fwDataTools::helper::Mesh::sptr meshHelper;
-    meshHelper = ::fwDataTools::helper::Mesh::New(mesh);
-
+    const auto dumpLock = mesh->lock();
     ::fwData::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
     ::fwData::Mesh::Id idx1, idx2, idx3, idx4;
     float step = edgeDim / nbPointsByEdge;
@@ -132,12 +130,12 @@ void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t 
             pt4[1] = edgeDim;
             pt4[2] = (z+1)*step;
 
-            idx1 = Mesh::addPoint(pt1, meshHelper, points);
-            idx2 = Mesh::addPoint(pt2, meshHelper, points);
-            idx3 = Mesh::addPoint(pt3, meshHelper, points);
-            idx4 = Mesh::addPoint(pt4, meshHelper, points);
+            idx1 = Mesh::addPoint(pt1, mesh, points);
+            idx2 = Mesh::addPoint(pt2, mesh, points);
+            idx3 = Mesh::addPoint(pt3, mesh, points);
+            idx4 = Mesh::addPoint(pt4, mesh, points);
 
-            meshHelper->insertNextCell(idx1, idx3, idx4, idx2);
+            mesh->pushCell(idx1, idx3, idx4, idx2);
         }
     }
 
@@ -162,12 +160,12 @@ void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t 
             pt4[1] = (y+1)*step;
             pt4[2] = (z+1)*step;
 
-            idx1 = Mesh::addPoint(pt1, meshHelper, points);
-            idx2 = Mesh::addPoint(pt2, meshHelper, points);
-            idx3 = Mesh::addPoint(pt3, meshHelper, points);
-            idx4 = Mesh::addPoint(pt4, meshHelper, points);
+            idx1 = Mesh::addPoint(pt1, mesh, points);
+            idx2 = Mesh::addPoint(pt2, mesh, points);
+            idx3 = Mesh::addPoint(pt3, mesh, points);
+            idx4 = Mesh::addPoint(pt4, mesh, points);
 
-            meshHelper->insertNextCell(idx1, idx3, idx4, idx2);
+            mesh->pushCell(idx1, idx3, idx4, idx2);
         }
     }
 }
@@ -176,8 +174,7 @@ void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t 
 
 void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t nbPointsByEdge, float edgeDim)
 {
-    ::fwDataTools::helper::Mesh::sptr meshHelper;
-    meshHelper = ::fwDataTools::helper::Mesh::New(mesh);
+    const auto dumpLock = mesh->lock();
 
     ::fwData::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
     ::fwData::Mesh::Id idx1, idx2, idx3, idx4;
@@ -204,13 +201,13 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
             pt4[1] = (y+1)*step;
             pt4[2] = 0;
 
-            idx1 = Mesh::addPoint(pt1, meshHelper, points);
-            idx2 = Mesh::addPoint(pt2, meshHelper, points);
-            idx3 = Mesh::addPoint(pt3, meshHelper, points);
-            idx4 = Mesh::addPoint(pt4, meshHelper, points);
+            idx1 = Mesh::addPoint(pt1, mesh, points);
+            idx2 = Mesh::addPoint(pt2, mesh, points);
+            idx3 = Mesh::addPoint(pt3, mesh, points);
+            idx4 = Mesh::addPoint(pt4, mesh, points);
 
-            meshHelper->insertNextCell(idx1, idx4, idx2);
-            meshHelper->insertNextCell(idx1, idx3, idx4);
+            mesh->pushCell(idx1, idx4, idx2);
+            mesh->pushCell(idx1, idx3, idx4);
         }
     }
 
@@ -235,21 +232,21 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
             pt4[1] = (y+1)*step;
             pt4[2] = (z+1)*step;
 
-            idx1 = Mesh::addPoint(pt1, meshHelper, points);
-            idx2 = Mesh::addPoint(pt2, meshHelper, points);
-            idx3 = Mesh::addPoint(pt3, meshHelper, points);
-            idx4 = Mesh::addPoint(pt4, meshHelper, points);
+            idx1 = Mesh::addPoint(pt1, mesh, points);
+            idx2 = Mesh::addPoint(pt2, mesh, points);
+            idx3 = Mesh::addPoint(pt3, mesh, points);
+            idx4 = Mesh::addPoint(pt4, mesh, points);
 
-            meshHelper->insertNextCell(idx2, idx4, idx3);
-            meshHelper->insertNextCell(idx1, idx2, idx3);
+            mesh->pushCell(idx2, idx4, idx3);
+            mesh->pushCell(idx1, idx2, idx3);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::addPoint(::fwData::Mesh::PointValueType* pt,
-                                  ::fwDataTools::helper::Mesh::sptr meshHelper,
+::fwData::Mesh::Id Mesh::addPoint(const ::fwData::Mesh::PointValueType* pt,
+                                  const ::fwData::Mesh::sptr& mesh,
                                   PointsMapType& points)
 {
     ::fwDataTools::Point myPoint(pt[0], pt[1], pt[2]);
@@ -259,7 +256,7 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
     {
         return it->second;
     }
-    ::fwData::Mesh::Id idx = meshHelper->insertNextPoint(pt[0], pt[1], pt[2]);
+    ::fwData::Mesh::Id idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
     points[myPoint]        = idx;
     return idx;
 }
