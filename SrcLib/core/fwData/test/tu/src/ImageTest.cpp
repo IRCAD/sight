@@ -25,9 +25,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Image.hpp>
-
 #include <fwTest/generator/Image.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
