@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
-#include <fwDataTools/helper/Mesh.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
@@ -474,8 +474,10 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         ::fwGdcmIO::helper::DicomDataTools::convertToPresentationType(material->getRepresentationMode()));
 
     // Finite Volume (0x0066,0x000E) - Type 1
-    ::fwDataTools::helper::Mesh helperMesh(reconstruction->getMesh());
-    surface->SetFiniteVolume(helperMesh.isClosed() ? (::gdcm::Surface::YES): (::gdcm::Surface::NO));
+    surface->SetFiniteVolume(::fwDataTools::Mesh::isClosed(reconstruction->getMesh()) ? (::gdcm::Surface::YES): (::gdcm
+                                                                                                                 ::
+                                                                                                                 Surface
+                                                                                                                 ::NO));
 
     // Manifold (0x0066,0x0010) - Type 1
     surface->SetManifold(::gdcm::Surface::NO);
