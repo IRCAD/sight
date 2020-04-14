@@ -281,11 +281,11 @@ void Plane::initializePlane()
         }
         else
         {
-            m_border->position(::Ogre::Vector3(-m_height/2.f, -m_width/2.f, 0));
-            m_border->position(::Ogre::Vector3(m_height/2.f, -m_width/2.f, 0));
-            m_border->position(::Ogre::Vector3(m_height/2.f, m_width/2.f, 0));
-            m_border->position(::Ogre::Vector3(-m_height/2.f, m_width/2.f, 0));
-            m_border->position(::Ogre::Vector3(-m_height/2.f, -m_width/2.f, 0));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(m_width/2.f, -m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(m_width/2.f, m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0));
         }
 
         m_border->end();
