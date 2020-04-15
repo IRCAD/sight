@@ -829,8 +829,9 @@ endmacro()
 
 macro(fwUse)
     foreach(PROJECT ${ARGV})
-        set(TARGET_TO_LINK ${PROJECT}_SHARED_LIB)
+        set(TARGET_TO_LINK ${PROJECT})
         if(${${PROJECT}_TYPE} MATCHES "LIBRARY")
+
             if("${${NAME}_TYPE}" MATCHES "TEST" AND ${NAME} MATCHES "Impl" AND ${NAME} MATCHES "${PROJECT}")
                 # If we have a implementation test, link with the object library to get access to non exported symbols
                 # For instance fwRuntimeImplTest will link with the object library target fwRuntime
@@ -844,6 +845,8 @@ macro(fwUse)
                 # For MSVC, we need to prevent import of symbols from the object library
                 string(TOUPPER ${PROJECT} PROJECT_NAME_UPCASE)
                 target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_EXPORTS)
+            else()
+                set(TARGET_TO_LINK ${PROJECT}_SHARED_LIB)
             endif()
         endif()
         target_link_libraries(${FWPROJECT_NAME} PUBLIC ${TARGET_TO_LINK})
