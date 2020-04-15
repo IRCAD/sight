@@ -274,7 +274,7 @@ Runtime::findModule( const std::string& identifier, const Version& version ) con
             break;
         }
     }
-    return std::move(resModule);
+    return resModule;
 }
 
 //------------------------------------------------------------------------------

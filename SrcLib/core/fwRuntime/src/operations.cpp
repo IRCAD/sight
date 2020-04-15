@@ -315,7 +315,7 @@ std::shared_ptr<Module> loadModule(const std::string& identifier, const Version&
         }
     }
 
-    return std::move(bundle);
+    return bundle;
 }
 
 //------------------------------------------------------------------------------
