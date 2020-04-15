@@ -80,7 +80,7 @@ public:
 
     fwCoreServiceMacro(SCamera, ::fwRenderOgre::IAdaptor)
 
-    /// Creates the adaptor and initialize slots..
+    /// Creates the adaptor and initialize slots.
     VISUOGREADAPTOR_API SCamera() noexcept;
 
     /// Does nothing.

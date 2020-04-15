@@ -97,19 +97,15 @@ void SMaterial::configuring()
     m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->getID());
     m_textureName          = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
     m_shadingMode          = config.get(s_SHADING_MODE_CONFIG, m_shadingMode);
-    if(config.count("representationMode"))
+    m_representationMode   = config.get<std::string>("representationMode", m_representationMode);
+
+    auto it = m_representationDict.find(m_representationMode);
+    if(it == m_representationDict.end())
     {
-        m_representationMode = config.get<std::string>("representationMode");
-
-        auto it = m_representationDict.find(m_representationMode);
-
-        if(it == m_representationDict.end())
-        {
-            SLM_ERROR("Value: " + m_representationMode + " is not valid for 'representationMode'."
-                      " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
-                      "'representationMode' is reset to default value (SURFACE). ");
-            m_representationMode = "SURFACE";
-        }
+        SLM_ERROR("Value: " + m_representationMode + " is not valid for 'representationMode'."
+                  " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
+                  "'representationMode' is reset to default value (SURFACE). ");
+        m_representationMode = "SURFACE";
     }
 }
 

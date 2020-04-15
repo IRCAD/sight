@@ -73,17 +73,16 @@ namespace visuOgreAdaptor
  * of the adaptor.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the mesh's layer
- * - \b materialTemplate (optional, string, default="") : name of the base Ogre material
+ * - \b layer (mandatory, string) : defines the mesh's layer.
+ * - \b materialTemplate (optional, string, default="") : name of the base Ogre material/
  * - \b materialName (optional, string, default="") : name of the Ogre material. This is necessary to bind a
- *::visuOgreAdaptor:SMesh or a
- * ::visuOgreAdaptor:SModelSeries to this material; simply specify the same Ogre material in its configuration.
+ * ::visuOgreAdaptor:SMesh or a ::visuOgreAdaptor:SModelSeries to this material;
+ * simply specify the same Ogre material in its configuration.
  * - \b textureName (optional, string, default="") : the Ogre texture name used the material. Use it if you want to
- * reference a texture
- * managed by an another ::visuOgreAdaptor::STexture.
- *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
- *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
- *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default= SURFACE):
+ * reference a texture managed by an another ::visuOgreAdaptor::STexture.
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode.
+ *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals.
+ *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *  representation mode as in ::fwData::Material.
  */
 class VISUOGREADAPTOR_CLASS_API SMaterial final : public ::fwRenderOgre::IAdaptor
@@ -214,13 +213,13 @@ private:
     /// Defines the configured shading mode.
     std::string m_shadingMode;
 
-    /// The configured representation mode.
-    std::string m_representationMode {"SURFACE"};
+    /// Defines the configured representation mode.
+    std::string m_representationMode { "SURFACE" };
 
-    /// Map to convert from string to fwData::Material::RepresentationType (ex: "SURFACE" = SURFACE).
+    /// Stores a map to convert from string to fwData::Material::RepresentationType (ex: "SURFACE" = SURFACE).
     std::map< std::string, ::fwData::Material::RepresentationType > m_representationDict;
 
-    /// Current number of lights in the scene.
+    /// Defines the current number of lights in the scene.
     int m_lightsNumber;
 
     /// Contains the Ogre material.

@@ -35,8 +35,6 @@
             <value>#2E3034</value>
         </object>
 
-        <object uid="snaphotImg" type="::fwData::Image" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="::gui::view::SDefaultView" >
@@ -104,7 +102,6 @@
             <registry>
                 <menuItem sid="fullscreenAct" start="yes" />
                 <menuItem sid="windowedAct" start="yes" />
-                <menuItem sid="takeSnapshot" start="yes" />
             </registry>
         </service>
 

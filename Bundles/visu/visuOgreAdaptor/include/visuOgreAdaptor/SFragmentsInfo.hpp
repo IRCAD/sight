@@ -130,10 +130,10 @@ private:
     /// Only used if width & height are found in <config /> of xml configuration
     int m_width { -1 };
 
-    /// Fixed height.
+    /// Defines the compositor target fixed height.
     int m_height { -1 };
 
-    /// Flip Ogre texture when converting to sight, can be useful when using VTK to save images.
+    /// Flips Ogre texture when converting to sight, can be useful when using VTK to save images.
     bool m_flipImage { false };
 
 };

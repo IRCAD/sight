@@ -115,7 +115,7 @@ public:
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SMesh() noexcept;
 
-    /// Destroys Ogre resources..
+    /// Destroys Ogre resources.
     VISUOGREADAPTOR_API virtual ~SMesh() noexcept;
 
     /**
