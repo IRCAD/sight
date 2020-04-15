@@ -1,0 +1,434 @@
+<plugin id="ExRGBDImageMasking" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="guiQt" />
+    <requirement id="material" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgre" />
+    <requirement id="visuOgreQt" />
+    <requirement id="arPatchMedicalData" />
+    <requirement id="patchMedicalData" />
+    <requirement id="ioActivity" />
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExRGBDImageMasking</id>
+        <config>
+            <!-- objects declarations -->
+            <!-- Frames timelines to manage video and depth streams  -->
+            <object uid="frameTLVideo" type="::arData::FrameTL" />
+            <object uid="frameTLDepth" type="::arData::FrameTL" />
+            <!-- Images extracted from the TL and used to perform image masking -->
+            <object uid="videoImage" type="::fwData::Image" />
+            <object uid="depthImage" type="::fwData::Image" />
+            <object uid="foregroundImage" type="::fwData::Image" />
+            <object uid="offscreenImage" type="::fwData::Image" />
+            <!-- Objects related to the camera managing the calibration data -->
+            <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
+            <object uid="RGBcamera" type="::arData::Camera" src="deferred" />
+            <object uid="Dcamera" type="::arData::Camera" src="deferred" />
+            <!-- Matrices to register to mesh in the right space regading the camera position -->
+            <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="inverseMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
+            <!-- Objectes related to the models loaded to perform AR -->
+            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+            <object uid="modelSeries" type="::fwMedData::ModelSeries" src="deferred" />
+            <object uid="mesh" type="::fwData::Mesh" src="deferred" />
+
+            <!-- declaration of the views, menu and toolbar -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>ExRGBDImageMasking</name>
+                        <icon>ExRGBDImageMasking-0.1/app.ico</icon>
+                    </frame>
+                    <menuBar/>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Load Transformation" shortcut="Ctrl+T" />
+                        <separator/>
+                        <menuItem name="Load Model" shortcut="Ctrl+M" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadTrf" start="yes" />
+                    <menuItem sid="actionLoadModel" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <editor />
+                        <menuItem name="start" icon="media-0.1/icons/start-cam.svg" shortcut="Space" />
+                        <menuItem name="pause" icon="media-0.1/icons/pause-cam.svg" shortcut="Space" style="check" />
+                        <menuItem name="stop" icon="media-0.1/icons/stop-cam.svg" />
+                        <separator/>
+                        <menuItem name="Learn background" icon="media-0.1/icons/icon-blend.png" />
+                        <separator/>
+                        <menuItem name="Manage organs color" icon="media-0.1/icons/ManageOrgan.png" style="check" />
+                        <spacer/>
+                        <menuItem name="Settings" icon="media-0.1/icons/Settings.svg" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="cameraSelector" start="yes" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="learnBackground" start="yes" />
+                    <menuItem sid="organManager" start="no" />
+                    <menuItem sid="showSettings" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                    </layout>
+                    <slideView align="top" size="50" opacity="1">
+                        <styleSheet>
+                            <![CDATA[
+                            #SlideBar{
+                                background-color: #dddddd;
+                                border: 0;
+                            }
+                            #SlideBar QGroupBox {
+                                background-color: #eeeeee;
+                                border-radius: 10px;
+                                margin-left: 10;
+                                margin-right: 10;
+                            }
+                            ]]>
+                        </styleSheet>
+                    </slideView>
+                </gui>
+                <registry>
+                    <view sid="genericScene" />
+                    <slideView sid="settings" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="settings" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="enableHoleFillingFilterParam" start="yes" />
+                    <view sid="maskerThresholdParam" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Parameter to enable/disable hole filling from the RealSense grabber -->
+            <service uid="enableHoleFillingFilterParam" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
+                </parameters>
+            </service>
+
+            <!-- Parameter to tune the threshold value from the SRGBDImageMasking service -->
+            <service uid="maskerThresholdParam" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Masking threshold" key="threshold" defaultValue="10" min="0" max="50" />
+                </parameters>
+            </service>
+
+            <!-- declaration of actions/slot callers -->
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
+            <service uid="loadTrf" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>transformReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="actionLoadModel" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>modelReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                    <slot>stopVideo/setExecutable</slot>
+                    <slot>startVideo/hide</slot>
+                    <slot>pauseVideo/show</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller">
+                <state executable="false" />
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                    <slot>stopVideo/setInexecutable</slot>
+                    <slot>startVideo/show</slot>
+                    <slot>pauseVideo/hide</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller">
+                <state visible="false" />
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="learnBackground" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>masker/setBackground</slot>
+                </slots>
+            </service>
+
+            <service uid="organManager" type="::gui::action::SConfigLauncher">
+                <appConfig id="ModelSeriesManagerWindow" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <parameter replace="ICON_PATH" by="ExRGBDImageMasking-0.1/app.ico" />
+            </service>
+
+            <service uid="showSettings" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>settings/setVisible</slot>
+                </slots>
+            </service>
+
+            <!-- Scene in which the video and the 3D will be rendered -->
+            <!-- *************************** Begin generic scene *************************** -->
+            <service uid="genericScene" type="::fwRenderOgre::SRender" >
+                <scene>
+                    <layer id="video" depth="1" />
+                    <layer id="default" depth="2" />
+                    <layer id="ar" depth="3" />
+                    <adaptor uid="videoAdpt" />
+                    <adaptor uid="videoARAdpt" />
+                    <adaptor uid="cameraAdpt" />
+                    <adaptor uid="meshAdpt" />
+                </scene>
+            </service>
+
+            <service uid="videoAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes">
+                <in key="image" uid="videoImage" />
+                <config layer="video" />
+            </service>
+
+            <service uid="videoARAdpt" type="::visuOgreAdaptor::SVideo" autoConnect="yes">
+                <in key="image" uid="foregroundImage" />
+                <config layer="ar" />
+            </service>
+
+            <service uid="cameraAdpt" type="::visuOgreAdaptor::SCamera">
+                <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
+                <in key="calibration" uid="RGBcamera" />
+                <config layer="default" />
+            </service>
+
+            <service uid="meshAdpt" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
+                <in key="model" uid="modelSeries" />
+                <config layer="default" transform="id" autoresetcamera="no" />
+            </service>
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- Scene in which skin mesh will be render and fill a binary image to perform image masking -->
+            <!-- *************************** Begin offscreen scene *************************** -->
+            <service uid="offscreenScene" type="::fwRenderOgre::SRender">
+                <inout key="offScreen" uid="offscreenImage" />
+                <scene width="1280" height="720">
+                    <background topColor="#000000" bottomColor="#000000" />
+                    <layer id="default" depth="1"/>
+                    <adaptor uid="cameraOffscreenAdpt" />
+                    <adaptor uid="meshOffscreenAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="cameraOffscreenAdpt" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
+                <in key="calibration" uid="RGBcamera" />
+                <config layer="default" />
+            </service>
+
+            <service uid="meshOffscreenAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="mesh" shadingMode="ambient" />
+                <config layer="default" transform="id" autoresetcamera="no" />
+            </service>
+            <!-- *************************** End offscreen scene *************************** -->
+
+            <service uid="cameraSelector" type="::videoQt::editor::SCamera">
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <createCameraNumber>2</createCameraNumber>
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- Matrix (trf format) reader -->
+            <!-- This matrix is used to staticaly register the model onto the video -->
+            <service uid="transformReader" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="registrationMatrix" />
+                <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
+                <selection mode="include" />
+                <addSelection service="::ioData::TransformationMatrix3DReaderService" />
+            </service>
+
+            <!-- Reader to open seriesDB data (.jsonz format) -->
+            <service uid="modelReader" type="::uiIO::editor::SIOSelector" config="FullSDBReaderIOSelectorConfig">
+                <inout key="data" uid="seriesDB" />
+            </service>
+
+            <!-- Extract the modelSeries from the loaded seriesDB -->
+            <service uid="extractModelSeries" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="seriesDB">
+                    <extract from="@values.0" />
+                </inout>
+                <out group="target">
+                    <key uid="modelSeries" />
+                </out>
+            </service>
+
+            <!-- Extract model called "Skin" in the model series -->
+            <service uid="extractSkin" type="::ctrlCamp::SExtractMeshByType" >
+               <inout key="source" uid="modelSeries">
+                   <extract type="Skin" />
+               </inout>
+               <out group="target">
+                   <key uid="mesh"/>
+               </out>
+            </service>
+
+            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::arData::CameraSeries -->
+            <service uid="extractor" type="::ctrlCamp::SExtractObj">
+                <!-- Source -->
+                <inout key="source" uid="RGBDCameraSeries" >
+                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries (Depth) -->
+                    <extract from="@cameras.1" /> <!-- Camp path of the second camera in cameraSeries (RGB) -->
+                    <extract from="@extrinsic_matrices.1" /> <!-- Camp path of the extrincis matrix in cameraSeries going from Depth to RGB coordinate system -->
+                </inout>
+                <!-- Destination -->
+                <out group="target">
+                    <key uid="Dcamera" />
+                    <key uid="RGBcamera" />
+                    <key uid="extrinsic" />
+                </out>
+            </service>
+
+            <!-- Use the extrinsic matrix to get back in the RGB space -->
+            <service uid="concatenate" type="::maths::SConcatenateMatrices" >
+                <in group="matrix">
+                    <key uid="registrationMatrix" autoConnect="yes" inverse="true" />
+                    <key uid="extrinsic" autoConnect="yes" inverse="true" />
+                </in>
+                <inout key="output" uid="inverseMatrix" />
+            </service>
+
+            <!-- To get frames from the RealSense camera -->
+            <service uid="frameGrabber" type="::videoRealSense::SScan" worker="grabber">
+                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+                <inout key="depthTL" uid="frameTLDepth" />
+                <inout key="frameTL" uid="frameTLVideo" />
+                <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" preset="Hand" alignTo="Color" />
+            </service>
+
+            <!-- To synchronize matrix, frame and detection -->
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+                <in group="frameTL">
+                    <key uid="frameTLVideo" />
+                    <key uid="frameTLDepth" />
+                </in>
+                <inout group="image">
+                    <key uid="videoImage" />
+                    <key uid="depthImage" />
+                </inout>
+            </service>
+
+            <!-- To extract the foreground image to display on top of meshes -->
+            <service uid="masker" type="::depthSegmentation::SDepthImageMasking" worker="masker">
+                <in key="maskImage" uid="offscreenImage" />
+                <in key="videoImage" uid="videoImage" />
+                <in key="depthImage" uid="depthImage" autoConnect="yes" />
+                <inout key="foregroundImage" uid="foregroundImage" />
+            </service>
+
+            <!-- signal/slot connection -->
+            <connect>
+                <signal>seriesDB/modified</signal>
+                <signal>seriesDB/addedSeries</signal>
+                <slot>extractModelSeries/update</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraSeries/addedCamera</signal>
+                <slot>extractor/update</slot>
+            </connect>
+
+            <connect>
+                 <signal>enableHoleFillingFilterParam/boolChanged</signal>
+                 <slot>frameGrabber/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                 <signal>maskerThresholdParam/intChanged</signal>
+                 <slot>masker/setThreshold</slot>
+            </connect>
+
+            <!-- Start services -->
+            <start uid="mainFrame" />
+            <start uid="organManager" />
+            <start uid="synchronizer" />
+            <start uid="frameGrabber" />
+            <start uid="extractor" />
+            <start uid="transformReader" />
+            <start uid="masker" />
+            <start uid="modelReader" />
+            <start uid="extractModelSeries" />
+            <start uid="extractSkin" />
+            <!-- Ogre scene 'genericScene' -->
+            <start uid="genericScene" />
+            <start uid="videoAdpt" />
+            <start uid="videoARAdpt" />
+            <start uid="cameraAdpt" />
+            <start uid="meshAdpt" />
+            <!-- Ogre scene 'offscreen' -->
+            <start uid="offscreenScene" />
+            <start uid="meshOffscreenAdaptor" />
+            <start uid="cameraOffscreenAdpt" />
+
+            <!-- Deffered start -->
+            <start uid="concatenate" />
+
+            <!-- Update -->
+            <update uid="extractSkin" />
+            <update uid="extractor" />
+            <update uid="concatenate" />
+            <update uid="enableHoleFillingFilterParam" />
+            <update uid="meshAdpt" />
+
+        </config>
+    </extension>
+</plugin>

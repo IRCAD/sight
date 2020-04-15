@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ class FWDATATOOLS_CLASS_API MedicalImage
 
 public:
 
-    fwCoreClassMacro(MedicalImage);
+    fwCoreClassMacro(MedicalImage)
 
     /// Image orientation
     typedef enum
@@ -201,7 +201,7 @@ void MedicalImage::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
     ::fwData::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
+    const ::fwData::Image::Spacing imSpacing = image->getSpacing2();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
@@ -212,7 +212,7 @@ void MedicalImage::getImageDataSize(INT_INDEX size)
 {
     ::fwData::Image::sptr image = this->getImage();
 
-    const ::fwData::Image::SizeType imSize = image->getSize();
+    const ::fwData::Image::Size imSize = image->getSize2();
     std::copy(imSize.begin(), imSize.end(), size);
 }
 

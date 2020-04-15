@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,7 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataTools/Mesh.hpp>
 
@@ -36,7 +37,7 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::vtkSimpleMesh::SSimpleMeshDeformation, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwServices::IController, ::vtkSimpleMesh::SSimpleMeshDeformation, ::fwData::Mesh )
 
 namespace vtkSimpleMesh
 {
@@ -108,7 +109,7 @@ void SSimpleMeshDeformation::updating()
         lock.upgrade();
         m_hiRestimer.reset();
         m_hiRestimer.start();
-        copyMesh(m_transformMesh, mesh);
+        this->copyMesh(m_transformMesh, mesh);
         m_hiRestimer.stop();
         OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
         lock.downgrade();
@@ -155,17 +156,36 @@ void SSimpleMeshDeformation::stopDeformation()
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr& src, const ::fwData::Mesh::sptr& dest ) const
+void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::csptr& src, const ::fwData::Mesh::sptr& dest ) const
 {
-    dest->setPointsArray(::fwData::Object::copy( src->getPointsArray() ));
-    dest->setPointNormalsArray(::fwData::Object::copy( src->getPointNormalsArray() ));
-    dest->setPointColorsArray(::fwData::Object::copy( src->getPointColorsArray() ));
+    const auto srcDumpLock  = src->lock();
+    const auto destDumpLock = dest->lock();
+
+    auto srcItr       = src->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto srcEnd = src->end< ::fwData::iterator::ConstPointIterator >();
+    auto destItr      = dest->begin< ::fwData::iterator::PointIterator >();
+
+    for (; srcItr != srcEnd; ++srcItr, ++destItr)
+    {
+        destItr->point->x = srcItr->point->x;
+        destItr->point->y = srcItr->point->y;
+        destItr->point->z = srcItr->point->z;
+
+        destItr->normal->nx = srcItr->normal->nx;
+        destItr->normal->ny = srcItr->normal->ny;
+        destItr->normal->nz = srcItr->normal->nz;
+
+        destItr->rgba->r = srcItr->rgba->r;
+        destItr->rgba->g = srcItr->rgba->g;
+        destItr->rgba->b = srcItr->rgba->b;
+        destItr->rgba->a = srcItr->rgba->a;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SSimpleMeshDeformation::computeDeformation (
-    const ::fwData::Mesh::sptr& refMesh,
+    const ::fwData::Mesh::csptr& refMesh,
     const ::fwData::Mesh::sptr& transformMesh,
     float deformationPercent )
 {
@@ -174,21 +194,19 @@ void SSimpleMeshDeformation::computeDeformation (
     const float maxDeformation = 15/100.0f;
     const float center         = 2/3.0f;
 
-    ::fwDataTools::helper::Mesh meshHelper(refMesh);
-    ::fwDataTools::helper::Mesh transformMeshHelper(transformMesh);
+    const auto refDumpLock       = refMesh->lock();
+    const auto transformDumpLock = transformMesh->lock();
 
-    ::fwData::Mesh::PointsMultiArrayType points              = meshHelper.getPoints();
-    ::fwData::Mesh::PointsMultiArrayType pointsTransform     = transformMeshHelper.getPoints();
-    ::fwData::Mesh::PointColorsMultiArrayType colorTransform = transformMeshHelper.getPointColors();
-
-    size_t nbPts = refMesh->getNumberOfPoints();
+    auto refItr       = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto refEnd = refMesh->end< ::fwData::iterator::ConstPointIterator >();
+    auto transformItr = transformMesh->begin< ::fwData::iterator::PointIterator >();
 
     // Compute limits
-    float ymin = points[0][1];
-    float ymax = points[0][1];
-    for(size_t i = 0; i != nbPts; ++i)
+    float ymin = refItr->point->y;
+    float ymax = ymin;
+    for (; refItr != refEnd; ++refItr)
     {
-        const float val = points[i][1];
+        const float val = refItr->point->y;
         if ( val < ymin )
         {
             ymin = val;
@@ -200,27 +218,31 @@ void SSimpleMeshDeformation::computeDeformation (
     }
 
     // Compute deformation
-    float sizeRef       = ymax-ymin;
-    float yref          = sizeRef * center + ymin;
-    float strafe        = maxDeformation * sizeRef;
-    float currentStrafe = deformationPercent * strafe;
+    const float sizeRef       = ymax-ymin;
+    const float yref          = sizeRef * center + ymin;
+    const float strafe        = maxDeformation * sizeRef;
+    const float currentStrafe = deformationPercent * strafe;
 
-    for(size_t i = 0; i < nbPts; ++i )
+    refItr = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
+
+    for (; refItr != refEnd; ++refItr, ++transformItr)
     {
-        float y = points[i][1];
+        const float y = refItr->point->y;
         if( y < yref )
         {
             float val = ( yref - y ) / ( yref - ymin ) * currentStrafe;
-            pointsTransform[i][1] = y - val;
-            colorTransform[i][0]  = 255;
-            colorTransform[i][1]  = static_cast<fwData::Mesh::ColorValueType>(255 - 255 * ( val / strafe ));
-            colorTransform[i][2]  = static_cast<fwData::Mesh::ColorValueType>(255 - 255 * ( val / strafe ));
+            transformItr->point->y = y - val;
+            transformItr->rgba->r  = 255;
+            transformItr->rgba->g  = static_cast<fwData::Mesh::ColorValueType>(255 - 255 * ( val / strafe ));
+            transformItr->rgba->b  = static_cast<fwData::Mesh::ColorValueType>(255 - 255 * ( val / strafe ));
+            transformItr->rgba->a  = 255;
         }
         else
         {
-            colorTransform[i][0] = 255;
-            colorTransform[i][1] = 255;
-            colorTransform[i][2] = 255;
+            transformItr->rgba->r = 255;
+            transformItr->rgba->g = 255;
+            transformItr->rgba->b = 255;
+            transformItr->rgba->a = 255;
         }
     }
 
@@ -230,7 +252,7 @@ void SSimpleMeshDeformation::computeDeformation (
 //-----------------------------------------------------------------------------
 
 void SSimpleMeshDeformation::computeDeformation(
-    const ::fwData::Mesh::sptr& refMesh,
+    const ::fwData::Mesh::csptr& refMesh,
     const ::fwData::Mesh::sptr& transformMesh )
 {
     const int step = 5;
@@ -258,12 +280,15 @@ void SSimpleMeshDeformation::initMeshBackup()
         m_currentDeformation = 0;
 
         auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
-        ::fwData::mt::ObjectReadToWriteLock lock(mesh);
+        ::fwData::mt::ObjectWriteLock lock(mesh);
 
-        lock.upgrade();
         ::fwDataTools::Mesh::generatePointNormals(mesh);
-        mesh->allocatePointColors( ::fwData::Mesh::RGB );
-        lock.downgrade();
+        if (!mesh->hasPointColors())
+        {
+            mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(), mesh->getCellDataSize(),
+                         ::fwData::Mesh::Attributes::POINT_COLORS);
+            ::fwDataTools::Mesh::colorizeMeshPoints(mesh, 255, 255, 255);
+        }
 
         m_mesh = ::fwData::Object::copy( mesh );
 

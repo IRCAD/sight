@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -464,16 +464,14 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
         ::Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
 
         const ::Ogre::Camera* const cam = layer->getDefaultCamera();
+        const auto* const vp            = cam->getViewport();
 
-        const ::Ogre::Real width  = static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth());
-        const ::Ogre::Real height = static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight());
+        const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+        const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
 
-        const ::Ogre::Ray ray = cam->getCameraToViewportRay(
-            static_cast< ::Ogre::Real >(_x)/width,
-            static_cast< ::Ogre::Real >(_y)/height);
+        const ::Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
 
         bool found = false;
-
         ::Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_distanceQueryFlag);
         raySceneQuery->setSortByDistance(false);
         if (raySceneQuery->execute().size() != 0)
@@ -555,11 +553,14 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
         else
         {
             const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
-            const ::Ogre::Camera* const cam         = layer->getDefaultCamera();
-            const ::Ogre::Ray ray                   = cam->getCameraToViewportRay(
-                static_cast< ::Ogre::Real >(_x) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth()),
-                static_cast< ::Ogre::Real >(_y) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight()));
 
+            const ::Ogre::Camera* const cam = layer->getDefaultCamera();
+            const auto* const vp            = cam->getViewport();
+
+            const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+            const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
+
+            const ::Ogre::Ray ray           = cam->getCameraToViewportRay(vpX, vpY);
             const ::Ogre::Vector3 direction = this->getCamDirection(cam);
 
             ::Ogre::Vector3 position;

@@ -275,40 +275,48 @@ void SNegato2DCamera::resetCamera()
     const float vpHeight = static_cast<float>(viewport->getActualHeight());
     camera->setAspectRatio(vpWidth / vpHeight);
 
-    const auto worldBoundingBox = layer->computeWorldBoundingBox();
+    // HACK: Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
+    camera->setNearClipDistance(1e-3f);
 
+    camNode->setPosition(::Ogre::Vector3::ZERO);
+    camNode->resetOrientation();
+
+    const ::fwData::mt::ObjectReadLock imageLock(image);
+    const auto origin  = image->getOrigin2();
+    const auto size    = image->getSize2();
+    const auto spacing = image->getSpacing2();
+
+    switch(m_currentNegatoOrientation)
+    {
+        case Orientation::X_AXIS:
+            camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
+            camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
+            camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
+            break;
+        case Orientation::Y_AXIS:
+            camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
+            camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
+            break;
+        case Orientation::Z_AXIS:
+            camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
+            camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
+            camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[1]) * spacing[1]));
+            break;
+    }
+
+    const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
+    ::Ogre::Vector3 camPos( static_cast< ::Ogre::Real >(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
+                            static_cast< ::Ogre::Real >(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
+                            static_cast< ::Ogre::Real >(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5));
+
+    camPos[orientation] =
+        static_cast< ::Ogre::Real >(origin[orientation] - static_cast<double>(size[orientation]) *
+                                    spacing[orientation]);
+    camNode->setPosition(camPos);
+
+    const auto worldBoundingBox = layer->computeWorldBoundingBox();
     if(worldBoundingBox.isFinite())
     {
-        const auto worldSize = worldBoundingBox.getSize();
-
-        camNode->setPosition(::Ogre::Vector3::ZERO);
-        camNode->resetOrientation();
-        switch(m_currentNegatoOrientation)
-        {
-            case Orientation::X_AXIS:
-                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
-                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
-                camera->setOrthoWindowHeight(worldSize.z);
-                break;
-            case Orientation::Y_AXIS:
-                camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
-                camera->setOrthoWindowHeight(worldSize.z);
-                break;
-            case Orientation::Z_AXIS:
-                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
-                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
-                camera->setOrthoWindowHeight(worldSize.y);
-                break;
-        }
-
-        const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
-        auto camPos              = worldBoundingBox.getCenter();
-
-        // HACK: Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
-        camera->setNearClipDistance(1e-3f);
-        camPos[orientation] = worldBoundingBox.getMinimum()[orientation] - 1.f;
-
-        camNode->setPosition(camPos);
         layer->resetCameraClippingRange(worldBoundingBox);
     }
 

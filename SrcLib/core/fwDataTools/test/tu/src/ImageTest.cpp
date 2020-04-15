@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,43 +62,36 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
     ss
         << "Test failed with types : img : " << imageTypeName
         << ", roi : " << roiTypeName;
-    std::string message = ss.str();
-    ::fwTools::Type imageType(imageTypeName);
-    ::fwTools::Type roiType(roiTypeName);
+    const std::string message = ss.str();
+    const ::fwTools::Type imageType(imageTypeName);
+    const ::fwTools::Type roiType(roiTypeName);
     ::fwData::Image::sptr imageRef;
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwData::Image::sptr roi   = ::fwData::Image::New();
 
+    // generate a random image
     ::fwTest::generator::Image::generateRandomImage(image, imageType);
-    ::fwData::Image::SizeType size       = image->getSize();
-    ::fwData::Image::SpacingType spacing = image->getSpacing();
-    ::fwData::Image::OriginType origin   = image->getOrigin();
-    ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType);
+    const ::fwData::Image::Size size       = image->getSize2();
+    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const ::fwData::Image::Origin origin   = image->getOrigin2();
+    ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType,
+                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
 
     imageRef = ::fwData::Object::copy(image);
 
-    ::fwData::Array::sptr imgData;
-    ::fwData::Array::sptr roiData;
-    imgData = image->getDataArray();
-    roiData = roi->getDataArray();
+    // fill roi with random values
+    ::fwTest::generator::Image::randomizeImage(roi);
 
-    ::fwDataTools::helper::Array roiDataHelper(roiData);
+    const auto dumpLock = roi->lock();
+    auto begin          = roi->begin();
+    const auto end      = roi->end();
+    const size_t part   = (end - begin)/3;
 
-    CPPUNIT_ASSERT(imgData);
-    CPPUNIT_ASSERT(imgData->getNumberOfElements());
-
-    CPPUNIT_ASSERT(roiData);
-    CPPUNIT_ASSERT(roiData->getNumberOfElements());
-
-    ::fwTest::generator::Image::randomizeArray(roi->getDataArray());
-
-    char* begin = roiDataHelper.begin();
-    char* end   = roiDataHelper.end();
-    size_t part = (end - begin)/3;
-
+    // keep random values in 1/3 of the image (else fill with 0)
     std::fill(begin, begin + part, 0);
     std::fill(end - part, end, 0);
 
+    // apply roi and check
     ::fwDataTools::Image::applyRoi(image, roi);
     CPPUNIT_ASSERT_MESSAGE( message, ::fwDataTools::Image::isRoiApplyed(imageRef, roi, image));
 }

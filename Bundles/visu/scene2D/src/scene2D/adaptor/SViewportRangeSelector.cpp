@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/data/Viewport.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
@@ -32,14 +33,18 @@
 
 #include <QGraphicsRectItem>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SViewportRangeSelector);
-
 namespace scene2D
 {
 namespace adaptor
 {
 
 static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT = "viewport";
+
+static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
+static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
+static const std::string s_COLOR_CONFIG         = "color";
+
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SViewportRangeSelector)
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -68,15 +73,22 @@ void SViewportRangeSelector::configuring()
     this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-    if (config.count("initialWidth"))
-    {
-        m_initialWidth = config.get<float>("initialWidth");
-    }
 
-    if (config.count("initialPos"))
-    {
-        m_initialX = config.get<float>("initialPos");
-    }
+    m_initialWidth = config.get<float>(s_INITIAL_WIDTH_CONFIG, m_initialWidth);
+
+    m_initialX = config.get<float>(s_INITIAL_POS_CONFIG, m_initialX);
+
+    const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
+    ::fwRenderQt::data::InitQtPen::setPenColor(m_color, color, m_opacity);
+}
+
+//----------------------------------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_VIEWPORT_INOUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -103,15 +115,14 @@ void SViewportRangeSelector::starting()
         }
     }
 
-    ::fwRenderQt::data::Viewport::sptr viewport =
+    const ::fwRenderQt::data::Viewport::sptr viewport =
         this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
-    QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
     Point2DType pair = this->mapAdaptorToScene(
         Point2DType( m_initialX, viewport->getHeight() ), m_xAxis, m_yAxis );
     m_shutter = new QGraphicsRectItem(
         pair.first, 0, m_initialWidth * m_xAxis->getScale(), pair.second );
-    m_shutter->setBrush( QBrush(QColor(127, 127, 127, 127)) );
+    m_shutter->setBrush( m_color.color() );
     m_shutter->setPen( Qt::NoPen );
 
     m_layer = new QGraphicsItemGroup();
@@ -306,7 +317,7 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
             m_layer->addToGroup( m_shutter );
 
             // Update object
-            this->updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
+            this->updateViewportFromShutter(rect.x(), rect.y(), rect.width(), rect.height() );
 
             ::fwRenderQt::data::Viewport::sptr viewport =
                 this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
@@ -372,15 +383,6 @@ bool SViewportRangeSelector::mouseOnShutterRight( ::fwRenderQt::data::Coord _coo
 
     return ( _coord.getX() >= shutterRightPos - m_clickCatchRange )
            && ( _coord.getX() <= shutterRightPos + m_clickCatchRange );
-}
-
-//----------------------------------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push( s_VIEWPORT_INOUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    return connections;
 }
 
 //---------------------------------------------------------------------------------------------------------------

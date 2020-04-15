@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -156,6 +156,8 @@ void TransferFunction::installTFConnections()
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
+    connection = tf->signal(::fwData::Object::s_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
+    m_tfConnections.addConnection(connection);
     connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
     m_tfConnections.addConnection(connection);
     connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);

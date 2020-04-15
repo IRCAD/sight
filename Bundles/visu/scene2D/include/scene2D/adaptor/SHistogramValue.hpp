@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace adaptor
 {
 
 /**
- * @brief IAdaptor implementation to show the histogram values clicked by mouse.
+ * @brief Defines an adaptor to show the histogram values clicked by mouse.
  *
  * @section XML XML Configuration
  *
@@ -55,53 +55,77 @@ namespace adaptor
  * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update adaptor.
  *
  * @subsection Configuration Configuration:
- * - \b config (mandatory): contains the adaptor configuration
- *    - \b xAxis (optional): x axis associated to the adaptor
- *    - \b yAxis (optional): y axis associated to the adaptor
- *    - \b zValue (optional, default=0): z value of the layer
- *    - \b opacity (optional, default=1.0): adaptor opacity (float)
- *    - \b color (optional, default white): color of the text
- *    - \b fontSize (optional, default 8): size of the font used to display the current value
- *
+ * - \b config (mandatory): contains the adaptor configuration.
+ *    - \b xAxis (optional): x axis associated to the adaptor.
+ *    - \b yAxis (optional): y axis associated to the adaptor.
+ *    - \b zValue (optional, default="0"): z value of the layer.
+ *    - \b opacity (optional, default="1.0"): adaptor opacity.
+ *    - \b color (optional, default="#FFFFFF"): color of the text
+ *    - \b fontSize (optional, default="8"): size of the font used to display the current value.
  */
 class SHistogramValue : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SHistogramValue, ::fwRenderQt::IAdaptor);
 
+    fwCoreServiceMacro(SHistogramValue, ::fwRenderQt::IAdaptor)
+
+    /// Creates the adaptor.
     SCENE2D_API SHistogramValue() noexcept;
+
+    /// Destroys the adaptor.
     SCENE2D_API virtual ~SHistogramValue() noexcept;
 
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+private:
 
-protected:
-    SCENE2D_API void configuring() override;
-    SCENE2D_API void starting() override;
-    SCENE2D_API void updating() override;
-    SCENE2D_API void stopping() override;
+    /// Configures the adaptor.
+    virtual void configuring() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
+    /// Initializes the layer and the font.
+    virtual void starting() override;
 
-    /// Color used for graphic item's inner color
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwRenderQt::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * ::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
+     * Connect ::fwData::Histogram::s_MODIFIED_SIG of s_HISTOGRAM_INPUT to
+     * ::scene2D::adaptor::SHistogramValue::s_UPDATE_SLOT.
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Draws the text at the clicked position.
+    virtual void updating() override;
+
+    /// Does nothing.
+    virtual void stopping() override;
+
+    /**
+     * @brief Filters the event to call the right methods from mouse informations.
+     * @param _event the 2D scene event.
+     */
+    virtual void processInteraction(::fwRenderQt::data::Event& _event ) override;
+
+    /// Defines the color used for graphic item's inner color.
     QPen m_color;
 
-    /// An item which display the current values of the associated histogram pointed by this cursor.
+    /// Stores the item which display the current values of the associated histogram pointed by this cursor.
     QGraphicsSimpleTextItem* m_text;
 
-    /// If true, display the currently pointed intensity value
+    /// Sets the display status.
     bool m_isInteracting;
 
-    ///
+    /// Defiens the font used for displaying the text.
     QFont m_font;
 
-    /// Coordinates of the current event.
+    /// Defines  the coordinates of the current event.
     ::fwRenderQt::data::Coord m_coord;
 
-    /// Size of the font used for rendering the current value of this tracker.
+    /// Defines the size of the font used for rendering the current value of this tracker.
     float m_fontSize;
 
-    /// The layer.
+    /// Stores the main layer.
     QGraphicsItemGroup* m_layer;
 
 };
