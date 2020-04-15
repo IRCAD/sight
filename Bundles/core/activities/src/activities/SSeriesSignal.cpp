@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2018 IRCAD France
- * Copyright (C) 2016-2018 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,8 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwRuntime/Convert.hpp>
@@ -42,12 +44,15 @@ namespace activities
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::activities::SSeriesSignal, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwServices::IController, ::activities::SSeriesSignal, ::fwMedData::SeriesDB )
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SSeriesSignal::s_REPORT_SERIES_SLOT   = "reportSeries";
+const ::fwCom::Slots::SlotKeyType SSeriesSignal::s_REPORT_SERIES_SLOT = "reportSeries";
+
 const ::fwCom::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "seriesAdded";
+
+static const std::string s_SERIES_DB_INPUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
@@ -127,6 +132,11 @@ void SSeriesSignal::reportSeries(::fwMedData::SeriesDB::ContainerType addedSerie
 
 void SSeriesSignal::updating()
 {
+    const ::fwMedData::SeriesDB::csptr seriesDB = this->getInput< ::fwMedData::SeriesDB >(s_SERIES_DB_INPUT);
+    SLM_ASSERT("input '" + s_SERIES_DB_INPUT + "' does not exist.", seriesDB);
+    ::fwData::mt::ObjectReadLock lock(seriesDB);
+
+    this->reportSeries(seriesDB->getContainer());
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +144,8 @@ void SSeriesSignal::updating()
 ::fwServices::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push("seriesDB",  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT );
+    connections.push(s_SERIES_DB_INPUT,  ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT);
+    connections.push(s_SERIES_DB_INPUT,  ::fwMedData::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
