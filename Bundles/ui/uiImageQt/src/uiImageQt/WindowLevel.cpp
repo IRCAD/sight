@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,11 +74,11 @@ static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
 //------------------------------------------------------------------------------
 
 WindowLevel::WindowLevel() noexcept :
-    m_helperTF(std::bind(&WindowLevel::updateTF, this)),
     m_widgetDynamicRangeMin(-1024),
     m_widgetDynamicRangeWidth(4000),
     m_autoWindowing(false),
-    m_enableSquareTF(true)
+    m_enableSquareTF(true),
+    m_helperTF(std::bind(&WindowLevel::updateTF, this))
 {
 }
 

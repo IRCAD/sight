@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 #include "Tuto08GenericSceneQml/AppManager.hpp"
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -165,11 +164,9 @@ void AppManager::onOpenImage()
 
     if (image && ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        ::fwDataTools::helper::Image helper( image );
-
-        helper.createLandmarks();
-        helper.createTransferFunctionPool();
-        helper.createImageSliceIndex();
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(image);
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(image);
 
         this->addObject(image, s_IMAGE_ID);
         Q_EMIT imageLoaded();

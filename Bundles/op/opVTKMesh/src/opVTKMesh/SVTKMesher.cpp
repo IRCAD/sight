@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,9 +51,9 @@ namespace opVTKMesh
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKMesh::SVTKMesher );
+fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKMesh::SVTKMesher )
 
-static const std::string s_IMAGE_INPUT  = "imageSeries";
+static const std::string s_IMAGE_INPUT = "imageSeries";
 static const std::string s_MODEL_OUTPUT = "modelSeries";
 
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ static const std::string s_MODEL_OUTPUT = "modelSeries";
 SVTKMesher::SVTKMesher() noexcept :
     m_reduction(0)
 {
-    this->registerObject(s_IMAGE_INPUT, ::fwServices::IService::AccessType::INPUT, true);
+    this->registerObject(s_IMAGE_INPUT, ::fwServices::IService::AccessType::INPUT, false);
     this->registerObject(s_MODEL_OUTPUT, ::fwServices::IService::AccessType::OUTPUT, false, true);
 }
 

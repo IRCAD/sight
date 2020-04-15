@@ -11,8 +11,10 @@ set( REQUIREMENTS
     guiQt
     ioData
     ioVTK
+    ctrlSelection
     uiIO
     uiVisuQt
+    uiImageQt
     uiReconstructionQt # contains editors to manage reconstructions
     uiMedDataQt # contains editors to manage model series
     visuVTKAdaptor

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,9 +46,9 @@
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, ::fwData::Vector);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, ::fwData::Vector)
 
-const ::fwCom::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT    = "add";
+const ::fwCom::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
 const ::fwCom::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const ::fwCom::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 
@@ -189,28 +189,42 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
-    ::fwData::Image::SizeType size(3);
+    ::fwData::Image::Size size;
     size[0] = m_frameTL->getWidth();
     size[1] = m_frameTL->getHeight();
     size[2] = 1;
 
-    const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-    image->allocate(size, m_frameTL->getType(), m_frameTL->getNumberOfComponents());
-    ::fwData::Image::OriginType origin(3, 0);
+    ::fwData::Image::PixelFormat format;
+    // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
+    // to the number of components.
+    switch ( m_frameTL->getNumberOfComponents())
+    {
+        case 1:
+            format = ::fwData::Image::GRAY_SCALE;
+            break;
+        case 3:
+            format = ::fwData::Image::RGB;
+            break;
+        case 4:
+            format = ::fwData::Image::RGBA;
+            break;
+        default:
+            format = ::fwData::Image::UNDEFINED;
+    }
 
-    image->setOrigin(origin);
-    ::fwData::Image::SpacingType spacing(3, voxelSize);
-    image->setSpacing(spacing);
+    image->resize(size, m_frameTL->getType(), format);
+    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    image->setOrigin2(origin);
+    const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+    image->setSpacing2(spacing);
     image->setWindowWidth(100);
     image->setWindowCenter(0);
 
-    ::fwData::Array::sptr array = image->getDataArray();
-
-    ::fwDataTools::helper::Array arrayHelper(array);
+    const auto dumpLock = image->lock();
 
     const std::uint8_t* frameBuff = &buffer->getElement(0);
-    std::uint8_t* index           = arrayHelper.begin< std::uint8_t >();
-    std::copy( frameBuff, frameBuff+buffer->getSize(), index);
+    std::uint8_t* imgBuffer       = static_cast< std::uint8_t* >(image->getBuffer());
+    std::copy( frameBuff, frameBuff+buffer->getSize(), imgBuffer);
 
     ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 

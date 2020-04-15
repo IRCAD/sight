@@ -471,7 +471,7 @@ public:
     /// Return the pixel value in a std::string
     FWDATA_API const std::string getPixelAsString(IndexType x,
                                                   IndexType y,
-                                                  IndexType z );
+                                                  IndexType z ) const;
 
     /**
      * @brief Return a lock on the image to prevent from dumping the buffer on the disk

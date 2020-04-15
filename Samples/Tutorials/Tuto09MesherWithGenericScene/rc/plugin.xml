@@ -225,7 +225,7 @@
                 <out key="object" uid="reconstructionId" />
             </service>
 
-            <service uid="organMaterialEditor" type="::uiReconstructionQt::OrganMaterialEditor" autoConnect="yes">
+            <service uid="organMaterialEditor" type="::uiReconstructionQt::SOrganMaterialEditor" autoConnect="yes">
                 <inout key="reconstruction" uid="reconstructionId" />
             </service>
 

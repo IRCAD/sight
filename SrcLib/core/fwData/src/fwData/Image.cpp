@@ -326,7 +326,7 @@ void Image::setPixelBuffer( IndexType index, Image::BufferType* pixBuf)
 
 const std::string Image::getPixelAsString(IndexType x,
                                           IndexType y,
-                                          IndexType z )
+                                          IndexType z ) const
 {
     const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
     return m_type.toString(this->getPixelBuffer(offset));
