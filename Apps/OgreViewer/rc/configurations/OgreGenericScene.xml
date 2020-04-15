@@ -432,6 +432,8 @@
         <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
             <inout key="data" uid="snaphot" />
             <type mode="writer" />
+            <selection mode="exclude" />
+            <addSelection service="::ioAtoms::SWriter" />
         </service>
 
         <!-- ************************************* Action ************************************ -->
