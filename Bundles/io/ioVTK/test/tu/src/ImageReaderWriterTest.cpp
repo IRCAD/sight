@@ -26,8 +26,6 @@
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwDataTools/Image.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
