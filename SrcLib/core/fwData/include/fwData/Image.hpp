@@ -480,6 +480,24 @@ public:
      */
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
+    /**
+     * @brief Set a stream factory for the image's buffer manager
+     *
+     * The factory will be used to load the image on demand.
+     *
+     * @param factory ::fwMemory::stream::in::IFactory stream factory
+     * @param size size of data provided by the stream
+     * @param sourceFile Filesystem path of the source file, if applicable
+     * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided
+     * @param policy Buffer allocation policy
+     */
+    FWDATA_API void setIStreamFactory(
+        const SPTR(::fwMemory::stream::in::IFactory)& factory,
+        const size_t size,
+        const std::filesystem::path& sourceFile                = "",
+        const ::fwMemory::FileFormatType format                = ::fwMemory::OTHER,
+        const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New());
+
     // ---------------------------------------
     // Deprecated API
     // ---------------------------------------

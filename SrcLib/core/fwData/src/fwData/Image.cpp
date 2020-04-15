@@ -424,6 +424,33 @@ void Image::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
 }
 
 //------------------------------------------------------------------------------
+
+void Image::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& factory,
+                              const size_t size,
+                              const std::filesystem::path& sourceFile,
+                              const ::fwMemory::FileFormatType format,
+                              const ::fwMemory::BufferAllocationPolicy::sptr& policy)
+{
+    const auto imageDims = this->getNumberOfDimensions();
+    ::fwData::Array::SizeType arraySize(imageDims);
+    size_t count = 0;
+    if (m_numberOfComponents > 1)
+    {
+        arraySize.resize(imageDims+1);
+        arraySize[0] = m_numberOfComponents;
+        count        = 1;
+    }
+    for (size_t i = 0; i < imageDims; ++i)
+    {
+        arraySize[count] = m_size[i];
+        ++count;
+    }
+
+    m_dataArray->resize(arraySize, m_type, false);
+    m_dataArray->getBufferObject()->setIStreamFactory(factory, size, sourceFile, format, policy);
+}
+
+//------------------------------------------------------------------------------
 // Deprecated API
 //------------------------------------------------------------------------------
 
