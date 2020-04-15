@@ -835,7 +835,11 @@ macro(fwUse)
                 # If we have a implementation test, link with the object library to get access to non exported symbols
                 # For instance fwRuntimeImplTest will link with the object library target fwRuntime
                 # and fwRuntimeTest will link with the shared library target fwRuntime_SHARED_LIB
-                set(TARGET_TO_LINK ${PROJECT} ${${PROJECT}_PCH_TARGET}_PCH_OBJ)
+                if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
+                    set(TARGET_TO_LINK ${PROJECT} ${${PROJECT}_PCH_TARGET}_PCH_OBJ)
+                else()
+                    set(TARGET_TO_LINK ${PROJECT})
+                endif()
 
                 # For MSVC, we need to prevent import of symbols from the object library
                 string(TOUPPER ${PROJECT} PROJECT_NAME_UPCASE)
