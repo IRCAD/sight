@@ -34,7 +34,7 @@
         <object uid="border" type="::fwData::Color" >
             <value>#2E3034</value>
         </object>
-        <object uid="snaphot" type="::fwData::Image" />
+        <object uid="snapshot" type="::fwData::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -162,8 +162,7 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="defaultLayer" depth="1" transparency="DepthPeeling" numPeels="4" compositors="ViewportBorder" />
-                <adaptor uid="compositorAdp" />
+                <layer id="defaultLayer" depth="1" transparency="DepthPeeling" numPeels="4" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -223,11 +222,6 @@
             </scene>
         </service>
 
-        <service uid="compositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
-            <inout key="parameter" uid="border" />
-            <config layer="defaultLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
-        </service>
-
         <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
             <config layer="defaultLayer" priority="0" />
         </service>
@@ -279,7 +273,7 @@
         </service>
 
         <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
-            <inout key="image" uid="snaphot" />
+            <inout key="image" uid="snapshot" />
             <config layer="defaultLayer" flip="true" />
         </service>
 
@@ -430,7 +424,7 @@
 
         <!-- Write the snapshot image -->
         <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
-            <inout key="data" uid="snaphot" />
+            <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
             <addSelection service="::ioAtoms::SWriter" />
@@ -589,7 +583,6 @@
         <start uid="backgroundReaderSrv" />
         <start uid="imageWriterSrv" />
 
-        <start uid="compositorAdp" />
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="modeSeriesAdp" />
