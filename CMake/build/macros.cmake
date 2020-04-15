@@ -367,7 +367,8 @@ macro(fwCppunitTest FWPROJECT_NAME)
             target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DBUNDLE_TEST_PROFILE=\"${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
         endif()
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${TU_NAME}")
-        createResourcesTarget( ${FWPROJECT_NAME}_rc "${TEST_RC_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
+
+        createResourcesTarget( ${FWPROJECT_NAME}_rc "${TEST_RC_DIR}" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
@@ -435,6 +436,8 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE "LIBRARY")
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
 
+    setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
+
     if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
@@ -449,8 +452,14 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         ${${FWPROJECT_NAME}_CMAKE_FILES}
         ${${FWPROJECT_NAME}_PCH_LIB})
 
-    add_library(${FWPROJECT_NAME}_SHARED_LIB SHARED $<TARGET_OBJECTS:${FWPROJECT_NAME}>)
-    set_target_properties(${FWPROJECT_NAME}_SHARED_LIB PROPERTIES LIBRARY_OUTPUT_NAME ${FWPROJECT_NAME})
+    # Define a variable to store the objects to link for the shared library and the implementation test
+    set(${FWPROJECT_NAME}_OBJECT_LIB $<TARGET_OBJECTS:${FWPROJECT_NAME}> ${${FWPROJECT_NAME}_PCH_LIB})
+    set(${FWPROJECT_NAME}_OBJECT_LIB ${${FWPROJECT_NAME}_OBJECT_LIB} PARENT_SCOPE)
+
+    add_library(${FWPROJECT_NAME}_SHARED_LIB SHARED ${${FWPROJECT_NAME}_OBJECT_LIB})
+    set_target_properties(${FWPROJECT_NAME}_SHARED_LIB PROPERTIES ARCHIVE_OUTPUT_NAME ${FWPROJECT_NAME}
+                                                                  LIBRARY_OUTPUT_NAME ${FWPROJECT_NAME}
+                                                                  RUNTIME_OUTPUT_NAME ${FWPROJECT_NAME})
 
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -478,7 +487,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
       $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
     )
-    target_link_libraries(${FWPROJECT_NAME}_SHARED_LIB INTERFACE ${FWPROJECT_NAME})
+    target_link_libraries(${FWPROJECT_NAME}_SHARED_LIB PUBLIC ${FWPROJECT_NAME})
 
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR ${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME} PARENT_SCOPE)
 
@@ -820,10 +829,17 @@ endmacro()
 
 macro(fwUse)
     foreach(PROJECT ${ARGV})
-        set(TARGET_TO_LINK ${PROJECT})
+        set(TARGET_TO_LINK ${PROJECT}_SHARED_LIB)
         if(${${PROJECT}_TYPE} MATCHES "LIBRARY")
-            if(NOT "${${NAME}_TYPE}" MATCHES "TEST" OR NOT ${NAME} MATCHES "Impl")
-                set(TARGET_TO_LINK ${PROJECT}_SHARED_LIB)
+            if("${${NAME}_TYPE}" MATCHES "TEST" AND ${NAME} MATCHES "Impl" AND ${NAME} MATCHES "${PROJECT}")
+                # If we have a implementation test, link with the object library to get access to non exported symbols
+                # For instance fwRuntimeImplTest will link with the object library target fwRuntime
+                # and fwRuntimeTest will link with the shared library target fwRuntime_SHARED_LIB
+                set(TARGET_TO_LINK ${PROJECT} ${${PROJECT}_PCH_TARGET}_PCH_OBJ)
+
+                # For MSVC, we need to prevent import of symbols from the object library
+                string(TOUPPER ${PROJECT} PROJECT_NAME_UPCASE)
+                target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_EXPORTS)
             endif()
         endif()
         target_link_libraries(${FWPROJECT_NAME} PUBLIC ${TARGET_TO_LINK})
