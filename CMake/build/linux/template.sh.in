@@ -14,11 +14,11 @@ libdir="$rootdir/lib/sight"
 sdkdir="@Sight_LIBRARY_DIR@"
 extdir="@FW_EXTERNAL_LIBRARIES_DIRS@"
 
-bundledir="$rootdir/@FWBUNDLE_RC_PREFIX@"
+bundledir="$rootdir/@SIGHT_MODULE_RC_PREFIX@"
 bundleopt="-B $bundledir"
 
 if [ -n "${sdkdir}" ]; then
-    bundleopt="$bundleopt -B @Sight_BUNDLES_DIR@"
+    bundleopt="$bundleopt -B @Sight_MODULES_DIR@"
 fi
 
 # compute LD_LIBRARY_PATH

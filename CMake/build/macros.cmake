@@ -174,7 +174,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     mark_as_advanced(SPYLOG_LEVEL_${FWPROJECT_NAME})
 
     if( SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}} )
-        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY" OR ${TARGET_TYPE} MATCHES "BUNDLE" )
+        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY")
            AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             target_compile_definitions(${FWPROJECT_NAME}
                 PRIVATE SPYLOG_LEVEL_${FWPROJECT_NAME}=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
@@ -261,12 +261,12 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
         endif()
     endif()
 
@@ -364,15 +364,15 @@ macro(fwCppunitTest FWPROJECT_NAME)
     endif()
     if(TEST_RC_DIR)
         if(EXISTS "${TEST_RC_DIR}/profile.xml")
-            target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DBUNDLE_TEST_PROFILE=\"${FWBUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
+            target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DBUNDLE_TEST_PROFILE=\"${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}/profile.xml\")
         endif()
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${TU_NAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}")
 
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${TEST_RC_DIR}" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${TU_NAME}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}" )
         endif()
     endif()
 
@@ -468,12 +468,12 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME}_SHARED_LIB PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
         endif()
 
     endif()
@@ -582,7 +582,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
 endmacro()
 
-macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
+macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
     initProject( ${FWPROJECT_NAME} )
 
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
@@ -595,7 +595,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
 
@@ -633,8 +633,8 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each bundles
             install(
                 TARGETS ${FWPROJECT_NAME}
-                RUNTIME DESTINATION ${FWBUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
-                LIBRARY DESTINATION ${FWBUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
+                RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
+                LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
                 OPTIONAL NAMELINK_SKIP
                 )
         endif()
@@ -679,7 +679,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         if(MSVC_IDE)
             # create the launch config for the current app
             set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
-            set(PROFILE "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            set(PROFILE "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
             if(CMAKE_CL_64)
@@ -732,14 +732,14 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
     endif()
 
-    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
 
     if(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
@@ -960,7 +960,7 @@ function(getPchTarget FWPROJECT_NAME PROJECT_DIR TYPE)
         set(${FWPROJECT_NAME}_PCH_TARGET ${FWPROJECT_NAME} PARENT_SCOPE)
     else()
         # Default pch
-        if( TYPE STREQUAL "BUNDLE" )
+        if( TYPE STREQUAL "MODULE" OR TYPE STREQUAL "BUNDLE" )
             set(${FWPROJECT_NAME}_PCH_TARGET pchServices PARENT_SCOPE)
         else()
             set(${FWPROJECT_NAME}_PCH_TARGET pchCore PARENT_SCOPE)
@@ -1012,14 +1012,14 @@ macro(fwLoadProperties)
         fwExec(${NAME} ${VERSION} ${OPTIONS})
     elseif( TYPE STREQUAL "LIBRARY" )
         fwLib(${NAME} ${VERSION} ${OPTIONS})
-    elseif( TYPE STREQUAL "BUNDLE" )
-        set(${NAME}_TYPE "BUNDLE")
-        fwBundle(${NAME} ${VERSION} ${OPTIONS})
+    elseif( TYPE STREQUAL "MODULE" OR TYPE STREQUAL "BUNDLE")
+        set(${NAME}_TYPE "MODULE")
+        fwModule(${NAME} ${VERSION} ${OPTIONS})
     elseif( TYPE STREQUAL "TEST" )
         fwCppunitTest(${NAME} "${OPTIONS}")
     elseif( TYPE STREQUAL "APP" )
         set(${NAME}_TYPE "APP")
-        fwBundle(${NAME} ${VERSION} ${OPTIONS})
+        fwModule(${NAME} ${VERSION} ${OPTIONS})
         if(NOT EXISTS "${${NAME}_DIR}/rc/profile.xml" )
             set(PROJECT ${NAME})
             profile_setup(${PROJECT})

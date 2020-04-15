@@ -93,7 +93,7 @@ function(vscodeGenerator)
                 "    \"type\": \"${DBG_TYPE}\",\n"
                 "    \"request\": \"launch\",\n"
                 "    \"program\": \"${CMAKE_BINARY_DIR}/bin/fwlauncher${CMAKE_EXECUTABLE_SUFFIX}\",\n"
-                "    \"args\": [\"${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${PRJ_NAME}_FULLNAME}/profile.xml\"],\n"
+                "    \"args\": [\"${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${PRJ_NAME}_FULLNAME}/profile.xml\"],\n"
                 "    \"stopAtEntry\": false,\n"
                 "    \"cwd\": \"${CMAKE_BINARY_DIR}\",\n"
                 "    \"environment\": [{\n"

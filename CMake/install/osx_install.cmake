@@ -16,7 +16,7 @@ function(osx_install PRJ_NAME)
         if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
             # create a new executable equivalent to fwLauncher
             add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${fwlauncher_HEADERS} ${fwlauncher_SOURCES} ${${PRJ_NAME}_ICON_PATH})
-            add_definitions(-DDEFAULT_PROFILE=${FWBUNDLE_RC_PREFIX}/${PRJ_NAME}-${${PRJ_NAME}_VERSION}/profile.xml)
+            add_definitions(-DDEFAULT_PROFILE=${SIGHT_MODULE_RC_PREFIX}/${PRJ_NAME}-${${PRJ_NAME}_VERSION}/profile.xml)
             get_target_property(LAUNCHER_DEFINITIONS fwlauncher COMPILE_DEFINITIONS)
             target_compile_definitions(${EXECUTABLE_NAME} PRIVATE ${LAUNCHER_DEFINITIONS})
             get_target_property(LINK_PROPERTIES fwlauncher LINK_LIBRARIES)
@@ -34,7 +34,7 @@ function(osx_install PRJ_NAME)
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_INFO_STRING "${PRJ_NAME}")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${${PRJ_NAME}_VERSION}")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "${${PRJ_NAME}_VERSION}")
-        set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${PRJ_NAME}")
+        set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_MODULE_NAME "${PRJ_NAME}")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "Copyright 2012-2018 IRCAD-IHU")
         set_target_properties( ${EXECUTABLE_NAME} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "com.sight.${LOWER_PRJ_NAME}")
 
@@ -48,12 +48,12 @@ function(osx_install PRJ_NAME)
 
         install(CODE "
 
-            if (EXISTS \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}\")
-                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_RC_PREFIX}/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/${FWBUNDLE_RC_PREFIX}\")
+            if (EXISTS \"${CMAKE_INSTALL_PREFIX}/${SIGHT_MODULE_RC_PREFIX}\")
+                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${SIGHT_MODULE_RC_PREFIX}/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/${SIGHT_MODULE_RC_PREFIX}\")
             endif()
 
-            if (EXISTS ${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX})
-                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${FWBUNDLE_LIB_PREFIX}/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/${FWBUNDLE_LIB_PREFIX}\")
+            if (EXISTS ${CMAKE_INSTALL_PREFIX}/${SIGHT_MODULE_LIB_PREFIX})
+                file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${SIGHT_MODULE_LIB_PREFIX}/\" DESTINATION \"${APP_INSTALL_PATH}/Contents/${SIGHT_MODULE_LIB_PREFIX}\")
             endif()
 
             if (EXISTS ${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins)
@@ -73,8 +73,8 @@ function(osx_install PRJ_NAME)
 
             foreach(FILE \${FILES})
                 if (NOT \${FILE} MATCHES \"${EXECUTABLE_NAME}\"
-                    AND NOT \${FILE} MATCHES \"${FWBUNDLE_RC_PREFIX}\"
-                    AND NOT \${FILE} MATCHES \"${FWBUNDLE_LIB_PREFIX}\"
+                    AND NOT \${FILE} MATCHES \"${SIGHT_MODULE_RC_PREFIX}\"
+                    AND NOT \${FILE} MATCHES \"${SIGHT_MODULE_LIB_PREFIX}\"
                     AND NOT \${FILE} MATCHES \"${CMAKE_INSTALL_LIBDIR}\"
                     AND NOT \${FILE} MATCHES \"bin\"
                 )
@@ -119,7 +119,7 @@ function(osx_install PRJ_NAME)
                 )
 
             execute_process(
-                COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py -e MacOS/ $(find \"${FWBUNDLE_LIB_PREFIX}\" -iname '*.dylib') -f\"
+                COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py -e MacOS/ $(find \"${SIGHT_MODULE_LIB_PREFIX}\" -iname '*.dylib') -f\"
                 WORKING_DIRECTORY ${APP_INSTALL_PATH}/Contents
                 )
         " COMPONENT ApplicationBundle)

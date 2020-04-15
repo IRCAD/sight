@@ -128,7 +128,7 @@ void Runtime::addDefaultBundles()
 void Runtime::addDefaultModules()
 {
     // Modules location
-    const auto location = this->getWorkingPath() / BUNDLE_RC_PREFIX;
+    const auto location = this->getWorkingPath() / MODULE_RC_PREFIX;
 
     SLM_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
 

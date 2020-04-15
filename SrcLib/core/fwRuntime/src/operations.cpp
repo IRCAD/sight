@@ -206,7 +206,7 @@ std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& pa
     // Currently the library resources are at the same location than modules
     // This might change in the future
     Runtime* rntm = Runtime::getDefault();
-    return std::filesystem::weakly_canonical(rntm->getWorkingPath() / BUNDLE_RC_PREFIX / path);
+    return std::filesystem::weakly_canonical(rntm->getWorkingPath() / MODULE_RC_PREFIX / path);
 }
 
 //------------------------------------------------------------------------------

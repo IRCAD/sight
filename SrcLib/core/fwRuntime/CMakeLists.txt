@@ -2,8 +2,8 @@
 fwLoadProperties()
 
 # This is the only place where we should pass these variables to the C++ code
-target_compile_definitions(${FWPROJECT_NAME} PRIVATE BUNDLE_LIB_PREFIX="${FWBUNDLE_LIB_PREFIX}")
-target_compile_definitions(${FWPROJECT_NAME} PRIVATE BUNDLE_RC_PREFIX="${FWBUNDLE_RC_PREFIX}")
+target_compile_definitions(${FWPROJECT_NAME} PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
+target_compile_definitions(${FWPROJECT_NAME} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC ${LIBXML2_LIBRARIES})
 

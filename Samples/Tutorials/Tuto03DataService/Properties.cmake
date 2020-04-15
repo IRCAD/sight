@@ -16,4 +16,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoDataServiceConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoDataServiceConfig)

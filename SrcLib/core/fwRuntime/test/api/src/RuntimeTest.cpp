@@ -64,7 +64,7 @@ void RuntimeTest::tearDown()
 
 void RuntimeTest::testOperations()
 {
-    const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX;
+    const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
 
     // module location prototype
     auto path = ::fwRuntime::getModuleResourcePath(std::string("servicesReg"));

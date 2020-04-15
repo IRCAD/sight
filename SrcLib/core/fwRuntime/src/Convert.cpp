@@ -98,7 +98,7 @@ void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::Confi
 
 xmlNodePtr Convert::runningModulesToXml( )
 {
-    xmlNodePtr node_root      = xmlNewNode( NULL,  xmlCharStrdup( BUNDLE_RC_PREFIX ) );
+    xmlNodePtr node_root      = xmlNewNode( NULL,  xmlCharStrdup( MODULE_RC_PREFIX ) );
     xmlNodePtr activated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Activated" ) );
     xmlAddChild(node_root, activated_Node );
 
