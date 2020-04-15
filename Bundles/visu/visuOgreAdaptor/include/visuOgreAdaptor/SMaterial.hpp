@@ -64,7 +64,7 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SMaterial">
         <inout key="material" uid="..." />
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
-                shadingMode="gouraud" normalLength="0.1" />
+                shadingMode="gouraud" normalLength="0.1" representationMode="SURFACE" />
     </service>
    @endcode
  *
@@ -81,8 +81,10 @@ namespace visuOgreAdaptor
  * - \b textureName (optional, string, default="") : the Ogre texture name used the material. Use it if you want to
  * reference a texture
  * managed by an another ::visuOgreAdaptor::STexture.
- * - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
- * - \b normalLength (optional, float, default=0.1) : factor defining the length of the normals
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
+ *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
+ *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default= SURFACE):
+ *  representation mode as in ::fwData::Material.
  */
 class VISUOGREADAPTOR_CLASS_API SMaterial final : public ::fwRenderOgre::IAdaptor
 {
@@ -212,8 +214,14 @@ private:
     /// Defines the configured shading mode.
     std::string m_shadingMode;
 
-    /// Defines the current number of lights in the scene..
-    int m_lightsNumber { 1 };
+    /// The configured representation mode.
+    std::string m_representationMode {"SURFACE"};
+
+    /// Map to convert from string to fwData::Material::RepresentationType (ex: "SURFACE" = SURFACE).
+    std::map< std::string, ::fwData::Material::RepresentationType > m_representationDict;
+
+    /// Current number of lights in the scene.
+    int m_lightsNumber;
 
     /// Contains the Ogre material.
     ::fwRenderOgre::Material::uptr m_materialFw;

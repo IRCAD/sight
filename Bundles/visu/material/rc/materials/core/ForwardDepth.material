@@ -1,0 +1,33 @@
+fragment_program ForwardDepth_FP glsl
+{
+    source ForwardDepth_FP.glsl
+}
+
+//---------------------------------------------------------------------------
+
+material ForwardDepth_M
+{
+    technique
+    {
+        pass
+        {
+            colour_write on off off off
+            depth_check off
+            depth_write off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref ForwardDepth_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

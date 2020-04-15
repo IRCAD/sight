@@ -1,0 +1,4 @@
+fragment_program PrimitiveID_FP glsl
+{
+    source PrimitiveID_FP.glsl
+}

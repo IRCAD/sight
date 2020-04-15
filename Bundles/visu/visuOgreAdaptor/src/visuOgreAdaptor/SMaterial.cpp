@@ -70,6 +70,12 @@ SMaterial::SMaterial() noexcept
     newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
     newSlot(s_ADD_TEXTURE_SLOT, &SMaterial::createTextureAdaptor, this);
     newSlot(s_REMOVE_TEXTURE_SLOT, &SMaterial::removeTextureAdaptor, this);
+
+    m_representationDict["SURFACE"]   = ::fwData::Material::SURFACE;
+    m_representationDict["POINT"]     = ::fwData::Material::POINT;
+    m_representationDict["WIREFRAME"] = ::fwData::Material::WIREFRAME;
+    m_representationDict["EDGE"]      = ::fwData::Material::EDGE;
+
 }
 
 //------------------------------------------------------------------------------
@@ -91,6 +97,20 @@ void SMaterial::configuring()
     m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->getID());
     m_textureName          = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
     m_shadingMode          = config.get(s_SHADING_MODE_CONFIG, m_shadingMode);
+    if(config.count("representationMode"))
+    {
+        m_representationMode = config.get<std::string>("representationMode");
+
+        auto it = m_representationDict.find(m_representationMode);
+
+        if(it == m_representationDict.end())
+        {
+            SLM_ERROR("Value: " + m_representationMode + " is not valid for 'representationMode'."
+                      " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
+                      "'representationMode' is reset to default value (SURFACE). ");
+            m_representationMode = "SURFACE";
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -121,6 +141,8 @@ void SMaterial::starting()
         // Force the shading mode of the material if it has been set in the configuration of the adaptor
         material->setShadingMode(shadingMode);
     }
+
+    material->setRepresentationMode(m_representationDict[m_representationMode]);
 
     m_materialFw = std::make_unique< ::fwRenderOgre::Material>(m_materialName, m_materialTemplateName);
 
