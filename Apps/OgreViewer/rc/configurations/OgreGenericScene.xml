@@ -34,20 +34,13 @@
         <object uid="border" type="::fwData::Color" >
             <value>#2E3034</value>
         </object>
+        <object uid="snaphot" type="::fwData::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
-                <slideView align="top" opacity="1" size="55" >
-                    <styleSheet>
-                        <![CDATA[
-                        #SlideBar QWidget {
-                            background-color: none;
-                        }
-                        ]]>
-                    </styleSheet>
-                </slideView>
+                <slideView align="top" opacity="1" size="55" />
                 <slideView align="top" opacity="1" size="45" >
                     <styleSheet>
                         <![CDATA[
@@ -97,11 +90,17 @@
                 <layout>
                     <menuItem name="Fullscreen" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
                     <menuItem name="Windowed" icon="flatIcon-0.1/icons/YellowMinimize.svg" shortcut="Escape" />
+                    <menuItem name="Snapshot" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <spacer/>
+                    <menuItem name="Snapshot" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <spacer/>
                 </layout>
             </gui>
             <registry>
                 <menuItem sid="fullscreenAct" start="yes" />
                 <menuItem sid="windowedAct" start="yes" />
+                <menuItem sid="snapshotAct" start="yes" />
+                <menuItem sid="snapshotSpacerAct" start="yes" />
             </registry>
         </service>
 
@@ -175,6 +174,7 @@
                 <adaptor uid="axisAdp" />
                 <adaptor uid="pickedVoxelTextAdp" />
                 <adaptor uid="resizeViewportAdp" />
+                <adaptor uid="snapshotAdp" />
 
                 <layer id="axialBackgroundNegatoLayer" depth="2" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
@@ -276,6 +276,11 @@
 
         <service uid="resizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
             <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
+        </service>
+
+        <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
+            <inout key="image" uid="snaphot" />
+            <config layer="defaultLayer" flip="true" />
         </service>
 
         <!-- Axial -->
@@ -423,6 +428,12 @@
             <resource>OgreViewer-@PROJECT_VERSION@/icons/background.png</resource>
         </service>
 
+        <!-- Write the snapshot image -->
+        <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="snaphot" />
+            <type mode="writer" />
+        </service>
+
         <!-- ************************************* Action ************************************ -->
 
         <!-- Set the view in full screen -->
@@ -439,6 +450,21 @@
             </slots>
         </service>
 
+        <!-- Save the snapshot image -->
+        <service uid="snapshotAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>imageWriterSrv/update</slot>
+            </slots>
+        </service>
+
+        <!-- Save the snapshot image -->
+        <service uid="snapshotSpacerAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>imageWriterSrv/update</slot>
+            </slots>
+            <state visible="false" />
+        </service>
+
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${NEGATO_VIEW_RECEIVE_CHANNEL}" >
@@ -451,6 +477,8 @@
             <slot>resizeViewportAdp/resize</slot>
             <slot>topNegatoSlicerSliderView/show</slot>
             <slot>bottomNegatoSlicerSliderView/show</slot>
+            <slot>snapshotAct/hide</slot>
+            <slot>snapshotSpacerAct/show</slot>
         </connect>
 
         <connect channel="${VOLUME_VIEW_RECEIVE_CHANNEL}" >
@@ -463,6 +491,8 @@
             <slot>resizeViewportAdp/revert</slot>
             <slot>topNegatoSlicerSliderView/hide</slot>
             <slot>bottomNegatoSlicerSliderView/hide</slot>
+            <slot>snapshotAct/show</slot>
+            <slot>snapshotSpacerAct/hide</slot>
         </connect>
 
         <!-- Volume rendering parameters -->
@@ -555,6 +585,7 @@
         <start uid="clippingBoxResetSrv" />
         <start uid="managePointsSrv" />
         <start uid="backgroundReaderSrv" />
+        <start uid="imageWriterSrv" />
 
         <start uid="compositorAdp" />
         <start uid="trackballInteractorAdp" />
@@ -567,6 +598,7 @@
         <start uid="axisAdp" />
         <start uid="pickedVoxelTextAdp" />
         <start uid="resizeViewportAdp" />
+        <start uid="snapshotAdp" />
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />
