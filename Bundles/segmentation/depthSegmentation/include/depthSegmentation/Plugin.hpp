@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __DEPTHSEGMENTATION_PLUGIN_HPP__
-#define __DEPTHSEGMENTATION_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -47,5 +46,3 @@ struct Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace depthSegmentation
-
-#endif //__DEPTHSEGMENTATION_PLUGIN_HPP__

@@ -24,6 +24,8 @@
         <object uid="volumeClippingMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
 
+        <object uid="snaphotImg" type="::fwData::Image" />
+
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="::gui::view::SDefaultView">
@@ -64,6 +66,7 @@
                     <spacer />
                     <menuItem name="Fullscreen" icon="media-0.1/icons/Fullscreen.svg" />
                     <menuItem name="Windowed" icon="media-0.1/icons/Minimize.svg" shortcut="Escape" />
+                    <menuItem name="Snapshot" icon="media-0.1/icons/camera-photo.svg" shortcut="CTRL+S" />
                 </layout>
             </gui>
             <registry>
@@ -79,6 +82,7 @@
                 <menuItem sid="showHideVideoAct" start="yes" />
                 <menuItem sid="fullscreenAct" start="yes" />
                 <menuItem sid="windowedAct" start="yes" />
+                <menuItem sid="takeSnapshot" start="yes" />
             </registry>
         </service>
 
@@ -200,6 +204,13 @@
             </slots>
         </service>
 
+
+        <service uid="takeSnapshot" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>imageWriterSrv/update</slot>
+            </slots>
+        </service>
+
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender">
@@ -220,6 +231,7 @@
                 <adaptor uid="renderStatsAdp" />
                 <adaptor uid="textAdp" />
                 <adaptor uid="pickedVoxelTextAdp" />
+                <adaptor uid="snapshotAdp" />
             </scene>
         </service>
 
@@ -281,6 +293,11 @@
             <config layer="default" color="#ff0000" fontSize="12" />
         </service>
 
+        <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
+            <inout key="image" uid="snaphotImg" />
+            <config layer="default" flip="true" />
+        </service>
+
         <!-- ************************************* Services ************************************ -->
 
         <service uid="synchronizerSrv" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
@@ -316,6 +333,13 @@
             <in key="source" uid="identityMatrix" />
             <inout key="target" uid="volumeClippingMatrix" />
         </service>
+
+
+        <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="snaphotImg" />
+            <type mode="writer" />
+        </service>
+
 
         <!-- ******************************* Connections ***************************************** -->
 
@@ -387,6 +411,7 @@
         <start uid="frameGrabberSrv" />
         <start uid="pointListModifierSrv" />
         <start uid="clippingBoxResetSrv" />
+        <start uid="imageWriterSrv" />
         <start uid="videoAdp" />
         <start uid="defaultInteractorAdp" />
         <start uid="defaultPickerAdp" />
@@ -398,6 +423,7 @@
         <start uid="renderStatsAdp" />
         <start uid="textAdp" />
         <start uid="pickedVoxelTextAdp" />
+        <start uid="snapshotAdp" />
 
         <update uid="volumeRenderingEditorAct" />
 
