@@ -172,7 +172,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
     auto bundleIdentifier   = bundleIdentifierAndVersion.substr(0, itVersionDelimiter);
     auto bundleVersion      = bundleIdentifierAndVersion.substr(itVersionDelimiter + 1);
 
-    // Strip the bundle name
+    // Strip the module name
     std::filesystem::path pathWithoutBundle;
     for(auto itPath = ++path.begin(); itPath != path.end(); itPath++)
     {
@@ -203,7 +203,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
 std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& path) noexcept
 {
-    // Currently the library resources are at the same location than bundles
+    // Currently the library resources are at the same location than modules
     // This might change in the future
     Runtime* rntm = Runtime::getDefault();
     return std::filesystem::weakly_canonical(rntm->getWorkingPath() / BUNDLE_RC_PREFIX / path);
@@ -216,7 +216,7 @@ std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noe
     auto file = ::fwRuntime::getModuleResourceFilePath(path);
     if(file.empty())
     {
-        // If not found in a bundle, look into libraries
+        // If not found in a module, look into libraries
         file = ::fwRuntime::getLibraryResourceFilePath(path);
         SLM_ERROR_IF("Resource '" + path.string() + "' has not been found in any bundle or library", file.empty());
     }
@@ -368,14 +368,14 @@ void startBundle(const std::string& identifier)
 
 void startModule(const std::string& identifier)
 {
-    // Retrieves the specified bundle.
-    std::shared_ptr<Module> bundle = impl::Runtime::get().findModule( identifier );
-    if( bundle == nullptr )
+    // Retrieves the specified module.
+    std::shared_ptr<Module> module = impl::Runtime::get().findModule( identifier );
+    if( module == nullptr )
     {
         throw RuntimeException(identifier + ": bundle not found.");
     }
-    // Starts the found bundle.
-    bundle->start();
+    // Starts the found module.
+    module->start();
 }
 
 //------------------------------------------------------------------------------

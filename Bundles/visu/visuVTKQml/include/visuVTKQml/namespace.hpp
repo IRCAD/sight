@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,7 @@
 
 /**
  * @ingroup apprequirement
- * @brief   The bundle visuVTKQml allows to display the VTK scene into a qml interface.
+ * @brief   The module visuVTKQml allows to display the VTK scene into a qml interface.
  */
 namespace visuVTKQml
 {

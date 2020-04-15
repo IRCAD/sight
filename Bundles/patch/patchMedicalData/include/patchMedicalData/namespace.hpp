@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __PATCHMEDICALDATA_NAMESPACE_HPP__
-#define __PATCHMEDICALDATA_NAMESPACE_HPP__
-
 /**
  * @ingroup  apprequirement
- * @brief    The bundle patchMedicalData allows to load patches from fwStructuralPatch and fwMDSemanticPatch library.
+ * @brief    The module patchMedicalData allows to load patches from fwStructuralPatch and fwMDSemanticPatch library.
  *
  * It must be added in the application \p \<requirement\> section in order to load/save medical patient folder from a
  * different version.
  */
+#pragma once
+
 namespace patchMedicalData
 {
 
 }
-#endif /* __PATCHMEDICALDATA_NAMESPACE_HPP__ */

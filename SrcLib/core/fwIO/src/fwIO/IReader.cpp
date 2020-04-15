@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -227,7 +227,7 @@ void IReader::configuring()
             auto folder                = ::fwRuntime::getBundleResourceFilePath(resource);
             if(folder.empty())
             {
-                // If not found in a bundle, look into libraries
+                // If not found in a module, look into libraries
                 folder = ::fwRuntime::getLibraryResourceFilePath(resource);
                 SLM_ERROR_IF("Resource '" + resource + "' has not been found in any bundle or library", folder.empty());
             }

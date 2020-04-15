@@ -44,7 +44,7 @@ namespace ut
 void AppConfigParametersTest::setUp()
 {
     // Set up context before running a test.
-    //Bundles location
+    //modules location
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultModules();
 

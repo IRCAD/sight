@@ -62,7 +62,7 @@ std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
             OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
             if(!std::filesystem::exists(schemaPath))
             {
-                // Allow to specify a schema defined elsewhere than this bundle
+                // Allow to specify a schema defined elsewhere than this module
                 schemaPath = ::fwRuntime::getResourceFilePath(m_schema);
             }
             m_validator = std::make_shared< io::Validator >(schemaPath);

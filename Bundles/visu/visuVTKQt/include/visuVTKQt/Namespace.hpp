@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUVTKQT_NAMESPACE_HPP__
-#define __VISUVTKQT_NAMESPACE_HPP__
-
 /**
  * @ingroup apprequirement
- * @brief   The bundle visuVTKQt contains a vtk Renderer window interactor manager using Qt. It must be set in the
+ * @brief   The module visuVTKQt contains a vtk Renderer window interactor manager using Qt. It must be set in the
  *          application (or activity) \p \<requirement\> in order to use a VTK scene in an application using Qt.
  */
+#pragma once
+
 namespace visuVTKQt
 {
 
 }
-
-#endif /* __VISUVTKQT_NAMESPACE_HPP__ */

@@ -472,7 +472,7 @@ void TransferFunctionEditor::initTransferFunctions()
     // Test if transfer function composite has few TF
     if( poolTF->size() <= 1 )
     {
-        // Parse all TF contained in uiTF Bundle's resources
+        // Parse all TF contained in uiTF module's resources
         std::vector< std::filesystem::path > paths;
         for(std::filesystem::path dirPath :  m_paths)
         {

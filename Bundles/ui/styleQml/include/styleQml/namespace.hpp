@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace styleQml
  *
  * @tableofcontents
  *
- * styleQml bundle contains the basic services to run a Qml application and style the application.
+ * styleQml module contains the basic services to run a Qml application and style the application.
  *
  * The style in Qml is located inside styleQml.
  *
@@ -62,7 +62,7 @@ namespace styleQml
  * @subsubsection SingletonQmlDir QmlDir
  *
  * Even if we have setup the Singleton we need to import this Qml.
- * It is made in the qmldir in the subfolder rc/styleQml of the bundle styleQml. This line: `singleton Theme 1.0
+ * It is made in the qmldir in the subfolder rc/styleQml of the module styleQml. This line: `singleton Theme 1.0
  * Material.qml` import the singleton and set the name Theme to use it.
  * To resume, you need to write Theme + the name of the Material variable: `Theme.foreground`.
  *

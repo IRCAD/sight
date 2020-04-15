@@ -66,7 +66,7 @@ void RuntimeTest::testOperations()
 {
     const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX;
 
-    // Bundle location prototype
+    // module location prototype
     auto path = ::fwRuntime::getModuleResourcePath(std::string("servicesReg"));
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1", path);
 
@@ -95,7 +95,7 @@ void RuntimeTest::testOperations()
     path = ::fwRuntime::getResourceFilePath("servicesReg-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
 
-    // (Bundle, path) prototype
+    // (module, path) prototype
     path = ::fwRuntime::getModuleResourceFilePath("servicesReg", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
 

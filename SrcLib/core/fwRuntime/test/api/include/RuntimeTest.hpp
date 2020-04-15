@@ -30,7 +30,7 @@ namespace ut
 {
 
 /**
- * @brief   Test Runtime : read the bundles in CommonLib
+ * @brief   Test Runtime : read the modules in CommonLib
  */
 class RuntimeTest : public CPPUNIT_NS::TestFixture
 {

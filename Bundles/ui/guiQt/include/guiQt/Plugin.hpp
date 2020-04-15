@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@ class Worker;
 namespace guiQt
 {
 /**
- * @brief   This class is called when the guiQt bundle is loaded.
+ * @brief   This class is called when the guiQt module is loaded.
  */
 class GUIQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CTRLHISTORY_PLUGIN_HPP__
-#define __CTRLHISTORY_PLUGIN_HPP__
+#pragma once
 
 #include "ctrlHistory/config.hpp"
 
@@ -31,7 +30,7 @@ namespace ctrlHistory
 {
 
 /**
- * @brief This class starts when the bundle is loaded.
+ * @brief This class starts when the module is loaded.
  */
 struct CTRLHISTORY_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -47,5 +46,3 @@ struct CTRLHISTORY_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace ctrlHistory
-
-#endif //__CTRLHISTORY_PLUGIN_HPP__

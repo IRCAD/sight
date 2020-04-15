@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __UIIMAGEQT_NAMESPACE_HPP__
-#define __UIIMAGEQT_NAMESPACE_HPP__
-
 /**
  * @brief       The namespace uiImageQt contains several editors on image written with Qt.
- * This namespace is included in uiImageQt bundle.
+ * This namespace is included in uiImageQt module.
  */
+#pragma once
+
 namespace uiImageQt
 {
 
 }
-#endif /* __UIIMAGEQT_NAMESPACE_HPP__ */

@@ -165,7 +165,7 @@ public:
     /// @copydoc ::fwRuntime::Runtime::getBundles
     [[deprecated]] virtual ::fwRuntime::Runtime::ModuleContainer getBundles() final;
 
-    /// @copydoc ::fwRuntime::Runtime::getBundles
+    /// @copydoc ::fwRuntime::Runtime::getModules
     virtual ::fwRuntime::Runtime::ModuleContainer getModules() final;
     //@}
 

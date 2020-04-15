@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,7 @@ class frame_publisher;
 }
 }
 
-/// The bundle openvslamTracker contains SOpenvslam service to manage instance of OpenVSLAM.
+/// The module openvslamTracker contains SOpenvslam service to manage instance of OpenVSLAM.
 namespace openvslamTracker
 {
 

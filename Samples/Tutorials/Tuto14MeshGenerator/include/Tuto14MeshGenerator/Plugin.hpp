@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace Tuto14MeshGenerator
 {
 
 /**
- * @brief Class call when bundle is started/stopped
+ * @brief Class call when module is started/stopped
  */
 class TUTO14MESHGENERATOR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -40,12 +40,11 @@ public:
     /// PLugin destructor
     TUTO14MESHGENERATOR_API ~Plugin() noexcept;
 
-    /// This method is used by runtime to initialize the bundle.
+    /// This method is used by runtime to initialize the module.
     TUTO14MESHGENERATOR_API void start();
 
-    /// This method is used by runtime to stop the bundle.
+    /// This method is used by runtime to stop the module.
     TUTO14MESHGENERATOR_API void stop() noexcept;
 };
 
 } // namespace Tuto14MeshGenerator
-

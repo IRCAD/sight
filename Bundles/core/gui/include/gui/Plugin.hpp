@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace gui
 {
 
 /**
- * @brief   This class is called when the gui bundle is loaded.
+ * @brief   This class is called when the gui module is loaded.
  */
 
 class GUI_CLASS_API Plugin : public ::fwRuntime::Plugin
@@ -52,7 +52,7 @@ public:
     GUI_API void start();
 
     /**
-     * @brief This method is used by runtime to close the bundle. Do nothing.
+     * @brief This method is used by runtime to close the module. Do nothing.
      */
     GUI_API void stop() noexcept;
 

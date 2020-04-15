@@ -68,13 +68,13 @@ void RuntimeTest::testRuntime()
 {
     ::fwRuntime::impl::Runtime& runtime = ::fwRuntime::impl::Runtime::get();
 
-    // Test bundle dataReg
+    // Test module dataReg
     CPPUNIT_ASSERT(runtime.findModule("dataReg"));
     auto bundle = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("dataReg"));
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnable());
 
-    // Test bundle servicesReg
+    // Test module servicesReg
     CPPUNIT_ASSERT(runtime.findModule("servicesReg"));
     auto bundle2 = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("servicesReg"));
     bundle2->setEnable(true);

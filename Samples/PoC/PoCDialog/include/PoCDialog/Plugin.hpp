@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace PoCDialog
 {
 
 /**
- * @brief   This class is started when the bundle is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 class POCDIALOG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

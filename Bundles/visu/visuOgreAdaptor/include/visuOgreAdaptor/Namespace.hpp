@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
  *
  * It's also used to register light factory (fwRenderOgreRegisterLightMacro).
  * So, if you want to use any lights in your application,
- * you require this bundle: add the requirement in your application plugin.xml.
+ * you require this module: add the requirement in your application plugin.xml.
  */
 namespace visuOgreAdaptor
 {

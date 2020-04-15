@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace visuOgre supplies a default plugin implementation for the visuOgre bundle.
+ * @brief The namespace visuOgre supplies a default plugin implementation for the visuOgre module.
  */
 #pragma once
 

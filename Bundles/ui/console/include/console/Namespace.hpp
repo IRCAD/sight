@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __CONSOLE_NAMESPACE_HPP__
-#define __CONSOLE_NAMESPACE_HPP__
-
 /**
  * @ingroup apprequirement
  * @brief The namespace console contains no service. It is only used to launch a main loop for console applications.
  *
- * This bundle is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
+ * This module is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
  * application's Properties.cmake.
  */
+#pragma once
+
 namespace console
 {
 
 }
-#endif /* __CONSOLE_NAMESPACE_HPP__ */

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,15 @@
  *
  ***********************************************************************/
 
-
-#ifndef __SCENE2D_NAMESPACE_HPP__
-#define __SCENE2D_NAMESPACE_HPP__
-
 /**
  * @ingroup apprequirement
- * @brief This bundles contains data and services used to display a 2D Qt scene.
+ * @brief This modules contains data and services used to display a 2D Qt scene.
  *
  * It must be started in the application or activity requirement.
  */
+#pragma once
+
 namespace scene2D
 {
 
 } // namespace scene2D
-
-#endif // __SCENE2D_NAMESPACE_HPP__
-

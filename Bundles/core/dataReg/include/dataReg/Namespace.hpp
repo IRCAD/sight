@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,13 @@
  *
  ***********************************************************************/
 
-#ifndef __DATAREG_NAMESPACE_HPP__
-#define __DATAREG_NAMESPACE_HPP__
-
 /**
  * @ingroup apprequirement
  * @brief  The namespace dataReg (data registration) contains classes which allow to parse the xml configuration
  *         of objects .
  *
  * It also is used to load fwData and fwMedData library. So, if you want to use any objects in your application
- * described in XML, you require this bundle: add the requirement in your application plugin.xml.
+ * described in XML, you require this module: add the requirement in your application plugin.xml.
  *
  * @code{xml}
     <requirement id="dataReg" />
@@ -67,8 +64,9 @@
     </plugin>
    @endcode
  */
+#pragma once
+
 namespace dataReg
 {
 
 }
-#endif /* __DATAREG_NAMESPACE_HPP__ */

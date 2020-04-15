@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __APPXML_NAMESPACE_HPP__
-#define __APPXML_NAMESPACE_HPP__
-
 /**
  * @ingroup apprequirement
- * @brief  The bundle appXml allows to parse xml configuration of an application.
+ * @brief  The module appXml allows to parse xml configuration of an application.
  * See @ref AppConfig for more details.
  *
- * This bundle is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
+ * This module is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
  * application's Properties.cmake.
  *
  * Example
@@ -47,8 +44,9 @@
     bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)
    @endcode
  */
+#pragma once
+
 namespace appXml
 {
 
 }
-#endif /* __APPXML_NAMESPACE_HPP__ */

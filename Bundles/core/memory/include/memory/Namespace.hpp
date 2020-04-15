@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,22 +20,20 @@
  *
  ***********************************************************************/
 
-#ifndef __MEMORY_NAMESPACE_HPP__
-#define __MEMORY_NAMESPACE_HPP__
-
 /**
  * @ingroup   apprequirement
  * @brief     The namespace memory contains tools to manage memory. It is used for dump.
  *            It allows to define the buffer loading mode for the application (lazy and direct) at the start of this
- *            bundle. Add it in the application's \p \<requirement\> section.
+ *            module. Add it in the application's \p \<requirement\> section.
  *
  * To configure the loading mode (here 'lazy') , add the following line in your application's Properties.cmake
  * @code{cmake}
     bundleParam(memory PARAM_LIST loading_mode PARAM_VALUES lazy)
    @endcode
  */
+#pragma once
+
 namespace memory
 {
 
 }
-#endif /* __MEMORY_NAMESPACE_HPP__ */

@@ -28,7 +28,7 @@ namespace depthSegmentation
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the modules are loaded.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {

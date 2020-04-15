@@ -302,7 +302,7 @@ FWRUNTIME_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Confi
  * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
  *
  * @param   executable  a pointer to an executable instance
- * @param   path        a path relative to the bundle
+ * @param   path        a path relative to the module
  *
  * @return  a system valid path
  */
@@ -310,44 +310,44 @@ FWRUNTIME_API std::filesystem::path getModuleResourcePath(const IExecutable* exe
                                                           const std::filesystem::path& path) noexcept;
 
 /**
- * @brief   Loads all bundles that can be found in the specified directory.
+ * @brief   Loads all modules that can be found in the specified directory.
  *
- * @param   directory   a path to the directory to explore for bundles
+ * @param   directory   a path to the directory to explore for modules
  * @deprecated  Bundle has been renamed to Module, please use addModules() instead
  */
 [[deprecated]] FWRUNTIME_API void addBundles( const std::filesystem::path& directory );
 
 /**
- * @brief   Loads all bundles that can be found in the specified directory.
+ * @brief   Loads all modules that can be found in the specified directory.
  *
- * @param   directory   a path to the directory to explore for bundles
+ * @param   directory   a path to the directory to explore for modules
  */
 FWRUNTIME_API void addModules( const std::filesystem::path& directory );
 
 /**
- * @brief   Load a bundle.
+ * @brief   Load a module.
  *
- * @param   identifier  a string containing a bundle identifier
+ * @param   identifier  a string containing a module identifier
  * @param   version     a version (none by default)
  *
- * @return  a shared pointer to the found bundle, or empty when it is not found
+ * @return  a shared pointer to the found module, or empty when it is not found
  * @deprecated  Bundle has been renamed to Module, please use loadModule() instead
  */
 [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> loadBundle( const std::string& identifier,
                                                                  const Version& version = Version() );
 
 /**
- * @brief   Load a bundle.
+ * @brief   Load a module.
  *
- * @param   identifier  a string containing a bundle identifier
+ * @param   identifier  a string containing a module identifier
  * @param   version     a version (none by default)
  *
- * @return  a shared pointer to the found bundle, or empty when it is not found
+ * @return  a shared pointer to the found module, or empty when it is not found
  */
 FWRUNTIME_API std::shared_ptr<Module> loadModule( const std::string& identifier, const Version& version = Version() );
 
 /**
- * @brief   Starts the given bundle set profile.
+ * @brief   Starts the given module set profile.
  *
  * @param   path    a path to an xml profile file
  *
@@ -356,39 +356,39 @@ FWRUNTIME_API std::shared_ptr<Module> loadModule( const std::string& identifier,
 FWRUNTIME_API std::shared_ptr< ::fwRuntime::Profile > startProfile( const std::filesystem::path& path );
 
 /**
- * @brief   Retrieves the bundle with the given identifier and version
+ * @brief   Retrieves the module with the given identifier and version
  *
- * @param   identifier  a string containing a bundle identifier
+ * @param   identifier  a string containing a module identifier
  * @param   version     a version (none by default)
  *
- * @return  a shared pointer to the found bundle, or empty when none
+ * @return  a shared pointer to the found module, or empty when none
  * @deprecated  Bundle has been renamed to Module, please use findModule() instead
  */
 [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> findBundle( const std::string& identifier,
                                                                  const Version& version = Version() );
 
 /**
- * @brief   Retrieves the bundle with the given identifier and version
+ * @brief   Retrieves the module with the given identifier and version
  *
- * @param   identifier  a string containing a bundle identifier
+ * @param   identifier  a string containing a module identifier
  * @param   version     a version (none by default)
  *
- * @return  a shared pointer to the found bundle, or empty when none
+ * @return  a shared pointer to the found module, or empty when none
  */
 FWRUNTIME_API std::shared_ptr<Module> findModule( const std::string& identifier, const Version& version = Version() );
 
 /**
- * @brief   Starts the bundle specified by the given identifier.
+ * @brief   Starts the module specified by the given identifier.
  *
- * @param   identifier  a string containing a bundle identifier
+ * @param   identifier  a string containing a module identifier
  * @deprecated  Bundle has been renamed to Module, please use startBundle() instead
  */
 [[deprecated]] FWRUNTIME_API void startBundle(const std::string& identifier);
 
 /**
- * @brief   Starts the bundle specified by the given identifier.
+ * @brief   Starts the module specified by the given identifier.
  *
- * @param   identifier  a string containing a bundle identifier
+ * @param   identifier  a string containing a module identifier
  */
 FWRUNTIME_API void startModule(const std::string& identifier);
 

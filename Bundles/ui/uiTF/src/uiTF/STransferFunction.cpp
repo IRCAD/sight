@@ -521,7 +521,7 @@ void STransferFunction::initTransferFunctions()
     if(poolTF->size() <= 1)
     {
         poolTFLock.unlock();
-        // Parse all TF contained in uiTF Bundle's resources
+        // Parse all TF contained in uiTF module's resources
         std::vector< std::filesystem::path > paths;
         for(std::filesystem::path dirPath :  m_paths)
         {

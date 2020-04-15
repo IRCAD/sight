@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,9 +66,9 @@ public:
     /**
      * @brief Utils::addRessourcesPath
      *        Add a path to load Ogre ressources from a specific path.
-     *        You must edit the ressource.cfg file for each Bundle containing specific resources
-     *        In this case, you can call this method in the Plugin.cpp file of this Bundle
-     * @param path Relative path to the ressource.cfg file from a specific Bundle
+     *        You must edit the ressource.cfg file for each module containing specific resources
+     *        In this case, you can call this method in the Plugin.cpp file of this module
+     * @param path Relative path to the ressource.cfg file from a specific module
      */
     FWRENDEROGRE_API static void addResourcesPath(const std::filesystem::path& path);
 

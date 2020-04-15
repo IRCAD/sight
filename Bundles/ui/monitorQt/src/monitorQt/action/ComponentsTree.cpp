@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,18 +65,18 @@ void ComponentsTree::updating( )
     {
         const std::string bundleName = bundle->getIdentifier();
         const bool isBundleEnable    = bundle->isEnable();
-        QTreeWidgetItem* bundleItem  = new QTreeWidgetItem();
+        QTreeWidgetItem* moduleItem  = new QTreeWidgetItem();
         if(!isBundleEnable)
         {
-            bundleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
+            moduleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
         }
-        bundleItem->setText(0, QString::fromStdString(bundleName));
-        m_treeContainer->addTopLevelItem( bundleItem );
+        moduleItem->setText(0, QString::fromStdString(bundleName));
+        m_treeContainer->addTopLevelItem( moduleItem );
 
         //Extensions
         QTreeWidgetItem* extensionsItem = new QTreeWidgetItem();
         extensionsItem->setText(0, QObject::tr("Extensions"));
-        bundleItem->addChild( extensionsItem );
+        moduleItem->addChild( extensionsItem );
 
         for (const auto& extension : bundle->getExtensions())
         {

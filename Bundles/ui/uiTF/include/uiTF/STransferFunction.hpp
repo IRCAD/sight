@@ -72,7 +72,7 @@ namespace uiTF
  * @subsection Output Output
  * - \b tf [::fwData::TransferFunction]: selected transfer function.
  * @subsection Configuration Configuration
- * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF bundle.
+ * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
  * - \b deleteIcon (optional): path of the delete button icon.
  * - \b newIcon (optional): path of the new button icon.
@@ -133,7 +133,7 @@ private:
      * @brief Initializes the transfer functions.
      *
      * Add their names to the ComboBox. If the composite does not contain any TF (or only the default grey level TF,
-     * the service creates a few from the ressources of the Bundle.
+     * the service creates a few from the ressources of the module.
      */
     void initTransferFunctions();
 

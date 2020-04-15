@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
  *
  * It's also used to load fwPacsIO library. So, if you want to use a
  * ::fwPacsIO::data::PacsConfiguration objects in your application,
- * you require this bundle: add the requirement in your application plugin.xml.
+ * you require this module: add the requirement in your application plugin.xml.
  */
 namespace ioPacs
 {

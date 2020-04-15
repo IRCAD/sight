@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,7 +58,7 @@ struct OPENVSLAMIO_CLASS_API InitParams
     float parallaxDegThr = 1.0;
     /// Reprojection Error threshold.
     float reprojErrThr = 4.0;
-    /// Number of Iterations for Bundle-Adjustement.
+    /// Number of Iterations for module-Adjustement.
     unsigned int numBAIterations = 20;
     /// Initial scale factor.
     float scalingFactor = 1000.0;

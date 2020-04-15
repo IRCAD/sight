@@ -70,7 +70,7 @@ namespace uiTF
  * - \b tfPool [::fwData::Composite]: selected transfer function pool.
  *
  * @subsection Configuration Configuration
- * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF bundle.
+ * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
  * - \b tfPerPath (optional, default="false"): if true, merge all TF contains in each path to a new composite.
  * - \b deleteIcon (optional): path of the delete button icon.
@@ -149,7 +149,7 @@ private:
      * @brief Initializes the composite.
      *
      * Add their names to m_tfPoolsPreset. If the composite does not contain any TF (or only the default grey level TF,
-     * the service creates a few from the ressources of the Bundle.
+     * the service creates a few from the ressources of the module.
      *
      * @see updatePoolsPreset()
      */

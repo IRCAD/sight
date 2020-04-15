@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __GUIQT_NAMESPACE_HPP__
-#define __GUIQT_NAMESPACE_HPP__
-
 /**
  * @ingroup apprequirement
  * @brief The namespace guiQt contains the basic services to build the application IHM with Qt.
  *
- * This bundle is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
+ * This module is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
  * application's Properties.cmake.
  *
  * Example
@@ -46,8 +43,9 @@
     bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)
    @endcode
  */
+#pragma once
+
 namespace guiQt
 {
 
 }
-#endif /* __GUIQT_NAMESPACE_HPP__ */

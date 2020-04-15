@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -456,7 +456,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
 void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo& info )
 {
-    // Start Bundle containing the activity if it is not started
+    // Start module containing the activity if it is not started
     std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
     SLM_WARN_IF("Bundle '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
                 bundle->isStarted());

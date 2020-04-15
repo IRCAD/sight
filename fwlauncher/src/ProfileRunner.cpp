@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -285,7 +285,7 @@ int main(int argc, char* argv[])
     profileFile = ::absolute(profileFile);
     rwd         = ::absolute(rwd);
 
-    // Automatically adds the bundle folders where the profile.xml is located if it was not already there
+    // Automatically adds the module folders where the profile.xml is located if it was not already there
     const auto profileBundlePath = profileFile.parent_path().parent_path();
     bool findProfileBundlePath   = false;
     for(const fs::path& bundlePath :  bundlePaths )

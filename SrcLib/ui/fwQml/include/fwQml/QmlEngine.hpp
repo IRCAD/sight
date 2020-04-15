@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,11 +26,12 @@
 
 #include <fwCore/macros.hpp>
 
-#include <filesystem>
 #include <QList>
 #include <QPointer>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+
+#include <filesystem>
 
 namespace fwQml
 {
@@ -75,7 +76,7 @@ public:
      * The directory should contain a sub directory with the qml files and a qmldir file that describe the module.
      *
      * Example:
-     * - declare your qm files in the rc directory of your bundle in a subdirectory named as your bundle:
+     * - declare your qm files in the rc directory of your bundle in a subdirectory named as your module:
      * @verbatim
         - myBundle
            - include
