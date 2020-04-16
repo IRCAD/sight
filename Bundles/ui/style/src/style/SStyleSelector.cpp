@@ -22,6 +22,8 @@
 
 #include "style/SStyleSelector.hpp"
 
+#include <fwCom/Slots.hxx>
+
 #include <fwCore/macros.hpp>
 
 #include <fwPreferences/helper.hpp>
@@ -43,14 +45,12 @@ fwServicesRegisterMacro( ::fwServices::IController, ::style::SStyleSelector )
 namespace style
 {
 
-static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_FROM_PREFS_SLOT  = "updateFromPreferences";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_FROM_PREFS_SLOT = "updateFromPreferences";
 
 //-----------------------------------------------------------------------------
 
 SStyleSelector::SStyleSelector() noexcept
 {
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SStyleSelector::setEnumParameter, this);
     newSlot(s_UPDATE_FROM_PREFS_SLOT, &SStyleSelector::updateFromPrefs, this);
 }
 
@@ -82,7 +82,7 @@ void SStyleSelector::starting()
 
         if(f.extension() == ".rcc")
         {
-            const std::string filename = f.filename().replace_extension("");
+            const std::string filename = f.filename().replace_extension("").string();
 
             std::string name = filename;
             std::transform(filename.begin(), filename.end(), name.begin(),
