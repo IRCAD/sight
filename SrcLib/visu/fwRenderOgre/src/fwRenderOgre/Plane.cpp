@@ -189,7 +189,6 @@ void Plane::initializeMaterial()
             m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
             m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
         }
-        m_borderMaterial->setDepthCheckEnabled(false);
     }
 }
 
