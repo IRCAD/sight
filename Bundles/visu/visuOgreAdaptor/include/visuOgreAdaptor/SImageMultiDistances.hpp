@@ -62,11 +62,11 @@ namespace visuOgreAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string) : Defines distance's layer.
- * - \b fontSource (optional, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
- * - \b fontSize (optional, default=16): Font size in points.
- * - \b radius (optional, default=4.5): Size of the distances spheres.
+ * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, int, default=16): Font size in points.
+ * - \b radius (optional, float, default=4.5): Size of the distances spheres.
  * - \b interactive (optional, bool, default=true): Enables interactions with distances.
- * - \b priority (optional, default=3): Priority of the interactor.
+ * - \b priority (optional, int, default=3): Priority of the interactor.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): Mask used to filter out entities when the distance is auto
  * snapped.
  * - \b distanceQueryFlags (optional, uint32, default=0x40000000): Mask apply to distances spheres.
