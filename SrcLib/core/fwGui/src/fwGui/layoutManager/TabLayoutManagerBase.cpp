@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -122,8 +122,8 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
             if(!hexaColor.empty())
             {
                 OSLM_ASSERT(
-                    "Color string should start with '#' and followed by 6 ou 8 "
-                    "hexadecimal digits. Given color : " << hexaColor,
+                    "Color string should start with '#' and followed by 6 or 8 "
+                    "hexadecimal digits. Given color: " << hexaColor,
                         hexaColor[0] == '#'
                         && ( hexaColor.length() == 7 || hexaColor.length() == 9)
                     );

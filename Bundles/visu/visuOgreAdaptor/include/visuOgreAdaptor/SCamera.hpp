@@ -98,7 +98,7 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT tos_UPDATE_SLOT
+     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      * Connect ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
      * Connect ::arData::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      * Connect ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT

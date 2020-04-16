@@ -83,8 +83,8 @@ void SVector::configuring()
     m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_color  = config.get<std::string>(s_COLOR_CONFIG, m_color);
     OSLM_ASSERT(
-        "Color string should start with '#' and followed by 6 ou 8 "
-        "hexadecimal digits. Given color : " << m_color,
+        "Color string should start with '#' and followed by 6 or 8 "
+        "hexadecimal digits. Given color: " << m_color,
             m_color[0] == '#'
             && ( m_color.length() == 7 || m_color.length() == 9)
         );

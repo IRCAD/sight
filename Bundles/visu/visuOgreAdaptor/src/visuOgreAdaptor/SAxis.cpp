@@ -88,8 +88,8 @@ void SAxis::configuring()
 
     m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
     OSLM_ASSERT(
-        "Color string should start with '#' and followed by 6 ou 8 "
-        "hexadecimal digits. Given color : " << m_originColor,
+        "Color string should start with '#' and followed by 6 or 8 "
+        "hexadecimal digits. Given color: " << m_originColor,
             m_originColor[0] == '#'
             && ( m_originColor.length() == 7 || m_originColor.length() == 9)
         );
