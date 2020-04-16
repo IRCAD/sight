@@ -43,7 +43,7 @@ namespace visuOgreAdaptor
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFragmentsInfo)
 
-struct FragmentsInfoMaterialListener : public ::Ogre::MaterialManager::Listener
+struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Listener
 {
 
     virtual ~FragmentsInfoMaterialListener()
@@ -82,15 +82,12 @@ static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
 static const ::fwServices::IService::KeyType s_DEPTH_INOUT        = "depth";
 static const ::fwServices::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID";
 
-static const ::fwCom::Signals::SignalKeyType s_RESIZE_RENDER_TARGET_SLOT = "resizeRenderTarget";
-
 static std::unique_ptr< FragmentsInfoMaterialListener > s_MATERIAL_LISTENER = nullptr;
 
 //-----------------------------------------------------------------------------
 
 SFragmentsInfo::SFragmentsInfo() noexcept
 {
-    newSlot(s_RESIZE_RENDER_TARGET_SLOT, &SFragmentsInfo::resizeRenderTarget, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,14 +146,16 @@ void SFragmentsInfo::starting()
     // If not listen to the resize event of the layer.
     else
     {
+        const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+        ::Ogre::Viewport* const viewport = layer->getViewport();
 
-        const auto h = this->getLayer()->getViewport()->getActualHeight();
-        const auto w = this->getLayer()->getViewport()->getActualWidth();
+        const auto h = viewport->getActualHeight();
+        const auto w = viewport->getActualWidth();
 
         this->createCompositor(w, h);
 
-        m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
-                                  this->getSptr(), s_RESIZE_RENDER_TARGET_SLOT);
+        // Listen the viewport to catch the resize event.
+        viewport->addListener(this);
     }
 }
 
@@ -213,6 +212,14 @@ void SFragmentsInfo::updating() noexcept
 void SFragmentsInfo::stopping()
 {
     this->destroyCompositor();
+
+    // Removes the listener from the viewport.
+    if(!m_fixedSize)
+    {
+        const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+        ::Ogre::Viewport* const viewport = layer->getViewport();
+        viewport->removeListener(this);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -363,13 +370,16 @@ void SFragmentsInfo::destroyCompositor()
 
 //-----------------------------------------------------------------------------
 
-void SFragmentsInfo::resizeRenderTarget(int _width, int _height)
+void SFragmentsInfo::viewportDimensionsChanged(::Ogre::Viewport* _viewport)
 {
-    // Sometimes, the layer sends a null size, we need to avoid resizing since a global texture needs absolute values.
-    if(_width != 0 && _height != 0)
+    int left, top, width, height;
+    _viewport->getActualDimensions(left, top, width, height);
+
+    // Sometimes, the size can be null, we need to avoid resizing since a global texture needs absolute values.
+    if(width != 0 && height != 0)
     {
         this->destroyCompositor();
-        this->createCompositor(_width, _height);
+        this->createCompositor(width, height);
     }
 }
 

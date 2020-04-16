@@ -34,10 +34,6 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor takes a snapshot of layer fragments information and output it as a ::fwData::Image.
  *
- * @section Slots Slots:
- * -\b resizeRenderTarget(int _width, int _height): resize the output texture with _width * _height.
- * If width & height are not present in <config /> this slot is connected to the resize signal of the layer.
- *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SFragmentsInfo">
@@ -61,7 +57,9 @@ namespace visuOgreAdaptor
  * - \b depth [::fwData::Image] (optional): image containing the snapshot of the layer depth buffer.
  * - \b primitiveID [::fwData::Image] (optional): image containing the primitive ID of the layer.
  */
-class VISUOGREADAPTOR_CLASS_API SFragmentsInfo final : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SFragmentsInfo final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::Ogre::Viewport::Listener
 {
 public:
 
@@ -98,14 +96,13 @@ private:
     void destroyCompositor();
 
     /**
-     * @brief SLOT: resizes the global render target.
+     * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.
      *
      * Call @ref ::visuOgreAdaptor::destroyCompositor() and @ref ::visuOgreAdaptor::createCompositor(int, int).
      *
-     * @param _width width of the global render target (color and depth).
-     * @param _height height of the global render target (color and depth).
+     * @param _viewport related layer's viewport.
      */
-    void resizeRenderTarget(int _width, int _height);
+    virtual void viewportDimensionsChanged(::Ogre::Viewport* _viewport) override;
 
     /// Contains the created compositor.
     ::Ogre::CompositorPtr m_compositor { nullptr };
