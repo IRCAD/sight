@@ -24,6 +24,8 @@
 
 #include <fwCore/macros.hpp>
 
+#include <fwPreferences/helper.hpp>
+
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
@@ -42,12 +44,14 @@ namespace style
 {
 
 static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_FROM_PREFS_SLOT  = "updateFromPreferences";
 
 //-----------------------------------------------------------------------------
 
 SStyleSelector::SStyleSelector() noexcept
 {
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SStyleSelector::setEnumParameter, this);
+    newSlot(s_UPDATE_FROM_PREFS_SLOT, &SStyleSelector::updateFromPrefs, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,7 +64,6 @@ SStyleSelector::~SStyleSelector() noexcept
 
 void SStyleSelector::configuring()
 {
-    const auto configTree = this->getConfigTree();
 }
 
 //-----------------------------------------------------------------------------
@@ -89,12 +92,16 @@ void SStyleSelector::starting()
 
         }
     }
+
+    // Apply theme from preferences if any.
+    this->updateFromPrefs();
 }
 
 //-----------------------------------------------------------------------------
 
 void SStyleSelector::stopping()
 {
+    m_styleMap.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,6 +121,8 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
     if(path.empty())
     {
         qApp->setStyleSheet("");
+        ::fwPreferences::setPreference("THEME", "DEFAULT");
+        ::fwPreferences::savePreferences();
         return;
     }
 
@@ -130,29 +139,21 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
         style = styleIn.readAll();
         data.close();
         qApp->setStyleSheet(style);
+        ::fwPreferences::setPreference("THEME", _styleName);
+        ::fwPreferences::savePreferences();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SStyleSelector::setEnumParameter(std::string _val, std::string _key)
+void SStyleSelector::updateFromPrefs()
 {
-    if(_key == "theme")
+    // Apply previously saved style in preferences file.
+    const std::string value = ::fwPreferences::getPreference("THEME");
+    if(!value.empty())
     {
-        if(m_styleMap.find(_val) != m_styleMap.end())
-        {
-            this->changeStyle(_val);
-        }
-        else
-        {
-            SLM_ERROR("Value '" + _val + "' is not handled for key " + _key);
-        }
+        this->changeStyle(value);
     }
-    else
-    {
-        SLM_ERROR("Key '" + _key + "' is not handled.");
-    }
-
 }
 
 //-----------------------------------------------------------------------------

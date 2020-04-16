@@ -10,7 +10,9 @@ set( REQUIREMENTS
     appXml
     fwlauncher
     uiGenericQt
+    uiPreferences
     style
+    preferences
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExNotificationsConfig)

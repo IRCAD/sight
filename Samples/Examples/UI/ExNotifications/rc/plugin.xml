@@ -13,6 +13,7 @@ are already displayed and where they are displayed on screen.
 
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
+    <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExNotificationsConfig</id>
@@ -31,7 +32,7 @@ are already displayed and where they are displayed on screen.
                     <view sid="mainview" start="yes" />
                 </registry>
             </service>
-            
+
            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
@@ -42,7 +43,7 @@ are already displayed and where they are displayed on screen.
                         <menuItem name="NOTIFY !"/>
                         <spacer />
                         <separator/>
-                        <editor />
+                        <menuItem name="Color Theme"/>
                     </layout>
                 </gui>
                 <registry>
@@ -50,7 +51,7 @@ are already displayed and where they are displayed on screen.
                     <editor sid="type" start="yes" />
                     <editor sid="position" start="yes" />
                     <menuItem sid="notify" start="yes" />
-                    <editor sid="style" start ="yes" />
+                    <menuItem sid="actionChangeTheme" start ="yes" />
                 </registry>
             </service>
 
@@ -88,12 +89,6 @@ are already displayed and where they are displayed on screen.
                 </parameters>
             </service>
 
-            <service uid="style" type="::guiQt::editor::SParameters">
-                <parameters>
-                    <param type="enum" name="Style" key="theme" defaultValue="DEFAULT" values="DEFAULT,DARKSTYLE,FLATDARK" />
-                </parameters>
-            </service>
-
             <!-- Dummy service only used to test notifications -->
             <service uid="testNotifier" type="::uiGenericQt::action::SDisplayTestNotifications" />
 
@@ -104,6 +99,18 @@ are already displayed and where they are displayed on screen.
                 <position>TOP_RIGHT</position><!-- Default position for ALL notifications (overriden by setEnumParameter slot) -->
                 <maxNotifications>3</maxNotifications> <!-- Maximum number of queued notifications -->
                 <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
+            </service>
+
+
+            <!-- preference to apply new theme on app -->
+            <service uid="actionChangeTheme" type="::uiPreferences::action::SPreferencesConfiguration">
+                <preference>
+                    <type>combobox</type>
+                    <name>Color Theme</name>
+                    <key>THEME</key>
+                    <values>DEFAULT,DARKSTYLE,FLATDARK</values>
+                    <default_value>DEFAULT</default_value>
+                </preference>
             </service>
 
             <service uid="styleChanger" type="::style::SStyleSelector" />
@@ -132,11 +139,6 @@ are already displayed and where they are displayed on screen.
             </connect>
 
             <connect>
-                <signal>style/enumChanged</signal>
-                <slot>styleChanger/setEnumParameter</slot>
-            </connect>
-
-            <connect>
                 <signal>type/enumChanged</signal>
                 <slot>testNotifier/setEnumParameter</slot>
             </connect>
@@ -144,6 +146,11 @@ are already displayed and where they are displayed on screen.
             <connect>
                 <signal>useSNotifier/boolChanged</signal>
                 <slot>testNotifier/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>actionChangeTheme/parametersModified</signal>
+                <slot>styleChanger/updateFromPreferences</slot>
             </connect>
 
             <start uid="mainFrame" />
