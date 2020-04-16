@@ -19,6 +19,7 @@ set( REQUIREMENTS
     uiPreferences
     uiTools
     maths
+    media
     preferences
     servicesReg
     trackerAruco
