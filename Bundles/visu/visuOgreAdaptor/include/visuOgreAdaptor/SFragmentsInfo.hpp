@@ -59,7 +59,8 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SFragmentsInfo final :
     public ::fwRenderOgre::IAdaptor,
-    public ::Ogre::Viewport::Listener
+    public ::Ogre::Viewport::Listener,
+    public ::Ogre::RenderTargetListener
 {
 public:
 
@@ -104,6 +105,9 @@ private:
      */
     virtual void viewportDimensionsChanged(::Ogre::Viewport* _viewport) override;
 
+    /// Calls @ref updating(), called just after a thelayer render target has been rendered to.
+    virtual void postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&) override;
+
     /// Contains the created compositor.
     ::Ogre::CompositorPtr m_compositor { nullptr };
 
@@ -115,9 +119,6 @@ private:
 
     /// Defines the global render target name used to get back the primitive ID.
     std::string m_targetPrimitiveIDName;
-
-    /// Handles connection the to layer.
-    ::fwCom::helper::SigSlotConnection m_layerConnection;
 
     /// Enables the fixed size, if width & height parameters are found in config xml, use fixed size.
     /// If not use the layer's viewport size and listen the resize event.

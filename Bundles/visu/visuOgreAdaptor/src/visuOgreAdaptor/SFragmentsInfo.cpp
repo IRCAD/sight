@@ -126,10 +126,8 @@ void SFragmentsInfo::starting()
     m_targetName            = this->getID() + "_global_RTT";
     m_targetPrimitiveIDName = this->getID() + "_primitiveID_RTT";
 
-    m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
-                              this->getSptr(), s_UPDATE_SLOT);
-    m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_RANGE_UPDATED_SIG,
-                              this->getSptr(), s_UPDATE_SLOT);
+    const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+    layer->getRenderService()->getInteractorManager()->getRenderTarget()->addListener(this);
 
     if(!s_MATERIAL_LISTENER)
     {
@@ -146,7 +144,6 @@ void SFragmentsInfo::starting()
     // If not listen to the resize event of the layer.
     else
     {
-        const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
         ::Ogre::Viewport* const viewport = layer->getViewport();
 
         const auto h = viewport->getActualHeight();
@@ -213,10 +210,12 @@ void SFragmentsInfo::stopping()
 {
     this->destroyCompositor();
 
+    const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
+    layer->getRenderService()->getInteractorManager()->getRenderTarget()->removeListener(this);
+
     // Removes the listener from the viewport.
     if(!m_fixedSize)
     {
-        const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
         ::Ogre::Viewport* const viewport = layer->getViewport();
         viewport->removeListener(this);
     }
@@ -381,6 +380,13 @@ void SFragmentsInfo::viewportDimensionsChanged(::Ogre::Viewport* _viewport)
         this->destroyCompositor();
         this->createCompositor(width, height);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SFragmentsInfo::postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&)
+{
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
