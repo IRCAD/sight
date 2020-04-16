@@ -89,7 +89,7 @@ void PreIntegrationTable::imageUpdate(const fwData::Image::sptr& _img, const ::f
 
         const auto dumpLock = _img->lock();
 
-        size_t nbPixels = _img->getNumElements();
+        const size_t nbPixels = _img->getNumElements();
 
         switch(pixelFormat)
         {
