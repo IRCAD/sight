@@ -37,6 +37,7 @@ namespace builder
 /**
  * @brief Defines the interface class for the slide view builder.
  *
+ * @section XML XML Configuration
  * @code{.xml}
     <slideView vAlign="top" hAlign="left" widht="50%" height="15" opacity="1.0" >
         <styleSheet>color: blue; background-color: yellow</styleSheet>
