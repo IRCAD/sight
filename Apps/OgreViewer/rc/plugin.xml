@@ -92,7 +92,7 @@
                         <view proportion="1" />
                         <view proportion="0" minWidth="500" backgroundColor="#36393E" />
                     </layout>
-                    <slideView align="right" opacity="1" size="50" >
+                    <slideView opacity="1" hAlign="right" vAlign="top" width="50" height="55" >
                         <styleSheet>
                             <![CDATA[
                             #SlideBar QWidget {

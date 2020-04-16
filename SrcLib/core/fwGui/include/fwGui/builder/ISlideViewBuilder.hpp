@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,78 +35,124 @@ namespace builder
 {
 
 /**
- * @brief   Defines the interface class for the slide view builder.
+ * @brief Defines the interface class for the slide view builder.
  *
- * Example of configuration
  * @code{.xml}
-    <slideView align="top" size="200" opacity="1.0">
+    <slideView vAlign="top" hAlign="left" widht="50%" height="15" opacity="1.0" >
         <styleSheet>color: blue; background-color: yellow</styleSheet>
     </slideView>
    @endcode
- *      - \b align (optional, default=left) : defines the widget side ('left', 'right', 'top' or 'bottom')
- *      - \b size (optional, default=200) : defines the widget width or height (width if side is 'left' or 'right' and
- *           height if side is 'top' or 'bottom')
- *      - \b opacity (optional, default=1.0) : defines the widget opacity
- *      - \b styleSheet (optional) : defines the style of the widget (see Qt style sheets
- *           http://doc.qt.io/qt-5/stylesheet-examples.html )
- *      - \b animatable (optional, default=false) : defines if the slide bar must use animation or not.
+ *
+ * @subsection Configuration Configuration
+ * - \b hAlign (optional, left/right, default=left): horizontal alignment of the widget.
+ * - \b vAlign (optional, top/bottom, default=top): vertical alignment of the widget.
+ * - \b hOffset (optional, int, default=0): horizontal offset of the widget (px or %).
+ * - \b vOffset (optional, int, default=0): vertical offset of the widget (px or %).
+ * - \b width (optional, int, default=100%): width of the widget (px or %).
+ * - \b height (optional, int, default=100%): height of the widget (px or %).
+ * - \b opacity (optional, float, default=1.0) : widget opacity.
+ * - \b animatable (optional, bool, default=false): defines if the slide bar must use animation or not.
+ * - \b animatableAlignment (optional, , default=): defines the animation direction.
+ * - \b styleSheet (optional, string, default=""): style of the widget (see Qt style sheets
+ * http://doc.qt.io/qt-5/stylesheet-examples.html).
  */
 class FWGUI_CLASS_API ISlideViewBuilder : public ::fwGui::GuiBaseObject
 {
 public:
+
     fwCoreClassMacro(ISlideViewBuilder, ::fwGui::GuiBaseObject)
 
-    typedef std::string RegistryKeyType;
+    FWGUI_API const static std::string REGISTRY_KEY;
 
-    FWGUI_API const static RegistryKeyType REGISTRY_KEY;
-
-    enum Aligment
+    /// Defines the horizontal alignment of the widget.
+    enum HAlignment
     {
-        TOP,
-        BOTTOM,
         RIGHT,
         LEFT
     };
 
-    /// Constructor. Do nothing.
+    /// Defines the vertical alignment of the widget.
+    enum VAlignment
+    {
+        TOP,
+        BOTTOM
+    };
+
+    /// Defines animation direction.
+    enum AnimatableAlignment
+    {
+        RIGHT_ANIMATION,
+        LEFT_ANIMATION,
+        TOP_ANIMATION,
+        BOTTOM_ANIMATION
+    };
+
+    /// Creates the slide view builder.
     FWGUI_API ISlideViewBuilder();
 
-    /// Destructor. Do nothing.
+    /// Destroyes the builder.
     FWGUI_API virtual ~ISlideViewBuilder();
 
-    /**
-     * @brief Returns the builded tool bar.
-     */
+    /// Returns the generic container.
     FWGUI_API virtual ::fwGui::container::fwContainer::sptr getContainer() const;
 
-    /**
-     * @brief Initialize the tool bar.
-     */
-    FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
+    /// Parses the configuration.
+    FWGUI_API virtual void initialize(::fwRuntime::ConfigurationElement::sptr _config);
 
-    /**
-     * @brief Instantiate layout with parent toolBar.
-     * @pre LayoutManager must be initialized before.
-     * @pre parent toolBar must be instanced.
-     */
-    FWGUI_API virtual void createContainer( ::fwGui::container::fwContainer::sptr parent ) = 0;
+    /// Creates the container.
+    FWGUI_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent) = 0;
 
-    /**
-     * @brief Destroy local layout with sub containers.
-     * @pre services using this sub containers must be stopped before.
-     */
+    /// Destoyes the container.
     FWGUI_API virtual void destroyContainer() = 0;
 
 protected:
 
+    /// Contains the generic container of the slide view.
     ::fwGui::container::fwContainer::sptr m_container;
 
-    int m_size;
-    double m_opacity;
-    Aligment m_aligment;
+    /// Defines the horizontal alignment.
+    HAlignment m_hAlignment { LEFT };
+
+    /// Defines the vertical alignment.
+    VAlignment m_vAlignment { TOP };
+
+    /// Defines the width of the widget.
+    int m_width { 100 };
+
+    /// Defines if the width must be read a percent.
+    bool m_percentWidth { true };
+
+    /// Defines the height of the widget.
+    int m_height { 100 };
+
+    /// Defines if the height must be read a percent.
+    bool m_percentHeight { true };
+
+    /// Defines the horizontal offset of the widget.
+    int m_hOffset { 0 };
+
+    /// Defines if the horizontal offset must be read a percent.
+    bool m_percentHOffset { false };
+
+    /// Defines the vertical offset of the widget.
+    int m_vOffset { 0 };
+
+    /// Defines if the vertical offset must be read a percent.
+    bool m_percentVOffset { false };
+
+    /// Defines the widget opacity.
+    double m_opacity { 1. };
+
+    /// Defines if the widget animation is enabled.
+    bool m_animatable { false };
+
+    /// Defines the animation direction.
+    AnimatableAlignment m_animatableAlignment { TOP_ANIMATION };
+
+    /// Defines the additional style sheet of the widget.
     std::string m_styleSheet;
-    bool m_animatable {false};
+
 };
 
-} // namespace builder
-} // namespace fwGui
+} // namespace builder.
+} // namespace fwGui.

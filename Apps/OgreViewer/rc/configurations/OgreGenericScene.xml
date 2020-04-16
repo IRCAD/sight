@@ -40,8 +40,16 @@
 
         <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
-                <slideView align="top" opacity="1" size="55" />
-                <slideView align="top" opacity="1" size="45" >
+                <slideView opacity="1" hAlign="left" vAlign="top" height="55" width="100" >
+                    <styleSheet>
+                        <![CDATA[
+                        #SlideBar QWidget {
+                            background-color: none;
+                        }
+                        ]]>
+                    </styleSheet>
+                </slideView>
+                <slideView opacity="1" hAlign="right" vAlign="bottom" width="50%" height="35" vOffset="50%" >
                     <styleSheet>
                         <![CDATA[
                         #SlideBar QWidget {
@@ -54,7 +62,7 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
-                <slideView align="bottom" opacity="1" size="35" >
+                <slideView opacity="1" hAlign="left" vAlign="bottom" height="35" >
                     <styleSheet>
                         <![CDATA[
                         #SlideBar QWidget {
@@ -92,15 +100,12 @@
                     <menuItem name="Windowed" icon="flatIcon-0.1/icons/YellowMinimize.svg" shortcut="Escape" />
                     <menuItem name="Snapshot" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="CTRL+S" />
                     <spacer/>
-                    <menuItem name="Snapshot" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="CTRL+S" />
-                    <spacer/>
                 </layout>
             </gui>
             <registry>
                 <menuItem sid="fullscreenAct" start="yes" />
                 <menuItem sid="windowedAct" start="yes" />
                 <menuItem sid="snapshotAct" start="yes" />
-                <menuItem sid="snapshotSpacerAct" start="yes" />
             </registry>
         </service>
 
@@ -108,20 +113,7 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#00000000" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="topNegatoSlicerView" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="topNegatoSlicerView" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="0" backgroundColor="#00000000" leftBorder="45" topBorder="5" rightBorder="10" />
-                    <spacer />
+                    <view proportion="0" backgroundColor="#00000000" border="5" />
                 </layout>
             </gui>
             <registry>
@@ -269,7 +261,7 @@
         </service>
 
         <service uid="resizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
-            <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
+            <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
         </service>
 
         <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
@@ -285,7 +277,7 @@
         </service>
 
         <service uid="axialBackgroundResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
-            <config layer="axialBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
+            <config layer="axialBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
         </service>
 
         <service uid="axialCompositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
@@ -311,7 +303,7 @@
         </service>
 
         <service uid="axialNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
-            <config layer="axialNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
+            <config layer="axialNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
         </service>
 
         <!-- Sagittal -->
@@ -453,14 +445,6 @@
             </slots>
         </service>
 
-        <!-- Save the snapshot image -->
-        <service uid="snapshotSpacerAct" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>imageWriterSrv/update</slot>
-            </slots>
-            <state visible="false" />
-        </service>
-
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${NEGATO_VIEW_RECEIVE_CHANNEL}" >
@@ -473,8 +457,6 @@
             <slot>resizeViewportAdp/resize</slot>
             <slot>topNegatoSlicerSliderView/show</slot>
             <slot>bottomNegatoSlicerSliderView/show</slot>
-            <slot>snapshotAct/hide</slot>
-            <slot>snapshotSpacerAct/show</slot>
         </connect>
 
         <connect channel="${VOLUME_VIEW_RECEIVE_CHANNEL}" >
@@ -487,8 +469,6 @@
             <slot>resizeViewportAdp/revert</slot>
             <slot>topNegatoSlicerSliderView/hide</slot>
             <slot>bottomNegatoSlicerSliderView/hide</slot>
-            <slot>snapshotAct/show</slot>
-            <slot>snapshotSpacerAct/hide</slot>
         </connect>
 
         <!-- Volume rendering parameters -->

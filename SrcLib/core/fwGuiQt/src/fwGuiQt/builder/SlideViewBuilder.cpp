@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 
 #include <QWidget>
 
-fwGuiRegisterMacro( ::fwGui::builder::SlideViewBuilder, ::fwGui::builder::ISlideViewBuilder::REGISTRY_KEY);
+fwGuiRegisterMacro( ::fwGui::builder::SlideViewBuilder, ::fwGui::builder::ISlideViewBuilder::REGISTRY_KEY)
 
 namespace fwGui
 {
@@ -38,7 +38,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-SlideViewBuilder::SlideViewBuilder(::fwGui::GuiBaseObject::Key key)
+SlideViewBuilder::SlideViewBuilder(::fwGui::GuiBaseObject::Key)
 {
 }
 
@@ -57,28 +57,51 @@ void SlideViewBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
 
     QWidget* qtParent = m_parent->getQtContainer();
 
-    ::fwGuiQt::widget::SlideBar::Aligment align = ::fwGuiQt::widget::SlideBar::LEFT;
-    switch (m_aligment)
+    ::fwGuiQt::widget::SlideBar::HAlignment hAlign             = ::fwGuiQt::widget::SlideBar::LEFT;
+    ::fwGuiQt::widget::SlideBar::VAlignment vAlign             = ::fwGuiQt::widget::SlideBar::TOP;
+    ::fwGuiQt::widget::SlideBar::AnimatableAlignment animAlign = ::fwGuiQt::widget::SlideBar::TOP_ANIMATION;
+
+    switch(m_hAlignment)
     {
         case ISlideViewBuilder::LEFT:
-            align = ::fwGuiQt::widget::SlideBar::LEFT;
+            hAlign = ::fwGuiQt::widget::SlideBar::LEFT;
             break;
         case ISlideViewBuilder::RIGHT:
-            align = ::fwGuiQt::widget::SlideBar::RIGHT;
-            break;
-        case ISlideViewBuilder::TOP:
-            align = ::fwGuiQt::widget::SlideBar::TOP;
-            break;
-        case ISlideViewBuilder::BOTTOM:
-            align = ::fwGuiQt::widget::SlideBar::BOTTOM;
-            break;
-        default:
-            SLM_ASSERT("Alignement not managed", false);
+            hAlign = ::fwGuiQt::widget::SlideBar::RIGHT;
             break;
     }
 
-    ::fwGuiQt::widget::SlideBar* slideBar = new ::fwGuiQt::widget::SlideBar(qtParent, align, m_size, m_opacity,
-                                                                            m_animatable);
+    switch(m_vAlignment)
+    {
+        case ISlideViewBuilder::TOP:
+            vAlign = ::fwGuiQt::widget::SlideBar::TOP;
+            break;
+        case ISlideViewBuilder::BOTTOM:
+            vAlign = ::fwGuiQt::widget::SlideBar::BOTTOM;
+            break;
+    }
+
+    switch(m_animatableAlignment)
+    {
+        case ISlideViewBuilder::TOP_ANIMATION:
+            animAlign = ::fwGuiQt::widget::SlideBar::TOP_ANIMATION;
+            break;
+        case ISlideViewBuilder::BOTTOM_ANIMATION:
+            animAlign = ::fwGuiQt::widget::SlideBar::BOTTOM_ANIMATION;
+            break;
+        case ISlideViewBuilder::LEFT_ANIMATION:
+            animAlign = ::fwGuiQt::widget::SlideBar::LEFT_ANIMATION;
+            break;
+        case ISlideViewBuilder::RIGHT_ANIMATION:
+            animAlign = ::fwGuiQt::widget::SlideBar::RIGHT_ANIMATION;
+            break;
+    }
+
+    ::fwGuiQt::widget::SlideBar* slideBar
+        = new ::fwGuiQt::widget::SlideBar(qtParent, hAlign, vAlign, m_width, m_percentWidth, m_height, m_percentHeight,
+                                          m_hOffset, m_percentHOffset, m_vOffset, m_percentVOffset, m_opacity,
+                                          m_animatable, animAlign);
+
     if (!m_styleSheet.empty())
     {
         slideBar->setStyleSheet(QString::fromStdString(m_styleSheet));
@@ -101,5 +124,5 @@ void SlideViewBuilder::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-} // namespace fwGui
+} // namespace builder.
+} // namespace fwGui.

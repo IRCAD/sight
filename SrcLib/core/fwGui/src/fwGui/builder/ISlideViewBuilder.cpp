@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,14 +29,22 @@ namespace fwGui
 namespace builder
 {
 
-const ISlideViewBuilder::RegistryKeyType ISlideViewBuilder::REGISTRY_KEY = "::fwGui::SlideViewBuilder";
+const std::string ISlideViewBuilder::REGISTRY_KEY = "::fwGui::SlideViewBuilder";
+
+static const std::string s_H_ALIGN_CONFIG          = "hAlign";
+static const std::string s_V_ALIGN_CONFIG          = "vAlign";
+static const std::string s_H_OFFSET_CONFIG         = "hOffset";
+static const std::string s_V_OFFSET_CONFIG         = "vOffset";
+static const std::string s_WIDTH_CONFIG            = "width";
+static const std::string s_HEIGHT_CONFIG           = "height";
+static const std::string s_OPACITY_CONFIG          = "opacity";
+static const std::string s_ANIMATABLE_CONFIG       = "animatable";
+static const std::string s_ANIMATABLE_ALIGN_CONFIG = "animatableAlignment";
+static const std::string s_STYLE_SHEET_CONFIG      = "styleSheet";
 
 //-----------------------------------------------------------------------------
 
-ISlideViewBuilder::ISlideViewBuilder() :
-    m_size(200),
-    m_opacity(1.),
-    m_aligment(LEFT)
+ISlideViewBuilder::ISlideViewBuilder()
 {
 }
 
@@ -48,61 +56,186 @@ ISlideViewBuilder::~ISlideViewBuilder()
 
 //-----------------------------------------------------------------------------
 
-void ISlideViewBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
+void ISlideViewBuilder::initialize(::fwRuntime::ConfigurationElement::sptr _config)
 {
-    SLM_ASSERT("Bad configuration name " + configuration->getName() + ", must be 'slideView'",
-               configuration->getName() == "slideView");
+    SLM_ASSERT("Bad configuration name " + _config->getName() + ", must be 'slideView'",
+               _config->getName() == "slideView");
 
-    if (configuration->hasAttribute("align"))
+    if(_config->hasAttribute(s_H_ALIGN_CONFIG))
     {
-        std::string aligment = configuration->getExistingAttributeValue("align");
-        if (aligment == "top")
+        const std::string hAlign = _config->getExistingAttributeValue(s_H_ALIGN_CONFIG);
+        if(hAlign == "left")
         {
-            m_aligment = TOP;
+            m_hAlignment = LEFT;
         }
-        else if (aligment == "bottom")
+        else if(hAlign == "right")
         {
-            m_aligment = BOTTOM;
-        }
-        else if (aligment == "right")
-        {
-            m_aligment = RIGHT;
-        }
-        else if (aligment == "left")
-        {
-            m_aligment = LEFT;
+            m_hAlignment = RIGHT;
         }
         else
         {
-            SLM_FATAL("Wrong value '"+ aligment +"' for 'align' attribute (require top, bottom, right or left)");
+            SLM_FATAL("Wrong value '"+ hAlign +"' for '" + s_H_ALIGN_CONFIG +
+                      "' attribute (require 'left' or 'right')");
+        }
+    }
+    if(_config->hasAttribute(s_V_ALIGN_CONFIG))
+    {
+        const std::string vAlign = _config->getExistingAttributeValue(s_V_ALIGN_CONFIG);
+        if(vAlign == "top")
+        {
+            m_vAlignment = TOP;
+        }
+        else if(vAlign == "bottom")
+        {
+            m_vAlignment = BOTTOM;
+        }
+        else
+        {
+            SLM_FATAL("Wrong value '"+ vAlign +"' for '" + s_V_ALIGN_CONFIG +
+                      "' attribute (require 'top' or 'bottom')");
         }
     }
 
-    if (configuration->hasAttribute("opacity"))
+    if(_config->hasAttribute(s_WIDTH_CONFIG))
     {
-        std::string opacity = configuration->getExistingAttributeValue("opacity");
-        m_opacity = std::stod(opacity);
-        SLM_ASSERT("Opacity must be in [0 - 1]; actual: " + opacity, m_opacity >= 0. && m_opacity <= 1.);
+        std::string width = _config->getExistingAttributeValue(s_WIDTH_CONFIG);
+        if(width[width.size()-1] == '%')
+        {
+            width = width.substr(0, width.size()-1);
+        }
+        else
+        {
+            m_percentWidth = false;
+        }
+        m_width = std::stoi(width);
+        SLM_ASSERT("Height must be upper to 0", m_width >= 0);
     }
 
-    if (configuration->hasAttribute("size"))
+    if(_config->hasAttribute(s_HEIGHT_CONFIG))
     {
-        std::string size = configuration->getExistingAttributeValue("size");
-        m_size = std::stoi(size);
-        SLM_ASSERT("Size must not be negative", m_size >= 0.);
+        std::string height = _config->getExistingAttributeValue(s_HEIGHT_CONFIG);
+        if(height[height.size()-1] == '%')
+        {
+            height = height.substr(0, height.size()-1);
+        }
+        else
+        {
+            m_percentHeight = false;
+        }
+        m_height = std::stoi(height);
+        SLM_ASSERT("Height must be upper to 0", m_height >= 0);
     }
 
-    if (configuration->hasAttribute("animatable"))
+    if(_config->hasAttribute(s_H_OFFSET_CONFIG))
     {
-        std::string animatable = configuration->getExistingAttributeValue("animatable");
-        SLM_ASSERT("Animatable value must be 'true' or 'false'", animatable == "true" || animatable == "false");
-        m_animatable = animatable == "true";
+        std::string offset = _config->getExistingAttributeValue(s_H_OFFSET_CONFIG);
+        if(offset[offset.size()-1] == '%')
+        {
+            m_percentHOffset = true;
+            offset           = offset.substr(0, offset.size()-1);
+        }
+        m_hOffset = std::stoi(offset);
     }
 
-    ::fwRuntime::ConfigurationElement::csptr styleCfg = configuration->findConfigurationElement("styleSheet");
-    if (styleCfg)
+    if(_config->hasAttribute(s_V_OFFSET_CONFIG))
+    {
+        std::string offset = _config->getExistingAttributeValue(s_V_OFFSET_CONFIG);
+        if(offset[offset.size()-1] == '%')
+        {
+            m_percentVOffset = true;
+            offset           = offset.substr(0, offset.size()-1);
+        }
+        m_vOffset = std::stoi(offset);
+    }
+
+    if(_config->hasAttribute(s_OPACITY_CONFIG))
+    {
+        m_opacity = std::stod(_config->getExistingAttributeValue(s_OPACITY_CONFIG));
+        SLM_ASSERT("Opacity must be in [0 - 1]; actual: " + std::to_string(
+                       m_opacity), m_opacity >= 0. && m_opacity <= 1.);
+    }
+
+    if(_config->hasAttribute(s_ANIMATABLE_CONFIG))
+    {
+        const std::string animatable = _config->getExistingAttributeValue(s_ANIMATABLE_CONFIG);
+        if(animatable == "true")
+        {
+            m_animatable = true;
+        }
+        else if(animatable == "false")
+        {
+            m_animatable = false;
+        }
+        else
+        {
+            SLM_FATAL(
+                "Wrong value '"+ animatable +"' for '" + s_ANIMATABLE_CONFIG +
+                "' attribute (require 'true' or 'false')");
+        }
+    }
+
+    if(_config->hasAttribute(s_ANIMATABLE_ALIGN_CONFIG))
+    {
+        const std::string align = _config->getExistingAttributeValue(s_ANIMATABLE_ALIGN_CONFIG);
+        if(align == "top")
+        {
+            m_animatableAlignment = TOP_ANIMATION;
+        }
+        else if(align == "bottom")
+        {
+            m_animatableAlignment = BOTTOM_ANIMATION;
+        }
+        else if(align == "left")
+        {
+            m_animatableAlignment = LEFT_ANIMATION;
+        }
+        else if(align == "right")
+        {
+            m_animatableAlignment = RIGHT_ANIMATION;
+        }
+        else
+        {
+            SLM_FATAL(
+                "Wrong value '"+ align +"' for '" + s_ANIMATABLE_ALIGN_CONFIG +
+                "' attribute (require 'left', 'right', 'top' or 'bottom')");
+        }
+    }
+
+    ::fwRuntime::ConfigurationElement::csptr styleCfg = _config->findConfigurationElement(s_STYLE_SHEET_CONFIG);
+    if(styleCfg)
     {
         m_styleSheet = styleCfg->getValue();
+    }
+
+    // Deprecated configuration.
+    if(_config->hasAttribute("size"))
+    {
+        FW_DEPRECATED_MSG("::fwGui::builder::ISlideViewBuilder deprecated attribute 'size'", "21.0");
+    }
+    if(_config->hasAttribute("align"))
+    {
+        const std::string align = _config->getExistingAttributeValue("align");
+        if(align == "top")
+        {
+            m_hAlignment = LEFT;
+            m_vAlignment = TOP;
+        }
+        else if(align == "bottom")
+        {
+            m_hAlignment = LEFT;
+            m_vAlignment = BOTTOM;
+        }
+        else if(align == "right")
+        {
+            m_hAlignment = RIGHT;
+            m_vAlignment = TOP;
+        }
+        else if(align == "left")
+        {
+            m_hAlignment = LEFT;
+            m_vAlignment = TOP;
+        }
+        FW_DEPRECATED_MSG("::fwGui::builder::ISlideViewBuilder deprecated attribute 'align'", "21.0");
     }
 }
 
@@ -115,5 +248,5 @@ void ISlideViewBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr conf
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-} // namespace fwGui
+} // namespace builder.
+} // namespace fwGui.
