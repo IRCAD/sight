@@ -34,7 +34,7 @@
 namespace visuOgreQt
 {
 
-/// Defines a class to manage an offscreen render window that render in a Ogre texture.
+/// Defines a class to manage an offscreen render window that renders in an Ogre texture.
 class VISUOGREQT_CLASS_API OffScreenRenderWindowInteractorManager final :
     public ::fwRenderOgre::IRenderWindowInteractorManager
 {
@@ -100,7 +100,7 @@ private:
     /// Updates the Ogre render target.
     void render();
 
-    /// Defines a counter to gets the widget ID.
+    /// Defines a counter to get the widget ID.
     static int m_counter;
 
     /// Defines the unique identifier of the widget, used to instantiate the managers related to this instance with a

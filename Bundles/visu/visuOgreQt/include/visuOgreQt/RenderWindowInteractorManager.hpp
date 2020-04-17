@@ -114,10 +114,10 @@ public:
 
 private Q_SLOTS:
 
-    /// Calls when the user interacts with the scene using the mouse and keyboard, connected to @ref m_qOgreWidget.
+    /// Called when the user interacts with the scene using the mouse and keyboard, connected to @ref m_qOgreWidget.
     void onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo _info);
 
-    /// Calls when the clipping range has to match the last updating of the scene bounding box
+    /// Called when the clipping range has to match the last updating of the scene bounding box
     void onCameraClippingComputation();
 
 private:

@@ -50,7 +50,7 @@ public:
     /// Builds a graphic worker able to handle resources for the given surface.
     OpenGLWorker(QSurface* _surface);
 
-    /// Clears all waiting tasks and waits on the one being executed.
+    /// Clears all waiting tasks and waits for the one being executed.
     virtual ~OpenGLWorker();
 
     /// Schedules a new task for the thread pool.

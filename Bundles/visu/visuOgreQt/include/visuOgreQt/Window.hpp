@@ -62,7 +62,7 @@ public:
     virtual ~Window() override;
 
     /**
-     * @brief Dow nothing.
+     * @brief Does nothing.
      * In case any drawing surface backing stores (QRasterWindow or QOpenGLWindow) of Qt are supplied to this
      * class in any way we inform Qt that they will be unused.
      */
@@ -155,7 +155,7 @@ private:
     /// Forwards the resize event.
     void ogreResize(const QSize& _newSize);
 
-    /// Defines a counter to gets the widget ID.
+    /// Defines a counter to get the widget ID.
     static int m_counter;
 
     /// Defines the unique identifier of the widget
@@ -187,7 +187,7 @@ private:
 
 private Q_SLOTS:
 
-    /// Calls when the screen change.
+    /// Called when the screen changes.
     void onScreenChanged(QScreen*);
 
 };
