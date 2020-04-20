@@ -76,10 +76,10 @@ public:
     void initialize();
 
     /// Returns the Ogre render window.
-    ::Ogre::RenderWindow* getOgreRenderWindow();
+    ::Ogre::RenderWindow* getOgreRenderWindow() const;
 
     /// Gets this window ID.
-    int getId();
+    int getId() const;
 
     /// Makes the OpenGL context as current one on this thread against this window.
     void makeCurrent();

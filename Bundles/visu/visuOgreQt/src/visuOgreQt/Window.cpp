@@ -163,14 +163,14 @@ void Window::initialize()
 
 // ----------------------------------------------------------------------------
 
-Ogre::RenderWindow* Window::getOgreRenderWindow()
+Ogre::RenderWindow* Window::getOgreRenderWindow() const
 {
     return m_ogreRenderWindow;
 }
 
 // ----------------------------------------------------------------------------
 
-int Window::getId()
+int Window::getId() const
 {
     return m_id;
 }
