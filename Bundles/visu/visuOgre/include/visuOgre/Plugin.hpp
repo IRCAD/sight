@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,40 +30,44 @@
 
 namespace visuOgre
 {
-/**
- * @brief   This class is started when the bundles is loaded.
- */
+
+/// This class is started when the bundles is loaded.
 class VISUOGRE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
-    /// Destructor
+
+    /// Destroys the plugin.
     ~Plugin() noexcept;
 
-    // Overrides
-    VISUOGRE_API void start();
+    /// Creates the Ogre log manager.
+    VISUOGRE_API virtual void start() override;
 
-    // Overrides
-    VISUOGRE_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    VISUOGRE_API virtual void stop() noexcept override;
 };
 
 /**
  * @brief Allows to redirect Ogre logs on Sight logs
- *        We need this class to be declared outside to export DLL symbols on Windows.
+ * We need this class to be declared outside to export DLL symbols on Windows.
  */
 class VISUOGRE_CLASS_API SightOgreListener : public ::Ogre::LogListener
 {
+
 public:
-    /// Destructor, does nothing
+
+    /// Does nothing.
     ~SightOgreListener()
     {
     }
 
     /**
-     * @brief Set the message on Sight logs.
-     *        Set Ogre log on Sight log depending on it's LogLevel.
+     * @brief Set Ogre log on Sight log depending on it's LogLevel.
      */
-    VISUOGRE_API virtual void messageLogged(const ::Ogre::String& message, ::Ogre::LogMessageLevel lml,
-                                            bool maskDebug, const ::Ogre::String& logName, bool& skipThisMessage);
+    VISUOGRE_API virtual void messageLogged(const ::Ogre::String& _message,
+                                            ::Ogre::LogMessageLevel _lml,
+                                            bool,
+                                            const ::Ogre::String&,
+                                            bool& _skipThisMessage);
 };
 
-} // namespace visuOgre
+} // namespace visuOgre.

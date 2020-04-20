@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,11 +26,8 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <QHBoxLayout>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
-#include <QPushButton>
-#include <QVBoxLayout>
 
 namespace fwGuiQt
 {
@@ -40,15 +37,35 @@ namespace widget
 
 //-----------------------------------------------------------------------------
 
-SlideBar::SlideBar(QWidget* parent, Aligment align, int buttonSize, double opacity, bool _animatable) :
-    QGroupBox(),
-    m_buttonSize(buttonSize),
-    m_opacity(opacity),
-    m_isShown(false),
-    m_align(align),
-    m_animatable(_animatable)
+SlideBar::SlideBar(QWidget* _parent,
+                   HAlignment _hAlign,
+                   VAlignment _vAlign,
+                   int _width,
+                   bool _percentWidth,
+                   int _height,
+                   bool _percentHeight,
+                   int _hOffset,
+                   bool _percentHOffset,
+                   int _vOffset,
+                   bool _percentVOffset,
+                   double _opacity,
+                   bool _animatable,
+                   AnimatableAlignment _animatableAlignment) :
+    QWidget(_parent),
+    m_hAlignment(_hAlign),
+    m_vAlignment(_vAlign),
+    m_width(_width),
+    m_percentWidth(_percentWidth),
+    m_height(_height),
+    m_percentHeight(_percentHeight),
+    m_hOffset(_hOffset),
+    m_percentHOffset(_percentHOffset),
+    m_vOffset(_vOffset),
+    m_percentVOffset(_percentVOffset),
+    m_opacity(_opacity),
+    m_animatable(_animatable),
+    m_animatableAlignment(_animatableAlignment)
 {
-    this->setParent(parent);
     this->init();
 }
 
@@ -91,56 +108,119 @@ SlideBar::~SlideBar()
 
 void SlideBar::updatePosition()
 {
-    int height = this->parentWidget()->height();
+    // Computes the size.
     int width  = this->parentWidget()->width();
+    int height = this->parentWidget()->height();
 
-    switch (m_align)
+    if(!m_percentWidth)
     {
-        case LEFT:
-        case RIGHT:
-            width = std::min(width, m_buttonSize);
-            this->setFixedWidth(width);
-            this->setFixedHeight(height);
-            break;
-        case TOP:
-        case BOTTOM:
-            height = std::min(height, m_buttonSize);
-            this->setFixedHeight(height);
-            this->setFixedWidth(width);
-            break;
+        if(m_width > -1)
+        {
+            width = std::min(width, m_width);
+        }
+    }
+    else
+    {
+        width = std::min(width, static_cast< int >(m_width/100. * width));
     }
 
-    if (m_align == LEFT)
+    if(!m_percentHeight)
+    {
+        if(m_height > -1)
+        {
+            height = std::min(height, m_height);
+        }
+    }
+    else
+    {
+        height = std::min(height, static_cast< int >(m_height/100. * height));
+    }
+
+    this->setFixedWidth(width);
+    this->setFixedHeight(height);
+
+    // Computes the offset.
+    int hOffset = 0;
+    int vOffset = 0;
+
+    if(!m_percentHOffset)
+    {
+        hOffset = m_hOffset;
+    }
+    else
+    {
+        hOffset = static_cast< int >(m_hOffset/100. * this->parentWidget()->width());
+    }
+
+    if(!m_percentVOffset)
+    {
+        vOffset = m_vOffset;
+    }
+    else
+    {
+        vOffset = static_cast< int >(m_vOffset/100. * this->parentWidget()->height());
+    }
+
+    // Compute the shown and hidden position.
+    if(m_hAlignment == LEFT && m_vAlignment == TOP)
     {
         QPoint pos = this->parentWidget()->rect().topLeft();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition  = QRect(pos.x(), pos.y(), width, height);
-        m_hiddenPosition = QRect(pos.x()-width, pos.y(), 0, height);
+        m_shownPosition = QRect(pos.x() + hOffset, pos.y() + vOffset, width, height);
     }
-    else if (m_align == RIGHT)
+    else if(m_hAlignment == RIGHT && m_vAlignment == TOP)
     {
         QPoint pos = this->parentWidget()->rect().topRight();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition  = QRect(pos.x()-width, pos.y(), width, height);
-        m_hiddenPosition = QRect(pos.x(), pos.y(), 0, height);
+        m_shownPosition = QRect(pos.x()-width - hOffset, pos.y() + vOffset, width, height);
     }
-    else if (m_align == TOP)
-    {
-        QPoint pos = this->parentWidget()->rect().topLeft();
-        pos = this->parentWidget()->mapToGlobal(pos);
-
-        m_shownPosition  = QRect(pos.x(), pos.y(), width, height);
-        m_hiddenPosition = QRect(pos.x(), pos.y()-height, width, 0);
-    }
-    else // m_align == BOTTOM
+    else if(m_hAlignment == LEFT && m_vAlignment == BOTTOM)
     {
         QPoint pos = this->parentWidget()->rect().bottomLeft();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition  = QRect(pos.x(), pos.y()-height, width, height);
-        m_hiddenPosition = QRect(pos.x(), pos.y(), width, 0);
+        m_shownPosition = QRect(pos.x() + hOffset, pos.y()-height - vOffset, width, height);
+    }
+    else if(m_hAlignment == RIGHT && m_vAlignment == BOTTOM)
+    {
+        QPoint pos = this->parentWidget()->rect().bottomRight();
+        pos = this->parentWidget()->mapToGlobal(pos);
+
+        m_shownPosition = QRect(pos.x()-width - hOffset, pos.y()-height - vOffset, width, height);
+    }
+
+    switch(m_animatableAlignment)
+    {
+        case TOP_ANIMATION:
+        {
+            QPoint pos = this->parentWidget()->rect().topLeft();
+            pos              = this->parentWidget()->mapToGlobal(pos);
+            m_hiddenPosition = QRect(m_shownPosition.x(), pos.y()-height + vOffset, width, 0);
+            break;
+        }
+        case BOTTOM_ANIMATION:
+        {
+            QPoint pos = this->parentWidget()->rect().bottomLeft();
+            pos              = this->parentWidget()->mapToGlobal(pos);
+            m_hiddenPosition = QRect(m_shownPosition.x(), pos.y() + vOffset, width, 0);
+            break;
+        }
+        case LEFT_ANIMATION:
+        {
+            QPoint pos = this->parentWidget()->rect().topLeft();
+            pos              = this->parentWidget()->mapToGlobal(pos);
+            m_hiddenPosition = QRect(pos.x()-width + hOffset, m_shownPosition.y(), 0, height);
+            break;
+        }
+        case RIGHT_ANIMATION:
+        {
+            QPoint pos = this->parentWidget()->rect().bottomRight();
+            pos              = this->parentWidget()->mapToGlobal(pos);
+            m_hiddenPosition = QRect(pos.x() + hOffset, m_shownPosition.y(), 0, height);
+            break;
+        }
     }
 
     if(!m_animatable || m_isShown)
@@ -155,35 +235,28 @@ void SlideBar::updatePosition()
 
 //-----------------------------------------------------------------------------
 
-void SlideBar::setSide(Aligment align)
+void SlideBar::setVisible(bool _visible)
 {
-    m_align = align;
-    this->updatePosition();
-}
-//-----------------------------------------------------------------------------
-
-void SlideBar::setVisible(bool visible)
-{
-    this->slide(visible);
+    this->slide(_visible);
 }
 
 //-----------------------------------------------------------------------------
 
 void SlideBar::forceHide()
 {
-    this->QGroupBox::setVisible(false);
+    this->QWidget::setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
 
 void SlideBar::forceShow()
 {
-    this->QGroupBox::setVisible(true);
+    this->QWidget::setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void SlideBar::slide(bool visible)
+void SlideBar::slide(bool _visible)
 {
     if(m_animatable)
     {
@@ -201,7 +274,7 @@ void SlideBar::slide(bool visible)
         geomAnimation->setEasingCurve(QEasingCurve::InBack);
         geomAnimation->setStartValue(this->geometry());
 
-        if(visible == true)
+        if(_visible == true)
         {
             geomAnimation->setEndValue(m_shownPosition);
         }
@@ -216,14 +289,14 @@ void SlideBar::slide(bool visible)
         // opacity animation
         QPropertyAnimation* opacityAnimation = new QPropertyAnimation(this, "windowOpacity");
         opacityAnimation->setDuration(500);
-        opacityAnimation->setEndValue(visible ? m_opacity : 0);
+        opacityAnimation->setEndValue(_visible ? m_opacity : 0);
 
         animations->addAnimation(geomAnimation);
         animations->addAnimation(opacityAnimation);
 
         animations->start(QPropertyAnimation::DeleteWhenStopped);
     }
-    else if(visible)
+    else if(_visible)
     {
         this->forceShow();
     }
@@ -231,47 +304,47 @@ void SlideBar::slide(bool visible)
     {
         this->forceHide();
     }
-    m_isShown = visible;
+    m_isShown = _visible;
 
 }
 
 //-----------------------------------------------------------------------------
 
-bool SlideBar::eventFilter(QObject* obj, QEvent* event)
+bool SlideBar::eventFilter(QObject* _obj, QEvent* _event)
 {
     // Update the widget position when the parent is moved or resized
-    if (event->type() == QEvent::Resize
-        || event->type() == QEvent::Move)
+    if(_event->type() == QEvent::Resize
+       || _event->type() == QEvent::Move)
     {
         this->updatePosition();
     }
-    else if (event->type() == QEvent::WindowActivate)
+    else if(_event->type() == QEvent::WindowActivate)
     {
         auto activeWindow = qApp->activeWindow();
         SLM_ASSERT("No active window", activeWindow);
         activeWindow->installEventFilter(this);
         this->updatePosition();
     }
-    else if (event->type() == QEvent::WindowDeactivate)
+    else if(_event->type() == QEvent::WindowDeactivate)
     {
-        auto mainFrame = dynamic_cast< ::fwGuiQt::QtMainFrame*>(obj);
+        auto mainFrame = dynamic_cast< ::fwGuiQt::QtMainFrame*>(_obj);
         if(mainFrame)
         {
             mainFrame->removeEventFilter(this);
         }
     }
-    else if(event->type() == QEvent::Show)
+    else if(_event->type() == QEvent::Show)
     {
         if(m_isShown)
         {
             this->forceShow();
         }
     }
-    else if(event->type() == QEvent::Hide)
+    else if(_event->type() == QEvent::Hide)
     {
         this->forceHide();
     }
-    return QObject::eventFilter(obj, event);
+    return QObject::eventFilter(_obj, _event);
 }
 
 //-----------------------------------------------------------------------------

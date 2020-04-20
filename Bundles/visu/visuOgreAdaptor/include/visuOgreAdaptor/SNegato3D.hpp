@@ -45,7 +45,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor to display a 3D negato.
+ * @brief This adaptor displays a 3D negato.
  *
  * @section Signals Signals
  * - \b pickedVoxel(string): sends the coordinates and intensity of the voxel picked by the cross widget.
@@ -60,31 +60,35 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SNegato3D">
-            <inout key="image" uid="..." />
-            <inout key="tf" uid="..." optional="yes" />
-            <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
-       </service>
+    <service type="::visuOgreAdaptor::SNegato3D">
+        <inout key="image" uid="..." />
+        <inout key="tf" uid="..." optional="yes" />
+        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
+    </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): id of the layer where this adaptor applies.
- * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
- * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
- * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used
- * - \b interactive (optional, true/false, default=false): enables interactions on the negato
+ * - \b layer (mandatory, string): id of the layer where this adaptor applies.
+ * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
+ * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
+ * - \b tfalpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  * - \b priority (optional, int, default=1): interaction priority of the negato.
- * - \b transform (optional): the name of the Ogre transform node where to attach the negato, as it was specified
+ * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
+ * was specified
  *      in the STransform adaptor.
- * - \b queryFlags (optional, default=0x40000000): Mask set to planes for picking request.
+ * - \b queryFlags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
+ * - \b border (optional, bool, default=true): allows to display plane borders.
  */
-class VISUOGREADAPTOR_CLASS_API SNegato3D final : public ::fwRenderOgre::IAdaptor,
-                                                  public ::fwRenderOgre::ITransformable,
-                                                  public ::fwRenderOgre::interactor::IInteractor
+class VISUOGREADAPTOR_CLASS_API SNegato3D final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable,
+    public ::fwRenderOgre::interactor::IInteractor
 {
 public:
 
@@ -98,36 +102,26 @@ public:
     /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SNegato3D() noexcept;
 
-    /**
-     * @brief Sets the filtering type.
-     * @param _filtering the filtering type.
-     */
-    VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
-
 private:
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::SNegato3D::s_NEWIMAGE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_BUFFER_MODIFIED_SIG to ::visuOgreAdaptor::SNegato3D::s_NEWIMAGE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_TYPE_MODIFIED_SIG to
-     * ::visuOgreAdaptor::SNegato3D::s_SLICETYPE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_INDEX_MODIFIED_SIG to
-     * ::visuOgreAdaptor::SNegato3D::s_SLICEINDEX_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to
-     * ::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to
-     * ::visuOgreAdaptor::SNegato3D::s_UPDATE_VISIBILITY_SLOT
-     */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Configures the service.
     virtual void configuring() override;
 
     /// Starts the service.
     virtual void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEWIMAGE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_BUFFER_MODIFIED_SIG to s_NEWIMAGE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_TYPE_MODIFIED_SIG to s_SLICETYPE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_SLICE_INDEX_MODIFIED_SIG to s_SLICEINDEX_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Requests rendering of the scene.
     virtual void updating() override;
@@ -136,7 +130,7 @@ private:
      * @brief Notifies that the TF is swapped.
      * @param _key key of the swapped data.
      */
-    void swapping(const KeyType& key) override;
+    virtual void swapping(const KeyType& key) override;
 
     /// Stops the service, disconnects connections.
     virtual void stopping() override;
@@ -242,7 +236,7 @@ private:
     bool m_interactive { false };
 
     /// Sets the order in which interactions take place in the scene.
-    int m_interactionPriority { 1 };
+    int m_priority { 1 };
 
     /// Contains the ogre texture which will be displayed on the negato.
     ::Ogre::TexturePtr m_3DOgreTexture { nullptr };
@@ -262,38 +256,33 @@ private:
     /// Contains the scene node allowing to move the entire negato.
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
-    /// Sets the filtering type for this negato.
+    /// Defines the filtering type for this negato.
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
     /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
 
-    /// Sets the transfer function window value at the time the interaction started.
+    /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };
 
-    /// Sets the transfer function level value at the time the interaction started.
+    /// Defines the transfer function level value at the time the interaction started.
     double m_initialLevel { 0.f };
 
-    /// Sets the mouse position at the time the windowing interaction started.
+    /// Defines the mouse position at the time the windowing interaction started.
     ::Ogre::Vector2i m_initialPos { -1, -1 };
 
-    /// Sets the mask used for picking request.
+    /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    /// Sets the signal sent when a voxel is picked using the left mouse button.
+    /// Defines if the plane border is used or not.
+    bool m_border { true };
+
+    /// Defines the signal sent when a voxel is picked using the left mouse button.
     using PickedVoxelSigType = ::fwCom::Signal< void (std::string) >;
     PickedVoxelSigType::sptr m_pickedVoxelSignal { nullptr };
 
 };
 
 //------------------------------------------------------------------------------
-// Inline functions
 
-inline void SNegato3D::setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering )
-{
-    m_filtering = _filtering;
-}
-
-//------------------------------------------------------------------------------
-
-} // visuOgreAdaptor
+} // namespace visuOgreAdaptor.

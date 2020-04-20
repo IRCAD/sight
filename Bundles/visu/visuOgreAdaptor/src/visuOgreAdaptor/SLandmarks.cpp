@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,11 +36,10 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLandmarks)
-
 static const std::string s_LANDMARKS_INPUT = "landmarks";
 
-static const std::string s_TEXT_SIZE_CONFIG = "textSize";
+static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
+static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
 
 //-----------------------------------------------------------------------------
 
@@ -56,27 +55,6 @@ SLandmarks::~SLandmarks() noexcept
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-
-    connections.push(s_TRANSFORM_CONFIG, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_INSERTED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_UPDATE_SLOT );
-
-    return connections;
-}
-
-//-----------------------------------------------------------------------------
-
 void SLandmarks::configuring()
 {
     this->configureParams();
@@ -87,8 +65,8 @@ void SLandmarks::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_fontSource = config.get("fontSource", m_fontSource);
-    m_fontSize   = config.get<size_t>("fontSize", m_fontSize);
+    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
 
 //-----------------------------------------------------------------------------
@@ -123,6 +101,27 @@ void SLandmarks::starting()
 
 //-----------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+
+    connections.push(s_TRANSFORM_CONFIG, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_INSERTED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_UPDATE_SLOT );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 void SLandmarks::updating()
 {
     this->getRenderService()->makeCurrent();
@@ -135,7 +134,7 @@ void SLandmarks::updating()
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     const ::fwData::Landmarks::csptr landmarks = this->getInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-    SLM_ASSERT("Input '" + s_LANDMARKS_INPUT + "' is missing", landmarks);
+    SLM_ASSERT("input '" + s_LANDMARKS_INPUT + "' does not exist.", landmarks);
 
     const ::fwData::mt::ObjectReadLock lockLandmark(landmarks);
     {
@@ -232,4 +231,4 @@ void SLandmarks::clearData()
     m_labels.clear();
 }
 
-} //visuOgreAdaptor
+} // namespace visuOgreAdaptor.

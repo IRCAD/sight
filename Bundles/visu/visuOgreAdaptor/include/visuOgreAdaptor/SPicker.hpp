@@ -32,7 +32,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Performs picking queries on mouse clicks and forwards the picked data through a signal.
+ * @brief This adaptor performs picking queries on mouse clicks and forwards the picked data through a signal.
  *
  * See @see fwRenderOgre::interactor::MeshPickerInteractor to learn more about the interactions
  * provided by this service.
@@ -43,53 +43,54 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuOgreAdaptor::SPicker">
-            <config layer="..." priority="0" queryMask="0xffffffff" />
+            <config layer="..." priority="0" queryMask="0xFFFFFFFF" />
        </service>
    @endcode
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): layer on which the adaptor picks points.
+ * - \b layer (mandatory, string): layer on which the adaptor picks points.
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
- * - \b queryMask (optional, uint32, default=0xffffffff): filters out entities with mismatching flags when picking.
+ * - \b queryMask (optional, uint32, default=0xFFFFFFFF): filters out entities with mismatching flags when picking.
  */
 
-class VISUOGREADAPTOR_CLASS_API SPicker : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SPicker final : public ::fwRenderOgre::IAdaptor
 {
 public:
 
     fwCoreServiceMacro(SPicker, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor, initializes the adaptor.
+    /// Initializes the adaptor.
     VISUOGREADAPTOR_API SPicker() noexcept;
 
-    /// Destructor, destroys the adaptor.
-    VISUOGREADAPTOR_API virtual ~SPicker() noexcept final;
+    /// Destroys the adaptor.
+    VISUOGREADAPTOR_API virtual ~SPicker() noexcept;
 
 private:
 
     /// Configures the picker's query mask and priority.
-    virtual void configuring() final;
+    virtual void configuring() override;
 
     /// Creates the interactor and adds it to the layer.
-    virtual void starting() final;
+    virtual void starting() override;
 
     /// Updates the service. Doesn't do anything here.
-    virtual void updating() noexcept final;
+    virtual void updating() noexcept override;
 
     /// Destroys the interactor and removes it from the layer.
-    virtual void stopping() final;
+    virtual void stopping() override;
 
     /// Determines the execution order of the picking interactor.
-    int m_pickingPriority { 2 };
+    int m_priority { 2 };
 
-    /// Mask used to filter out entities when picking.
-    std::uint32_t m_queryMask { 0xffffffff };
+    /// Defines the mask used to filter out entities when picking.
+    std::uint32_t m_queryMask { 0xFFFFFFFF };
 
-    /// Interactor managed by the adaptor.
+    /// Contains the interactor managed by the adaptor.
     std::shared_ptr< ::fwRenderOgre::interactor::MeshPickerInteractor > m_interactor;
 
-    /// Signal sent on picking events.
+    /// Defines the signal sent on picking events.
     ::fwRenderOgre::interactor::MeshPickerInteractor::PointClickedSigType::sptr m_pickedSig;
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

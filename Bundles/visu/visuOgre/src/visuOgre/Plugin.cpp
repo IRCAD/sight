@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,7 @@
 
 #include "visuOgre/Plugin.hpp"
 
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <fwServices/macros.hpp>
 
 #include <OgreLogManager.h>
 
@@ -62,8 +58,11 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-void SightOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
-                                      const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
+void SightOgreListener::messageLogged(const ::Ogre::String& _message,
+                                      ::Ogre::LogMessageLevel _lml,
+                                      bool,
+                                      const ::Ogre::String&,
+                                      bool& _skipThisMessage)
 {
     if (!_skipThisMessage)
     {
@@ -87,4 +86,4 @@ void SightOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::Lo
 
 //------------------------------------------------------------------------------
 
-} // namespace operators
+} // namespace visuOgre.

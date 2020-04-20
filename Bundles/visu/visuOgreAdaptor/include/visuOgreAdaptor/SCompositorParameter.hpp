@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,18 +32,18 @@ namespace visuOgreAdaptor
 class CompositorListener;
 
 /**
- * @brief   Binds a Sight data to a shader uniform from a specific compositor.
+ * @brief This adaptor binds a Sight data to a shader uniform from a specific compositor.
  *
  * @section Slots Slots
- *  - \b setBoolParameter(bool, std::string): Set the uniform from an integer value.
- *  - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): Set the uniform from a color value.
- *  - \b setIntParameter(int, std::string): Set the uniform from an integer value.
- *  - \b setInt2Parameter(int, int, std::string): Set the uniform from two integer values.
- *  - \b setInt3Parameter(int, int, int, std::string): Set the uniform from three integer values.
- *  - \b setFloatParameter(float, std::string): Set the uniform from an float value.
- *  - \b setDoubleParameter(double, std::string): Set the uniform from an double value.
- *  - \b setDouble2Parameter(double, double, std::string): Set the uniform from two double values.
- *  - \b setDouble3Parameter(double, double, double, std::string): Set the uniform from three double values.
+ *  - \b setBoolParameter(bool, std::string): set the uniform from an integer value.
+ *  - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set the uniform from a color value.
+ *  - \b setIntParameter(int, std::string): set the uniform from an integer value.
+ *  - \b setInt2Parameter(int, int, std::string): set the uniform from two integer values.
+ *  - \b setInt3Parameter(int, int, int, std::string): set the uniform from three integer values.
+ *  - \b setFloatParameter(float, std::string): set the uniform from an float value.
+ *  - \b setDoubleParameter(double, std::string): set the uniform from an double value.
+ *  - \b setDouble2Parameter(double, double, std::string): set the uniform from two double values.
+ *  - \b setDouble3Parameter(double, double, double, std::string): set the uniform from three double values.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -52,57 +52,59 @@ class CompositorListener;
         <config layer="..." compositorName="compositor" parameter="u_value" shaderType="fragment" />
     </service>
    @endcode
+ *
  * @subsection InOut InOut:
  * - \b parameter [::fwData::Object]: parameter containing the data to upload.
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the compositor's layer
- * - \b compositorName (mandatory) : the name of the associated Ogre compositor
- * - \b parameter (mandatory) : name of the shader parameter to set
- * - \b technique (optional) : name of the technique, default to the first in the compositor
- * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to fragment.
+ * - \b layer (mandatory, string): defines the compositor's layer.
+ * - \b compositorName (mandatory, string) : the name of the associated Ogre compositor.
+ * - \b parameter (mandatory, string) : name of the shader parameter to set.
+ * - \b technique (optional, string, default="") : name of the technique, default to the first in the compositor.
+ * - \b shaderType (optional, string, default="") : the type of the shader (vertex, geometry, fragment). Default to
+ * fragment.
  */
-class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::fwRenderOgre::IParameter
+class VISUOGREADAPTOR_CLASS_API SCompositorParameter final : public ::fwRenderOgre::IParameter
 {
 
 public:
 
-    fwCoreServiceMacro(SCompositorParameter, ::fwRenderOgre::IParameter);
+    fwCoreServiceMacro(SCompositorParameter, ::fwRenderOgre::IParameter)
 
-    /// Constructor.
+    /// Creates the adaptor.
     VISUOGREADAPTOR_API SCompositorParameter() noexcept;
 
-    /// Destructor. Does nothing
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SCompositorParameter() noexcept;
-
-    /// Return the compositor name
-    const std::string& getCompositorName() const;
-
-protected:
-
-    /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void configuring() final;
-    /// Do nothing
-    VISUOGREADAPTOR_API virtual void starting() final;
-    /// Do nothing
-    VISUOGREADAPTOR_API virtual void stopping() final;
-    /// Set the parameter as dirty
-    VISUOGREADAPTOR_API virtual void updating() final;
 
 private:
 
-    /// Updates parameter according to the attached fwData::Object
-    VISUOGREADAPTOR_API void updateValue(::Ogre::MaterialPtr& _mat);
+    /// Configures the adaptor.
+    virtual void configuring() override;
 
-    /// Material name
+    /// Creates the compositor listener.
+    virtual void starting() override;
+
+    /// Sets the parameter as dirty.
+    virtual void updating() override;
+
+    /// Removes the compositor listener.
+    virtual void stopping() override;
+
+    /// Updates parameter according to the attached fwData::Object.
+    void updateValue(::Ogre::MaterialPtr& _mat);
+
+    /// Defines the material name.
     std::string m_compositorName;
 
-    /// Ogre listener, we need to keep a pointer to unregister it
+    /// Contains the Ogre compositor listener, we need to keep a pointer to unregister it.
     CompositorListener* m_listener;
 
-    /// Pointer on the compositor we work on
+    /// Contains the compositor we work on.
     ::Ogre::CompositorInstance* m_compositor;
 
     friend class CompositorListener;
+
 };
 
-} // visuOgreAdaptor
+} // namespace visuOgreAdaptor.

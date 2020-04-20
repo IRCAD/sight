@@ -42,18 +42,8 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
-//------------------------------------------------------------------------------
-
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight)
-
-fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
-
-//------------------------------------------------------------------------------
-
 namespace visuOgreAdaptor
 {
-
-//------------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
 static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
@@ -61,6 +51,13 @@ static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT      = "transform";
 static const ::fwServices::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
 static const ::fwServices::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
+
+static const std::string s_NAME_CONFIG         = "name";
+static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
+static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
+static const std::string s_PHI_OFFSET_CONFIG   = "phiOffset";
+
+fwRenderOgreRegisterLightMacro(::visuOgreAdaptor::SLight, ::fwRenderOgre::ILight::REGISTRY_KEY)
 
 //------------------------------------------------------------------------------
 
@@ -84,45 +81,23 @@ SLight::~SLight() noexcept
 {
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SLight::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_DIFFUSE_COLOR_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_SPECULAR_COLOR_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
 void SLight::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_lightName = config.get<std::string>("name");
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    if(config.count("switchedOn"))
-    {
-        m_switchedOn = config.get<std::string>("switchedOn") == "yes";
-    }
-
-    if(config.count("thetaOffset"))
-    {
-        m_thetaOffset = config.get<float>("thetaOffset");
-    }
-
-    if(config.count("phiOffset"))
-    {
-        m_phiOffset = config.get<float>("phiOffset");
-    }
+    m_switchedOn  = config.get<bool>(s_SWITCHED_ON_CONFIG, m_switchedOn);
+    m_thetaOffset = config.get<float>(s_THETA_OFFSET_CONFIG, m_thetaOffset);
+    m_phiOffset   = config.get<float>(s_PHI_OFFSET_CONFIG, m_phiOffset);
 }
 
 //------------------------------------------------------------------------------
@@ -226,6 +201,18 @@ void SLight::starting()
     }
 
     updating();
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SLight::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_DIFFUSE_COLOR_INOUT, ::fwData::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_SPECULAR_COLOR_INOUT, ::fwData::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -389,4 +376,4 @@ void SLight::setType(::Ogre::Light::LightTypes _type)
 
 //------------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.
