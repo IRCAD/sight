@@ -34,8 +34,6 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwDataTools/helper/Mesh.hpp>
-
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
