@@ -44,6 +44,9 @@ static const ::fwCom::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
+static const std::string s_PRIORITY_CONFIG    = "priority";
+static const std::string s_ORIENTATION_CONFIG = "orientation";
+
 //-----------------------------------------------------------------------------
 
 SNegato2DCamera::SNegato2DCamera() noexcept :
@@ -68,11 +71,12 @@ void SNegato2DCamera::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_priority = config.get<int>("priority", m_priority);
+    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
 
-    const std::string orientation = config.get<std::string>("orientation", "sagittal");
+    const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "sagittal");
 
     SLM_ERROR_IF("Unknown orientation: '" + orientation +
                  "'. Orientation can be either 'axial', 'frontal' or 'sagittal'.",
@@ -122,7 +126,7 @@ void SNegato2DCamera::swapping(const KeyType& _key)
     if(_key == s_TF_INOUT)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -261,7 +265,7 @@ void SNegato2DCamera::resetCamera()
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -286,41 +290,47 @@ void SNegato2DCamera::resetCamera()
     const auto size    = image->getSize2();
     const auto spacing = image->getSpacing2();
 
-    switch(m_currentNegatoOrientation)
+    if(size[0] > 0 && size[1] > 0 && size[2] > 0)
     {
-        case Orientation::X_AXIS:
-            camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
-            camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
-            camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
-            break;
-        case Orientation::Y_AXIS:
-            camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
-            camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
-            break;
-        case Orientation::Z_AXIS:
-            camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
-            camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
-            camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[1]) * spacing[1]));
-            break;
+        switch(m_currentNegatoOrientation)
+        {
+            case Orientation::X_AXIS:
+                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
+                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
+                camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
+                break;
+            case Orientation::Y_AXIS:
+                camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
+                camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
+                break;
+            case Orientation::Z_AXIS:
+                camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
+                camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
+                camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[1]) * spacing[1]));
+                break;
+        }
+        camera->setOrthoWindowHeight(camera->getOrthoWindowHeight() + camera->getOrthoWindowHeight() * 0.1f);
+
+        const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
+        ::Ogre::Vector3 camPos(
+            static_cast< ::Ogre::Real >(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
+            static_cast< ::Ogre::Real >(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
+            static_cast< ::Ogre::Real >(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5)
+            );
+
+        camPos[orientation] =
+            static_cast< ::Ogre::Real >(origin[orientation] - static_cast<double>(size[orientation]) *
+                                        spacing[orientation]);
+        camNode->setPosition(camPos);
+
+        const auto worldBoundingBox = layer->computeWorldBoundingBox();
+        if(worldBoundingBox.isFinite())
+        {
+            layer->resetCameraClippingRange(worldBoundingBox);
+        }
+
+        this->requestRender();
     }
-
-    const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
-    ::Ogre::Vector3 camPos( static_cast< ::Ogre::Real >(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
-                            static_cast< ::Ogre::Real >(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
-                            static_cast< ::Ogre::Real >(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5));
-
-    camPos[orientation] =
-        static_cast< ::Ogre::Real >(origin[orientation] - static_cast<double>(size[orientation]) *
-                                    spacing[orientation]);
-    camNode->setPosition(camPos);
-
-    const auto worldBoundingBox = layer->computeWorldBoundingBox();
-    if(worldBoundingBox.isFinite())
-    {
-        layer->resetCameraClippingRange(worldBoundingBox);
-    }
-
-    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -390,4 +400,4 @@ void SNegato2DCamera::updateWindowing( double _dw, double _dl )
 
 //-----------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

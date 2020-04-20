@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,6 @@
 #include "fwGuiQt/config.hpp"
 
 #include <QApplication>
-#include <QBoxLayout>
-#include <QGroupBox>
 #include <QWidget>
 
 namespace fwGuiQt
@@ -35,73 +33,152 @@ namespace fwGuiQt
 namespace widget
 {
 
-/**
- * @brief This class allows to display a slide widget. The slide widget can be displayed over all the application
- *        widgets.
- */
-class FWGUIQT_CLASS_API SlideBar : public QGroupBox
+/// This class allows to display a slide widget. The slide widget can be displayed over all others widgets.
+class FWGUIQT_CLASS_API SlideBar : public QWidget
 {
 Q_OBJECT
 
 public:
 
-    enum Aligment
+    /// Defines the horizontal alignment of the widget.
+    enum HAlignment
     {
-        LEFT,
         RIGHT,
+        LEFT
+    };
+
+    /// Defines the vertical alignment of the widget.
+    enum VAlignment
+    {
         TOP,
         BOTTOM
     };
 
-    /// SlideBar constructor
-    FWGUIQT_API SlideBar(QWidget* parent, Aligment align = LEFT, int buttonWidth = 200, double opacity = 0.8,
-                         bool _animatable = false);
+    /// Defines animation direction.
+    enum AnimatableAlignment
+    {
+        RIGHT_ANIMATION,
+        LEFT_ANIMATION,
+        TOP_ANIMATION,
+        BOTTOM_ANIMATION
+    };
 
-    /// Destructor
+    /**
+     * @brief Creates the slide bar widget.
+     * @param _parent parent where attached the slide bar.
+     * @param _hAlign horizontal alignment.
+     * @param _vAlign vertical alignment.
+     * @param _width width of the widget.
+     * @param _percentWidth defines if the width must be read a percent.
+     * @param _height height of the widget.
+     * @param _percentHeight defines if the height must be read a percent.
+     * @param _hOffset h offset of the widget.
+     * @param _percentHOffset defines if the h offset must be read a percent.
+     * @param _vOffset v offset of the widget.
+     * @param _percentVOffset defines if the v offset must be read a percent.
+     * @param _opacity opacity of the widget.
+     * @param _animatable defines if the animation is enable.
+     * @param _animatableAlignment defines the animation direction.
+     */
+    FWGUIQT_API SlideBar(QWidget* _parent,
+                         HAlignment _hAlign,
+                         VAlignment _vAlign,
+                         int _width,
+                         bool _percentWidth,
+                         int _height,
+                         bool _percentHeight,
+                         int _hOffset,
+                         bool _percentHOffset,
+                         int _vOffset,
+                         bool _percentVOffset,
+                         double _opacity,
+                         bool _animatable,
+                         AnimatableAlignment _animatableAlignment);
+
+    /// Destroyes the widget.
     FWGUIQT_API virtual ~SlideBar();
 
-    /// Update the shown/hide positions
+    /// Updates the widget position relative of the parent.
     FWGUIQT_API void updatePosition();
 
-    /// Set the widget align
-    FWGUIQT_API void setSide(Aligment align);
+    /// Sets the widget visibility.
+    FWGUIQT_API virtual void setVisible(bool _visible) override;
 
-    /// Return true if the widget is visible
-    bool isShown() const
-    {
-        return m_isShown;
-    }
-
-    /// Show/hide the slide widget. The widget is animated
-    FWGUIQT_API virtual void setVisible(bool visible) override;
-
-protected:
-    /// Filter 'Resize' and 'Move' events to update the widget position.
-    bool eventFilter(QObject* obj, QEvent* event) override;
+    /// Gets if the widget is shown.
+    inline bool isShown() const;
 
 private:
 
-    /// Force to hide the widget calling the super class setVisible(false) method
-    void forceHide();
+    bool eventFilter(QObject* _obj, QEvent* _event) override;
 
-    /// Force to show of the widget calling the super class setVisible(true) method
-    void forceShow();
-
-    /// Show/hide the slide widget
-    void slide(bool visible);
-
-    /// Initialize the widget
+    /// Initializes the widget by settings flags and attributes.
     void init();
 
-    QRect m_shownPosition; ///< widget position when it is visible
-    QRect m_hiddenPosition; ///< widget position when it is not visible
-    int m_buttonSize; ///< widget size (width if m_align is LEFT or RIGHT, height if m_align is TOP or BOTTOM)
-    double m_opacity; /// widget opacity [0 - 1]
-    bool m_isShown; ///< flag if widget is visible
-    Aligment m_align; ///< defines the widget alignement (left, right, top or bottom)
-    bool m_animatable; ///< defines if the widget must use animation or not.
+    /// Hides the widget.
+    void forceHide();
+
+    /// Shows the widget.
+    void forceShow();
+
+    /// Slides the widget with the animation if it's enabled, else, show or hide the widget.
+    void slide(bool visible);
+
+    /// Defines the horizontal alignment.
+    HAlignment m_hAlignment { LEFT };
+
+    /// Defines the vertical alignment.
+    VAlignment m_vAlignment { TOP };
+
+    /// Defines the width of the widget.
+    int m_width { 100 };
+
+    /// Defines if the width must be read a percent.
+    bool m_percentWidth { true };
+
+    /// Defines the height of the widget.
+    int m_height { 100 };
+
+    /// Defines if the height must be read a percent.
+    bool m_percentHeight { true };
+
+    /// Defines the horizontal offset of the widget.
+    int m_hOffset { 0 };
+
+    /// Defines if the horizontal offset must be read a percent.
+    bool m_percentHOffset { false };
+
+    /// Defines the vertical offset of the widget.
+    int m_vOffset { 0 };
+
+    /// Defines if the vertical offset must be read a percent.
+    bool m_percentVOffset { false };
+
+    /// Defines the widget opacity.
+    double m_opacity { 1. };
+
+    /// Defines if the widget animation is enabled.
+    bool m_animatable { false };
+
+    /// Defines the animation direction.
+    AnimatableAlignment m_animatableAlignment { TOP_ANIMATION };
+
+    /// Defines the position of the widget when it's shown.
+    QRect m_shownPosition;
+
+    /// Defines the position of the widget when it's hidden.
+    QRect m_hiddenPosition;
+
+    /// Defines the widget visibility.
+    bool m_isShown { false };
 
 };
 
-} // namespace widget
-} // namespace fwGuiQt
+//------------------------------------------------------------------------------
+
+bool SlideBar::isShown() const
+{
+    return m_isShown;
+}
+
+} // namespace widget.
+} // namespace fwGuiQt.

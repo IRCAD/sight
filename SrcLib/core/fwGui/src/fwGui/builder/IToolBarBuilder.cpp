@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::fwGui:
 //-----------------------------------------------------------------------------
 
 IToolBarBuilder::IToolBarBuilder() :
-    m_aligment(TOP)
+    m_alignment(TOP)
 {
     m_toolBitmapSize = std::make_pair(32, 32);
 }
@@ -59,26 +59,26 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
 
     if (configuration->hasAttribute("align"))
     {
-        std::string aligment = configuration->getExistingAttributeValue("align");
-        if (aligment == "top")
+        std::string alignment = configuration->getExistingAttributeValue("align");
+        if (alignment == "top")
         {
-            m_aligment = TOP;
+            m_alignment = TOP;
         }
-        else if (aligment == "bottom")
+        else if (alignment == "bottom")
         {
-            m_aligment = BOTTOM;
+            m_alignment = BOTTOM;
         }
-        else if (aligment == "right")
+        else if (alignment == "right")
         {
-            m_aligment = RIGHT;
+            m_alignment = RIGHT;
         }
-        else if (aligment == "left")
+        else if (alignment == "left")
         {
-            m_aligment = LEFT;
+            m_alignment = LEFT;
         }
         else
         {
-            OSLM_FATAL("Wrong value '"<< aligment <<"' for 'align' attribute (require top, bottom, right or left)");
+            OSLM_FATAL("Wrong value '"<< alignment <<"' for 'align' attribute (require top, bottom, right or left)");
         }
     }
 
@@ -88,8 +88,8 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         if(!hexaColor.empty())
         {
             OSLM_ASSERT(
-                "Color string should start with '#' and followed by 6 ou 8 "
-                "hexadecimal digits. Given color : " << hexaColor,
+                "Color string should start with '#' and followed by 6 or 8 "
+                "hexadecimal digits. Given color: " << hexaColor,
                     hexaColor[0] == '#'
                     && ( hexaColor.length() == 7 || hexaColor.length() == 9)
                 );

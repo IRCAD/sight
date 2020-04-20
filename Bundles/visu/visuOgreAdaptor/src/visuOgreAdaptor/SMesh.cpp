@@ -27,9 +27,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
-
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/Mesh.hpp>
@@ -46,14 +43,8 @@
 
 #include <cstdint>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMesh, ::fwData::Mesh )
-
-//-----------------------------------------------------------------------------
-
 namespace visuOgreAdaptor
 {
-
-//-----------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "modifyColors";
@@ -97,26 +88,12 @@ SMesh::~SMesh() noexcept
 
 //-----------------------------------------------------------------------------
 
-void visuOgreAdaptor::SMesh::updateVisibility(bool _isVisible)
-{
-    m_isVisible = _isVisible;
-    if(m_entity)
-    {
-        m_entity->setVisible(_isVisible);
-
-        m_meshGeometry->setVisible(_isVisible);
-
-        this->requestRender();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SMesh::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string color = config.get<std::string>("color", "");
 
@@ -205,9 +182,47 @@ void SMesh::starting()
     }
 
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
 
     this->updateMesh(mesh);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
+    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT);
+    connections.push(s_MESH_INOUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
+void SMesh::updating()
+{
+    if((m_isDynamic || m_isDynamicVertices) && (!getVisibility() || !this->getRenderService()->isShownOnScreen()))
+    {
+        return;
+    }
+    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
+    ::fwData::mt::ObjectReadLock lock(mesh);
+
+    if(m_meshGeometry->hasColorLayerChanged(mesh))
+    {
+        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+        m_meshGeometry->clearMesh(*sceneMgr);
+    }
+    this->updateMesh(mesh);
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -235,23 +250,17 @@ void SMesh::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updating()
+void visuOgreAdaptor::SMesh::updateVisibility(bool _isVisible)
 {
-    if((m_isDynamic || m_isDynamicVertices) && (!getVisibility() || !this->getRenderService()->isShownOnScreen()))
+    m_isVisible = _isVisible;
+    if(m_entity)
     {
-        return;
-    }
-    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
-    ::fwData::mt::ObjectReadLock lock(mesh);
+        m_entity->setVisible(_isVisible);
 
-    if(m_meshGeometry->hasColorLayerChanged(mesh))
-    {
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
-        m_meshGeometry->clearMesh(*sceneMgr);
+        m_meshGeometry->setVisible(_isVisible);
+
+        this->requestRender();
     }
-    this->updateMesh(mesh);
-    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -465,6 +474,8 @@ void SMesh::modifyVertices()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
     m_meshGeometry->updateVertices(mesh);
 
@@ -496,6 +507,8 @@ void SMesh::modifyPointColors()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
 
     if(m_meshGeometry->hasColorLayerChanged(mesh))
@@ -526,6 +539,8 @@ void SMesh::modifyTexCoords()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Mesh::csptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
+    SLM_ASSERT("inout '" + s_MESH_INOUT + "' does not exist.", mesh);
+
     ::fwData::mt::ObjectReadLock lock(mesh);
     m_meshGeometry->updateTexCoords(mesh);
 
@@ -550,19 +565,6 @@ void SMesh::attachNode(::Ogre::MovableObject* _node)
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT );
-    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT );
-    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT );
-    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT );
-    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    return connections;
-}
-
-//-----------------------------------------------------------------------------
-
 void SMesh::requestRender()
 {
     m_meshGeometry->invalidateR2VB();
@@ -572,4 +574,4 @@ void SMesh::requestRender()
 
 //-----------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

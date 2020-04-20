@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor displaying a text object in the center or along the window's borders.
+ * @brief This adaptor displays a text object in the center or along the window's borders.
  *
  * @section Slots Slots
  * -\b setText(std::string): sets the text to be displayed.
@@ -60,53 +60,56 @@ namespace visuOgreAdaptor
                 hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
-
+ *
  * @subsection Input Input:
  * - \b object (optional) : "GenericField" object that can be casted to a text string.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory) : not really used but it is needed to be bound to a render service.
- * - \b color (optional, default=#ffffffff): the color and opacity of the text.
- * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
- * - \b fontSize (optional, default=16): font size in points.
- * - \b hAlign (optional, values=left|center|right, default="left"): horizontal alignment.
- * - \b vAlign (optional, values=top|center|bottom, default="bottom"): vertical alignment.
- * - \b text (optional): text to display, only available when no input is set.
- * - \b x (optional, float, default=0.f): horizontal coordinate relatively to the screen.
- * - \b y (optional, float, default=0.f): vertical coordinate relatively to the screen.
+ * - \b layer (mandatory, string) : not really used but it is needed to be bound to a render service.
+ * - \b color (optional, hexadecimal, default=#FFFFFF): the color and opacity of the text.
+ * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, usinged int, default=16): font size in points.
+ * - \b hAlign (optional, left|center|right, default="left"): horizontal alignment.
+ * - \b vAlign (optional, top|center|bottom, default="bottom"): vertical alignment.
+ * - \b text (optional, string, default=""): text to display, only available when no input is set.
+ * - \b x (optional, float, default=0.): horizontal coordinate relatively to the screen.
+ * - \b y (optional, float, default=0.): vertical coordinate relatively to the screen.
  */
-class VISUOGREADAPTOR_CLASS_API SText : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SText final : public ::fwRenderOgre::IAdaptor
 {
 public:
+
     fwCoreServiceMacro(SText, ::fwRenderOgre::IAdaptor)
 
     /// Constructor.
     VISUOGREADAPTOR_API SText() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SText() noexcept final;
-
-protected:
-
-    /// Configures the service.
-    VISUOGREADAPTOR_API virtual void configuring() final;
-
-    /// Creates the text object and adds it to the scene.
-    VISUOGREADAPTOR_API virtual void starting() final;
-
-    /// Updates the displayed text from the input object.
-    VISUOGREADAPTOR_API virtual void updating() final;
-
-    /// Removes the text from the ogre scene and deletes it.
-    VISUOGREADAPTOR_API virtual void stopping() final;
-
-    /// Returns connection proposals with the input objects.
-    /// Connects the input's 'modified' signal to the 'update' slot.
-    VISUOGREADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const final;
+    VISUOGREADAPTOR_API virtual ~SText() noexcept;
 
 private:
 
-    /// Sets the text string.
+    /// Configures the service.
+    virtual void configuring() override;
+
+    /// Creates the text object and adds it to the scene.
+    virtual void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Object::s_OBJECT_INPUT of s_POINTLIST_INPUT to s_UPDATE_SLOT
+     */
+    virtual KeyConnectionsMap getAutoConnections() const override;
+
+    /// Updates the displayed text from the input object.
+    virtual void updating() override;
+
+    /// Removes the text from the ogre scene and deletes it.
+    virtual void stopping() override;
+
+    /// Defines the text string.
     void setText(std::string str);
 
     /// Updates the displayed text from the input object.
@@ -115,29 +118,30 @@ private:
     /// Computes the position of text object relatively to the screen according to the alignment.
     void updatePositionFromAlignment();
 
-    /// Displays stats in the overlay.
+    /// Contains the displayed stats in the overlay.
     ::fwRenderOgre::Text* m_text { nullptr };
 
-    /// The text's color.
+    /// Defines the text's color.
     ::Ogre::ColourValue m_textColor;
 
-    /// Font size in points.
+    /// Defines the font size in points.
     size_t m_fontSize { 16 };
 
+    /// Defines the position of the text.
     ::Ogre::Vector2 m_position { 0.f, 0.f };
 
-    /// Vertical alignment type (top, center or bottom).
+    /// Defines the vertical alignment type (top, center or bottom).
     std::string m_verticalAlignment;
 
-    /// Horizontal alignment type (left, center or right).
+    /// Defines the horizontal alignment type (left, center or right).
     std::string m_horizontalAlignment;
 
-    /// Displayed message.
+    /// Defines the displayed message.
     std::string m_textString;
 
-    /// TrueType font source file.
+    /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

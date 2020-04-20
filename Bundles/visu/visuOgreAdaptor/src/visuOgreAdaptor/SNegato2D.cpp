@@ -44,14 +44,19 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
-
 const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
+static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
+
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
+
+static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
+static const std::string s_FILTERING_CONFIG   = "filtering";
+static const std::string s_TF_ALPHA_CONFIG    = "tfAlpha";
+static const std::string s_BORDER_CONFIG      = "border";
 
 //------------------------------------------------------------------------------
 
@@ -77,34 +82,26 @@ void SNegato2D::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    if(config.count("sliceIndex"))
+    const std::string orientation = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
+    if(orientation == "axial")
     {
-        const std::string orientation = config.get<std::string>("sliceIndex");
-
-        if(orientation == "axial")
-        {
-            m_orientation = OrientationMode::Z_AXIS;
-        }
-        else if(orientation == "frontal")
-        {
-            m_orientation = OrientationMode::Y_AXIS;
-        }
-        else if(orientation == "sagittal")
-        {
-            m_orientation = OrientationMode::X_AXIS;
-        }
-    }
-    else
-    {
-        // Axis orientation mode by default
         m_orientation = OrientationMode::Z_AXIS;
     }
-
-    if(config.count("filtering"))
+    else if(orientation == "frontal")
     {
-        const std::string filteringValue = config.get<std::string>("filtering");
+        m_orientation = OrientationMode::Y_AXIS;
+    }
+    else if(orientation == "sagittal")
+    {
+        m_orientation = OrientationMode::X_AXIS;
+    }
+
+    if(config.count(s_FILTERING_CONFIG))
+    {
+        const std::string filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
         ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
 
         if(filteringValue == "none")
@@ -115,11 +112,11 @@ void SNegato2D::configuring()
         {
             filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
         }
-
         this->setFiltering(filtering);
     }
 
-    m_enableAlpha = config.get<bool>("tfalpha", m_enableAlpha);
+    m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
+    m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +127,7 @@ void SNegato2D::starting()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -150,7 +147,7 @@ void SNegato2D::starting()
 
     // Plane's instanciation
     m_plane = std::make_unique< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                                        m_orientation, m_3DOgreTexture, m_filtering);
+                                                        m_orientation, m_3DOgreTexture, m_filtering, m_border);
 
     this->newImage();
 }
@@ -186,7 +183,7 @@ void SNegato2D::swapping(const KeyType& _key)
     if (_key == s_TF_INOUT)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -207,7 +204,7 @@ void SNegato2D::newImage()
     this->getRenderService()->makeCurrent();
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     const ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -257,7 +254,7 @@ void SNegato2D::newImageDeprecatedSlot()
 void SNegato2D::changeSliceType(int _from, int _to)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     const auto toOrientation   = static_cast<OrientationMode>(_to);
@@ -290,7 +287,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     this->getRenderService()->makeCurrent();
@@ -362,6 +359,4 @@ void SNegato2D::createPlane(const ::Ogre::Vector3& _spacing)
     m_plane->enableAlpha(m_enableAlpha);
 }
 
-//------------------------------------------------------------------------------
-
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.
