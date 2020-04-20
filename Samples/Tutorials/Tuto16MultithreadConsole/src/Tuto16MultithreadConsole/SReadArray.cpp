@@ -27,8 +27,6 @@
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SReadArray, ::fwData::Array )

@@ -28,8 +28,6 @@
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwThread/Timer.hpp>

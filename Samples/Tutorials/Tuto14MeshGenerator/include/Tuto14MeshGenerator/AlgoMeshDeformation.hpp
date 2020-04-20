@@ -27,8 +27,6 @@
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <fwDataTools/helper/Mesh.hpp>
-
 #include <fwTools/Failed.hpp>
 
 namespace Tuto14MeshGenerator

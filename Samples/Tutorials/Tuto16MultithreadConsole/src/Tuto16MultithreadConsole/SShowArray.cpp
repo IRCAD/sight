@@ -25,8 +25,6 @@
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwDataTools/helper/ArrayGetter.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <sstream>

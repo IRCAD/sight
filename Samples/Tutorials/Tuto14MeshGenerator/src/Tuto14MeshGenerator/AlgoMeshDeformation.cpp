@@ -22,7 +22,6 @@
 
 #include "Tuto14MeshGenerator/AlgoMeshDeformation.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
