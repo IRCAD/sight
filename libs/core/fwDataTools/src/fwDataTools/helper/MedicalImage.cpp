@@ -25,7 +25,6 @@
 #include "fwDataTools/fieldHelper/Image.hpp"
 #include "fwDataTools/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwDataTools/helper/Composite.hpp"
-#include "fwDataTools/helper/Image.hpp"
 
 #include <fwData/Image.hpp>
 

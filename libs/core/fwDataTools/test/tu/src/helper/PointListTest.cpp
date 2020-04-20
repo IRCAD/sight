@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 
 #include "helper/PointListTest.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/PointList.hpp>
 
 #include <fwCore/Exception.hpp>
@@ -98,12 +97,12 @@ void PointListTest::computeDistance()
         // Compare the point lists
         ::fwData::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
 
-        ::fwDataTools::helper::Array arrayHelper(outputArray);
-        double* distanceArray = arrayHelper.begin<double>();
+        const auto dumpLock   = outputArray->lock();
+        auto distanceArrayItr = outputArray->begin<double>();
 
-        for(size_t i = 0; i < nbPoints; i++)
+        for(size_t i = 0; i < nbPoints; i++, ++distanceArrayItr)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(distanceArray[i], 1.0, 1e-8);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(*distanceArrayItr, 1.0, 1e-8);
         }
     }
 
@@ -126,13 +125,13 @@ void PointListTest::computeDistance()
 
         // Compare the point lists
         ::fwData::Array::sptr outputArray = ::fwDataTools::helper::PointList::computeDistance(pl1, pl2);
+        const auto dumpLock = outputArray->lock();
 
-        ::fwDataTools::helper::Array arrayHelper(outputArray);
-        double* distanceArray = arrayHelper.begin<double>();
+        auto distanceArrayItr = outputArray->begin<double>();
 
-        for(size_t i = 0; i < nbPoints; i++)
+        for(size_t i = 0; i < nbPoints; i++, ++distanceArrayItr)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(distanceArray[i], static_cast<double>(i), 1e-8);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(*distanceArrayItr, static_cast<double>(i), 1e-8);
         }
     }
 }

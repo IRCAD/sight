@@ -22,7 +22,6 @@
 
 #include "ImageTest.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/Image.hpp>
 
 #include <fwTest/generator/Image.hpp>

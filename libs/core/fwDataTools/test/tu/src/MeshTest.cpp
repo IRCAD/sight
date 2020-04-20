@@ -22,7 +22,6 @@
 
 #include "MeshTest.hpp"
 
-#include <fwDataTools/helper/ArrayGetter.hpp>
 #include <fwDataTools/Mesh.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 

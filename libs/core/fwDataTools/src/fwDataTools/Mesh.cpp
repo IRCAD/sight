@@ -20,7 +20,6 @@
  *
  ***********************************************************************/
 
-#include "fwDataTools/helper/Mesh.hpp"
 #include "fwDataTools/Mesh.hpp"
 
 #include "fwDataTools/thread/RegionThreader.hpp"
@@ -335,9 +334,9 @@ void Mesh::shakeNormals(::fwData::Array::sptr array)
        && array->getNumberOfDimensions() == 1
        )
     {
-        ::fwDataTools::helper::Array arrayHelper(array);
+        const auto dumpLock = array->lock();
         void* buf;
-        buf = arrayHelper.getBuffer();
+        buf = array->getBuffer();
         const ::fwData::Mesh::Id nbOfNormals = array->getSize().at(0);
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
         NormalsMultiArrayType normals = NormalsMultiArrayType(
