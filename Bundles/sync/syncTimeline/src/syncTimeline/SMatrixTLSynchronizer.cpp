@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,8 +30,6 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
@@ -45,9 +43,9 @@ namespace syncTimeline
 {
 
 // -----------------------------------------------------------------------------
-fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::arData::MatrixTL);
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::arData::MatrixTL)
 
-static const ::fwCom::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
+static const ::fwCom::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
 static const ::fwCom::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
 static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
