@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,6 @@
 #include <fwData/Integer.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Composite.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -53,21 +52,21 @@
 
 #include <fwTools/System.hpp>
 
-#include <filesystem>
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QMouseEvent>
 
+#include <filesystem>
 #include <iterator>
 
 namespace ioPacs
 {
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioPacs::SSliceIndexDicomPullerEditor,
-                         ::fwMedData::DicomSeries );
+                         ::fwMedData::DicomSeries )
 
-const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_READ_IMAGE_SLOT      = "readImage";
+const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_READ_IMAGE_SLOT = "readImage";
 const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
 
 //------------------------------------------------------------------------------
