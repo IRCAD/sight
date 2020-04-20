@@ -27,8 +27,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <boost/numeric/conversion/cast.hpp>
 
 #include <igtlImageMessage.h>
