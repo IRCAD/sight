@@ -155,7 +155,7 @@ void SVideo::updating()
     ::fwData::mt::ObjectReadLock inputLock(image);
     ::fwVtkIO::toVTKImage(image, m_imageData);
 
-    // If we the image size has changed since the last time, consider we need to reinit the texture
+    // If the image size has changed since the last time, consider we need to reinit the texture
     // This might happened if a service forgets to send the correct signal, of if it is caught too late
     // (e.g. regular buffer updates were queued before)
     if(image->getAllocatedSizeInBytes() != m_imageSize)
