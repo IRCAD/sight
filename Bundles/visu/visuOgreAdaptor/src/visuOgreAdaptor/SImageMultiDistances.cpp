@@ -32,8 +32,6 @@
 #include <fwData/PointList.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Mesh.hpp>
 #include <fwDataTools/helper/Vector.hpp>
 
 #include <fwRenderOgre/helper/ManualObject.hpp>
