@@ -43,17 +43,21 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    // Redirect Ogre Log to Sight Log
-    ::Ogre::LogManager* logMgr = new ::Ogre::LogManager();
-    ::Ogre::Log* log           = logMgr->createLog("Ogre.log", true, false, false);
-    log->addListener(new SightOgreListener());
-    log->setLogDetail(::Ogre::LL_BOREME);
+    // Redirect Ogre Log to Sight Log.
+    m_logManager = new ::Ogre::LogManager();
+    m_log        = m_logManager->createLog("Ogre.log", true, false, false);
+    m_listener   = new SightOgreListener();
+    m_log->addListener(m_listener);
+    m_log->setLogDetail(::Ogre::LL_BOREME);
 }
 
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
+    m_log->removeListener(m_listener);
+    delete m_listener;
+    delete m_logManager;
 }
 
 //------------------------------------------------------------------------------
