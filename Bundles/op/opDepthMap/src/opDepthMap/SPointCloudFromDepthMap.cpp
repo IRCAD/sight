@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,8 +34,6 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/ArrayGetter.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
@@ -45,7 +43,7 @@
 namespace opDepthMap
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::SPointCloudFromDepthMap);
+fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::SPointCloudFromDepthMap)
 
 const ::fwCom::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
 
@@ -109,45 +107,33 @@ void SPointCloudFromDepthMap::updating()
     // Initialize mesh points memory one time in order to increase performances
     if (pointCloud->getNumberOfPoints() == 0)
     {
-        const auto size       = depthMap->getSize();
+        const auto size       = depthMap->getSize2();
         const size_t width    = size[0];
         const size_t height   = size[1];
         const size_t nbPoints = width * height;
 
         ::fwData::mt::ObjectWriteLock meshLock(pointCloud);
         // allocate mesh
-        pointCloud->allocate(nbPoints, nbPoints, nbPoints);
-
-        ::fwData::Array::sptr cellArray       = pointCloud->getCellDataArray();
-        ::fwData::Array::sptr cellOffsetArray = pointCloud->getCellDataOffsetsArray();
-        ::fwData::Array::sptr cellTypeArray   = pointCloud->getCellTypesArray();
-
-        ::fwDataTools::helper::Array cellArrayHelper(cellArray);
-        ::fwDataTools::helper::Array cellOffsetArrayHelper(cellOffsetArray);
-        ::fwDataTools::helper::Array cellTypeArrayHelper(cellTypeArray);
-
-        ::fwData::Mesh::CellValueType* cells =
-            cellArrayHelper.begin< ::fwData::Mesh::CellValueType >();
-        ::fwData::Mesh::CellDataOffsetType* cellOffsets =
-            cellOffsetArrayHelper.begin< ::fwData::Mesh::CellDataOffsetType >();
-        ::fwData::Mesh::CellTypes* cellTypes = cellTypeArrayHelper.begin< ::fwData::Mesh::CellTypes >();
-
-        // to display the mesh, we need to create cells with one point
-        for (size_t i = 0; i < nbPoints; ++i)
-        {
-            cells[i]       = i;
-            cellTypes[i]   = ::fwData::Mesh::POINT;
-            cellOffsets[i] = i;
-        }
-
-        pointCloud->setNumberOfPoints(nbPoints);
-        pointCloud->setNumberOfCells(nbPoints);
-        pointCloud->setCellDataSize(nbPoints);
-
+        ::fwData::Mesh::Attributes attribute = ::fwData::Mesh::Attributes::NONE;
         if (rgbMap)
         {
-            pointCloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGBA);
+            attribute = ::fwData::Mesh::Attributes::POINT_COLORS;
         }
+        pointCloud->resize(nbPoints, nbPoints, ::fwData::Mesh::CellType::POINT, attribute);
+
+        const auto dumpLock = pointCloud->lock();
+
+        auto itr = pointCloud->begin< ::fwData::iterator::CellIterator >();
+
+        // to display the mesh, we need to create cells with one point.
+        for( size_t i = 0; i < nbPoints; ++i, ++itr )
+        {
+            *itr->type       = static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT);
+            *itr->offset     = i;
+            *(itr+1)->offset = i+1; // to be able to iterate through point indices
+            itr->pointIdx[0] = i;
+        }
+
         auto sig = pointCloud->signal< ::fwData::Mesh::ModifiedSignalType >(::fwData::Mesh::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
@@ -225,15 +211,15 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
         return;
     }
 
-    const auto size     = depthMap->getSize();
+    const auto size     = depthMap->getSize2();
     const size_t width  = size[0];
     const size_t height = size[1];
 
     ::fwData::mt::ObjectReadLock depthMapLock(depthMap);
 
-    ::fwData::Array::sptr depthMapArray = depthMap->getDataArray();
-    ::fwDataTools::helper::ArrayGetter depthMapArrayHelper(depthMapArray);
-    const std::uint16_t* depthBuffer = depthMapArrayHelper.begin< std::uint16_t >();
+    const auto depthDumpLock = depthMap->lock();
+
+    auto depthItr = depthMap->begin< std::uint16_t >();
 
     const double cx = depthCamera->getCx(),
                  cy = depthCamera->getCy(),
@@ -242,26 +228,27 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 
     ::fwData::mt::ObjectWriteLock meshLock(pointCloud);
 
-    ::fwData::Array::sptr pointsArray = pointCloud->getPointsArray();
-    ::fwDataTools::helper::Array arrayHelper(pointsArray);
+    const auto meshDumpLock = pointCloud->lock();
 
-    ::fwData::Mesh::PointValueType* points = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+    auto pointsItr = pointCloud->begin< ::fwData::iterator::PointIterator >();
 
     size_t nbRealPoints = 0;
     for(size_t y = 0; y != height; ++y)
     {
         for(size_t x = 0; x != width; ++x)
         {
-            const uint16_t depth = depthBuffer[y * width + x];
+            const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
                 double px, py, pz;
                 ::depthMapOp::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
-                *points++ = static_cast<float>(px);
-                *points++ = static_cast<float>(py);
-                *points++ = static_cast<float>(pz);
+                pointsItr->point->x = static_cast<float>(px);
+                pointsItr->point->y = static_cast<float>(py);
+                pointsItr->point->z = static_cast<float>(pz);
+                ++pointsItr;
                 ++nbRealPoints;
             }
+            ++depthItr;
         }
     }
     pointCloud->setNumberOfPoints(nbRealPoints);
@@ -289,7 +276,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     }
 
     // Make sure RGB and depth maps are the same size
-    const auto size     = depthMap->getSize();
+    const auto size     = depthMap->getSize2();
     const size_t width  = size[0];
     const size_t height = size[1];
 
@@ -305,7 +292,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    const auto rgbSize     = colorMap->getSize();
+    const auto rgbSize     = colorMap->getSize2();
     const size_t rgbWidth  = rgbSize[0];
     const size_t rgbHeight = rgbSize[1];
 
@@ -317,15 +304,13 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
     ::fwData::mt::ObjectReadLock depthMapLock(depthMap);
 
-    ::fwData::Array::sptr depthMapArray = depthMap->getDataArray();
-    ::fwDataTools::helper::ArrayGetter depthMapArrayHelper(depthMapArray);
-    const std::uint16_t* depthBuffer = depthMapArrayHelper.begin< std::uint16_t >();
+    const auto depthDumpLock = depthMap->lock();
+    auto depthItr            = depthMap->begin< std::uint16_t >();
 
     ::fwData::mt::ObjectReadLock rgbLock(colorMap);
 
-    ::fwData::Array::sptr rgbArray = colorMap->getDataArray();
-    ::fwDataTools::helper::ArrayGetter rgbArrayHelper(rgbArray);
-    const std::uint32_t* rgbBuffer = rgbArrayHelper.begin< std::uint32_t >();
+    const auto rgbDumpLock = colorMap->lock();
+    const auto rgbBegin    = colorMap->begin< ::fwData::iterator::RGBA >();
 
     const double cx = depthCamera->getCx(),
                  cy = depthCamera->getCy(),
@@ -339,34 +324,29 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
     ::fwData::mt::ObjectWriteLock meshLock(pointCloud);
 
-    ::fwData::Array::sptr pointsArray = pointCloud->getPointsArray();
-    ::fwDataTools::helper::Array arrayHelper(pointsArray);
+    const auto meshDumpLock = pointCloud->lock();
 
-    ::fwData::Mesh::PointValueType* points = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+    auto pointsItr = pointCloud->begin< ::fwData::iterator::PointIterator >();
 
-    ::fwData::Array::sptr colorArray = pointCloud->getPointColorsArray();
-    ::fwDataTools::helper::Array colorArrayHelper(colorArray);
-
-    std::uint32_t* colors = colorArrayHelper.begin< std::uint32_t >();
-
-    const std::uint32_t defaultColor = 0xFFFFFFFF;
+    const ::fwData::iterator::RGBA defaultColor = {255, 255, 255, 255};
 
     size_t nbRealPoints     = 0;
     auto glmExtrinsicMatrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(extrinsic);
+
+    const auto imageSize = height*width;
     for(size_t y = 0; y != height; ++y)
     {
         for(size_t x = 0; x != width; ++x)
         {
-            const size_t idx     = y * width + x;
-            const uint16_t depth = depthBuffer[idx];
+            const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
                 // get the 3D coordinates in the depth world
                 double px, py, pz;
                 ::depthMapOp::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
-                *points++ = static_cast<float>(px);
-                *points++ = static_cast<float>(py);
-                *points++ = static_cast<float>(pz);
+                pointsItr->point->x = static_cast<float>(px);
+                pointsItr->point->y = static_cast<float>(py);
+                pointsItr->point->z = static_cast<float>(pz);
 
                 // Transform point to the rgb sensor world
                 const ::glm::dvec4 point(px, py, pz, 1.0);
@@ -381,17 +361,25 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
                 if (isProjected)
                 {
-                    const size_t rgbIdx       = rgbPy * rgbWidth + rgbPx;
-                    const std::uint32_t color = rgbBuffer[rgbIdx];
-                    *colors++ = color;
+                    const size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
+                    if (rgbIdx < imageSize)
+                    {
+                        const auto color = rgbBegin + rgbIdx;
+                        *pointsItr->rgba = *color;
+                    }
+                    else
+                    {
+                        *pointsItr->rgba = defaultColor;
+                    }
                 }
                 else
                 {
-                    *colors++ = defaultColor;
+                    *pointsItr->rgba = defaultColor;
                 }
-
+                ++pointsItr;
                 ++nbRealPoints;
             }
+            ++depthItr;
         }
     }
 
