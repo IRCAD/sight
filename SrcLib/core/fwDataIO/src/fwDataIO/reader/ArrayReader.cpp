@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 
 #include <fwCore/Exception.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fstream>
 #include <iostream>
 
@@ -41,7 +39,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-ArrayReader::ArrayReader(::fwDataIO::reader::IObjectReader::Key key) :
+ArrayReader::ArrayReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile<
         IObjectReader >(this)
 {
@@ -61,10 +59,11 @@ void ArrayReader::read()
     std::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
 
     ::fwData::Array::sptr array = this->getConcreteObject();
-    ::fwDataTools::helper::Array arrayHelper(array);
+
+    const auto dumpLock = array->lock();
 
     size_t arraySizeInBytes = array->resize(array->getSize());
-    char* buff              = arrayHelper.begin();
+    char* buff              = static_cast<char*>(array->getBuffer());
 
     std::ifstream fs(file.string().c_str(), std::ios::in|std::ios::binary|std::ios::ate);
 

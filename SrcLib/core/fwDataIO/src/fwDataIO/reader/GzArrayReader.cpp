@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,6 @@
 
 #include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <zlib.h>
 
 #include <iostream>
@@ -40,7 +38,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzArrayReader::GzArrayReader(::fwDataIO::reader::IObjectReader::Key key) :
+GzArrayReader::GzArrayReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }
@@ -62,8 +60,9 @@ void GzArrayReader::read()
 
     ::fwData::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->resize(array->getSize());
-    ::fwDataTools::helper::Array helper(array);
-    void* buff = helper.getBuffer();
+    const auto dumpLock     = array->lock();
+
+    void* buff = array->getBuffer();
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
     if ( rawFile == 0 )
@@ -74,7 +73,7 @@ void GzArrayReader::read()
         throw std::ios_base::failure(str);
     }
 
-    unsigned int uncompressedBytesReaded = gzread(rawFile, buff, arraySizeInBytes);
+    unsigned int uncompressedBytesReaded = gzread(rawFile, buff, static_cast<unsigned int>(arraySizeInBytes));
     gzclose(rawFile);
     if ( uncompressedBytesReaded != arraySizeInBytes )
     {

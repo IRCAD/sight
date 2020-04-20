@@ -79,10 +79,11 @@ void GzBufferImageWriter::write()
     const char* ptr     = static_cast<char*>(image->getBuffer());
     size_t writtenBytes = 0;
 
-    int uncompressedbyteswrited;
+    int uncompressedbyteswrited = 0;
 
     while ( writtenBytes < imageSizeInBytes
-            && (uncompressedbyteswrited = gzwrite(rawFile, ptr+writtenBytes, imageSizeInBytes-writtenBytes)) > 0 )
+            && (uncompressedbyteswrited =
+                    gzwrite(rawFile, ptr+writtenBytes, static_cast<unsigned int>(imageSizeInBytes-writtenBytes))) > 0 )
     {
         writtenBytes += uncompressedbyteswrited;
     }

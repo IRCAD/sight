@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -121,42 +121,46 @@ void MeshTrianTest::testMeshWithCellNormals()
 
 //------------------------------------------------------------------------------
 
-#define COMPAREBUFFER(type, buff1, buff2)                             \
-    {                                                                     \
-        CPPUNIT_ASSERT( (!buff1 && !buff2) || (buff1 && buff2));          \
-        if(buff1)                                                         \
-        {                                                                 \
-            CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());         \
-            ::fwDataTools::helper::Array helper1(buff1);                      \
-            ::fwDataTools::helper::Array helper2(buff2);                      \
-                                                                      \
-            type* iter1 = helper1.begin<type>();                          \
-            type* iter2 = helper2.begin<type>();                          \
-                                                                      \
-            for (; iter1 != helper1.end<type>(); ++iter1, ++iter2)       \
-            {                                                             \
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(*iter1, *iter2, 0.000001);   \
-            }                                                             \
-        }                                                                 \
-    }
-
-//------------------------------------------------------------------------------
-
 void MeshTrianTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2)
 {
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), mesh2->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(mesh1->getCellDataSize(), mesh2->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(mesh1->hasCellNormals(), mesh2->hasCellNormals());
 
-    COMPAREBUFFER(::fwData::Mesh::PointValueType, mesh1->getPointsArray(), mesh2->getPointsArray());
-    COMPAREBUFFER(::fwData::Mesh::CellTypes, mesh1->getCellTypesArray(), mesh2->getCellTypesArray());
-    COMPAREBUFFER(::fwData::Mesh::CellDataOffsetType, mesh1->getCellDataOffsetsArray(),
-                  mesh2->getCellDataOffsetsArray());
-    COMPAREBUFFER(::fwData::Mesh::CellValueType, mesh1->getCellDataArray(), mesh2->getCellDataArray());
-    COMPAREBUFFER(::fwData::Mesh::ColorValueType, mesh1->getPointColorsArray(), mesh2->getPointColorsArray());
-    COMPAREBUFFER(::fwData::Mesh::ColorValueType, mesh1->getCellColorsArray(), mesh2->getCellColorsArray());
-    COMPAREBUFFER(::fwData::Mesh::NormalValueType, mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray());
-    COMPAREBUFFER(::fwData::Mesh::NormalValueType, mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray());
+    const auto dumpLock1 = mesh1->lock();
+    const auto dumpLock2 = mesh2->lock();
+
+    auto pointItr1      = mesh1->begin< ::fwData::iterator::ConstPointIterator >();
+    auto pointItr2      = mesh2->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto pointEnd = mesh1->end< ::fwData::iterator::ConstPointIterator >();
+
+    for (; pointItr1 != pointEnd; ++pointItr1, ++pointItr2)
+    {
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr1->point->x, pointItr2->point->x, 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr1->point->y, pointItr2->point->y, 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr1->point->z, pointItr2->point->z, 0.00001);
+    }
+
+    auto cellItr1      = mesh1->begin< ::fwData::iterator::ConstCellIterator >();
+    auto cellItr2      = mesh2->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto cellEnd = mesh1->end< ::fwData::iterator::ConstCellIterator >();
+
+    for(; cellItr1 != cellEnd; ++cellItr1, ++cellItr2)
+    {
+        CPPUNIT_ASSERT_EQUAL(*cellItr1->type, *cellItr2->type);
+        CPPUNIT_ASSERT_EQUAL(*cellItr1->offset, *cellItr2->offset);
+        CPPUNIT_ASSERT_EQUAL(cellItr1->nbPoints, cellItr2->nbPoints);
+        CPPUNIT_ASSERT_EQUAL(cellItr1->pointIdx[0], cellItr2->pointIdx[0]);
+        CPPUNIT_ASSERT_EQUAL(cellItr1->pointIdx[1], cellItr2->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL(cellItr1->pointIdx[2], cellItr2->pointIdx[2]);
+        if (mesh1->hasCellNormals())
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellItr1->normal->nx, cellItr2->normal->nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellItr1->normal->ny, cellItr2->normal->ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellItr1->normal->nz, cellItr2->normal->nz, 0.00001);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
