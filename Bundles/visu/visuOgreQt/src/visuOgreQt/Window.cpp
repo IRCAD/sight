@@ -25,9 +25,6 @@
 #define FW_PROFILING_DISABLED
 #include <fwCore/Profiling.hpp>
 
-#include <fwGui/Application.hpp>
-#include <fwGui/Cursor.hpp>
-
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/WindowManager.hpp>
 

@@ -27,8 +27,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/String.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRenderOgre/registry/macros.hpp>
@@ -38,7 +36,6 @@
 #include <QEvent>
 #include <QRect>
 #include <QShortcut>
-#include <QThread>
 #include <QVBoxLayout>
 #include <QWidget>
 
