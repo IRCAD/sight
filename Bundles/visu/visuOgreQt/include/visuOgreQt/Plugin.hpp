@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUOGREQT_PLUGIN_HPP__
-#define __VISUOGREQT_PLUGIN_HPP__
+#pragma once
 
 #include "visuOgreQt/config.hpp"
 
@@ -29,24 +28,20 @@
 
 namespace visuOgreQt
 {
-/**
- * @brief   This class is started when the bundles is loaded.
- */
-struct VISUOGREQT_CLASS_API Plugin : public ::fwRuntime::Plugin
+
+/// This class is started when the bundle is loaded.
+struct VISUOGREQT_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
-    /**
-     * @brief   destructor
-     */
+
+    /// Destroys the plugin.
     ~Plugin() noexcept;
 
-    // Overrides
+    /// Starts the plugin, does nothing here.
     VISUOGREQT_API void start();
 
-    // Overrides
+    /// Stops the plugin, does nothing here.
     VISUOGREQT_API void stop() noexcept;
 
 };
 
-} // namespace visuOgreQt
-
-#endif //__VISUOGREQT_PLUGIN_HPP__
+} // namespace visuOgreQt.

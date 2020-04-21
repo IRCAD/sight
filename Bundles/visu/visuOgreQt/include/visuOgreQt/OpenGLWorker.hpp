@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,36 +39,37 @@ struct OpenGLRunner;
 /**
  * @brief Runs OpenGL resource handling tasks in a separate thread.
  *
- * /!\ DISCLAIMER: can not be used for parallel rendering as it is not supported by OGRE.
+ * @warning can not be used for parallel rendering as it is not supported by OGRE.
  * OpenGL workers should mainly be used to fill large gpu buffers in the background.
  */
-class OpenGLWorker : public ::fwRenderOgre::IGraphicsWorker
+class OpenGLWorker final : public ::fwRenderOgre::IGraphicsWorker
 {
+
 public:
 
-    /// Constructor, builds a graphic worker able to handle resources for the given surface.
+    /// Builds a graphic worker able to handle resources for the given surface.
     OpenGLWorker(QSurface* _surface);
 
-    /// Destructor, clears all waiting tasks and waits on the one being executed.
-    virtual ~OpenGLWorker() final;
+    /// Clears all waiting tasks and waits for the one being executed.
+    virtual ~OpenGLWorker();
 
     /// Schedules a new task for the thread pool.
-    virtual void pushTask(::fwRenderOgre::IGraphicsWorker::TaskType _task) final;
+    virtual void pushTask(::fwRenderOgre::IGraphicsWorker::TaskType _task);
 
 private:
 
     friend struct OpenGLRunner;
 
-    /// OpenGL context used by the graphics worker.
+    /// Contains an OpenGL context used by the graphics worker.
     std::unique_ptr< QOpenGLContext > m_glContext;
 
-    /// Thread pool launching workers, this spares the expense of re-instancing a QThread with an
+    /// Contains a thread pool launching workers, this spares the expense of re-instancing a QThread with an
     /// OpenGL context for each new task.
     std::unique_ptr< QThreadPool > m_threadPool;
 
-    /// Surface on which the thread's context is enabled.
+    /// Contains the surface on which the thread's context is enabled.
     QSurface* m_surface;
 
 };
 
-} // namespace visuOgreQt
+} // namespace visuOgreQt.

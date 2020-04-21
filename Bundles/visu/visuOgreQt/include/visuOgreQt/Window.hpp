@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,92 +44,94 @@
 
 namespace visuOgreQt
 {
-class Window : public QWindow,
-               public ::Ogre::RenderTargetListener
+class Window final :
+    public QWindow,
+    public ::Ogre::RenderTargetListener
 {
+
 Q_OBJECT
 
 public:
     /**
-     * @brief Window Initialize attributes
-     * @param parent This window parent's
+     * @brief Initializes members and connect screenChanged to onScreenChanged.
+     * @param _parent the parent container of the widget.
      */
-    Window(QWindow* parent = nullptr);
-    /**
-     * @brief ~Window Destructor. Destroy associated pointers
-     */
+    Window(QWindow* _parent = nullptr);
+
+    /// Destroys associated pointers by calling @ref destroy().
     virtual ~Window() override;
 
     /**
-     * @brief render
+     * @brief Does nothing.
      * In case any drawing surface backing stores (QRasterWindow or QOpenGLWindow) of Qt are supplied to this
-       class in any way we inform Qt that they will be unused.
-     * @param painter The used painter
+     * class in any way we inform Qt that they will be unused.
      */
-    virtual void render(QPainter* painter);
+    void render(QPainter*);
 
     /// Enables animations i.e. forces the window to keep rendering.
-    void setAnimating(bool animating);
+    void setAnimating(bool _animating);
 
-    /// Returns Ogre render window.
-    virtual ::Ogre::RenderWindow* getOgreRenderWindow();
-
-    /// Get this window ID
-    int getId();
-
-    /// Request frame rendering
-    void requestRender();
-
-    /// Enables visuOgreQt's shared gl context on this thread against this window.
-    void makeCurrent();
-
-    /// Destroy ogre window
-    void destroyWindow();
-
-    int getFrameId() const;
-
-    /**
-     * @brief initialize
-     * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
-     */
+    /// Creates the Ogre render window associated to this window,
+    /// called by renderNow() once the window is first exposed.
     void initialize();
 
-    /**
-     * @brief renderNow
-     * Force the renderWindow update
-     */
+    /// Returns the Ogre render window.
+    ::Ogre::RenderWindow* getOgreRenderWindow() const;
+
+    /// Gets this window ID.
+    int getId() const;
+
+    /// Makes the OpenGL context as current one on this thread against this window.
+    void makeCurrent();
+
+    /// Destroy the Ogre window.
+    void destroyWindow();
+
+    /// Returns current frame number of the render window.
+    int getFrameId() const;
+
+    /// Renders immediately the frame.
     void renderNow();
 
+    /// Renders the frame as soon as possible.
+    void requestRender();
+
 Q_SIGNALS:
-    /// Emitted when the user interacts with the scene using the mouse and keyboard.
+
+    /// Emits when the user interacts with the scene using the mouse and keyboard.
     void interacted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
 
-    /// Emitted to recompute the camera's clipping range.
+    /// Emits to recompute the camera's clipping range.
     void cameraClippingComputation();
 
 private:
 
-    /*
-     * Qt events to manage keyboard and mouse input
-     */
-    /// Qt event to manage keyboard action
-    virtual void keyPressEvent(QKeyEvent* e) override;
-    /// Qt event to manage keyboard action
-    virtual void keyReleaseEvent(QKeyEvent* e) override;
-    /// Qt event to manage mouse move
-    virtual void mouseMoveEvent(QMouseEvent* e) override;
-    /// Qt event to manage wheel action
-    virtual void wheelEvent(QWheelEvent* e) override;
-    /// Qt event to manage mouse clic
-    virtual void mousePressEvent(QMouseEvent* e) override;
-    /// Qt event to manage mouse clic on release
-    virtual void mouseReleaseEvent(QMouseEvent* e) override;
-    /// Qt event to manage when window visibility in the windowing system changes.
-    virtual void exposeEvent(QExposeEvent* event) override;
-    /// Qt event to manage when window is moved.
-    virtual void moveEvent(QMoveEvent* event) override;
-    /// Qt event to manage generic events
-    virtual bool event(QEvent* event) override;
+    /// Manages keyboard action.
+    virtual void keyPressEvent(QKeyEvent* _e) override;
+
+    /// Nanage keyboard action.
+    virtual void keyReleaseEvent(QKeyEvent* _e) override;
+
+    /// Manages mouse move.
+    virtual void mouseMoveEvent(QMouseEvent* _e) override;
+
+    /// Manages wheel action.
+    virtual void wheelEvent(QWheelEvent* _e) override;
+
+    /// Manages mouse clic.
+    virtual void mousePressEvent(QMouseEvent* _e) override;
+
+    /// Manages mouse clic on release.
+    virtual void mouseReleaseEvent(QMouseEvent* _e) override;
+
+    /// Manages when window visibility in the windowing system changes.
+    virtual void exposeEvent(QExposeEvent*) override;
+
+    /// Manages when window is moved.
+    virtual void moveEvent(QMoveEvent*) override;
+
+    /// Manages generic events.
+    virtual bool event(QEvent* _event) override;
 
     using InteractionInfo = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo;
 
@@ -138,38 +140,36 @@ private:
                                       InteractionInfo::InteractionEnum _interactionType) const;
 
     /**
-     * @brief render
-     * Calls OgreRoot renderOneFrame to update the current renderWindow
-     * If you want to update this window, call requestRender()
+     * @brief Renders immediately the frame.
+     * Calls OgreRoot renderOneFrame to update the current renderWindow.
+     * If you want to update this window, call requestRender().
      */
     void render();
 
-    /**
-     * @brief renderLater
-     * Render the renderWindow later
-     */
+    /// Renders the frame as soon as possible.
     void renderLater();
 
-    /// Apply device pixel ratio on screen coordinates, needed only for MacOs currently
+    /// Applies device pixel ratio on screen coordinates, needed only for MacOs currently.
     std::pair<int, int> getDeviceCoordinates(int _x, int _y) const;
 
-    /// resizeEvent forwarding function
-    void ogreResize(const QSize& newSize);
+    /// Forwards the resize event.
+    void ogreResize(const QSize& _newSize);
 
-    /// Needed for multiple instances of ogreQt WIDGET
+    /// Defines a counter to get the widget ID.
     static int m_counter;
 
-    /// Used to instantiate the managers related to this instance with a proper name.
+    /// Defines the unique identifier of the widget
     int m_id;
 
-    /*
-       Ogre3D pointers added here. Useful to have the pointers here for use by the window later.
-     */
+    /// Contains the Ogre root.
     Ogre::Root* m_ogreRoot { nullptr };
+
+    /// Contains the Ogre render window.
     Ogre::RenderWindow* m_ogreRenderWindow { nullptr };
 
     /// Tells if an update is requested
     bool m_update_pending { false };
+
     /// Tells if the window is currently showed
     bool m_animating { false };
 
@@ -179,16 +179,17 @@ private:
     /// Counts the number of frames rendered since the window's creation.
     int m_frameId { 0 };
 
-    /// OpenGL context used by this window.
+    /// Contains the OpenGL context used for offscreen rendering.
     std::shared_ptr<QOpenGLContext> m_glContext;
 
-    /// Last size sent to ogre
+    /// Defines the last size sent to Ogre.
     QSize m_ogreSize;
 
 private Q_SLOTS:
 
-    /// Called when the screen change
+    /// Called when the screen changes.
     void onScreenChanged(QScreen*);
+
 };
 
 //-----------------------------------------------------------------------------
@@ -198,6 +199,4 @@ inline int Window::getFrameId() const
     return m_frameId;
 }
 
-//-----------------------------------------------------------------------------
-
-}
+} // namespace visuOgreQt.

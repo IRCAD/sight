@@ -506,7 +506,7 @@ void Plane::setEntityOpacity(float _f)
         ::Ogre::Pass* pass = tech->getPass(0);
 
         // We don't want a depth check if we have non-OIT transparency
-        const bool needDepthCheck = (m_entityOpacity == 1.f);
+        const bool needDepthCheck = (m_entityOpacity - 1.f) < std::numeric_limits<float>::epsilon();
         pass->setDepthCheckEnabled(needDepthCheck);
     }
 }
