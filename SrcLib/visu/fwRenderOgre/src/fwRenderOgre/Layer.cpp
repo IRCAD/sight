@@ -709,7 +709,7 @@ void Layer::removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr
         {
             const ::Ogre::Entity* entity = dynamic_cast< ::Ogre::Entity* > (movable);
 
-            if(entity)
+            if(entity && entity->isVisible())
             {
                 worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
             }
@@ -718,7 +718,7 @@ void Layer::removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr
                 // Then try to cast into a ManualObject*
                 const ::Ogre::ManualObject* manualObject = dynamic_cast< ::Ogre::ManualObject* > (movable);
 
-                if(manualObject)
+                if(manualObject && manualObject->isVisible())
                 {
                     worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
                 }
