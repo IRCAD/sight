@@ -327,7 +327,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
         SLM_ASSERT("The object is nullptr", arrayObject);
 
-        size_t numComponents = arrayObject->getSize()[0];
+        const size_t numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
         {
             const auto dumpLock = arrayObject->lock();

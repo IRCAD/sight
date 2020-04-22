@@ -22,10 +22,10 @@
 
 #include "uiVisuOgre/helper/ParameterEditor.hpp"
 
-#include "fwData/Array.hpp"
-#include "fwData/Color.hpp"
-#include "fwData/Float.hpp"
-#include "fwData/Integer.hpp"
+#include <fwData/Array.hpp>
+#include <fwData/Color.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
 
 namespace uiVisuOgre
 {
