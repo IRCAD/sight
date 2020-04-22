@@ -189,7 +189,7 @@ CellIterator::CellIterator(::fwData::Mesh* mesh)
         m_locks.push_back(mesh->m_cellTexCoords->lock());
         m_cellInfo->tex = static_cast<tex_value_type*>(mesh->m_cellTexCoords->getBuffer());
     }
-    const cell_offset_value_type nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset+1);
+    const cell_offset_value_type nextOffset = *(m_cellInfo->offset+1);
     m_cellInfo->nbPoints = nextOffset;
 }
 
@@ -255,7 +255,7 @@ ConstCellIterator::ConstCellIterator(const ::fwData::Mesh* mesh)
         m_locks.push_back(mesh->m_cellTexCoords->lock());
         m_cellInfo->tex = static_cast<tex_value_type*>(mesh->m_cellTexCoords->getBuffer());
     }
-    const cell_offset_value_type nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset+1);
+    const cell_offset_value_type nextOffset = *(m_cellInfo->offset+1);
     m_cellInfo->nbPoints = nextOffset;
 }
 
