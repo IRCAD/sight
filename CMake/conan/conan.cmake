@@ -1,9 +1,8 @@
 # Conan support
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-   message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
-                 "${CMAKE_BINARY_DIR}/conan.cmake")
-endif()
+file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
+    "${CMAKE_BINARY_DIR}/conan.cmake"
+    SHOW_PROGRESS
+    EXPECTED_HASH SHA256=c9c8dfaf21fb071aa1cd2a2e250b73476405705052096e4cdfd5f1192b007dd0)
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_check(VERSION 1.0.0 REQUIRED)
@@ -76,7 +75,7 @@ macro(installConanDeps CONAN_DEPS_LIST)
         set(CONAN_DISTRO "${LSB_RELEASE_ID_LOWER}${LSB_MAJOR_RELEASE_NUMBER}" CACHE INTERNAL "custom conan distro" FORCE)
         set(CONAN_SETTINGS "os.distro=${CONAN_DISTRO}" CACHE INTERNAL "custom conan settings" FORCE)
     endif()
-    
+
     # Force use of c++17 as standard
     if(MSVC)
         list(APPEND CONAN_SETTINGS "compiler.cppstd=17")
