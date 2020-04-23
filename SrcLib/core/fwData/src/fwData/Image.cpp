@@ -425,6 +425,20 @@ void Image::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
 
 //------------------------------------------------------------------------------
 
+::fwMemory::BufferObject::sptr Image::getBufferObject()
+{
+    return m_dataArray->getBufferObject();
+}
+
+//------------------------------------------------------------------------------
+
+::fwMemory::BufferObject::csptr Image::getBufferObject() const
+{
+    return m_dataArray->getBufferObject();
+}
+
+//------------------------------------------------------------------------------
+
 void Image::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& factory,
                               const size_t size,
                               const std::filesystem::path& sourceFile,

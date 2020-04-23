@@ -480,6 +480,11 @@ public:
      */
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
+    /// Return the buffer object
+    FWDATA_API ::fwMemory::BufferObject::sptr getBufferObject();
+
+    /// Return the buffer object
+    FWDATA_API ::fwMemory::BufferObject::csptr getBufferObject() const;
     /**
      * @brief Set a stream factory for the image's buffer manager
      *
