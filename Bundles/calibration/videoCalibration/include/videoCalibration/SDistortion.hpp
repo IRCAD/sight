@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ class VIDEOCALIBRATION_CLASS_API SDistortion : public ::fwServices::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SDistortion, ::fwServices::IOperator);
+    fwCoreServiceMacro(SDistortion, ::fwServices::IOperator)
 
     /**
      * @name Slots API
@@ -136,7 +136,7 @@ private:
     bool m_calibrationMismatch { false };
 
     /// This is used to reset m_calibrationMismatch when the image resolution changes
-    ::fwData::Image::SizeType m_prevImageSize;
+    ::fwData::Image::Size m_prevImageSize{0, 0, 0};
 
 #if OPENCV_CUDA_SUPPORT
     ::cv::cuda::GpuMat m_mapx;

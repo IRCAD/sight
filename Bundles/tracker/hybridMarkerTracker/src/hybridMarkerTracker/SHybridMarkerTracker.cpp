@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -562,18 +562,16 @@ void SHybridMarkerTracker::tracking(::fwCore::HiResClock::HiResClockType& timest
     if (frameIn)
     {
         // check if image dimension have changed
-        ::fwData::Image::SizeType size;
-        size = frameIn->getSize();
+        ::fwData::Image::Size size;
+        size = frameIn->getSize2();
         // if so, we need to initialize the output image
-        if(size != frameOut->getSize())
+        if(size != frameOut->getSize2())
         {
-            const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-            frameOut->allocate(size, frameIn->getType(), frameIn->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(2, 0);
-
-            frameOut->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(2, voxelSize);
-            frameOut->setSpacing(spacing);
+            frameOut->resize(size, frameIn->getType(), frameIn->getPixelFormat());
+            const ::fwData::Image::Origin origin = {0., 0., 0.};
+            frameOut->setOrigin2(origin);
+            const ::fwData::Image::Spacing spacing = {1., 1., 0.};
+            frameOut->setSpacing2(spacing);
             frameOut->setWindowWidth(1);
             frameOut->setWindowCenter(0);
         }

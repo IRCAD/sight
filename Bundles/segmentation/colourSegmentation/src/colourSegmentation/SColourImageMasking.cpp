@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,8 +32,6 @@
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwDataTools/helper/ArrayGetter.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <boost/tokenizer.hpp>
@@ -41,9 +39,9 @@
 namespace colourSegmentation
 {
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::colourSegmentation::SColourImageMasking);
+fwServicesRegisterMacro( ::fwServices::IOperator, ::colourSegmentation::SColourImageMasking)
 
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_SLOT            = "setBackground";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_SLOT            = "setForeground";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_THRESHOLD_SLOT             = "setThreshold";
 const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";

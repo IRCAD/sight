@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ static const ::fwServices::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeri
 static const ::fwServices::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
 static const ::fwServices::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::STransformDepthMap2mm);
+fwServicesRegisterMacro(::fwServices::IOperator, ::opDepthMap::STransformDepthMap2mm)
 
 //------------------------------------------------------------------------------
 
@@ -99,38 +99,42 @@ void STransformDepthMap2mm::updating()
         return;
     }
 
-    const auto size = originFrame->getSize();
-
-    ::fwData::Array::sptr originFrameArray = originFrame->getDataArray();
-    ::fwDataTools::helper::ArrayGetter originFrameArrayHelper(originFrameArray);
+    const auto size = originFrame->getSize2();
 
     auto scaledFrame = this->getInOut< ::fwData::Image >(s_SCALED_FRAME_INOUT);
     SLM_ASSERT("missing '" + s_SCALED_FRAME_INOUT + "' image", scaledFrame);
 
     ::fwData::mt::ObjectWriteLock scaledFrameLock(scaledFrame);
 
-    if(size != scaledFrame->getSize())
+    if(size != scaledFrame->getSize2())
     {
-        const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-        scaledFrame->allocate(size, originFrame->getType(), originFrame->getNumberOfComponents());
-        ::fwData::Image::OriginType origin(3, 0);
+        scaledFrame->resize(size, originFrame->getType(), originFrame->getPixelFormat());
 
-        scaledFrame->setOrigin(origin);
-        ::fwData::Image::SpacingType spacing(3, voxelSize);
-        scaledFrame->setSpacing(spacing);
+        if (scaledFrame->getNumberOfComponents() != originFrame->getNumberOfComponents())
+        {
+            FW_DEPRECATED_MSG("Pixel format is not properly defined.", "sight 22.0");
+            scaledFrame->setNumberOfComponents(originFrame->getNumberOfComponents());
+            scaledFrame->resize();
+        }
+
+        const ::fwData::Image::Origin origin = {0., 0., 0.};
+        scaledFrame->setOrigin2(origin);
+        const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+        scaledFrame->setSpacing2(spacing);
         scaledFrame->setWindowWidth(1);
         scaledFrame->setWindowCenter(0);
     }
 
-    ::fwData::Array::sptr scaledFrameArray = scaledFrame->getDataArray();
-    ::fwDataTools::helper::Array scaledFrameArrayHelper(scaledFrameArray);
+    const auto origDumpLock   = originFrame->lock();
+    const auto scaledDumpLock = scaledFrame->lock();
 
-    const std::uint16_t* depthBufferIn = originFrameArrayHelper.begin< std::uint16_t >();
-    std::uint16_t* depthBufferOut      = scaledFrameArrayHelper.begin< std::uint16_t >();
+    auto depthBufferInItr     = originFrame->begin< std::uint16_t >();
+    const auto depthBufferEnd = originFrame->end< std::uint16_t >();
+    auto depthBufferOutItr    = scaledFrame->begin< std::uint16_t >();
 
-    for (size_t i = 0; i < size[0] * size[1]; ++i)
+    for (; depthBufferInItr != depthBufferEnd; ++depthBufferInItr, ++depthBufferOutItr)
     {
-        *depthBufferOut++ = static_cast<std::uint16_t>((*depthBufferIn++)*scale);
+        *depthBufferOutItr = static_cast<std::uint16_t>((*depthBufferInItr)*scale);
     }
 
     auto sig = scaledFrame->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG );

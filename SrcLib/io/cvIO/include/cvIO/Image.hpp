@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,6 +62,7 @@ public:
 
     /**
      * @brief Copy an OpenCV image into our internal image data.
+     * @warning The image's pixelFormat is not changed, openCV image does not give this information.
      */
     CVIO_API static void copyFromCv(::fwData::Image::sptr& _image, const ::cv::Mat& _cvImage);
 

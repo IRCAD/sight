@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,9 +35,6 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -382,34 +379,24 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     ::fwData::mt::ObjectWriteLock meshLock(m_pointcloud);
 
     // Allocate mesh.
-    m_pointcloud->allocate(nbPoints, nbPoints, nbPoints);
+    m_pointcloud->resize(nbPoints, nbPoints, nbPoints, ::fwData::Mesh::Attributes::POINT_COLORS);
 
-    ::fwData::Array::sptr cellArray       = m_pointcloud->getCellDataArray();
-    ::fwData::Array::sptr cellOffsetArray = m_pointcloud->getCellDataOffsetsArray();
-    ::fwData::Array::sptr cellTypeArray   = m_pointcloud->getCellTypesArray();
+    const auto dumpLock = m_pointcloud->lock();
 
-    ::fwDataTools::helper::Array cellArrayHelper(cellArray);
-    ::fwDataTools::helper::Array cellOffsetArrayHelper(cellOffsetArray);
-    ::fwDataTools::helper::Array cellTypeArrayHelper(cellTypeArray);
-
-    ::fwData::Mesh::CellValueType* cells =
-        cellArrayHelper.begin< ::fwData::Mesh::CellValueType >();
-    ::fwData::Mesh::CellDataOffsetType* cellOffsets =
-        cellOffsetArrayHelper.begin< ::fwData::Mesh::CellDataOffsetType >();
-    ::fwData::Mesh::CellTypes* cellTypes = cellTypeArrayHelper.begin< ::fwData::Mesh::CellTypes >();
+    auto itr = m_pointcloud->begin< ::fwData::iterator::CellIterator >();
 
     // to display the mesh, we need to create cells with one point.
-    for( size_t i = 0; i < nbPoints; ++i )
+    for( size_t i = 0; i < nbPoints; ++i, ++itr )
     {
-        cells[i]       = i;
-        cellTypes[i]   = ::fwData::Mesh::POINT;
-        cellOffsets[i] = i;
+        *itr->type       = static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT);
+        *itr->offset     = i;
+        *(itr+1)->offset = i+1; // to be able to iterate through point indices
+        itr->pointIdx[0] = i;
     }
 
     m_pointcloud->setNumberOfPoints(nbPoints);
     m_pointcloud->setNumberOfCells(nbPoints);
     m_pointcloud->setCellDataSize(nbPoints);
-    m_pointcloud->allocatePointColors(::fwData::Mesh::ColorArrayTypes::RGB);
 }
 
 //-----------------------------------------------------------------------------
@@ -1231,14 +1218,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
     {
         ::fwData::mt::ObjectWriteLock lockTFM(m_pointcloud);
 
-        ::fwData::Array::sptr pointsArray = m_pointcloud->getPointsArray();
-        ::fwDataTools::helper::Array arrayHelper(pointsArray);
-
-        auto* buffer = static_cast< ::fwData::Mesh::PointValueType* >(arrayHelper.getBuffer());
-
-        ::fwData::Array::sptr colorArray = m_pointcloud->getPointColorsArray();
-        ::fwDataTools::helper::Array colorArrayHelper(colorArray);
-        auto* colorBuf = static_cast< ::fwData::Mesh::ColorValueType* >(colorArrayHelper.getBuffer());
+        const auto dumpLock = m_pointcloud->lock();
 
         // Get Width and Height coordinates of texture
         const int textureW = _texture.get_width();   // Frame width in pixels
@@ -1255,13 +1235,18 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
         const size_t pcSize = _pc.size();
 
         // Parallelization of the loop is possible since each element is independent.
-        #pragma omp parallel for shared(buffer, colorBuf)
-        for (std::int64_t i = 0; i < static_cast<std::int64_t>(pcSize); i++)
+
+        const auto pointBegin = m_pointcloud->begin< ::fwData::iterator::PointIterator >();
+        auto points           = pointBegin->point;
+        auto colors           = pointBegin->rgba;
+
+        #pragma omp parallel for
+        for (std::int64_t i = 0; i < static_cast<std::int64_t>(pcSize); ++i)
         {
             // Fill the point buffer (x = +0, y = +1, z = +2).
-            buffer[i*3 + 0] = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
-            buffer[i*3 + 1] = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
-            buffer[i*3 + 2] = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale;  // Re-map to mm.
+            points[i].x = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
+            points[i].y = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
+            points[i].z = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale;  // Re-map to mm.
 
             // Normals to Texture Coordinates conversion
             const int x_value = std::min(std::max(static_cast<int>(textureCoord[i].u * static_cast<float>(textureW)
@@ -1274,10 +1259,10 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
             const int index   = (bytes + strides);
 
             // Fill the color buffer (R = +0, G = +1, B = +2).
-            colorBuf[i*3 + 0] = textureBuff[index + 0];
-            colorBuf[i*3 + 1] = textureBuff[index + 1];
-            colorBuf[i*3 + 2] = textureBuff[index + 2];
-
+            colors[i].r = textureBuff[index + 0];
+            colors[i].g = textureBuff[index + 1];
+            colors[i].b = textureBuff[index + 2];
+            colors[i].a = 255;
         }
 
         // Now that we have correct data in the point cloud, we can allow other to read us
