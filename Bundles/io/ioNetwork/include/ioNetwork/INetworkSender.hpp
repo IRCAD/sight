@@ -81,6 +81,14 @@ protected:
     IONETWORK_API virtual void swapping() override;
 
     /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ::fwData::Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    IONETWORK_API virtual KeyConnectionsMap getAutoConnections() const override;
+
+    /**
      * @brief Sends the obj at index
      * Usable if the configuration group exists.
      */

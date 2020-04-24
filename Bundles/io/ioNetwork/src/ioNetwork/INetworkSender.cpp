@@ -79,5 +79,15 @@ void INetworkSender::swapping()
 
 //-----------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_OBJECTS_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
+
+// ----------------------------------------------------------------------------
+
+
 } // namespace ioNetwork
 
