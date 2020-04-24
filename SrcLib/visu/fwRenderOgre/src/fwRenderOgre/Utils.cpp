@@ -30,7 +30,6 @@
 #include <fwCore/spyLog.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwRuntime/operations.hpp>
 

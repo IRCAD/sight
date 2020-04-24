@@ -30,7 +30,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Vector.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>

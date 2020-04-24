@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,6 +37,39 @@ fwRenderOgre::R2VBRenderable* fwRenderOgre::R2VBRenderable::New(const std::strin
                                                                 ::fwData::Mesh::CellTypesEnum _primitiveType,
                                                                 const std::string& _mtlName)
 {
+    ::fwData::Mesh::CellType type = ::fwData::Mesh::CellType::NO_CELL;
+    switch (_primitiveType)
+    {
+        case ::fwData::Mesh::POINT:
+            type = ::fwData::Mesh::CellType::POINT;
+            break;
+        case ::fwData::Mesh::EDGE:
+            type = ::fwData::Mesh::CellType::EDGE;
+            break;
+        case ::fwData::Mesh::TRIANGLE:
+            type = ::fwData::Mesh::CellType::TRIANGLE;
+            break;
+        case ::fwData::Mesh::QUAD:
+            type = ::fwData::Mesh::CellType::QUAD;
+            break;
+        case ::fwData::Mesh::TETRA:
+            type = ::fwData::Mesh::CellType::TETRA;
+            break;
+        default:
+            type = ::fwData::Mesh::CellType::NO_CELL;
+    }
+
+    return fwRenderOgre::R2VBRenderable::New(_name, _sourceObject, _sceneManager, type, _mtlName);
+}
+
+//-----------------------------------------------------------------------------
+
+fwRenderOgre::R2VBRenderable* fwRenderOgre::R2VBRenderable::New(const std::string& _name,
+                                                                ::Ogre::SubEntity* _sourceObject,
+                                                                ::Ogre::SceneManager* _sceneManager,
+                                                                ::fwData::Mesh::CellType _primitiveType,
+                                                                const std::string& _mtlName)
+{
     const auto& factoryName = ::fwRenderOgre::factory::R2VBRenderable::FACTORY_TYPE_NAME;
     auto instance           = static_cast< ::fwRenderOgre::R2VBRenderable*>
                               (_sceneManager->createMovableObject(_name, factoryName));
@@ -57,7 +90,7 @@ fwRenderOgre::R2VBRenderable* fwRenderOgre::R2VBRenderable::New(const std::strin
 fwRenderOgre::R2VBRenderable::R2VBRenderable(const ::Ogre::String& _name) :
     SimpleRenderable(_name),
     m_dirty(false),
-    m_inputPrimitiveType(::fwData::Mesh::TRIANGLE),
+    m_inputPrimitiveType(::fwData::Mesh::CellType::TRIANGLE),
     m_maxOutputVertexCount(0)
 {
 }
@@ -75,8 +108,8 @@ void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
         m_r2vbBuffer->setOperationType(::Ogre::RenderOperation::OT_TRIANGLE_LIST);
         m_r2vbBuffer->setResetsEveryUpdate(true);
 
-        const size_t numVertices = m_inputPrimitiveType == ::fwData::Mesh::QUAD ? _vertexCount * 2 :
-                                   m_inputPrimitiveType == ::fwData::Mesh::TETRA ? _vertexCount * 4 :
+        const size_t numVertices = m_inputPrimitiveType == ::fwData::Mesh::CellType::QUAD ? _vertexCount * 2 :
+                                   m_inputPrimitiveType == ::fwData::Mesh::CellType::TETRA ? _vertexCount * 4 :
                                    _vertexCount;
         m_r2vbBuffer->setMaxVertexCount(static_cast<unsigned int>(numVertices));
         m_r2vbBuffer->setSourceRenderable(m_srcObject);

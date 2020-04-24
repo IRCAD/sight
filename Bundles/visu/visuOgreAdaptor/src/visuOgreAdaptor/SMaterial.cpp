@@ -31,7 +31,6 @@
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Field.hpp>
 
 #include <fwRenderOgre/helper/Shading.hpp>
@@ -208,7 +207,7 @@ void SMaterial::updating()
 
     if(m_r2vbObject)
     {
-        m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType());
+        m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType2());
     }
 
     // Set up representation mode
