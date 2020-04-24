@@ -25,7 +25,6 @@
 #include <fwDataIO/reader/MeshReader.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwTest/generator/Mesh.hpp>

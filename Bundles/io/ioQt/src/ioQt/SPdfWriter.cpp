@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,6 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
@@ -44,7 +42,7 @@
 #include <QPainter>
 #include <QPixmap>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, ::fwData::Object );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, ::fwData::Object )
 
 namespace ioQt
 {
@@ -252,26 +250,27 @@ QImage SPdfWriter::convertFwImageToQImage(::fwData::Image::sptr fwImage)
 {
     if (fwImage->getNumberOfComponents() == 3
         && fwImage->getType().string() == "uint8"
-        && fwImage->getSize()[2] == 1)
+        && fwImage->getSize2()[2] == 1)
     {
         // Initialize QImage parameters
-        const ::fwData::Image::SizeType dimension = fwImage->getSize();
-        const int width                           = static_cast<int>(dimension[0]);
-        const int height                          = static_cast<int>(dimension[1]);
+        const ::fwData::Image::Size dimension = fwImage->getSize2();
+        const int width                       = static_cast<int>(dimension[0]);
+        const int height                      = static_cast<int>(dimension[1]);
 
         QImage qImage(width, height, QImage::Format_ARGB32);
         std::uint8_t* qImageBuffer = qImage.bits();
 
-        ::fwDataTools::helper::Image imgHelper(fwImage);
-        const std::uint8_t* fwImageBuffer = reinterpret_cast< const std::uint8_t*>( imgHelper.getBuffer() );
+        const auto dumpLock = fwImage->lock();
+
+        auto imageItr = fwImage->begin< ::fwData::iterator::RGB >();
 
         const unsigned int size = static_cast<unsigned int>( width * height) * 4;
-        for(unsigned int idx = 0; idx < size; idx += 4)
+        for(unsigned int idx = 0; idx < size; idx += 4, ++imageItr)
         {
             qImageBuffer[idx+3] = (255 & 0xFF);
-            qImageBuffer[idx+2] = (*fwImageBuffer++ & 0xFF);
-            qImageBuffer[idx+1] = (*fwImageBuffer++ & 0xFF);
-            qImageBuffer[idx+0] = (*fwImageBuffer++ & 0xFF);
+            qImageBuffer[idx+2] = (imageItr->r & 0xFF);
+            qImageBuffer[idx+1] = (imageItr->g & 0xFF);
+            qImageBuffer[idx+0] = (imageItr->b & 0xFF);
         }
         return qImage.mirrored(0, 1);
     }
