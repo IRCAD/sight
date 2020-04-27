@@ -132,11 +132,10 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 
     // Load stylesheet.
     QFile data(QString::fromStdString(path.replace_extension(".qss").string()));
-    QString style;
     if(data.open(QFile::ReadOnly))
     {
         QTextStream styleIn(&data);
-        style = styleIn.readAll();
+        const QString style = styleIn.readAll();
         data.close();
         qApp->setStyleSheet(style);
         ::fwPreferences::setPreference("THEME", _styleName);
