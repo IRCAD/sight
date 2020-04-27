@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,26 +41,21 @@ class FWZIP_CLASS_API WriteZipArchive : public IWriteArchive
 
 public:
 
-    fwCoreClassMacro(WriteZipArchive, IWriteArchive);
+    fwCoreClassMacro(WriteZipArchive, IWriteArchive)
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const std::filesystem::path& archive, const std::string& comment = "")
+    static sptr New(const std::filesystem::path& archive, const std::string& comment = "", const std::string& key = "")
     {
-        return std::make_shared<WriteZipArchive>(archive, comment);
+        return std::make_shared<WriteZipArchive>(archive, comment, key);
     }
 
     /**
-     * @brief Constructors. Initializes archive path.
+     * @brief Constructors. Initializes archive path, comment and key.
      *
      */
-    FWZIP_API WriteZipArchive( const std::filesystem::path& archive );
-
-    /**
-     * @brief Constructors. Initializes archive path and comment.
-     *
-     */
-    FWZIP_API WriteZipArchive( const std::filesystem::path& archive, const std::string& comment );
+    FWZIP_API WriteZipArchive(const std::filesystem::path& archive, const std::string& comment = "",
+                              const std::string& key = "");
 
     FWZIP_API ~WriteZipArchive();
 
@@ -97,11 +92,13 @@ public:
      */
     FWZIP_API const std::filesystem::path getArchivePath() const override;
 
-protected:
+private:
 
     std::filesystem::path m_archive;
 
     std::string m_comment;
+
+    std::string m_key;
 };
 
 }

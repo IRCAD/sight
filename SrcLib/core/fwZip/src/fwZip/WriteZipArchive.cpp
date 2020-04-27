@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 
 #include "fwZip/exception/Write.hpp"
 
+#include "minizip/minishared.h"
 #include "minizip/zip.h"
 
 #include <fwCore/exceptionmacros.hpp>
@@ -35,7 +36,6 @@
 #include <boost/iostreams/stream_buffer.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 #include <functional>
 #include <iosfwd>    // streamsize
@@ -61,50 +61,71 @@ zipFile openWriteZipArchive( const std::filesystem::path& archive )
 
 /*
  * @brief  Open a file in the zip archive for writing
- * @note Z_BEST_SPEED compression level for '.raw' files,
- *       Z_NO_COMPRESSION for 'raw.gz', Z_DEFAULT_COMPRESSION otherwise.
  */
-std::streamsize openFile(zipFile zipDescriptor, const std::filesystem::path& path)
+std::streamsize openFile(zipFile zipDescriptor, const std::filesystem::path& path, const std::string& key)
 {
     const std::string extension = path.extension().string();
-    int compressLevel           = Z_DEFAULT_COMPRESSION;
-    if(extension == ".raw")
-    {
-        compressLevel = Z_BEST_SPEED;
-    }
-    else if(extension == ".raw.gz")
-    {
-        compressLevel = Z_NO_COMPRESSION;
-    }
-    zip_fileinfo zfi;
-    zfi.internal_fa = 0;
-    zfi.external_fa = 0;// @todo FIXME
+    const int level             = extension.length() > 0 && extension.at(extension.length() - 1) == 'z'
+                                  ? Z_NO_COMPRESSION : Z_DEFAULT_COMPRESSION;
 
-    ::boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-    std::tm ptm = ::boost::posix_time::to_tm(now);
-    zfi.dosDate          = 0;
-    zfi.tmz_date.tm_year = ptm.tm_year;
-    zfi.tmz_date.tm_mon  = ptm.tm_mon;
-    zfi.tmz_date.tm_mday = ptm.tm_mday;
-    zfi.tmz_date.tm_hour = ptm.tm_hour;
-    zfi.tmz_date.tm_min  = ptm.tm_min;
-    zfi.tmz_date.tm_sec  = ptm.tm_sec;
+    const std::string filepath = path.generic_string();
+    const char* const filename = filepath.c_str();
 
-    std::streamsize nRet = zipOpenNewFileInZip(zipDescriptor,
-                                               path.generic_string().c_str(),
-                                               &zfi,
-                                               NULL,
-                                               0,
-                                               NULL,
-                                               0,
-                                               NULL,
-                                               Z_DEFLATED,
-                                               compressLevel);
+    zip_fileinfo zfileinfo;
+    memset(&zfileinfo, 0, sizeof(zfileinfo));
+
+    const ::boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+    const std::tm ptm                    = ::boost::posix_time::to_tm(now);
+    zfileinfo.dos_date = tm_to_dosdate(&ptm);
+
+    const char* const password = key.empty() ? nullptr : key.c_str();
+
+    const int nRet = zipOpenNewFileInZip5(
+        zipDescriptor,              // zipFile file
+        filename,                   // const char *filename : the filename in zip
+        &zfileinfo,                 // const zip_fileinfo *zipfi: contain supplemental information
+        nullptr,                    // const void *extrafield_local: buffer to store the local header extra field data
+        0,                          // uint16_t size_extrafield_local: size of extrafield_local buffer
+        nullptr,                    // const void *extrafield_global: buffer to store the global header extra field data
+        0,                          // uint16_t size_extrafield_global: size of extrafield_local buffer
+        nullptr,                    // const char *comment: buffer for comment string
+        0,                          // uint16_t flag_base: use default value
+        1,                          // int zip64: use 0 to disable
+        Z_DEFLATED,                 // uint16_t method: contain the compression method
+        level,                      // int level: contain the level of compression
+        0,                          // int raw: use 0 to disable
+        -MAX_WBITS,                 // int windowBits: use default value
+        DEF_MEM_LEVEL,              // int memLevel: use default value
+        Z_DEFAULT_STRATEGY,         // int strategy: use default value
+        password,                   // const char *password: NULL means no encryption
+        1                           // int aes: Allowing optional aes
+        );
 
     return nRet;
 }
 
 //-----------------------------------------------------------------------------
+
+// This stupid class is mandatory to allow ZipSink ctor to have more than 3 parameters.
+// Ask boost why...
+struct ZipSinkParameter
+{
+    ZipSinkParameter(const std::filesystem::path& archive,
+                     const std::filesystem::path& path,
+                     const std::string& comment = "",
+                     const std::string& key     = "") :
+        m_archive(archive),
+        m_path(path),
+        m_comment(comment),
+        m_key(key)
+    {
+    }
+
+    const std::filesystem::path& m_archive;
+    const std::filesystem::path& m_path;
+    const std::string& m_comment;
+    const std::string& m_key;
+};
 
 class ZipSink
 {
@@ -112,21 +133,25 @@ public:
     typedef char char_type;
     typedef ::boost::iostreams::sink_tag category;
 
-    ZipSink( const std::filesystem::path& archive, const std::filesystem::path& path,
-             const std::string comment ) :
+    ZipSink( const ZipSinkParameter& parameter ) :
         m_zipDescriptor(
-            openWriteZipArchive(archive),
-            [comment](zipFile zipDescriptor)
+            openWriteZipArchive(parameter.m_archive),
+            [parameter](zipFile zipDescriptor)
         {
-            zipClose(zipDescriptor, comment.c_str());
+            zipClose(zipDescriptor, parameter.m_comment.c_str());
         }),
-        m_archive(archive),
-        m_path(path)
+        m_archive(parameter.m_archive),
+        m_path(parameter.m_path)
     {
-        std::streamsize nRet = openFile(m_zipDescriptor.get(), m_path);
+        std::streamsize nRet = openFile(m_zipDescriptor.get(), m_path, parameter.m_key);
         FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Write("Cannot open file '" + path.string() +
-                                      "' in archive '"+ archive.string() + "'."),
+            ::fwZip::exception::Write(
+                "Cannot open file '"
+                + m_path.string()
+                + "' in archive '"
+                + m_archive.string()
+                + "'."
+                ),
             nRet != Z_OK);
     }
 
@@ -150,17 +175,11 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-WriteZipArchive::WriteZipArchive( const std::filesystem::path& archive ) :
+WriteZipArchive::WriteZipArchive(const std::filesystem::path& archive, const std::string& comment,
+                                 const std::string& key) :
     m_archive(archive),
-    m_comment("")
-{
-}
-
-//-----------------------------------------------------------------------------
-
-WriteZipArchive::WriteZipArchive( const std::filesystem::path& archive, const std::string& comment ) :
-    m_archive(archive),
-    m_comment(comment)
+    m_comment(comment),
+    m_key(key)
 {
 }
 
@@ -174,9 +193,7 @@ WriteZipArchive::~WriteZipArchive()
 
 SPTR(std::ostream) WriteZipArchive::createFile(const std::filesystem::path& path)
 {
-    SPTR(::boost::iostreams::stream<ZipSink>) os
-        = std::make_shared< ::boost::iostreams::stream<ZipSink> >(m_archive, path, m_comment);
-    return os;
+    return std::make_shared< ::boost::iostreams::stream<ZipSink> >(ZipSinkParameter(m_archive, path, m_comment, m_key));
 }
 
 //-----------------------------------------------------------------------------
@@ -199,7 +216,7 @@ void WriteZipArchive::putFile(const std::filesystem::path& sourceFile, const std
 bool WriteZipArchive::createDir(const std::filesystem::path& path)
 {
     zipFile zipDescriptor      = openWriteZipArchive(m_archive);
-    const std::streamsize nRet = openFile(zipDescriptor, path);
+    const std::streamsize nRet = openFile(zipDescriptor, path, m_key);
 
     zipCloseFileInZip(zipDescriptor);
     zipClose(zipDescriptor, m_comment.c_str());

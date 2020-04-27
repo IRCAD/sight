@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ namespace ioAtoms
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioAtoms::SWriter, ::fwData::Object );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioAtoms::SWriter, ::fwData::Object )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -449,6 +449,16 @@ void SWriter::updating()
                     std::filesystem::remove( filePath );
                 }
                 writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
+                archiveRootName = "root.json";
+                format          = ::fwAtomsBoostIO::JSON;
+            }
+            else if ( extension == ".cpz" )
+            {
+                if ( std::filesystem::exists( filePath ) )
+                {
+                    std::filesystem::remove( filePath );
+                }
+                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string(), "", "secret");
                 archiveRootName = "root.json";
                 format          = ::fwAtomsBoostIO::JSON;
             }

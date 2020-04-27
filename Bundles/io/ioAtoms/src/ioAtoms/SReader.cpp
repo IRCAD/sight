@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,14 +62,15 @@
 namespace ioAtoms
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::fwData::Object );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::fwData::Object )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 const SReader::FileExtension2NameType SReader::s_EXTENSIONS = { {".xml", "XML"},
                                                                 { ".xmlz", "Zipped XML"},
                                                                 { ".json", "JSON"},
-                                                                { ".jsonz", "Zipped JSON"} };
+                                                                { ".jsonz", "Zipped JSON"},
+                                                                { ".cpz", "Crypted JSON"} };
 
 //-----------------------------------------------------------------------------
 
@@ -255,6 +256,12 @@ void SReader::updating()
                     else if ( extension == ".jsonz" )
                     {
                         readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
+                        archiveRootName = "root.json";
+                        format          = ::fwAtomsBoostIO::JSON;
+                    }
+                    else if ( extension == ".cpz" )
+                    {
+                        readArchive     = ::fwZip::ReadZipArchive::New(filePath.string(), "secret");
                         archiveRootName = "root.json";
                         format          = ::fwAtomsBoostIO::JSON;
                     }
