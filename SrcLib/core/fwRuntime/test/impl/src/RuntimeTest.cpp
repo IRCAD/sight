@@ -74,7 +74,8 @@ void RuntimeTest::testPosix()
     nativeLibrary->setModule(module.get());
     auto nativeName = nativeLibrary->getNativeName();
 
-    CPPUNIT_ASSERT( std::regex_match("libdataReg.so", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("libdataReg.so.0.1", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libdataReg.so", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libdataReg", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("dataReg", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
