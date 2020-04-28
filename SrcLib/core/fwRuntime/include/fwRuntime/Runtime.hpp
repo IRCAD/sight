@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "fwCore/macros.hpp"
-
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
+
+#include <fwCore/macros.hpp>
 
 #include <filesystem>
 #include <set>

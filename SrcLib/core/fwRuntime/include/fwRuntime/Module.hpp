@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "fwCore/base.hpp"
-
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/Version.hpp"
+
+#include <fwCore/base.hpp>
 
 #include <filesystem>
 #include <set>
