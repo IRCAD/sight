@@ -38,6 +38,7 @@ set( REQUIREMENTS
     ctrlTF
     ctrlPicking
     uiMeasurement
+    opImageFilter
 
     # Configuration launchers
     ogreConfig

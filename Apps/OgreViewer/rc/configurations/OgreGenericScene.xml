@@ -12,12 +12,15 @@
         <param name="MESHES_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
         <param name="POINTLIST_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="POINTLIST_RESET_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
+        <param name="extrudedModelSeries" />
     </parameters>
     <config>
 
@@ -26,7 +29,9 @@
         <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="${image}" type="::fwData::Image" src="ref" />
         <object uid="${volumeTF}" type="::fwData::TransferFunction" src="ref" />
+        <object uid="${extrudedModelSeries}" type="::fwMedData::ModelSeries" src="ref" />
 
+        <object uid="extrudedImage" type="::fwData::Image" />
         <object uid="clippingMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="pointList" type="::fwData::PointList" />
@@ -158,12 +163,14 @@
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
                 <adaptor uid="modeSeriesAdp" />
+                <adaptor uid="extrudedMeshesAdp" />
                 <adaptor uid="3DNegatoAdp" />
                 <adaptor uid="volumeAdp" />
                 <adaptor uid="pointListAdp" />
                 <adaptor uid="multiDistancesAdp" />
                 <adaptor uid="axisAdp" />
                 <adaptor uid="pickedVoxelTextAdp" />
+                <adaptor uid="shapeExtruderAdp" />
                 <adaptor uid="resizeViewportAdp" />
                 <adaptor uid="snapshotAdp" />
 
@@ -224,14 +231,19 @@
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="${modelSeries}" />
-            <config layer="defaultLayer" queryFlags="0x44000000" />
+            <config layer="defaultLayer" queryFlags="0x44000000" autoresetcamera="no" />
+        </service>
+
+        <service uid="extrudedMeshesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
+            <in key="model" uid="${extrudedModelSeries}" />
+            <config layer="defaultLayer" queryFlags="0x44000000" autoresetcamera="no" />
         </service>
 
         <service uid="volumeAdp" type="::visuOgreAdaptor::SVolumeRender" >
-            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="image" uid="extrudedImage" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="yes" />
-            <config layer="defaultLayer" widgets="no" preintegration="no" autoresetcamera="yes" samples="1024" />
+            <config layer="defaultLayer" widgets="no" preintegration="no" autoresetcamera="no" samples="1024" />
         </service>
 
         <service uid="3DNegatoAdp" type="::visuOgreAdaptor::SNegato3D" >
@@ -258,6 +270,11 @@
         <service uid="pickedVoxelTextAdp" type="::visuOgreAdaptor::SText">
             <text></text>
             <config layer="defaultLayer" x="0.01" y="0.01" hAlign="left" vAlign="bottom" color="#D35151" />
+        </service>
+
+        <service uid="shapeExtruderAdp" type="::visuOgreAdaptor::SShapeExtruder">
+            <inout key="extrudedMeshes" uid="${extrudedModelSeries}" />
+            <config layer="defaultLayer" lineColor="#FFC66D" edgeColor="#D35151" />
         </service>
 
         <service uid="resizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
@@ -422,6 +439,12 @@
             <addSelection service="::ioAtoms::SWriter" />
         </service>
 
+        <service uid="imageExtruderSrv" type="::opImageFilter::SImageExtruder" autoConnect="yes" worker="EXTRUSION_THREAD" >
+            <in key="meshes" uid="${extrudedModelSeries}" />
+            <in key="image" uid="${image}" />
+            <inout key="extrudedImage" uid="extrudedImage" />
+        </service>
+
         <!-- ************************************* Action ************************************ -->
 
         <!-- Set the view in full screen -->
@@ -506,6 +529,14 @@
             <slot>volumeAdp/updateClippingBox</slot>
         </connect>
 
+        <connect channel="${SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL}" >
+            <slot>shapeExtruderAdp/enableTool</slot>
+        </connect>
+
+        <connect channel="${SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL}" >
+            <signal>shapeExtruderAdp/toolDisabled</signal>
+        </connect>
+
         <connect channel="${POINTLIST_VISIBILITY_RECEIVER_CHANNEL}" >
             <slot>pointListAdp/updateVisibility</slot>
             <slot>pointListAdp/update</slot>
@@ -562,16 +593,19 @@
         <start uid="managePointsSrv" />
         <start uid="backgroundReaderSrv" />
         <start uid="imageWriterSrv" />
+        <start uid="imageExtruderSrv" />
 
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="modeSeriesAdp" />
+        <start uid="extrudedMeshesAdp" />
         <start uid="volumeAdp" />
         <start uid="3DNegatoAdp" />
         <start uid="pointListAdp" />
         <start uid="multiDistancesAdp" />
         <start uid="axisAdp" />
         <start uid="pickedVoxelTextAdp" />
+        <start uid="shapeExtruderAdp" />
         <start uid="resizeViewportAdp" />
         <start uid="snapshotAdp" />
         <start uid="axialBackgroundAdp" />
@@ -597,5 +631,7 @@
         <start uid="frontalNegatoResizeViewportAdp" />
 
         <update uid="backgroundReaderSrv" />
+        <update uid="shapeExtruderAdp" />
+
     </config>
 </extension>
