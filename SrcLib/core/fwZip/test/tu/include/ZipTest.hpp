@@ -34,6 +34,7 @@ class ZipTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE( ZipTest );
 CPPUNIT_TEST( commentTest );
 CPPUNIT_TEST( cryptTest );
+CPPUNIT_TEST( badPasswordCryptTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,6 +44,7 @@ public:
 
     void commentTest();
     void cryptTest();
+    void badPasswordCryptTest();
 };
 
 } // namespace ut
