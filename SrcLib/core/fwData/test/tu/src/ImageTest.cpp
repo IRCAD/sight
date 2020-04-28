@@ -25,10 +25,11 @@
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Image.hpp>
+#include <fwMemory/stream/in/Raw.hpp>
 
 #include <fwTest/generator/Image.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -767,6 +768,39 @@ void ImageTest::imageDeepCopy()
         imgCopy->deepCopy(img);
 
         CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::setISStreamTest()
+{
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+
+    const auto dumpLock              = image->lock();
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "ImageTest.raw";
+
+    std::ofstream ostr(PATH, std::ios::binary);
+    ostr.write(static_cast<const char*>(image->getBuffer()), image->getSizeInBytes());
+    ostr.close();
+
+    ::fwData::Image::sptr newImage = ::fwData::Image::New();
+    newImage->setSize2(image->getSize2());
+    newImage->setType(image->getType());
+    newImage->setPixelFormat(image->getPixelFormat());
+    newImage->setIStreamFactory(std::make_shared< ::fwMemory::stream::in::Raw >(PATH),
+                                image->getSizeInBytes(), PATH, ::fwMemory::RAW);
+
+    const auto newDumpLock = newImage->lock();
+
+    auto itr       = image->begin< std::int16_t>();
+    const auto end = image->end< std::int16_t>();
+    auto newItr    = newImage->begin< std::int16_t>();
+
+    for (; itr != end; ++itr, ++newItr)
+    {
+        CPPUNIT_ASSERT_EQUAL(*itr, *newItr);
     }
 }
 

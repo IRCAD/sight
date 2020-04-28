@@ -22,8 +22,6 @@
 
 #include "IoItkTest.hpp"
 
-#include <fwDataTools/Image.hpp>
-
 #include <fwIO/ioTypes.hpp>
 
 #include <fwMedData/ImageSeries.hpp>

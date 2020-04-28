@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 namespace fwGdcmIO
@@ -59,40 +58,38 @@ DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction
     ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Can't save this mesh. It must contain only triangles !"),
                           !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
-
+    auto itr       = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto end = mesh->end< ::fwData::iterator::ConstPointIterator >();
     // Coordinates
     {
         // Retrieve & copy data
-        ::fwDataTools::helper::Array pointsArrayHelper(mesh->getPointsArray());
         m_pointBuffer.reserve(mesh->getNumberOfPoints() * 3);
-        m_pointBuffer.assign(pointsArrayHelper.begin< ::fwData::Mesh::PointValueType >(),
-                             pointsArrayHelper.end< ::fwData::Mesh::PointValueType >());
+        m_pointBuffer.assign(reinterpret_cast<const float*>(itr->point), reinterpret_cast<const float*>(end->point));
     }
 
     // Cells
     {
         // Retrieve & copy data
-        ::fwDataTools::helper::Array cellDataHelper(mesh->getCellDataArray());
         m_cellBuffer.resize(mesh->getNumberOfCells() * 3);
+        auto cellIt        = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto cellEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
         std::size_t index = 0;
-        for(auto cellIt = cellDataHelper.begin< ::fwData::Mesh::CellValueType >();
-            cellIt != cellDataHelper.end< ::fwData::Mesh::CellValueType >();
-            ++cellIt)
+        for(; cellIt != cellEnd; ++cellIt)
         {
             // Index shall start at 1 in DICOM
-            m_cellBuffer[index++] = static_cast< DicomCellValueType >(*cellIt) + 1;
+            m_cellBuffer[index++] = static_cast< DicomCellValueType >(cellIt->pointIdx[0]) + 1;
+            m_cellBuffer[index++] = static_cast< DicomCellValueType >(cellIt->pointIdx[1]) + 1;
+            m_cellBuffer[index++] = static_cast< DicomCellValueType >(cellIt->pointIdx[2]) + 1;
         }
     }
 
     // Normals
-    if (mesh->getPointNormalsArray())
+    if (mesh->hasPointNormals())
     {
         // Retrieve & copy data
-        ::fwDataTools::helper::Array normalsArrayHelper(mesh->getPointNormalsArray());
         m_normalBuffer.reserve(mesh->getNumberOfPoints() * 3);
-        m_normalBuffer.assign(normalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >(),
-                              normalsArrayHelper.end< ::fwData::Mesh::NormalValueType >());
+        m_normalBuffer.assign(reinterpret_cast<const float*>(itr->normal), reinterpret_cast<const float*>(end->normal));
     }
 
 }
@@ -135,55 +132,55 @@ DicomSurface::~DicomSurface()
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
     // Initialize number of points
-    mesh->setNumberOfPoints(m_pointBuffer.size() / 3);
-    mesh->setNumberOfCells(m_cellBuffer.size() / 3);
-    mesh->setCellDataSize(m_cellBuffer.size());
-    mesh->adjustAllocatedMemory();
+    ::fwData::Mesh::Attributes attribute = ::fwData::Mesh::Attributes::NONE;
+    if( !m_normalBuffer.empty())
+    {
+        attribute = ::fwData::Mesh::Attributes::POINT_NORMALS;
+    }
+
+    mesh->resize(m_pointBuffer.size() / 3, m_cellBuffer.size() / 3, ::fwData::Mesh::CellType::TRIANGLE, attribute);
 
     // Coordinates
     {
-        ::fwDataTools::helper::Array pointsArrayHelper(mesh->getPointsArray());
+        auto itr = mesh->begin< ::fwData::iterator::PointIterator >();
+
         std::copy(m_pointBuffer.begin(),
                   m_pointBuffer.end(),
-                  pointsArrayHelper.begin< ::fwData::Mesh::PointValueType >());
+                  reinterpret_cast<float*>(itr->point));
     }
 
     // Cells
     {
-        ::fwDataTools::helper::Array cellDataHelper(mesh->getCellDataArray());
+        auto itr       = mesh->begin< ::fwData::iterator::CellIterator >();
+        const auto end = mesh->end< ::fwData::iterator::CellIterator >();
 
-        std::size_t index = 0;
-        for(auto cellIt = cellDataHelper.begin< ::fwData::Mesh::CellValueType >();
-            cellIt != cellDataHelper.end< ::fwData::Mesh::CellValueType >();
-            ++cellIt)
+        // Cells types
+        std::fill(itr->type,
+                  end->type,
+                  static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
+
+        // Cell data offset
+        CellDataOffsetGenerator cellDataOffsetGenerator;
+        std::generate(itr->offset,
+                      end->offset,
+                      cellDataOffsetGenerator);
+
+        for(size_t index = 0; index != m_cellBuffer.size(); ++index)
         {
             // Index shall start at 0 in Sight
-            *cellIt = static_cast< ::fwData::Mesh::CellValueType >(m_cellBuffer[index++]) - 1;
+            itr->pointIdx[index] = static_cast< ::fwData::Mesh::CellValueType >(m_cellBuffer[index]) - 1;
         }
     }
 
     // Normals
     if(!m_normalBuffer.empty())
     {
-        mesh->allocatePointNormals();
-        ::fwDataTools::helper::Array normalsArrayHelper(mesh->getPointNormalsArray());
+        auto itr = mesh->begin< ::fwData::iterator::PointIterator >();
+
         std::copy(m_normalBuffer.begin(),
                   m_normalBuffer.end(),
-                  normalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >());
+                  reinterpret_cast<float*>(itr->normal));
     }
-
-    // Cells types
-    ::fwDataTools::helper::Array cellTypesHelper(mesh->getCellTypesArray());
-    std::fill(cellTypesHelper.begin< ::fwData::Mesh::CellTypes >(),
-              cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
-              static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
-
-    // Cell data offset
-    ::fwDataTools::helper::Array cellDataOffsetsHelper(mesh->getCellDataOffsetsArray());
-    CellDataOffsetGenerator cellDataOffsetGenerator;
-    std::generate(cellDataOffsetsHelper.begin< ::fwData::Mesh::CellDataOffsetType >(),
-                  cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(),
-                  cellDataOffsetGenerator);
 
     return mesh;
 

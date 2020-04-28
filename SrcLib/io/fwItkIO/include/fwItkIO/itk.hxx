@@ -22,11 +22,6 @@
 
 #pragma once
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
-
-#include <fwTools/DynamicType.hpp>
-
 #include <itkImage.h>
 #include <itkImageRegion.h>
 

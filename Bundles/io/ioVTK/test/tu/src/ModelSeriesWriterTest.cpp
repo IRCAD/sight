@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,13 +36,13 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
+#include <fwTest/helper/compare.hpp>
 
 #include <fwTools/System.hpp>
 
 #include <boost/functional/hash.hpp>
 
 #include <filesystem>
-
 #include <set>
 #include <string>
 #include <vector>
@@ -130,42 +130,6 @@ void runModelSeriesSrv(
 
 //------------------------------------------------------------------------------
 
-size_t recHash(const ::fwData::Reconstruction::sptr& rec)
-{
-    ::fwData::Mesh::sptr mesh = rec->getMesh();
-
-    ::fwData::Array::sptr points          = mesh->getPointsArray();
-    ::fwData::Array::sptr cellTypes       = mesh->getCellTypesArray();
-    ::fwData::Array::sptr cellData        = mesh->getCellDataArray();
-    ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
-
-    std::string buf;
-
-    ::fwMemory::BufferObject::sptr bo;
-    ::fwMemory::BufferObject::Lock lock;
-
-    bo   = points->getBufferObject();
-    lock = (bo->lock());
-    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
-
-    bo   = cellTypes->getBufferObject();
-    lock = (bo->lock());
-    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
-
-    bo   = cellData->getBufferObject();
-    lock = (bo->lock());
-    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
-
-    bo   = cellDataOffsets->getBufferObject();
-    lock = (bo->lock());
-    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
-
-    ::boost::hash<std::string> stringHash;
-    return stringHash(buf);
-}
-
-//------------------------------------------------------------------------------
-
 void ModelSeriesWriterTest::testWriteMeshes()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
@@ -212,22 +176,15 @@ void ModelSeriesWriterTest::testWriteMeshes()
     const RecVecType& readRecs = readSeries->getReconstructionDB();
     CPPUNIT_ASSERT_EQUAL(files.size(), readRecs.size());
 
-    std::set< size_t > refHashes;
-    std::set< size_t > readHashes;
-
     const RecVecType& refRecs         = modelSeries->getReconstructionDB();
     RecVecType::const_iterator itRef  = refRecs.begin();
     RecVecType::const_iterator itRead = readRecs.begin();
 
     for(; itRef != refRecs.end(); ++itRef, ++itRead)
     {
-        refHashes.insert(recHash(*itRef));
-        CPPUNIT_ASSERT_MESSAGE("No valid mesh found in reconstruction", (*itRef)->getMesh());
-        readHashes.insert(recHash(*itRead));
-        CPPUNIT_ASSERT_MESSAGE("No valid mesh found in read reconstruction", (*itRead)->getMesh());
+        CPPUNIT_ASSERT(::fwTest::helper::compare((*itRef)->getMesh(), (*itRead)->getMesh()));
     }
 
-    CPPUNIT_ASSERT(refHashes == readHashes);
 }
 
 //------------------------------------------------------------------------------

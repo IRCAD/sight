@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,11 +24,9 @@
 
 #include "fwDataIO/writer/registry/macros.hpp"
 
-#include <fwDataTools/helper/ArrayGetter.hpp>
-
-#include <filesystem>
 #include <zlib.h>
 
+#include <filesystem>
 #include <iostream>
 
 fwDataIOWriterRegisterMacro( ::fwDataIO::writer::GzArrayWriter);
@@ -40,7 +38,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-GzArrayWriter::GzArrayWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+GzArrayWriter::GzArrayWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
@@ -69,11 +67,12 @@ void GzArrayWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwDataTools::helper::ArrayGetter arrayHelper(array);
+    const auto dumpLock = array->lock();
     // file is OK : process now
     const size_t arraySizeInBytes = array->getSizeInBytes();
 
-    const unsigned int uncompressedbyteswrited = gzwrite(rawFile, arrayHelper.getBuffer(), arraySizeInBytes);
+    const unsigned int uncompressedbyteswrited =
+        gzwrite(rawFile, array->getBuffer(), static_cast<unsigned int>(arraySizeInBytes));
     gzclose(rawFile);
     if ( uncompressedbyteswrited != arraySizeInBytes )
     {

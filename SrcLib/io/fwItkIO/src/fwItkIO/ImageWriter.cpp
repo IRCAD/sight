@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,11 +30,11 @@
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeKeyTypeMapping.hpp>
+
+#include <itkImageFileWriter.h>
 
 #include <filesystem>
-#include <itkImageFileWriter.h>
 
 fwDataIOWriterRegisterMacro( ::fwItkIO::ImageWriter );
 
@@ -70,7 +70,7 @@ struct ITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        OSLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
+        OSLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre
@@ -118,8 +118,8 @@ void ImageWriter::write()
     saverParam.m_fwWriter  = this->getSptr();
     assert( saverParam.m_dataImage );
 
-    ::fwTools::Dispatcher< fwTools::IntrinsicTypes, ITKSaverFunctor >::invoke(
-        saverParam.m_dataImage->getPixelType(), saverParam );
+    ::fwTools::Dispatcher< fwTools::SupportedDispatcherTypes, ITKSaverFunctor >::invoke(
+        saverParam.m_dataImage->getType(), saverParam );
 }
 
 //------------------------------------------------------------------------------

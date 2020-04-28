@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,14 +38,14 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeKeyTypeMapping.hpp>
 
-#include <filesystem>
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
 #include <itkJPEGImageIOFactory.h>
 #include <itkNumericSeriesFileNames.h>
+
+#include <filesystem>
 
 fwDataIOWriterRegisterMacro( ::fwItkIO::JpgImageWriter );
 
@@ -88,7 +88,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
+        OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::Type::create<PIXELTYPE>().string() );
 
         ::fwData::Image::csptr image = param.m_dataImage;
 
@@ -158,7 +158,7 @@ struct JpgITKSaverFunctor
         format += "/%04d.jpg";
         nameGenerator->SetSeriesFormat( format.c_str() );
         nameGenerator->SetStartIndex( 1 );
-        nameGenerator->SetEndIndex( image->getSize()[2] );
+        nameGenerator->SetEndIndex( image->getSize2()[2] );
         nameGenerator->SetIncrementIndex( 1 );
 
         writer->SetFileNames( nameGenerator->GetFileNames() );
@@ -183,8 +183,8 @@ void JpgImageWriter::write()
     saverParam.m_fwWriter  = this->getSptr();
     assert( saverParam.m_dataImage );
 
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, JpgITKSaverFunctor >::invoke(
-        saverParam.m_dataImage->getPixelType(), saverParam );
+    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, JpgITKSaverFunctor >::invoke(
+        saverParam.m_dataImage->getType(), saverParam );
 }
 
 //------------------------------------------------------------------------------

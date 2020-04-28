@@ -17,3 +17,4 @@ if(WIN32)
         ${CONAN_ZLIB}
     )
 endif()
+set( WARNINGS_AS_ERRORS ON)

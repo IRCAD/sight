@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 #include <fwData/Composite.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
@@ -259,16 +257,16 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
     srvCfg.add("file", filePath.string());
 
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwDataTools::helper::Array arrayHelper(array);
-    const size_t NB_COMPONENT = 1;
+    const auto dumpLock = array->lock();
     ::fwData::Array::SizeType size {10, 100};
 
-    array->resize("uint32", size, NB_COMPONENT, true);
+    array->resize(size, ::fwTools::Type::s_UINT32);
 
-    unsigned int count = 0;
-    unsigned int* iter = arrayHelper.begin<unsigned int>();
+    std::uint32_t count = 0;
+    auto iter           = array->begin<std::uint32_t>();
+    const auto end      = array->end<std::uint32_t>();
 
-    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
+    for (; iter != end; ++iter)
     {
         *iter = count++;
     }

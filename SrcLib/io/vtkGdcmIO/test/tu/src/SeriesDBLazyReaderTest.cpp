@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
@@ -85,7 +83,7 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
     timer.start();
 #endif
 
-    ::fwDataTools::helper::Image locker( series->getImage() );
+    const auto dumpLock = series->getImage()->lock();
 
     #if (SPYLOG_LEVEL >= 4 )
     timer.stop();

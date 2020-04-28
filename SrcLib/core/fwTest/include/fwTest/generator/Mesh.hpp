@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_GENERATOR_MESH_HPP__
-#define __FWTEST_GENERATOR_MESH_HPP__
+#pragma once
 
 #include "fwTest/config.hpp"
 
@@ -29,15 +28,13 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwDataTools/Vector.hxx>
 #include <fwDataTools/helper/Mesh.hpp>
-
+#include <fwDataTools/Vector.hxx>
 
 namespace fwTest
 {
 namespace generator
 {
-
 
 /**
  * @brief   This helper generates a mesh using specified structure (quad or triangle).
@@ -48,7 +45,6 @@ class Mesh
 public:
 
     typedef std::map< ::fwDataTools::Point, ::fwData::Mesh::Id> PointsMapType;
-
 
     /**
      * @brief Initialize 'rand' seed
@@ -61,7 +57,6 @@ public:
      */
     FWTEST_API static void generateMesh( ::fwData::Mesh::sptr mesh );
 
-
     /**
      * @brief Add quad cells in mesh, this method generates synthetic data (two face of a cube).
      *
@@ -73,7 +68,7 @@ public:
     FWTEST_API static void addQuadMesh(::fwData::Mesh::sptr mesh,
                                        PointsMapType& points,
                                        size_t nbPointsByEdge = 10,
-                                       float edgeDim = 100.);
+                                       float edgeDim         = 100.f);
 
     /**
      * @brief Add triangle cells in mesh, this method generates synthetic data (two face of a cube).
@@ -86,7 +81,7 @@ public:
     FWTEST_API static void addTriangleMesh(::fwData::Mesh::sptr mesh,
                                            PointsMapType& points,
                                            size_t nbPointsByEdge = 10,
-                                           float edgeDim = 100.);
+                                           float edgeDim         = 100.f);
 
     /**
      * @brief Generate a quad mesh.
@@ -110,17 +105,13 @@ public:
      */
     FWTEST_API static void generateTriangleQuadMesh(::fwData::Mesh::sptr mesh);
 
-
 protected:
 
-    FWTEST_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt,
-                                                  ::fwDataTools::helper::Mesh::sptr meshHelper,
+    FWTEST_API static ::fwData::Mesh::Id addPoint(const fwData::Mesh::PointValueType* pt,
+                                                  const ::fwData::Mesh::sptr& mesh,
                                                   PointsMapType& points);
-
 
 };
 
 } // namespace generator
 } // namespace fwTest
-
-#endif // __FWTEST_GENERATOR_MESH_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,6 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
@@ -48,7 +46,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_writeCount(0),
     m_job(::fwJobs::Observer::New("Writing DICOM files"))
