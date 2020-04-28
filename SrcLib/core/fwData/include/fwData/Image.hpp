@@ -90,7 +90,7 @@ class PointList;
  * can also be a simple struct like:
  *
  * @code{.cpp}
-    struct RGBA {
+    struct Color {
         std::uint8_t r;
         std::uint8_t g;
         std::uint8_t b;
@@ -109,8 +109,8 @@ class PointList;
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
     img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
-    auto iter    = img->begin<RGBA>();
-    const auto iterEnd = img->end<RGBA>();
+    auto iter    = img->begin<Color>();
+    const auto iterEnd = img->end<Color>();
 
     for (; iter != iterEnd; ++iter)
     {
@@ -336,7 +336,7 @@ public:
      * The format can be the buffer type ([u]int[8|16|32|64], double, float), and can also be a simple struct like:
      *
      * @code{.cpp}
-        struct RGBA {
+        struct Color {
             std::uint8_t r;
             std::uint8_t g;
             std::uint8_t b;
@@ -349,8 +349,8 @@ public:
      * @code{.cpp}
         ::fwData::Image::sptr img = ::fwData::Image::New();
         img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
-        ::fwData::Image::Iterator< RGBA > iter    = img->begin< RGBA >();
-        const ::fwData::Image::Iterator< RGBA > iterEnd = img->end< RGBA >();
+        ::fwData::Image::Iterator< Color > iter    = img->begin< Color >();
+        const ::fwData::Image::Iterator< Color > iterEnd = img->end< Color >();
 
         for (; iter != iterEnd; ++iter)
         {
@@ -363,7 +363,7 @@ public:
      *
      * @warning The iterator does not assert that the buffer type is the same as the given format. It only asserts
      * (in debug) that the iterator does not iterate outside of the buffer bounds).
-     * @note These functions lock the buffer
+     * @note These functions lock the buffer for dump (see lock()).
      * @{
      */
     template< typename FORMAT > Iterator<FORMAT> begin();
@@ -427,7 +427,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock())
      * @throw ::fwData::Exception Index out of bounds
      */
     template< typename T > T& at(IndexType id);
@@ -441,7 +441,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock())
      * @throw ::fwData::Exception Index out of bounds
      */
     template< typename T > T& at(IndexType x, IndexType y, IndexType z);
@@ -452,14 +452,14 @@ public:
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
     FWDATA_API void* getPixelBuffer( IndexType index );
 
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
     FWDATA_API void* getPixelBuffer( IndexType index ) const;
 
@@ -467,7 +467,7 @@ public:
      * @brief Set pixel value represented as a void* buffer
      * @param index offset of the pixel
      * @param pixBuf pixel value represented as a void* buffer
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
     FWDATA_API void setPixelBuffer( IndexType index, BufferType* pixBuf);
 
@@ -479,7 +479,11 @@ public:
     /**
      * @brief Return a lock on the image to prevent from dumping the buffer on the disk
      *
-     * The buffer cannot be accessed if the image is not locked
+     * When the buffer is dumped, the memory is released and the buffer will not be accissible. When lock() is called,
+     * the buffer is restored from the disk if it was dumped and as long as the ::fwMemory::BufferObject::Lock is
+     * maintainted, the buffer will not be dumped.
+     *
+     * An exception will be raised if you try to access while the array is not locked.
      */
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 

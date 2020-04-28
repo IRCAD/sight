@@ -718,7 +718,9 @@ public:
      *  - ::fwData::iterator::CellIterator: to iterate through mesh cells
      *  - ::fwData::iterator::ConstCellIterator: to iterate through mesh cells read-only
      *
-     * @note These iterators lock the buffer
+     * @warning If the Mesh is 'const', only "Const" iterators are available (::fwData::iterator::ConstPointIterator and
+     * ::fwData::iterator::ConstCellIterator)
+     * @note These iterators lock the buffers for dump (see lock())
      * @{
      */
     template< typename ITERATOR > ITERATOR begin();

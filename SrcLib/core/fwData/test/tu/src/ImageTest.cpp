@@ -526,7 +526,12 @@ void ImageTest::testIterator()
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2]*2, allocatedSize);
     CPPUNIT_ASSERT_EQUAL(SIZE[0]*SIZE[1]*SIZE[2], img->getNumElements());
 
-    const auto lock = img->lock();
+    {
+        // Check that the iterator properly lock the buffer
+        CPPUNIT_ASSERT_NO_THROW(img->begin());
+        const auto itr = img->begin();
+        CPPUNIT_ASSERT_NO_THROW(img->getBuffer());
+    }
 
     {
         // check default raw int8 iterator

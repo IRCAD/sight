@@ -329,7 +329,7 @@ protected:
         const size_t nbPoints = iter.nbPoints();
         for (int i = 0; i< nbPoints ; ++i)
         {
-            const auto pointIdx = iter.pointIdx(i);
+            const auto pointIdx = iter->pointIdx[i];
             //...
         }
     }
@@ -367,7 +367,7 @@ public:
         const size_t nbPoints = iter.nbPoints();
         for (int i = 0; i< nbPoints ; ++i)
         {
-            const auto pointIdx = iter.pointIdx(i);
+            const auto pointIdx = iter->pointIdx[i];
             //...
         }
     }
