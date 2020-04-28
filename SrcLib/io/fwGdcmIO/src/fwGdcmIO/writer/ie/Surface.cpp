@@ -474,10 +474,9 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         ::fwGdcmIO::helper::DicomDataTools::convertToPresentationType(material->getRepresentationMode()));
 
     // Finite Volume (0x0066,0x000E) - Type 1
-    surface->SetFiniteVolume(::fwDataTools::Mesh::isClosed(reconstruction->getMesh()) ? (::gdcm::Surface::YES): (::gdcm
-                                                                                                                 ::
-                                                                                                                 Surface
-                                                                                                                 ::NO));
+    surface->SetFiniteVolume(
+        ::fwDataTools::Mesh::isClosed(reconstruction->getMesh()) ? (::gdcm::Surface::YES):
+        (::gdcm::Surface::NO));
 
     // Manifold (0x0066,0x0010) - Type 1
     surface->SetManifold(::gdcm::Surface::NO);
