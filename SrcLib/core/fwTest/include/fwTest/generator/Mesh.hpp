@@ -68,7 +68,7 @@ public:
     FWTEST_API static void addQuadMesh(::fwData::Mesh::sptr mesh,
                                        PointsMapType& points,
                                        size_t nbPointsByEdge = 10,
-                                       float edgeDim         = 100.);
+                                       float edgeDim         = 100.f);
 
     /**
      * @brief Add triangle cells in mesh, this method generates synthetic data (two face of a cube).
@@ -81,7 +81,7 @@ public:
     FWTEST_API static void addTriangleMesh(::fwData::Mesh::sptr mesh,
                                            PointsMapType& points,
                                            size_t nbPointsByEdge = 10,
-                                           float edgeDim         = 100.);
+                                           float edgeDim         = 100.f);
 
     /**
      * @brief Generate a quad mesh.
