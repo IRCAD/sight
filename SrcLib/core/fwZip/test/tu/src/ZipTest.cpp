@@ -120,7 +120,6 @@ void ZipTest::cryptTest()
 
     for(size_t i = 0; i < sizeof(sourceBuffer); i++)
     {
-        // std::cerr << sourceBuffer[i] << " == " << archiveBuffer[i] << std::endl;
         CPPUNIT_ASSERT_EQUAL(sourceBuffer[i], archiveBuffer[i]);
     }
 }
@@ -150,7 +149,7 @@ void ZipTest::badPasswordCryptTest()
 
     // Read comment, it should work, even with a bad password as the comment are not encrypted
     SPTR(ReadZipArchive) reader = std::make_shared<ReadZipArchive>(path, readPassword);
-    std::string readerComment = reader->getComment();
+    const std::string readerComment = reader->getComment();
 
     CPPUNIT_ASSERT_EQUAL(writerComment, readerComment);
 

@@ -94,10 +94,13 @@ public:
 
 private:
 
+    /// Path to the archive file
     std::filesystem::path m_archive;
 
+    /// Global comment
     std::string m_comment;
 
+    /// Key used to encrypt files
     std::string m_key;
 };
 

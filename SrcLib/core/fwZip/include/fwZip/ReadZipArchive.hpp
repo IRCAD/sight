@@ -88,8 +88,10 @@ public:
 
 private:
 
+    /// Path of the archive file
     std::filesystem::path m_archive;
 
+    /// Key used to decrypt encrypted files
     std::string m_key;
 };
 
