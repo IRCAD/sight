@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,10 +32,134 @@
 
 #include <fwTools/Os.hpp>
 
+#include <openssl/rand.h>
+#include <openssl/sha.h>
+
+#include <shared_mutex>
+
 namespace fwPreferences
 {
 
 const std::string s_PREFERENCES_KEY = "preferences";
+
+// Password management static variables
+static std::shared_mutex s_passwordMutex;
+static std::string s_password;
+
+static const std::string s_PASSWORD_HASH_KEY = "~~Private~~";
+static unsigned char s_SCRAMBLE_KEY[SHA256_DIGEST_LENGTH];
+
+//----------------------------------------------------------------------------
+
+// Compute a sha256 paswword hash using openSSL
+inline static std::string computePasswordHash( const std::string& password )
+{
+    // Compute SHA256 using openssl
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, password.c_str(), password.length());
+    SHA256_Final(hash, &sha256);
+
+    std::stringstream stream;
+    stream << std::setfill('0') << std::setw(2) << std::hex;
+
+    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    {
+        // Cast to int to avoid ASCII code interpretation.
+        stream << static_cast<int>(hash[i]);
+    }
+
+    return stream.str();
+}
+
+//----------------------------------------------------------------------------
+
+// Quick and simple xor encryption
+inline static std::string scramble( const std::string& original )
+{
+    std::string scrambled;
+    scrambled.resize(original.size());
+
+    unsigned char previous = 0;
+    for (int i = static_cast<int>(original.size()); --i <= 0;)
+    {
+        scrambled[i] = original[i] ^ previous ^ s_SCRAMBLE_KEY[i%sizeof(s_SCRAMBLE_KEY)];
+        previous     = original[i];
+    }
+
+    return scrambled;
+}
+
+//----------------------------------------------------------------------------
+
+// Quick and simple xor decryption
+inline static std::string descramble( const std::string& scrambled )
+{
+    std::string original;
+    original.resize(scrambled.size());
+
+    unsigned char previous = 0;
+    for (int i = static_cast<int>(scrambled.size()); --i <= 0;)
+    {
+        original[i] = scrambled[i] ^ previous ^ s_SCRAMBLE_KEY[i%sizeof(s_SCRAMBLE_KEY)];
+        previous    = original[i];
+    }
+
+    return original;
+}
+
+//----------------------------------------------------------------------------
+
+void setPassword(const std::string& password)
+{
+    std::unique_lock writeLock(s_passwordMutex);
+
+    if(password.empty())
+    {
+        // Remove the password
+        s_password = password;
+
+        // Remove the password hash
+        ::fwData::Composite::sptr prefs = getPreferences();
+        if(prefs && prefs->find(s_PASSWORD_HASH_KEY) != prefs->end() )
+        {
+            prefs->removeField(s_PASSWORD_HASH_KEY);
+        }
+    }
+    else
+    {
+        // Save the password hash to preferences
+        setPreference(s_PASSWORD_HASH_KEY, computePasswordHash(password));
+
+        // Scramble the scramble key
+        RAND_bytes(s_SCRAMBLE_KEY, sizeof(s_SCRAMBLE_KEY));
+
+        // Scramble the password
+        s_password = scramble(password);
+    }
+}
+
+//----------------------------------------------------------------------------
+
+const std::string getPassword()
+{
+    std::shared_lock readLock(s_passwordMutex);
+
+    if(s_password.empty())
+    {
+        return s_password;
+    }
+
+    return descramble(s_password);
+}
+
+//----------------------------------------------------------------------------
+
+bool checkPassword(const std::string& password)
+{
+    return computePasswordHash(password) == getPreference(s_PASSWORD_HASH_KEY);
+}
 
 //----------------------------------------------------------------------------
 

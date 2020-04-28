@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwPreferences
@@ -79,5 +78,14 @@ T getValue(const std::string& var, const char delimiter = '%')
     const std::string value = getValue(var, delimiter);
     return ::boost::lexical_cast< T >(value);
 }
+
+/// Set the password to use in the application. If null or empty, erase it.
+FWPREFERENCES_API void setPassword(const std::string& password);
+
+/// Return the password used in the application.
+FWPREFERENCES_API const std::string getPassword();
+
+/// Check if the given password match the hash stored in the preferences
+FWPREFERENCES_API bool checkPassword(const std::string& password);
 
 } // namespace fwPreferences
