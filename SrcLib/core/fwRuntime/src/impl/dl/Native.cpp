@@ -98,10 +98,10 @@ const std::regex Native::getNativeName() const
         "[0-9]\\.[0-9]" );
 #elif defined(WIN32)
     nativeName = std::regex(
-        fullModulePath.filename().string() + "\\.dll");
+        m_modulePath.filename().string() + "\\.dll");
 #elif defined (__APPLE__)
     nativeName = std::regex(
-        "lib" + fullModulePath.filename().string() + "[0-9\\.]*\\.dylib" );
+        "lib" + m_modulePath.filename().string() + "[0-9\\.]*\\.dylib" );
 #endif
 
     return nativeName;
