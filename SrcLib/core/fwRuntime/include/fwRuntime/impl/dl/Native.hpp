@@ -31,10 +31,11 @@
 namespace fwRuntime
 {
 
-class Module;
-
 namespace impl
 {
+
+class Module;
+
 namespace dl
 {
 
@@ -44,7 +45,7 @@ namespace dl
  */
 struct Native
 {
-    friend class ::fwRuntime::Module;
+    friend class ::fwRuntime::impl::Module;
 
     /**
      * @brief       Constructor
@@ -93,7 +94,7 @@ struct Native
      *
      * @see         getPath
      */
-    const std::filesystem::path getFullPath( const bool _bMustBeFile = false ) const;
+    const std::filesystem::path getFullPath() const;
 
     /**
      * @brief   Retrieves the file path of the native library.
@@ -109,7 +110,7 @@ struct Native
      *
      * @param[in]   module  a pointer to a module instance
      */
-    void setModule( const ::fwRuntime::Module* module ) noexcept;
+    void setModule( const ::fwRuntime::impl::Module* module ) noexcept;
 
     /**
      * @brief  Retrieves the pattern of the dynamic library file name given the host OS

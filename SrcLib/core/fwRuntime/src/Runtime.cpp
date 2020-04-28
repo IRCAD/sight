@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,9 @@
 #include "fwRuntime/ExecutableFactory.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/IExecutable.hpp"
+#include "fwRuntime/operations.hpp"
 
-#include <boost/dll/runtime_symbol_info.hpp>
+#include <fwCore/spyLog.hpp>
 
 namespace fwRuntime
 {
@@ -36,10 +37,6 @@ namespace fwRuntime
 
 Runtime::Runtime()
 {
-    auto execPath = ::boost::dll::program_location();
-
-    // The program location is 'path/bin/executable', real working path is 'path'
-    m_workingPath = std::filesystem::path(execPath.normalize().parent_path().parent_path().string());
 }
 
 //------------------------------------------------------------------------------
@@ -64,6 +61,16 @@ Runtime& Runtime::get()
 
 //------------------------------------------------------------------------------
 
+void Runtime::addDefaultBundles()
+{
+    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
+
+    // Now done in ::fwRuntime::init()
+    ::fwRuntime::init();
+}
+
+//------------------------------------------------------------------------------
+
 std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
 {
     std::shared_ptr<Extension> resExtension;
@@ -82,14 +89,7 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
 
 void Runtime::setWorkingPath(const std::filesystem::path& workingPath)
 {
-    m_workingPath = workingPath;
-}
-
-//------------------------------------------------------------------------------
-
-std::filesystem::path Runtime::getWorkingPath() const
-{
-    return m_workingPath;
+    FW_DEPRECATED_MSG("setWorkingPath", "22.0");
 }
 
 //------------------------------------------------------------------------------

@@ -256,7 +256,7 @@ std::shared_ptr<Extension> ModuleDescriptorReader::processExtension(xmlNodePtr n
     }
 
     // Creates the extension instance.
-    std::shared_ptr<Extension> extension(new Extension(module, identifier, point, node));
+    std::shared_ptr<Extension> extension = std::make_shared<Extension>(module, identifier, point, node);
 
     // Processes child nodes which are configuration elements.
     xmlNodePtr curChild;
@@ -296,7 +296,7 @@ ModuleDescriptorReader::PointExtensionsPairType ModuleDescriptorReader::processP
             continue;
         }
     }
-    std::shared_ptr<ExtensionPoint> extensionPoint(new ExtensionPoint(module, identifier, schema));
+    auto extensionPoint = std::make_shared<ExtensionPoint>(module, identifier, schema);
 
     // Processes child nodes which declare identifier as extensions.
     std::vector< std::shared_ptr<Extension> > extensionContainer;
@@ -308,7 +308,7 @@ ModuleDescriptorReader::PointExtensionsPairType ModuleDescriptorReader::processP
             if( xmlStrcmp(curChild->name, (const xmlChar*) IMPLEMENTS.c_str()) == 0 )
             {
                 std::string extensionId = (const char*) curChild->children->content;
-                std::shared_ptr<Extension> extension(new Extension(module, identifier, extensionId, curChild));
+                auto extension          = std::make_shared<Extension>(module, identifier, extensionId, curChild);
                 extensionContainer.push_back( extension );
             }
         }
@@ -342,7 +342,7 @@ std::shared_ptr<ExtensionPoint> ModuleDescriptorReader::processExtensionPoint(xm
         }
     }
     // Creates the extension instance.
-    std::shared_ptr<ExtensionPoint> point(new ExtensionPoint(module, identifier, schema));
+    std::shared_ptr<ExtensionPoint> point = std::make_shared<ExtensionPoint>(module, identifier, schema);
 
     // Job's done.
     return point;
@@ -365,7 +365,7 @@ std::shared_ptr<dl::Library> ModuleDescriptorReader::processLibrary(xmlNodePtr n
     }
 
     // Creates the library
-    std::shared_ptr<dl::Library> library( new dl::Library(name) );
+    auto library = std::make_shared<dl::Library>(name);
     return library;
 }
 
@@ -409,11 +409,11 @@ std::shared_ptr<impl::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr n
     }
     if(pluginClass.empty() == true)
     {
-        module = std::shared_ptr<Module>( new Module(location, moduleIdentifier, version) );
+        module = std::make_shared<Module>(location, moduleIdentifier, version);
     }
     else
     {
-        module = std::shared_ptr<Module>( new Module(location, moduleIdentifier, version, pluginClass) );
+        module = std::make_shared<Module>(location, moduleIdentifier, version, pluginClass);
     }
 
     // Processes all child nodes.

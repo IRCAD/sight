@@ -121,9 +121,7 @@ int main(int argc, char* argv[])
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", po::value(&bundlePaths)->default_value
-            (PathListType(1, (::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX).string())),
-        "Adds a bundle path")
+        ("bundle-path,B", "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
 
@@ -319,6 +317,8 @@ int main(int argc, char* argv[])
 #endif // _WIN32
     OSLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
+    ::fwRuntime::init();
+
     for(const fs::path& bundlePath :  bundlePaths )
     {
         if ( fs::is_directory(bundlePath))
@@ -340,7 +340,6 @@ int main(int argc, char* argv[])
         try
         {
             profile = ::fwRuntime::io::ProfileReader::createProfile(profileFile);
-            ::fwRuntime::profile::setCurrentProfile(profile);
 
             // Install a signal handler
             std::signal(SIGINT, signal_handler);

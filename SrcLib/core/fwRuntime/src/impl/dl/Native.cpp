@@ -22,7 +22,7 @@
 
 #include "fwRuntime/impl/dl/Native.hpp"
 
-#include "fwRuntime/Module.hpp"
+#include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/Runtime.hpp"
 
 #include <limits.h>
@@ -57,16 +57,15 @@ Native::~Native() noexcept
 
 const std::filesystem::path Native::getModuleLocation() const
 {
+    // Pre-condition
+    SLM_ASSERT("module not initialized", m_module);
     return m_module->getLibraryLocation();
 }
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
+const std::filesystem::path Native::getFullPath() const
 {
-    // Pre-condition
-    SLM_ASSERT("module not initialized", m_module != 0 );
-
     std::filesystem::path result;
 
     result = this->getModuleLocation() / this->getPath();
@@ -80,9 +79,9 @@ const std::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
     {
         throw RuntimeException("'" + result.string() + "': invalid native module file name.");
     }
-    if(_bMustBeFile && std::filesystem::is_directory(result) )
+    if( std::filesystem::is_directory(result) )
     {
-        throw RuntimeException("'" + result.string() + "': is a directory. Perhaps dynamic library is missing.");
+        throw RuntimeException("'" + result.string() + "': is a directory. Dynamic library is missing.");
     }
     return result;
 }
@@ -91,12 +90,11 @@ const std::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
 
 const std::regex Native::getNativeName() const
 {
-    const std::filesystem::path fullModulePath( this->getModuleLocation() / m_modulePath );
     std::regex nativeName;
 
 #if defined(linux) || defined(__linux)
     nativeName = std::regex(
-        "lib" + fullModulePath.filename().string() + "\\.so" +
+        "lib" + m_modulePath.filename().string() + "\\.so" +
         "[0-9\\.]*" );
 #elif defined(WIN32)
     nativeName = std::regex(
@@ -113,23 +111,21 @@ const std::regex Native::getNativeName() const
 
 const std::filesystem::path Native::getPath() const
 {
-    // Pre-condition
-    SLM_ASSERT("module not initialized", m_module != 0 );
+    SLM_ASSERT("module path not initialized", !m_modulePath.empty());
 
     std::filesystem::path result;
 
-    const std::filesystem::path fullModulePath( this->getModuleLocation() / m_modulePath );
     const std::regex nativeFileRegex( this->getNativeName() );
 
     // Walk through the module directory, seeking for a matching file.
-    std::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
+    std::filesystem::directory_iterator curDirEntry(this->getModuleLocation());
     std::filesystem::directory_iterator endDirEntry;
     for(; curDirEntry != endDirEntry; ++curDirEntry)
     {
         std::filesystem::path curEntryPath( *curDirEntry );
         if( std::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
         {
-            result = m_modulePath.parent_path() / curEntryPath.filename();
+            result = curEntryPath.filename();
             break;
         }
     }
@@ -142,7 +138,7 @@ const std::filesystem::path Native::getPath() const
 void Native::setModule( const Module* module ) noexcept
 {
     // Pre-condition
-    SLM_ASSERT("module already initialized", m_module == 0 );
+    SLM_ASSERT("module already initialized", m_module == nullptr );
     m_module = module;
     // Post-condition
     SLM_ASSERT("module not correctly attached", m_module == module );

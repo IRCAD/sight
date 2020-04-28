@@ -46,7 +46,7 @@ void AppConfigParametersTest::setUp()
     // Set up context before running a test.
     //modules location
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultModules();
+    runtime->addDefaultBundles();
 
     std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(std::filesystem::exists(location));

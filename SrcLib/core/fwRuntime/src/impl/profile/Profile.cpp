@@ -183,7 +183,7 @@ void Profile::cleanup()
 
 //------------------------------------------------------------------------------
 
-Profile::wptr current_profile;
+static Profile::sptr current_profile;
 
 //------------------------------------------------------------------------------
 
@@ -196,7 +196,7 @@ void setCurrentProfile(Profile::sptr prof)
 
 Profile::sptr getCurrentProfile()
 {
-    return current_profile.lock();
+    return current_profile;
 }
 
 //------------------------------------------------------------------------------

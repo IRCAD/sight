@@ -32,10 +32,9 @@
 namespace fwRuntime
 {
 
-class Module;
-
 namespace impl
 {
+class Module;
 
 namespace dl
 {
@@ -50,8 +49,7 @@ public:
     /**
      * @brief       Constructor.
      *
-     * @param[in]   modulePath      a path pointing the module to load without any extension
-     *                          information
+     * @param[in]   modulePath      a path pointing the module to load without any extension information
      */
     Library( const std::filesystem::path& modulePath ) noexcept;
 
@@ -123,7 +121,7 @@ public:
      *
      * @param[in]   module  a pointer to a module instance
      */
-    void setModule(const ::fwRuntime::Module* module) noexcept
+    void setModule(const ::fwRuntime::impl::Module* module) noexcept
     {
         m_implementor->setModule(module);
     }

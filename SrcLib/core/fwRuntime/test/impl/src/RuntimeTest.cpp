@@ -23,9 +23,11 @@
 #include "RuntimeTest.hpp"
 
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/impl/dl/Posix.hpp>
 #include <fwRuntime/impl/ExtensionPoint.hpp>
 #include <fwRuntime/impl/Module.hpp>
 #include <fwRuntime/impl/Runtime.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <filesystem>
@@ -44,9 +46,6 @@ namespace ut
 
 RuntimeTest::RuntimeTest()
 {
-    // Set up context before running a test.
-    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultBundles();
 }
 
 //------------------------------------------------------------------------------
@@ -64,8 +63,34 @@ void RuntimeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+
+void RuntimeTest::testPosix()
+{
+    const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
+    auto module         = std::make_shared<Module>(location / "dataReg-0.1", "dataReg", "0.1");
+
+    auto nativeLibrary = std::make_unique<dl::Posix>("dataReg");
+    nativeLibrary->setModule(module.get());
+    auto nativeName = nativeLibrary->getNativeName();
+
+    CPPUNIT_ASSERT( std::regex_match("libdataReg.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libdataReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("dataReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
+
+    auto path = nativeLibrary->getPath();
+    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("libdataReg.so.0.1"), path );
+}
+#endif
+
+//------------------------------------------------------------------------------
+
 void RuntimeTest::testRuntime()
 {
+    // Initialize the runtime
+    ::fwRuntime::init();
+
     ::fwRuntime::impl::Runtime& runtime = ::fwRuntime::impl::Runtime::get();
 
     // Test module dataReg

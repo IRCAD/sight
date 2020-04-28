@@ -153,7 +153,7 @@ private:
 
 /**
  * @brief       Set current profile.
- *
+ * @deprecated  This should not be called outside this library and will become part of private API as of 22.0
  * @param       prof profile
  */
 FWRUNTIME_API void setCurrentProfile(::fwRuntime::Profile::sptr prof);

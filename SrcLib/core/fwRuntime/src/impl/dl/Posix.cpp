@@ -84,7 +84,7 @@ void Posix::load()
     if(m_handle == 0)
     {
         // Opens the dynamic library.
-        m_handle = dlopen(getFullPath(true).string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
+        m_handle = dlopen(getFullPath().string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
         if(m_handle == 0)
         {
             std::string message(dlerror());

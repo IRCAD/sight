@@ -31,12 +31,8 @@
 #include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/IPlugin.hpp"
 
-#include <boost/dll/runtime_symbol_info.hpp>
+#include <fwTools/Os.hpp>
 
-#include <limits.h>
-
-#include <algorithm>
-#include <cassert>
 #include <filesystem>
 #include <functional>
 
@@ -53,10 +49,15 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 
 Runtime::Runtime()
 {
-    auto execPath = ::boost::dll::program_location();
+    const auto fwRuntimePath = ::fwTools::os::getSharedLibraryPath("fwCore");
 
-    // The program location is 'path/bin/executable', real working path is 'path'
-    m_workingPath = std::filesystem::path(execPath.normalize().parent_path().parent_path().string());
+#if defined(WIN32)
+    // The lib location is 'SIGHT_DIR/lib/libfwCore.dll'
+    m_workingPath = fwRuntimePath.parent_path().parent_path();
+#else
+    // The lib location is 'SIGHT_DIR/lib/share/libfwCore.so'
+    m_workingPath = fwRuntimePath.parent_path().parent_path().parent_path();
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -117,33 +118,11 @@ void Runtime::addModules( const std::filesystem::path& repository )
 
 //------------------------------------------------------------------------------
 
-void Runtime::addDefaultBundles()
-{
-    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
-    this->addDefaultModules();
-}
-
-//------------------------------------------------------------------------------
-
-void Runtime::addDefaultModules()
-{
-    // Modules location
-    const auto location = this->getWorkingPath() / MODULE_RC_PREFIX;
-
-    SLM_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
-
-    // Read modules
-    this->addBundles(location);
-    SLM_ASSERT("Couldn't load any module from path: " + location.string(), !this->getModules().empty());
-}
-
-//------------------------------------------------------------------------------
-
 void Runtime::addExecutableFactory( std::shared_ptr< ExecutableFactory > factory )
 {
-    // Ensures no registered factory has the same identifier.
+    // Ensures no registered factory has the same identifierg
     const std::string type( factory->getType() );
-    if( this->findExecutableFactory(type) != 0 )
+    if( this->findExecutableFactory(type) != nullptr )
     {
         throw RuntimeException(type + ": type already used by an executable factory.");
     }
@@ -346,6 +325,13 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
     ::fwRuntime::Runtime::ModuleContainer modules;
     std::copy(m_modules.begin(), m_modules.end(), std::inserter(modules, modules.begin()));
     return modules;
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path Runtime::getWorkingPath() const
+{
+    return m_workingPath;
 }
 
 //------------------------------------------------------------------------------

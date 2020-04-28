@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ typedef Win32 LibraryImplType;
 //------------------------------------------------------------------------------
 
 Library::Library(const std::filesystem::path& modulePath) noexcept :
-    m_implementor(new LibraryImplType(modulePath))
+    m_implementor(std::make_unique<LibraryImplType>(modulePath))
 {
 }
 

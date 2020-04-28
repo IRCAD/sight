@@ -86,7 +86,7 @@ public:
      *
      * @return      a boost path.
      */
-    FWRUNTIME_API std::filesystem::path getWorkingPath() const;
+    FWRUNTIME_API virtual std::filesystem::path getWorkingPath() const = 0;
 
     /**
      * @name    Modules
@@ -113,16 +113,9 @@ public:
      * @brief       Adds all modules found at the default location.
      *
      * @remark      The given module state will be altered according to the current configuration rules.
-     * @deprecated  Bundle has been renamed to Module, please use addDefaultModules() instead
+     * @deprecated  This is now done automatically when initializing Sight.
      */
-    [[deprecated]] FWRUNTIME_API virtual void addDefaultBundles() = 0;
-
-    /**
-     * @brief       Adds all modules found at the default location.
-     *
-     * @remark      The given module state will be altered according to the current configuration rules.
-     */
-    FWRUNTIME_API virtual void addDefaultModules() = 0;
+    [[deprecated]] FWRUNTIME_API virtual void addDefaultBundles();
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -198,9 +191,6 @@ private:
 
     /// Contains all registered extensions.
     ExtensionContainer m_extensions;
-
-    /// Path where Modules and share folder are located.
-    std::filesystem::path m_workingPath;
 };
 
 } // namespace fwRuntime

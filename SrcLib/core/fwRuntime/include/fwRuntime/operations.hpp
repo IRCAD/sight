@@ -46,9 +46,9 @@ class Profile;
  * @brief   Initializes Sight runtime and discovers default modules. To be used when building an external application
  *          with Sight.
  *
- * @param   directory   a path to the directory where Sight is installed
+ * @param   directory   deprecated, a path to the directory where Sight is installed
  */
-FWRUNTIME_API void init( const std::filesystem::path& directory );
+FWRUNTIME_API void init( const std::filesystem::path& directory = std::filesystem::path() );
 
 /**
  * @brief       Creates an executable instance for the specified configuration element.
@@ -313,7 +313,7 @@ FWRUNTIME_API std::filesystem::path getModuleResourcePath(const IExecutable* exe
  * @brief   Loads all modules that can be found in the specified directory.
  *
  * @param   directory   a path to the directory to explore for modules
- * @deprecated  Bundle has been renamed to Module, please use addModules() instead
+ * @deprecated  module has been renamed to Module, please use addModules() instead
  */
 [[deprecated]] FWRUNTIME_API void addBundles( const std::filesystem::path& directory );
 
@@ -331,7 +331,7 @@ FWRUNTIME_API void addModules( const std::filesystem::path& directory );
  * @param   version     a version (none by default)
  *
  * @return  a shared pointer to the found module, or empty when it is not found
- * @deprecated  Bundle has been renamed to Module, please use loadModule() instead
+ * @deprecated  module has been renamed to Module, please use loadModule() instead
  */
 [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> loadBundle( const std::string& identifier,
                                                                  const Version& version = Version() );
@@ -362,7 +362,7 @@ FWRUNTIME_API std::shared_ptr< ::fwRuntime::Profile > startProfile( const std::f
  * @param   version     a version (none by default)
  *
  * @return  a shared pointer to the found module, or empty when none
- * @deprecated  Bundle has been renamed to Module, please use findModule() instead
+ * @deprecated  module has been renamed to Module, please use findModule() instead
  */
 [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> findBundle( const std::string& identifier,
                                                                  const Version& version = Version() );
@@ -381,7 +381,7 @@ FWRUNTIME_API std::shared_ptr<Module> findModule( const std::string& identifier,
  * @brief   Starts the module specified by the given identifier.
  *
  * @param   identifier  a string containing a module identifier
- * @deprecated  Bundle has been renamed to Module, please use startBundle() instead
+ * @deprecated  Bundle has been renamed to Module, please use startModule() instead
  */
 [[deprecated]] FWRUNTIME_API void startBundle(const std::string& identifier);
 

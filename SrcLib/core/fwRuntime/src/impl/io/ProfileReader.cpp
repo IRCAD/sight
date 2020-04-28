@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -119,6 +119,8 @@ std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::fil
         profile->setVersion(sVersion);
         profile->setCheckSingleInstance(checkSingleInstance);
 
+        impl::profile::setCurrentProfile(profile);
+
         // Job's done!
         xmlFreeDoc(document);
         return profile;
@@ -136,8 +138,16 @@ std::shared_ptr< profile::Profile > ProfileReader::processProfile(xmlNodePtr nod
 {
     using namespace profile;
 
+    auto profile = std::dynamic_pointer_cast< impl::profile::Profile>(::fwRuntime::getCurrentProfile());
+
+    // Kept for compatibility with Sight < 22.0, before fwRuntime::init() was mandatory
+    if(profile == nullptr)
+    {
+        profile = std::make_shared<impl::profile::Profile>();
+        impl::profile::setCurrentProfile(profile);
+    }
+
     // Process child nodes.
-    SPTR(Profile) profile = std::make_shared<Profile>();
     xmlNodePtr curChild = node->children;
     for(curChild = node->children; curChild != 0; curChild = curChild->next)
     {
@@ -313,7 +323,7 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node,
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<::fwRuntime::Profile> io::ProfileReader::createProfile(const std::filesystem::path &path)
+std::shared_ptr< ::fwRuntime::Profile> io::ProfileReader::createProfile(const std::filesystem::path& path)
 {
     return impl::io::ProfileReader::createProfile(path);
 }

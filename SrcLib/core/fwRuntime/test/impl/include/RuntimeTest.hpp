@@ -37,6 +37,11 @@ namespace ut
 class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( RuntimeTest );
+
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+CPPUNIT_TEST( testPosix );
+#endif
+
 CPPUNIT_TEST( testRuntime );
 CPPUNIT_TEST_SUITE_END();
 
@@ -47,6 +52,9 @@ public:
     void setUp();
     void tearDown();
 
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+    void testPosix();
+#endif
     void testRuntime();
 };
 

@@ -27,6 +27,8 @@
 #include <fwRuntime/impl/Module.hpp>
 #include <fwRuntime/impl/Runtime.hpp>
 #include <fwRuntime/operations.hpp>
+#include <fwRuntime/Plugin.hpp>
+#include <fwRuntime/profile/Profile.hpp>
 
 #include <filesystem>
 
@@ -42,9 +44,8 @@ namespace ut
 
 RuntimeTest::RuntimeTest()
 {
-    // Set up context before running a test.
-    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultModules();
+    // Set up context before running all tests.
+    ::fwRuntime::init();
 }
 
 //------------------------------------------------------------------------------
@@ -58,6 +59,38 @@ void RuntimeTest::setUp()
 void RuntimeTest::tearDown()
 {
     // Clean up after the test run.
+}
+
+//------------------------------------------------------------------------------
+
+void RuntimeTest::testModule()
+{
+    auto module = ::fwRuntime::loadModule(std::string("dataReg"));
+
+    CPPUNIT_ASSERT_EQUAL(std::string("dataReg"),  module->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(Version("0.1"),  module->getVersion());
+    // No good parameter test for now, but at least test without any parameter
+    CPPUNIT_ASSERT_EQUAL(false,  module->hasParameter("test"));
+    CPPUNIT_ASSERT_EQUAL(std::string(),  module->getParameterValue("test"));
+
+    auto runtime           = ::fwRuntime::Runtime::getDefault();
+    const auto libLocation = runtime->getWorkingPath() / MODULE_LIB_PREFIX;
+    CPPUNIT_ASSERT_EQUAL(libLocation / "dataReg-0.1",  module->getLibraryLocation());
+    const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
+    CPPUNIT_ASSERT_EQUAL(rcLocation / "dataReg-0.1",  module->getResourcesLocation());
+
+    const auto extensions = module->getExtensions();
+    CPPUNIT_ASSERT_EQUAL(true, extensions.empty());
+
+    CPPUNIT_ASSERT_EQUAL(std::string("::dataReg::Plugin"), module->getClass());
+    auto plugin = module->getPlugin();
+    CPPUNIT_ASSERT_MESSAGE("Plugin is null", nullptr != plugin);
+
+    auto moduleFromPlugin = plugin->getModule();
+    CPPUNIT_ASSERT_EQUAL(module, moduleFromPlugin);
+
+    CPPUNIT_ASSERT_EQUAL(true, module->isEnable());
+    CPPUNIT_ASSERT_EQUAL(true, module->isStarted());
 }
 
 //------------------------------------------------------------------------------

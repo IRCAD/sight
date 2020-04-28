@@ -81,7 +81,7 @@ Module::Module( const std::filesystem::path& location,
         strLocation.replace(itModule, strRCPrefix.string().length(), std::string(MODULE_LIB_PREFIX));
     }
 
-    // This may fail is the module does not contain any library, so we ignore the returned error
+    // This may fail if the module does not contain any library, so we ignore the returned error
     m_libraryLocation = std::filesystem::weakly_canonical(std::filesystem::path(strLocation));
 }
 
@@ -453,12 +453,12 @@ void Module::startPlugin()
         {
             auto prof = std::dynamic_pointer_cast< impl::profile::Profile>(::fwRuntime::getCurrentProfile());
             SLM_TRACE("Register stopper for " + getModuleStr(m_identifier, m_version) + " Module's plugin.");
-            prof->add(SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
+            prof->add(std::make_shared<profile::Stopper>(this->getIdentifier(), this->getVersion()));
 
             m_plugin = plugin;
             m_plugin->start();
 
-            prof->add(SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier(), this->getVersion())));
+            prof->add(std::make_shared<profile::Initializer>(this->getIdentifier(), this->getVersion()));
 
             m_started = true;
         }

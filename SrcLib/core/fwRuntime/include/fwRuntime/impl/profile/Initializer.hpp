@@ -39,7 +39,8 @@ namespace profile
 {
 
 /**
- * @brief   Starts a given module.
+ * @brief   Starts a given module. Only the identifier of the module and the version are passed to allow
+ *          loading and unloading.
  */
 class Initializer : public boost::noncopyable
 {

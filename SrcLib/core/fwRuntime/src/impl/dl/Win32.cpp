@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,7 +71,7 @@ void Win32::load()
     if(m_handle == 0)
     {
         // Opens the dynamic library.
-        std::string lib(getFullPath(true).string());
+        std::string lib(getFullPath().string());
         OSLM_TRACE("Opens the dynamic library " << lib);
         m_handle = LoadLibrary( lib.c_str() );
         if(m_handle == 0)

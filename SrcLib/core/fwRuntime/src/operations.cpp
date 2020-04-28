@@ -22,14 +22,14 @@
 
 #include "fwRuntime/operations.hpp"
 
-#include "fwCore/spyLog.hpp"
-
 #include "fwRuntime/ConfigurationElement.hpp"
 #include "fwRuntime/impl/ExtensionPoint.hpp"
 #include "fwRuntime/impl/io/ProfileReader.hpp"
 #include "fwRuntime/impl/Module.hpp"
 #include "fwRuntime/impl/profile/Profile.hpp"
 #include "fwRuntime/impl/Runtime.hpp"
+
+#include <fwCore/spyLog.hpp>
 
 #include <algorithm>
 #include <vector>
@@ -70,13 +70,29 @@ struct ConfigurationElementIdentifierPredicate
 
 }
 
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------- -----
 
 void init(const std::filesystem::path& directory)
 {
-    Runtime& rntm = Runtime::get();
-    rntm.setWorkingPath(directory);
-    rntm.addDefaultModules();
+    if(!directory.empty())
+    {
+        FW_DEPRECATED_MSG("Specifying a directory for Sight installation is now deprecated, the path will be ignored",
+                          "22.0");
+    }
+
+    // Load default modules
+    ::fwRuntime::Runtime* rntm = ::fwRuntime::Runtime::getDefault();
+
+    const auto location = rntm->getWorkingPath() / MODULE_RC_PREFIX;
+
+    auto profile = std::make_shared<impl::profile::Profile>();
+    impl::profile::setCurrentProfile(profile);
+
+    SLM_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
+
+    // Read modules
+    rntm->addModules(location);
+    SLM_ASSERT("Couldn't load any module from path: " + location.string(), !rntm->getModules().empty());
 }
 
 //------------------------------------------------------------------------------

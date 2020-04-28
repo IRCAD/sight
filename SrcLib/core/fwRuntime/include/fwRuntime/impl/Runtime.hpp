@@ -79,20 +79,6 @@ public:
     virtual void addModules( const std::filesystem::path& repository ) override;
 
     /**
-     * @brief       Adds all module found at the default location.
-     *
-     * @remark      The given module state will be altered according to the current configuration rules.
-     */
-    virtual void addDefaultBundles() override;
-
-    /**
-     * @brief       Adds all module found at the default location.
-     *
-     * @remark      The given module state will be altered according to the current configuration rules.
-     */
-    virtual void addDefaultModules() override;
-
-    /**
      * @brief       Retrieves the module for the specified idenfier.
      *
      * @param[in]   identifier  a string containing a module identifier
@@ -160,13 +146,17 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const override;
+    virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const final;
 
     /// @copydoc ::fwRuntime::Runtime::getBundles
     [[deprecated]] virtual ::fwRuntime::Runtime::ModuleContainer getBundles() final;
 
     /// @copydoc ::fwRuntime::Runtime::getModules
     virtual ::fwRuntime::Runtime::ModuleContainer getModules() final;
+
+    /// @copydoc ::fwRuntime::Runtime::getWorkingPath
+    virtual std::filesystem::path getWorkingPath() const final;
+
     //@}
 
     /**
