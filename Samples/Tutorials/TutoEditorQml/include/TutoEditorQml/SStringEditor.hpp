@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ class TUTOEDITORQML_CLASS_API SStringEditor : public ::fwQml::IQmlEditor
 Q_OBJECT;
 public:
 
-    fwCoreServiceMacro(SStringEditor, ::fwQml::IQmlEditor);
+    fwCoreServiceMacro(SStringEditor, ::fwQml::IQmlEditor)
 
     /// Constructor.
     TUTOEDITORQML_API SStringEditor() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,7 +86,6 @@ std::string getPreference(const std::string& preferenceKey)
 std::filesystem::path getPreferencesFile()
 {
     namespace bfile = std::filesystem;
-
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     FW_RAISE_IF("No current profile set.", !profile);
