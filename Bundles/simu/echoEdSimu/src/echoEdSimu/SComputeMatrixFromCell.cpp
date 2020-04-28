@@ -75,12 +75,10 @@ void SComputeMatrixFromCell::starting()
     auto cellItr      = m_mesh->begin< ::fwData::iterator::ConstCellIterator >();
 
     /// Get the first cell coordinates
-    int z;
-
     const auto index = cellItr->pointIdx[0];
 
     const auto point = points + index;
-    z = static_cast<int>(point->point->z);
+    const int z      = static_cast<int>(point->point->z);
 
     /// Find the first cell of the second line to know the number of cell per line.
     int currentZ;

@@ -104,12 +104,12 @@ void SImagesSubstract::updating()
     ::fwData::Image::sptr imageResult = this->getInOut< ::fwData::Image>("result");
 
     // Test if the both images have the same type and it is signed short.
-    bool isSameType = ( image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
+    const bool isSameType = ( image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
 
     if(isSameType)
     {
         // test if the both images have the same size.
-        bool isSameSize = (image1->getSize2() == image2->getSize2());
+        const bool isSameSize = (image1->getSize2() == image2->getSize2());
         if(isSameSize)
         {
             typedef itk::Image< std::int16_t, 3 > ImageType;
