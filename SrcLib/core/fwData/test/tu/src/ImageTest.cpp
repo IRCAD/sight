@@ -22,10 +22,10 @@
 
 #include "ImageTest.hpp"
 
-#include "fwMemory/stream/in/Raw.hpp"
-
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
+
+#include <fwMemory/stream/in/Raw.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
