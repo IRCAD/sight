@@ -87,7 +87,7 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const std::filesystem::path& workingPath)
+void Runtime::setWorkingPath(const std::filesystem::path& )
 {
     FW_DEPRECATED_MSG("setWorkingPath", "22.0");
 }
