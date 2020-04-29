@@ -35,6 +35,7 @@
 #include <openssl/rand.h>
 #include <openssl/sha.h>
 
+#include <iomanip>
 #include <shared_mutex>
 
 namespace fwPreferences
@@ -61,6 +62,7 @@ inline static std::string computePasswordHash( const std::string& password )
     SHA256_Update(&sha256, password.c_str(), password.length());
     SHA256_Final(hash, &sha256);
 
+    // Convert the hash to an hexadecimal string
     std::stringstream stream;
     stream << std::setfill('0') << std::setw(2) << std::hex;
 
@@ -113,6 +115,7 @@ inline static std::string descramble( const std::string& scrambled )
 
 void setPassword(const std::string& password)
 {
+    // Protect for writing
     std::unique_lock writeLock(s_passwordMutex);
 
     if(password.empty())
@@ -144,21 +147,51 @@ void setPassword(const std::string& password)
 
 const std::string getPassword()
 {
+    // Protect for reading
     std::shared_lock readLock(s_passwordMutex);
 
+    // If the password is empty, it means we didn't set one yet.
     if(s_password.empty())
     {
         return s_password;
     }
-
-    return descramble(s_password);
+    else
+    {
+        // Otherwise descramble and return it
+        return descramble(s_password);
+    }
 }
 
 //----------------------------------------------------------------------------
 
 bool checkPassword(const std::string& password)
 {
-    return computePasswordHash(password) == getPreference(s_PASSWORD_HASH_KEY);
+    // Protect for writing
+    std::unique_lock writeLock(s_passwordMutex);
+
+    const std::string& passwordHash = getPreference(s_PASSWORD_HASH_KEY);
+
+    if(passwordHash.empty())
+    {
+        // No password hash is stored in the settings or there is no settings
+        // We must check against s_password
+        return password == s_password || password == descramble(s_password);
+    }
+    else if(computePasswordHash(password) == passwordHash)
+    {
+        // Store the verified password
+        // Scramble the scramble key
+        RAND_bytes(s_SCRAMBLE_KEY, sizeof(s_SCRAMBLE_KEY));
+
+        // Scramble the password
+        s_password = scramble(password);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 //----------------------------------------------------------------------------
