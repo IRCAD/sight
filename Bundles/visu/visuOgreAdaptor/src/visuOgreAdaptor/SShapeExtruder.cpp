@@ -535,7 +535,7 @@ void SShapeExtruder::buttonReleaseEvent(MouseButton, Modifier, int, int)
         const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
         layer->cancelFurtherInteraction();
 
-        // Add a new point to le lasso edge list.
+        // Add a new point to the lasso edge list.
         m_lassoEdgePositions.push_back(m_lassoToolPositions.back());
         this->drawLasso();
 

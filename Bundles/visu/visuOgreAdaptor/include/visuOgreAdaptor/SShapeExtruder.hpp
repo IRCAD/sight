@@ -260,7 +260,7 @@ private:
     void generateExtrudedMesh(const std::vector< Triangle3D >& _triangulation) const;
 
     /**
-     * @brief Triangluates a point list.
+     * @brief Triangulates a point list.
      * @param _points the point list to triangulate.
      * @param _wordTriangulation vector where all generated triangles are pushed.
      */

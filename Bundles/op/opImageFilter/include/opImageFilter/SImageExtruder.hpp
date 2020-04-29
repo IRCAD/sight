@@ -36,7 +36,7 @@ namespace opImageFilter
 {
 
 /**
- * @brief This service sets all voxel inside meshes to -1000.
+ * @brief This service sets all voxels inside meshes to -2000.
  *
  * To compute this quickly, we loop over two dimensions out of three, for each voxel, we launch a ray on the third
  * dimension and get a list of intersections between this ray, and triangles of the mesh. After that, we iterate over
@@ -44,7 +44,7 @@ namespace opImageFilter
  * the voxel is inside or outside of the mesh.
  *
  * @pre The input image must be in 3D.
- * @warning The image and meshes must be used without transformatino matrices in 3D scene, no matrix are used here.
+ * @warning The image and meshes must be used without transformation matrices in 3D scene, no matrices are used here.
  *
  * @section Slots Slots
  * - \b addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType): extrude reconstructions from the image.

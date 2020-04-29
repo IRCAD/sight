@@ -272,7 +272,7 @@
                     <menuItem sid="negato3DVisibilityAct" start="yes" />
                     <menuItem sid="boxWidgetVisibilityAct" start="yes" />
                     <menuItem sid="boxWidgetResetAct" start="yes" />
-<menuItem sid="shapeExtruderAct" start="yes" />
+                    <menuItem sid="shapeExtruderAct" start="yes" />
                     <menuItem sid="addDistanceAct" start="yes" />
                     <menuItem sid="removeDistanceAct" start="yes" />
                     <menuItem sid="hideDistanceAct" start="yes" />
