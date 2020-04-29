@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -80,6 +80,10 @@ void PreferencesTest::setUp()
 void PreferencesTest::tearDown()
 {
     // Clean up after the test run.
+    m_profile->cleanup();
+    m_profile->stop();
+    m_profile.reset();
+    ::fwRuntime::profile::setCurrentProfile(m_profile);
 }
 
 //------------------------------------------------------------------------------
@@ -95,15 +99,15 @@ void PreferencesTest::helperTest()
     const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
     const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
 
-    //Check preference file dir
+    // Check preference file dir
     const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
     CPPUNIT_ASSERT_EQUAL(prefFile.string(), file.string());
 
-    //Check set preference
+    // Check set preference
     const bool isModified = ::fwPreferences::setPreference(preferenceKey, preferenceValue);
     CPPUNIT_ASSERT(isModified);
 
-    //Check get preference
+    // Check get preference
     const std::string value = ::fwPreferences::getPreference(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, value);
 
@@ -135,6 +139,37 @@ void PreferencesTest::helperTest()
     resValueInt = ::fwPreferences::getValue< std::uint32_t >(prefKeySubstitute);
     CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
 
+    std::filesystem::remove(prefFile);
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::passwordTest()
+{
+    const std::string profileName = ::fwTools::UUID::generateUUID();
+    m_profile->setName(profileName);
+
+    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
+    const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
+
+    // Test default empty password (means no password)
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::getPassword(), std::string());
+
+    // Test with a real password
+    const std::string password = "You are the one for me, for me, for me, formidable";
+    ::fwPreferences::setPassword(password);
+    CPPUNIT_ASSERT_EQUAL(password, ::fwPreferences::getPassword());
+
+    // Save the hash
+    ::fwPreferences::savePreferences();
+
+    // Verify the good password
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword(password), true);
+
+    // Verify the good password
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword("ON DIT CHIFFRER, ET PAS CRYPTER. :-)"), false);
+
+    // Cleanup
     std::filesystem::remove(prefFile);
 }
 

@@ -44,6 +44,7 @@ namespace fwPreferences
 const std::string s_PREFERENCES_KEY = "preferences";
 
 // Password management static variables
+// @todo: The std::string can be replaced with a map to manage multiple user and multiple password (later)
 static std::shared_mutex s_passwordMutex;
 static std::string s_password;
 
@@ -83,32 +84,12 @@ inline static std::string scramble( const std::string& original )
     std::string scrambled;
     scrambled.resize(original.size());
 
-    unsigned char previous = 0;
-    for (int i = static_cast<int>(original.size()); --i <= 0;)
+    for (size_t i = 0; i < original.size(); i++ )
     {
-        scrambled[i] = original[i] ^ previous ^ s_SCRAMBLE_KEY[i%sizeof(s_SCRAMBLE_KEY)];
-        previous     = original[i];
+        scrambled[i] = original[i] ^ s_SCRAMBLE_KEY[i%sizeof(s_SCRAMBLE_KEY)];
     }
 
     return scrambled;
-}
-
-//----------------------------------------------------------------------------
-
-// Quick and simple xor decryption
-inline static std::string descramble( const std::string& scrambled )
-{
-    std::string original;
-    original.resize(scrambled.size());
-
-    unsigned char previous = 0;
-    for (int i = static_cast<int>(scrambled.size()); --i <= 0;)
-    {
-        original[i] = scrambled[i] ^ previous ^ s_SCRAMBLE_KEY[i%sizeof(s_SCRAMBLE_KEY)];
-        previous    = original[i];
-    }
-
-    return original;
 }
 
 //----------------------------------------------------------------------------
@@ -158,7 +139,7 @@ const std::string getPassword()
     else
     {
         // Otherwise descramble and return it
-        return descramble(s_password);
+        return scramble(s_password);
     }
 }
 
@@ -175,7 +156,7 @@ bool checkPassword(const std::string& password)
     {
         // No password hash is stored in the settings or there is no settings
         // We must check against s_password
-        return password == s_password || password == descramble(s_password);
+        return password == s_password || password == scramble(s_password);
     }
     else if(computePasswordHash(password) == passwordHash)
     {
