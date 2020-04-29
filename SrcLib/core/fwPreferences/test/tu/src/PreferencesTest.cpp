@@ -49,6 +49,18 @@ namespace ut
 
 void PreferencesTest::setUp()
 {
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::tearDown()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::runtimeTest()
+{
     m_profile = ::fwRuntime::profile::Profile::New();
     m_profile->setName("APP_TEST");
     ::fwRuntime::profile::setCurrentProfile(m_profile);
@@ -73,17 +85,16 @@ void PreferencesTest::setUp()
     preferences->setEnable(true);
     CPPUNIT_ASSERT(preferences->isEnable());
     preferences->start();
-}
 
-//------------------------------------------------------------------------------
+    const std::string profileName = ::fwTools::UUID::generateUUID();
+    m_profile->setName(profileName);
 
-void PreferencesTest::tearDown()
-{
-    // Clean up after the test run.
-    m_profile->cleanup();
-    m_profile->stop();
-    m_profile.reset();
-    ::fwRuntime::profile::setCurrentProfile(m_profile);
+    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
+    m_preferencesPath = appPrefDir / "preferences.json";
+
+    // Check preference file dir
+    const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
+    CPPUNIT_ASSERT_EQUAL(m_preferencesPath.string(), file.string());
 }
 
 //------------------------------------------------------------------------------
@@ -92,16 +103,6 @@ void PreferencesTest::helperTest()
 {
     const std::string preferenceKey   = "PREF_KEY_TEST";
     const std::string preferenceValue = "PREF_VALUE_TEST";
-
-    const std::string profileName = ::fwTools::UUID::generateUUID();
-    m_profile->setName(profileName);
-
-    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
-    const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
-
-    // Check preference file dir
-    const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
-    CPPUNIT_ASSERT_EQUAL(prefFile.string(), file.string());
 
     // Check set preference
     const bool isModified = ::fwPreferences::setPreference(preferenceKey, preferenceValue);
@@ -138,20 +139,12 @@ void PreferencesTest::helperTest()
 
     resValueInt = ::fwPreferences::getValue< std::uint32_t >(prefKeySubstitute);
     CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
-
-    std::filesystem::remove(prefFile);
 }
 
 //------------------------------------------------------------------------------
 
 void PreferencesTest::passwordTest()
 {
-    const std::string profileName = ::fwTools::UUID::generateUUID();
-    m_profile->setName(profileName);
-
-    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
-    const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
-
     // Test default empty password (means no password)
     CPPUNIT_ASSERT_EQUAL(::fwPreferences::getPassword(), std::string());
 
@@ -168,9 +161,14 @@ void PreferencesTest::passwordTest()
 
     // Verify the good password
     CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword("ON DIT CHIFFRER, ET PAS CRYPTER. :-)"), false);
+}
 
+//------------------------------------------------------------------------------
+
+void PreferencesTest::cleanup()
+{
     // Cleanup
-    std::filesystem::remove(prefFile);
+    std::filesystem::remove(m_preferencesPath);
 }
 
 //------------------------------------------------------------------------------

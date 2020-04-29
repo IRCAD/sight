@@ -51,6 +51,8 @@
 
 #include <fwMDSemanticPatch/PatchLoader.hpp>
 
+#include <fwPreferences/helper.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <fwZip/WriteDirArchive.hpp>
@@ -458,7 +460,7 @@ void SWriter::updating()
                 {
                     std::filesystem::remove( filePath );
                 }
-                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string(), "", "secret");
+                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string(), "", ::fwPreferences::getPassword());
                 archiveRootName = "root.json";
                 format          = ::fwAtomsBoostIO::JSON;
             }
