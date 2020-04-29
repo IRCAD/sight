@@ -24,6 +24,7 @@
 
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/impl/dl/Posix.hpp>
+#include <fwRuntime/impl/dl/Win32.hpp>
 #include <fwRuntime/impl/ExtensionPoint.hpp>
 #include <fwRuntime/impl/Module.hpp>
 #include <fwRuntime/impl/Runtime.hpp>
@@ -82,6 +83,29 @@ void RuntimeTest::testPosix()
 
     auto path = nativeLibrary->getPath();
     CPPUNIT_ASSERT_EQUAL( std::filesystem::path("libdataReg.so.0.1"), path );
+}
+
+#elif defined(WIN32)
+
+//------------------------------------------------------------------------------
+
+void RuntimeTest::testWin32()
+{
+    const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
+    auto module         = std::make_shared<Module>(location / "dataReg-0.1", "dataReg", "0.1");
+
+    auto nativeLibrary = std::make_unique<dl::Win32>("dataReg");
+    nativeLibrary->setModule(module.get());
+    auto nativeName = nativeLibrary->getNativeName();
+
+    CPPUNIT_ASSERT( std::regex_match("dataReg.dll", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libdataReg.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libdataReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("dataReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
+
+    auto path = nativeLibrary->getPath();
+    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("dataReg.dll"), path );
 }
 #endif
 

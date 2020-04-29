@@ -40,6 +40,8 @@ CPPUNIT_TEST_SUITE( RuntimeTest );
 
 #if defined(linux) || defined(__linux) || defined(__APPLE__)
 CPPUNIT_TEST( testPosix );
+#elif defined(WIN32)
+CPPUNIT_TEST( testWin32 );
 #endif
 
 CPPUNIT_TEST( testRuntime );
@@ -54,6 +56,9 @@ public:
 
 #if defined(linux) || defined(__linux) || defined(__APPLE__)
     void testPosix();
+#endif
+#if defined(WIN32)
+    void testWin32();
 #endif
     void testRuntime();
 };
