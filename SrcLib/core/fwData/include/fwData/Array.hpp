@@ -530,10 +530,10 @@ public:
      * @note These functions lock the buffer for dump (see lock()).
      * @{
      */
-    Iterator<char> begin();
-    Iterator<char> end();
-    ConstIterator<char> begin() const;
-    ConstIterator<char> end() const;
+    FWDATA_API Iterator<char> begin();
+    FWDATA_API Iterator<char> end();
+    FWDATA_API ConstIterator<char> begin() const;
+    FWDATA_API ConstIterator<char> end() const;
     /// @}
 
     //-----------------------------------------------------
