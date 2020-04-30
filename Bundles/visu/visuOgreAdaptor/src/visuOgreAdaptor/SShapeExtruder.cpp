@@ -264,6 +264,8 @@ void SShapeExtruder::stopping()
 
 void SShapeExtruder::enableTool(bool _enable)
 {
+    this->getRenderService()->makeCurrent();
+
     m_toolEnableState = _enable;
 
     // Stop the lasso interaction.
@@ -343,6 +345,8 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
 {
     if(m_toolEnableState && (_button == MouseButton::LEFT || _button == MouseButton::RIGHT))
     {
+        this->getRenderService()->makeCurrent();
+
         const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
 
         // Start the lasso interaction.
@@ -448,6 +452,8 @@ void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier, int _
 {
     if(m_interactionEnableState && _button == MouseButton::LEFT)
     {
+        this->getRenderService()->makeCurrent();
+
         // Cancel others interactions.
         const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
         layer->cancelFurtherInteraction();
@@ -489,6 +495,8 @@ void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _
 {
     if(m_interactionEnableState)
     {
+        this->getRenderService()->makeCurrent();
+
         // Cancel others interactions.
         const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
         layer->cancelFurtherInteraction();
@@ -531,6 +539,8 @@ void SShapeExtruder::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_interactionEnableState && m_leftButtonMoveState)
     {
+        this->getRenderService()->makeCurrent();
+
         // Cancel others interactions.
         const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
         layer->cancelFurtherInteraction();
