@@ -13,3 +13,5 @@ set( CONAN_DEPS
     ${CONAN_ITK}
     ${CONAN_GLM}
 )
+
+set( USE_PCH_FROM_TARGET pchServicesOmp )
