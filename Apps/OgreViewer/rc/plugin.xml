@@ -153,9 +153,9 @@
                 <registry>
                     <toolBar sid="parameterToolBarView" start="yes" />
                     <view sid="volumeParameterView" start="yes" />
-                    <view wid="organsParameterView" start="yes" />
+                    <view wid="organsParameterView" />
                     <view sid="lightParameterView" start="yes" />
-                    <view wid="extrudedMeshesParameterView" start="yes" />
+                    <view wid="extrudedMeshesParameterView" />
                 </registry>
             </service>
 
