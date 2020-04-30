@@ -30,6 +30,8 @@
 
 #include <fwCore/macros.hpp>
 
+#include <fwMemory/IBuffered.hpp>
+
 #include <boost/multi_array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
@@ -258,7 +260,8 @@ namespace fwData
     }
    @endcode
  */
-class FWDATA_CLASS_API Mesh : public ::fwData::Object
+class FWDATA_CLASS_API Mesh : public ::fwData::Object,
+                              public ::fwMemory::IBuffered
 {
 
 public:
@@ -732,6 +735,16 @@ public:
      * @warning You must allocate all the mesh's arrays before calling lock()
      */
     [[nodiscard]] FWDATA_API LocksType lock() const;
+
+    /**
+     * @brief Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     * The buffer cannot be accessed if the mesh is not locked
+     *
+     * @warning You must allocate all the mesh's arrays before calling lock()
+     */
+    FWDATA_API virtual void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
     /// Return true if the mesh has point colors
     bool hasPointColors() const;

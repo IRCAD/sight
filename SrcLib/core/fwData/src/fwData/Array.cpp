@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -399,6 +399,13 @@ const char* Array::getBufferPtr( const ::fwData::Array::IndexType& id) const
 ::fwMemory::BufferObject::Lock Array::lock() const
 {
     return m_bufferObject->lock();
+}
+
+//------------------------------------------------------------------------------
+
+void Array::lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const
+{
+    locks.push_back(this->lock());
 }
 
 //------------------------------------------------------------------------------

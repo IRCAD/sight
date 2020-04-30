@@ -279,6 +279,13 @@ size_t Image::getAllocatedSizeInBytes() const
     return m_dataArray->lock();
 }
 
+//------------------------------------------------------------------------------
+
+void Image::lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const
+{
+    locks.push_back(this->lock());
+}
+
 //-----------------------------------------------------------------------------
 
 void* Image::getBuffer()

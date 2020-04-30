@@ -841,7 +841,7 @@ void IService::autoConnect()
                     auto itObj = m_inputsMap.find(objectCfg.m_key);
                     if(itObj != m_inputsMap.end())
                     {
-                        obj = itObj->second.lock();
+                        obj = itObj->second.lock().getShared();
                     }
                     break;
                 }
@@ -850,7 +850,7 @@ void IService::autoConnect()
                     auto itObj = m_inOutsMap.find(objectCfg.m_key);
                     if(itObj != m_inOutsMap.end())
                     {
-                        obj = itObj->second.lock();
+                        obj = itObj->second.lock().getShared();
                     }
                     break;
                 }
@@ -860,7 +860,7 @@ void IService::autoConnect()
                     auto itObj = m_outputsMap.find(objectCfg.m_key);
                     if(itObj != m_outputsMap.end())
                     {
-                        obj = itObj->second;
+                        obj = itObj->second.getShared();
                     }
                     break;
                 }

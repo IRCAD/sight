@@ -28,6 +28,7 @@
 #include "fwData/Object.hpp"
 
 #include <fwMemory/BufferObject.hpp>
+#include <fwMemory/IBuffered.hpp>
 
 #include <fwTools/Type.hpp>
 
@@ -100,7 +101,8 @@ namespace fwData
     }
    @endcode
  */
-class FWDATA_CLASS_API Array : public ::fwData::Object
+class FWDATA_CLASS_API Array : public ::fwData::Object,
+                               public ::fwMemory::IBuffered
 {
 public:
 
@@ -392,6 +394,13 @@ public:
      * The buffer cannot be accessed if the array is not locked
      */
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+
+    /**
+     * @brief Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     */
+    FWDATA_API virtual void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
     /**
      * @brief Get the value of an element
