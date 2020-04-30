@@ -729,7 +729,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     // Creates the reconstruction.
     const ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
     reconstruction->setMesh(mesh);
-    reconstruction->setOrganName("ExtrudedMesh_" + reconstructions.size());
+    reconstruction->setOrganName("ExtrudedMesh_" + std::to_string(reconstructions.size()));
 
     // Pushs the reconstruction.
     reconstructions.push_back(reconstruction);
