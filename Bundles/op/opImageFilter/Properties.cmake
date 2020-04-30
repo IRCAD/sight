@@ -9,8 +9,4 @@ set( DEPENDENCIES
     fwServices
     imageFilterOp
 )
-set( REQUIREMENTS  )
-
-set( CONAN_DEPS
-    ${CONAN_GLM}
-)
+set( REQUIREMENTS )

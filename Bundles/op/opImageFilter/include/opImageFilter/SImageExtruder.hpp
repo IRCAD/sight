@@ -30,8 +30,6 @@
 
 #include <fwServices/IOperator.hpp>
 
-#include <glm/vec3.hpp>
-
 namespace opImageFilter
 {
 
