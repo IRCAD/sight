@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,6 +33,8 @@ namespace mt
 
 ObjectReadToWriteLock::ObjectReadToWriteLock(::fwData::Object::sptr obj, bool lock)
 {
+    FW_DEPRECATED_MSG("'ObjectReadToWriteLock' is deprecated.", "21.0");
+
     if (lock)
     {
         m_lock = ::fwCore::mt::ReadToWriteLock(obj->getMutex());

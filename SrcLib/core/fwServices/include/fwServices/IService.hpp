@@ -414,7 +414,7 @@ public:
      * @return object cast in the right type, nullptr if not found.
      */
     template< class DATATYPE >
-    [[deprecated("it will be removed in sight 22.0, use getWeakXXX() or getLockedXXX()")]]
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
     inline CSPTR(DATATYPE) getInput(const KeyType& key) const;
 
     /**
@@ -423,7 +423,7 @@ public:
      * @return object cast in the right type, nullptr if not found.
      */
     template< class DATATYPE >
-    [[deprecated("it will be removed in sight 22.0, use getWeakXXX() or getLockedXXX()")]]
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
     inline SPTR(DATATYPE) getInOut(const KeyType& key) const;
 
     /**
@@ -432,7 +432,7 @@ public:
      * @return object cast in the right type, nullptr if not found.
      */
     template< class DATATYPE >
-    [[deprecated("it will be removed in sight 22.0, use getWeakXXX() or getLockedXXX()")]]
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
     inline SPTR(DATATYPE) getOutput(const KeyType& key) const;
 
     /**
@@ -442,7 +442,7 @@ public:
      * @return object cast in the right type, nullptr if not found.
      */
     template< class DATATYPE >
-    [[deprecated("it will be removed in sight 22.0, use getWeakXXX() or getLockedXXX()")]]
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
     inline CSPTR(DATATYPE) getInput(const KeyType& keybase, size_t index) const;
 
     /**
@@ -452,7 +452,7 @@ public:
      * @return object cast in the right type, nullptr if not found.
      */
     template< class DATATYPE >
-    [[deprecated("it will be removed in sight 22.0, use getWeakXXX() or getLockedXXX()")]]
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
     inline SPTR(DATATYPE) getInOut(const KeyType& keybase, size_t index) const;
 
     /**
@@ -462,7 +462,7 @@ public:
      * @return object cast in the right type, nullptr if not found.
      */
     template< class DATATYPE >
-    [[deprecated("it will be removed in sight 22.0, use getWeakXXX() or getLockedXXX()")]]
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
     inline SPTR(DATATYPE) getOutput(const KeyType& keybase, size_t index) const;
 
     /**
