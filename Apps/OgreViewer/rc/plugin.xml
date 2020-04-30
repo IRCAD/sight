@@ -153,9 +153,9 @@
                 <registry>
                     <toolBar sid="parameterToolBarView" start="yes" />
                     <view sid="volumeParameterView" start="yes" />
-                    <view sid="organsParameterView" start="yes" />
+                    <view wid="organsParameterView" start="yes" />
                     <view sid="lightParameterView" start="yes" />
-                    <view sid="extrudedMeshesParameterView" start="yes" />
+                    <view wid="extrudedMeshesParameterView" start="yes" />
                 </registry>
             </service>
 
@@ -194,18 +194,6 @@
                 </registry>
             </service>
 
-            <service uid="organsParameterView" type="::gui::view::SDefaultView" >
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="vertical" />
-                        <view proportion="0" border="5" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view wid="organsParameterView" start="yes" />
-                </registry>
-            </service>
-
             <service uid="lightParameterView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
@@ -219,18 +207,6 @@
                 <registry>
                     <view sid="lightSelectorSrv" />
                     <view sid="lightEditorSrv" />
-                </registry>
-            </service>
-
-            <service uid="extrudedMeshesParameterView" type="::gui::view::SDefaultView" >
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="vertical" />
-                        <view proportion="0" border="5" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view wid="extrudedMeshesParameterView" start="yes" />
                 </registry>
             </service>
 
@@ -305,36 +281,36 @@
             <service uid="volumeManagerAct" type="::gui::action::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
-                    <hide sid="organsParameterView" />
+                    <hide wid="organsParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide sid="extrudedMeshesParameterView" />
+                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
             <service uid="organsManagerAct" type="::gui::action::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <show sid="organsParameterView" />
+                    <show wid="organsParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide sid="extrudedMeshesParameterView" />
+                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
             <service uid="lightManagerAct" type="::gui::action::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <hide sid="organsParameterView" />
+                    <hide wid="organsParameterView" />
                     <show sid="lightParameterView" />
-                    <hide sid="extrudedMeshesParameterView" />
+                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
             <service uid="extrudedMeshesManagerAct" type="::gui::action::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
-                    <hide sid="organsParameterView" />
+                    <hide wid="organsParameterView" />
                     <hide sid="lightParameterView" />
-                    <show sid="extrudedMeshesParameterView" />
+                    <show wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
