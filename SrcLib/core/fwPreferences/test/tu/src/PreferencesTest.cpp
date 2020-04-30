@@ -148,6 +148,9 @@ void PreferencesTest::passwordTest()
     // Test default empty password (means no password)
     CPPUNIT_ASSERT_EQUAL(::fwPreferences::getPassword(), std::string());
 
+    // Test if there is no hash in preferences (means no password)
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::hasPasswordHash(), false);
+
     // Test with a real password
     const std::string password = "You are the one for me, for me, for me, formidable";
     ::fwPreferences::setPassword(password);
@@ -156,10 +159,13 @@ void PreferencesTest::passwordTest()
     // Save the hash
     ::fwPreferences::savePreferences();
 
+    // Test if there is a hash in preferences
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::hasPasswordHash(), true);
+
     // Verify the good password
     CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword(password), true);
 
-    // Verify the good password
+    // Verify that bad password doesn't work
     CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword("ON DIT CHIFFRER, ET PAS CRYPTER. :-)"), false);
 }
 
