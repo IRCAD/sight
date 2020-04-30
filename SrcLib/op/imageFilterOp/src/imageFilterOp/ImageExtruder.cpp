@@ -181,8 +181,13 @@ void ImageExtruder::operator()(Parameters& _param)
                 {
                     if(distance >= 0.f)
                     {
-                        _intersections.push_back(_rayOrig + _rayDir*distance);
-                        inside = !inside;
+                        const ::glm::vec3 cross = _rayOrig + _rayDir*distance;
+                        // Sometime, the ray it the edge of a triangle, we need to take it into account only one time.
+                        if(std::find(_intersections.begin(), _intersections.end(), cross) == _intersections.end())
+                        {
+                            _intersections.push_back(cross);
+                            inside = !inside;
+                        }
                     }
                 }
             }
