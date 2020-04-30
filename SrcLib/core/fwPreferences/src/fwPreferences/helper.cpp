@@ -108,7 +108,8 @@ void setPassword(const std::string& password)
         ::fwData::Composite::sptr prefs = getPreferences();
         if(prefs && prefs->find(s_PASSWORD_HASH_KEY) != prefs->end() )
         {
-            prefs->removeField(s_PASSWORD_HASH_KEY);
+            setPreference(s_PASSWORD_HASH_KEY, password);
+            savePreferences();
         }
     }
     else

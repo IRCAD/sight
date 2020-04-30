@@ -145,6 +145,9 @@ void PreferencesTest::helperTest()
 
 void PreferencesTest::passwordTest()
 {
+    // Reset password field in settings
+    ::fwPreferences::setPassword(std::string());
+
     // Test default empty password (means no password)
     CPPUNIT_ASSERT_EQUAL(::fwPreferences::getPassword(), std::string());
 
