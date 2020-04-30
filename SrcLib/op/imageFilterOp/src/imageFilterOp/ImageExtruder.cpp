@@ -197,8 +197,8 @@ void ImageExtruder::operator()(Parameters& _param)
             return inside;
         };
 
-    // Check if each voxel are in the mesh and sets them to -2000.
-    const IMAGE_TYPE emptyValue = static_cast<IMAGE_TYPE>(-2000);
+    // Check if each voxel are in the mesh and sets them to the lowest value.
+    const IMAGE_TYPE emptyValue = std::numeric_limits< IMAGE_TYPE >::lowest();
 
     // We loop over two dimensions out of three, for each voxel, we launch a ray on the third dimension and get a
     // list of intersections. After that, we iterate over the voxel line on the third dimension and with the

@@ -34,7 +34,7 @@ namespace opImageFilter
 {
 
 /**
- * @brief This service sets all voxels inside meshes to -2000.
+ * @brief This service sets all voxels of an image that are inside meshes to the lowest value of the image type.
  *
  * To compute this quickly, we loop over two dimensions out of three, for each voxel, we launch a ray on the third
  * dimension and get a list of intersections between this ray, and triangles of the mesh. After that, we iterate over
