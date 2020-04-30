@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -129,10 +129,10 @@ void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _
                                                  const ::fwData::Image::csptr& _fixed,
                                                  ::fwData::TransformationMatrix3D::sptr& _transform)
 {
-    const double fixedVoxelVolume = std::accumulate(_fixed->getSpacing().begin(), _fixed->getSpacing().end(), 1.,
+    const double fixedVoxelVolume = std::accumulate(_fixed->getSpacing2().begin(), _fixed->getSpacing2().end(), 1.,
                                                     std::multiplies<double>());
 
-    const double movingVoxelVolume = std::accumulate(_moving->getSpacing().begin(), _moving->getSpacing().end(), 1.,
+    const double movingVoxelVolume = std::accumulate(_moving->getSpacing2().begin(), _moving->getSpacing2().end(), 1.,
                                                      std::multiplies<double>());
 
     ::fwData::Image::csptr fixed = _fixed,
@@ -144,11 +144,11 @@ void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _
         auto inverseTransform = ::fwData::TransformationMatrix3D::New();
         ::fwDataTools::TransformationMatrix3D::invert(_transform, inverseTransform);
 
-        fixed = ::itkRegistrationOp::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing());
+        fixed = ::itkRegistrationOp::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
     }
     else
     {
-        moving = ::itkRegistrationOp::Resampler::resample(_moving, _transform, _fixed->getSpacing());
+        moving = ::itkRegistrationOp::Resampler::resample(_moving, _transform, _fixed->getSpacing2());
     }
 
     const Image3DPtrType itkMoving = castTo<PIX>(moving);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@
 #include <vtkTransform.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SCamera,
-                         ::fwData::TransformationMatrix3D );
+                         ::fwData::TransformationMatrix3D )
 
 namespace visuVTKARAdaptor
 {
@@ -70,7 +70,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void Execute(::vtkObject* pCaller, unsigned long eventId, void*)
+    virtual void Execute(::vtkObject* /*pCaller*/, unsigned long /*eventId*/, void*)
     {
         m_adaptor->calibrate();
     }
@@ -103,7 +103,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void Execute(::vtkObject* pCaller, unsigned long eventId, void*)
+    virtual void Execute(::vtkObject* /*pCaller*/, unsigned long /*eventId*/, void*)
     {
         m_adaptor->updateFromVtk();
     }

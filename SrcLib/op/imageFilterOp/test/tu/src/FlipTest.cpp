@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,6 @@
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -42,21 +41,22 @@ namespace ut
 
 void FlipTest::flipAlongXAxisTest()
 {
-    const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
-    const ::fwData::Image::SpacingType spacing = {{ 0.1, 0.4, 1.6 }};
-    const ::fwData::Image::OriginType origin   = {{ 0., 0., 0. }};
-    const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
+    const ::fwData::Image::Spacing spacing    = {{ 0.1, 0.4, 1.6 }};
+    const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
+    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{true, false, false};
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type);
-    ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+    ::fwTest::generator::Image::randomizeImage(imageIn);
 
-    ::fwDataTools::helper::Image imageInHelper(imageIn);
+    const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-    ::fwDataTools::helper::Image imageOutHelper(imageOut);
+    const auto outDumpLock = imageOut->lock();
 
     for(size_t i = 0; i < size[0]; ++i)
     {
@@ -64,9 +64,8 @@ void FlipTest::flipAlongXAxisTest()
         {
             for(size_t k = 0; k < size[2]; ++k)
             {
-                const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
-                const uint8_t valueOut =
-                    *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(size[0]-i-1, j, k)));
+                const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
+                const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0]-i-1, j, k);
 
                 // Static cast to get proper printing of the value (in int and not char) on stdout
                 CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
@@ -79,21 +78,22 @@ void FlipTest::flipAlongXAxisTest()
 
 void FlipTest::flipAlongYAxisTest()
 {
-    const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
-    const ::fwData::Image::SpacingType spacing = {{ 0.5, 0.5, 0.5 }};
-    const ::fwData::Image::OriginType origin   = {{ 8., 4., 2. }};
-    const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
+    const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
+    const ::fwData::Image::Origin origin      = {{ 8., 4., 2. }};
+    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, true, false};
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type);
-    ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+    ::fwTest::generator::Image::randomizeImage(imageIn);
 
-    ::fwDataTools::helper::Image imageInHelper(imageIn);
+    const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-    ::fwDataTools::helper::Image imageOutHelper(imageOut);
+    const auto outDumpLock = imageOut->lock();
 
     for(size_t i = 0; i < size[0]; ++i)
     {
@@ -101,9 +101,8 @@ void FlipTest::flipAlongYAxisTest()
         {
             for(size_t k = 0; k < size[2]; ++k)
             {
-                const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
-                const uint8_t valueOut =
-                    *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, size[1]-j-1, k)));
+                const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
+                const uint8_t valueOut = imageOut->at<std::uint8_t>(i, size[1]-j-1, k);
 
                 // Static cast to get proper printing of the value (in int and not char) on stdout
                 CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
@@ -116,21 +115,22 @@ void FlipTest::flipAlongYAxisTest()
 
 void FlipTest::flipAlongZAxisTest()
 {
-    const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
-    const ::fwData::Image::SpacingType spacing = {{ 2.0, 2.0, 2.0 }};
-    const ::fwData::Image::OriginType origin   = {{ 0., 0., 0. }};
-    const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
+    const ::fwData::Image::Spacing spacing    = {{ 2.0, 2.0, 2.0 }};
+    const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
+    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, false, true};
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type);
-    ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+    ::fwTest::generator::Image::randomizeImage(imageIn);
 
-    ::fwDataTools::helper::Image imageInHelper(imageIn);
+    const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-    ::fwDataTools::helper::Image imageOutHelper(imageOut);
+    const auto outDumpLock = imageOut->lock();
 
     for(size_t i = 0; i < size[0]; ++i)
     {
@@ -138,9 +138,8 @@ void FlipTest::flipAlongZAxisTest()
         {
             for(size_t k = 0; k < size[2]; ++k)
             {
-                const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
-                const uint8_t valueOut =
-                    *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, size[2]-k-1)));
+                const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
+                const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, size[2]-k-1);
 
                 // Static cast to get proper printing of the value (in int and not char) on stdout
                 CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
@@ -154,21 +153,22 @@ void FlipTest::flipAlongZAxisTest()
 void FlipTest::flipAlongMultipleAxesTest()
 {
     {
-        const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
-        const ::fwData::Image::SpacingType spacing = {{ 0.5, 0.5, 0.5 }};
-        const ::fwData::Image::OriginType origin   = {{ 0., 0., 0. }};
-        const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
+        const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
+        const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
+        const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
+        const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+        const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes{true, true, false };
 
         ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
         ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-        ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type);
-        ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+        ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+        ::fwTest::generator::Image::randomizeImage(imageIn);
 
-        ::fwDataTools::helper::Image imageInHelper(imageIn);
+        const auto inDumpLock = imageIn->lock();
         ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-        ::fwDataTools::helper::Image imageOutHelper(imageOut);
+        const auto outDumpLock = imageOut->lock();
 
         for(size_t i = 0; i < size[0]; ++i)
         {
@@ -176,9 +176,8 @@ void FlipTest::flipAlongMultipleAxesTest()
             {
                 for(size_t k = 0; k < size[2]; ++k)
                 {
-                    const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
-                    const uint8_t valueOut =
-                        *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(size[0]-i-1, size[1]-j-1, k)));
+                    const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
+                    const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0]-i-1, size[1]-j-1, k);
 
                     // Static cast to get proper printing of the value (in int and not char) on stdout
                     CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
@@ -188,21 +187,22 @@ void FlipTest::flipAlongMultipleAxesTest()
     }
 
     {
-        const ::fwData::Image::SizeType size       = {{ 3, 3, 3 }};
-        const ::fwData::Image::SpacingType spacing = {{ 0.5, 0.5, 0.5 }};
-        const ::fwData::Image::OriginType origin   = {{ 0., 0., 0. }};
-        const ::fwTools::Type type                 = ::fwTools::Type::s_UINT8;
+        const ::fwData::Image::Size size          = {{ 3, 3, 3 }};
+        const ::fwData::Image::Spacing spacing    = {{ 0.5, 0.5, 0.5 }};
+        const ::fwData::Image::Origin origin      = {{ 0., 0., 0. }};
+        const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+        const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes{true, true, true};
 
         ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
         ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-        ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type);
-        ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+        ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
+        ::fwTest::generator::Image::randomizeImage(imageIn);
 
-        ::fwDataTools::helper::Image imageInHelper(imageIn);
+        const auto inDumpLock = imageIn->lock();
         ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-        ::fwDataTools::helper::Image imageOutHelper(imageOut);
+        const auto outDumpLock = imageOut->lock();
 
         for(size_t i = 0; i < size[0]; ++i)
         {
@@ -210,11 +210,8 @@ void FlipTest::flipAlongMultipleAxesTest()
             {
                 for(size_t k = 0; k < size[2]; ++k)
                 {
-                    const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
-                    const uint8_t valueOut =
-                        *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(size[0]-i-1,
-                                                                                   size[1]-j-1,
-                                                                                   size[2]-k-1)));
+                    const uint8_t valueIn  = imageIn->at<std::uint8_t>(i, j, k);
+                    const uint8_t valueOut = imageOut->at<std::uint8_t>(size[0]-i-1, size[1]-j-1, size[2]-k-1);
 
                     // Static cast to get proper printing of the value (in int and not char) on stdout
                     CPPUNIT_ASSERT_EQUAL(static_cast<int>(valueIn), static_cast<int>(valueOut));
@@ -228,21 +225,22 @@ void FlipTest::flipAlongMultipleAxesTest()
 
 void FlipTest::flipEmptyImageTest()
 {
-    const ::fwData::Image::SizeType size;
-    const ::fwData::Image::SpacingType spacing;
-    const ::fwData::Image::OriginType origin;
-    const ::fwTools::Type type = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size size          = {0, 0, 0};
+    const ::fwData::Image::Spacing spacing    = {0., 0., 0.};
+    const ::fwData::Image::Origin origin      = {0., 0., 0.};
+    const ::fwTools::Type type                = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::PixelFormat format = ::fwData::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes{false, true, false};
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type);
+    ::fwTest::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
     ::fwTest::generator::Image::randomizeImage(imageIn);
 
-    ::fwDataTools::helper::Image imageInHelper(imageIn);
+    const auto inDumpLock = imageIn->lock();
     ::imageFilterOp::Flipper::flip(imageIn, imageOut, flipAxes);
-    ::fwDataTools::helper::Image imageOutHelper(imageOut);
+    const auto outDumpLock = imageOut->lock();
 
     const ::fwData::Image::Size imageSize    = imageIn->getSize2();
     const ::fwData::Image::Size imageOutSize = imageOut->getSize2();

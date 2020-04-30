@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,8 +30,6 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
@@ -43,10 +41,10 @@ namespace echoEdSimu
 {
 
 fwServicesRegisterMacro( ::arServices::ISimulator, ::echoEdSimu::SComputeMatrixFromCell,
-                         ::fwData::TransformationMatrix3D);
+                         ::fwData::TransformationMatrix3D)
 
 const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_SINGLE_SLOT = "updateSingle";
-const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_BOTH_SLOT   = "updateBoth";
+const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_BOTH_SLOT = "updateBoth";
 
 //------------------------------------------------------------------------------
 SComputeMatrixFromCell::SComputeMatrixFromCell() noexcept :
@@ -71,50 +69,28 @@ void SComputeMatrixFromCell::starting()
     m_mesh = this->getInput< ::fwData::Mesh>("radialMesh");
     SLM_ASSERT("Key 'radialMesh' is not a ::fwData::Mesh", m_mesh);
 
-    ::fwData::Array::sptr cellArray = m_mesh->getCellDataArray();
-    ::fwDataTools::helper::Array cellArrayHelper(cellArray);
+    const auto dumpLock = m_mesh->lock();
 
-    ::fwData::Array::sptr pointsArray = m_mesh->getPointsArray();
-    ::fwDataTools::helper::Array pointsArrayHelper(pointsArray);
+    const auto points = m_mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    auto cellItr      = m_mesh->begin< ::fwData::iterator::ConstCellIterator >();
 
     /// Get the first cell coordinates
-    const unsigned int indexCell = 0;
-    int x, y, z;
-    for(int i = 0; i < 4; ++i)
-    {
-        ::fwData::Array::IndexType indexCellVector;
-        indexCellVector.push_back(indexCell * 4 + static_cast<unsigned int>(i));
-        ::fwData::Mesh::CellValueType* cell = cellArrayHelper.getItem< ::fwData::Mesh::CellValueType>(indexCellVector);
+    const auto index = cellItr->pointIdx[0];
 
-        ::fwData::Array::IndexType indexPointsVector;
-        indexPointsVector.push_back(*cell);
-        x = static_cast<int>(*pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 0));
-        y = static_cast<int>(*pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 1));
-        z = static_cast<int>(*pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 2));
-
-    }
+    const auto point = points + index;
+    const int z      = static_cast<int>(point->point->z);
 
     /// Find the first cell of the second line to know the number of cell per line.
-    int currentX, currentY, currentZ;
+    int currentZ;
     do
     {
         ++m_nbCellsPerLine;
-        for(int i = 0; i < 4; ++i)
-        {
-            ::fwData::Array::IndexType indexCellVector;
-            indexCellVector.push_back(m_nbCellsPerLine * 4 + static_cast<unsigned int>(i));
-            ::fwData::Mesh::CellValueType* cell = cellArrayHelper.getItem< ::fwData::Mesh::CellValueType>(
-                indexCellVector);
+        ++cellItr;
 
-            ::fwData::Array::IndexType indexPointsVector;
-            indexPointsVector.push_back(*cell);
-            currentX =
-                static_cast<int>(*pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 0));
-            currentY =
-                static_cast<int>(*pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 1));
-            currentZ =
-                static_cast<int>(*pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 2));
-        }
+        const auto index = cellItr->pointIdx[0];
+
+        const auto point = points + index;
+        currentZ = static_cast<int>(point->point->z);
     }
     while ( currentZ == z);
 }
@@ -167,35 +143,22 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
     {
         indexCell = nbrCells -1;
     }
+    const auto cell   = m_mesh->begin< ::fwData::iterator::ConstCellIterator >() + indexCell;
+    const auto points = m_mesh->begin< ::fwData::iterator::ConstPointIterator >();
 
-    ::fwData::Array::sptr normalArray = m_mesh->getCellNormalsArray();
-    ::fwDataTools::helper::Array normalArrayHelper(normalArray);
+    ::fwData::Mesh::NormalValueType nx = cell->normal->nx;
+    ::fwData::Mesh::NormalValueType ny = cell->normal->ny;
+    ::fwData::Mesh::NormalValueType nz = cell->normal->nz;
 
-    ::fwData::Array::IndexType indexVector;
-    indexVector.push_back(indexCell);
-
-    ::fwData::Mesh::NormalValueType nx = *normalArrayHelper.getItem< ::fwData::Mesh::NormalValueType>(indexVector, 0);
-    ::fwData::Mesh::NormalValueType ny = *normalArrayHelper.getItem< ::fwData::Mesh::NormalValueType>(indexVector, 1);
-    ::fwData::Mesh::NormalValueType nz = *normalArrayHelper.getItem< ::fwData::Mesh::NormalValueType>(indexVector, 2);
-
-    ::fwData::Array::sptr cellArray = m_mesh->getCellDataArray();
-    ::fwDataTools::helper::Array cellArrayHelper(cellArray);
-
-    ::fwData::Array::sptr pointsArray = m_mesh->getPointsArray();
-    ::fwDataTools::helper::Array pointsArrayHelper(pointsArray);
-
-    ::fwData::Mesh::PointValueType points[4][3];
+    ::fwData::Mesh::PointValueType cellPoints[4][3];
     for(int i = 0; i < 4; ++i)
     {
-        ::fwData::Array::IndexType indexCellVector;
-        indexCellVector.push_back(indexCell * 4 + static_cast<unsigned int>(i));
-        ::fwData::Mesh::CellValueType* cell = cellArrayHelper.getItem< ::fwData::Mesh::CellValueType>(indexCellVector);
+        const auto index = cell->pointIdx[i];
 
-        ::fwData::Array::IndexType indexPointsVector;
-        indexPointsVector.push_back(*cell);
-        points[i][0] = *pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 0);
-        points[i][1] = *pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 1);
-        points[i][2] = *pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 2);
+        const auto point = points + index;
+        cellPoints[i][0] = static_cast<int>(point->point->x);
+        cellPoints[i][1] = static_cast<int>(point->point->y);
+        cellPoints[i][2] = static_cast<int>(point->point->z);
     }
 
     ::fwData::TransformationMatrix3D::sptr matrix        = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
@@ -204,9 +167,9 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
     ::fwData::Mesh::PointValueType barycenter[3] = {0., 0., 1.};
     for(int i = 0; i < 4; ++i)
     {
-        barycenter[0] = (barycenter[0] * (i) + points[i][0]) / (i + 1);
-        barycenter[1] = (barycenter[1] * (i) + points[i][1]) / (i + 1);
-        barycenter[2] = (barycenter[2] * (i) + points[i][2]) / (i + 1);
+        barycenter[0] = (barycenter[0] * (i) + cellPoints[i][0]) / (i + 1);
+        barycenter[1] = (barycenter[1] * (i) + cellPoints[i][1]) / (i + 1);
+        barycenter[2] = (barycenter[2] * (i) + cellPoints[i][2]) / (i + 1);
     }
 
     ::fwData::Mesh::PointValueType zVector[3] = {0., 0., 1.};

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SAxis);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SAxis)
 
 namespace scene2D
 {
@@ -43,10 +43,10 @@ SAxis::SAxis() noexcept :
     m_min(0.f),
     m_max(0.f),
     m_tickSize(1.0f),
+    m_color(Qt::white),
     m_showLine(true),
     m_layer(nullptr),
-    m_line(nullptr),
-    m_color(Qt::white)
+    m_line(nullptr)
 {
 }
 
@@ -189,16 +189,13 @@ void SAxis::updating()
     Point2DType tickSize;
     Point2DType tickPos;
 
-    const Point2DType viewportSize =
-        this->mapAdaptorToScene(Point2DType(viewportWidth, viewportHeight), m_xAxis, m_yAxis);
-
     if(m_align == "bottom")
     {
         tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), m_xAxis, m_yAxis);
 
         const double tickPosY = viewport->getY();
 
-        for(int i = 0; i < nbValues; ++i)
+        for(size_t i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
@@ -215,7 +212,7 @@ void SAxis::updating()
 
         const double tickPosY = viewport->getHeight() * 0.9;
 
-        for(int i = 0; i < nbValues; ++i)
+        for(size_t i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
@@ -233,7 +230,7 @@ void SAxis::updating()
 
         const double tickPosX = viewport->getX();
 
-        for(int i = 0; i < nbValues; ++i)
+        for(size_t i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
@@ -250,7 +247,7 @@ void SAxis::updating()
 
         const double tickPosX = viewport->getX() + viewport->getWidth();
 
-        for(int i = 0; i < nbValues; ++i)
+        for(size_t i = 0; i < nbValues; ++i)
         {
             pos = min + i * m_interval;
 
@@ -288,4 +285,3 @@ void SAxis::processInteraction( ::fwRenderQt::data::Event& _event)
 
 }   // namespace adaptor
 }   // namespace scene2D
-

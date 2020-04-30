@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,6 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
@@ -48,7 +47,7 @@
 #include <QPixmap>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SNegato );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SNegato )
 
 namespace scene2D
 {
@@ -142,11 +141,12 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    ::fwDataTools::helper::Image imgHelper(image);
-    const ::fwData::Image::SizeType size = image->getSize();
-    const short* imgBuff                 = static_cast<const short*>(imgHelper.getBuffer());
-    const size_t imageZOffset            = size[0] * size[1];
+    ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const ::fwData::mt::ObjectReadLock imLock(image);
+    const auto dumpLock              = image->lock();
+    const ::fwData::Image::Size size = image->getSize2();
+    const short* imgBuff             = static_cast<const short*>(image->getBuffer());
+    const size_t imageZOffset        = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
     const double tfMax = tf->getMinMaxTFValues().second;
@@ -247,9 +247,9 @@ QImage* SNegato::createQImage()
         return nullptr;
     }
 
-    const ::fwData::Image::SizeType size       = img->getSize();
-    const ::fwData::Image::SpacingType spacing = img->getSpacing();
-    const ::fwData::Image::OriginType origin   = img->getOrigin();
+    const ::fwData::Image::Size size       = img->getSize2();
+    const ::fwData::Image::Spacing spacing = img->getSpacing2();
+    const ::fwData::Image::Origin origin   = img->getOrigin2();
 
     double qImageSpacing[2];
     double qImageOrigin[2];
@@ -540,7 +540,7 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord )
+void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord&, ::fwRenderQt::data::Coord& newCoord )
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 

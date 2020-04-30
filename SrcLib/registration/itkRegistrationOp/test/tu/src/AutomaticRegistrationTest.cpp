@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,6 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/itk.hpp>
@@ -86,17 +85,18 @@ void AutomaticRegistrationTest::tearDown()
 
 void AutomaticRegistrationTest::identityTest()
 {
-    const ::fwData::Image::SizeType SIZE = {{ 32, 32, 32 }};
+    const ::fwData::Image::Size SIZE = {{ 32, 32, 32 }};
 
-    const ::fwData::Image::SpacingType SPACING = {{ 0.5, 0.5, 0.5 }};
-    const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                 = ::fwTools::Type::s_INT16;
+    const ::fwData::Image::Spacing SPACING = {{ 0.5, 0.5, 0.5 }};
+    const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const ::fwTools::Type TYPE             = ::fwTools::Type::s_INT16;
 
     ::fwData::Image::sptr target    = ::fwData::Image::New();
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(target, SIZE, SPACING, ORIGIN, TYPE);
-    ::fwTest::generator::Image::randomizeArray(target->getDataArray());
+    ::fwTest::generator::Image::generateImage(target, SIZE, SPACING, ORIGIN, TYPE,
+                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
+    ::fwTest::generator::Image::randomizeImage(target);
 
     //Test if registering same image returns identity
     reference->deepCopy(target);

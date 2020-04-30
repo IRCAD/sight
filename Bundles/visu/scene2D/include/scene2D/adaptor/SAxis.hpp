@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,7 @@ class SCENE2D_CLASS_API SAxis : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SAxis, ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SAxis, ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SAxis() noexcept;
     SCENE2D_API virtual ~SAxis() noexcept;
@@ -96,28 +96,28 @@ private:
     std::string m_align;
 
     /// The required interval between two consecutive values of the axis.
-    float m_interval;
+    float m_interval{1.f};
 
     /// Minimal value of the axis.
-    float m_min;
+    float m_min{0.f};
 
     /// Maximal value of the axis.
-    float m_max;
+    float m_max{0.f};
 
     /// Size of a tick.
-    float m_tickSize;
+    float m_tickSize{1.0f};
 
     /// Color.
-    QPen m_color;
+    QPen m_color{Qt::white};
 
     /// Tells if the line of the axis must be displayed in addition to ticks.
-    bool m_showLine;
+    bool m_showLine{true};
 
-    // A layer that gathers all the graphic items.
-    QGraphicsItemGroup* m_layer;
+    /// A layer that gathers all the graphic items.
+    QGraphicsItemGroup* m_layer{nullptr};
 
     /// The line of the axis.
-    QGraphicsLineItem* m_line;
+    QGraphicsLineItem* m_line{nullptr};
 
     /// The graphic items that refer to ticks of the axis.
     std::vector< QGraphicsLineItem* > m_ticks;

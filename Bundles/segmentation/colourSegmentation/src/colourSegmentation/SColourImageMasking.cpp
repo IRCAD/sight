@@ -174,7 +174,7 @@ void SColourImageMasking::updating()
         OSLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
         OSLM_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
         OSLM_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
-        const auto maskSize = mask->getSize();
+        const auto maskSize = mask->getSize2();
         if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
         {
             OSLM_ERROR("Reference mask (" << maskSize[0] << ", " << maskSize[1]

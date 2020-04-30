@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SViewportUpdater);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SViewportUpdater)
 
 namespace scene2D
 {
@@ -90,7 +90,7 @@ void SViewportUpdater::updating()
 
 //-----------------------------------------------------------------------------
 
-void SViewportUpdater::processInteraction( ::fwRenderQt::data::Event& _event )
+void SViewportUpdater::processInteraction( ::fwRenderQt::data::Event& )
 {
 
 }
@@ -106,4 +106,3 @@ void SViewportUpdater::processInteraction( ::fwRenderQt::data::Event& _event )
 
 }   // namespace adaptor
 }   // namespace scene2D
-

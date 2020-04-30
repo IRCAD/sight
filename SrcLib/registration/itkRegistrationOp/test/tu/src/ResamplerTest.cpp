@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -57,17 +56,17 @@ void ResamplerTest::tearDown()
 
 void ResamplerTest::identityTest()
 {
-    const ::fwData::Image::SizeType SIZE = {{ 32, 32, 32 }};
+    const ::fwData::Image::Size SIZE = {{ 32, 32, 32 }};
 
     // TODO: make it work with an anisotropic spacing.
-    const ::fwData::Image::SpacingType SPACING = {{ 0.5, 0.5, 0.5 }};
-    const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                 = ::fwTools::Type::s_INT16;
+    const ::fwData::Image::Spacing SPACING = {{ 0.5, 0.5, 0.5 }};
+    const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const ::fwTools::Type TYPE             = ::fwTools::Type::s_INT16;
 
     ::fwData::Image::sptr imageIn = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
-    ::fwTest::generator::Image::randomizeArray(imageIn->getDataArray());
+    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::randomizeImage(imageIn);
 
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
@@ -77,12 +76,12 @@ void ResamplerTest::identityTest()
     ::itkRegistrationOp::Resampler::resample(
         ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(idMat), imageIn);
 
-    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
+    CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
+    CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
     CPPUNIT_ASSERT(imageOut->getType() == TYPE);
 
-    fwDataTools::helper::Image imageInHelper(imageIn);
-    fwDataTools::helper::Image imageOutHelper(imageOut);
+    const auto inDumpLock  = imageIn->lock();
+    const auto outDumpLock = imageOut->lock();
 
     for(size_t i = 0; i < SIZE[0]; ++i)
     {
@@ -90,8 +89,8 @@ void ResamplerTest::identityTest()
         {
             for(size_t k = 0; k < SIZE[2]; ++k)
             {
-                const uint8_t valueIn  = *(reinterpret_cast<uint8_t*>(imageInHelper.getPixelBuffer(i, j, k)));
-                const uint8_t valueOut = *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, k)));
+                const std::int16_t valueIn  = imageIn->at<std::int16_t>(i, j, k);
+                const std::int16_t valueOut = imageOut->at<std::int16_t>(i, j, k);
 
                 // The image shouldn't change.
                 std::string msg = std::to_string(valueIn) + " " + std::to_string(valueOut);
@@ -103,43 +102,35 @@ void ResamplerTest::identityTest()
 
 //------------------------------------------------------------------------------
 
-static size_t computeOffset( const size_t x, const size_t y, const size_t z, ::fwData::Image::sptr image )
-{
-    const fwData::Image::SizeType size = image->getSize();
-    return z * size[0] * size[1] + y * size[0] + x;
-}
-
-//------------------------------------------------------------------------------
-
 void ResamplerTest::translateTest()
 {
     // Generate a simple image with a white cube at its center.
-    const ::fwData::Image::SizeType SIZE       = {{ 16, 16, 16 }};
-    const ::fwData::Image::SpacingType SPACING = {{ 1., 1., 1. }};
-    const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                 = ::fwTools::Type::s_UINT8;
+    const ::fwData::Image::Size SIZE       = {{ 16, 16, 16 }};
+    const ::fwData::Image::Spacing SPACING = {{ 1., 1., 1. }};
+    const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const ::fwTools::Type TYPE             = ::fwTools::Type::s_UINT8;
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
+    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, ::fwData::Image::GRAY_SCALE);
 
     std::uint8_t value = 255;
 
     SPTR(::fwData::Image::BufferType) bufferValue =
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
-    fwDataTools::helper::Image imageHelper(imageIn);
+    const auto inDumpLock = imageIn->lock();
 
     // Draw a tiny 2x2 cube at the center
-    imageHelper.setPixelBuffer( computeOffset(7, 7, 7, imageIn), bufferValue.get() );
-    imageHelper.setPixelBuffer( computeOffset(7, 7, 8, imageIn), bufferValue.get() );
-    imageHelper.setPixelBuffer( computeOffset(7, 8, 7, imageIn), bufferValue.get() );
-    imageHelper.setPixelBuffer( computeOffset(7, 8, 8, imageIn), bufferValue.get() );
-    imageHelper.setPixelBuffer( computeOffset(8, 7, 7, imageIn), bufferValue.get() );
-    imageHelper.setPixelBuffer( computeOffset(8, 7, 8, imageIn), bufferValue.get() );
-    imageHelper.setPixelBuffer( computeOffset(8, 8, 7, imageIn), bufferValue.get() );
-    imageHelper.setPixelBuffer( computeOffset(8, 8, 8, imageIn), bufferValue.get() );
+    imageIn->at<std::uint8_t>(7, 7, 7) = value;
+    imageIn->at<std::uint8_t>(7, 7, 8) = value;
+    imageIn->at<std::uint8_t>(7, 8, 7) = value;
+    imageIn->at<std::uint8_t>(7, 8, 8) = value;
+    imageIn->at<std::uint8_t>(8, 7, 7) = value;
+    imageIn->at<std::uint8_t>(8, 7, 8) = value;
+    imageIn->at<std::uint8_t>(8, 8, 7) = value;
+    imageIn->at<std::uint8_t>(8, 8, 8) = value;
 
     // 5 mm translation along the x axis.
     ::fwData::TransformationMatrix3D::sptr transMat = ::fwData::TransformationMatrix3D::New();
@@ -148,7 +139,7 @@ void ResamplerTest::translateTest()
     ::itkRegistrationOp::Resampler::resample(
         ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(transMat));
 
-    fwDataTools::helper::Image imageOutHelper(imageOut);
+    const auto dumpLock = imageOut->lock();
 
     for(size_t i = 0; i < SIZE[0]; ++i)
     {
@@ -156,7 +147,7 @@ void ResamplerTest::translateTest()
         {
             for(size_t k = 0; k < SIZE[2]; ++k)
             {
-                const uint8_t valueOut = *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, k)));
+                const uint8_t valueOut = imageOut->at<std::uint8_t>(i, j, k);
 
                 if((i >= 2 && i <= 3) && (j >= 7 && j <= 8) && (k >= 7 && k <= 8))
                 {
@@ -171,37 +162,34 @@ void ResamplerTest::translateTest()
     }
 
     // Check if size and spacing are the same as the input.
-    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
+    CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
+    CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
 }
 
 //------------------------------------------------------------------------------
 
 void ResamplerTest::rotateTest()
 {
-    const ::fwData::Image::SizeType SIZE       = {{ 64, 64, 64 }};
-    const ::fwData::Image::SpacingType SPACING = {{ 1., 1., 1. }};
-    const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
-    const ::fwTools::Type TYPE                 = ::fwTools::Type::s_FLOAT;
+    const ::fwData::Image::Size SIZE       = {{ 64, 64, 64 }};
+    const ::fwData::Image::Spacing SPACING = {{ 1., 1., 1. }};
+    const ::fwData::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const ::fwTools::Type TYPE             = ::fwTools::Type::s_FLOAT;
 
     ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
     ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
+    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, ::fwData::Image::GRAY_SCALE);
 
     const float value = 1.f;
 
-    SPTR(::fwData::Image::BufferType) bufferValue =
-        ::fwDataTools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
-
-    fwDataTools::helper::Image imageHelper(imageIn);
+    const auto dumpLock = imageIn->lock();
 
     // draw the back Z face.
     for(size_t i = 0; i < 64; ++i)
     {
         for(size_t j = 0; j < 64; ++j)
         {
-            imageHelper.setPixelBuffer( computeOffset(i, j, 0, imageIn), bufferValue.get() );
+            imageIn->at<float>(i, j, 0) = value;
         }
     }
 
@@ -220,7 +208,7 @@ void ResamplerTest::rotateTest()
     ::itkRegistrationOp::Resampler::resample(
         ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(rotMat));
 
-    fwDataTools::helper::Image imageOutHelper(imageOut);
+    const auto outDumpLock = imageOut->lock();
 
     for(size_t i = 0; i < SIZE[0]; ++i)
     {
@@ -228,7 +216,7 @@ void ResamplerTest::rotateTest()
         {
             for(size_t k = 0; k < SIZE[2]; ++k)
             {
-                const float valueOut = *(reinterpret_cast<uint8_t*>(imageOutHelper.getPixelBuffer(i, j, k)));
+                const float valueOut = imageOut->at<float>(i, j, k);
 
                 std::string msg = std::to_string(i) + " " + std::to_string(j) + " " + std::to_string(k);
 

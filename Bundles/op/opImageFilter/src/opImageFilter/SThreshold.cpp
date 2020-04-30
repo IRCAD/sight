@@ -27,16 +27,12 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/TypeKeyTypeMapping.hpp>
 
 namespace opImageFilter

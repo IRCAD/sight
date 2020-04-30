@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,6 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/itk.hpp>
@@ -39,8 +38,7 @@
 #include <fwTest/generator/Image.hpp>
 
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -81,11 +79,11 @@ void MIPMatchingRegistrationTest::identityTest()
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.fixed                = fixed;
-    params.moving               = moving;
-    params.transform            = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::DynamicType type = moving->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
+    params.fixed         = fixed;
+    params.moving        = moving;
+    params.transform     = ::fwData::TransformationMatrix3D::New();
+    ::fwTools::Type type = moving->getType();
+    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
 
     for(size_t i = 0; i != 3; ++i)
     {
@@ -109,11 +107,11 @@ void MIPMatchingRegistrationTest::translateTransformTest()
 
     std::array<double, 3> expected {{ 4., 12., 7. }};
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.fixed                = fixed;
-    params.moving               = moving;
-    params.transform            = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::DynamicType type = moving->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
+    params.fixed         = fixed;
+    params.moving        = moving;
+    params.transform     = ::fwData::TransformationMatrix3D::New();
+    ::fwTools::Type type = moving->getType();
+    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
@@ -132,7 +130,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     movingSpacing[1]             = 1.3;
     ::fwData::Image::sptr moving = createSphereImage< ::std::uint16_t, 3>(movingSpacing);
     ::fwData::Image::sptr fixed  = ::fwData::Image::New();
-    moving->setOrigin({ 107., 50., -30. });
+    moving->setOrigin2({ 107., 50., -30. });
 
     // Translate the image a bit
     std::array<double, 3> vTrans {{ 4., 19., 7. }};
@@ -141,9 +139,9 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     transform->setCoefficient(1, 3, vTrans[1]);
     transform->setCoefficient(2, 3, vTrans[2]);
     itkReg::Resampler::resample(moving, fixed, transform);
-    auto fixedOrigin  = std::vector<double> {{ 20., 10., 35. }},
-         movingOrigin = moving->getOrigin();
-    fixed->setOrigin(fixedOrigin);
+    auto fixedOrigin  = std::array<double, 3> {{ 20., 10., 35. }},
+         movingOrigin = moving->getOrigin2();
+    fixed->setOrigin2(fixedOrigin);
     std::array<float, 3> expected {
         {
             float(movingOrigin[0] + vTrans[0] - fixedOrigin[0]),
@@ -159,7 +157,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     ImageType::SpacingType newSpacing(2.);
     for(uint8_t i = 0; i != 3; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize()[i]);
+        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize2()[i]);
     }
     auto resample = ::itk::ResampleImageFilter<ImageType, ImageType>::New();
     resample->SetInput(itkFixed);
@@ -171,11 +169,11 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     auto resampledF4sFixed = ::fwItkIO::dataImageFactory<ImageType>(resampled, true);
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.fixed                = resampledF4sFixed;
-    params.moving               = moving;
-    params.transform            = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::DynamicType type = moving->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
+    params.fixed         = resampledF4sFixed;
+    params.moving        = moving;
+    params.transform     = ::fwData::TransformationMatrix3D::New();
+    ::fwTools::Type type = moving->getType();
+    ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
