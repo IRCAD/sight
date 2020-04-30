@@ -44,6 +44,7 @@ namespace opImageFilter
  * the voxel is inside or outside of the mesh.
  *
  * @pre The input image must be in 3D.
+ * @pre Input meshes must have cells with 3 or 4 points.
  * @warning The image and meshes must be used without transformation matrices in 3D scene, no matrices are used here.
  *
  * @section Slots Slots
