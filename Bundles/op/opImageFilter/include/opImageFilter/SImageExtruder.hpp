@@ -64,7 +64,7 @@ namespace opImageFilter
  * @subsection In-Out In-Out
  * - \b extrudedImage [::fwData::Image]: extruded image.
  */
-class OPIMAGEFILTER_CLASS_API SImageExtruder : public ::fwServices::IOperator
+class OPIMAGEFILTER_CLASS_API SImageExtruder final : public ::fwServices::IOperator
 {
 public:
 

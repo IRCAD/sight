@@ -46,7 +46,7 @@ namespace imageFilterOp
  * @pre Input meshes must have cells with 3 or 4 points.
  * @warning The image and meshes must be used without transformation matrices in 3D scene, no matrices are used here.
  */
-class IMAGEFILTEROP_CLASS_API ImageExtruder
+class IMAGEFILTEROP_CLASS_API ImageExtruder final
 {
 
 public:

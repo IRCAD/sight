@@ -565,29 +565,18 @@ void SShapeExtruder::drawLasso()
     m_lasso->clear();
 
     // Draw the lasso line.
-    ::Ogre::Vector3 min(std::numeric_limits< float >::max());
-    ::Ogre::Vector3 max(std::numeric_limits< float >::lowest());
-
     m_lasso->begin(m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP);
     m_lasso->colour(m_lineColor);
     for(const ::Ogre::Vector3 pos : m_lassoToolPositions)
     {
         m_lasso->position(pos);
-
-        min.x = pos.x < min.x ? pos.x : min.x;
-        min.y = pos.y < min.y ? pos.y : min.y;
-        min.z = pos.z < min.z ? pos.z : min.z;
-
-        max.x = pos.x > max.x ? pos.x : max.x;
-        max.y = pos.y > max.y ? pos.y : max.y;
-        max.z = pos.z > max.z ? pos.z : max.z;
     }
     m_lasso->end();
 
     // Draw the spheres at the edge of each line.
     const unsigned int sample = 16;
-    const float deltaRing     = (static_cast< float >(::Ogre::Math::PI) / static_cast< float >(sample));
-    const float deltaSeg      = (2 * static_cast< float >(::Ogre::Math::PI) / static_cast< float >(sample));
+    const float deltaRing     = static_cast< float >(::Ogre::Math::PI / sample);
+    const float deltaSeg      = 2 * static_cast< float >(::Ogre::Math::PI / sample);
 
     for(const ::Ogre::Vector3 pos : m_lassoEdgePositions)
     {
@@ -704,15 +693,16 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 
     // Fill cell coordinates.
     {
-        auto it          = mesh->begin< ::fwData::iterator::CellIterator >();
-        const auto itEnd = mesh->end< ::fwData::iterator::CellIterator >();
+        auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
+        const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
+        const auto itPrevEnd = itEnd-1;
 
         for(size_t index = 0; index < _triangulation.size()*3; index += 3)
         {
-            *it->type   = ::fwData::Mesh::TRIANGLE;
+            *it->type   = static_cast< unsigned char >(::fwData::Mesh::CellType::TRIANGLE);
             *it->offset = index;
 
-            if(it != itEnd-1)
+            if(it != itPrevEnd)
             {
                 (*(it+1)->offset) = index+3;
             }
@@ -780,23 +770,10 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
 
     for(const ::Ogre::Vector2 point : points)
     {
-        if(point.x < minBound.x)
-        {
-            minBound.x = point.x;
-        }
-        else if(point.x > maxBound.x)
-        {
-            maxBound.x = point.x;
-        }
-
-        if(point.y < minBound.y)
-        {
-            minBound.y = point.y;
-        }
-        else if(point.y > maxBound.y)
-        {
-            maxBound.y = point.y;
-        }
+        minBound.x = std::min(point.x, minBound.x);
+        maxBound.x = std::max(point.x, maxBound.x);
+        minBound.y = std::min(point.y, minBound.y);
+        maxBound.y = std::max(point.y, maxBound.y);
     }
 
     // Increase the bounding box to avoid points to be shared with some of the triangle edges.
