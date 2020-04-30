@@ -88,4 +88,7 @@ FWPREFERENCES_API const std::string getPassword();
 /// Check if the given password match the hash stored in the preferences
 FWPREFERENCES_API bool checkPassword(const std::string& password);
 
+/// Check if a password hash is stored in the preferences
+FWPREFERENCES_API bool hasPasswordHash();
+
 } // namespace fwPreferences

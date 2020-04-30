@@ -154,7 +154,7 @@ bool checkPassword(const std::string& password)
 
     if(passwordHash.empty())
     {
-        // No password hash is stored in the settings or there is no settings
+        // No password hash is stored in the preferences or there is no preferences
         // We must check against s_password
         return password == s_password || password == scramble(s_password);
     }
@@ -173,6 +173,13 @@ bool checkPassword(const std::string& password)
     {
         return false;
     }
+}
+
+//------------------------------------------------------------------------------
+
+bool hasPasswordHash()
+{
+    return !getPreference(s_PASSWORD_HASH_KEY).empty();
 }
 
 //----------------------------------------------------------------------------
