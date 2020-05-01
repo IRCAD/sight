@@ -49,6 +49,12 @@ class locked_ptr;
 /**
  * @brief This class holds a a non-owning ("weak") reference on a data.
  *
+ * This class main purpose is to be used as class member to avoid continuous lookup in service tables.
+ *
+ * In a `IService`, the `weak_ptr` member could be initialized in the `configuring()` and then 'locked'
+ * and used in the `updating()` method. It will spare the lookup, and only lock the data in the `updating()`
+ * which may have an impact when `updating()` is called very often.
+ *
  * It must be converted to a locked_ptr in order to access the referenced object.
  */
 template <class DATATYPE>

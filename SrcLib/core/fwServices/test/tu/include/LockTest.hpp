@@ -24,8 +24,6 @@
 
 #include "TestService.hpp"
 
-#include <fwRuntime/EConfigurationElement.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwServices
