@@ -611,8 +611,7 @@ void SeriesDBLazyReader::preprocessImage(const ::fwData::Image::sptr& _img,
     _img->setSpacing2(imgSpacing);
 
     // Size
-    ::fwData::Image::SizeType imgSize(3);
-    imgSize.resize(3);
+    ::fwData::Image::Size imgSize;
     imgSize[0] = dim[0];
     imgSize[1] = dim[1];
     imgSize[2] = _files.size();
@@ -663,10 +662,9 @@ void SeriesDBLazyReader::preprocessImage(const ::fwData::Image::sptr& _img,
     // Number of component
     size_t numberOfComponents = pixelFormat.GetSamplesPerPixel();
 
-    _img->setSize(imgSize);
+    _img->setSize2(imgSize);
     _img->setNumberOfComponents(numberOfComponents);
     _img->setType(imgType);
-    _img->getDataArray()->resize(imgType, imgSize, numberOfComponents, false);
 }
 
 //------------------------------------------------------------------------------
@@ -706,8 +704,7 @@ void SeriesDBLazyReader::fillImage(::gdcm::Scanner& _scanner, const SeriesDBLazy
     _img->setWindowCenter(center);
     _img->setWindowWidth(width);
 
-    ::fwData::Image::SpacingType imgSpacing = _img->getSpacing();
-    imgSpacing.resize(3);
+    ::fwData::Image::Spacing imgSpacing = _img->getSpacing2();
     double thickness = getNumericValue<double>(_scanner, _dcmFile, s_SLICE_THICKNESS_TAG);
     thickness = thickness ? thickness : 1.;
     if(_seriesFiles.size() > 1)
@@ -719,14 +716,13 @@ void SeriesDBLazyReader::fillImage(::gdcm::Scanner& _scanner, const SeriesDBLazy
     {
         imgSpacing[2] = thickness;
     }
-    _img->setSpacing(imgSpacing);
+    _img->setSpacing2(imgSpacing);
 
     ::vtkGdcmIO::helper::ImageDicomInfo::sptr dcmInfo = std::make_shared< ::vtkGdcmIO::helper::ImageDicomInfo >();
     dcmInfo->m_buffSizeInBytes                        = _img->getSizeInBytes();
     dcmInfo->m_seriesFiles                            = _seriesFiles;
 
-    ::fwMemory::BufferObject::sptr buffObj = _img->getDataArray()->getBufferObject();
-    buffObj->setIStreamFactory(
+    _img->setIStreamFactory(
         std::make_shared< ::vtkGdcmIO::helper::ImageDicomStream >(dcmInfo),
         _img->getSizeInBytes());
 }

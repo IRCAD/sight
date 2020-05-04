@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,99 +34,104 @@
 namespace visuOgreQt
 {
 
-/**
- * @brief   Defines a class to manage ogreRenderWindowInteractor in a window.
- */
-class VISUOGREQT_CLASS_API OffScreenRenderWindowInteractorManager :
+/// Defines a class to manage an offscreen render window that renders in an Ogre texture.
+class VISUOGREQT_CLASS_API OffScreenRenderWindowInteractorManager final :
     public ::fwRenderOgre::IRenderWindowInteractorManager
 {
 public:
+
     fwCoreClassMacro(OffScreenRenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)
 
-    /// Constructor
+    /**
+     * @brief Initialize members.
+     * @param _width width of the render window.
+     * @param _height height of the render window.
+     */
     VISUOGREQT_API OffScreenRenderWindowInteractorManager(
         ::fwRenderOgre::IRenderWindowInteractorManager::OffscreenMgrKey,
-        unsigned int _width, unsigned int _height);
-    /// Destructor
+        unsigned int _width,
+        unsigned int _height);
+    /// Destroys the render window.
     VISUOGREQT_API virtual ~OffScreenRenderWindowInteractorManager() final;
 
-    /// Call Widget render immediately
-    VISUOGREQT_API virtual void renderNow() final;
+    /// Renders immediately the frame in the render window.
+    VISUOGREQT_API virtual void renderNow() override;
 
-    /// Call Widget render
-    VISUOGREQT_API virtual void requestRender() final;
+    /// Renders immediately the frame in the render window.
+    VISUOGREQT_API virtual void requestRender() override;
 
-    /// Create the container that holds the QtWidget.
-    VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent,
-                                                bool renderOnDemand, bool fullscreen) final;
+    /// Creates the render window in the global OpenGL context, @see ::visuOgreQt::OpenGLContext.
+    VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr, bool, bool) override;
 
-    /// Connects widget and SRender signals and slots.
-    VISUOGREQT_API virtual void connectToContainer() final;
+    /// Does nothing.
+    VISUOGREQT_API virtual void connectToContainer() override;
 
-    /// Not implemented yet
-    /// Deletes interactor and manages correctly the window (removing layout).
-    VISUOGREQT_API virtual void disconnectInteractor() final;
+    /// Deletes the render window and the render texture.
+    VISUOGREQT_API virtual void disconnectInteractor() override;
 
-    /// Returns Ogre widget
-    VISUOGREQT_API virtual int getWidgetId() const final;
+    /// Returns the unique identifier of the widget.
+    VISUOGREQT_API virtual int getWidgetId() const override;
 
-    /// Returns frame ID
-    VISUOGREQT_API virtual int getFrameId() const final;
+    /// Returns current frame number of the render window.
+    VISUOGREQT_API virtual int getFrameId() const override;
 
-    /// Enables visuOgreQt's shared gl context on this thread against this window.
-    VISUOGREQT_API virtual void makeCurrent() final;
+    /// Makes the OpenGL context as current one on this thread against this window.
+    VISUOGREQT_API virtual void makeCurrent() override;
 
-    /// Get Ogre RenderWindow
-    VISUOGREQT_API virtual ::Ogre::RenderTarget* getRenderTarget() final;
+    /// Gets the Ogre render target.
+    VISUOGREQT_API virtual ::Ogre::RenderTarget* getRenderTarget() override;
 
-    /// Get the Ogre texture attached to the target
-    VISUOGREQT_API virtual ::Ogre::TexturePtr getRenderTexture() final;
+    /// Gets the Ogre render texture attached to the render target.
+    VISUOGREQT_API virtual ::Ogre::TexturePtr getRenderTexture() override;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
-    VISUOGREQT_API ::fwRenderOgre::IGraphicsWorker* createGraphicsWorker() final;
+    VISUOGREQT_API ::fwRenderOgre::IGraphicsWorker* createGraphicsWorker() override;
 
-    /// Doesn't make much sense when not rendering on a screen.
     /// Returns a DPI of 220 to permit offscreen font rendering.
-    VISUOGREQT_API virtual float getLogicalDotsPerInch() const final
+    /// @warning Doesn't make much sense when not rendering on a screen.
+    VISUOGREQT_API virtual float getLogicalDotsPerInch() const override
     {
         // Return this value which is kind of common for HiDPI monitors.
         return 220;
     }
 
 private:
+
+    /// Updates the Ogre render target.
     void render();
 
-    /// Needed to get the widget Id
+    /// Defines a counter to get the widget ID.
     static int m_counter;
 
-    /// Used to instantiate the managers related to this instance with a proper name.
+    /// Defines the unique identifier of the widget, used to instantiate the managers related to this instance with a
+    // proper name.
     int m_id;
 
-    /// Frame identifier
+    /// Defines the number of render frame.
     int m_frameId { 0 };
 
-    /// Ogre root
+    /// Contains the Ogre root.
     ::Ogre::Root* m_ogreRoot { nullptr };
 
-    /// Ogre window
+    /// Contains the Ogre render window.
     ::Ogre::RenderWindow* m_ogreRenderWindow { nullptr };
 
-    /// Ogre window
+    /// Contains the Ogre render target.
     ::Ogre::RenderTarget* m_ogreRenderTarget { nullptr };
 
-    /// Ogre window
+    /// Contains the Ogre render texture attached to the render target
     ::Ogre::TexturePtr m_ogreTexture;
 
-    /// OpenGL context used for offscreen rendering.
+    /// Contains the OpenGL context used for offscreen rendering.
     std::shared_ptr<QOpenGLContext> m_glContext;
 
-    /// Window width
+    /// Defines the window width.
     unsigned int m_width { 0 };
 
-    /// Window height
+    /// Defines the window height.
     unsigned int m_height { 0 };
 
-    /// Offscreen surface, needed to enable the OpenGL context on the current thread.
+    /// Contains the offscreen surface, needed to enable the OpenGL context on the current thread.
     std::unique_ptr<QOffscreenSurface> m_offscreenSurface;
 
 };
@@ -159,4 +164,4 @@ inline ::Ogre::TexturePtr OffScreenRenderWindowInteractorManager::getRenderTextu
     return m_ogreTexture;
 }
 
-} // namespace visuOgreQt
+} // namespace visuOgreQt.

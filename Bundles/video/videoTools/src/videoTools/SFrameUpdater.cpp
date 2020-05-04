@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,13 +31,11 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Object.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwThread/Worker.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, ::fwData::Composite )
 
 namespace videoTools
 {
@@ -116,25 +114,44 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
 {
     if (timestamp > m_lastTimestamp)
     {
-        ::fwData::Image::SizeType size(2);
+        ::fwData::Image::Size size;
         size[0] = m_frameTL->getWidth();
         size[1] = m_frameTL->getHeight();
+        size[2] = 0;
 
         // Check if image dimensions has changed
-        if(size != m_image->getSize())
+        if(size != m_image->getSize2())
         {
             m_imageInitialized = false;
         }
 
         if(!m_imageInitialized)
         {
-            const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-            m_image->allocate(size, m_frameTL->getType(), m_frameTL->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(2, 0);
+            ::fwData::mt::ObjectWriteLock destLock(m_image);
 
-            m_image->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(2, voxelSize);
-            m_image->setSpacing(spacing);
+            ::fwData::Image::PixelFormat format;
+            // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or RGBA
+            switch (m_frameTL->getNumberOfComponents())
+            {
+                case 1:
+                    format = ::fwData::Image::GRAY_SCALE;
+                    break;
+                case 3:
+                    format = ::fwData::Image::RGB;
+                    break;
+                case 4:
+                    format = ::fwData::Image::RGBA;
+                    break;
+                default:
+                    OSLM_ERROR("Number of compenent not managed")
+                    return;
+            }
+
+            m_image->resize(size, m_frameTL->getType(), format);
+            const ::fwData::Image::Origin origin = {0., 0., 0.};
+            m_image->setOrigin2(origin);
+            const ::fwData::Image::Spacing spacing = {1., 1., 0.};
+            m_image->setSpacing2(spacing);
             m_image->setWindowWidth(1);
             m_image->setWindowCenter(0);
             m_imageInitialized = true;
@@ -159,33 +176,27 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
 void SFrameUpdater::updateImage()
 {
     //Lock image & copy buffer
+    ::fwData::mt::ObjectWriteLock destLock(m_image);
+    const auto dumpLock = m_image->lock();
+
+    const ::fwCore::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
+    CSPTR(::arData::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
+
+    OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
+    if(buffer)
     {
-        ::fwData::mt::ObjectWriteLock destLock(m_image);
-        ::fwData::Array::sptr array = m_image->getDataArray();
+        m_lastTimestamp = timestamp;
 
-        ::fwDataTools::helper::Array arrayHelper(array);
+        const std::uint8_t* frameBuff = &buffer->getElement(0);
+        auto iter                     = m_image->begin<std::uint8_t>();
 
-        ::fwCore::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
-        CSPTR(::arData::FrameTL::BufferType) buffer    = m_frameTL->getClosestBuffer(timestamp);
+        std::copy( frameBuff, frameBuff+buffer->getSize(), iter);
 
-        OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
-        if(buffer)
-        {
-            m_lastTimestamp = timestamp;
-
-            const std::uint8_t* frameBuff = &buffer->getElement(0);
-
-            ::arData::timeline::Buffer::BufferDataType index = arrayHelper.begin< std::uint8_t >();
-
-            std::copy( frameBuff, frameBuff+buffer->getSize(), index);
-
-            //Notify
-            auto sig =
-                m_image->signal< ::fwData::Image::BufferModifiedSignalType >( ::fwData::Image::s_BUFFER_MODIFIED_SIG );
-            sig->asyncEmit();
-        }
+        //Notify
+        auto sig =
+            m_image->signal< ::fwData::Image::BufferModifiedSignalType >( ::fwData::Image::s_BUFFER_MODIFIED_SIG );
+        sig->asyncEmit();
     }
-
 }
 
 //-----------------------------------------------------------------------------

@@ -30,7 +30,6 @@
 #include <fwCore/spyLog.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwRuntime/operations.hpp>
 
@@ -407,6 +406,11 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const ::fwData:
             // float
             return ::Ogre::PF_FLOAT32_R;
         }
+        else if (pixelType == ::fwTools::Type::s_INT32)
+        {
+            // int32
+            return ::Ogre::PF_R32_SINT;
+        }
         FW_RAISE("Format '" + pixelType.string() + "' not handled");
     }
 
@@ -486,6 +490,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_L8:
         case ::Ogre::PF_L16:
         case ::Ogre::PF_R16_UINT:
+        case ::Ogre::PF_R32_SINT:
         case ::Ogre::PF_FLOAT32_R:
             numComponents = 1;
             pixelFormat   = ::fwData::Image::PixelFormat::GRAY_SCALE;
@@ -565,6 +570,7 @@ void Utils::setPixelFormatFromOgre( ::fwData::Image::sptr _image, ::Ogre::PixelF
         case ::Ogre::PF_R32G32B32A32_UINT:  pixelType = ::fwTools::Type::s_UINT32; break;
 
         case ::Ogre::PF_R32G32B32_SINT:
+        case ::Ogre::PF_R32_SINT:
         case ::Ogre::PF_R32G32B32A32_SINT: pixelType = ::fwTools::Type::s_INT32; break;
 
         case ::Ogre::PF_FLOAT32_R:

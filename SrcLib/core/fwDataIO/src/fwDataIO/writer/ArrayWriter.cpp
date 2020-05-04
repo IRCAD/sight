@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,10 +24,7 @@
 
 #include "fwDataIO/writer/registry/macros.hpp"
 
-#include <fwDataTools/helper/ArrayGetter.hpp>
-
 #include <filesystem>
-
 #include <fstream>
 #include <iostream>
 
@@ -40,7 +37,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-ArrayWriter::ArrayWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+ArrayWriter::ArrayWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
@@ -59,8 +56,8 @@ void ArrayWriter::write()
 
     ::fwData::Array::csptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->getSizeInBytes();
-    ::fwDataTools::helper::ArrayGetter arrayHelper(array);
-    const char* buff = arrayHelper.begin();
+    const auto dumpLock     = array->lock();
+    const char* buff        = static_cast<const char*>(array->getBuffer());
 
     std::ofstream fs(file.string().c_str(), std::ios::binary|std::ios::trunc);
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,6 @@
 
 #include "fwDataIO/writer/registry/macros.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/MeshGetter.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fstream>
@@ -41,7 +39,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
@@ -75,61 +73,46 @@ void MeshWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwDataTools::helper::MeshGetter meshHelper(mesh);
+    const auto dumpLock = mesh->lock();
 
-    size_t i, nbPts, nbCells;
-    nbPts                                            = mesh->getNumberOfPoints();
-    ::fwData::Mesh::ConstPointsMultiArrayType points = meshHelper.getPoints();
+    const size_t nbPts   = mesh->getNumberOfPoints();
+    const size_t nbCells = mesh->getNumberOfCells();
+
+    auto pointsItr       = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto pointsEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
+
     file<<nbPts<<std::endl;
-    for( i = 0; i < nbPts; ++i )
+    for(; pointsItr != pointsEnd; ++pointsItr)
     {
-        file << points[i][0] << " " << points[i][1] << " " << points[i][2] << std::endl;
+        file << pointsItr->point->x << " " << pointsItr->point->y << " " << pointsItr->point->z << std::endl;
     }
 
-    nbCells                     = mesh->getNumberOfCells();
-    ::fwData::Array::sptr cells = mesh->getCellDataArray();
+    auto cellItr       = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+    const auto cellEnd = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
-    ::fwDataTools::helper::Array cellsArrayHelper(cells);
-
-    FW_RAISE_IF("Not able to write " << cells->getType().string() << " cell type in trian file.",
-                cells->getType() != ::fwTools::Type::create< std::uint64_t >());
-
-    std::uint64_t* cellBuf    = cellsArrayHelper.begin< std::uint64_t >();
-    std::uint64_t* cellBufEnd = cellBuf + 3*nbCells;
-
-    SLM_ASSERT("Wrong CellDataMultiArray size", cells->getNumberOfElements() >= nbCells*3);
     file << nbCells << std::endl;
 
-    ::fwData::Array::sptr normals = mesh->getCellNormalsArray();
-
-    if(normals
-       && !normals->empty()
-       && normals->getType() == ::fwTools::Type::create<float>()
-       && normals->getNumberOfComponents() == 3
-       && normals->getNumberOfDimensions() == 1
-       && nbCells == normals->getSize().at(0)
-       )
+    if(mesh->hasCellNormals())
     {
-        ::fwDataTools::helper::Array normalsArrayHelper(normals);
-        float* normalBuf = normalsArrayHelper.begin< float >();
-
-        while (cellBuf != cellBufEnd)
+        while (cellItr != cellEnd)
         {
-            file << (*cellBuf++) << " ";
-            file << (*cellBuf++) << " ";
-            file << (*cellBuf++) << " ";
-            file << (*normalBuf++) << " ";
-            file << (*normalBuf++) << " ";
-            file << (*normalBuf++) << std::endl;
+            file << (cellItr->pointIdx[0]) << " ";
+            file << (cellItr->pointIdx[1]) << " ";
+            file << (cellItr->pointIdx[2]) << " ";
+            file << (cellItr->normal->nx) << " ";
+            file << (cellItr->normal->ny) << " ";
+            file << (cellItr->normal->nz) << std::endl;
+            ++cellItr;
         }
     }
     else
     {
-        while (cellBuf != cellBufEnd)
+        while (cellItr != cellEnd)
         {
-            file << (*cellBuf++) << " ";
-            file << (*cellBuf++) << " ";
-            file << (*cellBuf++) << " -1 -1 -1" << std::endl;
+            file << (cellItr->pointIdx[0]) << " ";
+            file << (cellItr->pointIdx[1]) << " ";
+            file << (cellItr->pointIdx[2]) << " -1 -1 -1" << std::endl;
+            ++cellItr;
         }
     }
     file.close();

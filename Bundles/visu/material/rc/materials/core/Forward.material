@@ -1,0 +1,22 @@
+material Forward_M
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref RenderQuad_FP
+            {
+            }
+
+            texture_unit RT
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

@@ -26,9 +26,6 @@
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/Image.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -130,18 +127,17 @@ void ImageReaderWriterTest::testVtkImageReader()
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // Data expected
-    const size_t dim = 3;
-    ::fwData::Image::SpacingType spacingExpected(dim);
+    ::fwData::Image::Spacing spacingExpected;
     spacingExpected[0] = 1.732;
     spacingExpected[1] = 1.732;
     spacingExpected[2] = 3.2;
 
-    ::fwData::Image::OriginType originExpected(dim);
+    ::fwData::Image::Origin originExpected;
     originExpected[0] = 34.64;
     originExpected[1] = 86.6;
     originExpected[2] = 56;
 
-    ::fwData::Image::SizeType sizeExpected(dim);
+    ::fwData::Image::Size sizeExpected;
     sizeExpected[0] = 230;
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
@@ -184,18 +180,17 @@ void ImageReaderWriterTest::testVtiImageReader()
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
-    const size_t dim = 3;
-    ::fwData::Image::SpacingType spacingExpected(dim);
+    ::fwData::Image::Spacing spacingExpected;
     spacingExpected[0] = 1.0;
     spacingExpected[1] = 1.0;
     spacingExpected[2] = 1.0;
 
-    ::fwData::Image::OriginType originExpected(dim);
+    ::fwData::Image::Origin originExpected;
     originExpected[0] = 1.1;
     originExpected[1] = 2.2;
     originExpected[2] = 3.3;
 
-    ::fwData::Image::SizeType sizeExpected(dim);
+    ::fwData::Image::Size sizeExpected;
     sizeExpected[0] = 256;
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
@@ -239,18 +234,17 @@ void ImageReaderWriterTest::testMhdImageReader()
     runImageSrv("::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
-    const size_t dim = 3;
-    ::fwData::Image::SpacingType spacingExpected(dim);
+    ::fwData::Image::Spacing spacingExpected;
     spacingExpected[0] = 1.0;
     spacingExpected[1] = 1.0;
     spacingExpected[2] = 1.0;
 
-    ::fwData::Image::OriginType originExpected(dim);
+    ::fwData::Image::Origin originExpected;
     originExpected[0] = 1.1;
     originExpected[1] = 2.2;
     originExpected[2] = 3.3;
 
-    ::fwData::Image::SizeType sizeExpected(dim);
+    ::fwData::Image::Size sizeExpected;
     sizeExpected[0] = 256;
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
@@ -369,11 +363,11 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0]);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
 
-        ::fwDataTools::helper::Image imageHelper(image);
-        ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
+        const auto imageDumpLock         = image->lock();
+        const auto imageFromDiskDumpLock = imageFromDisk->lock();
 
-        const char* const ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-        const char* const ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+        const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
+        const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
 
         CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
         CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(),
@@ -393,6 +387,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
                                               ::fwData::Image::RGBA);
+    ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
@@ -426,11 +421,11 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    ::fwDataTools::helper::Image imageHelper(image);
-    ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
+    const auto imageDumpLock         = image->lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->lock();
 
-    char* ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char* ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
+    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -477,6 +472,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
                                               ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
@@ -508,10 +504,11 @@ void ImageReaderWriterTest::testVtiImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    ::fwDataTools::helper::Image imageHelper(image);
-    ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
-    char* ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char* ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    const auto imageDumpLock         = image->lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+
+    const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
+    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -531,6 +528,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
                                               ::fwData::Image::RGB);
+    ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
@@ -562,10 +560,11 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    ::fwDataTools::helper::Image imageHelper(image);
-    ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
-    char* ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char* ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    const auto imageDumpLock         = image->lock();
+    const auto imageFromDiskDumpLock = imageFromDisk->lock();
+
+    const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
+    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -585,6 +584,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type,
                                               ::fwData::Image::GRAY_SCALE);
+    ::fwTest::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     const std::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";

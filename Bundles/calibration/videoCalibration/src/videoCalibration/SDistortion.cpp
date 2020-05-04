@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,9 +36,6 @@
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -114,7 +111,7 @@ void SDistortion::starting()
 void SDistortion::stopping()
 {
     m_calibrationMismatch = false;
-    m_prevImageSize.clear();
+    m_prevImageSize       = {0, 0, 0};
 }
 
 //------------------------------------------------------------------------------
@@ -125,12 +122,12 @@ void SDistortion::updating()
     if(inputImage && m_calibrationMismatch)
     {
         const ::fwData::mt::ObjectReadLock inputLock(inputImage);
-        const auto inputSize = inputImage->getSize();
+        const auto inputSize = inputImage->getSize2();
         if(inputSize != m_prevImageSize)
         {
             // Reset the error detection boolean
             m_calibrationMismatch = false;
-            m_prevImageSize.clear();
+            m_prevImageSize       = {0, 0, 0};
         }
     }
 
@@ -162,9 +159,9 @@ void SDistortion::updating()
             // we have to notify the output image pointer has changed if it was not shared yet before
             bool reallocated = false;
             {
-                ::fwDataTools::helper::ImageGetter inputImgHelper(inputImage);
-                ::fwDataTools::helper::Image outputImgHelper(outputImage);
-                reallocated = inputImgHelper.getBuffer() != outputImgHelper.getBuffer();
+                const auto inDumpLock  = inputImage->lock();
+                const auto outDumpLock = outputImage->lock();
+                reallocated = inputImage->getBuffer() != outputImage->getBuffer();
             }
 
             // Shallow copy the image is faster
@@ -210,11 +207,9 @@ void SDistortion::remap()
 
     ::fwData::mt::ObjectReadLock inputLock(inputImage);
 
-    const auto inputSize = inputImage->getSize();
+    const auto inputSize = inputImage->getSize2();
 
-    ::fwDataTools::helper::ImageGetter inputImgHelper(inputImage);
-
-    if (!inputImgHelper.getBuffer() || inputSize.size() < 2)
+    if (inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
     {
         SLM_WARN("Can not remap this image, it is empty.");
         return;
@@ -237,39 +232,41 @@ void SDistortion::remap()
         return;
     }
 
-    const auto prevSize = outputImage->getSize();
-
+    const auto prevSize = outputImage->getSize2();
+    const auto dumpLock = inputImage->lock();
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;
     {
-        ::fwDataTools::helper::Image outputImgHelper(outputImage);
-        realloc = inputImgHelper.getBuffer() == outputImgHelper.getBuffer();
+        const auto outDumpLock = outputImage->lock();
+        realloc = inputImage->getBuffer() == outputImage->getBuffer();
     }
     if(prevSize != inputSize || realloc)
     {
         ::fwData::mt::ObjectWriteLock outputLock(outputImage);
-        ::fwData::Image::SizeType size(2);
-        size[0] = inputSize[0];
-        size[1] = inputSize[1];
+        ::fwData::Image::Size size = {inputSize[0], inputSize[1], 0};
 
         // Since we may have shared the pointer on the input image, we can't use ::fwData::Image::allocate
         // Because it will not give us a new buffer and will thus make us modify both input and output images
-        ::fwData::Array::sptr outputBuffer = ::fwData::Array::New();
-        outputBuffer->resize(inputImage->getType(), size, inputImage->getNumberOfComponents(), true);
-        outputImage->setDataArray(outputBuffer);
+        ::fwData::Image::sptr tmpImage = ::fwData::Image::New();
+        outputImage->shallowCopy(tmpImage);
+        outputImage->resize(size, inputImage->getType(), inputImage->getPixelFormat());
 
-        ::fwData::Image::OriginType origin(2, 0);
-        outputImage->setOrigin(origin);
+        const ::fwData::Image::Origin origin = {0., 0., 0.};
+        outputImage->setOrigin2(origin);
 
-        const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-        ::fwData::Image::SpacingType spacing(2, voxelSize);
-        outputImage->setSpacing(spacing);
+        const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+        outputImage->setSpacing2(spacing);
         outputImage->setWindowWidth(1);
         outputImage->setWindowCenter(0);
-        outputImage->setNumberOfComponents(inputImage->getNumberOfComponents());
+        if (inputImage->getNumberOfComponents() != outputImage->getNumberOfComponents())
+        {
+            FW_DEPRECATED_MSG("Number of components should be defined by pixel format", "sight 22.0");
+            outputImage->setNumberOfComponents(inputImage->getNumberOfComponents());
+            outputImage->resize();
+        }
     }
-    const auto newSize = outputImage->getSize();
+    const auto newSize = outputImage->getSize2();
 
     // Get ::cv::Mat from fwData::Image
     auto inImage = std::const_pointer_cast< ::fwData::Image>(inputImage);
@@ -284,8 +281,6 @@ void SDistortion::remap()
         undistortedImage = ::cvIO::Image::moveToCv(outputImage);
     }
 #endif
-
-    ::fwDataTools::helper::Image outputImgHelper(outputImage);
 
     {
 #ifdef OPENCV_CUDA_SUPPORT
@@ -304,6 +299,7 @@ void SDistortion::remap()
 
         ::cv::remap(img, undistortedImage, m_mapx, m_mapy, ::cv::INTER_LINEAR, ::cv::BORDER_CONSTANT);
 
+        const auto outDumpLock = outputImage->lock();
         if(outputImage == inputImage)
         {
             // Copy new image.
@@ -312,11 +308,11 @@ void SDistortion::remap()
             // this call should copy the undistorted image to the video's
             // frameBuffer.
             undistortedImage.copyTo(img);
-            SLM_ASSERT("OpenCV did something wrong.", img.data == inputImgHelper.getBuffer());
+            SLM_ASSERT("OpenCV did something wrong.", img.data == inputImage->getBuffer());
         }
         else
         {
-            SLM_ASSERT("OpenCV did something wrong.", undistortedImage.data == outputImgHelper.getBuffer());
+            SLM_ASSERT("OpenCV did something wrong.", undistortedImage.data == outputImage->getBuffer());
         }
 #endif // OPENCV_CUDA_SUPPORT
     }
@@ -340,7 +336,7 @@ void SDistortion::changeState()
 {
     // Reset the error detection boolean
     m_calibrationMismatch = false;
-    m_prevImageSize.clear();
+    m_prevImageSize       = {0, 0, 0};
 
     m_isEnabled = !m_isEnabled;
 }
@@ -351,7 +347,7 @@ void SDistortion::calibrate()
 {
     // Reset the error detection boolean
     m_calibrationMismatch = false;
-    m_prevImageSize.clear();
+    m_prevImageSize       = {0, 0, 0};
 
     auto camera = this->getInput< ::arData::Camera> (s_CAMERA_INPUT);
     SLM_FATAL_IF("Object 'camera' is not found.", !camera);

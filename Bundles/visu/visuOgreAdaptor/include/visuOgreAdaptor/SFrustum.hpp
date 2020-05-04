@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor displays the frustum of an ::arData::Camera
+ * @brief This adaptor displays the frustum of an ::arData::Camera.
  *
  * @section Slots Slots
  * -\b updateVisibility(bool): Sets whether the frustum is shown or not.
@@ -50,72 +50,84 @@ namespace visuOgreAdaptor
         <config layer="..." transform="..." near="..." far="..."/>
     </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b camera [::arData::Camera]:  camera containing calibration information.
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the frustum's layer
- * - \b transform (optional): transform applied to the frustum's scene node
- * - \b near (optional): near clipping distance of the ::Ogre::Camera
- * - \b far (optional): far clipping distance of the ::Ogre::Camera
- * - \b color (optional): frustum's color
+ * - \b layer (mandatory, string): defines the frustum's layer
+ * - \b transform (optional, string, default=""): transform applied to the frustum's scene node
+ * - \b near (optional, float, default=1.0): near clipping distance of the ::Ogre::Camera
+ * - \b far (optional, float, default=20.0): far clipping distance of the ::Ogre::Camera
+ * - \b color (optional, hexadecimal, default=0xFF0000): frustum's color
  */
-class VISUOGREADAPTOR_CLASS_API SFrustum : public ::fwRenderOgre::IAdaptor,
-                                           public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SFrustum final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 public:
 
-    fwCoreServiceMacro(SFrustum, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(SFrustum, ::fwRenderOgre::IAdaptor)
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    /// Enable/disable visibility
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-    /// Toggle visibility
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
-    /** @} */
-
-    /// Constructor: Sets default parameters and initializes necessary members.
+    /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SFrustum() noexcept;
-    /// Destructor: Does nothing
+
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SFrustum() noexcept;
-
-    /// Connect ::fwData::Object::s_MODIFIED_SIG and s_INTRINSIC_CALIBRATED_SIG of the camera data to s_UPDATE_SLOT
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    /// Slot: Sets visibility of the frustum
-    VISUOGREADAPTOR_API void updateVisibility(bool);
-    /// Slot: Toggles visibility of the frustum
-    VISUOGREADAPTOR_API void toggleVisibility();
 
 private:
 
     /// Configures.
-    void configuring() override;
-    /// Manually creates a frustum.
-    void starting() override;
-    /// Deletes the frustum.
-    void stopping() override;
-    /// Checks if the camera has changed, and updates it if it has.
-    void updating() override;
+    virtual void configuring() override;
 
-    /// Sets ::Ogre::Camera from arData::Camera parameters
+    /// Manually creates a frustum.
+    virtual void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
+     * Connect ::arData::Camera::s_MODIFIED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
+     */
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Deletes the frustum.
+    virtual void stopping() override;
+
+    /// Checks if the camera has changed, and updates it if it has.
+    virtual void updating() override;
+
+    /// Sets ::Ogre::Camera from arData::Camera parameters.
     void setOgreCamFromData();
 
-    /// Ogre's camera (frustum) representing arData::Camera position and parameters
-    ::Ogre::Camera* m_ogreCamera {nullptr};
-    /// Pointer to the Material data
-    ::fwData::Material::sptr m_material {nullptr};
-    /// Hides or displays the frustum
-    bool m_visibility {true};
-    /// Near clipping
-    float m_near {1.f};
-    /// Far clipping
-    float m_far {20.f};
-    /// Color of frustum
-    std::string m_color {"#ff0000ff"};
+    /**
+     * @brief SLOT: sets the visibility of the frustum.
+     * @param _isVisible the visibility status.
+     */
+    void updateVisibility(bool _isVisible);
+
+    /// SLOT: toggles the visibility of the frustum.
+    void toggleVisibility();
+
+    /// Contains the Ogre's camera (frustum) representing arData::Camera position and parameters.
+    ::Ogre::Camera* m_ogreCamera { nullptr };
+
+    /// Contains the material data.
+    ::fwData::Material::sptr m_material { nullptr };
+
+    /// Enables the frustum visibility.
+    bool m_visibility { true };
+
+    /// Defines the near clipping distance.
+    float m_near { 1.f };
+
+    /// Defines the far clipping distance.
+    float m_far { 20.f };
+
+    /// Defines the color of frustum.
+    std::string m_color { "#FF0000" };
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor from Sight Camera to Ogre Camera.
+ * @brief This adaptor transforms a Sight camera to an Ogre camera.
  *
  * @section Slots Slots
  * - \b updateTF3D(): Called when the Ogre transform matrix has been updated and updates the transform service
@@ -57,89 +57,96 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
- *  <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
- *      <inout key="transform" uid="..." />
- *      <in key="calibration" uid="..." />
- *      <config layer="..." />
- *  </service>
+    <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
+        <inout key="transform" uid="..." />
+        <in key="calibration" uid="..." />
+        <config layer="..." />
+    </service>
  * @endcode
- * @subsection Configuration Configuration
- * - \b layer (mandatory): defines the camera's layer
+ *
  * @subsection Input Input
  * - \b calibration [::arData::Camera]: camera containing calibration information.
+ *
  * @subsection InOut InOut
  * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
+ *
+ * @subsection Configuration Configuration
+ * - \b layer (mandatory, string): defines the camera's layer
  */
-class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SCamera final : public ::fwRenderOgre::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SCamera, ::fwRenderOgre::IAdaptor);
 
-    /// Constructor.
+    fwCoreServiceMacro(SCamera, ::fwRenderOgre::IAdaptor)
+
+    /// Creates the adaptor and initialize slots.
     VISUOGREADAPTOR_API SCamera() noexcept;
 
-    /// Destructor. Does nothing.
+    /// Does nothing.
     VISUOGREADAPTOR_API virtual ~SCamera() noexcept override;
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT;
-    /** @} */
+private:
 
-    /// Updates Transformation Matrix.
-    VISUOGREADAPTOR_API virtual void updateTF3D();
-
-    /// Returns proposals to connect service slots to associated object signals.
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    /// Near clipping plane position setter.
-    VISUOGREADAPTOR_API virtual void setNearClipDistance(::Ogre::Real _nearClipDistance);
-
-    /// Far clipping plane position setter.
-    VISUOGREADAPTOR_API virtual void setFarClipDistance(::Ogre::Real _farClipDistance);
-
-    /// Aspect ratio setter.
-    VISUOGREADAPTOR_API virtual void setAspectRatio(::Ogre::Real _ratio);
-
-protected:
     /// Configures the adaptor.
-    VISUOGREADAPTOR_API void configuring() override;
+    virtual void configuring() override;
 
     /// Installs layer connections and calibrates the camera if it exists.
-    VISUOGREADAPTOR_API void starting() override;
+    void starting() override;
 
-    /// Removes layer connections.
-    VISUOGREADAPTOR_API void stopping() override;
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
+     * Connect ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
+     * Connect ::arData::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
+     * Connect ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Sets the camera's transform.
-    VISUOGREADAPTOR_API void updating() override;
+    virtual void updating() override;
 
-private:
+    /// Removes layer connections.
+    virtual void stopping() override;
 
     /// Calibrates the scene's camera(s) using the input calibration(s).
     void calibrate();
 
-    /// Computes the camera's projection matrix using its intrinsic parameters and sets it in the scene.
+    /**
+     * @brief Computes the camera's projection matrix using its intrinsic parameters and sets it in the scene.
+     * @param _cam data use to retreive the camera intrinsic parameters.
+     */
     void calibrateMonoCamera(const ::arData::Camera::csptr& _cam);
 
     /// Computes a projection matrix for each camera in the series and set them in the layer.
     /// This matrix is equal to the intrinsic times the extrinsic matrix.
     void calibrateCameraSeries(const ::arData::CameraSeries::csptr& _cs);
 
-    /// Ogre camera managed by this adaptor.
+    /// Updates Transformation Matrix.
+    void updateTF3D();
+
+    /// Defines the near clipping plane position.
+    void setNearClipDistance(::Ogre::Real _nearClipDistance);
+
+    /// Defines the far clipping plane position.
+    void setFarClipDistance(::Ogre::Real _farClipDistance);
+
+    /// Defines the aspect ratio.
+    void setAspectRatio(::Ogre::Real _ratio);
+
+    /// Contains the Ogre camera managed by this adaptor.
     ::Ogre::Camera* m_camera { nullptr };
 
-    /// Aspect ratio for the frustum viewport.
+    /// Defines the aspect ratio for the frustum viewport.
     ::Ogre::Real m_aspectRatio { 0.f };
 
-    /// Connection with the layer
+    /// Handles connection with the layer.
     ::fwCom::helper::SigSlotConnection m_layerConnection;
+
 };
 
 //------------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

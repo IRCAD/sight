@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,14 +24,11 @@
 
 #include "fwZip/exception/Write.hpp"
 
-#include "minizip/zip.h"
-
 #include <fwCore/exceptionmacros.hpp>
 
 #include <boost/iostreams/stream_buffer.hpp>
 
 #include <filesystem>
-
 #include <fstream>
 
 namespace fwZip

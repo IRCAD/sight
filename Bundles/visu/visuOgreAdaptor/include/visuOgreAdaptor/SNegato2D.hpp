@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Adaptor to display a 2D negato.
+ * @brief This adaptor displays a 2D negato.
  *
  * @section Signals Signals
  * - \b sliceIndexChanged(): emitted when the slice index changed.
@@ -49,22 +49,24 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SNegato2D">
-            <inout key="image" uid="..." />
-            <inout key="tf" uid="..." optional="yes" />
-            <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
-       </service>
+    <service type="::visuOgreAdaptor::SNegato2D">
+        <inout key="image" uid="..." />
+        <inout key="tf" uid="..." optional="yes" />
+        <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
+   </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): id of the layer where this adaptor applies.
+ * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
- * - \b tfalpha (optional, true/false, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b tfalpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b border (optional, bool, default=true): allows to display the plane border.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D final : public ::fwRenderOgre::IAdaptor
 {
@@ -80,9 +82,6 @@ public:
     /// Destroys the service.
     VISUOGREADAPTOR_API virtual ~SNegato2D() noexcept;
 
-    /// Sets the filtering type.
-    VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
-
 private:
 
     /// Configures the service.
@@ -96,12 +95,10 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::STransform::s_UPDATE_SLOT
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to ::visuOgreAdaptor::STransform::s_UPDATE_SLOT
-     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to
-     * ::visuOgreAdaptor::STransform::s_SLICETYPE_SLOT
-     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to
-     * ::visuOgreAdaptor::STransform::s_SLICEINDEX_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICETYPE_SLOT
+     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICEINDEX_SLOT
      */
     virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -119,6 +116,9 @@ private:
 
     /// Updates the displayed transfer function.
     virtual void updateTF();
+
+    /// Sets the filtering type.
+    void setFiltering(::fwRenderOgre::Plane::FilteringEnumType _filtering);
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     void newImage();
@@ -165,29 +165,30 @@ private:
     /// Contains the scene node allowing to move the entire negato.
     ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
 
-    /// Sets the filtering type for this negato.
+    /// Defines the filtering type for this negato.
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
     /// Stores the current slice index for each axis.
     std::vector<float> m_currentSliceIndex { 0.f, 0.f, 0.f };
 
-    /// Sets the image orientation.
+    /// Defines the image orientation.
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     /// Helps interfacing with the transfer function input.
     ::fwDataTools::helper::TransferFunction m_helperTF;
+
+    /// Defines if the plane border is used or not.
+    bool m_border { true };
 
     using SliceIndexChangedSignalType = ::fwCom::Signal<void()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 };
 
 //------------------------------------------------------------------------------
-// Inline functions
 
 inline void SNegato2D::setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering )
 {
     m_filtering = _filtering;
 }
 
-//------------------------------------------------------------------------------
-} // visuOgreAdaptor
+} // namespace visuOgreAdaptor.

@@ -34,17 +34,18 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
+
 public:
-    /**
-     * @brief   destructor
-     */
+
+    /// Destroys the plugin.
     ~Plugin() noexcept;
 
-    // Overrides
-    VISUOGREADAPTOR_API void start();
+    /// Starts the plugin, does nothing here.
+    VISUOGREADAPTOR_API virtual void start() override;
 
-    // Overrides
-    VISUOGREADAPTOR_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    VISUOGREADAPTOR_API virtual void stop() noexcept override;
+
 };
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

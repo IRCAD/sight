@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,6 @@
 
 #include <fwData/Array.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/ArrayGetter.hpp>
-#include <fwDataTools/helper/Image.hpp>
-
 namespace cvIO
 {
 
@@ -42,15 +38,15 @@ static ::cv::Mat toCv(const ::fwData::Image::csptr& _image, bool _copy)
 
     const auto cvType = ::cvIO::Type::toCv(imageType, imageComp);
 
-    const ::fwData::Array::sptr arraySrc = _image->getDataArray();
-    const ::fwDataTools::helper::ArrayGetter arraySrcHelper(arraySrc);
-    SLM_ASSERT("Empty image buffer", arraySrcHelper.getBuffer());
+    const auto dumpLock = _image->lock();
 
-    const auto imageSize = _image->getSize();
+    SLM_ASSERT("Empty image buffer", _image->getBuffer());
+
+    const auto imageSize = _image->getSize2();
     std::vector<int> cvSize;
-    for(size_t i : imageSize)
+    for(size_t i = 0; i < _image->getNumberOfDimensions(); ++i)
     {
-        cvSize.push_back( static_cast<int>(i) );
+        cvSize.push_back( static_cast<int>(imageSize[i]) );
     }
     if(cvSize.size() == 1)
     {
@@ -63,12 +59,12 @@ static ::cv::Mat toCv(const ::fwData::Image::csptr& _image, bool _copy)
     ::cv::Mat cvImage;
     if(_copy)
     {
-        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, const_cast<void*>(arraySrcHelper.getBuffer()));
+        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
         cvImage       = mat.clone();
     }
     else
     {
-        cvImage = ::cv::Mat(cvSize, cvType, const_cast<void*>(arraySrcHelper.getBuffer()));
+        cvImage = ::cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
     }
     return cvImage;
 }
@@ -98,33 +94,47 @@ void Image::copyFromCv(::fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
     const auto imageType   = imageFormat.first;
     const auto imageComp   = imageFormat.second;
     SLM_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
+    SLM_ASSERT("Number of dimension should be between 1 and 3", _cvImage.dims >= 1 && _cvImage.dims <= 3);
 
-    std::vector<size_t> imageSize;
-    for(int i = 0; i < _cvImage.dims; ++i)
+    ::fwData::Image::Size imageSize = {0, 0, 0};
+
+    if (_cvImage.dims == 1)
     {
-        imageSize.push_back(static_cast<size_t>(_cvImage.size[i]));
+        imageSize[0] = _cvImage.size[0];
     }
-
-    if(_cvImage.dims == 2 && _cvImage.rows == 1)
+    else if(_cvImage.dims == 2 && _cvImage.rows == 1)
     {
         // This means this is actually a 1D image so remove the first dimension (==1)
-        imageSize.erase(imageSize.begin());
+        imageSize[0] = _cvImage.size[1];
+        imageSize[1] = 0;
     }
-    // Reverse from (d,h,w) to  because OpenCV uses a row major format
-    std::reverse(imageSize.begin(), imageSize.end());
+    else if (_cvImage.dims == 2)
+    {
+        imageSize[0] = _cvImage.size[1];
+        imageSize[1] = _cvImage.size[0];
+    }
+    else // 3D
+    {
+        imageSize[0] = _cvImage.size[2];
+        imageSize[1] = _cvImage.size[1];
+        imageSize[2] = _cvImage.size[0];
+    }
 
-    const auto prevImageSize = _image->getSize();
+    const auto prevImageSize = _image->getSize2();
     if(prevImageComp != imageComp || prevImageType != imageType || imageSize != prevImageSize)
     {
-        _image->allocate(imageSize, imageType, imageComp);
+        // The pixel format is not changed here, we have no way to know the format from a ::cv::Mat
+        _image->setSize2(imageSize);
+        _image->setType(imageType);
+        _image->setNumberOfComponents(imageComp);
+        _image->resize();
     }
 
-    ::fwData::Array::sptr arraySrc = _image->getDataArray();
-    ::fwDataTools::helper::Array arraySrcHelper(arraySrc);
-    SLM_ASSERT("Empty image buffer", arraySrcHelper.getBuffer());
+    const auto dumpLock = _image->lock();
+    SLM_ASSERT("Empty image buffer", _image->getAllocatedSizeInBytes() > 0);
 
-    std::uint8_t* buffer = arraySrcHelper.begin< std::uint8_t >();
-    std::copy(_cvImage.data, _cvImage.data+arraySrc->getSizeInBytes(), buffer);
+    auto buffer = _image->begin< std::uint8_t >();
+    std::copy(_cvImage.data, _cvImage.data+_image->getSizeInBytes(), buffer);
 }
 
 //------------------------------------------------------------------------------

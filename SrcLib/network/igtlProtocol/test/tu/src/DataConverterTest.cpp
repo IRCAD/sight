@@ -37,8 +37,6 @@
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/helper/Mesh.hpp>
-
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/Mesh.hpp>
 #include <fwTest/helper/compare.hpp>
@@ -92,9 +90,6 @@ void DataConverterTest::meshConverterTest()
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
-
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-    ::fwDataTools::helper::Mesh mesh2Helper(mesh2);
 
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());

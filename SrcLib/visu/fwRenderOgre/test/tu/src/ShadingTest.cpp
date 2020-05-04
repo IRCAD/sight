@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,8 +31,6 @@
 
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/Utils.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
@@ -271,22 +269,22 @@ void ShadingTest::getR2VBGeometryProgramName()
 {
     std::string prgName;
 
-    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::TRIANGLE, true, true, true);
+    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType::TRIANGLE, true, true, true);
     CPPUNIT_ASSERT_EQUAL(std::string("R2VB/Triangles+VT+DfsTex+PPColor_GP"), prgName);
 
-    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::TRIANGLE, false, true, false);
+    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType::TRIANGLE, false, true, false);
     CPPUNIT_ASSERT_EQUAL(std::string("R2VB/Triangles+VT_GP"), prgName);
 
-    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::TETRA, false, true, true);
+    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType::TETRA, false, true, true);
     CPPUNIT_ASSERT_EQUAL(std::string("R2VB/Tetra+VT+PPColor_GP"), prgName);
 
-    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::TETRA, true, false, true);
+    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType::TETRA, true, false, true);
     CPPUNIT_ASSERT_EQUAL(std::string("R2VB/Tetra+DfsTex+PPColor_GP"), prgName);
 
-    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::QUAD, false, true, true);
+    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType::QUAD, false, true, true);
     CPPUNIT_ASSERT_EQUAL(std::string("R2VB/Quad+VT+PPColor_GP"), prgName);
 
-    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::QUAD, false, false, true);
+    prgName = Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType::QUAD, false, false, true);
     CPPUNIT_ASSERT_EQUAL(std::string("R2VB/Quad+PPColor_GP"), prgName);
 }
 
@@ -361,13 +359,12 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL(2.0, (arrayHelper.getItem< double >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL(4.5, (arrayHelper.getItem< double >({0}))[1]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL(2.0, arrayObject->at< double >({0}));
+            CPPUNIT_ASSERT_EQUAL(4.5, arrayObject->at< double >({1}));
         }
 
         value.d = {{ -4.1, 1.5, 3.7, 0. }};
@@ -377,14 +374,13 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL(-4.1, (arrayHelper.getItem< double >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL( 1.5, (arrayHelper.getItem< double >({0}))[1]);
-            CPPUNIT_ASSERT_EQUAL( 3.7, (arrayHelper.getItem< double >({0}))[2]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL(-4.1, arrayObject->at< double >({0}));
+            CPPUNIT_ASSERT_EQUAL( 1.5, arrayObject->at< double >({1}));
+            CPPUNIT_ASSERT_EQUAL( 3.7, arrayObject->at< double >({2}));
         }
 
         value.d = {{ -1.1, -5.5, -1.7, 4.1 }};
@@ -394,15 +390,14 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL(-1.1, (arrayHelper.getItem< double >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL(-5.5, (arrayHelper.getItem< double >({0}))[1]);
-            CPPUNIT_ASSERT_EQUAL(-1.7, (arrayHelper.getItem< double >({0}))[2]);
-            CPPUNIT_ASSERT_EQUAL( 4.1, (arrayHelper.getItem< double >({0}))[3]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL(-1.1, arrayObject->at< double >({0}));
+            CPPUNIT_ASSERT_EQUAL(-5.5, arrayObject->at< double >({1}));
+            CPPUNIT_ASSERT_EQUAL(-1.7, arrayObject->at< double >({2}));
+            CPPUNIT_ASSERT_EQUAL( 4.1, arrayObject->at< double >({3}));
         }
 
         value.i = {{ -1, 5, 0, 4 }};
@@ -412,13 +407,12 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL(-1, (arrayHelper.getItem< int >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL( 5, (arrayHelper.getItem< int >({0}))[1]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL(-1, arrayObject->at< int >({0}));
+            CPPUNIT_ASSERT_EQUAL( 5, arrayObject->at< int >({1}));
         }
 
         value.i = {{ 2, -4, 3, 4 }};
@@ -428,14 +422,13 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL( 2, (arrayHelper.getItem< int >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL(-4, (arrayHelper.getItem< int >({0}))[1]);
-            CPPUNIT_ASSERT_EQUAL( 3, (arrayHelper.getItem< int >({0}))[2]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL( 2, arrayObject->at< int >({0}));
+            CPPUNIT_ASSERT_EQUAL(-4, arrayObject->at< int >({1}));
+            CPPUNIT_ASSERT_EQUAL( 3, arrayObject->at< int >({2}));
         }
 
         value.i = {{ -1, 5, 9, 1 }};
@@ -445,15 +438,14 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL(-1, (arrayHelper.getItem< int >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL( 5, (arrayHelper.getItem< int >({0}))[1]);
-            CPPUNIT_ASSERT_EQUAL( 9, (arrayHelper.getItem< int >({0}))[2]);
-            CPPUNIT_ASSERT_EQUAL( 1, (arrayHelper.getItem< int >({0}))[3]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL(-1, arrayObject->at< int >({0}));
+            CPPUNIT_ASSERT_EQUAL( 5, arrayObject->at< int >({1}));
+            CPPUNIT_ASSERT_EQUAL( 9, arrayObject->at< int >({2}));
+            CPPUNIT_ASSERT_EQUAL( 1, arrayObject->at< int >({3}));
         }
 
         value.f = {{ 21.1f, -2.5f, 9.f, 1.f }};
@@ -463,13 +455,12 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL(21.1f, (arrayHelper.getItem< float >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL(-2.5f, (arrayHelper.getItem< float >({0}))[1]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL(21.1f, arrayObject->at< float >({0}));
+            CPPUNIT_ASSERT_EQUAL(-2.5f, arrayObject->at< float >({1}));
         }
 
         value.f = {{ 21.1f, 2.5f, -9.f, 1.f }};
@@ -479,14 +470,13 @@ void ShadingTest::createObjectFromShaderParameter()
         arrayObject = ::fwData::Array::dynamicCast(obj);
         size        = arrayObject->getSize();
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), size[0]);
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
         {
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            CPPUNIT_ASSERT_EQUAL(21.1f, (arrayHelper.getItem< float >({0}))[0]);
-            CPPUNIT_ASSERT_EQUAL( 2.5f, (arrayHelper.getItem< float >({0}))[1]);
-            CPPUNIT_ASSERT_EQUAL( -9.f, (arrayHelper.getItem< float >({0}))[2]);
+            const auto dumpLock = arrayObject->lock();
+            CPPUNIT_ASSERT_EQUAL(21.1f, arrayObject->at< float >({0}));
+            CPPUNIT_ASSERT_EQUAL( 2.5f, arrayObject->at< float >({1}));
+            CPPUNIT_ASSERT_EQUAL( -9.f, arrayObject->at< float >({2}));
         }
 
         value.f = {{ 0.12f, .5f, 1.f, 8.f }};

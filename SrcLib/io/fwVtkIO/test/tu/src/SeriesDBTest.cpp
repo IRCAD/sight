@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -167,7 +167,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
         ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(seriesDB->at(0));
         CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
 
-        ::fwMemory::BufferObject::sptr bo = imgSeries->getImage()->getDataArray()->getBufferObject();
+        ::fwMemory::BufferObject::sptr bo = imgSeries->getImage()->getBufferObject();
         CPPUNIT_ASSERT_MESSAGE("ImageSeries is not lazy-loaded", !isLoaded(bo));
 
         ::fwMemory::BufferObject::Lock lock = bo->lock();
@@ -185,11 +185,7 @@ void SeriesDBTest::testLazyImportSeriesDB()
 
         ::fwData::Mesh::sptr mesh = recVect[0]->getMesh();
 
-        ::fwMemory::BufferObject::sptr points = mesh->getPointsArray()->getBufferObject();
-        CPPUNIT_ASSERT_MESSAGE("ModelSeries points are lazy-loaded", isLoaded(points));
-
-        ::fwMemory::BufferObject::sptr cell = mesh->getCellDataArray()->getBufferObject();
-        CPPUNIT_ASSERT_MESSAGE("ModelSeries cells are lazy-loaded", isLoaded(cell));
+        CPPUNIT_ASSERT_NO_THROW(auto lock = mesh->lock());
     }
 
     {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,7 @@
 
 #include "visuOgre/Plugin.hpp"
 
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <fwServices/macros.hpp>
 
 #include <OgreLogManager.h>
 
@@ -47,23 +43,30 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    // Redirect Ogre Log to Sight Log
-    ::Ogre::LogManager* logMgr = new ::Ogre::LogManager();
-    ::Ogre::Log* log           = logMgr->createLog("Ogre.log", true, false, false);
-    log->addListener(new SightOgreListener());
-    log->setLogDetail(::Ogre::LL_BOREME);
+    // Redirect Ogre Log to Sight Log.
+    m_logManager = new ::Ogre::LogManager();
+    m_log        = m_logManager->createLog("Ogre.log", true, false, false);
+    m_listener   = new SightOgreListener();
+    m_log->addListener(m_listener);
+    m_log->setLogDetail(::Ogre::LL_BOREME);
 }
 
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
+    m_log->removeListener(m_listener);
+    delete m_listener;
+    delete m_logManager;
 }
 
 //------------------------------------------------------------------------------
 
-void SightOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
-                                      const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
+void SightOgreListener::messageLogged(const ::Ogre::String& _message,
+                                      ::Ogre::LogMessageLevel _lml,
+                                      bool,
+                                      const ::Ogre::String&,
+                                      bool& _skipThisMessage)
 {
     if (!_skipThisMessage)
     {
@@ -87,4 +90,4 @@ void SightOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::Lo
 
 //------------------------------------------------------------------------------
 
-} // namespace operators
+} // namespace visuOgre.

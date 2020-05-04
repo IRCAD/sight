@@ -58,7 +58,7 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
     auto instance           = static_cast< ::fwRenderOgre::vr::GridProxyGeometry*>
                               (_sceneManager->createMovableObject(_name, factoryName));
 
-    instance->m_inputPrimitiveType = ::fwData::Mesh::POINT;
+    instance->m_inputPrimitiveType = ::fwData::Mesh::CellType::POINT;
     instance->mParentSceneManager  = _sceneManager;
     instance->m_3DImageTexture     = _3DImageTexture;
     instance->m_gpuTF              = _tf;

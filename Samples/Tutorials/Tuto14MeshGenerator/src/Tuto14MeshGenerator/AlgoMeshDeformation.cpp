@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 
 #include "Tuto14MeshGenerator/AlgoMeshDeformation.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
@@ -74,7 +73,7 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
     if (    m_mesh.expired() ||
             m_nbPoints != _mesh->getNumberOfPoints() ||
             m_nbCells != _mesh->getNumberOfCells()  ||
-            !_mesh->getPointColorsArray())
+            !_mesh->hasPointColors())
     {
         this->setParam( _mesh, _nbStep, _amplitude );
         this->initSimu();
@@ -90,24 +89,26 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
 void AlgoMeshDeformation::initSimu()
 {
     SLM_TRACE_FUNC();
-    m_originPoints = ::fwData::Object::copy( m_mesh.lock()->getPointsArray() );
-    m_step         = 0;
+    const auto mesh = m_mesh.lock();
+    m_originMesh = ::fwData::Object::copy(mesh);
+    m_step       = 0;
 
-    if ( !m_mesh.lock()->getPointColorsArray() )
+    if ( !m_mesh.lock()->hasPointColors() )
     {
-        ::fwDataTools::Mesh::colorizeMeshPoints( m_mesh.lock() );
+        ::fwDataTools::Mesh::colorizeMeshPoints( mesh );
     }
 
-    m_meshHelper = ::fwDataTools::helper::Mesh::New(m_mesh.lock());
+    const auto dumpLock = mesh->lock();
 
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
 
-    ::fwData::Mesh::PointsMultiArrayType points = m_meshHelper->getPoints();
+    auto pointsItr       = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+    const auto pointsEnd = mesh->end< ::fwData::iterator::ConstPointIterator >();
     float coord;
-    for(unsigned int i = 0; i < m_nbPoints; ++i)
+    for(; pointsItr != pointsEnd; ++pointsItr)
     {
-        coord = points[i][1];
+        coord = pointsItr->point->y;
         if ( coord < min )
         {
             min = coord;
@@ -138,36 +139,33 @@ void AlgoMeshDeformation::computeSimu()
 
     const float scale = m_step / (float) m_nbStep;
 
-    ::fwDataTools::helper::Array originPointsHelper(m_originPoints);
+    const auto mesh         = m_mesh.lock();
+    const auto dumpLock     = mesh->lock();
+    const auto origDumpLock = m_originMesh->lock();
 
-    ::fwData::Mesh::PointsMultiArrayType points      = m_meshHelper->getPoints();
-    ::fwData::Mesh::PointColorsMultiArrayType colors = m_meshHelper->getPointColors();
+    auto pointsItr       = mesh->begin< ::fwData::iterator::PointIterator >();
+    const auto pointsEnd = mesh->end< ::fwData::iterator::PointIterator >();
+    auto origPointsItr   = m_originMesh->begin< ::fwData::iterator::ConstPointIterator >();
 
-    ::fwData::Mesh::PointsMultiArrayType opoints =
-        ::fwData::Mesh::PointsMultiArrayType(
-            static_cast< ::fwData::Mesh::PointsMultiArrayType::element* >(originPointsHelper.getBuffer()),
-            ::boost::extents[m_nbPoints][3] );
-
-    for(unsigned int i = 0; i < m_nbPoints; ++i)
+    for(; pointsItr != pointsEnd; ++pointsItr, ++origPointsItr)
     {
-        points[i][0] = opoints[i][0];
-        OSLM_TRACE("opoints[i][1] - m_yCenter = " <<  opoints[i][1] - m_yCenter);
-        if( opoints[i][1] - m_yCenter > 0 )
+        pointsItr->point->x = origPointsItr->point->x;
+        OSLM_TRACE("pointsItr->point->y - m_yCenter = " <<  pointsItr->point->y - m_yCenter);
+        if( origPointsItr->point->y - m_yCenter > 0 )
         {
-            points[i][1] = opoints[i][1] + (opoints[i][1] - m_yCenter) * scale;
-            colors[i][0] = ::fwTools::numericRoundCast< ::fwData::Mesh::ColorValueType >(255 * scale);
+            pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;
+            pointsItr->rgba->r  = ::fwTools::numericRoundCast< ::fwData::Mesh::ColorValueType >(255 * scale);
         }
         else
         {
-            colors[i][0] = 0;
+            pointsItr->rgba->r = 0;
         }
-        points[i][2] = opoints[i][2];
+        pointsItr->point->z = origPointsItr->point->z;
     }
 
-    ::fwDataTools::Mesh::generatePointNormals( m_mesh.lock() );
+    ::fwDataTools::Mesh::generatePointNormals( mesh );
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace Tuto14MeshGenerator
-

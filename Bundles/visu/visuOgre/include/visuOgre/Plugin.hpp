@@ -30,40 +30,56 @@
 
 namespace visuOgre
 {
-/**
- * @brief   This class is started when the module is loaded.
- */
-class VISUOGRE_CLASS_API Plugin : public ::fwRuntime::Plugin
-{
-public:
-    /// Destructor
-    ~Plugin() noexcept;
-
-    // Overrides
-    VISUOGRE_API void start();
-
-    // Overrides
-    VISUOGRE_API void stop() noexcept;
-};
 
 /**
  * @brief Allows to redirect Ogre logs on Sight logs
- *        We need this class to be declared outside to export DLL symbols on Windows.
+ * We need this class to be declared outside to export DLL symbols on Windows.
  */
 class VISUOGRE_CLASS_API SightOgreListener : public ::Ogre::LogListener
 {
+
 public:
-    /// Destructor, does nothing
+
+    /// Does nothing.
     ~SightOgreListener()
     {
     }
 
     /**
-     * @brief Set the message on Sight logs.
-     *        Set Ogre log on Sight log depending on it's LogLevel.
+     * @brief Set Ogre log on Sight log depending on it's LogLevel.
      */
-    VISUOGRE_API virtual void messageLogged(const ::Ogre::String& message, ::Ogre::LogMessageLevel lml,
-                                            bool maskDebug, const ::Ogre::String& logName, bool& skipThisMessage);
+    VISUOGRE_API virtual void messageLogged(const ::Ogre::String& _message,
+                                            ::Ogre::LogMessageLevel _lml,
+                                            bool,
+                                            const ::Ogre::String&,
+                                            bool& _skipThisMessage);
 };
 
-} // namespace visuOgre
+/// This class is started when the module is loaded.
+class VISUOGRE_CLASS_API Plugin : public ::fwRuntime::Plugin
+{
+public:
+
+    /// Destroys the plugin.
+    ~Plugin() noexcept;
+
+    /// Creates the Ogre log manager.
+    VISUOGRE_API virtual void start() override;
+
+    /// Stops the plugin, does nothing here.
+    VISUOGRE_API virtual void stop() noexcept override;
+
+private:
+
+    /// Contains the Ogre's log manager.
+    ::Ogre::LogManager* m_logManager { nullptr };
+
+    /// Contains the Ogre's log.
+    ::Ogre::Log* m_log { nullptr };
+
+    /// Contains the Ogre listener.
+    SightOgreListener* m_listener { nullptr };
+
+};
+
+} // namespace visuOgre.

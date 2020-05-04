@@ -1,6 +1,8 @@
 fwLoadProperties()
 
-find_package(Qt5 QUIET COMPONENTS Core REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Widgets REQUIRED)
+
+target_link_libraries(${FWPROJECT_NAME} PRIVATE Qt5::Core Qt5::Widgets)
 
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 

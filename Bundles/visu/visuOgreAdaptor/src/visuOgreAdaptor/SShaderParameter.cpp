@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 
-#include "visuOgreAdaptor/defines.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwServices/macros.hpp>
@@ -35,7 +34,7 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IParameter, ::visuOgreAdaptor::SShaderParameter, ::fwData::Object);
+static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
 
 //------------------------------------------------------------------------------
 
@@ -51,21 +50,15 @@ SShaderParameter::~SShaderParameter() noexcept
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::setMaterialName(const std::string& matName)
-{
-    m_materialName = matName;
-}
-
-//------------------------------------------------------------------------------
-
 void SShaderParameter::configuring()
 {
     this->IParameter::configuring();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_materialName = config.get<std::string>("materialName", "");
-    OSLM_ERROR_IF("material attribute not set", m_materialName.empty());
+    m_materialName = config.get<std::string>(s_MATERIAL_NAME_CONFIG, "");
+    OSLM_ERROR_IF("'" + s_MATERIAL_NAME_CONFIG + "' attribute not set", m_materialName.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -104,4 +97,4 @@ void SShaderParameter::swapping()
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

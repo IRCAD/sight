@@ -50,12 +50,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(guiQt
-    PARAM_LIST
-        resource
-        stylesheet
-    PARAM_VALUES
-        style-0.1/darkstyle.rcc
-        style-0.1/darkstyle.qss
-)
 bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

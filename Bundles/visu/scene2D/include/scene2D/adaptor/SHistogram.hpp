@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -65,7 +65,7 @@ namespace adaptor
 class SCENE2D_CLASS_API SHistogram : public ::fwRenderQt::IAdaptor
 {
 public:
-    fwCoreServiceMacro(SHistogram,  ::fwRenderQt::IAdaptor);
+    fwCoreServiceMacro(SHistogram,  ::fwRenderQt::IAdaptor)
 
     SCENE2D_API SHistogram() noexcept;
     SCENE2D_API virtual ~SHistogram() noexcept;
@@ -94,18 +94,18 @@ private:
     void updateCurrentPoint( ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point );
 
     /// Color used for graphic item's inner and border color
-    QPen m_color;
+    QPen m_color{Qt::green};
 
     /// Opacity
-    float m_opacity;
+    float m_opacity{0.80f};
 
     /// Current vertical scaling ratio
-    float m_scale;
+    float m_scale{1.0f};
 
     // Graphics items contained into m_items are also added to this group item,
     // which is then added to the scene.
     // (This is the only graphic item which has to be added into the scene).
-    QGraphicsItemGroup* m_layer;
+    QGraphicsItemGroup* m_layer{nullptr};
 };
 
 }   // namespace adaptor

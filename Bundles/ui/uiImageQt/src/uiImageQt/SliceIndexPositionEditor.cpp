@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,7 +58,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::fwData::Image )
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
@@ -172,7 +172,7 @@ void SliceIndexPositionEditor::updating()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
     m_helper.updateImageInfos(image);
     this->updateSliceIndexFromImg();
@@ -220,7 +220,7 @@ void SliceIndexPositionEditor::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::info( std::ostream& _sstream )
+void SliceIndexPositionEditor::info( std::ostream& )
 {
 }
 
@@ -236,13 +236,13 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
         OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
-        unsigned int index = image->getField< ::fwData::Integer >( fieldID )->value();
+        const int index = static_cast<int>(image->getField< ::fwData::Integer >( fieldID )->value());
 
         // Update QSlider
         int max = 0;
         if(image->getNumberOfDimensions() > m_helper.getOrientation())
         {
-            max = static_cast<int>(image->getSize()[m_helper.getOrientation()]-1);
+            max = static_cast<int>(image->getSize2()[m_helper.getOrientation()]-1);
         }
         m_sliceSelectorPanel->setSliceRange( 0, max );
         m_sliceSelectorPanel->setSliceValue( index );
@@ -269,7 +269,7 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
+    const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
@@ -278,7 +278,8 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
     ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
     ::fwData::Integer::sptr indexes[3];
     m_helper.getSliceIndex(indexes);
-    sig->asyncEmit(indexes[2]->value(), indexes[1]->value(), indexes[0]->value());
+    sig->asyncEmit(static_cast<int>(indexes[2]->value()), static_cast<int>(indexes[1]->value()),
+                   static_cast<int>(indexes[0]->value()));
 }
 
 //------------------------------------------------------------------------------
@@ -290,7 +291,7 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
                 type == ::fwDataTools::helper::MedicalImage::Y_AXIS ||
                 type == ::fwDataTools::helper::MedicalImage::Z_AXIS );
 
-    int oldType = static_cast< int > (m_helper.getOrientation());
+    const int oldType = static_cast< int > (m_helper.getOrientation());
     // Change slice type
     m_helper.setOrientation(type);
 

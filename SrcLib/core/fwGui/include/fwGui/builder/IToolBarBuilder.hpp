@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ public:
         BOTTOM,
         RIGHT,
         LEFT
-    } Aligment;
+    } Alignment;
 
     /// Constructor. Do nothing.
     FWGUI_API IToolBarBuilder();
@@ -102,7 +102,7 @@ protected:
 
     std::pair< int, int > m_toolBitmapSize;
 
-    Aligment m_aligment;
+    Alignment m_alignment;
 
     /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
     std::string m_backgroundColor;

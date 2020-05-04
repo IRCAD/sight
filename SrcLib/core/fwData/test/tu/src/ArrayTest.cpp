@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -428,7 +428,7 @@ void ArrayTest::dumpLockTest()
 {
     ::fwData::Array::SizeType size = {10, 100};
     ::fwData::Array::sptr array    = ::fwData::Array::New();
-    array->resize(::fwTools::Type::s_INT16, {12, 15}, true);
+    array->resize({12, 15}, ::fwTools::Type::s_INT16, true);
 
     CPPUNIT_ASSERT_THROW(array->getBuffer(), ::fwData::Exception);
 
@@ -534,20 +534,26 @@ void ArrayTest::constArrayTest()
     }
 
     ::fwData::Array::csptr array2 = ::fwData::Object::copy(array);
-    auto lock2 = array2->lock();
+    const auto lock2 = array2->lock();
 
     CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >(0));
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >(10));
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >(999));
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >(326));
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
     CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
 
-    auto it1 = array->begin< std::uint32_t >();
-    auto it2 = array2->begin< std::uint32_t >();
+    auto it1        = array->begin< std::uint32_t >();
+    auto it2        = array2->begin< std::uint32_t >();
+    const auto end1 = array->end< std::uint32_t >();
+    const auto end2 = array2->end< std::uint32_t >();
 
-    while(it1 != array->end< std::uint32_t >() && it2 != array2->end< std::uint32_t >())
+    while(it1 != end1 && it2 != end2)
     {
         CPPUNIT_ASSERT_EQUAL(*it1, *it2);
         CPPUNIT_ASSERT_NO_THROW(++it1);

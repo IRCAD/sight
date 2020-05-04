@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SScaleValues);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SScaleValues)
 
 namespace scene2D
 {
@@ -280,7 +280,7 @@ void SScaleValues::rescaleValues()
             textPosX = viewportX + viewportWidth;
         }
 
-        for(int i = 0; i < valuesSize; ++i, val += m_interval)
+        for(size_t i = 0; i < valuesSize; ++i, val += m_interval)
         {
             valueSize = m_values[i]->boundingRect().height();
 
@@ -326,7 +326,7 @@ void SScaleValues::rescaleValues()
                                 ? viewport->getY()
                                 : viewportHeight * 0.9;
 
-        for(int i = 0; i < valuesSize; ++i, val += m_interval)
+        for(size_t i = 0; i < valuesSize; ++i, val += m_interval)
         {
             valueSize = m_values[i]->boundingRect().width();
 
@@ -427,4 +427,3 @@ void SScaleValues::stopping()
 } // namespace adaptor
 
 } // namespace scene2D
-

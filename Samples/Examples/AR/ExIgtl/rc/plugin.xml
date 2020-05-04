@@ -76,7 +76,7 @@
 
             <service uid="configureServer" type="::uiPreferences::action::SPreferencesConfiguration">
                 <preference>
-                    <type>number</type>
+                    <type>int</type>
                     <name>Server port</name>
                     <key>SERVER_PORT_KEY</key>
                     <default_value>4242</default_value>
@@ -100,7 +100,7 @@
                     <default_value>127.0.0.1</default_value>
                 </preference>
                 <preference>
-                    <type>number</type>
+                    <type>int</type>
                     <name>Client port</name>
                     <key>CLIENT_PORT_KEY</key>
                     <default_value>4242</default_value>

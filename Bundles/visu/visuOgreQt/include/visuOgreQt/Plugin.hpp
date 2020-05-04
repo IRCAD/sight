@@ -28,22 +28,20 @@
 
 namespace visuOgreQt
 {
-/**
- * @brief   This class is started when the module is loaded.
- */
-struct VISUOGREQT_CLASS_API Plugin : public ::fwRuntime::Plugin
+
+/// This class is started when the module is loaded.
+struct VISUOGREQT_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
-    /**
-     * @brief   destructor
-     */
+
+    /// Destroys the plugin.
     ~Plugin() noexcept;
 
-    // Overrides
+    /// Starts the plugin, does nothing here.
     VISUOGREQT_API void start();
 
-    // Overrides
+    /// Stops the plugin, does nothing here.
     VISUOGREQT_API void stop() noexcept;
 
 };
 
-} // namespace visuOgreQt
+} // namespace visuOgreQt.

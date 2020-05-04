@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -84,7 +84,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
         bool visible = window->isVisible();
 
         Qt::ToolBarArea area;
-        switch (m_aligment)
+        switch (m_alignment)
         {
             case TOP:
                 area = Qt::TopToolBarArea;
@@ -109,7 +109,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
         QWidget* widget = m_parent->getQtContainer();
         SLM_ASSERT("Parent container must have a layout", widget->layout());
         QBoxLayout* layout = qobject_cast<QBoxLayout*> ( widget->layout() );
-        switch (m_aligment)
+        switch (m_alignment)
         {
             case TOP:
                 layout->setDirection(QBoxLayout::TopToBottom);

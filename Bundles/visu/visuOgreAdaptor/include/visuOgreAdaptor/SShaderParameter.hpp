@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Send a Sight data as a shader parameter.
+ * @brief This adaptor sends a Sight data as a shader parameter.
  *
  * Send parameters to vertex and fragment shaders
  *
@@ -52,47 +52,48 @@ namespace visuOgreAdaptor
         <config materialName="mat" parameter="u_value" shaderType="fragment" />
     </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b parameter [::fwData::Object]: parameter containing the data to upload.
+ *
  * @subsection Configuration Configuration:
- * - \b materialName (mandatory) : the name of the associated Ogre material
- * - \b parameter (mandatory) : name of the shader parameter to set
- * - \b technique (optional) : name of the technique, default to the first in the material
- * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
+ * - \b materialName (mandatory, string) : the name of the associated Ogre material
+ * - \b parameter (mandatory, string) : name of the shader parameter to set
+ * - \b technique (optional, string, default="") : name of the technique, default to the first in the material
+ * - \b shaderType (optional, vertex/geometry/fragment, default=vertex) : the type of the shader.
  */
-class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::fwRenderOgre::IParameter
+class VISUOGREADAPTOR_CLASS_API SShaderParameter final : public ::fwRenderOgre::IParameter
 {
 
 public:
 
-    fwCoreServiceMacro(SShaderParameter, ::fwRenderOgre::IParameter);
+    fwCoreServiceMacro(SShaderParameter, ::fwRenderOgre::IParameter)
 
-    /// Constructor.
+    /// Creates the adaptor.
     VISUOGREADAPTOR_API SShaderParameter() noexcept;
 
-    /// Destructor. Does nothing
+    /// Does nothing
     VISUOGREADAPTOR_API virtual ~SShaderParameter() noexcept;
-
-    /// Set the value of the member m_materialName.
-    VISUOGREADAPTOR_API void setMaterialName(const std::string& matName);
-
-protected:
-
-    /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void configuring() final override;
-    /// Find the material on which this service works.
-    VISUOGREADAPTOR_API virtual void starting() final override;
-    /// Update the shader parameter with the input.
-    VISUOGREADAPTOR_API virtual void updating() final override;
-    /// Clear resources.
-    VISUOGREADAPTOR_API virtual void stopping() final override;
-    /// Do nothing
-    VISUOGREADAPTOR_API virtual void swapping() final override;
 
 private:
 
-    /// Material name
+    /// Configures the adaptor.
+    virtual void configuring() override;
+
+    /// Finds the material on which this service works.
+    virtual void starting() override;
+
+    /// Updates the shader parameter with the input.
+    virtual void updating() override;
+
+    /// Does nothing.
+    virtual void swapping() override;
+
+    /// Clears resources.
+    virtual void stopping() override;
+
+    /// Defines the material name.
     std::string m_materialName;
 };
 
-} // visuOgreAdaptor
+} // namespace visuOgreAdaptor.

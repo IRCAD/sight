@@ -57,9 +57,9 @@ namespace ut
 
 static const double epsilon = 0.00001;
 
-static const ::fwData::Image::SizeType bostonTeapotSize       = {{ 256, 256, 178 }};
-static const ::fwData::Image::SpacingType bostonTeapotSpacing = {{ 1, 1, 1 }};
-static const ::fwData::Image::OriginType bostonTeapotOrigin   = {{ 1.1, 2.2, 3.3 }};
+static const ::fwData::Image::Size bostonTeapotSize       = {{ 256, 256, 178 }};
+static const ::fwData::Image::Spacing bostonTeapotSpacing = {{ 1, 1, 1 }};
+static const ::fwData::Image::Origin bostonTeapotOrigin   = {{ 1.1, 2.2, 3.3 }};
 
 //------------------------------------------------------------------------------
 
@@ -346,6 +346,78 @@ void ImageTest::testFromVtk()
 
 // ------------------------------------------------------------------------------
 
+template<typename TYPE>
+void fromToTest(::fwData::Image::PixelFormat format)
+{
+    const ::fwData::Image::Size size       = {10, 20, 0};
+    const ::fwData::Image::Spacing spacing = {1., 1., 0};
+    const ::fwData::Image::Origin origin   = {0., 0., 0.};
+    const ::fwTools::Type type             = ::fwTools::Type::create<TYPE>();
+
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type, format);
+    ::fwTest::generator::Image::randomizeImage(image);
+
+    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
+    ::fwVtkIO::toVTKImage(image, vtkImage);
+
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    ::fwVtkIO::fromVTKImage(vtkImage, image2);
+
+    CPPUNIT_ASSERT_EQUAL( image->getSize2()[0], image2->getSize2()[0] );
+    CPPUNIT_ASSERT_EQUAL( image->getSize2()[1], image2->getSize2()[1] );
+    CPPUNIT_ASSERT_EQUAL( image->getSize2()[2], image2->getSize2()[2] );
+    CPPUNIT_ASSERT_EQUAL( image->getType(), image2->getType());
+    CPPUNIT_ASSERT_EQUAL( image->getNumberOfComponents(), image2->getNumberOfComponents() );
+    CPPUNIT_ASSERT_EQUAL( image->getPixelFormat(), image2->getPixelFormat() );
+
+    const auto imageDumpLock  = image->lock();
+    const auto image2DumpLock = image2->lock();
+
+    auto itr       = image->begin< TYPE >();
+    auto itr2      = image2->begin< TYPE >();
+    const auto end = image->end< TYPE >();
+
+    size_t count = 0;
+    for (; itr != end; ++itr, ++itr2, ++count)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("[" + type.string() + "] pixel[" + std::to_string(count) + "]", *itr, *itr2);
+    }
+}
+
+// ------------------------------------------------------------------------------
+
+void ImageTest::fromToVtkTest()
+{
+    fromToTest<std::uint8_t>(::fwData::Image::GRAY_SCALE);
+    fromToTest<std::uint8_t>(::fwData::Image::RGB);
+    fromToTest<std::uint8_t>(::fwData::Image::RGBA);
+
+    fromToTest<std::uint16_t>(::fwData::Image::GRAY_SCALE);
+    fromToTest<std::uint16_t>(::fwData::Image::RGB);
+    fromToTest<std::uint16_t>(::fwData::Image::RGBA);
+
+    fromToTest<std::uint32_t>(::fwData::Image::GRAY_SCALE);
+    fromToTest<std::uint32_t>(::fwData::Image::RGB);
+    fromToTest<std::uint32_t>(::fwData::Image::RGBA);
+
+    fromToTest<std::int8_t>(::fwData::Image::GRAY_SCALE);
+    fromToTest<std::int8_t>(::fwData::Image::RGB);
+    fromToTest<std::int8_t>(::fwData::Image::RGBA);
+
+    fromToTest<std::int16_t>(::fwData::Image::GRAY_SCALE);
+    fromToTest<std::int16_t>(::fwData::Image::RGB);
+    fromToTest<std::int16_t>(::fwData::Image::RGBA);
+
+    fromToTest<std::int32_t>(::fwData::Image::GRAY_SCALE);
+    fromToTest<std::int32_t>(::fwData::Image::RGB);
+    fromToTest<std::int32_t>(::fwData::Image::RGBA);
+
+    // uint64 and int64 are not recognized on Windows for VTK conversion.
+}
+
+// ------------------------------------------------------------------------------
+
 void ImageTest::mhdReaderTest()
 {
     const std::filesystem::path imagePath( ::fwTest::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
@@ -483,9 +555,9 @@ void ImageTest::vtkReaderTest()
     reader->setFile(imagePath);
     reader->read();
 
-    ::fwData::Image::SizeType vtkSize {{ 230, 170, 58 }};
-    ::fwData::Image::SpacingType vtkSpacing {{ 1.732, 1.732, 3.2 }};
-    ::fwData::Image::OriginType vtkOrigin {{ 34.64, 86.6, 56 }};
+    ::fwData::Image::Size vtkSize {{ 230, 170, 58 }};
+    ::fwData::Image::Spacing vtkSpacing {{ 1.732, 1.732, 3.2 }};
+    ::fwData::Image::Origin vtkOrigin {{ 34.64, 86.6, 56 }};
 
     compareImageAttributes(
         vtkSize,

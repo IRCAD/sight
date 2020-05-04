@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,6 @@
 
 #include <fwData/Array.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::cvIO::ut::ImageTest );
 
@@ -47,7 +43,7 @@ static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t
                                       std::uint8_t _numChannels)
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwDataTools::helper::Image imgHelper(image);
+    const auto dumpLock = image->lock();
 
     SLM_ASSERT("Width should be at least 1", _w >= 1);
     size_t imageDim = 1;
@@ -61,8 +57,8 @@ static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t
     }
 
     const ::fwTools::Type imageType = ::fwTools::Type::create<T>();
-    ::fwData::Image::SizeType imageSize(imageDim);
-    imageSize[0] = _w;
+    ::fwData::Image::Size imageSize = {0, 0, 0};
+    imageSize[0]                    = _w;
     if(_h > 0)
     {
         imageSize[1] = _h;
@@ -72,14 +68,14 @@ static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t
         imageSize[2] = _d;
     }
 
-    image->allocate(imageSize, imageType, _numChannels);
+    image->setSize2(imageSize);
+    image->setType(imageType);
+    image->setNumberOfComponents(_numChannels);
+    image->resize();
 
-    ::fwData::Array::sptr array = image->getDataArray();
-    ::fwDataTools::helper::Array arrayHelper(array);
-
-    std::uint8_t* dstBuffer       = arrayHelper.begin< std::uint8_t >();
+    auto dstBuffer                = image->begin< std::uint8_t >();
     const std::uint8_t* srcBuffer = reinterpret_cast<const std::uint8_t*>(_imageBuffer.data());
-    std::copy( srcBuffer, srcBuffer+array->getSizeInBytes(), dstBuffer);
+    std::copy( srcBuffer, srcBuffer+image->getSizeInBytes(), dstBuffer);
 
     return image;
 }
@@ -92,15 +88,15 @@ static void compareImages( const ::cv::Mat& _cvImage,
                            size_t _w, size_t _h, size_t _d,
                            std::uint8_t _numChannels)
 {
-    ::fwDataTools::helper::ImageGetter helper(_image);
-    const T* imageBuffer = reinterpret_cast<const T*>(helper.getBuffer());
+    const auto dumpLock  = _image->lock();
+    const T* imageBuffer = reinterpret_cast<const T*>(_image->getBuffer());
 
     std::vector< ::cv::Mat> channels(_numChannels);
     ::cv::split(_cvImage, channels);
 
     if(_d > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->getSize().size(), static_cast<size_t>(_cvImage.dims));
+        CPPUNIT_ASSERT_EQUAL(_image->getNumberOfDimensions(), static_cast<size_t>(_cvImage.dims));
         CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[2]));
         CPPUNIT_ASSERT_EQUAL(_h, static_cast<size_t>(_cvImage.size[1]));
         CPPUNIT_ASSERT_EQUAL(_d, static_cast<size_t>(_cvImage.size[0]));
@@ -124,7 +120,7 @@ static void compareImages( const ::cv::Mat& _cvImage,
     }
     else if(_h > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->getSize().size(), static_cast<size_t>(_cvImage.dims));
+        CPPUNIT_ASSERT_EQUAL(_image->getNumberOfDimensions(), static_cast<size_t>(_cvImage.dims));
         CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[1]));
         CPPUNIT_ASSERT_EQUAL(_h, static_cast<size_t>(_cvImage.size[0]));
 
@@ -170,8 +166,8 @@ static void testMoveToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
     ::cv::Mat cvImage = ::cvIO::Image::moveToCv(image);
 
     // Since we share the same buffer, compare the pointers
-    ::fwDataTools::helper::ImageGetter helper(image);
-    CPPUNIT_ASSERT_EQUAL(helper.getBuffer(), static_cast<void*>(cvImage.data));
+    const auto dumpLock = image->lock();
+    CPPUNIT_ASSERT_EQUAL(image->getBuffer(), static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
 }
@@ -188,8 +184,8 @@ static void testCopyFromCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numCha
     ::cvIO::Image::copyFromCv(image, cvImage);
 
     // Since we copy the buffer, ensure the pointers are different
-    ::fwDataTools::helper::ImageGetter helper(image);
-    CPPUNIT_ASSERT(helper.getBuffer() != static_cast<void*>(cvImage.data));
+    const auto dumpLock = image->lock();
+    CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
 }
@@ -205,8 +201,8 @@ static void testCopyToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
     ::cv::Mat cvImage = ::cvIO::Image::copyToCv(image);
 
     // Since we copy the buffer, ensure the pointers are different
-    ::fwDataTools::helper::ImageGetter helper(image);
-    CPPUNIT_ASSERT(helper.getBuffer() != static_cast<void*>(cvImage.data));
+    const auto dumpLock = image->lock();
+    CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
 }

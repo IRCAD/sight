@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,19 +66,39 @@ public:
      * @param[in] _camera defines the view in which the coordinates are transformed.
      * @param[in] _viewportPos viewport point.
      */
+    [[deprecated("Use convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
     static FWRENDEROGRE_API ::Ogre::Vector3 convertFromScreenToViewSpace(const ::Ogre::Camera& _camera,
                                                                          const ::Ogre::Vector3& _viewportPos);
 
     /// Convenience function, casts the inputs and
     /// calls @ref convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&)
+    [[deprecated("Use convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
     static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
                                                                     int _screenX, int _screenY);
 
-    /// @deprecated, call @ref convertFromScreenToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.
+    /// @deprecated, call @ref convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.
     /// Removed in sight 21.0
-    [[deprecated("Use convertPixelToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
+    [[deprecated("Use convertScreenSpaceToViewSpace(const ::Ogre::Camera&, const ::Ogre::Vector3&) instead.")]]
     static FWRENDEROGRE_API ::Ogre::Vector3 convertPixelToViewSpace(const ::Ogre::Camera& _camera,
                                                                     const float _pixelPoint[3]);
+
+    /**
+     * @brief Converts from screen space (u, v, w) to view space (x, y, z).
+     * @param _camera ogre camera.
+     * @param _screenPos screen position (u, v, w).
+     * @return view space coordinates (x, y, z).
+     */
+    static FWRENDEROGRE_API ::Ogre::Vector3 convertScreenSpaceToViewSpace(const ::Ogre::Camera& _camera,
+                                                                          const ::Ogre::Vector3& _screenPos);
+
+    /**
+     * @brief Converts from NDC space to view space (call by @ref convertScreenSpaceToViewSpace)
+     * @param _camera ogre camera.
+     * @param _ndcPos NDC coordinates (3 components).
+     * @return the view space coordinates (x, y, z).
+     */
+    static FWRENDEROGRE_API ::Ogre::Vector3 convertNDCToViewSpace(const ::Ogre::Camera& _camera,
+                                                                  const ::Ogre::Vector3& _ndcPos);
 
 };
 

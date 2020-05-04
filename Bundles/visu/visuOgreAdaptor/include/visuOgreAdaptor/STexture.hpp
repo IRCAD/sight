@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@
 namespace visuOgreAdaptor
 {
 /**
- * @brief   Adaptor to map a texture on a mesh. This is done via ::visuOgreAdaptor::SMaterial. In the configuration we
+ * @brief This adaptor maps a texture on a mesh. This is done via ::visuOgreAdaptor::SMaterial. In the configuration we
  *  don't specify the material adaptor since it is automatically created by the ::visuOgreAdaptor::SMesh adaptor.
  *  The mesh adaptor isn't specified too because the texture can be applied on several meshes.
  *
@@ -46,94 +46,102 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::visuOgreAdaptor::STexture">
-            <in key="image" uid="..." />
-            <config layer="..." textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
-       </service>
+    <service type="::visuOgreAdaptor::STexture">
+        <in key="image" uid="..." />
+        <config layer="..." textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
+    </service>
    @endcode
+ *
  * @subsection Input Input:
- * - \b key1 [::fwData::Image]: .
+ * - \b image [::fwData::Image]: the image to map as a texture.
+ *
  * @subsection Configuration Configuration:
- *  - \b layer (mandatory): defines the texture's layer
- *  - \b textureName (optional) : the name of the ogre texture managed by the adaptor
+ *  - \b layer (mandatory, string): defines the texture's layer
+ *  - \b textureName (optional, string, default="") : the name of the ogre texture managed by the adaptor
  *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
  *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
- *  - \b useAlpha (optional, true/false, default=true) : whether or not the alpha channel is used
- *  - \b dynamic (optional, true/false, default=false) : whether or not the texture is updated frequently
+ *  - \b useAlpha (optional, bool, default=true) : whether or not the alpha channel is used
+ *  - \b dynamic (optional, bool, default=false) : whether or not the texture is updated frequently
  */
-class VISUOGREADAPTOR_CLASS_API STexture : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API STexture final : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
-    fwCoreServiceMacro(STexture, ::fwRenderOgre::IAdaptor);
+    fwCoreServiceMacro(STexture, ::fwRenderOgre::IAdaptor)
 
+    /// Defines the keys of the slot @ref textureSwapped().
+    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;
+
+    /// Creates the adaptor and the signal.
     VISUOGREADAPTOR_API STexture() noexcept;
+
+    /// Does nothing.
     VISUOGREADAPTOR_API virtual ~STexture() noexcept;
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;
-    typedef ::fwCom::Signal< void () > TextureSwappedSignalType;
-    /** @} */
-
-    /// Name of the default texture
-    VISUOGREADAPTOR_API static const std::string DEFAULT_TEXTURE_FILENAME;
-
+    /// Gets the Ogre texture.
     VISUOGREADAPTOR_API ::Ogre::TexturePtr getTexture() const;
-    VISUOGREADAPTOR_API std::string getTextureName() const;
-    VISUOGREADAPTOR_API void setTextureName(std::string texName);
 
+    /// Gets the textures name.
+    VISUOGREADAPTOR_API std::string getTextureName() const;
+
+    /// Sets the texture name.
+    VISUOGREADAPTOR_API void setTextureName(std::string _texName);
+
+    /// Gets if 1.0 is used as the alpha value.
     VISUOGREADAPTOR_API bool getUseAlpha() const;
-    VISUOGREADAPTOR_API void setUseAlpha(bool _useAlpha);
 
     /// Return true if a valid image is stored in this texture
     VISUOGREADAPTOR_API bool isValid() const;
 
-protected:
-
-    /// Configure the adaptor.
-    VISUOGREADAPTOR_API void configuring() override;
-
-    /// Creates the managed Ogre texture
-    VISUOGREADAPTOR_API void starting() override;
-
-    /// Updates the attached
-    VISUOGREADAPTOR_API void updating() override;
-
-    /// Does nothing
-    VISUOGREADAPTOR_API void stopping() override;
-
-    /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
 private:
 
-    /// Pointer to the Ogre texture
+    /// Configures the adaptor.
+    virtual void configuring() override;
+
+    /// Creates the managed Ogre texture.
+    virtual void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Updates the attached texture.
+    virtual void updating() override;
+
+    /// Destroys Ogre resources.
+    virtual void stopping() override;
+
+    /// Contains the Ogre texture.
     ::Ogre::TexturePtr m_texture;
-    /// Texture's name in the Ogre Ressource manager
+
+    /// Defines the texture's name in the Ogre resource manager.
     std::string m_textureName;
 
-    /// How to filter this texture
-    std::string m_filtering;
+    /// Defines the filtering method.
+    std::string m_filtering { "linear" };
 
-    /// How to wrap the texture
-    std::string m_wrapping;
+    /// Defines the wraping method.
+    std::string m_wrapping { "repeat" };
 
-    /// Used as a flag to know if we have to use 1.0 as the alpha value (no transparency) or another value
-    bool m_useAlpha;
+    /// Defines if 1.0 is used as the alpha value (no transparency) or another value.
+    bool m_useAlpha { true };
 
-    /// Signal emitted when the texture has to be changed on the associated material
+    /// Defines if the texture changes dynamically, defined in m_configuration.
+    bool m_isDynamic { false };
+
+    /// Defines the signal emitted when the texture has to be changed on the associated material.
+    typedef ::fwCom::Signal< void () > TextureSwappedSignalType;
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
 
-    /// defines if the texture changes dynamically, defined in m_configuration
-    bool m_isDynamic;
 };
 
 //------------------------------------------------------------------------------
-// Inline method(s)
 
 inline ::Ogre::TexturePtr STexture::getTexture() const
 {
@@ -149,9 +157,9 @@ inline std::string STexture::getTextureName() const
 
 //------------------------------------------------------------------------------
 
-inline void STexture::setTextureName(std::string texName)
+inline void STexture::setTextureName(std::string _texName)
 {
-    m_textureName = texName;
+    m_textureName = _texName;
 }
 
 //------------------------------------------------------------------------------
@@ -163,11 +171,4 @@ inline bool STexture::getUseAlpha() const
 
 //------------------------------------------------------------------------------
 
-inline void STexture::setUseAlpha(bool _useAlpha)
-{
-    m_useAlpha = _useAlpha;
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

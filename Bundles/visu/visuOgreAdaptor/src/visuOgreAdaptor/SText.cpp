@@ -39,6 +39,15 @@ static const ::fwServices::IService::KeyType s_OBJECT_INPUT = "object";
 
 static const ::fwCom::Slots::SlotKeyType s_SET_TEXT_SLOT = "setText";
 
+static const std::string s_TEXT_CONFIG        = "text";
+static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
+static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
+static const std::string s_H_ALIGN_CONFIG     = "hAlign";
+static const std::string s_V_ALIGN_CONFIG     = "vAlign";
+static const std::string s_X_CONFIG           = "x";
+static const std::string s_Y_CONFIG           = "y";
+static const std::string s_COLOR_CONFIG       = "color";
+
 //----------------------------------------------------------------------------
 
 SText::SText() noexcept
@@ -59,30 +68,30 @@ void SText::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvconfig = this->getConfigTree();
-    const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_textString = config.get<std::string>("text", "");
+    m_textString = config.get<std::string>(s_TEXT_CONFIG, "");
 
-    m_fontSource = config.get("fontSource", m_fontSource);
-    m_fontSize   = config.get<size_t>("fontSize", m_fontSize);
+    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
-    m_horizontalAlignment = config.get<std::string>("hAlign", "left");
+    m_horizontalAlignment = config.get<std::string>(s_H_ALIGN_CONFIG, "left");
     SLM_ASSERT("'hAlign' must be 'left', 'center' or 'right'",
                m_horizontalAlignment == "left"
                || m_horizontalAlignment == "center"
                || m_horizontalAlignment == "right" );
 
-    m_verticalAlignment = config.get<std::string>("vAlign", "bottom");
+    m_verticalAlignment = config.get<std::string>(s_V_ALIGN_CONFIG, "bottom");
     SLM_ASSERT("'vAlign' must be 'top', 'center' or 'bottom'",
                m_verticalAlignment == "top"
                || m_verticalAlignment == "center"
                || m_verticalAlignment == "bottom");
 
-    m_position.x = config.get<float>("x", m_position.x);
-    m_position.y = config.get<float>("y", m_position.y);
+    m_position.x = config.get<float>(s_X_CONFIG, m_position.x);
+    m_position.y = config.get<float>(s_Y_CONFIG, m_position.y);
 
-    const auto hexaTextColor = config.get<std::string>("color", "#ffffff");
+    const auto hexaTextColor = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     std::array< std::uint8_t, 4 > textColor;
     ::fwDataTools::Color::hexaStringToRGBA(hexaTextColor, textColor.data());
 
@@ -113,6 +122,15 @@ void SText::starting()
     this->updateText();
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_OBJECT_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
+
 //----------------------------------------------------------------------------
 
 void SText::updating()
@@ -131,17 +149,6 @@ void SText::stopping()
     m_text->detachFromParent();
     sm->destroyMovableObject(m_text);
     m_text = nullptr;
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-
-    connections.push(s_OBJECT_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
 }
 
 //----------------------------------------------------------------------------
@@ -214,4 +221,4 @@ void SText::updateText()
     this->setText(textString);
 }
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

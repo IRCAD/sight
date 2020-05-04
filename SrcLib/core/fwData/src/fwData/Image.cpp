@@ -326,7 +326,7 @@ void Image::setPixelBuffer( IndexType index, Image::BufferType* pixBuf)
 
 const std::string Image::getPixelAsString(IndexType x,
                                           IndexType y,
-                                          IndexType z )
+                                          IndexType z ) const
 {
     const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
     return m_type.toString(this->getPixelBuffer(offset));
@@ -421,6 +421,47 @@ void Image::setBuffer(void* buf, bool takeOwnership, ::fwMemory::BufferAllocatio
     }
     m_dataArray->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_dataArray->getSizeInBytes(), policy);
     m_dataArray->setIsBufferOwner(takeOwnership);
+}
+
+//------------------------------------------------------------------------------
+
+::fwMemory::BufferObject::sptr Image::getBufferObject()
+{
+    return m_dataArray->getBufferObject();
+}
+
+//------------------------------------------------------------------------------
+
+::fwMemory::BufferObject::csptr Image::getBufferObject() const
+{
+    return m_dataArray->getBufferObject();
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& factory,
+                              const size_t size,
+                              const std::filesystem::path& sourceFile,
+                              const ::fwMemory::FileFormatType format,
+                              const ::fwMemory::BufferAllocationPolicy::sptr& policy)
+{
+    const auto imageDims = this->getNumberOfDimensions();
+    ::fwData::Array::SizeType arraySize(imageDims);
+    size_t count = 0;
+    if (m_numberOfComponents > 1)
+    {
+        arraySize.resize(imageDims+1);
+        arraySize[0] = m_numberOfComponents;
+        count        = 1;
+    }
+    for (size_t i = 0; i < imageDims; ++i)
+    {
+        arraySize[count] = m_size[i];
+        ++count;
+    }
+
+    m_dataArray->resize(arraySize, m_type, false);
+    m_dataArray->getBufferObject()->setIStreamFactory(factory, size, sourceFile, format, policy);
 }
 
 //------------------------------------------------------------------------------

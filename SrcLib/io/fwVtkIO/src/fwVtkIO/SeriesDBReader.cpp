@@ -198,7 +198,7 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
 
     FilteringStream(const ::fwData::Image::sptr& source ) :
         m_image(source),
-        m_bufferObject(source->getDataArray()->getBufferObject()),
+        m_bufferObject(source->getBufferObject()),
         m_lock( m_bufferObject->lock() ),
         m_bufferStream( std::make_shared<BufferStreamType>(static_cast<char*>(m_lock.getBuffer()),
                                                            m_bufferObject->getSize()) )
@@ -308,7 +308,6 @@ void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation >& info, const
     int nbOfComponents = attrInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
     imgObj->setType( ::fwVtkIO::TypeTranslator::translate( attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE()) ) );
     imgObj->setNumberOfComponents(static_cast<size_t>(nbOfComponents));
-    imgObj->getDataArray()->setType(imgObj->getType());
 }
 
 //------------------------------------------------------------------------------
@@ -322,12 +321,10 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader >& reader, const 
     imgReader->ReadMetaData(info);
 
     updateImageFromVtkInfo(info, imgObj);
-    imgObj->getDataArray()->resize(imgObj->getSize(), false);
 
-    ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     std::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkStructuredPointsReader> >(file),
-                                imgObj->getSizeInBytes());
+    imgObj->setIStreamFactory( std::make_shared< ImageStream<vtkStructuredPointsReader> >(file),
+                               imgObj->getSizeInBytes());
 }
 
 //------------------------------------------------------------------------------
@@ -342,12 +339,10 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader >& reader, con
     imgReader->CopyOutputInformation(info, 0);
 
     updateImageFromVtkInfo(info, imgObj);
-    imgObj->getDataArray()->resize(imgObj->getSize(), false);
 
-    ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     std::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkXMLImageDataReader> >(file),
-                                imgObj->getSizeInBytes());
+    imgObj->setIStreamFactory( std::make_shared< ImageStream<vtkXMLImageDataReader> >(file),
+                               imgObj->getSizeInBytes());
 
 }
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, ::fwData::Image )
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -148,7 +148,7 @@ void ImageTransparency::updating()
         if(img->getField( "TRANSPARENCY" ) )
         {
             ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
-            m_valueSlider->setValue( *transparency );
+            m_valueSlider->setValue( static_cast<int>(*transparency) );
         }
         else
         {

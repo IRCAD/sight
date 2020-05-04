@@ -37,15 +37,16 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
-              ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
-              FilteringEnumType _filtering, float _entityOpacity) :
-    m_filtering( _filtering ),
-    m_orientation( _orientation ),
-    m_texture( _tex ),
-    m_sceneManager( _sceneManager ),
-    m_parentSceneNode( _parentSceneNode ),
-    m_entityOpacity( _entityOpacity )
+Plane::Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
+             ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
+             FilteringEnumType _filtering, float _entityOpacity, bool _displayBorder) :
+    m_filtering(_filtering),
+    m_orientation(_orientation),
+    m_texture(_tex),
+    m_sceneManager(_sceneManager),
+    m_parentSceneNode(_parentSceneNode),
+    m_entityOpacity(_entityOpacity),
+    m_displayBorder(_displayBorder)
 {
     // names definition
     switch(m_orientation)
@@ -89,9 +90,19 @@ Plane::~Plane()
         ::Ogre::MeshManager::getSingleton().remove(m_slicePlane);
     }
 
+    if(m_border)
+    {
+        m_sceneManager->destroyManualObject(m_border);
+    }
+
     if(m_texMaterial)
     {
         ::Ogre::MaterialManager::getSingleton().remove(m_texMaterial);
+    }
+
+    if(m_borderMaterial)
+    {
+        ::Ogre::MaterialManager::getSingleton().remove(m_borderMaterial);
     }
 }
 
@@ -102,13 +113,14 @@ void Plane::initializeMaterial()
     auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
     ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato");
 
+    // If the texture material exists, delete it.
     if(m_texMaterial)
     {
         materialMgr.remove(m_texMaterial);
         m_texMaterial.reset();
     }
 
-    m_texMaterial = defaultMat->clone(m_slicePlaneName + "_Material");
+    m_texMaterial = defaultMat->clone(m_slicePlaneName + "_TextMaterial");
 
     const ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
@@ -150,6 +162,34 @@ void Plane::initializeMaterial()
             pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
         }
     }
+
+    if(m_displayBorder)
+    {
+        // If the border material exist, delete it.
+        if(m_borderMaterial)
+        {
+            materialMgr.remove(m_borderMaterial);
+            m_borderMaterial.reset();
+        }
+
+        m_borderMaterial = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient");
+        m_borderMaterial = m_borderMaterial->clone(m_slicePlaneName + "_BorderMaterial");
+        if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
+        {
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Red);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Red);
+        }
+        else if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
+        {
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Green);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Green);
+        }
+        else
+        {
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -165,14 +205,14 @@ void Plane::initializePlane()
 {
     ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
 
-    // First delete mesh if it already exists
+    // First delete mesh if it already exists.
     if(meshManager.resourceExists(m_slicePlaneName))
     {
         meshManager.remove(m_slicePlaneName);
         m_slicePlane.reset();
     }
 
-    if( m_sceneManager->hasEntity(m_entityName))
+    if(m_sceneManager->hasEntity(m_entityName))
     {
         m_sceneManager->getEntity( m_entityName)->detachFromParent();
         m_sceneManager->destroyEntity(m_entityName);
@@ -182,7 +222,7 @@ void Plane::initializePlane()
 
     // Mesh plane instanciation:
     // Y is the default upVector,
-    // so if we want a plane which normal is the Y unit vector we have to create it differently
+    // so if we want a plane which normal is the Y unit vector we have to create it differently.
     if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
     {
         m_slicePlane = meshManager.createPlane(
@@ -204,10 +244,52 @@ void Plane::initializePlane()
             m_width, m_height);
     }
 
-    // Entity creation
+    // Entity creation.
     ::Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
     planeEntity->setMaterial(m_texMaterial);
     m_planeSceneNode->attachObject(planeEntity);
+
+    if(m_displayBorder)
+    {
+        if(m_border)
+        {
+            m_sceneManager->destroyManualObject(m_border);
+            m_border = nullptr;
+        }
+
+        // Create the border.
+        m_border = m_sceneManager->createManualObject(m_slicePlaneName + "_Border");
+        m_border->estimateVertexCount(5);
+        m_border->begin(m_borderMaterial, ::Ogre::RenderOperation::OT_LINE_STRIP);
+
+        if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
+        {
+            m_border->position(::Ogre::Vector3(0, -m_height/2.f, -m_width/2.f));
+            m_border->position(::Ogre::Vector3(0, m_height/2.f, -m_width/2.f));
+            m_border->position(::Ogre::Vector3(0, m_height/2.f, m_width/2.f));
+            m_border->position(::Ogre::Vector3(0, -m_height/2.f, m_width/2.f));
+            m_border->position(::Ogre::Vector3(0, -m_height/2.f, -m_width/2.f));
+        }
+        else if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
+        {
+            m_border->position(::Ogre::Vector3(-m_width/2.f, 0, -m_height/2.f));
+            m_border->position(::Ogre::Vector3(m_width/2.f, 0, -m_height/2.f));
+            m_border->position(::Ogre::Vector3(m_width/2.f, 0, m_height/2.f));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, 0, m_height/2.f));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, 0, -m_height/2.f));
+        }
+        else
+        {
+            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(m_width/2.f, -m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(m_width/2.f, m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, m_height/2.f, 0));
+            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0));
+        }
+
+        m_border->end();
+        m_planeSceneNode->attachObject(m_border);
+    }
 
     this->initializePosition();
 }
@@ -362,6 +444,26 @@ void Plane::setOrientationMode(OrientationMode _newMode)
             pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
         }
     }
+
+    if(m_displayBorder)
+    {
+        if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
+        {
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Red);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Red);
+        }
+        else if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
+        {
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Green);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Green);
+        }
+        else
+        {
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
+        }
+    }
+
     this->initializePlane();
 }
 
@@ -404,7 +506,7 @@ void Plane::setEntityOpacity(float _f)
         ::Ogre::Pass* pass = tech->getPass(0);
 
         // We don't want a depth check if we have non-OIT transparency
-        const bool needDepthCheck = (m_entityOpacity == 1.f);
+        const bool needDepthCheck = (m_entityOpacity - 1.f) < std::numeric_limits<float>::epsilon();
         pass->setDepthCheckEnabled(needDepthCheck);
     }
 }

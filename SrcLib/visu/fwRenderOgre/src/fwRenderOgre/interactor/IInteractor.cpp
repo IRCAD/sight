@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -91,6 +91,12 @@ void IInteractor::buttonReleaseEvent(MouseButton, Modifier, int, int)
 //------------------------------------------------------------------------------
 
 void IInteractor::buttonPressEvent(MouseButton, Modifier, int, int)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::buttonDoublePressEvent(MouseButton, Modifier, int, int)
 {
 }
 

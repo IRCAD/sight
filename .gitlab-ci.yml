@@ -44,7 +44,7 @@ sheldon-mr:
   stage: lint
   dependencies: []
   script:
-    - export ORIG_BRANCH_COMMIT_SHA=$(git merge-base dev origin/${CI_COMMIT_REF_NAME})
+    - export ORIG_BRANCH_COMMIT_SHA=$(diff -u <(git rev-list --first-parent origin/${CI_COMMIT_REF_NAME}) <(git rev-list --first-parent origin/dev) | sed -ne 's/^ //p' | head -1)
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
     # Execute sheldon, on all commits from the merge request
     - sight-git/hooks/sheldon ${ORIG_BRANCH_COMMIT_SHA}..${CI_COMMIT_SHA}

@@ -31,8 +31,6 @@
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
-#include <fwDataTools/helper/Mesh.hpp>
-
 #include <fwMedData/DicomSeries.hpp>
 
 #include <boost/algorithm/clamp.hpp>

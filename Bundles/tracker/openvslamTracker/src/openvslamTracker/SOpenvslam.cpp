@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,6 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -848,7 +846,7 @@ void SOpenvslam::updatePointCloud()
         const ::fwData::mt::ObjectWriteLock pointCloudLock(m_pointCloud);
         m_pointCloud->clear();
 
-        ::fwDataTools::helper::Mesh helper(m_pointCloud);
+        const auto dumplLock = m_pointCloud->lock();
 
         unsigned int i = 0;
         if(m_localMap)
@@ -862,10 +860,10 @@ void SOpenvslam::updatePointCloud()
 
                 const openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
-                helper.insertNextPoint(static_cast<float>(pos_w(0)) * m_scale,
-                                       static_cast<float>(pos_w(1)) * m_scale,
-                                       static_cast<float>(pos_w(2)) * m_scale);
-                helper.insertNextCell(i);
+                m_pointCloud->pushPoint(static_cast<float>(pos_w(0)) * m_scale,
+                                        static_cast<float>(pos_w(1)) * m_scale,
+                                        static_cast<float>(pos_w(2)) * m_scale);
+                m_pointCloud->pushCell(i);
                 ++i;
             }
         }
@@ -880,11 +878,11 @@ void SOpenvslam::updatePointCloud()
 
                 const openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
-                helper.insertNextPoint(static_cast<float>(pos_w(0)) * m_scale,
-                                       static_cast<float>(pos_w(1)) * m_scale,
-                                       static_cast<float>(pos_w(2)) * m_scale);
+                m_pointCloud->pushPoint(static_cast<float>(pos_w(0)) * m_scale,
+                                        static_cast<float>(pos_w(1)) * m_scale,
+                                        static_cast<float>(pos_w(2)) * m_scale);
 
-                helper.insertNextCell(i);
+                m_pointCloud->pushCell(i);
                 ++i;
             }
         }

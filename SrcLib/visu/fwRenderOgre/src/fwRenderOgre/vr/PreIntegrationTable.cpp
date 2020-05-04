@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,6 @@
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwCore/Profiling.hpp>
-
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferObject.hpp>
@@ -89,15 +87,15 @@ void PreIntegrationTable::imageUpdate(const fwData::Image::sptr& _img, const ::f
     {
         ::Ogre::PixelFormat pixelFormat = ::fwRenderOgre::Utils::getPixelFormatOgre(_img);
 
-        ::fwDataTools::helper::Image imgHelper(_img);
+        const auto dumpLock = _img->lock();
 
-        size_t nbPixels = _img->getDataArray()->getNumberOfElements();
+        const size_t nbPixels = _img->getNumElements();
 
         switch(pixelFormat)
         {
             case ::Ogre::PF_L8: //uint8
             {
-                uint8_t* ucharImgBuffer = static_cast<uint8_t*>(imgHelper.getBuffer());
+                uint8_t* ucharImgBuffer = static_cast<uint8_t*>(_img->getBuffer());
                 auto minMax             = std::minmax_element(ucharImgBuffer, ucharImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;
@@ -107,7 +105,7 @@ void PreIntegrationTable::imageUpdate(const fwData::Image::sptr& _img, const ::f
             }
             case ::Ogre::PF_L16: //int16
             {
-                int16_t* ushortImgBuffer = static_cast<int16_t*>(imgHelper.getBuffer());
+                int16_t* ushortImgBuffer = static_cast<int16_t*>(_img->getBuffer());
                 auto minMax              = std::minmax_element(ushortImgBuffer, ushortImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;

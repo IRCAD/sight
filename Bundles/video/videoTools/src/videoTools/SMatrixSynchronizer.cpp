@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,20 +32,18 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwTools/fwID.hpp>
+#include <fwTools/Object.hpp>
 
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixSynchronizer,
-                        ::fwData::TransformationMatrix3D);
+                        ::fwData::TransformationMatrix3D)
 
 // ----------------------------------------------------------------------------
 
@@ -56,7 +54,8 @@ const ::fwCom::Slots::SlotKeyType SMatrixSynchronizer::s_UPDATE_MATRIX_SLOT = "u
 
 // ----------------------------------------------------------------------------
 
-SMatrixSynchronizer::SMatrixSynchronizer() noexcept : m_lastTimestamp(0)
+SMatrixSynchronizer::SMatrixSynchronizer() noexcept :
+    m_lastTimestamp(0)
 {
     m_slotUpdateMatrix = ::fwCom::newSlot(&SMatrixSynchronizer::updateMatrix, this);
 
@@ -103,7 +102,7 @@ void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType time
         {
             for(unsigned int j = 0; j < 4; ++j)
             {
-                matrix3D->setCoefficient(i,j,values[i*4+j]);
+                matrix3D->setCoefficient(i, j, values[i*4+j]);
             }
         }
 
@@ -113,6 +112,5 @@ void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType time
 }
 
 // ----------------------------------------------------------------------------
-
 
 }  // namespace videoTools

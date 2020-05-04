@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwCore
     fwTools
     fwData
-    fwDataTools
     fwTest
     igtlProtocol
 )

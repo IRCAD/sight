@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,9 +56,21 @@ public:
      * @param _outputSpacing desired sampling rate.
      * @return resampled image.
      */
+    [[deprecated("Will be removed in sigth 22.0")]]
     static ITKREGISTRATIONOP_API ::fwData::Image::sptr resample(const fwData::Image::csptr& _img,
                                                                 const fwData::TransformationMatrix3D::csptr& _trf,
                                                                 const fwData::Image::SpacingType& _outputSpacing);
+
+    /**
+     * @brief transforms and resamples the image into a new grid big enough so it won't crop the input image.
+     * @param _img image to resample.
+     * @param _trf transform applied to the image.
+     * @param _outputSpacing desired sampling rate.
+     * @return resampled image.
+     */
+    static ITKREGISTRATIONOP_API ::fwData::Image::sptr resample(const fwData::Image::csptr& _img,
+                                                                const fwData::TransformationMatrix3D::csptr& _trf,
+                                                                const fwData::Image::Spacing& _outputSpacing);
 
 };
 

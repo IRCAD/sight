@@ -19,3 +19,4 @@ set( REQUIREMENTS  )
 set( CONAN_DEPS
     ${CONAN_QT}
 )
+set( WARNINGS_AS_ERRORS ON)

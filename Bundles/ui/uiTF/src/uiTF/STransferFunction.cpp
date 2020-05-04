@@ -120,15 +120,36 @@ void STransferFunction::configuring()
         }
 
         useDefaultPath = config->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
-
-        m_deleteIcon       = ::fwRuntime::getBundleResourceFilePath(config->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
-        m_newIcon          = ::fwRuntime::getBundleResourceFilePath(config->get(s_NEW_ICON_CONFIG, m_newIcon));
-        m_reinitializeIcon =
-            ::fwRuntime::getBundleResourceFilePath(config->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
-        m_renameIcon = ::fwRuntime::getBundleResourceFilePath(config->get(s_RENAME_ICON_CONFIG, m_renameIcon));
-        m_importIcon = ::fwRuntime::getBundleResourceFilePath(config->get(s_IMPORT_ICON_CONFIG, m_importIcon));
-        m_exportIcon = ::fwRuntime::getBundleResourceFilePath(config->get(s_EXPORT_ICON_CONFIG, m_exportIcon));
-
+        const auto deleteIconCfg       = config->get_optional<std::string>(s_DELETE_ICON_CONFIG);
+        const auto newIconCfg          = config->get_optional<std::string>(s_NEW_ICON_CONFIG);
+        const auto reinitializeIconCfg = config->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
+        const auto renameIconCfg       = config->get_optional<std::string>(s_RENAME_ICON_CONFIG);
+        const auto importIconCfg       = config->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
+        const auto exportIconCfg       = config->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
+        if(deleteIconCfg.is_initialized())
+        {
+            m_deleteIcon = ::fwRuntime::getBundleResourceFilePath(deleteIconCfg.value());
+        }
+        if(newIconCfg.is_initialized())
+        {
+            m_newIcon = ::fwRuntime::getBundleResourceFilePath(newIconCfg.value());
+        }
+        if(reinitializeIconCfg.is_initialized())
+        {
+            m_reinitializeIcon = ::fwRuntime::getBundleResourceFilePath(reinitializeIconCfg.value());
+        }
+        if(renameIconCfg.is_initialized())
+        {
+            m_renameIcon = ::fwRuntime::getBundleResourceFilePath(renameIconCfg.value());
+        }
+        if(importIconCfg.is_initialized())
+        {
+            m_importIcon = ::fwRuntime::getBundleResourceFilePath(importIconCfg.value());
+        }
+        if(exportIconCfg.is_initialized())
+        {
+            m_exportIcon = ::fwRuntime::getBundleResourceFilePath(exportIconCfg.value());
+        }
         m_iconWidth  = config->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
         m_iconHeight = config->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
     }

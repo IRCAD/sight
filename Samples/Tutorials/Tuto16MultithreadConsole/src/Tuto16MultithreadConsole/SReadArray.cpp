@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,11 +27,9 @@
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SReadArray, ::fwData::Array );
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SReadArray, ::fwData::Array )
 
 namespace Tuto16MultithreadConsole
 {
@@ -71,14 +69,16 @@ void SReadArray::updating()
     // Initialize the array size and type
     const int arraySize = 10;
     ::fwData::Array::SizeType size(1, arraySize);
-    array->resize("uint32", size, 1, true);
+    array->resize(size, ::fwTools::Type::s_UINT32);
 
     // Fill the array values
-    ::fwDataTools::helper::Array arrayHelper(array);
-    unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
-    for (unsigned int i = 0; i < arraySize; i++)
+    const auto dumpLock = array->lock();
+
+    auto itr = array->begin< unsigned int >();
+
+    for (unsigned int i = 0; i < arraySize; i++, ++itr)
     {
-        buffer[i] = i;
+        *itr = i;
     }
 
     // Notify that the array is modified

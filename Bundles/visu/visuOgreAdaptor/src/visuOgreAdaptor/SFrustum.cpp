@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,15 +44,13 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustum);
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType SFrustum::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-
-const std::string s_CAMERA_INPUT = "camera";
-const std::string s_NEAR_CONFIG  = "near";
-const std::string s_FAR_CONFIG   = "far";
-const std::string s_COLOR_CONFIG = "color";
+static const std::string s_CAMERA_INPUT = "camera";
+static const std::string s_NEAR_CONFIG  = "near";
+static const std::string s_FAR_CONFIG   = "far";
+static const std::string s_COLOR_CONFIG = "color";
 
 //-----------------------------------------------------------------------------
 
@@ -68,24 +66,14 @@ SFrustum::~SFrustum() noexcept
 {
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_CAMERA_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
-
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
 void SFrustum::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
@@ -149,6 +137,17 @@ void SFrustum::starting()
 
 //-----------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 void SFrustum::updating()
 {
     this->setOgreCamFromData();
@@ -174,7 +173,8 @@ void SFrustum::stopping()
 void SFrustum::setOgreCamFromData()
 {
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("Required input '" + s_CAMERA_INPUT + "' is not set", camera);
+    SLM_ASSERT("input '" + s_CAMERA_INPUT + "' does not exist.", camera);
+
     if(camera->getIsCalibrated())
     {
 
@@ -194,9 +194,9 @@ void SFrustum::setOgreCamFromData()
 
 //-----------------------------------------------------------------------------
 
-void SFrustum::updateVisibility(bool isVisible)
+void SFrustum::updateVisibility(bool _isVisible)
 {
-    m_visibility = isVisible;
+    m_visibility = _isVisible;
     this->updating();
 }
 
@@ -210,4 +210,4 @@ void SFrustum::toggleVisibility()
 
 //-----------------------------------------------------------------------------
 
-} //visuOgreAdaptor
+} // namespace visuOgreAdaptor.

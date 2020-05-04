@@ -11,11 +11,13 @@ set( DEPENDENCIES
     fwGuiQt
     fwRenderOgre
     fwRuntime
-    fwServices
-    fwTools
 )
 set( REQUIREMENTS visuOgre )
 set( CONAN_DEPS
     ${CONAN_QT}
 )
 set( WARNINGS_AS_ERRORS ON )
+
+if(UNIX)
+    set(PLUGINS xcbglintegrations)
+endif()

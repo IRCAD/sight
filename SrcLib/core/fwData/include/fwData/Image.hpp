@@ -471,7 +471,7 @@ public:
     /// Return the pixel value in a std::string
     FWDATA_API const std::string getPixelAsString(IndexType x,
                                                   IndexType y,
-                                                  IndexType z );
+                                                  IndexType z ) const;
 
     /**
      * @brief Return a lock on the image to prevent from dumping the buffer on the disk
@@ -479,6 +479,29 @@ public:
      * The buffer cannot be accessed if the image is not locked
      */
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
+
+    /// Return the buffer object
+    FWDATA_API ::fwMemory::BufferObject::sptr getBufferObject();
+
+    /// Return the buffer object
+    FWDATA_API ::fwMemory::BufferObject::csptr getBufferObject() const;
+    /**
+     * @brief Set a stream factory for the image's buffer manager
+     *
+     * The factory will be used to load the image on demand.
+     *
+     * @param factory ::fwMemory::stream::in::IFactory stream factory
+     * @param size size of data provided by the stream
+     * @param sourceFile Filesystem path of the source file, if applicable
+     * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided
+     * @param policy Buffer allocation policy
+     */
+    FWDATA_API void setIStreamFactory(
+        const SPTR(::fwMemory::stream::in::IFactory)& factory,
+        const size_t size,
+        const std::filesystem::path& sourceFile                = "",
+        const ::fwMemory::FileFormatType format                = ::fwMemory::OTHER,
+        const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New());
 
     // ---------------------------------------
     // Deprecated API

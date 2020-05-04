@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,8 +24,6 @@
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Image.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
@@ -81,12 +79,11 @@ void ProcessingTest::histogramTest()
     ::fwData::Histogram::sptr histogram = ::fwData::Histogram::New();
 
     // Create image.
-    image->allocate(sizeX, sizeY,  sizeZ, ::fwTools::Type("int16"));
-    ::fwData::Array::sptr array = image->getDataArray();
-    ::fwDataTools::helper::Array arrayHelper(array);
+    image->resize(sizeX, sizeY,  sizeZ, ::fwTools::Type::s_INT16, ::fwData::Image::GRAY_SCALE);
 
-    ImageType* itr    = arrayHelper.begin< ImageType >();
-    ImageType* itrEnd = arrayHelper.end< ImageType >();
+    const auto dumpLock = image->lock();
+    auto itr            = image->begin< ImageType >();
+    const auto itrEnd   = image->end< ImageType >();
 
     int count = 0;
     for(; itr != itrEnd; ++itr)

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,31 @@
  *
  ***********************************************************************/
 
-#ifndef __VISUOGREADAPTOR_DEFINES_HPP__
-#define __VISUOGREADAPTOR_DEFINES_HPP__
+#include "style/Plugin.hpp"
 
-namespace visuOgreAdaptor
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwServices/macros.hpp>
+
+namespace style
 {
-extern char* s_defaultMaterial;
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::style::Plugin");
+
+Plugin::~Plugin() noexcept
+{
 }
 
-#endif // __VISUOGREADAPTOR_DEFINES_HPP__
+//------------------------------------------------------------------------------
+
+void Plugin::start()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::stop() noexcept
+{
+}
+
+} // namespace style

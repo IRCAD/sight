@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,11 +31,10 @@
 namespace visuOgreQt
 {
 
-/**
- * @brief Static class to manage the OpenGL context shared by all render windows.
- */
-class OpenGLContext
+/// Defines a static class to manage the OpenGL context shared by all render windows.
+class OpenGLContext final
 {
+
 public:
 
     /// Retrieves a shared pointer to Ogre's OpenGL context, creates it if does not exist or has expired.
@@ -45,15 +44,15 @@ public:
      * @brief Creates an OpenGL 4.1 context.
      *
      * @param _sharedContext context to share resources with or nullptr for no context sharing.
-     * @pre   if a _sharedContext is used then it must be on the same thread as the one calling this method.
+     * @pre if a _sharedContext is used then it must be on the same thread as the one calling this method.
      */
     static QOpenGLContext* createOgreGLContext(QOpenGLContext* const _sharedContext = nullptr);
 
 private:
 
-    /// Weak reference to the OpenGL context, expires when no more windows hold the context.
+    /// Contains a weak reference to the OpenGL context, expires when no more windows hold the context.
     static std::weak_ptr<QOpenGLContext> s_globalOgreOpenGLContext;
 
 };
 
-} // namespace visuOgreQt
+} // namespace visuOgreQt.

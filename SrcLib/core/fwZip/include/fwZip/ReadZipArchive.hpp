@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,13 +40,13 @@ class FWZIP_CLASS_API ReadZipArchive : public IReadArchive
 {
 
 public:
-    fwCoreClassMacro(ReadZipArchive, IReadArchive);
+    fwCoreClassMacro(ReadZipArchive, IReadArchive)
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const std::filesystem::path& archive)
+    static sptr New(const std::filesystem::path& archive, const std::string& key = "")
     {
-        return std::make_shared< ReadZipArchive >(archive);
+        return std::make_shared< ReadZipArchive >(archive, key);
     }
 
     /*
@@ -55,7 +55,7 @@ public:
      * @throw ::fwZip::exception::Read if archive doesn't exist.
      * @throw ::fwZip::exception::Read if archive cannot be opened.
      */
-    FWZIP_API ReadZipArchive( const std::filesystem::path& archive );
+    FWZIP_API ReadZipArchive( const std::filesystem::path& archive, const std::string& key = "");
 
     /**
      * @brief Returns input stream for the file in current archive (zip).
@@ -83,12 +83,16 @@ public:
 
     IReadArchive::sptr clone() const override
     {
-        return ReadZipArchive::New(m_archive);
+        return ReadZipArchive::New(m_archive, m_key);
     }
 
-protected:
+private:
 
+    /// Path of the archive file
     std::filesystem::path m_archive;
+
+    /// Key used to decrypt encrypted files
+    std::string m_key;
 };
 
 }

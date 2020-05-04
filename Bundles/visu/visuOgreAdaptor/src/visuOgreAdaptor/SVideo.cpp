@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,22 +47,21 @@
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVideo, ::fwData::Image)
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT         = "updateTF";
 
-static const std::string VIDEO_MATERIAL_NAME = "Video";
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
+
+static const std::string s_REVERSE_CONFIG = "reverse";
+
+static const std::string VIDEO_MATERIAL_NAME            = "Video";
 static const std::string VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
 static const std::string VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 //------------------------------------------------------------------------------
 
-static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
-static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
-
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT         = "updateTF";
-
-//------------------------------------------------------------------------------
 SVideo::SVideo() noexcept
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SVideo::updateVisibility, this);
@@ -82,9 +81,10 @@ void SVideo::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_reverse = config.get<bool>("reverse", false);
+    m_reverse = config.get<bool>(s_REVERSE_CONFIG, m_reverse);
 }
 
 //------------------------------------------------------------------------------
@@ -94,19 +94,19 @@ void SVideo::starting()
     this->initialize();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void SVideo::stopping()
+::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
-    this->getRenderService()->makeCurrent();
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
-    this->clearEntity();
+    connections.push(s_TF_INPUT, ::fwData::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
 
-    m_material.reset();
-    m_texture.reset();
-    m_gpuTF.reset();
-
-    m_isTextureInit = false;
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void SVideo::updating()
 
     // Getting Sight Image
     ::fwData::Image::csptr imageSight = this->getInput< ::fwData::Image>(s_IMAGE_INPUT);
-    SLM_ASSERT("Problem getting the image", imageSight);
+    SLM_ASSERT("input '" + s_IMAGE_INPUT + "' does not exist.", imageSight);
 
     {
         ::fwData::mt::ObjectReadLock lock(imageSight);
@@ -233,6 +233,21 @@ void SVideo::updating()
     this->requestRender();
 }
 
+//------------------------------------------------------------------------------
+
+void SVideo::stopping()
+{
+    this->getRenderService()->makeCurrent();
+
+    this->clearEntity();
+
+    m_material.reset();
+    m_texture.reset();
+    m_gpuTF.reset();
+
+    m_isTextureInit = false;
+}
+
 //-----------------------------------------------------------------------------
 
 void SVideo::updateVisibility(bool _isVisible)
@@ -260,7 +275,7 @@ void SVideo::toggleVisibility()
 void SVideo::updateTF()
 {
     ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
-    SLM_ASSERT("input '" + s_TF_INPUT + "' is missing.", tf);
+    SLM_ASSERT("input '" + s_TF_INPUT + "' does not exist.", tf);
 
     m_gpuTF->updateTexture(tf);
 
@@ -293,20 +308,6 @@ void SVideo::clearEntity()
     }
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-
-    connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-    connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

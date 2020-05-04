@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,8 +33,7 @@
 #include <fwServices/macros.hpp>
 
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/TypeKeyTypeMapping.hpp>
 
 #include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
@@ -46,7 +45,7 @@ namespace opItkRegistration
 {
 
 fwServicesRegisterMacro(::fwServices::IRegisterer,
-                        ::opItkRegistration::SMIPMatchingRegistration);
+                        ::opItkRegistration::SMIPMatchingRegistration)
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
     ::fwServices::IRegisterer()
@@ -97,8 +96,8 @@ void SMIPMatchingRegistration::updating()
         ::fwData::mt::ObjectReadLock movingLock(moving);
         ::fwData::mt::ObjectReadLock fixedLock(fixed);
         ::fwData::mt::ObjectWriteLock transformLock(transform);
-        ::fwTools::DynamicType type = moving->getPixelType();
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ::itkRegistrationOp::RegistrationDispatch >
+        ::fwTools::Type type = moving->getType();
+        ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ::itkRegistrationOp::RegistrationDispatch >
         ::invoke( type, params );
     }
 
