@@ -807,8 +807,8 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
         newPoints.clear();
         for(std::int64_t index = 0; index < static_cast< std::int64_t >(oldPoints.size()); ++index)
         {
-            const size_t previousIndex = index-1 < 0 ? oldPoints.size()-1 : index-1;
-            const Edge edge(oldPoints[previousIndex], oldPoints[index]);
+            const size_t previousIndex = index-1 < 0 ? oldPoints.size()-1 : static_cast<size_t>(index-1);
+            const Edge edge(oldPoints[previousIndex], oldPoints[static_cast<size_t>(index)]);
             std::list< ::Ogre::Vector2 > constraintes = this->addConstraints(triangulation, edge);
 
             newPoints.push_back(oldPoints[previousIndex]);
@@ -844,8 +844,8 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
         bool inside = false;
         for(std::int64_t i = 0; i < static_cast< std::int64_t >(points.size()); ++i)
         {
-            const size_t previousI = i-1 < 0 ? points.size()-1 : i-1;
-            const Edge edge(points[previousI], points[i]);
+            const size_t previousI = i-1 < 0 ? points.size()-1 : static_cast<size_t>(i-1);
+            const Edge edge(points[previousI], points[static_cast<size_t>(i)]);
 
             if(ray.intersect(edge))
             {
