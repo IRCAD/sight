@@ -116,6 +116,7 @@ void setPassword(const std::string& password)
     {
         // Save the password hash to preferences
         setPreference(s_PASSWORD_HASH_KEY, computePasswordHash(password));
+        savePreferences();
 
         // Scramble the scramble key
         RAND_bytes(s_SCRAMBLE_KEY, sizeof(s_SCRAMBLE_KEY));
