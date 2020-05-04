@@ -53,7 +53,7 @@ struct Posix : public Native
     /**
      * @brief   Destructor.
      */
-    ~Posix() override noexcept;
+    ~Posix() noexcept override;
 
     /**
      * @see ::fwRuntime::dl::Native#isLoaded
