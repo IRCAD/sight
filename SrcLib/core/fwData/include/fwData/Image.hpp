@@ -30,6 +30,8 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
+#include <fwMemory/IBuffered.hpp>
+
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
 
@@ -119,7 +121,8 @@ class PointList;
     }
    @endcode
  */
-class FWDATA_CLASS_API Image : public Object
+class FWDATA_CLASS_API Image : public ::fwData::Object,
+                               public ::fwMemory::IBuffered
 {
 public:
     fwCoreClassMacro(Image, ::fwData::Object, ::fwData::factory::New< Image >)
@@ -594,6 +597,20 @@ public:
     ///get data array
     [[deprecated("it will be removed in sight 22.0")]]
     FWDATA_API ::fwData::Array::sptr getDataArray() const;
+
+protected:
+
+    // To allow locked_ptr to access protected lockBuffer()
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
+    /**
+     * @brief Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     * The buffer cannot be accessed if the image is not locked
+     */
+    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
 private:
 

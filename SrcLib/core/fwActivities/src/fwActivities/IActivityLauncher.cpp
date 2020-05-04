@@ -26,6 +26,7 @@
 #include "fwActivities/IValidator.hpp"
 
 #include <fwData/Composite.hpp>
+#include <fwData/mt/locked_ptr.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataCamp/getObject.hpp>
@@ -72,7 +73,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
 
         const auto it = inouts.find(key);
         SLM_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
-        ::fwData::Object::csptr obj = it->second.lock();
+        ::fwData::Object::csptr obj = it->second.getShared();
         ParameterType param;
         param.replace = key;
         if(optional)

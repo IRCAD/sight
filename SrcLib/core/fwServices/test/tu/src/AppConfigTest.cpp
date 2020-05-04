@@ -834,18 +834,19 @@ void AppConfigTest::optionalKeyTest()
     CPPUNIT_ASSERT(srv1->getIsUpdated());
     srv1->resetIsUpdated();
 
-    CPPUNIT_ASSERT(data1 == srv1->getInput< ::fwData::Object>("data1") );
-    CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
-    CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data3") );
+    CPPUNIT_ASSERT(data1 == srv1->getLockedInput< ::fwData::Object>("data1").getShared() );
+    CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data2").expired());
+    CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data3").expired() );
 
     // Create data 2
     ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
 
     ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
-    fwTestWaitMacro(data2 == srv1->getInput< ::fwData::Object>("data2"));
+    fwTestWaitMacro(!srv1->getWeakInput< ::fwData::Object>("data2").expired() &&
+                    data2 == srv1->getLockedInput< ::fwData::Object>("data2").getShared());
 
-    CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("data2") );
-    CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data3") );
+    CPPUNIT_ASSERT(data2 == srv1->getLockedInput< ::fwData::Object>("data2").getShared() );
+    CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data3").expired() );
 
     fwTestWaitMacro("data2" == srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT_EQUAL(std::string("data2"), srv1->getSwappedObjectKey() );
@@ -865,11 +866,13 @@ void AppConfigTest::optionalKeyTest()
     ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
     ::fwServices::OSR::registerServiceOutput(data4, "out4", genDataSrv);
 
-    fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("data3") &&
-                    data4 == srv1->getInput< ::fwData::Object>("data4"));
+    fwTestWaitMacro(!srv1->getWeakInput< ::fwData::Object>("data3").expired() &&
+                    !srv1->getWeakInput< ::fwData::Object>("data4").expired() &&
+                    data3 == srv1->getLockedInput< ::fwData::Object>("data3").getShared() &&
+                    data4 == srv1->getLockedInput< ::fwData::Object>("data4").getShared());
 
-    CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("data3") );
-    CPPUNIT_ASSERT(data4 == srv1->getInput< ::fwData::Object>("data4") );
+    CPPUNIT_ASSERT(data3 == srv1->getLockedInput< ::fwData::Object>("data3").getShared() );
+    CPPUNIT_ASSERT(data4 == srv1->getLockedInput< ::fwData::Object>("data4").getShared() );
     CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv1->getStatus());
 
     // Check connection with data 3
@@ -888,29 +891,31 @@ void AppConfigTest::optionalKeyTest()
 
     // Remove data 2 and 3
     ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
-    fwTestWaitMacro(nullptr == srv1->getInput< ::fwData::Object>("data2"));
+    fwTestWaitMacro(srv1->getWeakInput< ::fwData::Object>("data2").expired());
 
     fwTestWaitMacro("data2" == srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT_EQUAL(std::string("data2"), srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject() );
-    CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
+    CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data2").expired());
 
     ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
-    fwTestWaitMacro(nullptr == srv1->getInput< ::fwData::Object>("data3"));
+    fwTestWaitMacro(!srv1->getWeakInput< ::fwData::Object>(
+                        "data3").expired() && nullptr == srv1->getLockedInput< ::fwData::Object>("data3").getShared());
 
     fwTestWaitMacro("data3" == srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT_EQUAL(std::string("data3"), srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject() );
-    CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data3") );
+    CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data3").expired());
 
     CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv1->getStatus());
 
     // Create data 3
     ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
-    fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("data3"));
+    fwTestWaitMacro(!srv1->getWeakInput< ::fwData::Object>(
+                        "data3").expired() && data3 == srv1->getLockedInput< ::fwData::Object>("data3").getShared());
 
-    CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
-    CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("data3") );
+    CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data2").expired());
+    CPPUNIT_ASSERT(data3 == srv1->getLockedInput< ::fwData::Object>("data3").getShared());
     CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv1->getStatus());
 
     // =================================================================================================================
@@ -933,10 +938,10 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getLockedInput< ::fwData::Object>("data5").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data2").expired());
+        CPPUNIT_ASSERT(data3 == srv2->getLockedInput< ::fwData::Object>("data3").getShared());
+        CPPUNIT_ASSERT(data4 == srv2->getLockedInput< ::fwData::Object>("data4").getShared());
 
         // Check connection with data 4
         srv2->resetIsUpdated();
@@ -948,22 +953,22 @@ void AppConfigTest::optionalKeyTest()
         ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
         ::fwServices::OSR::unregisterServiceOutput("out4", genDataSrv);
 
-        fwTestWaitMacro(nullptr == srv2->getInput< ::fwData::Object>("data3") &&
+        fwTestWaitMacro(!srv2->getWeakInput< ::fwData::Object>("data3").expired()&&
                         nullptr == srv2->getInput< ::fwData::Object>("data4"));
 
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getLockedInput< ::fwData::Object>("data5").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data2").expired());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data3").expired());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data4").expired());
 
         // Create data 3
         ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
         fwTestWaitMacro(nullptr != srv2->getInput< ::fwData::Object>("data3"));
 
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getLockedInput< ::fwData::Object>("data5").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data2").expired());
+        CPPUNIT_ASSERT(data3 == srv2->getLockedInput< ::fwData::Object>("data3").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data4").expired());
     }
 
     // Remove data 5
@@ -987,10 +992,10 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getLockedInput< ::fwData::Object>("data5").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data2").expired());
+        CPPUNIT_ASSERT(data3 == srv2->getLockedInput< ::fwData::Object>("data3").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data4").expired());
 
         // Check connection with data 3
         srv2->resetIsUpdated();
@@ -1003,12 +1008,14 @@ void AppConfigTest::optionalKeyTest()
         ::fwData::Boolean::sptr data2b = ::fwData::Boolean::New();
 
         ::fwServices::OSR::registerServiceOutput(data2b, "out2", genDataSrv);
-        fwTestWaitMacro(data2b == srv2->getInput< ::fwData::Object>("data2"));
+        fwTestWaitMacro(!srv2->getWeakInput< ::fwData::Object>(
+                            "data2").expired() &&
+                        data2b == srv2->getLockedInput< ::fwData::Object>("data2").getShared());
 
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(data2b == srv2->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getLockedInput< ::fwData::Object>("data5").getShared());
+        CPPUNIT_ASSERT(data2b == srv2->getLockedInput< ::fwData::Object>("data2").getShared());
+        CPPUNIT_ASSERT(data3 == srv2->getLockedInput< ::fwData::Object>("data3").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("data4").expired());
 
         // Check no connection with data 2
         srv2->resetIsUpdated();
@@ -1025,9 +1032,11 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT(genDataSrv2 != nullptr);
 
         ::fwServices::OSR::registerServiceOutput(data2bis, "out", genDataSrv2);
-        fwTestWaitMacro(data2bis == srv2->getInput< ::fwData::Object>("data2"));
+        fwTestWaitMacro(!srv2->getWeakInput< ::fwData::Object>(
+                            "data2").expired() && data2bis == srv2->getLockedInput< ::fwData::Object>(
+                            "data2").getShared());
 
-        CPPUNIT_ASSERT(data2bis == srv2->getInput< ::fwData::Object>("data2"));
+        CPPUNIT_ASSERT(data2bis == srv2->getLockedInput< ::fwData::Object>("data2").getShared());
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
         CPPUNIT_ASSERT(data2bis == srv2->getSwappedObject() );
 
@@ -1038,9 +1047,10 @@ void AppConfigTest::optionalKeyTest()
 
         // Revert that
         ::fwServices::OSR::registerServiceOutput(data2b, "out", genDataSrv2);
-        fwTestWaitMacro(data2b == srv2->getInput< ::fwData::Object>("data2"));
+        fwTestWaitMacro(!srv2->getWeakInput< ::fwData::Object>("data2").expired() &&
+                        data2b == srv2->getLockedInput< ::fwData::Object>("data2").getShared());
 
-        CPPUNIT_ASSERT(data2b == srv2->getInput< ::fwData::Object>("data2"));
+        CPPUNIT_ASSERT(data2b == srv2->getLockedInput< ::fwData::Object>("data2").getShared());
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
         CPPUNIT_ASSERT(data2b == srv2->getSwappedObject() );
 
@@ -1090,12 +1100,13 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv1->getStatus());
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
-        CPPUNIT_ASSERT(data1 == srv1->getInput< ::fwData::Object>("data1") );
-        CPPUNIT_ASSERT(data2b == srv1->getInput< ::fwData::Object>("dataGroup#0") );
-        CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("dataGroup#1") );
+        CPPUNIT_ASSERT(data1 == srv1->getLockedInput< ::fwData::Object>("data1").getShared());
+        CPPUNIT_ASSERT(data2b == srv1->getLockedInput< ::fwData::Object>("dataGroup#0").getShared());
+        CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("dataGroup#1").expired());
 
-        CPPUNIT_ASSERT(data2b == srv1->getInput< ::fwData::Object>("dataGroup", 0 ) );
-        CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("dataGroup", 1 ) );
+        CPPUNIT_ASSERT(data2b == srv1->getLockedInput< ::fwData::Object>("dataGroup", 0 ).getShared());
+        CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("dataGroup", 1 ).expired());
+        CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("dataGroup", 1 ).expired());
 
         CPPUNIT_ASSERT(2 == srv1->getKeyGroupSize("dataGroup") );
 
@@ -1111,13 +1122,15 @@ void AppConfigTest::keyGroupTest()
 
         ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
 
-        fwTestWaitMacro(data3 == srv1->getInput< ::fwData::Object>("dataGroup#1"));
+        fwTestWaitMacro(!srv1->getWeakInput< ::fwData::Object>(
+                            "dataGroup#1").expired() && data3 == srv1->getLockedInput< ::fwData::Object>(
+                            "dataGroup#1").getShared());
 
-        CPPUNIT_ASSERT(data2b == srv1->getInput< ::fwData::Object>("dataGroup#0") );
-        CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("dataGroup#1") );
+        CPPUNIT_ASSERT(data2b == srv1->getLockedInput< ::fwData::Object>("dataGroup#0").getShared());
+        CPPUNIT_ASSERT(data3 == srv1->getLockedInput< ::fwData::Object>("dataGroup#1").getShared());
 
-        CPPUNIT_ASSERT(data2b == srv1->getInput< ::fwData::Object>("dataGroup", 0 ) );
-        CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("dataGroup", 1 ) );
+        CPPUNIT_ASSERT(data2b == srv1->getLockedInput< ::fwData::Object>("dataGroup", 0 ).getShared());
+        CPPUNIT_ASSERT(data3 == srv1->getLockedInput< ::fwData::Object>("dataGroup", 1 ).getShared());
 
         // Check connection with data 3
         srv1->resetIsUpdated();
@@ -1145,23 +1158,25 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        fwTestWaitMacro(data3 == srv2->getInput< ::fwData::Object>("dataGroup1#0"));
+        fwTestWaitMacro(!srv2->getWeakInput< ::fwData::Object>(
+                            "dataGroup1#0").expired() && data3 == srv2->getLockedInput< ::fwData::Object>(
+                            "dataGroup1#0").getShared());
 
         CPPUNIT_ASSERT(2 == srv2->getKeyGroupSize("dataGroup0") );
-        CPPUNIT_ASSERT(data1 == srv2->getInput< ::fwData::Object>("dataGroup0#0") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0#1") );
+        CPPUNIT_ASSERT(data1 == srv2->getLockedInput< ::fwData::Object>("dataGroup0#0").getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("dataGroup0#1").expired());
 
-        CPPUNIT_ASSERT(data1 == srv2->getInput< ::fwData::Object>("dataGroup0", 0 ) );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0", 1 ) );
+        CPPUNIT_ASSERT(data1 == srv2->getLockedInput< ::fwData::Object>("dataGroup0", 0 ).getShared());
+        CPPUNIT_ASSERT(srv2->getWeakInput< ::fwData::Object>("dataGroup0", 1 ).expired());
 
         CPPUNIT_ASSERT(3 == srv2->getKeyGroupSize("dataGroup1") );
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1#0") );
-        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("dataGroup1#1") );
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("dataGroup1#2") );
+        CPPUNIT_ASSERT(data3 == srv2->getLockedInput< ::fwData::Object>("dataGroup1#0").getShared());
+        CPPUNIT_ASSERT(data4 == srv2->getLockedInput< ::fwData::Object>("dataGroup1#1").getShared());
+        CPPUNIT_ASSERT(data5 == srv2->getLockedInput< ::fwData::Object>("dataGroup1#2").getShared());
 
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1", 0) );
-        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("dataGroup1", 1) );
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("dataGroup1", 2) );
+        CPPUNIT_ASSERT(data3 == srv2->getLockedInput< ::fwData::Object>("dataGroup1", 0).getShared());
+        CPPUNIT_ASSERT(data4 == srv2->getLockedInput< ::fwData::Object>("dataGroup1", 1).getShared());
+        CPPUNIT_ASSERT(data5 == srv2->getLockedInput< ::fwData::Object>("dataGroup1", 2).getShared());
 
         // Check connection with data 1
         srv2->resetIsUpdated();
