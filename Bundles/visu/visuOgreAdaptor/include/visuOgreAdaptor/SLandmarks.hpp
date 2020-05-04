@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,75 +44,93 @@ namespace visuOgreAdaptor
         <config layer="default" transform="transformUID" />
     </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b landmarks [::fwData::Landmarks]: landmarks to display.
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines landmarks layer.
- * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
- * - \b fontSource (optional, default="DejaVuSans.ttf"): TrueType font (*.ttf) source file.
- * - \b fontSize (optional, default=16): font size in points.
+ * - \b layer (mandatory, string): defines landmarks layer.
+ * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
+ * was specified
+ * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
+ * - \b fontSize (optional, unsigned int, default=16): font size in points.
  *
  */
-class VISUOGREADAPTOR_CLASS_API SLandmarks : public ::fwRenderOgre::IAdaptor,
-                                             public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SLandmarks final :
+    public ::fwRenderOgre::IAdaptor,
+
+    public ::fwRenderOgre::ITransformable
 {
 public:
 
     fwCoreServiceMacro(SLandmarks, ::fwRenderOgre::IAdaptor)
 
-    /// Constructor.
+    /// Creates the adaptor.
     VISUOGREADAPTOR_API SLandmarks() noexcept;
 
-    /// Destructor.
+    /// Does nothing.
     VISUOGREADAPTOR_API virtual ~SLandmarks() noexcept;
-
-    /// Connect landmark modification signals to the update slot.
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
     /// Configure the adaptor.
     virtual void configuring() override;
 
-    /// Initialize material et update the service.
+    /// Initialize material and update the service.
     virtual void starting() override;
 
-    /// Stop the service.
-    virtual void stopping() override;
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_ADDED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_INSERTED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     * Connect ::fwData::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Update landmarks displaying.
+    /// Draws landmarks.
     virtual void updating() override;
 
-    /// Destroy Ogre's data.
+    /// Destroys Ogre resources and the material.
+    virtual void stopping() override;
+
+    /// Destroy Ogre's resources.
     void clearData();
 
-    /// Pointer to the material data.
-    ::fwData::Material::sptr m_material {nullptr};
+    /// Contains the material data.
+    ::fwData::Material::sptr m_material { nullptr };
 
-    /// Pointer to the material adaptor.
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
+    /// Contains the Ogre material adaptor.
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
-    /// Root node.
-    ::Ogre::SceneNode* m_transNode {nullptr};
+    /// Contains the root scene node.
+    ::Ogre::SceneNode* m_transNode { nullptr };
 
-    /// Used to store manual objects.
+    /// Stores manual objects.
     std::vector< ::Ogre::ManualObject* > m_manualObjects;
 
-    /// Used to store label of each landmark.
+    /// Stores label of each landmark.
     std::vector< ::fwRenderOgre::Text* > m_labels;
 
-    /// Used to store landmark`s nodes.
+    /// Stores landmark`s nodes.
     std::vector< ::Ogre::SceneNode* > m_nodes;
 
-    /// Text container.
-    ::Ogre::OverlayContainer* m_text {nullptr};
+    /// Contains the text container.
+    ::Ogre::OverlayContainer* m_text { nullptr };
 
-    /// Label font size in points.
+    /// Defines the label font size in points.
     size_t m_fontSize { 16 };
 
-    /// TrueType font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    /// Defines the TrueType font source file.
+    std::string m_fontSource { "DejaVuSans.ttf" };
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

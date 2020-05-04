@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,8 +35,6 @@
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -286,28 +284,40 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
     {
         image = ::fwData::Image::New();
 
-        ::fwData::Image::SizeType size(3);
-        size[0] = tl->getWidth();
-        size[1] = tl->getHeight();
-        size[2] = 1;
-        const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-        image->allocate(size, tl->getType(), tl->getNumberOfComponents());
-        ::fwData::Image::OriginType origin(3, 0);
+        ::fwData::Image::PixelFormat format = ::fwData::Image::PixelFormat::UNDEFINED;
 
-        image->setOrigin(origin);
-        ::fwData::Image::SpacingType spacing(3, voxelSize);
-        image->setSpacing(spacing);
+        // FIXME: Currently, FrameTL does not comntains Pixel format, so we assume that format is GrayScale, RGB or
+        // RGBA.
+        switch (tl->getNumberOfComponents())
+        {
+            case 1:
+                format = ::fwData::Image::PixelFormat::GRAY_SCALE;
+                break;
+            case 3:
+                format = ::fwData::Image::PixelFormat::RGB;
+                break;
+            case 4:
+                format = ::fwData::Image::PixelFormat::RGBA;
+                break;
+            default:
+                format = ::fwData::Image::PixelFormat::UNDEFINED;
+        }
+
+        const ::fwData::Image::Size size = {tl->getWidth(), tl->getHeight(), 1};
+        image->resize(size, tl->getType(), format);
+        const ::fwData::Image::Origin origin = {0., 0., 0.};
+        image->setOrigin2(origin);
+        const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+        image->setSpacing2(spacing);
         image->setWindowWidth(1);
         image->setWindowCenter(0);
 
-        ::fwData::Array::sptr array = image->getDataArray();
-
-        ::fwDataTools::helper::Array arrayHelper(array);
+        const auto dumpLock = image->lock();
 
         const std::uint8_t*  frameBuff = &buffer->getElement(0);
-        std::uint8_t* index            = arrayHelper.begin< std::uint8_t >();
+        auto itr                       = image->begin< std::uint8_t >();
 
-        std::copy( frameBuff, frameBuff+buffer->getSize(), index);
+        std::copy( frameBuff, frameBuff+buffer->getSize(), itr);
     }
 
     return image;

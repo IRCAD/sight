@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,6 +33,8 @@ namespace mt
 
 ObjectReadLock::ObjectReadLock(::fwData::Object::csptr obj, bool lock)
 {
+    FW_DEPRECATED_MSG("'ObjectReadLock' is deprecated.", "21.0");
+
     if (lock)
     {
         m_lock = ::fwCore::mt::ReadLock(obj->getMutex());

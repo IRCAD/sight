@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,9 +26,6 @@
 
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Mesh.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Mesh.hpp>
 
 #include <boost/spirit/include/phoenix_bind.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -62,7 +59,7 @@ struct cell_data_offset_generator {
     {
         ::fwData::Mesh::CellDataOffsetType res = current;
         current += 3;
-        return res;
+        return static_cast<int>(res);
     }
 };
 
@@ -189,7 +186,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key key) :
+MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }

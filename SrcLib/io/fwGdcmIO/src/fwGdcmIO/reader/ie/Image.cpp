@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,6 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
 #include <fwData/Image.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwDicomTools/Image.hpp>
 
@@ -138,12 +136,12 @@ void Image::readImagePlaneModule()
 
     // Image Position (Patient) - Type 1
     const double* gdcmOrigin = gdcmImage.GetOrigin();
-    ::fwData::Image::OriginType origin(3, 0);
+    ::fwData::Image::Origin origin = {0., 0., 0.};
     if ( gdcmOrigin != 0 )
     {
         std::copy( gdcmOrigin, gdcmOrigin+3, origin.begin() );
     }
-    m_object->setOrigin(origin);
+    m_object->setOrigin2(origin);
 
     // Pixel Spacing - Type 1
     // Image dimension
@@ -152,7 +150,7 @@ void Image::readImagePlaneModule()
 
     // Image's spacing
     const double* gdcmSpacing = gdcmImage.GetSpacing();
-    ::fwData::Image::SpacingType spacing(3, 1);
+    ::fwData::Image::Spacing spacing = {1., 1., 1.};
     if ( gdcmSpacing != 0 )
     {
         std::copy( gdcmSpacing, gdcmSpacing+dimension, spacing.begin() );
@@ -197,7 +195,7 @@ void Image::readImagePlaneModule()
     }
 
     OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
-    m_object->setSpacing( spacing );
+    m_object->setSpacing2( spacing );
 }
 
 //------------------------------------------------------------------------------
@@ -325,7 +323,7 @@ void Image::readImagePixelModule()
     const unsigned long frameBufferSize = gdcmImage.GetBufferLength();
     const unsigned long depth           = frameBufferSize / (dimensions[0] * dimensions[1] * (bitsAllocated/8));
     dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
-    m_object->setSize( { dimensions[0], dimensions[1], dimensions[2] });
+    m_object->setSize2( { dimensions[0], dimensions[1], dimensions[2] });
 
     OSLM_TRACE("Image dimensions : [" << dimensions[0] << "," <<dimensions[1] << "," << dimensions[2] << "]");
 
@@ -373,9 +371,7 @@ void Image::readImagePixelModule()
     }
 
     // Set image buffer
-    ::fwData::Array::sptr array = m_object->getDataArray();
-    ::fwDataTools::helper::Array helper(array);
-    helper.setBuffer(imageBuffer, true, m_object->getType(), m_object->getSize(), m_object->getNumberOfComponents());
+    m_object->setBuffer(imageBuffer, true, m_object->getType(), m_object->getSize2());
 
 }
 
@@ -675,33 +671,33 @@ char* Image::correctImageOrientation(char* buffer,
         delete[] buffer;
 
         // Update image size
-        m_object->setSize( {newSizeX, newSizeY, newSizeZ });
+        m_object->setSize2( {newSizeX, newSizeY, newSizeZ });
 
         // Update image spacing
-        ::fwData::Image::SpacingType spacing = m_object->getSpacing();
+        const ::fwData::Image::Spacing spacing = m_object->getSpacing2();
         VectorType spacingVector(4);
         spacingVector(0) = spacing[0];
         spacingVector(1) = spacing[1];
         spacingVector(2) = spacing[2];
         VectorType newSpacingVector = ::boost::numeric::ublas::prod(spacingVector, inverseMatrix);
-        ::fwData::Image::SpacingType newSpacing(3, 1);
+        ::fwData::Image::Spacing newSpacing;
         newSpacing[0] = std::fabs(newSpacingVector[0]);
         newSpacing[1] = std::fabs(newSpacingVector[1]);
         newSpacing[2] = std::fabs(newSpacingVector[2]);
-        m_object->setSpacing( newSpacing );
+        m_object->setSpacing2( newSpacing );
 
         // Update image origin
-        ::fwData::Image::OriginType origin = m_object->getOrigin();
+        const ::fwData::Image::Origin origin = m_object->getOrigin2();
         VectorType originVector(4);
         originVector(0) = origin[0];
         originVector(1) = origin[1];
         originVector(2) = origin[2];
         VectorType newOriginVector = ::boost::numeric::ublas::prod(originVector, inverseMatrix);
-        ::fwData::Image::OriginType newOrigin(3, 0);
+        ::fwData::Image::Origin newOrigin;
         newOrigin[0] = newOriginVector[0];
         newOrigin[1] = newOriginVector[1];
         newOrigin[2] = newOriginVector[2];
-        m_object->setOrigin( newOrigin );
+        m_object->setOrigin2( newOrigin );
 
         m_logger->warning("Image buffer has been rotated in order to match patient orientation: "
                           "image origin could be wrong.");

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,36 +47,33 @@ namespace visuOgreAdaptor
  * -\b updateVisibility(bool): Sets whether the vector is shown or not.
  * -\b toggleVisibility(): Toggle whether the vector is shown or not.
  * -\b updateLength(float): set the length of the vector.
+ * -\b show(): Shows the vector.
+ * -\b hide(): Hides the vector.
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SVector">
-        <config layer="..." transform="..." length="30" color="#FFFFFF" />
+        <config layer="..." transform="..." length="30" color="#FFFFFF" visible="true"/>
     </service>
    @endcode
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the mesh's layer.
- * - \b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
+ * - \b layer (mandatory, string): defines the mesh's layer.
+ * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
+ * was specified
  * in the STransform adaptor.
- * - \b length (optional, default=1.f): axis length in mm.
- * - \b color (optional, default=#FFFFFF): color of the vector.
+ * - \b length (optional, float, default=1.): axis length in mm.
+ * - \b color (optional, hexadecimal, default=#FFFFFF): color of the vector.
+ * - \b visible (optional, bool, default=true): visibility of the vector.
  *
  */
-class VISUOGREADAPTOR_CLASS_API SVector : public ::fwRenderOgre::IAdaptor,
-                                          public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SVector final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 public:
 
     fwCoreServiceMacro(SVector, ::fwRenderOgre::IAdaptor)
-
-    /// Slot used to set visibility.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-
-    /// Slot used to toggle visibility.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
-
-    /// Slot used to update length of the line.
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT;
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
@@ -87,68 +84,68 @@ public:
 private:
 
     /// Configures the adaptor
-    void configuring() override;
+    virtual void configuring() override;
 
     /// Initialize the main node and the material.
-    void starting() override;
+    virtual void starting() override;
 
     /// Deletes resources.
-    void stopping() override;
+    virtual void stopping() override;
 
     /// Create with the specified length the vector.
-    void updating() override;
+    virtual void updating() override;
 
     /**
-     * @brief Sets whether the vector is to be seen or not.
+     * @brief SLOT: sets whether the vector is to be seen or not.
      * @param _isVisible Set to true to show the vector.
      */
     void updateVisibility(bool _isVisible);
 
-    /// Toogle the vector visibility.
+    /// SLOT: toogles the vector visibility.
     void toggleVisibility();
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals.
-     * @return An empty connection map.
-     */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    /**
-     * @brief Update the length of the vector.
-     * @param _length Length of the vector
+     * @brief Updates the length of the vector.
+     * @param _length length of the vector.
      */
     void updateLength(float _length);
 
     /// Create the vector.
     void createVector();
 
-    /// Delete resources.
+    /// Deletes the vector resources.
     void deleteVector();
 
-    /// Pointer to the Material data
+    /// Shows the vector.
+    void show();
+
+    /// Hides the vector.
+    void hide();
+
+    /// Contains the material data.
     ::fwData::Material::sptr m_material {nullptr};
 
-    /// Axis length (in mm)
+    /// Defines the axis length (in mm).
     float m_length {1.f};
 
-    /// Handles axis visibility.
+    /// Defines the axis visibility.
     bool m_isVisible {true};
 
-    /// Color of the vector
+    /// Defines the color of the vector.
     std::string m_color {"#FFFFFF"};
 
-    /// Line along the z axis
+    /// Contains the line along the z axis.
     ::Ogre::ManualObject* m_line {nullptr};
 
-    /// Arrow of the z axis
+    /// Contains the arrow of the z axis.
     ::Ogre::ManualObject* m_cone {nullptr};
 
-    /// Scene node where all of our manual objects are attached
+    /// Contains the scene node where all of our manual objects are attached.
     ::Ogre::SceneNode* m_sceneNode {nullptr};
 
-    /// Material used to draw the vector.
+    /// Contains the material used to draw the vector.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

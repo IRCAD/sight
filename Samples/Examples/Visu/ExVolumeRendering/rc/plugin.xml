@@ -340,8 +340,10 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <!-- Declaration of the 2D scene service uses to create the TF editor which draw the range of transfer function define by the Scene2D_Shutter -->
             <service uid="Scene2D" type="::fwRenderQt::SRender" >
                 <scene>
+                    <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
+
                     <viewport x="-500" y="-1.1" width="500" height="1.2" />
-                    <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
+
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
                     <adaptor uid="grid1" />
@@ -365,7 +367,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <in key="viewport" uid="viewportUID" />
                 <inout key="image" uid="imageUID" />
                 <inout key="tf" uid="TF" />
-                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" />
             </service>
             <service uid="axisLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
                 <in key="viewport" uid="viewportUID" />
@@ -411,7 +413,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <!-- Declaration of the shutter service uses to focus a range of the transfer function which will be draw by the Scene2D service. -->
             <service uid="Scene2D_Shutter" type="::fwRenderQt::SRender" >
                 <scene>
-                    <scene x="-1100" y="-1.1" width="2100" height="1.2" />
+                    <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
                     <viewport x="-1100" y="-1.1" width="2100" height="1.2" />
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -427,11 +429,11 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <inout key="image" uid="imageUID" />
                 <inout key="tf" uid="TF" />
                 <in key="viewport" uid="viewportUID" />
-                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="2" interactive="false" />
             </service>
             <service uid="viewportRangeSelector_Shutter" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes" >
                 <inout key="viewport"  uid="viewportUID" />
-                <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
+                <config xAxis="xAxis" yAxis="yAxis"  color="#565A5E" opacity="0.5" zValue="3" initialWidth="1000" initialPos="-100" />
             </service>
 
             <service uid="imageEditorsManager" type="::fwServices::SConfigController">

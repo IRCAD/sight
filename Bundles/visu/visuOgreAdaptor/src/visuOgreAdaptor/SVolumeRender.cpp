@@ -49,8 +49,6 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image)
-
 //-----------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
@@ -71,6 +69,23 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateCl
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
 static const ::fwServices::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
 static const ::fwServices::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
+
+static const std::string s_AUTORESET_CAMERA_CONFIG      = "autoresetcamera";
+static const std::string s_PREINTEGRATION_CONFIG        = "preintegration";
+static const std::string s_DYNAMIC_CONFIG               = "dynamic";
+static const std::string s_WIDGETS_CONFIG               = "widgets";
+static const std::string s_PRIORITY_CONFIG              = "priority";
+static const std::string s_SAMPLES_CONFIG               = "samples";
+static const std::string s_SAT_SIZE_RATIO_CONFIG        = "satSizeRatio";
+static const std::string s_SAT_SHELLS_CONFIG            = "satShells";
+static const std::string s_SAT_SHELL_RADIUS_CONFIG      = "satShellRadius";
+static const std::string s_SAT_CONE_ANGLE_CONFIG        = "satConeAngle";
+static const std::string s_SAT_CONE_SAMPLES_CONFIG      = "satConeSamples";
+static const std::string s_AO_FACOTR_CONFIG             = "aoFactor";
+static const std::string s_COLOR_BLEEDING_FACTOR_CONFIG = "colorBleedingFactor";
+static const std::string s_AO_CONFIG                    = "ao";
+static const std::string s_COLOR_BLEEDING_CONFIG        = "colorBleeding";
+static const std::string s_SHADOES_CONFIG               = "shadows";
 
 //-----------------------------------------------------------------------------
 
@@ -115,29 +130,30 @@ void SVolumeRender::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_autoResetCamera        = config.get<std::string>("autoresetcamera", "yes") == "yes";
-    m_preIntegratedRendering = config.get<std::string>("preintegration", "no") == "yes";
-    m_dynamic                = config.get<bool>("dynamic", m_dynamic);
-    m_widgetVisibilty        = config.get<std::string>("widgets", "yes") == "yes";
-    m_widgetPriority         = config.get<int>("widgetPriority", m_widgetPriority);
-    m_nbSamples              = config.get<std::uint16_t>("samples", m_nbSamples);
+    m_autoResetCamera        = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
+    m_preIntegratedRendering = config.get<std::string>(s_PREINTEGRATION_CONFIG, "no") == "yes";
+    m_dynamic                = config.get<bool>(s_DYNAMIC_CONFIG, m_dynamic);
+    m_widgetVisibilty        = config.get<std::string>(s_WIDGETS_CONFIG, "yes") == "yes";
+    m_priority               = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_nbSamples              = config.get<std::uint16_t>(s_SAMPLES_CONFIG, m_nbSamples);
 
     // Advanced illumination parameters.
-    m_satSizeRatio        = config.get<float>("satSizeRatio", m_satSizeRatio);
-    m_satShells           = config.get<int>("satShells", m_satShells);
-    m_satShellRadius      = config.get<int>("satShellRadius", m_satShellRadius);
-    m_satConeAngle        = config.get<float>("satConeAngle", m_satConeAngle);
-    m_satConeSamples      = config.get<int>("satConeSamples", m_satConeSamples);
-    m_aoFactor            = config.get<double>("aoFactor", m_aoFactor);
-    m_colorBleedingFactor = config.get<double>("colorBleedingFactor", m_colorBleedingFactor);
-    m_ambientOcclusion    = config.get<bool>("ao", false);
-    m_colorBleeding       = config.get<bool>("colorBleeding", false);
-    m_shadows             = config.get<bool>("shadows", false);
+    m_satSizeRatio        = config.get<float>(s_SAT_SIZE_RATIO_CONFIG, m_satSizeRatio);
+    m_satShells           = config.get<int>(s_SAT_SHELLS_CONFIG, m_satShells);
+    m_satShellRadius      = config.get<int>(s_SAT_SHELL_RADIUS_CONFIG, m_satShellRadius);
+    m_satConeAngle        = config.get<float>(s_SAT_CONE_ANGLE_CONFIG, m_satConeAngle);
+    m_satConeSamples      = config.get<int>(s_SAT_CONE_SAMPLES_CONFIG, m_satConeSamples);
+    m_aoFactor            = config.get<double>(s_AO_FACOTR_CONFIG, m_aoFactor);
+    m_colorBleedingFactor = config.get<double>(s_COLOR_BLEEDING_FACTOR_CONFIG, m_colorBleedingFactor);
+    m_ambientOcclusion    = config.get<bool>(s_AO_CONFIG, false);
+    m_colorBleeding       = config.get<bool>(s_COLOR_BLEEDING_CONFIG, false);
+    m_shadows             = config.get<bool>(s_SHADOES_CONFIG, false);
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
+    this->setTransformId(config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
+                                                 this->getID() + "_transform"));
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +168,7 @@ void SVolumeRender::starting()
     m_gpuVolumeTF = std::make_shared< ::fwRenderOgre::TransferFunction>();
 
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' does not exist..", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' does not exist.", image);
 
     const ::fwData::TransferFunction::sptr volumeTF = this->getInOut< ::fwData::TransferFunction>(s_VOLUME_TF_INOUT);
     m_helperVolumeTF.setOrCreateTF(volumeTF, image);
@@ -793,7 +809,7 @@ void SVolumeRender::createWidget()
                                                                                     ogreClippingMx, clippingMxUpdate,
                                                                                     "BasicAmbient", "BasicPhong");
 
-    layer->addInteractor(m_widget, m_widgetPriority);
+    layer->addInteractor(m_widget, m_priority);
 
     m_volumeRenderer->clipImage(m_widget->getClippingBox());
 
@@ -953,4 +969,4 @@ void SVolumeRender::updateVisibility(bool _visibility)
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace visuOgreAdaptor.

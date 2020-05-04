@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,6 @@
 #include <fwData/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwLog/Logger.hpp>
 
@@ -437,7 +436,7 @@ void SeriesDBReaderTest::readJMSSeries()
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesJMSGenouTrimmed( series ) );
 
     // Read image in lazy mode
-    ::fwDataTools::helper::Image locker( series->getImage() );
+    const auto dumpLock = series->getImage()->lock();
 
 }
 
@@ -469,25 +468,25 @@ void SeriesDBReaderTest::readCTSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker( image );
+    const auto dumpLock = image->lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    ::fwData::Image::SizeType size = image->getSize();
+    const ::fwData::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 129 ), size[2]);
 
     // Check spacing
-    ::fwData::Image::SpacingType spacing = image->getSpacing();
+    const ::fwData::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.57 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.57 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1.6 ), spacing[2], delta);
 
     // Check origin
-    ::fwData::Image::OriginType origin = image->getOrigin();
+    const ::fwData::Image::Origin origin = image->getOrigin2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[2], delta);
@@ -533,26 +532,26 @@ void SeriesDBReaderTest::readMRSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker( image );
+    const auto dumpLock = image->lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    ::fwData::Image::SizeType size = image->getSize();
+    const ::fwData::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1024 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1024 ), size[2]);
 
     // Check spacing
-    ::fwData::Image::SpacingType spacing = image->getSpacing();
+    const ::fwData::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 6 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), spacing[2], delta);
 
     // Check origin
-    ::fwData::Image::OriginType origin = image->getOrigin();
+    const ::fwData::Image::Origin origin = image->getOrigin2();
     OSLM_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -112.828 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -180.058 ), origin[1], delta);
@@ -600,26 +599,26 @@ void SeriesDBReaderTest::readOTSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker( image );
+    const auto dumpLock = image->lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
 
     // Check size
-    ::fwData::Image::SizeType size = image->getSize();
+    ::fwData::Image::Size size = image->getSize2();
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[0]);
     CPPUNIT_ASSERT_EQUAL( size_t( 512 ), size[1]);
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size[2]);
 
     // Check spacing
-    ::fwData::Image::SpacingType spacing = image->getSpacing();
+    ::fwData::Image::Spacing spacing = image->getSpacing2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 1 ), spacing[2], delta);
 
     // Check origin
-    ::fwData::Image::OriginType origin = image->getOrigin();
+    ::fwData::Image::Origin origin = image->getOrigin2();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0 ), origin[2], delta);
@@ -715,7 +714,7 @@ void SeriesDBReaderTest::readSFSeries()
     // Retrieve ImageSeries
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker( image );
+    const auto dumpLock = image->lock();
 
     // Retrieve landmarks
     ::fwData::PointList::sptr pointList =
@@ -768,7 +767,7 @@ void SeriesDBReaderTest::readSRSeries()
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     CPPUNIT_ASSERT(series);
     ::fwData::Image::sptr image = series->getImage();
-    ::fwDataTools::helper::Image locker( image );
+    const auto dumpLock = image->lock();
 
     // Retrieve landmarks
     ::fwData::PointList::sptr landmarkPointList =
@@ -835,7 +834,7 @@ void SeriesDBReaderTest::read3DSRSeries()
     // Retrieve ImageSeries
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker( image );
+    const auto dumpLock = image->lock();
 
     // Retrieve landmarks
     ::fwData::PointList::sptr landmarkPointList =
@@ -954,18 +953,17 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwDataTools::helper::Image locker(image);
+    const auto dumpLock = image->lock();
 
     // Get internal buffer
-    ::fwMemory::BufferObject::sptr buf = image->getDataArray()->getBufferObject();
-    CPPUNIT_ASSERT(buf);
+    auto buffer = image->getBuffer();
+    CPPUNIT_ASSERT(buffer);
 
-    ::fwMemory::BufferObject::Lock lock = buf->lock();
-    CPPUNIT_ASSERT(lock.getBuffer());
+    CPPUNIT_ASSERT(dumpLock.getBuffer());
 
     // Compute sha1 digest
     ::boost::uuids::detail::sha1 sha1;
-    sha1.process_bytes(static_cast< char* >(lock.getBuffer()), buf->getSize());
+    sha1.process_bytes(static_cast< char* >(dumpLock.getBuffer()), image->getSizeInBytes());
     ::boost::uuids::detail::sha1::digest_type digest = {0};
     sha1.get_digest(digest);
 

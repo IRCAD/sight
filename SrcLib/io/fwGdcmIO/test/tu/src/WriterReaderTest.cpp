@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,9 +74,9 @@ double tolerance(double num)
 
 void roundSpacing(::fwData::Image::sptr image)
 {
-    ::fwData::Image::SpacingType spacing = image->getSpacing();
+    ::fwData::Image::Spacing spacing = image->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image->setSpacing(spacing);
+    image->setSpacing2(spacing);
 }
 
 //------------------------------------------------------------------------------
@@ -196,11 +196,11 @@ void WriterReaderTest::writeReadSeriesDBTest()
     ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
     ::fwData::PointList::sptr landmarks =
         image->getField< ::fwData::PointList >( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
-    ::fwData::Image::SpacingType spacing = image->getSpacing();
-    ::fwData::Image::OriginType origin   = image->getOrigin();
-    ::fwData::Point::sptr point          = ::fwData::Point::New(2.6 + origin[0],
-                                                                1.2 + origin[1],
-                                                                4.5 + origin[2]);
+    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const ::fwData::Image::Origin origin   = image->getOrigin2();
+    const ::fwData::Point::sptr point      = ::fwData::Point::New(2.6 + origin[0],
+                                                                  1.2 + origin[1],
+                                                                  4.5 + origin[2]);
     point->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label1") );
     landmarks->getPoints().push_back(point);
     ::fwData::Point::sptr point2 = ::fwData::Point::New(1.2 + origin[0],
@@ -208,19 +208,19 @@ void WriterReaderTest::writeReadSeriesDBTest()
                                                         0.3 + origin[2]);
     point2->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label2") );
     landmarks->getPoints().push_back(point2);
-    ::fwData::Image::SizeType size = image->getSize();
-    ::fwData::Point::sptr point3   = ::fwData::Point::New(1.2 + origin[0],
-                                                          2.4 + origin[1],
-                                                          static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
+    const ::fwData::Image::Size size   = image->getSize2();
+    const ::fwData::Point::sptr point3 = ::fwData::Point::New(1.2 + origin[0],
+                                                              2.4 + origin[1],
+                                                              static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
     point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label3") );
     landmarks->getPoints().push_back(point3);
 
     // Add distance
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
-    ::fwData::Point::sptr pt1    = ::fwData::Point::New(0., 0., 0.);
-    ::fwData::Point::sptr pt2    = ::fwData::Point::New(static_cast<double>(size[0]-1) * spacing[0],
-                                                        static_cast<double>(size[1]-1) * spacing[1],
-                                                        static_cast<double>(size[2]-1) * spacing[2]);
+    const ::fwData::Point::sptr pt1 = ::fwData::Point::New(0., 0., 0.);
+    const ::fwData::Point::sptr pt2 = ::fwData::Point::New(static_cast<double>(size[0]-1) * spacing[0],
+                                                           static_cast<double>(size[1]-1) * spacing[1],
+                                                           static_cast<double>(size[2]-1) * spacing[2]);
     pl->getPoints().push_back( pt1 );
     pl->getPoints().push_back( pt2 );
 
@@ -235,9 +235,9 @@ void WriterReaderTest::writeReadSeriesDBTest()
     // Update Reconstruction
     ::fwData::Reconstruction::sptr rec = modelSeries->getReconstructionDB().front();
     ::fwData::Mesh::sptr mesh          = rec->getMesh();
-    mesh->setPointColorsArray(::fwData::Array::sptr());
-    mesh->setCellColorsArray(::fwData::Array::sptr());
-    mesh->setCellNormalsArray(::fwData::Array::sptr());
+    mesh->clearCellColors();
+    mesh->clearPointColors();
+    mesh->clearCellNormals();
 
     // gdcm only manage ambient color in reconstruction
     ::fwData::Material::sptr material = ::fwData::Material::New();

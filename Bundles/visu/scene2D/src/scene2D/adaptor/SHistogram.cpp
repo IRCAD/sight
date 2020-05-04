@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SHistogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SHistogram)
 
 namespace scene2D
 {
@@ -47,11 +47,7 @@ const float SHistogram::SCALE = 1.1f; // vertical scaling factor applied at each
 
 //---------------------------------------------------------------------------------------------------------
 
-SHistogram::SHistogram() noexcept :
-    m_opacity( 0.80f ),
-    m_scale(1.0f),
-    m_layer(nullptr),
-    m_color(Qt::green)
+SHistogram::SHistogram() noexcept
 {
 }
 

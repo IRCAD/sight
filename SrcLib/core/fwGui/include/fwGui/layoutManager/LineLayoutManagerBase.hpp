@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -102,6 +102,7 @@ public:
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="0" minWidth="50" />
+                    <spacer />
                </layout>
            </gui>
            <registry>
@@ -111,6 +112,7 @@ public:
        </service>
        @endcode
      *  - \<layout type="::fwGui::LineLayoutManager" \> : define a line layout.
+     *  - \<spacer /> : create a stretch view.
      *  - \<view proportion="0" minWidth="30" /\> : define a new view which can have the following attributes
      *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizontal.
      *   - \b proportion : define if the space allocate in proportion of the proportion factor (bigger it is, more space

@@ -105,6 +105,13 @@
                 <key>PACS_SERVER_PORT</key>
                 <default_value>80</default_value>
              </preference>
+             <preference>
+                 <type>combobox</type>
+                 <name>Color Theme</name>
+                 <key>THEME</key>
+                 <values>DEFAULT,DARKSTYLE,FLATDARK</values>
+                 <default_value>DARKSTYLE</default_value>
+             </preference>
         </service>
 
         <service uid="action_about" type="::uiGenericQt::action::SShowAbout">
@@ -123,6 +130,8 @@
 
         <service uid="progress_statusbar" type="::gui::editor::SJobBar" />
 
+         <service uid="styleSelector" type="::style::SStyleSelector" />
+
         <connect channel="progressStatus">
             <signal>SDBWriter/jobCreated</signal>
             <slot>progress_statusbar/showJob</slot>
@@ -134,10 +143,12 @@
 
         <connect channel="parametersChannel">
             <signal>action_configuration/parametersModified</signal>
+            <slot>styleSelector/updateFromPreferences</slot>
         </connect>
 
         <start uid="mainFrame" />
         <start uid="progress_statusbar" />
+        <start uid="styleSelector" />
 
     </config>
 </extension>

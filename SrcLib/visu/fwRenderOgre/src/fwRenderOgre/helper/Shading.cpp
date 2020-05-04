@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,6 @@
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
@@ -148,6 +146,44 @@ std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _p
         suffix = "Quad";
     }
     else if(_primitiveType == ::fwData::Mesh::TETRA)
+    {
+        suffix = "Tetra";
+    }
+    else
+    {
+        suffix = "Triangles";
+    }
+
+    if(_vertexColor)
+    {
+        suffix += "+VT";
+    }
+    if(_diffuseTexture)
+    {
+        suffix += "+DfsTex";
+    }
+    if(_hasPrimitiveColor)
+    {
+        suffix += "+PPColor";
+    }
+
+    const std::string name = "R2VB/" + suffix + "_GP";
+
+    return name;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellType _primitiveType, bool _diffuseTexture,
+                                                bool _vertexColor, bool _hasPrimitiveColor)
+{
+    std::string suffix;
+
+    if(_primitiveType == ::fwData::Mesh::CellType::QUAD)
+    {
+        suffix = "Quad";
+    }
+    else if(_primitiveType == ::fwData::Mesh::CellType::TETRA)
     {
         suffix = "Tetra";
     }
@@ -332,13 +368,13 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_FLOAT2:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            float vec[2] = { _value.f[0], _value.f[1] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
-            arrayObject->resize( type, {1}, 2, true);
+            arrayObject->resize( {2}, ::fwTools::Type::s_FLOAT);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< float >(0) = _value.f[0];
+            arrayObject->at< float >(1) = _value.f[1];
 
             object = arrayObject;
         }
@@ -346,13 +382,14 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_FLOAT3:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            float vec[3] = { _value.f[0], _value.f[1], _value.f[2] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
-            arrayObject->resize( type, {1}, 3, true);
+            arrayObject->resize({3}, ::fwTools::Type::s_FLOAT);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< float >(0) = _value.f[0];
+            arrayObject->at< float >(1) = _value.f[1];
+            arrayObject->at< float >(2) = _value.f[2];
 
             object = arrayObject;
         }
@@ -377,13 +414,13 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_INT2:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            int vec[2] = {_value.i[0], _value.i[1]};
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
-            arrayObject->resize( type, {1}, 2, true);
+            arrayObject->resize({2}, ::fwTools::Type::s_INT32);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< std::uint32_t >(0) = _value.i[0];
+            arrayObject->at< std::uint32_t >(1) = _value.i[1];
 
             object = arrayObject;
         }
@@ -391,13 +428,14 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_INT3:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            int vec[3] = {_value.i[0], _value.i[1], _value.i[2]};
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
-            arrayObject->resize( type, {1}, 3, true);
+            arrayObject->resize({3}, ::fwTools::Type::s_INT32);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< std::uint32_t >(0) = _value.i[0];
+            arrayObject->at< std::uint32_t >(1) = _value.i[1];
+            arrayObject->at< std::uint32_t >(2) = _value.i[2];
 
             object = arrayObject;
         }
@@ -405,13 +443,15 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_INT4:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            int vec[4] = {_value.i[0], _value.i[1], _value.i[2], _value.i[3]};
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
-            arrayObject->resize( type, {1}, 4, true);
+            arrayObject->resize({4}, ::fwTools::Type::s_INT32);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< std::uint32_t >(0) = _value.i[0];
+            arrayObject->at< std::uint32_t >(1) = _value.i[1];
+            arrayObject->at< std::uint32_t >(2) = _value.i[2];
+            arrayObject->at< std::uint32_t >(3) = _value.i[3];
 
             object = arrayObject;
         }
@@ -426,13 +466,13 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_DOUBLE2:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            double vec[2] = { _value.d[0], _value.d[1] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
-            arrayObject->resize( type, {1}, 2, true);
+            arrayObject->resize({2}, ::fwTools::Type::s_DOUBLE);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< double >(0) = _value.d[0];
+            arrayObject->at< double >(1) = _value.d[1];
 
             object = arrayObject;
         }
@@ -440,13 +480,14 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_DOUBLE3:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            double vec[3] = { _value.d[0], _value.d[1], _value.d[2] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
-            arrayObject->resize( type, {1}, 3, true);
+            arrayObject->resize({3}, ::fwTools::Type::s_DOUBLE);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< double >(0) = _value.d[0];
+            arrayObject->at< double >(1) = _value.d[1];
+            arrayObject->at< double >(2) = _value.d[2];
 
             object = arrayObject;
         }
@@ -454,13 +495,15 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_DOUBLE4:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            double vec[4] = { _value.d[0], _value.d[1], _value.d[2], _value.d[3] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
-            arrayObject->resize( type, {1}, 4, true);
+            arrayObject->resize({4}, ::fwTools::Type::s_DOUBLE);
 
-            ::fwDataTools::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setItem( {0}, vec);
+            const auto dumpLock = arrayObject->lock();
+
+            arrayObject->at< double >(0) = _value.d[0];
+            arrayObject->at< double >(1) = _value.d[1];
+            arrayObject->at< double >(2) = _value.d[2];
+            arrayObject->at< double >(3) = _value.d[3];
 
             object = arrayObject;
         }

@@ -164,7 +164,7 @@ bool SSquare::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphi
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Coord SSquare::coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
+::fwRenderQt::data::Coord SSquare::coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* )
 {
     ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     //QPointF sp ( scenePoint.getX(), scenePoint.getY() );

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,30 +37,32 @@ namespace fwGui
 namespace builder
 {
 
-/**
- * @brief   Defines the qt implementation of the slide view builder.
- */
+/// This builder creates a slide widget. The slide widget can be displayed over all others widgets.
 class FWGUIQT_CLASS_API SlideViewBuilder : public ::fwGui::builder::ISlideViewBuilder
 {
-public:
-    fwCoreClassMacro(SlideViewBuilder, ::fwGui::builder::ISlideViewBuilder, ::fwGui::factory::New< SlideViewBuilder >);
 
+public:
+
+    fwCoreClassMacro(SlideViewBuilder, ::fwGui::builder::ISlideViewBuilder, ::fwGui::factory::New< SlideViewBuilder >)
+
+    /// Creates the slide builder.
     FWGUIQT_API SlideViewBuilder(::fwGui::GuiBaseObject::Key key);
 
+    /// Destroyes the slide builder.
     FWGUIQT_API virtual ~SlideViewBuilder();
 
-    /// Create the slide view container
+    /// Create the Qt container @ref ::fwGuiQt::widget::SlideBar.
     FWGUIQT_API virtual void createContainer( ::fwGui::container::fwContainer::sptr parent ) override;
 
-    /**
-     * @brief Destroy local layout with sub containers.
-     * @pre services using this sub containers must be stopped before.
-     */
+    /// Destroyes the container.
     FWGUIQT_API virtual void destroyContainer() override;
 
 protected:
+
+    /// Contains the generic parent container.
     ::fwGuiQt::container::QtContainer::sptr m_parent;
+
 };
 
-} // namespace builder
-} // namespace fwGui
+} // namespace builder.
+} // namespace fwGui.

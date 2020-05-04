@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,15 +28,13 @@
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwThread/Timer.hpp>
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SIncrementArray, ::fwData::Array );
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SIncrementArray, ::fwData::Array )
 
 namespace Tuto16MultithreadConsole
 {
@@ -87,16 +85,15 @@ void SIncrementArray::updating()
     SLM_ASSERT("No array.", array);
     SLM_ASSERT("Array : bad number of dimensions.", array->getNumberOfDimensions() == 1 );
 
-    const size_t arraySize = array->getSize()[0];
+    const auto dumpLock = array->lock();
 
-    ::fwDataTools::helper::Array arrayHelper(array);
-
-    unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
+    auto itr       = array->begin< unsigned int >();
+    const auto end = array->end< unsigned int >();
 
     // Increment the array values
-    for (size_t i = 0; i < arraySize; i++)
+    for (; itr != end; ++itr)
     {
-        ++buffer[i];
+        ++(*itr);
     }
 
     // Notify that the array is modified

@@ -1,6 +1,5 @@
-
 set( NAME OgreViewer )
-set( VERSION 0.3 )
+set( VERSION 0.4 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -8,44 +7,59 @@ set( REQUIREMENTS
     appXml                  # XML configurations
 
     preferences             # Start the bundle, load file location or window preferences
-    visuOgre                # Start the bundle, redirect Ogre's log to Sight log
+    visuOgre                # Start the bundle, allow to use fwRenderOgre
     material                # Start the bundle, load Ogre's materials
-    visuVTKQt               # Start the bundle, allow vtk to be displayed in QT.
+    guiQt                   # Start the bundle, allow dark theme
+    patchMedicalData        # Patch old atoms data
 
-    visuOgreQt              # Allow Ogre to be displayed in QT.
+    visuOgreQt              # Enable Ogre to render things in Qt window.
+
+    # Objects declaration
+    dataReg                 # fwData
+    servicesReg             # fwService
 
     # UI declaration/Actions
     gui
-    media
-    guiQt
-
-    # Configuration launchers
-    fwServices
-    ogreConfig
-
-    # Services
-    ctrlSelection
+    style
     uiVisuOgre
     uiIO
-    ioAtoms
-    videoTools
     uiImageQt
-    videoQt
+    uiTF
+    flatIcon
+
+    # Reader
+    ioVtkGdcm
+    ioVTK
+    ioAtoms
+
+    # Services
+    scene2D
     ctrlCamp
-    uiMeasurement
+    ctrlTF
     ctrlPicking
-    ioActivity
+    uiMeasurement
+    opImageFilter
+
+    # Configuration launchers
+    ogreConfig
 
     # Generic Scene
-    visuOgre
-    visuVTK
     visuOgreAdaptor
-    visuVTKAdaptor
-    visuVTKVRAdaptor
-
-    arDataReg
-    dataReg
-    servicesReg
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
+bundleParam(guiQt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        style-0.1/flatdark.rcc
+        style-0.1/flatdark.qss
+) # Allow dark theme via guiQt
+
+bundleParam(
+        appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        OgreViewer_AppCfg
+) # Main application's configuration to launch

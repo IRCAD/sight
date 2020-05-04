@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,13 +38,21 @@ namespace adaptor
 /**
  * @brief IAdaptor implementation to display a transfer function.
  *
+ * The following actions are available:
+ * - Left mouse click: move the current clicked TF point.
+ * - Left mouse double click: adds a new TF point to the TF or open a color dialog
+ *                            to change the current clicked TF point.
+ * - Middle mouse click: adjusts the transfer function level and window by moving
+ *                       the mouse up/down and left/right respectively.
+ * - Right mouse click: remove the current clicked TF point or open a context menu
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
-    <inout key="tf" uid="..." />
-    <inout key="viewport" uid="..." />
-    <config lineColor="lightGray" circleColor="gray" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+       <inout key="tf" uid="..." />
+       <inout key="viewport" uid="..." />
+       <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
    </service>
    @endcode
  *
@@ -58,145 +66,222 @@ namespace adaptor
  *    - \b yAxis (optional): y axis associated to the adaptor
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b lineColor (optional, default black): Set the color of the lines between the TF points.
- *    - \b circleColor (optional, default black): Set the outline color of the circles representing the TF points.
- *    - \b pointSize (optional, default 10): specify point size.
+ *    - \b pointColor (optional, default="lightGray"): outline color of the circles representing the TF points.
+ *    - \b pointSize (optional, default=0.03): size of TF points in a ratio relative to the window.
+ *    - \b opacity (optional, default=1.0): opacity of the gradient.
+ *    - \b interactive (optional, true/false, default=false): enables interactions.
  */
-class SCENE2D_CLASS_API STransferFunction : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API STransferFunction :
+    public QObject,
+    public ::fwRenderQt::IAdaptor
 {
 
-public:
-    fwCoreServiceMacro(STransferFunction, ::fwRenderQt::IAdaptor);
+Q_OBJECT
 
-    /// Constructor, add handle events TRANSFERFUNCTION and WINDOWING.
+public:
+
+    fwCoreServiceMacro(STransferFunction, ::fwRenderQt::IAdaptor)
+
+    /// Creates the adaptor.
     SCENE2D_API STransferFunction() noexcept;
 
-    /// Basic destructor, do nothing.
+    /// Destroys the adaptor.
     SCENE2D_API virtual ~STransferFunction() noexcept;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
-     */
-    SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
-
-protected:
-
-    SCENE2D_API void configuring() override;
-
-    /// Initialize the layer m_layer (QGraphicsGroupItem), m_circleWidth and m_circleHeight from the viewport
-    ///  dimensions, and call DoUpdate().
-    SCENE2D_API void starting() override;
-
-    /// Call buildTFPoints(), buildCircles(), buildLinesAndPolygons() and buildLayer() to build the tf points map,
-    ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
-    SCENE2D_API void updating() override;
-
-    /// Clear the m_circles and m_linesAndPolygons vectors and remove the layer (and therefore all it's related
-    ///  items) from the scene.
-    SCENE2D_API void stopping() override;
-
-    /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
-    ///  to a specific event.
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
 private:
 
-    /// Convert the view coordinates to item coordinates.
-    ::fwRenderQt::data::Coord coordViewToCoordItem( const ::fwRenderQt::data::Coord& _coord );
+    /// Configures the adaptor.
+    virtual void configuring() override;
 
-    /// Get the selected tf of the image, calculate the window and the level, clear the m_TFPoints map and fill
-    ///  it with the tf points of the selected tf.
-    void buildTFPoints();
+    /**
+     * @brief Initializes the layer and draw the TF.
+     *
+     * @see updating()
+     */
+    virtual void starting() override;
 
-    /// Remove all circle items from the scene, clear the m_circles vector and push it back circles generated
-    ///  from m_TFPoints.
-    void buildCircles();
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwRenderQt::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * ::scene2D::adaptor::SMultipleTF::s_UPDATE_SLOT.
+     * Connect ::fwData::TransferFunction::s_MODIFIED_SIG of s_TF_INOUT to
+     * ::scene2D::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * Connect ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INOUT to
+     * ::scene2D::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * Connect ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INOUT to
+     * ::scene2D::adaptor::STransferFunction::s_UPDATE_SLOT.
+     */
+    virtual KeyConnectionsMap getAutoConnections() const override;
 
-    /// From an iterator on the m_TFPoints map, create a QGraphicsEllipseItem, give it the appropriated color
-    ///  and pen, and return it.
-    QGraphicsEllipseItem* buildCircle(::fwData::TransferFunction::TFValueType value,
-                                      ::fwData::TransferFunction::TFColor color);
+    /// Release all graphics items and draw the TF.
+    virtual void updating() override;
 
-    /// Remove all line and polygon items from the scene, clear the m_linesAndPolygons vector, and push it back
-    ///  lines and gradient polygons generated from m_circles.
-    void buildLinesAndPolygons();
+    /// Release all graphic items.
+    virtual void stopping() override;
 
-    /// Create lines and gradient polygons generated from m_circles
-    void buildLinearLinesAndPolygons();
+    /// Creates graphic points.
+    void createTFPoints();
 
-    /// Create lines and polygons generated from m_circles
-    void buildNearestLinesAndPolygons();
+    /// Removes all graphic points from the layer and deletes it.
+    void destroyTFPoints();
 
-    /// Build lines on TF bounds with color of first/last point (use when TF is not clamped)
-    void buildBounds();
+    /// Creates the gradient.
+    void createTFPolygon();
 
-    /// Add the items from m_circles and m_linesAndPolygons to m_layer, set its position and its zValue and add
-    /// it to the scene.
+    /// Removes the graphic gradient from the layer and deletes it.
+    void destroyTFPolygon();
+
+    /**
+     * @brief Creates lines and linear gradient polygons of the TF.
+     * @param _position the position vector to fill.
+     * @param _grad the gradient to create.
+     * @param _distanceMax the maximum distance used by the gradient.
+     */
+    void buildLinearPolygons(QVector<QPointF>& _position,
+                             QLinearGradient& _grad,
+                             double _distanceMax);
+
+    /**
+     * @brief Creates lines and nearest gradient polygons of the TF.
+     * @param _position the position vector to fill.
+     * @param _grad the gradient to create.
+     * @param _distanceMax the maximum distance used by the gradient.
+     */
+    void buildNearestPolygons(QVector<QPointF>& _position,
+                              QLinearGradient& _grad,
+                              double _distanceMax);
+
+    /// Adds graphic items to @ref m_layer.
     void buildLayer();
 
-    /// Clear the selected tf, rebuilt it from m_TFPoints (building TransferFunctionPoints and inserting'em),
-    ///  update image min and max, and notify the image with a TRANSFERFUNCTION message.
-    void updateImageTF();
+    /**
+     * @brief Filters the event to call the right methods from mouse informations.
+     * @param _event the 2D scene event.
+     *
+     * The following actions are available:
+     * - Left mouse click: move the current clicked TF point.
+     * - Left mouse double click: adds a new TF point to the TF or open a color dialog
+     *                            to change the current clicked TF point.
+     * - Middle mouse click: adjusts the transfer function level and window by moving
+     *                       the mouse up/down and left/right respectively.
+     * - Right mouse click: remove the current clicked TF point or open a context menu
+     *                      to manage multiple actions which are 'clamp' or 'linear'.
+     */
+    virtual void processInteraction(::fwRenderQt::data::Event& _event ) override;
 
-    /// Open a color dialog and change the selected tf point color
-    void doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor);
+    /**
+     * @brief Sets @ref m_capturedTFPoint and highlight the captured clicked point.
+     * @param _TFPoint the selected TF point.
+     */
+    void leftButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
 
-    /// Store the circle selected and its coordinates, and set its outline yellow
-    void leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
+    /**
+     * @brief Move @ref m_capturedTFPoint to the new mouse position and update the TF.
+     * @param _event the 2D scene event.
+     *
+     * @pre m_capturedTFPoint must be previously sets.
+     * @see leftButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >&)
+     */
+    void mouseMoveOnPointEvent(const ::fwRenderQt::data::Event& _event);
 
-    /// Check if the mouse is out of bounds, as the case, move the circle on x and y, x or y, destroy the related
-    /// point in the tf points map, create a new one with the new coord as key and alpha, rescale the tf map
-    /// to 0-1 and update the image tf.
-    void mouseMoveEvent(QGraphicsEllipseItem* circle,
-                        ::fwData::TransferFunction::TFValueType tfPoint,
-                        ::fwRenderQt::data::Event& _event);
+    /**
+     * @brief Resets the captured TF point highlighting and sets @ref m_capturedTFPoint to null.
+     *
+     * @pre m_capturedTFPoint must be previously sets.
+     * @see leftButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >&)
+     */
+    void leftButtonReleaseEvent();
 
-    /// Reset the circle pen to the selected circle
-    void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
+    /**
+     * @brief Changes the TF point color by opening a color dialog and update the TF.
+     * @param _TFPoint the selected TF point.
+     */
+    void leftButtonDoubleClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
 
-    /// Erase the selected point
-    void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
-                          ::fwRenderQt::data::Event& _event);
+    /**
+     * @brief Removes a TF point from the TF.
+     * @param _TFPoint the selected TF point.
+     */
+    void rightButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
 
-    /// Create a new point without modifying the TF (placed between the 2 encompassing points with linear
-    /// interpolation)
-    void doubleClickEvent( ::fwRenderQt::data::Event& _event);
+    /**
+     * @brief Adds a new TF point to the TF.
+     * @param _event the 2D scene event.
+     */
+    void leftButtonDoubleClickEvent(const ::fwRenderQt::data::Event& _event);
 
-    /// Return the x coordinate of the center of the circle in a 0-1 scale (for storage in m_TFPoints).
-    double pointValue(QGraphicsEllipseItem* circle);
+    /**
+     * @brief Sets @ref m_capturedTF if the clicked coord if over the TF.
+     * @param _event the 2D scene event.
+     */
+    void midButtonClickEvent(const ::fwRenderQt::data::Event& _event);
 
-    /// The line pen (see "lineColor" config attribute) and circle pen (see "circleColor" config attribute).
-    QPen m_linePen, m_circlePen;
+    /**
+     * @brief Update the window/level of the TF relativly to the mouse movement.
+     * @param _event the 2D scene event.
+     *
+     * @pre m_capturedTF must be previously sets.
+     * @see midButtonClickEvent(const ::fwRenderQt::data::Event&)
+     */
+    void mouseMoveOnTFEvent(const ::fwRenderQt::data::Event& _event);
 
-    /// A vector containing QGraphicsItems representing the lines between tf points and the filling gradient
-    /// polygons.
-    std::vector< QGraphicsItem* > m_linesAndPolygons;
+    /**
+     * @brief Resets @ref m_capturedTF.
+     *
+     * @pre m_capturedTF must be previously sets.
+     * @see midButtonClickEvent(const ::fwRenderQt::data::Event&)
+     */
+    void midButtonReleaseEvent();
 
-    /// A vector containing QGraphicsEllipseItems representing the circles representing the tf points.
-    std::vector< QGraphicsEllipseItem* > m_circles;
+    /**
+     * @brief Open a context menu.
+     * @param _event the 2D scene event.
+     */
+    void rightButtonCLickEvent(const ::fwRenderQt::data::Event& _event);
 
-    /// The layer.
+    /**
+     * @brief Sets if the TF is clamped or not.
+     * @param _clamp the clamp status.
+     */
+    void clampTF(bool _clamp);
+
+    /**
+     * @brief Sets if the TF interpolation mode is linear or nearest.
+     * @param _linear uses true is the interpolation mode must be linear.
+     */
+    void toggleLinearTF(bool _linear);
+
+    /// Defines the size of TF points in a ratio relative to the window.
+    float m_pointSize { 0.03f };
+
+    /// Defines the pen used by gradients.
+    QPen m_polygonsPen;
+
+    /// Defines the pen used by TF points.
+    QPen m_pointsPen;
+
+    /// Sets if interactions are enable or not.
+    bool m_interactive { true };
+
+    /// Stores the main layer.
     QGraphicsItemGroup* m_layer;
 
-    /// The selected tf level and window, and width/height of the circles.
-    double m_circleWidth, m_circleHeight;
+    /// Contains a set of graphic point and it coordinate in the window/level space.
+    std::vector< std::pair< Point2DType, QGraphicsEllipseItem* > > m_TFPoints;
 
-    /// The map associating a key representing the value of a tf point to the ::fwData::Color associated.
-    ::fwData::TransferFunction::TFDataType m_TFPoints;
+    /// Contains the graphic gradient.
+    QGraphicsPolygonItem* m_TFPolygon { nullptr };
 
-    /// Coordinates saved to calculate circles moves.
-    ::fwRenderQt::data::Coord m_oldCoord;
+    /// Stores the captured clicked point.
+    std::pair< Point2DType, QGraphicsEllipseItem* >* m_capturedTFPoint { nullptr };
 
-    /// Is a point captured by a mouse click?
-    bool m_pointIsCaptured;
+    /// Stores the captured clicked TF and the current mouse position,
+    /// the first coord is in the window/level space and the second in screen space,
+    /// it allows to adjust the window/level of the current TF.
+    std::pair< ::fwData::TransferFunction::sptr, ::fwRenderQt::data::Coord > m_capturedTF;
 
-    /// The captured circle.
-    QGraphicsEllipseItem* m_capturedCircle;
-
-    float m_pointSize;
 };
 
 } // namespace adaptor

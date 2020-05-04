@@ -17,3 +17,4 @@ set( PLUGINS
     QtQuick
     QtQuick.2
 )
+set( WARNINGS_AS_ERRORS ON)

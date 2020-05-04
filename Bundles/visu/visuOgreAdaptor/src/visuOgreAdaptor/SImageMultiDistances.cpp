@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,8 +32,6 @@
 #include <fwData/PointList.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Mesh.hpp>
 #include <fwDataTools/helper/Vector.hpp>
 
 #include <fwRenderOgre/helper/ManualObject.hpp>
@@ -55,17 +53,15 @@ static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT            
 static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
 static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT             = "updateVisibility";
 
-static const std::string s_FONT_SOURCE_CONFIG          = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG            = "fontSize";
-static const std::string s_RADIUS_CONFIG               = "radius";
-static const std::string s_INTERACTIVE_CONFIG          = "interactive";
-static const std::string s_PRIORITY_CONFIG             = "priority";
-static const std::string s_QUERY_MASK_CONFIG           = "queryMask";
-static const std::string s_DISTANCE_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
+static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
+static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
+static const std::string s_RADIUS_CONFIG      = "radius";
+static const std::string s_INTERACTIVE_CONFIG = "interactive";
+static const std::string s_PRIORITY_CONFIG    = "priority";
+static const std::string s_QUERY_MASK_CONFIG  = "queryMask";
+static const std::string s_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
 
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID;
-
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SImageMultiDistances)
 
 //------------------------------------------------------------------------------
 
@@ -148,18 +144,6 @@ SImageMultiDistances::~SImageMultiDistances() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 void SImageMultiDistances::configuring()
 {
     this->configureParams();
@@ -173,7 +157,7 @@ void SImageMultiDistances::configuring()
     m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
     m_priority             = config.get< int >(s_PRIORITY_CONFIG, m_priority);
 
-    std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG);
+    std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexaMask.empty())
     {
         SLM_ASSERT(
@@ -184,7 +168,7 @@ void SImageMultiDistances::configuring()
         m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 
-    hexaMask = config.get<std::string>(s_DISTANCE_QUERY_FLAGS_CONFIG);
+    hexaMask = config.get<std::string>(s_QUERY_FLAGS_CONFIG, "");
     if(!hexaMask.empty())
     {
         SLM_ASSERT(
@@ -251,6 +235,18 @@ void SImageMultiDistances::starting()
         auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
         layer->addInteractor(interactor, m_priority);
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -464,16 +460,14 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
         ::Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
 
         const ::Ogre::Camera* const cam = layer->getDefaultCamera();
+        const auto* const vp            = cam->getViewport();
 
-        const ::Ogre::Real width  = static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth());
-        const ::Ogre::Real height = static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight());
+        const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+        const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
 
-        const ::Ogre::Ray ray = cam->getCameraToViewportRay(
-            static_cast< ::Ogre::Real >(_x)/width,
-            static_cast< ::Ogre::Real >(_y)/height);
+        const ::Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
 
         bool found = false;
-
         ::Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_distanceQueryFlag);
         raySceneQuery->setSortByDistance(false);
         if (raySceneQuery->execute().size() != 0)
@@ -555,11 +549,14 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
         else
         {
             const ::fwRenderOgre::Layer::sptr layer = this->getLayer();
-            const ::Ogre::Camera* const cam         = layer->getDefaultCamera();
-            const ::Ogre::Ray ray                   = cam->getCameraToViewportRay(
-                static_cast< ::Ogre::Real >(_x) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualWidth()),
-                static_cast< ::Ogre::Real >(_y) / static_cast< ::Ogre::Real >(cam->getViewport()->getActualHeight()));
 
+            const ::Ogre::Camera* const cam = layer->getDefaultCamera();
+            const auto* const vp            = cam->getViewport();
+
+            const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+            const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
+
+            const ::Ogre::Ray ray           = cam->getCameraToViewportRay(vpX, vpY);
             const ::Ogre::Vector3 direction = this->getCamDirection(cam);
 
             ::Ogre::Vector3 position;
@@ -766,7 +763,7 @@ void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
     const DistanceMap::const_iterator it = m_distances.find(_id);
     SLM_ASSERT("The distance is not found", it != m_distances.end());
 
-    // Destroy Ogre ressource.
+    // Destroy Ogre resource.
     const DistanceData distanceData = it->second;
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
@@ -789,38 +786,4 @@ void SImageMultiDistances::destroyDistance(::fwTools::fwID::IDType _id)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::focusInEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::focusOutEvent()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::wheelEvent(int, int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::resizeEvent(int, int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::keyPressEvent(int)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::keyReleaseEvent(int)
-{
-}
-
-}
+} // namespace visuOgreAdaptor.

@@ -717,7 +717,7 @@ typename CellIteratorBase<isConst>::difference_type CellIteratorBase<isConst>::o
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-typename CellIteratorBase<isConst>::reference CellIteratorBase<isConst>::operator*()
+typename CellIteratorBase<isConst>::reference CellIteratorBase<isConst>::operator*() const
 {
     return *m_cellInfo;
 }
@@ -725,7 +725,7 @@ typename CellIteratorBase<isConst>::reference CellIteratorBase<isConst>::operato
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-typename CellIteratorBase<isConst>::pointer CellIteratorBase<isConst>::operator->()
+typename CellIteratorBase<isConst>::pointer CellIteratorBase<isConst>::operator->() const
 {
     return m_cellInfo.get();
 }

@@ -36,8 +36,6 @@
 
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
 
 #include <fwVtkIO/helper/vtkLambdaCommand.hpp>
 #include <fwVtkIO/vtk.hpp>

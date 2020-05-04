@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 
 #include "visuOgreAdaptor/SMesh.hpp"
 #include "visuOgreAdaptor/SReconstruction.hpp"
-#include <visuOgreAdaptor/defines.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -41,17 +40,12 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SModelSeries, ::fwMedData::ModelSeries)
-
 namespace visuOgreAdaptor
 {
 //-----------------------------------------------------------------------------
 
-// Private slots
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
-
-// Public slot
-const ::fwCom::Slots::SlotKeyType SModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT         = "changeField";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
 static const std::string s_MODEL_INPUT = "model";
 
@@ -81,15 +75,13 @@ void SModelSeries::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    if (config.count(s_AUTORESET_CAMERA_CONFIG))
-    {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
-    }
+    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
 
     m_materialTemplateName = config.get<std::string>(s_MATERIAL_CONFIG, m_materialTemplateName);
     m_isDynamic            = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
@@ -116,13 +108,27 @@ void SModelSeries::starting()
     this->updating();
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    return connections;
+}
+
 //------------------------------------------------------------------------------
 
 void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", modelSeries);
+    SLM_ASSERT("input '" + s_MODEL_INPUT + "' does not exist.", modelSeries);
 
     this->stopping();
 
@@ -179,7 +185,7 @@ void SModelSeries::showReconstructions(bool _show)
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
     const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("'" + s_MODEL_INPUT + "' input not found", modelSeries);
+    SLM_ASSERT("input '" + s_MODEL_INPUT + "' does not exist.", modelSeries);
 
     ::fwData::mt::ObjectReadLock lock(modelSeries);
 
@@ -193,20 +199,6 @@ void SModelSeries::showReconstructionsOnFieldChanged()
     }
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

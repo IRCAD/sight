@@ -30,6 +30,8 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
+#include <fwMemory/IBuffered.hpp>
+
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
 
@@ -119,7 +121,8 @@ class PointList;
     }
    @endcode
  */
-class FWDATA_CLASS_API Image : public Object
+class FWDATA_CLASS_API Image : public ::fwData::Object,
+                               public ::fwMemory::IBuffered
 {
 public:
     fwCoreClassMacro(Image, ::fwData::Object, ::fwData::factory::New< Image >)
@@ -446,10 +449,32 @@ public:
     /// @}
     ///
 
+    /**
+     * @brief Return a pointer on a image pixel
+     * @param index offset of the pixel
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void* getPixelBuffer( IndexType index );
+
+    /**
+     * @brief Return a pointer on a image pixel
+     * @param index offset of the pixel
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void* getPixelBuffer( IndexType index ) const;
+
+    /**
+     * @brief Set pixel value represented as a void* buffer
+     * @param index offset of the pixel
+     * @param pixBuf pixel value represented as a void* buffer
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     */
+    FWDATA_API void setPixelBuffer( IndexType index, BufferType* pixBuf);
+
     /// Return the pixel value in a std::string
     FWDATA_API const std::string getPixelAsString(IndexType x,
                                                   IndexType y,
-                                                  IndexType z );
+                                                  IndexType z ) const;
 
     /**
      * @brief Return a lock on the image to prevent from dumping the buffer on the disk
@@ -458,6 +483,29 @@ public:
      */
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
+    /// Return the buffer object
+    FWDATA_API ::fwMemory::BufferObject::sptr getBufferObject();
+
+    /// Return the buffer object
+    FWDATA_API ::fwMemory::BufferObject::csptr getBufferObject() const;
+    /**
+     * @brief Set a stream factory for the image's buffer manager
+     *
+     * The factory will be used to load the image on demand.
+     *
+     * @param factory ::fwMemory::stream::in::IFactory stream factory
+     * @param size size of data provided by the stream
+     * @param sourceFile Filesystem path of the source file, if applicable
+     * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided
+     * @param policy Buffer allocation policy
+     */
+    FWDATA_API void setIStreamFactory(
+        const SPTR(::fwMemory::stream::in::IFactory)& factory,
+        const size_t size,
+        const std::filesystem::path& sourceFile                = "",
+        const ::fwMemory::FileFormatType format                = ::fwMemory::OTHER,
+        const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New());
+
     // ---------------------------------------
     // Deprecated API
     // ---------------------------------------
@@ -465,19 +513,19 @@ public:
     /**
      * @brief Image size type
      */
-    typedef ::fwData::Array::SizeType SizeType;
+    [[deprecated("it will be removed in sight 22.0, use Size")]] typedef ::fwData::Array::SizeType SizeType;
 
-    typedef size_t BufferIndexType;
+    [[deprecated("it will be removed in sight 22.0")]] typedef size_t BufferIndexType;
 
     /**
      * @brief Image spacing type
      */
-    typedef std::vector< double > SpacingType;
+    [[deprecated("it will be removed in sight 22.0, use Spacing")]] typedef std::vector< double > SpacingType;
 
     /**
      * @brief Image origin type
      */
-    typedef std::vector< double > OriginType;
+    [[deprecated("it will be removed in sight 22.0, use Origin")]] typedef std::vector< double > OriginType;
     /** @{
      * @brief get/set image spacing
      * @deprecated Use getSizeSpacing2()/setSpacing2(), it will be removed in sight 22.0
@@ -550,11 +598,21 @@ public:
     [[deprecated("it will be removed in sight 22.0")]]
     FWDATA_API ::fwData::Array::sptr getDataArray() const;
 
-private:
+protected:
 
-    /// Get Pixel buffer
-    FWDATA_API void* getPixelBuffer( IndexType index );
-    FWDATA_API void* getPixelBuffer( IndexType index ) const;
+    // To allow locked_ptr to access protected lockBuffer()
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
+    /**
+     * @brief Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     * The buffer cannot be accessed if the image is not locked
+     */
+    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
+
+private:
 
     /**
      * @brief Protected setter for the array buffer.

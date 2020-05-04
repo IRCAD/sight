@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -860,6 +860,27 @@ Mesh::LocksType Mesh::lock() const
     }
 
     return locks;
+}
+
+//------------------------------------------------------------------------------
+
+const Mesh::ColorValueType* Mesh::getPointColorsBuffer() const
+{
+    return static_cast<ColorValueType*>(m_pointColors->getBuffer());
+}
+
+//------------------------------------------------------------------------------
+
+const Mesh::ColorValueType* Mesh::getCellColorsBuffer() const
+{
+    return static_cast<ColorValueType*>(m_cellColors->getBuffer());
+}
+//------------------------------------------------------------------------------
+
+void Mesh::lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const
+{
+    const LocksType& myLocks = this->lock();
+    locks.insert(std::end(locks), std::begin(myLocks), std::end(myLocks));
 }
 
 //------------------------------------------------------------------------------

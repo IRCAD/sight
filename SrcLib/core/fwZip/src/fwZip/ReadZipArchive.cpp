@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,6 @@
 #include <boost/iostreams/stream.hpp>
 
 #include <filesystem>
-
 #include <iosfwd>    // streamsize
 
 namespace fwZip
@@ -63,29 +62,48 @@ public:
     typedef char char_type;
     typedef ::boost::iostreams::source_tag category;
 
-    ZipSource( const std::filesystem::path& archive) :
-        m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
-        m_archive(archive)
-    {
-
-    }
-
-    ZipSource( const std::filesystem::path& archive, const std::filesystem::path& path ) :
+    ZipSource( const std::filesystem::path& archive, const std::string& key = "") :
         m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
         m_archive(archive),
-        m_path(path)
+        m_key(key)
     {
-        int nRet = unzLocateFile(m_zipDescriptor.get(), path.string().c_str(), 0);
+    }
+
+    ZipSource( const std::filesystem::path& archive, const std::filesystem::path& path, const std::string& key = "") :
+        m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
+        m_archive(archive),
+        m_path(path),
+        m_key(key)
+    {
+        int nRet = unzLocateFile(m_zipDescriptor.get(), m_path.string().c_str(), 0);
 
         FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Read("File '" +  path.string() + "' in archive '" +
-                                     archive.string() + "' doesn't exist."),
+            ::fwZip::exception::Read(
+                "File '"
+                + m_path.string()
+                + "' in archive '"
+                + m_archive.string()
+                + "' doesn't exist."
+                ),
             nRet != UNZ_OK);
 
-        nRet = unzOpenCurrentFile(m_zipDescriptor.get());
+        if(key.empty())
+        {
+            nRet = unzOpenCurrentFile(m_zipDescriptor.get());
+        }
+        else
+        {
+            nRet = unzOpenCurrentFilePassword(m_zipDescriptor.get(), m_key.c_str());
+        }
+
         FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Read("Cannot retrieve file '" + path.string() +
-                                     "' in archive '"+ archive.string() + "'."),
+            ::fwZip::exception::Read(
+                "Cannot retrieve file '"
+                + m_path.string()
+                + "' in archive '"
+                + m_archive.string()
+                + "'."
+                ),
             nRet != UNZ_OK);
     }
 
@@ -93,10 +111,15 @@ public:
 
     std::streamsize read(char* s, std::streamsize n)
     {
-        std::streamsize nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
+        const int nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
         FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Read("Error occurred while reading archive '" + m_archive.string()
-                                     + ":" + m_path.string() + "'."),
+            ::fwZip::exception::Read(
+                "Error occurred while reading archive '"
+                + m_archive.string()
+                + ":"
+                + m_path.string()
+                + "'."
+                ),
             nRet < 0);
         return nRet;
     }
@@ -105,41 +128,44 @@ public:
 
     std::string getComment()
     {
-        unz_global_info* info = new unz_global_info;
+        unz_global_info info;
 
-        std::streamsize nRet = unzGetGlobalInfo(m_zipDescriptor.get(), info);
-
-        FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Read("Error occurred while reading information archive '" +
-                                     m_archive.string() + "'."),
-            nRet < 0);
-
-        char* comment = new char[info->size_comment];
-        nRet = unzGetGlobalComment(m_zipDescriptor.get(), comment, info->size_comment);
+        int nRet = unzGetGlobalInfo(m_zipDescriptor.get(), &info);
 
         FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Read("Error occurred while reading archive's global comment '" +
-                                     m_archive.string() + "'."),
+            ::fwZip::exception::Read(
+                "Error occurred while reading information archive '"
+                + m_archive.string()
+                + "'."),
             nRet < 0);
 
-        std::string stringComment(comment, info->size_comment);
+        std::string comment;
+        comment.resize(info.size_comment);
 
-        delete info;
-        delete[] comment;
+        nRet = unzGetGlobalComment(m_zipDescriptor.get(), comment.data(), static_cast<uint16_t>(comment.size()));
 
-        return stringComment;
+        FW_RAISE_EXCEPTION_IF(
+            ::fwZip::exception::Read(
+                "Error occurred while reading archive's global comment '"
+                + m_archive.string()
+                + "'."),
+            nRet < 0);
+
+        return comment;
     }
 
-protected:
+private:
     SPTR(void) m_zipDescriptor;
     std::filesystem::path m_archive;
     std::filesystem::path m_path;
+    std::string m_key;
 };
 
 //-----------------------------------------------------------------------------
 
-ReadZipArchive::ReadZipArchive( const std::filesystem::path& archive ) :
-    m_archive(archive)
+ReadZipArchive::ReadZipArchive(const std::filesystem::path& archive, const std::string& key) :
+    m_archive(archive),
+    m_key(key)
 {
 }
 
@@ -147,17 +173,14 @@ ReadZipArchive::ReadZipArchive( const std::filesystem::path& archive ) :
 
 SPTR(std::istream) ReadZipArchive::getFile(const std::filesystem::path& path)
 {
-    SPTR(::boost::iostreams::stream<ZipSource>) is
-        = std::make_shared< ::boost::iostreams::stream<ZipSource> >(m_archive, path);
-
-    return is;
+    return std::make_shared< ::boost::iostreams::stream<ZipSource> >(m_archive, path, m_key);
 }
 
 //-----------------------------------------------------------------------------
 
 std::string ReadZipArchive::getComment()
 {
-    SPTR(ZipSource) zip = std::make_shared<ZipSource>(m_archive);
+    SPTR(ZipSource) zip = std::make_shared<ZipSource>(m_archive, m_key);
 
     return zip->getComment();
 }

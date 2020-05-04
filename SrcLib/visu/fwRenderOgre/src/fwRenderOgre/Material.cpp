@@ -222,7 +222,7 @@ void Material::updatePolygonMode(int _polygonMode)
 
 void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDiffuseTexture, bool _useTextureAlpha )
 {
-    const bool isR2VB = m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor;
+    const bool isR2VB = m_primitiveType != ::fwData::Mesh::CellType::TRIANGLE || m_hasPrimitiveColor;
 
     // If we have UVs with R2VB, then for the sake of simplicity we generate UVs whatever the material is
     // Otherwise we would have to update the whole R2VB pipeline each time a texture is set/unset

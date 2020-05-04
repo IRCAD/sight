@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="130" height="130" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="matrix(.94183 0 0 .77687 -232.66 -80.898)" fill="#d25252" stroke="#741e1e">
+  <text transform="scale(.91596 1.0917)" x="291.01212" y="211.66046" font-family="'DejaVu Sans'" font-weight="bold" letter-spacing="0px" stroke-width="2" word-spacing="0px" style="line-height:0%" xml:space="preserve"><tspan x="291.01212" y="211.66046" fill="#d25252" font-size="50px" font-weight="bold" stroke="#741e1e" stroke-width="2"> </tspan></text>
+  <path d="m330.1 188.98-40.075-31.611 40.96-31.89-0.0205 18.707s17.025-2.3762 27.13 7.0778c10.104 9.454 10.045 31.424 10.045 31.424s-5.5857-9.7629-15.832-13.358c-10.247-3.5948-21.913-1.7071-21.913-1.7071l-0.29243 21.357z" fill-rule="evenodd" stroke-width="2.3381"/>
+  <path d="m302 186.61 40.075 31.611-40.96 31.89 0.0206-18.707s-17.025 2.3762-27.13-7.0778c-10.104-9.454-10.045-31.424-10.045-31.424s5.5857 9.7629 15.832 13.358c10.247 3.5948 21.913 1.7071 21.913 1.7071l0.29239-21.357z" fill-rule="evenodd" stroke-width="2.3381"/>
+ </g>
+ <g transform="matrix(.48 0 0 .48 56.8 51.6)" fill="#6997bb" stroke="#2e4d64" stroke-width="4.1665">
+  <path d="m104.06 30.979v18.357c0 0.53926 0.4373 0.97656 0.97656 0.97656h18.357c0.86992 0 1.3057-1.052 0.69062-1.6672l-18.357-18.357c-0.61523-0.61504-1.6672-0.17949-1.6672 0.69062z"/>
+  <path d="m99.375 59.688c-2.5889 0-4.6875-2.0986-4.6875-4.6875v-25h-44.141c-5.8154 0-10.547 4.7312-10.547 10.547v78.906c0 5.8156 4.7314 10.547 10.547 10.547h63.281c5.8154 0 10.547-4.7312 10.547-10.547v-59.766z"/>
+ </g>
+</svg>

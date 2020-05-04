@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,20 +39,23 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::visuOgreAdaptor::STransform">
-            <inout key="transform" uid="..." />
-            <config layer="default" transform="meshTFAdaptor" />
-       </service>
+    <service type="::visuOgreAdaptor::STransform">
+        <inout key="transform" uid="..." />
+        <config layer="default" transform="meshTFAdaptor" />
+   </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b transform [::fwData::TransformationMatrix3D]: Sight transform matrix.
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): Defines the transform's layer.
- * - \b transform (mandatory): Name of the Ogre Transform.
- * - \b parent (optional) : Name of the parent Ogre Transform you want to attach to.
+ * - \b layer (mandatory, string): Defines the transform's layer.
+ * - \b transform (mandatory, string): Name of the Ogre Transform.
+ * - \b parent (optional, string, default="") : Name of the parent Ogre Transform you want to attach to.
  */
-class VISUOGREADAPTOR_CLASS_API STransform : public ::fwRenderOgre::IAdaptor,
-                                             public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API STransform final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 
 public:
@@ -63,42 +66,42 @@ public:
     VISUOGREADAPTOR_API STransform() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~STransform() noexcept final;
+    VISUOGREADAPTOR_API virtual ~STransform() noexcept;
 
 private:
+
+    /// Retrieves id sets in the configurations.
+    virtual void configuring();
+
+    /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
+    virtual void starting();
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to ::visuOgreAdaptor::STransform::s_UPDATE_SLOT
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const final;
-
-    /// Retrieves id sets in the configurations.
-    void configuring() final;
-
-    /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
-    void starting() final;
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Updates m_transformNode from the ::fwData::TransformationMatrix3D.
-    void updating() final;
+    virtual void updating();
 
     /// Does nothing.
-    void stopping() final;
+    virtual void stopping();
 
-    /// The Parent transform identifier.
+    /// Defines the Parent transform identifier.
     ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId {""};
 
-    /// Ogre transform node.
+    /// Contains the Ogre transform node.
     ::Ogre::SceneNode* m_transformNode {nullptr};
 
-    /// Ogre parent transform sceneNode.
+    /// Contains the Ogre parent transform sceneNode.
     ::Ogre::SceneNode* m_parentTransformNode {nullptr};
 
-    /// Ogre transformation of this service
+    /// Defines the Ogre transformation of this service
     ::Ogre::Affine3 m_ogreTransform;
 
 };
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

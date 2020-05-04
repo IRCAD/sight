@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -194,6 +194,57 @@ Ogre::Matrix4 Camera::computeProjectionMatrix(const ::arData::Camera& _calibrati
 
     return convertFromScreenToViewSpace(_camera, pixelPt);
 }
+
+//-----------------------------------------------------------------------------
+
+Ogre::Vector3 Camera::convertScreenSpaceToViewSpace(const Ogre::Camera& _camera, const Ogre::Vector3& _screenPos)
+{
+    const ::Ogre::Viewport* viewport = _camera.getViewport();
+
+    const ::Ogre::Vector3 vpSize(static_cast<float>(viewport->getActualWidth()),
+                                 static_cast<float>(viewport->getActualHeight()), 1.f);
+    const ::Ogre::Vector3 vpPosition(static_cast<float>(viewport->getActualLeft()),
+                                     static_cast<float>(viewport->getActualTop()), 0.f);
+
+    ::Ogre::Vector3 ndcPos = (_screenPos - vpPosition) / vpSize;
+    ndcPos                 = ndcPos * 2.f - 1.f;
+    ndcPos.y              *= -1.f;
+
+    return convertNDCToViewSpace(_camera, ndcPos);
+}
+
+//-----------------------------------------------------------------------------
+
+Ogre::Vector3 Camera::convertNDCToViewSpace(const ::Ogre::Camera& _camera, const ::Ogre::Vector3& _ndcPos)
+{
+    ::Ogre::Vector4 clippingCoordinatePixel;
+    if(_camera.getProjectionType() == ::Ogre::ProjectionType::PT_PERSPECTIVE)
+    {
+        const float near = static_cast<const float>(_camera.getNearClipDistance());
+        const float far  = static_cast<float>(_camera.getFarClipDistance());
+        clippingCoordinatePixel.w = static_cast< ::Ogre::Real >(2.0 * near * far)  /
+                                    (near + far + _ndcPos.z * (near - far));
+    }
+    else
+    {
+        clippingCoordinatePixel.w = 1;
+    }
+    clippingCoordinatePixel.x = _ndcPos.x * clippingCoordinatePixel.w;
+    clippingCoordinatePixel.y = _ndcPos.y * clippingCoordinatePixel.w;
+    clippingCoordinatePixel.z = _ndcPos.z * clippingCoordinatePixel.w;
+
+    const ::Ogre::Affine3& viewMat = _camera.getViewMatrix();
+    const ::Ogre::Matrix4& projMat = _camera.getProjectionMatrixWithRSDepth();
+    const auto inversedCombinedMat = (projMat * viewMat).inverse();
+
+    // We multiply by the inverse since we are performing the usual projection in the other way around.
+    const ::Ogre::Vector4 result = inversedCombinedMat * clippingCoordinatePixel;
+
+    return result.xyz();
+
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace helper
 

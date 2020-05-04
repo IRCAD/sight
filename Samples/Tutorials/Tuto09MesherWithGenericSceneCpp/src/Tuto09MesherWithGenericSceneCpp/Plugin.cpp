@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -105,7 +105,7 @@ void Plugin::initialize()
                                                       "sliderIndexEditor", true, false);
     auto listOrganEditor = m_appManager->addService("::uiMedDataQt::editor::SModelSeriesList",
                                                     "listOrganEditor", true, false);
-    auto organMaterialEditor = m_appManager->addService("::uiReconstructionQt::OrganMaterialEditor",
+    auto organMaterialEditor = m_appManager->addService("::uiReconstructionQt::SOrganMaterialEditor",
                                                         "organMaterialEditor", true, false);
     auto representationEditor = m_appManager->addService("::uiReconstructionQt::RepresentationEditor",
                                                          "representationEditor", true, false);

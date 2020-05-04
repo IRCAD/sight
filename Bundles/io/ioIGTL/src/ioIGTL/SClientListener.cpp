@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,8 +31,6 @@
 #include <fwData/Object.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwPreferences/helper.hpp>
@@ -42,7 +40,7 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SClientListener);
+fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SClientListener)
 
 const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 
@@ -250,11 +248,10 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
     else if(frameTL)
     {
         ::fwData::Image::sptr im = ::fwData::Image::dynamicCast(obj);
-        ::fwDataTools::helper::Image helper(im);
         if(!m_tlInitialized)
         {
             frameTL->setMaximumSize(10);
-            frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), im->getNumberOfComponents());
+            frameTL->initPoolSize(im->getSize2()[0], im->getSize2()[1], im->getType(), im->getNumberOfComponents());
             m_tlInitialized = true;
         }
 
@@ -262,9 +259,11 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
 
         std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
-        std::uint8_t* srcBuffer = static_cast< std::uint8_t* >(helper.getBuffer());
+        const auto dumpLock = im->lock();
+        auto itr            = im->begin<std::uint8_t>();
+        const auto end      = im->end<std::uint8_t>();
 
-        std::copy(srcBuffer, srcBuffer+im->getSizeInBytes(), destBuffer);
+        std::copy(itr, end, destBuffer);
 
         frameTL->pushObject(buffer);
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -246,8 +246,7 @@ namespace reader
 {
 //------------------------------------------------------------------------------
 
-template <typename Iterator>
-std::pair<bool, std::string> parse(Iterator first,  Iterator last, std::string& buf, std::vector<fwDataIO::line>& lines)
+std::pair<bool, std::string> parse(std::string& buf, std::vector<fwDataIO::line>& lines)
 {
     using boost::spirit::ascii::space;
     using boost::spirit::ascii::blank;
@@ -271,7 +270,7 @@ std::pair<bool, std::string> parse(Iterator first,  Iterator last, std::string& 
 
 //------------------------------------------------------------------------------
 
-DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key key) :
+DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }
@@ -313,7 +312,7 @@ void DictionaryReader::read()
     file.close();
 
     std::vector < ::fwDataIO::line > dicolines;
-    std::pair<bool, std::string> result = parse(buffer, buffer+length, buf, dicolines);
+    std::pair<bool, std::string> result = parse(buf, dicolines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
     FW_RAISE_IF(error, !result.first);
@@ -334,8 +333,10 @@ void DictionaryReader::read()
         FW_RAISE_IF(error, !(strClassIter != ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
-        newOrgan->setColor(::fwData::Color::New(line.red/255.0f, line.green/255.0f, line.blue/255.0f,
-                                                line.alpha/100.0f));
+        newOrgan->setColor(::fwData::Color::New(static_cast<float>(line.red)/255.0f,
+                                                static_cast<float>(line.green)/255.0f,
+                                                static_cast<float>(line.blue)/255.0f,
+                                                static_cast<float>(line.alpha)/100.0f));
         std::vector<std::string> categorylist;
         ::boost::algorithm::split( categorylist, line.catgegory, ::boost::algorithm::is_any_of(",") );
         ::fwData::StructureTraits::CategoryContainer categories;

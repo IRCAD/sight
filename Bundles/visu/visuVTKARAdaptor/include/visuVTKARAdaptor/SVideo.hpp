@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -69,7 +69,7 @@ class VISUVTKARADAPTOR_CLASS_API SVideo : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SVideo, ::fwRenderVTK::IAdaptor);
+    fwCoreServiceMacro(SVideo, ::fwRenderVTK::IAdaptor)
 
     /// Constructor
     SVideo() noexcept;
@@ -133,9 +133,9 @@ private:
 
     bool m_interpolate; ///< turn on/off the linear interpolation of the vtkImageActor
 
-    /// Keep a reference to the image because it may be reallocated by someone whereas the vtk actor needs it
+    /// Keep a reference to the image size because it may be reallocated by someone whereas the vtk actor needs it
     /// If the rendering is triggered before the update of the adaptor this will crash
-    ::fwData::Array::sptr m_imageBuffer;
+    size_t m_imageSize{0};
 };
 
 } //namespace visuVTKARAdaptor

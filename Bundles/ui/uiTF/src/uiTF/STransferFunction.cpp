@@ -26,8 +26,8 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
@@ -60,9 +60,21 @@
 namespace uiTF
 {
 
-static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
-static const ::fwServices::IService::KeyType s_TF_OUTPUT        = "tf";
+static const std::string s_USE_DEFAULT_PATH_CONFIG  = "useDefaultPath";
+static const std::string s_PATH_CONFIG              = "path";
+static const std::string s_DELETE_ICON_CONFIG       = "deleteIcon";
+static const std::string s_NEW_ICON_CONFIG          = "newIcon";
+static const std::string s_REINITIALIZE_ICON_CONFIG = "reinitializeIcon";
+static const std::string s_RENAME_ICON_CONFIG       = "renameIcon";
+static const std::string s_IMPORT_ICON_CONFIG       = "importIcon";
+static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
+static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
+static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
+
 static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
+
+static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -72,6 +84,14 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::STransferFunction)
 
 STransferFunction::STransferFunction()
 {
+    const std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+
+    m_deleteIcon       = bundlePath / "delete.png";
+    m_newIcon          = bundlePath / "new.png";
+    m_reinitializeIcon = bundlePath / "reinitialize.png";
+    m_renameIcon       = bundlePath / "rename.png";
+    m_importIcon       = bundlePath / "import.png";
+    m_exportIcon       = bundlePath / "export.png";
 }
 
 //------------------------------------------------------------------------------
@@ -86,21 +106,52 @@ void STransferFunction::configuring()
 {
     this->initialize();
 
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType tree = this->getConfigTree();
+    const auto config     = tree.get_child_optional("config.<xmlattr>");
 
     bool useDefaultPath = true;
-    if(srvConfig.count("config"))
+    if(config)
     {
-        const ConfigType config = srvConfig.get_child("config");
-
-        const auto pathCfg = config.equal_range("path");
+        const auto pathCfg = config->equal_range(s_PATH_CONFIG);
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
             const auto path = ::fwRuntime::getBundleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
-        useDefaultPath = config.get<bool>("<xmlattr>.useDefaultPath", useDefaultPath);
+        useDefaultPath = config->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
+        const auto deleteIconCfg       = config->get_optional<std::string>(s_DELETE_ICON_CONFIG);
+        const auto newIconCfg          = config->get_optional<std::string>(s_NEW_ICON_CONFIG);
+        const auto reinitializeIconCfg = config->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
+        const auto renameIconCfg       = config->get_optional<std::string>(s_RENAME_ICON_CONFIG);
+        const auto importIconCfg       = config->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
+        const auto exportIconCfg       = config->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
+        if(deleteIconCfg.is_initialized())
+        {
+            m_deleteIcon = ::fwRuntime::getBundleResourceFilePath(deleteIconCfg.value());
+        }
+        if(newIconCfg.is_initialized())
+        {
+            m_newIcon = ::fwRuntime::getBundleResourceFilePath(newIconCfg.value());
+        }
+        if(reinitializeIconCfg.is_initialized())
+        {
+            m_reinitializeIcon = ::fwRuntime::getBundleResourceFilePath(reinitializeIconCfg.value());
+        }
+        if(renameIconCfg.is_initialized())
+        {
+            m_renameIcon = ::fwRuntime::getBundleResourceFilePath(renameIconCfg.value());
+        }
+        if(importIconCfg.is_initialized())
+        {
+            m_importIcon = ::fwRuntime::getBundleResourceFilePath(importIconCfg.value());
+        }
+        if(exportIconCfg.is_initialized())
+        {
+            m_exportIcon = ::fwRuntime::getBundleResourceFilePath(exportIconCfg.value());
+        }
+        m_iconWidth  = config->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
+        m_iconHeight = config->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
     }
 
     if(useDefaultPath)
@@ -123,31 +174,33 @@ void STransferFunction::starting()
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
 
-    const std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
-
-    const auto deletePath = bundlePath / "delete.png";
-    m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");
+    m_deleteButton = new QPushButton(QIcon(m_deleteIcon.string().c_str()), "");
     m_deleteButton->setToolTip(QString("Delete"));
 
-    const auto newPath = bundlePath / "new.png";
-    m_newButton = new QPushButton(QIcon(newPath.string().c_str()), "");
+    m_newButton = new QPushButton(QIcon(m_newIcon.string().c_str()), "");
     m_newButton->setToolTip(QString("New"));
 
-    const auto reinitializePath = bundlePath / "reinitialize.png";
-    m_reinitializeButton = new QPushButton(QIcon(reinitializePath.string().c_str()), "");
+    m_reinitializeButton = new QPushButton(QIcon(m_reinitializeIcon.string().c_str()), "");
     m_reinitializeButton->setToolTip(QString("Reinitialize"));
 
-    const auto renamePath = bundlePath / "rename.png";
-    m_renameButton = new QPushButton(QIcon(renamePath.string().c_str()), "");
+    m_renameButton = new QPushButton(QIcon(m_renameIcon.string().c_str()), "");
     m_renameButton->setToolTip(QString("Rename"));
 
-    const auto importPath = bundlePath / "import.png";
-    m_importButton = new QPushButton(QIcon(importPath.string().c_str()), "");
+    m_importButton = new QPushButton(QIcon(m_importIcon.string().c_str()), "");
     m_importButton->setToolTip(QString("Import"));
 
-    const auto exportPath = bundlePath / "export.png";
-    m_exportButton = new QPushButton(QIcon(exportPath.string().c_str()), "");
+    m_exportButton = new QPushButton(QIcon(m_exportIcon.string().c_str()), "");
     m_exportButton->setToolTip(QString("Export"));
+
+    if(m_iconWidth > 0 && m_iconHeight > 0)
+    {
+        m_deleteButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_newButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_reinitializeButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_renameButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_importButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_exportButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+    }
 
     // Layout management
     QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
@@ -410,15 +463,6 @@ void STransferFunction::renameTF()
             messageBox.show();
         }
     }
-    if( newName.empty() )
-    {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage("You have to give a name to your transfer function.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -597,25 +641,25 @@ void STransferFunction::updateTransferFunctionPreset()
 
 //------------------------------------------------------------------------------
 
-bool STransferFunction::hasTransferFunctionName(const std::string& _sName) const
+bool STransferFunction::hasTransferFunctionName(const std::string& _name) const
 {
     const ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", poolTF);
     const ::fwData::mt::ObjectReadLock poolTFLock(poolTF);
-    return poolTF->find(_sName) != poolTF->end();
+    return poolTF->find(_name) != poolTF->end();
 }
 
 //------------------------------------------------------------------------------
 
-std::string STransferFunction::createTransferFunctionName(const std::string& _sBasename) const
+std::string STransferFunction::createTransferFunctionName(const std::string& _basename) const
 {
     bool bHasTransferFunctionName = true;
-    std::string newName           = _sBasename;
+    std::string newName           = _basename;
     int cpt                       = 1;
     while(bHasTransferFunctionName)
     {
         std::stringstream tmpStr;
-        tmpStr <<  _sBasename <<  "_" <<  cpt;
+        tmpStr <<  _basename <<  "_" <<  cpt;
         newName                  = tmpStr.str();
         bHasTransferFunctionName = this->hasTransferFunctionName(newName);
         cpt++;

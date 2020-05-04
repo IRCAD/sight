@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWZIP_UT_ZIPTEST_HPP__
-#define __FWZIP_UT_ZIPTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -34,6 +33,8 @@ class ZipTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ZipTest );
 CPPUNIT_TEST( commentTest );
+CPPUNIT_TEST( cryptTest );
+CPPUNIT_TEST( badPasswordCryptTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,9 +43,9 @@ public:
     void tearDown();
 
     void commentTest();
+    void cryptTest();
+    void badPasswordCryptTest();
 };
 
 } // namespace ut
 } // namespace fwZip
-
-#endif //__FWZIP_UT_ZIPTEST_HPP__

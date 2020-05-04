@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,10 +25,6 @@
 #include "cvIO/Type.hpp"
 
 #include <fwData/Array.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/ArrayGetter.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 namespace cvIO
 {

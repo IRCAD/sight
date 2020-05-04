@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATATOOLS_IMAGEDIFF_HPP__
-#define __FWDATATOOLS_IMAGEDIFF_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/helper/Image.hpp"
@@ -97,10 +96,10 @@ public:
 private:
 
     /// Write the new value in the image from one element.
-    void applyDiffElt(helper::Image& img, size_t eltIndex) const;
+    void applyDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const;
 
     /// Write the old value back in the image from one element.
-    void revertDiffElt(helper::Image& img, size_t eltIndex) const;
+    void revertDiffElt(const ::fwData::Image::sptr& img, size_t eltIndex) const;
 
     /// The size of a single pixel diff.
     size_t m_imgEltSize;
@@ -127,5 +126,3 @@ fwData::Image::IndexType ImageDiff::getElementDiffIndex(size_t eltIndex) const
 }
 
 } // namespace fwDataTools
-
-#endif // __FWDATATOOLS_IMAGEDIFF_HPP__

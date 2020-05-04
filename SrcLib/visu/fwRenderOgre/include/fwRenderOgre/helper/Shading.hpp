@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -90,8 +90,21 @@ public:
      * @param[in] _diffuseTexture is diffuse texture bound ?
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
+     * @deprecated Use '::fwData::Mesh::CellType' intead of '::fwData::Mesh::CellTypesEnum'. It will be removed in
+     * sight 22.0
      */
+    [[deprecated("Use '::fwData::Mesh::CellType' intead of '::fwData::Mesh::CellTypesEnum'(sight 22.0)")]]
     FWRENDEROGRE_API static std::string getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _primitiveType,
+                                                                   bool _diffuseTexture, bool _vertexColor,
+                                                                   bool _hasPrimitiveColor);
+    /**
+     * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
+     * @param[in] _primitiveType type of the primitive (only triangles, quads and tetrahedrons supported right now)
+     * @param[in] _diffuseTexture is diffuse texture bound ?
+     * @param[in] _vertexColor is vertex color enabled ?
+     * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
+     */
+    FWRENDEROGRE_API static std::string getR2VBGeometryProgramName(::fwData::Mesh::CellType _primitiveType,
                                                                    bool _diffuseTexture, bool _vertexColor,
                                                                    bool _hasPrimitiveColor);
 

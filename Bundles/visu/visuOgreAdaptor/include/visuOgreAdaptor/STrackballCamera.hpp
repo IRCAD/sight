@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief Lets the user move the camera around a point of interest using the mouse and keyboard.
+ * @brief This adaptor lets the user move the camera around a point of interest using the mouse and keyboard.
  *
  * See @see fwRenderOgre::interactor::TrackballInteractor to learn more about the interactions provided by this service.
  *
@@ -41,12 +41,13 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::visuOgreAdaptor::STrackballCamera">
-            <config layer="..." priority="0" />
-       </service>
+    <service type="::visuOgreAdaptor::STrackballCamera">
+        <config layer="..." priority="0" />
+   </service>
    @endcode
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): layer on which the trackball interactions are added.
+ * - \b layer (mandatory, string): layer on which the trackball interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  */
 class VISUOGREADAPTOR_CLASS_API STrackballCamera final : public ::fwRenderOgre::IAdaptor
@@ -60,28 +61,28 @@ public:
     VISUOGREADAPTOR_API STrackballCamera() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~STrackballCamera() noexcept final;
+    VISUOGREADAPTOR_API virtual ~STrackballCamera() noexcept;
 
 private:
 
     /// Configures the layer and the interaction priority.
-    virtual void configuring() final;
+    virtual void configuring() override;
 
     /// Adds trackball interactions to the layer.
-    virtual void starting() final;
+    virtual void starting() override;
 
     /// Updates the service. Unused here.
-    virtual void updating() noexcept final;
+    virtual void updating() noexcept override;
 
     /// Removes trackball interactions from the layer.
-    virtual void stopping() final;
+    virtual void stopping() override;
 
-    /// Interaction handler.
+    /// Contains the interaction handler.
     std::shared_ptr< ::fwRenderOgre::interactor::TrackballInteractor > m_trackball;
 
-    /// Interaction priority.
+    /// Defines the interaction priority.
     int m_priority { 0 };
 
 };
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

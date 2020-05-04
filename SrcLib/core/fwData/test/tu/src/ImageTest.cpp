@@ -25,10 +25,11 @@
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Image.hpp>
+#include <fwMemory/stream/in/Raw.hpp>
 
 #include <fwTest/generator/Image.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -341,13 +342,14 @@ void ImageTest::testSetGetPixel()
     auto iter          = img->begin<std::int16_t>();
     const auto iterEnd = img->end<std::int16_t>();
 
-    // test 1 : use getPixelBuffer
+    // test 1 : get pixel value
     std::int16_t count = 0;
     for (; iter != iterEnd; ++iter)
     {
         *iter = count++;
     }
 
+    ::fwData::Image::csptr constImg = img;
     for (size_t x = 0; x < SIZE[0]; ++x)
     {
         for (size_t y = 0; y < SIZE[1]; ++y)
@@ -357,8 +359,11 @@ void ImageTest::testSetGetPixel()
                 const ::fwData::Image::IndexType index = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
                 const std::int16_t val                 = static_cast<std::int16_t>(index);
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(x, y, z));
+                CPPUNIT_ASSERT_EQUAL(val, constImg->at<std::int16_t>(x, y, z));
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
-                CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
+                CPPUNIT_ASSERT_EQUAL(val, constImg->at<std::int16_t>(index));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<std::int16_t*>(img->getPixelBuffer(index)));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(constImg->getPixelBuffer(index)));
 
                 std::stringstream ss;
                 ss << val;
@@ -367,25 +372,36 @@ void ImageTest::testSetGetPixel()
         }
     }
 
-    // test 2 : use setPixelBuffer
+    // test 2 : set pixel value
     for (size_t x = 0; x < SIZE[0]; ++x)
     {
         for (size_t y = 0; y < SIZE[1]; ++y)
         {
             for (size_t z = 0; z < SIZE[2]; ++z)
             {
-                const auto index       = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
-                const std::int16_t val = static_cast<std::int16_t>(index * 2);
-                img->at<std::int16_t>(index) = val;
+                const auto index = x+y*SIZE[0]+z*SIZE[0]*SIZE[1];
+
+                if (index % 2 == 0)
+                {
+                    const std::int16_t val = static_cast<std::int16_t>(index * 2);
+                    img->at<std::int16_t>(index) = val;
+                }
+                else
+                {
+                    std::int16_t val = static_cast<std::int16_t>(index * 2);
+                    img->setPixelBuffer(index, reinterpret_cast< ::fwData::Image::BufferType* >(&val));
+                }
             }
         }
     }
 
     count = 0;
-    auto iter2 = img->begin<std::int16_t>();
-    for (; iter2 != iterEnd; ++iter2)
+    auto iter2      = img->begin<std::int16_t>();
+    auto constIter2 = constImg->begin<std::int16_t>();
+    for (; iter2 != iterEnd; ++iter2, ++constIter2)
     {
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), *iter2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count *2), *iter2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), *constIter2);
     }
 
     ::fwData::Image::csptr img2 = ::fwData::Image::copy(img);
@@ -752,6 +768,39 @@ void ImageTest::imageDeepCopy()
         imgCopy->deepCopy(img);
 
         CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::setISStreamTest()
+{
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+
+    const auto dumpLock              = image->lock();
+    const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "ImageTest.raw";
+
+    std::ofstream ostr(PATH, std::ios::binary);
+    ostr.write(static_cast<const char*>(image->getBuffer()), image->getSizeInBytes());
+    ostr.close();
+
+    ::fwData::Image::sptr newImage = ::fwData::Image::New();
+    newImage->setSize2(image->getSize2());
+    newImage->setType(image->getType());
+    newImage->setPixelFormat(image->getPixelFormat());
+    newImage->setIStreamFactory(std::make_shared< ::fwMemory::stream::in::Raw >(PATH),
+                                image->getSizeInBytes(), PATH, ::fwMemory::RAW);
+
+    const auto newDumpLock = newImage->lock();
+
+    auto itr       = image->begin< std::int16_t>();
+    const auto end = image->end< std::int16_t>();
+    auto newItr    = newImage->begin< std::int16_t>();
+
+    for (; itr != end; ++itr, ++newItr)
+    {
+        CPPUNIT_ASSERT_EQUAL(*itr, *newItr);
     }
 }
 

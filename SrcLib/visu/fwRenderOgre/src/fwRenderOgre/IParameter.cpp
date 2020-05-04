@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,9 +34,6 @@
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/ArrayGetter.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -330,24 +327,24 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
         SLM_ASSERT("The object is nullptr", arrayObject);
 
-        size_t numComponents = arrayObject->getNumberOfComponents();
+        const size_t numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
         {
-            ::fwDataTools::helper::ArrayGetter arrayHelper(arrayObject);
+            const auto dumpLock = arrayObject->lock();
 
             if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
             {
-                const float* floatValue = static_cast<const float*>(arrayHelper.getBuffer());
+                const float* floatValue = static_cast<const float*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
             }
             else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
             {
-                const double* doubleValue = static_cast<const double*>(arrayHelper.getBuffer());
+                const double* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
             }
             else if( arrayObject->getType() == ::fwTools::Type::s_INT32)
             {
-                const int* intValue = static_cast<const int*>(arrayHelper.getBuffer());
+                const int* intValue = static_cast<const int*>(arrayObject->getBuffer());
                 params->setNamedConstant(m_paramName, intValue, 1, numComponents);
             }
             else
@@ -357,7 +354,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         }
         else
         {
-            OSLM_ERROR("Array size not handled: " << arrayObject->getNumberOfComponents());
+            OSLM_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
         }
     }
     else if(objClass == "::fwData::Image")
@@ -461,13 +458,12 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
 
         if(arrayObject->empty())
         {
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
-            arrayObject->resize( type, {1}, 2, true);
+            arrayObject->resize({2}, ::fwTools::Type::s_INT32);
         }
 
-        ::fwDataTools::helper::Array arrayHelper(arrayObject);
-        int vec[2] = { value1, value2 };
-        arrayHelper.setItem( {0}, vec);
+        const auto dumpLock = arrayObject->lock();
+        arrayObject->at< std::uint32_t >(0) = value1;
+        arrayObject->at< std::uint32_t >(1) = value2;
 
         this->updating();
     }
@@ -485,13 +481,13 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
 
         if(arrayObject->empty())
         {
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
-            arrayObject->resize( type, {1}, 3, true);
+            arrayObject->resize({3}, ::fwTools::Type::s_INT32);
         }
 
-        ::fwDataTools::helper::Array arrayHelper(arrayObject);
-        int vec[3] = { value1, value2, value3 };
-        arrayHelper.setItem( {0}, vec);
+        const auto dumpLock = arrayObject->lock();
+        arrayObject->at< std::uint32_t >(0) = value1;
+        arrayObject->at< std::uint32_t >(1) = value2;
+        arrayObject->at< std::uint32_t >(2) = value3;
 
         this->updating();
     }
@@ -524,20 +520,20 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
         if(arrayObject->empty())
         {
             ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
-            arrayObject->resize( type, {1}, 2, true);
+            arrayObject->resize({2}, ::fwTools::Type::s_DOUBLE);
         }
 
-        ::fwDataTools::helper::Array arrayHelper(arrayObject);
+        const auto dumpLock = arrayObject->lock();
 
         if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
         {
-            float vec[2] = {  static_cast<float>(value1),  static_cast<float>(value2) };
-            arrayHelper.setItem( {0}, vec);
+            arrayObject->at< float >(0) = static_cast<float>(value1);
+            arrayObject->at< float >(1) = static_cast<float>(value2);
         }
         else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
         {
-            double vec[2] = { value1, value2 };
-            arrayHelper.setItem( {0}, vec);
+            arrayObject->at< double >(0) = value1;
+            arrayObject->at< double >(1) = value2;
         }
 
         this->updating();
@@ -557,20 +553,22 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
         if(arrayObject->empty())
         {
             ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
-            arrayObject->resize( type, {1}, 3, true);
+            arrayObject->resize({3}, ::fwTools::Type::s_DOUBLE);
         }
 
-        ::fwDataTools::helper::Array arrayHelper(arrayObject);
+        const auto dumpLock = arrayObject->lock();
 
         if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
         {
-            float vec[3] = { static_cast<float>(value1), static_cast<float>(value2), static_cast<float>(value3) };
-            arrayHelper.setItem( {0}, vec);
+            arrayObject->at< float >(0) = static_cast<float>(value1);
+            arrayObject->at< float >(1) = static_cast<float>(value2);
+            arrayObject->at< float >(2) = static_cast<float>(value3);
         }
         else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
         {
-            double vec[3] = { value1, value2, value3 };
-            arrayHelper.setItem( {0}, vec);
+            arrayObject->at< double >(0) = value1;
+            arrayObject->at< double >(1) = value2;
+            arrayObject->at< double >(2) = value3;
         }
         this->updating();
     }

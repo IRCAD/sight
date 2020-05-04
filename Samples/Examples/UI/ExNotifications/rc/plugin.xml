@@ -13,6 +13,7 @@ are already displayed and where they are displayed on screen.
 
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
+    <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExNotificationsConfig</id>
@@ -31,7 +32,7 @@ are already displayed and where they are displayed on screen.
                     <view sid="mainview" start="yes" />
                 </registry>
             </service>
-            
+
            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
@@ -40,6 +41,9 @@ are already displayed and where they are displayed on screen.
                         <editor/>
                         <separator/>
                         <menuItem name="NOTIFY !"/>
+                        <spacer />
+                        <separator/>
+                        <menuItem name="Color Theme"/>
                     </layout>
                 </gui>
                 <registry>
@@ -47,6 +51,7 @@ are already displayed and where they are displayed on screen.
                     <editor sid="type" start="yes" />
                     <editor sid="position" start="yes" />
                     <menuItem sid="notify" start="yes" />
+                    <menuItem sid="actionChangeTheme" start ="yes" />
                 </registry>
             </service>
 
@@ -96,6 +101,20 @@ are already displayed and where they are displayed on screen.
                 <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
             </service>
 
+
+            <!-- preference to apply new theme on app -->
+            <service uid="actionChangeTheme" type="::uiPreferences::action::SPreferencesConfiguration">
+                <preference>
+                    <type>combobox</type>
+                    <name>Color Theme</name>
+                    <key>THEME</key>
+                    <values>DEFAULT,DARKSTYLE,FLATDARK</values>
+                    <default_value>DEFAULT</default_value>
+                </preference>
+            </service>
+
+            <service uid="styleChanger" type="::style::SStyleSelector" />
+
             <!-- connection from IService notify signals to the SNotifier,you can add as many service as you need -->
             <connect>
                 <signal>testNotifier/infoNotified</signal>
@@ -129,9 +148,15 @@ are already displayed and where they are displayed on screen.
                 <slot>testNotifier/setBoolParameter</slot>
             </connect>
 
+            <connect>
+                <signal>actionChangeTheme/parametersModified</signal>
+                <slot>styleChanger/updateFromPreferences</slot>
+            </connect>
+
             <start uid="mainFrame" />
             <start uid="notifier" />
             <start uid="testNotifier" />
+            <start uid="styleChanger" />
 
         </config>
     </extension>

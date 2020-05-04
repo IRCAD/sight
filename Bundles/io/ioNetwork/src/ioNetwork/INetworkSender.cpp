@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -79,5 +79,13 @@ void INetworkSender::swapping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ioNetwork
+::fwServices::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_OBJECTS_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    return connections;
+}
 
+// ----------------------------------------------------------------------------
+
+} // namespace ioNetwork

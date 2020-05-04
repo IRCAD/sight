@@ -33,6 +33,9 @@
 #include <fwCom/Slots.hpp>
 
 #include <fwData/Object.hpp>
+#include <fwData/mt/locked_ptr.hpp>
+#include <fwData/mt/weak_ptr.hpp>
+#include <fwData/mt/shared_ptr.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -102,9 +105,9 @@ public:
 
     typedef std::string IdType;
     typedef std::string KeyType;
-    typedef std::map< KeyType, CWPTR( ::fwData::Object )> InputMapType;
-    typedef std::map< KeyType, WPTR( ::fwData::Object )> InOutMapType;
-    typedef std::map< KeyType, SPTR( ::fwData::Object )> OutputMapType;
+    typedef std::map< KeyType, ::fwData::mt::weak_ptr< const ::fwData::Object > > InputMapType;
+    typedef std::map< KeyType, ::fwData::mt::weak_ptr< ::fwData::Object > > InOutMapType;
+    typedef std::map< KeyType, ::fwData::mt::shared_ptr< ::fwData::Object > > OutputMapType;
 
     enum class AccessType : std::uint8_t
     {
@@ -410,42 +413,159 @@ public:
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
-    template< class DATATYPE > CSPTR(DATATYPE) getInput(const KeyType& key) const;
+    template< class DATATYPE >
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
+    inline CSPTR(DATATYPE) getInput(const KeyType& key) const;
 
     /**
      * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
-    template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType& key) const;
+    template< class DATATYPE >
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
+    inline SPTR(DATATYPE) getInOut(const KeyType& key) const;
 
     /**
      * @brief Return the output object at the given key. Asserts if the data is not of the right type.
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
-    template< class DATATYPE > SPTR(DATATYPE) getOutput(const KeyType& key) const;
+    template< class DATATYPE >
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
+    inline SPTR(DATATYPE) getOutput(const KeyType& key) const;
 
     /**
      * @brief Return the input object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
-    template< class DATATYPE > CSPTR(DATATYPE) getInput(const KeyType& keybase, size_t index) const;
+    template< class DATATYPE >
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
+    inline CSPTR(DATATYPE) getInput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
-    template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType& keybase, size_t index) const;
+    template< class DATATYPE >
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
+    inline SPTR(DATATYPE) getInOut(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Return the output object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
-    template< class DATATYPE > SPTR(DATATYPE) getOutput(const KeyType& keybase, size_t index) const;
+    template< class DATATYPE >
+    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
+    inline SPTR(DATATYPE) getOutput(const KeyType& keybase, size_t index) const;
+
+    /**
+     * @brief Return a weak data pointer of the input object at the given key.
+     * @param key name of the data to retrieve.
+     * @return weak data pointer in the right type, expired pointer if not found.
+     */
+    template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
+    inline ::fwData::mt::weak_ptr< CONST_DATATYPE > getWeakInput(const KeyType& key) const;
+
+    /**
+     * @brief Return a weak data pointer of the in/out object at the given key.
+     * @param key name of the data to retrieve.
+     * @return weak data pointer in the right type, expired pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakInOut(const KeyType& key) const;
+
+    /**
+     * @brief Return a weak data pointer of the out object at the given key.
+     * @param key name of the data to retrieve.
+     * @return weak data pointer in the right type, expired pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakOutput(const KeyType& key) const;
+
+    /**
+     * @brief Return a weak data pointer of the input object at the given key and index.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
+     * @return weak data pointer in the right type, expired pointer if not found.
+     */
+    template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
+    inline ::fwData::mt::weak_ptr< CONST_DATATYPE > getWeakInput(const KeyType& keybase, size_t index) const;
+
+    /**
+     * @brief Return a weak data pointer of the in/out object at the given key and index.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
+     * @return weak data pointer in the right type, expired pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakInOut(const KeyType& keybase, size_t index) const;
+
+    /**
+     * @brief Return a weak data pointer of the out object at the given key and index.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
+     * @return weak data pointer in the right type, expired pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::weak_ptr< DATATYPE > getWeakOutput(const KeyType& keybase, size_t index) const;
+
+    /**
+     * @brief Return a locked data pointer of the input object at the given key.
+     * @param key name of the data to retrieve.
+     * @return locked data pointer in the right type, null pointer if not found.
+     */
+    template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
+    inline ::fwData::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& key) const;
+
+    /**
+     * @brief Return a locked data pointer of the in/out object at the given key.
+     * @param key name of the data to retrieve.
+     * @return locked data pointer in the right type, null pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& key) const;
+
+    /**
+     * @brief Return a locked data pointer of the out object at the given key.
+     * @param key name of the data to retrieve.
+     * @return locked data pointer in the right type, null pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::locked_ptr< DATATYPE > getLockedOutput(const KeyType& key) const;
+
+    /**
+     * @brief Return a locked data pointer of the input object at the given key and index.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
+     * @return locked data pointer in the right type, null pointer if not found.
+     */
+    template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
+    inline ::fwData::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& keybase, size_t index) const;
+
+    /**
+     * @brief Return a locked data pointer of the in/out object at the given key and index.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
+     * @return locked data pointer in the right type, null pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& keybase, size_t index) const;
+
+    /**
+     * @brief Return a locked data pointer of the out object at the given key and index.
+     * @param group key of data to retrieve.
+     * @param index of the data to retrieve.
+     * @return locked data pointer in the right type, null pointer if not found.
+     */
+    template< class DATATYPE >
+    inline ::fwData::mt::locked_ptr< DATATYPE > geLockedOutput(const KeyType& keybase, size_t index) const;
 
     /**
      * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
@@ -806,7 +926,7 @@ protected:
     /// Associated worker
     SPTR(::fwThread::Worker) m_associatedWorker;
 
-    //@}
+//@}
 
 private:
 

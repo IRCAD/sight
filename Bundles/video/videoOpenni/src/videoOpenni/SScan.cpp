@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,8 +27,6 @@
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 

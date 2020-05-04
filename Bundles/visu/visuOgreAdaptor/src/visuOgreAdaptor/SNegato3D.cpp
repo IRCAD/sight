@@ -32,6 +32,7 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwDataTools/Color.hpp>
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -63,12 +64,19 @@ static const ::fwCom::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 static const std::string s_IMAGE_INOUT = "image";
 static const std::string s_TF_INOUT    = "tf";
 
+static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
+static const std::string s_TRANSFORM_CONFIG        = "transform";
+static const std::string s_FILTERING_CONFIG        = "filtering";
+static const std::string s_TF_ALPHA_CONFIG         = "tfAlpha";
+static const std::string s_INTERACTIVE_CONFIG      = "interactive";
+static const std::string s_PRIORITY_CONFIG         = "priority";
+static const std::string s_QUERY_CONFIG            = "queryFlags";
+static const std::string s_BORDER_CONFIG           = "border";
+
 static const std::string s_TRANSPARENCY_FIELD = "TRANSPARENCY";
 static const std::string s_VISIBILITY_FIELD   = "VISIBILITY";
 
 static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID = ::fwRenderOgre::compositor::Core::s_SURFACE_RQ_GROUP_ID - 1;
-
-static const std::string s_QUERY_CONFIG = "queryFlags";
 
 //------------------------------------------------------------------------------
 
@@ -91,39 +99,20 @@ SNegato3D::~SNegato3D() noexcept
 {
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
 void SNegato3D::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    if(config.count("autoresetcamera"))
+    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
+
+    if(config.count(s_FILTERING_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
-    }
-    if(config.count("transform"))
-    {
-        this->setTransformId(config.get<std::string>("transform"));
-    }
-    if(config.count("filtering"))
-    {
-        const std::string filteringValue = config.get<std::string>("filtering");
+        const std::string filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
         ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
 
         if(filteringValue == "none")
@@ -135,11 +124,12 @@ void SNegato3D::configuring()
             filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
         }
 
-        this->setFiltering(filtering);
+        m_filtering = filtering;
     }
-    if(config.count(s_QUERY_CONFIG))
+
+    const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
+    if(!hexaMask.empty())
     {
-        const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
         SLM_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
@@ -148,9 +138,10 @@ void SNegato3D::configuring()
         m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
 
-    m_enableAlpha         = config.get<bool>("tfalpha", m_enableAlpha);
-    m_interactive         = config.get<bool>("interactive", m_interactive);
-    m_interactionPriority = config.get<int>("priority", m_interactionPriority);
+    m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
+    m_interactive = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
+    m_priority    = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
 
     const std::string transformId =
         config.get<std::string>(::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
@@ -166,7 +157,7 @@ void SNegato3D::starting()
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     m_helperTF.setOrCreateTF(tf, image);
@@ -194,7 +185,7 @@ void SNegato3D::starting()
         plane = std::make_shared< ::fwRenderOgre::Plane >(this->getID(), m_negatoSceneNode,
                                                           this->getSceneManager(),
                                                           imgOrientation, m_3DOgreTexture,
-                                                          m_filtering);
+                                                          m_filtering, m_border);
     }
 
     if (m_autoResetCamera)
@@ -207,7 +198,7 @@ void SNegato3D::starting()
     if(m_interactive)
     {
         auto interactor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::IInteractor >(this->getSptr());
-        this->getLayer()->addInteractor(interactor, m_interactionPriority);
+        this->getLayer()->addInteractor(interactor, m_priority);
 
         m_pickingCross = this->getSceneManager()->createManualObject(this->getID() + "_PickingCross");
         const auto basicAmbientMat = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient");
@@ -229,6 +220,20 @@ void SNegato3D::starting()
     }
 }
 
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    return connections;
+}
+
 //------------------------------------------------------------------------------
 
 void SNegato3D::updating()
@@ -243,7 +248,7 @@ void SNegato3D::swapping(const KeyType& key)
     if (key == s_TF_INOUT)
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -314,7 +319,7 @@ void SNegato3D::newImage()
     this->getRenderService()->makeCurrent();
     {
         const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
 
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);
@@ -375,7 +380,7 @@ void SNegato3D::changeSliceType(int, int)
 void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
     const auto& imgSize = image->getSize2();
@@ -424,7 +429,7 @@ void SNegato3D::setPlanesOpacity()
     if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
     {
         ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
         const ::fwData::mt::ObjectReadLock imageLock(image);
 
         const auto transparency = image->setDefaultField(s_TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
@@ -448,7 +453,7 @@ void SNegato3D::setPlanesOpacity()
 void SNegato3D::setVisibility(bool _visibility)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
     const ::fwData::mt::ObjectReadLock imageLock(image);
 
     image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visibility));
@@ -558,7 +563,7 @@ void SNegato3D::moveSlices(int _x, int _y)
     if(pickRes.has_value())
     {
         const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
         const ::fwData::mt::ObjectReadLock imgLock(image);
 
         auto pickedPt = pickRes.value();
@@ -592,7 +597,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
         if(pickedPos.has_value())
         {
             const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
             const ::fwData::mt::ObjectReadLock imgLock(image);
 
             if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
@@ -708,4 +713,4 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
     }
 }
 
-} // namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

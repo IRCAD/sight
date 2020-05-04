@@ -105,7 +105,7 @@ public:
     /// Copy constructor
     PointIteratorBase(const PointIteratorBase& other);
 
-    PointIteratorBase& operator=(const PointIteratorBase& other);
+    virtual PointIteratorBase& operator=(const PointIteratorBase& other);
 
     /// Comparison operators
     bool operator==(const PointIteratorBase& other) const;
@@ -269,7 +269,7 @@ public:
     virtual ~CellIteratorBase();
     /// Copy constructor
     CellIteratorBase(const CellIteratorBase& other);
-    CellIteratorBase& operator=(const CellIteratorBase& other);
+    virtual CellIteratorBase& operator=(const CellIteratorBase& other);
 
     /// Comparison operators
     bool operator==(const CellIteratorBase& other) const;
@@ -292,8 +292,8 @@ public:
     difference_type operator+(const CellIteratorBase& other) const;
     difference_type operator-(const CellIteratorBase& other) const;
 
-    reference operator*();
-    pointer operator->();
+    reference operator*() const;
+    pointer operator->() const;
 
     cell_data_value_type& operator[](size_t index);
     size_t nbPoints() const;

@@ -27,8 +27,6 @@
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupLazyStream.hpp"
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupReader.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwDicomTools/Image.hpp>
 #include <fwDicomTools/Series.hpp>
 
@@ -130,7 +128,7 @@ ImageStorageReader::~ImageStorageReader()
         OSLM_WARN("Invalid value for pixel spacing. Assuming pixel value is 1.");
     }
 
-    image->setSpacing(std::vector< double >(spacing, spacing+3));
+    image->setSpacing2({spacing[0], spacing[1], spacing[2]});
 
     //Origin
     //TODO: Compute the correct origin
@@ -138,7 +136,7 @@ ImageStorageReader::~ImageStorageReader()
     dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[0], 0);
     dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[1], 1);
     dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[2], 2);
-    image->setOrigin( { imagePosition[0], imagePosition[1], imagePosition[2] } );
+    image->setOrigin2( { imagePosition[0], imagePosition[1], imagePosition[2] } );
 
     //Size
     unsigned short rows, columns;
@@ -165,7 +163,7 @@ ImageStorageReader::~ImageStorageReader()
     }
 
     //FIXME: Remove depth for 2D images ?
-    image->setSize( {columns, rows, depth } );
+    image->setSize2( {columns, rows, depth } );
 
     //Window Center
     double windowCenter = 0;
@@ -332,13 +330,12 @@ void ImageStorageReader::directRead(const ::fwData::Image::sptr& image,
                                     ::fwTools::Type imageType)
 {
     //Allocate image
-    image->allocate();
-    ::fwData::Array::sptr array = image->getDataArray();
-    ::fwDataTools::helper::Array arrayHelper(array);
+    image->resize();
+    const auto dumpLock = image->lock();
 
     //Fill image
     ::fwDcmtkIO::reader::main::ImageReader::fillImageBuffer(rows, columns, depth, instances,
-                                                            arrayHelper.getBuffer(), rescaleSlope, rescaleIntercept, pixelRepresentation,
+                                                            image->getBuffer(), rescaleSlope, rescaleIntercept, pixelRepresentation,
                                                             imageType);
 }
 
@@ -351,9 +348,8 @@ void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
                                              int depth, unsigned short bitsAllocated)
 {
     //Allocate image
-    image->allocate();
-    ::fwData::Array::sptr array = image->getDataArray();
-    ::fwDataTools::helper::Array arrayHelper(array);
+    image->resize();
+    const auto dumpLock = image->lock();
 
     unsigned short pixelValueBitsAllocated = 8;
     dataset.findAndGetUint16(DCM_BitsAllocated, pixelValueBitsAllocated);
@@ -374,7 +370,7 @@ void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
             ::fwDcmtkIO::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint16, Uint16>(rows,
                                                                                                   columns, depth,
                                                                                                   instances,
-                                                                                                  arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                  image->getBuffer(), redLookup, greenLookup,
                                                                                                   blueLookup);
         }
         else
@@ -382,7 +378,7 @@ void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
             ::fwDcmtkIO::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint16, Uint8>(rows,
                                                                                                  columns, depth,
                                                                                                  instances,
-                                                                                                 arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                 image->getBuffer(), redLookup, greenLookup,
                                                                                                  blueLookup);
         }
     }
@@ -402,7 +398,7 @@ void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
             ::fwDcmtkIO::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint8, Uint16>(rows,
                                                                                                  columns, depth,
                                                                                                  instances,
-                                                                                                 arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                 image->getBuffer(), redLookup, greenLookup,
                                                                                                  blueLookup);
         }
         else
@@ -410,7 +406,7 @@ void ImageStorageReader::directRGBLookupRead(const ::fwData::Image::sptr& image,
             ::fwDcmtkIO::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint8, Uint8>(rows,
                                                                                                 columns, depth,
                                                                                                 instances,
-                                                                                                arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                image->getBuffer(), redLookup, greenLookup,
                                                                                                 blueLookup);
         }
     }
@@ -439,8 +435,7 @@ void ImageStorageReader::lazyRead(const ::fwData::Image::sptr& image,
     dcmInfo->m_imageType           = imageType;
 
     // Create streamer
-    ::fwMemory::BufferObject::sptr buffObj = image->getDataArray()->getBufferObject();
-    buffObj->setIStreamFactory(
+    image->setIStreamFactory(
         std::make_shared< ::fwDcmtkIO::reader::main::ImageLazyStream >( dcmInfo ),
         image->getSizeInBytes() );
 }
@@ -450,7 +445,7 @@ void ImageStorageReader::lazyRead(const ::fwData::Image::sptr& image,
 void ImageStorageReader::lazyRGBLookupRead(const ::fwData::Image::sptr& image,
                                            const ::fwMedData::DicomSeries::csptr& series,
                                            DcmDataset& dataset,
-                                           DicomContainerType instances,
+                                           DicomContainerType,
                                            unsigned short rows, unsigned short columns,
                                            int depth, unsigned short bitsAllocated,
                                            ::fwTools::Type imageType)
@@ -470,8 +465,7 @@ void ImageStorageReader::lazyRGBLookupRead(const ::fwData::Image::sptr& image,
     dcmInfo->m_imageType               = imageType;
 
     // Create streamer
-    ::fwMemory::BufferObject::sptr buffObj = image->getDataArray()->getBufferObject();
-    buffObj->setIStreamFactory(
+    image->setIStreamFactory(
         std::make_shared< ::fwDcmtkIO::reader::rgblookup::ImageRGBLookupLazyStream >( dcmInfo ),
         image->getSizeInBytes() );
 

@@ -27,16 +27,12 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Image.hpp>
-#include <fwDataTools/helper/ImageGetter.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/TypeKeyTypeMapping.hpp>
 
 namespace opImageFilter
@@ -120,8 +116,8 @@ struct ThresholdFilter
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
         imageOut->resize(); // Allocate the image buffer
 
-        ::fwDataTools::helper::ImageGetter imageInHelper(imageIn); // helper used to access the image source buffer
-        ::fwDataTools::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
+        const auto inDumpLock  = imageIn->lock();
+        const auto outDumpLock = imageOut->lock();
 
         // Get image buffers
         auto it1          = imageIn->begin<PIXELTYPE>();

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,6 +35,8 @@ namespace visuOgreAdaptor
 
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
+static const std::string s_PARENT_CONFIG = "parent";
+
 //------------------------------------------------------------------------------
 
 STransform::STransform() noexcept
@@ -52,7 +54,7 @@ STransform::~STransform() noexcept
 ::fwServices::IService::KeyConnectionsMap STransform::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_TRANSFORM_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -62,11 +64,12 @@ void STransform::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType configType = this->getConfigTree();
+    const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    this->setTransformId( config.get<std::string>("transform") );
+    this->setTransformId(config.get<std::string>(s_TRANSFORM_CONFIG));
 
-    m_parentTransformId = config.get<std::string>("parent", m_parentTransformId);
+    m_parentTransformId = config.get<std::string>(s_PARENT_CONFIG, m_parentTransformId);
 }
 
 //------------------------------------------------------------------------------
@@ -98,7 +101,7 @@ void STransform::starting()
 void STransform::updating()
 {
     const auto fwTransform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-    SLM_ASSERT("'" + s_TRANSFORM_INOUT + "' does not exist.", fwTransform);
+    SLM_ASSERT("inout '" + s_TRANSFORM_INOUT + "' does not exist.", fwTransform);
 
     {
         const ::fwData::mt::ObjectReadLock lock(fwTransform);
@@ -138,4 +141,4 @@ void STransform::stopping()
 
 //-----------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

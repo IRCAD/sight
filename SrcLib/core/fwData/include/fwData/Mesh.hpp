@@ -30,6 +30,8 @@
 
 #include <fwCore/macros.hpp>
 
+#include <fwMemory/IBuffered.hpp>
+
 #include <boost/multi_array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
@@ -258,7 +260,8 @@ namespace fwData
     }
    @endcode
  */
-class FWDATA_CLASS_API Mesh : public ::fwData::Object
+class FWDATA_CLASS_API Mesh : public ::fwData::Object,
+                              public ::fwMemory::IBuffered
 {
 
 public:
@@ -751,6 +754,39 @@ public:
     /// Return true if the mesh has cell texture coordinates
     bool hasCellTexCoords() const;
 
+    /**
+     * @brief Return true if the point color are RGB (used for temporary support of RGB colors)
+     * @pre Point colors must be allocated
+     */
+    bool hasRGBPointColors() const;
+    /**
+     * @brief Return true if the cell color are RGB (used for temporary support of RGB colors)
+     * @pre Cell colors must be allocated
+     */
+    bool hasRGBCellColors() const;
+
+    /**
+     * @brief Return the buffer of point colors.
+     *
+     * It is used for efficient conversion between our mesh and external libraries mesh.
+     *
+     * @throw ::fwData::Exception The buffer cannot be accessed if the mesh is not locked
+     * @note For temporary support of RGB colors, use hasRGBPointColors() to know the buffer size :
+     * numberOfPoints * 4 for RGBA colors or numberOfPoints * 3 for RGB.
+     */
+    FWDATA_API const ColorValueType* getPointColorsBuffer() const;
+
+    /**
+     * @brief Return the buffer of cell colors.
+     *
+     * It is used for efficient conversion between our mesh and external libraries mesh.
+     *
+     * @throw ::fwData::Exception The buffer cannot be accessed if the mesh is not locked
+     * @note For temporary support of RGB colors, use hasRGBPCellColors() to know the buffer size :
+     * numberOfCells * 4 for RGBA colors or numberOfPCells * 3 for RGB.
+     */
+    FWDATA_API const ColorValueType* getCellColorsBuffer() const;
+
     // ---------------------------------------
     // Deprecated API for sight 22.0
     // ---------------------------------------
@@ -903,6 +939,16 @@ protected:
     friend class ::fwData::iterator::ConstPointIterator;
     friend class ::fwData::iterator::CellIterator;
     friend class ::fwData::iterator::ConstCellIterator;
+
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
+    /**
+     * @brief Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     */
+    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
     /**
      * @brief Initializes points, cell-types, cell-data, and cell-data-offsets arrays.
@@ -1098,6 +1144,21 @@ inline bool Mesh::hasCellTexCoords() const
 {
     return m_cellTexCoords != nullptr;
 }
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasRGBPointColors() const
+{
+    return m_pointColors->getNumberOfComponents() == 3;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool Mesh::hasRGBCellColors() const
+{
+    return m_cellColors->getNumberOfComponents() == 3;
+}
+
 //------------------------------------------------------------------------------
 
 } // namespace fwData

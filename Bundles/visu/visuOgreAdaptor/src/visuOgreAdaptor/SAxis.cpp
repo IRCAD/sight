@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,10 +47,9 @@ static const std::string s_VISIBLE_CONFIG      = "visible";
 static const std::string s_LENGTH_CONFIG       = "length";
 static const std::string s_LABEL_CONFIG        = "label";
 static const std::string s_FONT_SIZE_CONFIG    = "fontSize";
+static const std::string s_FONT_SOURCE_CONFIG  = "fontSource";
 static const std::string s_ORIGIN_CONFIG       = "origin";
 static const std::string s_ORIGIN_COLOR_CONFIG = "originColor";
-
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis)
 
 //-----------------------------------------------------------------------------
 
@@ -64,14 +63,6 @@ SAxis::SAxis() noexcept
 
 SAxis::~SAxis() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SAxis::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -92,12 +83,13 @@ void SAxis::configuring()
     m_length           = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_enableLabel      = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
     m_fontSize         = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSource       = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
 
     m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
     OSLM_ASSERT(
-        "Color string should start with '#' and followed by 6 ou 8 "
-        "hexadecimal digits. Given color : " << m_originColor,
+        "Color string should start with '#' and followed by 6 or 8 "
+        "hexadecimal digits. Given color: " << m_originColor,
             m_originColor[0] == '#'
             && ( m_originColor.length() == 7 || m_originColor.length() == 9)
         );
@@ -146,8 +138,7 @@ void SAxis::starting()
     materialAdaptor->getMaterialFw()->setHasVertexColor(true);
     materialAdaptor->update();
 
-    const float dpi       = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-    const auto fontSource = "DejaVuSans.ttf";
+    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     // Sizes
     const float originRadius   = m_length * 0.1f;
@@ -219,7 +210,7 @@ void SAxis::starting()
     if(m_enableLabel)
     {
         m_axisLabels[0] = ::fwRenderOgre::Text::New(
-            this->getID() + "_xAxisLabel", sceneMgr, textContainer, fontSource, m_fontSize, dpi, cam);
+            this->getID() + "_xAxisLabel", sceneMgr, textContainer, m_fontSource, m_fontSize, dpi, cam);
         m_axisLabels[0]->setText("X");
         xConeNode->attachObject(m_axisLabels[0]);
     }
@@ -239,7 +230,7 @@ void SAxis::starting()
     if(m_enableLabel)
     {
         m_axisLabels[1] = ::fwRenderOgre::Text::New(
-            this->getID() + "_yAxisLabel", sceneMgr, textContainer, fontSource, m_fontSize, dpi, cam);
+            this->getID() + "_yAxisLabel", sceneMgr, textContainer, m_fontSource, m_fontSize, dpi, cam);
         m_axisLabels[1]->setText("Y");
         yConeNode->attachObject(m_axisLabels[1]);
     }
@@ -259,7 +250,7 @@ void SAxis::starting()
     if(m_enableLabel)
     {
         m_axisLabels[2] = ::fwRenderOgre::Text::New(
-            this->getID() + "_zAxisLabel", sceneMgr, textContainer, fontSource, m_fontSize, dpi, cam);
+            this->getID() + "_zAxisLabel", sceneMgr, textContainer, m_fontSource, m_fontSize, dpi, cam);
         m_axisLabels[2]->setText("Z");
         zConeNode->attachObject(m_axisLabels[2]);
     }
@@ -360,4 +351,4 @@ void SAxis::toggleVisibility()
 
 //-----------------------------------------------------------------------------
 
-} //visuOgreAdaptor
+} // namespace visuOgreAdaptor.

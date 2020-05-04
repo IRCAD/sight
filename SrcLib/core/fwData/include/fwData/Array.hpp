@@ -28,6 +28,7 @@
 #include "fwData/Object.hpp"
 
 #include <fwMemory/BufferObject.hpp>
+#include <fwMemory/IBuffered.hpp>
 
 #include <fwTools/Type.hpp>
 
@@ -100,7 +101,8 @@ namespace fwData
     }
    @endcode
  */
-class FWDATA_CLASS_API Array : public ::fwData::Object
+class FWDATA_CLASS_API Array : public ::fwData::Object,
+                               public ::fwMemory::IBuffered
 {
 public:
 
@@ -417,7 +419,7 @@ public:
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
      */
-    template< typename T > T at(const ::fwData::Array::IndexType& id) const;
+    template< typename T > const T& at(const ::fwData::Array::IndexType& id) const;
 
     /**
      * @brief Get the value of an element
@@ -443,7 +445,7 @@ public:
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
      * @throw ::fwData::Exception Index out of bounds
      */
-    template< typename T > T& at(const size_t& offset) const;
+    template< typename T > const T& at(const size_t& offset) const;
 
     /**
      * @brief Getter for the array buffer
@@ -622,6 +624,17 @@ protected:
         ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
         );
 
+    // To allow locked_ptr to access protected lockBuffer()
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
+    /**
+     * @brief Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     */
+    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
+
     /**
      * @brief Compute strides for given parameters
      *
@@ -736,7 +749,7 @@ inline T& Array::at(const ::fwData::Array::IndexType& id)
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T Array::at(const ::fwData::Array::IndexType& id) const
+inline const T& Array::at(const ::fwData::Array::IndexType& id) const
 {
     const bool isIndexInBounds =
         std::equal(id.begin(), id.end(), m_size.begin(), std::less<IndexType::value_type>());
@@ -758,12 +771,12 @@ inline T& Array::at(const size_t& offset)
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T& Array::at(const size_t& offset) const
+inline const T& Array::at(const size_t& offset) const
 {
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
                                               + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
                           offset >= this->getSizeInBytes()/sizeof(T));
-    return *(reinterpret_cast<T*>(this->getBuffer()) + offset);
+    return *(reinterpret_cast<const T*>(this->getBuffer()) + offset);
 }
 
 //------------------------------------------------------------------------------

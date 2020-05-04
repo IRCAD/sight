@@ -63,14 +63,14 @@ namespace visuOgreAdaptor
  * - \b specularColor [::fwData::Color]: specular color of the light.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the light's layer.
- * - \b name (mandatory): defines a name for the associated Ogre light.
- * - \b transform (optional): transform applied to the frustum's scene node.
- * - \b switchedOn (optional, bool, default="yes"): defines if the light is activated or not.
+ * - \b layer (mandatory, string): defines the light's layer.
+ * - \b name (mandatory, string): defines a name for the associated Ogre light.
+ * - \b transform (optional, string, default=""): transform applied to the frustum's scene node.
+ * - \b switchedOn (optional, bool, default=true): defines if the light is activated or not.
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
-class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight
+class VISUOGREADAPTOR_CLASS_API SLight final : public ::fwRenderOgre::ILight
 {
 
 public:
@@ -90,147 +90,135 @@ public:
      * @brief Gets the name of the light.
      * @return The name of the light.
      */
-    VISUOGREADAPTOR_API virtual const std::string& getName() const override final;
+    VISUOGREADAPTOR_API virtual const std::string& getName() const override;
 
     /**
      * @brief Sets the name of the light.
      * @param _name the new light name.
      */
-    VISUOGREADAPTOR_API virtual void setName(const std::string& _name) override final;
+    VISUOGREADAPTOR_API virtual void setName(const std::string& _name) override;
 
     /**
      * @brief Gets the type of the light.
      * @return The light type.
      */
-    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const override final;
+    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const override;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the new light type.
      */
-    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type) override final;
+    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type) override;
 
     /**
      * @brief Gets the diffuse color of the light.
      * @return The light diffuse color.
      */
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const override final;
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const override;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the new light diffuse color.
      */
-    VISUOGREADAPTOR_API void setDiffuseColor(::fwData::Color::sptr _diffuseColor);
-
-    /**
-     * @brief Sets the diffuse color of the light.
-     * @param _diffuseColor the new light diffuse color.
-     */
-    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override final;
+    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override;
 
     /**
      * @brief Gets the specular color of the light.
      * @return The light specular color.
      */
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const override final;
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const override;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _specularColor the new light specular color.
      */
-    VISUOGREADAPTOR_API void setSpecularColor(::fwData::Color::sptr _specularColor);
-
-    /**
-     * @brief Sets the specular color of the light.
-     * @param _specularColor the new light specular color.
-     */
-    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override final;
+    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override;
 
     /**
      * @brief Gets the light activation state.
      * @return The light activation state.
      */
-    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const override final;
+    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const override;
 
     /**
      * @brief Sets the light activation state.
      * @param _on the light new activation state.
      */
-    VISUOGREADAPTOR_API virtual void switchOn(bool _on) override final;
+    VISUOGREADAPTOR_API virtual void switchOn(bool _on) override;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around x axis.
      * @return The theta offset of the light.
      */
-    VISUOGREADAPTOR_API virtual float getThetaOffset() const override final;
+    VISUOGREADAPTOR_API virtual float getThetaOffset() const override;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
      * @param _thetaOffset the value of the thta offset.
      * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override final;
+    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around y axis.
      * @return The phi of the light.
      */
-    VISUOGREADAPTOR_API virtual float getPhiOffset() const override final;
+    VISUOGREADAPTOR_API virtual float getPhiOffset() const override;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
      * @param _phiOffset the phi of the thta offset.
      * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override final;
+    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override;
 
     /**
      * @brief Indicates if the light is attached to a parent node or not.
      * @return True if the light is attached.
      */
     [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    VISUOGREADAPTOR_API virtual bool isOrphanNode() const override final;
+    VISUOGREADAPTOR_API virtual bool isOrphanNode() const override;
 
     /// Parent tranform id setter.
     [[deprecated("Deprecated method. Removed in sight 21.0")]]
     VISUOGREADAPTOR_API virtual void setParentTransformName(
-        const fwRenderOgre::SRender::OgreObjectIdType&) override final;
+        const fwRenderOgre::SRender::OgreObjectIdType&) override;
 
     /**
      * @brief Enables the light visual feedback.
      * @param _enable the visual feedback visibility state.
      */
-    VISUOGREADAPTOR_API virtual void enableVisualFeedback(bool _enable) override final;
+    VISUOGREADAPTOR_API virtual void enableVisualFeedback(bool _enable) override;
 
     /**
      * @brief Indicates if the visual feedback is enabled.
      * @return True if the visual feedback is activated.
      */
-    VISUOGREADAPTOR_API virtual bool isVisualFeedbackOn() const override final;
+    VISUOGREADAPTOR_API virtual bool isVisualFeedbackOn() const override;
 
 private:
+
+    /// Configures the service.
+    virtual void configuring() override;
+
+    /// Adds a new light to the scene manager.
+    virtual void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to ::visuOgreAdaptor::SLight::s_UPDATE_SLOT
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to ::visuOgreAdaptor::SLight::s_UPDATE_SLOT
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to ::visuOgreAdaptor::SLight::s_UPDATE_SLOT
+     * Connect ::fwData::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
+     * Connect ::fwData::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
+     * Connect ::fwData::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
-
-    /// Configures the service.
-    virtual void configuring() override final;
-
-    /// Adds a new light to the scene manager.
-    virtual void starting() override final;
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the light position and orientation.
-    virtual void updating() override final;
+    virtual void updating() override;
 
     /// Removes the light from the scene manager.
-    virtual void stopping() override final;
+    virtual void stopping() override;
 
     /// Containes the Ogre light managed by this adaptor.
     ::Ogre::Light* m_light {nullptr};
@@ -250,10 +238,10 @@ private:
     /// Enables the light.
     bool m_switchedOn { true };
 
-    /// Sets the angle in degrees defining the rotation of the light around x axis.
+    /// Defines the angle in degrees defining the rotation of the light around x axis.
     float m_thetaOffset { 0.f };
 
-    /// Sets the angle in degrees defining the rotation of the light around y axis.
+    /// Defines the angle in degrees defining the rotation of the light around y axis.
     float m_phiOffset { 0.f };
 
     /// Contains the node used to attach the light
@@ -268,7 +256,7 @@ private:
     /// Contains the sphere at the light position.
     ::Ogre::ManualObject* m_lightPosition { nullptr };
 
-    /// Sets the length of the visual feedback object.
+    /// Defines the length of the visual feedback object.
     float m_length { 50.f };
 
     /// Contains objects used for the directional light visual feedback.
@@ -305,23 +293,9 @@ inline ::Ogre::ColourValue SLight::getDiffuseColor() const
 
 //------------------------------------------------------------------------------
 
-inline void SLight::setDiffuseColor(::fwData::Color::sptr _diffuseColor)
-{
-    m_lightDiffuseColor = _diffuseColor;
-}
-
-//------------------------------------------------------------------------------
-
 inline ::Ogre::ColourValue SLight::getSpecularColor() const
 {
     return m_light->getSpecularColour();
-}
-
-//------------------------------------------------------------------------------
-
-inline void SLight::setSpecularColor(::fwData::Color::sptr _specularColor)
-{
-    m_lightSpecularColor = _specularColor;
 }
 
 //------------------------------------------------------------------------------
@@ -370,4 +344,4 @@ inline bool SLight::isVisualFeedbackOn() const
 
 //------------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

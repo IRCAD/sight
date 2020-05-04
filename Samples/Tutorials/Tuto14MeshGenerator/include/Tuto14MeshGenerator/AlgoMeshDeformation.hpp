@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
-
-#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -74,8 +72,7 @@ private:
     unsigned int m_nbStep;
 
     ::fwData::Mesh::wptr m_mesh;
-    ::fwDataTools::helper::Mesh::sptr m_meshHelper;
-    ::fwData::Array::sptr m_originPoints;
+    ::fwData::Mesh::sptr m_originMesh;
 
     unsigned int m_amplitude;
     unsigned int m_step;
@@ -86,4 +83,3 @@ private:
 };
 
 }   // namespace Tuto14MeshGenerator
-

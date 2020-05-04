@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_ITKPP_HXX__
-#define __FWITKIO_ITKPP_HXX__
+#pragma once
 
 #include "fwItkIO/itk.hpp"
-
-#include <fwTools/DynamicType.hpp>
 
 #include <itkCastImageFilter.h>
 
@@ -55,5 +52,3 @@ typename ScannerType::Pointer  itkppScannerFactory( ::fwData::Image::sptr imageD
 }
 
 } // end namespace
-
-#endif // __FWITKIO_ITKPP_HXX__

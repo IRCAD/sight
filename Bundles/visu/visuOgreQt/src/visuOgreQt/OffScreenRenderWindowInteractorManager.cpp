@@ -48,7 +48,9 @@ int OffScreenRenderWindowInteractorManager::m_counter = 0;
 //-----------------------------------------------------------------------------
 
 OffScreenRenderWindowInteractorManager::OffScreenRenderWindowInteractorManager(
-    ::fwRenderOgre::IRenderWindowInteractorManager::OffscreenMgrKey, unsigned int _width, unsigned int _height) :
+    ::fwRenderOgre::IRenderWindowInteractorManager::OffscreenMgrKey,
+    unsigned int _width,
+    unsigned int _height) :
     m_id(OffScreenRenderWindowInteractorManager::m_counter++),
     m_width(_width),
     m_height(_height)

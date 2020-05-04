@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,101 +37,110 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   This adaptor shows a modelSeries. It creates an adaptor for each reconstruction in the model.
+ * @brief This adaptor shows a modelSeries. It creates an adaptor for each reconstruction in the model.
  *
  * @section Slots Slots
  * - \b showReconstructions(bool): update all reconstructions visibility.
-
+ * - \b changeField(): update all reconstructions visibility.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::visuOgreAdaptor::SModelSeries">
-            <in key="model" uid="..." />
-            <config layer="..." transform="..." material="..." autoresetcamera="yes" dynamic="no" dynamicVertices="no"
-            queryFlags="0x40000000" />
-       </service>
+    <service type="::visuOgreAdaptor::SModelSeries">
+        <in key="model" uid="..." />
+        <config layer="..." transform="..." material="..." autoresetcamera="yes" dynamic="no" dynamicVertices="no"
+        queryFlags="0x40000000" />
+   </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
- * - \b model [::fwData::ModelSeries]: adapted model series.
+ * - \b model [::fwMedData::ModelSeries]: adapted model series.
+ *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the modelSeries's layer
- * - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
- * - \b material (optional): the name of the base Ogre material to pass to the mesh adaptors.
- * - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
- * - \b dynamic (optional, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is a
+ * - \b layer (mandatory, string): defines the modelSeries's layer
+ * - \b transform (optional, string, default="") : the transformation matrix to associate to the adaptor.
+ * - \b material (optional, string, default=""): the name of the base Ogre material to pass to the mesh adaptors.
+ * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera when this mesh is modified, "yes" or "no".
+ * - \b dynamic (optional, yes/no, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is
+ * a
  * performance hint that will choose a specific GPU memory pool accordingly.
- * - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
+ * - \b dynamicVertices (optional, yes/no, default=no) : if the modelSeries geometry is likely to be updated frequently.
+ * This
  * is a performance hint that will choose a specific GPU memory pool accordingly.
- * - \b queryFlags (optional, default=0x40000000) : Used for picking. Picked only by pickers whose mask that match the
+ * - \b queryFlags (optional, uint32, default=0x40000000) : Used for picking. Picked only by pickers whose mask that
+ * match the
  * flag.
  */
-class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
-                                               public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SModelSeries final :
+    public ::fwRenderOgre::IAdaptor,
+    public ::fwRenderOgre::ITransformable
 {
 
 public:
 
     fwCoreServiceMacro(SModelSeries, ::fwRenderOgre::IAdaptor)
 
-    /// Slot used to show the reconstruction.
-    static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
-
     /// Initialisa slots.
     VISUOGREADAPTOR_API SModelSeries() noexcept;
 
-    /// Does nothing
+    /// Does nothing.
     VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals.
-     * @return The connection map proposals.
-     */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-protected:
-
-    /// Creates a Transform Service, then updates.
-    VISUOGREADAPTOR_API void starting() override;
-
-    /// Configure the parameter.
-    VISUOGREADAPTOR_API void configuring() override;
-
-    /// Redraws all (stops then restarts sub services).
-    VISUOGREADAPTOR_API void updating() override;
-
-    /// Closes connections and unregisters service.
-    VISUOGREADAPTOR_API void stopping() override;
 
 private:
 
+    /// Configures the adaptor.
+    virtual void configuring() override;
+
+    /// Starts the service and updates it.
+    virtual void starting() override;
+
     /**
-     * @brief Update all reconstructions visibility.
-     * @param _show Set to true to show reconstructions.
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwMedData::ModelSeries::s_VERTEX_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to s_UPDATE_SLOT
+     * Connect ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to s_UPDATE_SLOT
+     * Connect ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
+     * Connect ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
+     * Connect ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+    /// Redraws all (stops then restarts sub services).
+    virtual void updating() override;
+
+    /// Closes connections and unregisters service.
+    virtual void stopping() override;
+
+    /**
+     * @brief SOT: updates all reconstructions visibility.
+     * @param _show use true to show reconstructions.
      */
     void showReconstructions(bool _show);
 
-    /// Update all reconstructions visibility using "ShowReconstructions" field.
+    /// SLOT: updates all reconstructions by calling @ref showReconstructions(bool).
     void showReconstructionsOnFieldChanged();
 
     /// Defines if the camera must be reset automatically
-    bool m_autoResetCamera {true};
+    bool m_autoResetCamera { true };
 
-    /// Texture adaptor's UID
-    std::string m_textureAdaptorUID {""};
+    /// Defines the texture name.
+    std::string m_textureAdaptorUID { "" };
 
-    /// Material name
+    /// Defines the material name.
     std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
 
-    /// Defines if the model series is dynamic
+    /// Defines if the model series is dynamic.
     bool m_isDynamic {false};
 
-    /// Defines if the model series' vertices are dynamic
+    /// Defines if the model series' vertices are dynamic.
     bool m_isDynamicVertices {false};
 
-    /// Mask for picking requests
+    /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 //------------------------------------------------------------------------------
 
-} // visuOgreAdaptor
+} // namespace visuOgreAdaptor.
