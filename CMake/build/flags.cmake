@@ -133,7 +133,7 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 # On macOS fwComTest fails without -fvisibility-ms-compat and -fvisibility=hidden
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU>:-fvisibility=hidden;-fvisibility-inlines-hidden>"
-    "$<$<CXX_COMPILER_ID:Clang>:-fvisibility=hidden;-fvisibility-inlines-hidden>"
+    "$<$<CXX_COMPILER_ID:Clang>:-fvisibility=hidden;-fvisibility-inlines-hidden>;"
     "$<$<CXX_COMPILER_ID:AppleClang>:-fvisibility-ms-compat;-fvisibility-inlines-hidden>"
 )
 
@@ -143,6 +143,11 @@ add_compile_options(
     "$<$<CXX_COMPILER_ID:Clang>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
     "$<$<CXX_COMPILER_ID:AppleClang>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
     "$<$<CXX_COMPILER_ID:MSVC>:/W4>"
+)
+
+# AES support is enabled with pragmas on GCC, Clang needs the explicit CLI flag
+add_compile_options(
+    "$<$<CXX_COMPILER_ID:Clang>:-maes>;"
 )
 
 # MSVC need special treatment
