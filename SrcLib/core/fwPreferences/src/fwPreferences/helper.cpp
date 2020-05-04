@@ -67,7 +67,7 @@ inline static std::string computePasswordHash( const std::string& password )
     std::stringstream stream;
     stream << std::setfill('0') << std::setw(2) << std::hex;
 
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    for(uint8_t i = 0; i < SHA256_DIGEST_LENGTH; i++)
     {
         // Cast to int to avoid ASCII code interpretation.
         stream << static_cast<int>(hash[i]);
@@ -133,16 +133,8 @@ const std::string getPassword()
     // Protect for reading
     std::shared_lock readLock(s_passwordMutex);
 
-    // If the password is empty, it means we didn't set one yet.
-    if(s_password.empty())
-    {
-        return s_password;
-    }
-    else
-    {
-        // Otherwise descramble and return it
-        return scramble(s_password);
-    }
+    // Return it
+    return scramble(s_password);
 }
 
 //----------------------------------------------------------------------------
@@ -158,7 +150,7 @@ bool checkPassword(const std::string& password)
     {
         // No password hash is stored in the preferences or there is no preferences
         // We must check against s_password
-        return password == s_password || password == scramble(s_password);
+        return password == scramble(s_password);
     }
     else if(computePasswordHash(password) == passwordHash)
     {

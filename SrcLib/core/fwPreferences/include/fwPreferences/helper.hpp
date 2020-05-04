@@ -79,16 +79,16 @@ T getValue(const std::string& var, const char delimiter = '%')
     return ::boost::lexical_cast< T >(value);
 }
 
-/// Set the password to use in the application. If null or empty, erase it.
+/// Sets the password to use in the application. If null or empty, erase it.
 FWPREFERENCES_API void setPassword(const std::string& password);
 
-/// Return the password used in the application.
+/// @Returns the password used in the application.
 FWPREFERENCES_API const std::string getPassword();
 
-/// Check if the given password match the hash stored in the preferences
+/// Checks if the given password match the hash stored in the preferences
 FWPREFERENCES_API bool checkPassword(const std::string& password);
 
-/// Check if a password hash is stored in the preferences
+/// Checks if a password hash is stored in the preferences
 FWPREFERENCES_API bool hasPasswordHash();
 
 } // namespace fwPreferences
