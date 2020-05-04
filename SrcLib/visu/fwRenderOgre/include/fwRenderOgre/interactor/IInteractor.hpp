@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -153,6 +153,15 @@ public:
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y);
 
     /**
+     * @brief Listens to mouse buttons being double pressed.
+     * @param _button pressed mouse button.
+     * @param _mods keyboard modifiers.
+     * @param _x width coordinate of the mouse.
+     * @param _y height coordinate of the mouse.
+     */
+    FWRENDEROGRE_API virtual void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y);
+
+    /**
      * @brief Listens to keyboard keys being pressed.
      * @param _key pressed key.
      * @param _mods keyboard modifiers.
@@ -206,9 +215,9 @@ public:
     FWRENDEROGRE_API virtual void focusInEvent();
     [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API virtual void focusOutEvent();
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -230,9 +239,9 @@ protected:
     /// Signal triggered when a render is requested
     [[deprecated("Call the render request on the Layer directly.")]]
     RenderRequestedSigType::sptr m_sigRenderRequested;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 private:
 
