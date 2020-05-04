@@ -419,8 +419,8 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< std::uint32_t >(0) = _value.i[0];
-            arrayObject->at< std::uint32_t >(1) = _value.i[1];
+            arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(_value.i[0]);
+            arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(_value.i[1]);
 
             object = arrayObject;
         }
@@ -433,9 +433,9 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< std::uint32_t >(0) = _value.i[0];
-            arrayObject->at< std::uint32_t >(1) = _value.i[1];
-            arrayObject->at< std::uint32_t >(2) = _value.i[2];
+            arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(_value.i[0]);
+            arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(_value.i[1]);
+            arrayObject->at< std::uint32_t >(2) = static_cast<std::uint32_t>(_value.i[2]);
 
             object = arrayObject;
         }
@@ -448,10 +448,10 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< std::uint32_t >(0) = _value.i[0];
-            arrayObject->at< std::uint32_t >(1) = _value.i[1];
-            arrayObject->at< std::uint32_t >(2) = _value.i[2];
-            arrayObject->at< std::uint32_t >(3) = _value.i[3];
+            arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(_value.i[0]);
+            arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(_value.i[1]);
+            arrayObject->at< std::uint32_t >(2) = static_cast<std::uint32_t>(_value.i[2]);
+            arrayObject->at< std::uint32_t >(3) = static_cast<std::uint32_t>(_value.i[3]);
 
             object = arrayObject;
         }
