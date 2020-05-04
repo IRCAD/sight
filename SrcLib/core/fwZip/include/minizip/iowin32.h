@@ -1,40 +1,58 @@
+/************************************************************************
+ *
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
 /* iowin32.h -- IO base function header for compress/uncompress .zip
-     Version 1.1, February 14h, 2010
-     part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
+   Version 1.2.0, September 16th, 2017
+   part of the MiniZip project
 
-         Copyright (C) 1998-2010 Gilles Vollant (minizip) ( http://www.winimage.com/zLibDll/minizip.html )
+   Copyright (C) 2012-2017 Nathan Moinvaziri
+     https://github.com/nmoinvaz/minizip
+   Copyright (C) 2009-2010 Mathias Svensson
+     Modifications for Zip64 support
+     http://result42.com
+   Copyright (C) 1998-2010 Gilles Vollant
+     http://www.winimage.com/zLibDll/minizip.html
 
-         Modifications for Zip64 support
-         Copyright (C) 2009-2010 Mathias Svensson ( http://result42.com )
-
-         Modifications for Sight
-         Copyright (C) 2010 IRCAD France
-
-         For more info read MiniZip_info.txt
-
+   This program is distributed under the terms of the same license as zlib.
+   See the accompanying LICENSE file for the full text of the license.
  */
 
-#ifndef __MINIZIP_IOWIN32_H__
-#define __MINIZIP_IOWIN32_H__
+#pragma once
 
-#ifdef _WIN32
+#ifdef WIN32
 
 #include <windows.h>
-
-#include "minizip/export.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-MINIZIP_API void fill_win32_filefunc OF((zlib_filefunc_def* pzlib_filefunc_def));
-MINIZIP_API void fill_win32_filefunc64 OF((zlib_filefunc64_def* pzlib_filefunc_def));
-MINIZIP_API void fill_win32_filefunc64A OF((zlib_filefunc64_def* pzlib_filefunc_def));
-MINIZIP_API void fill_win32_filefunc64W OF((zlib_filefunc64_def* pzlib_filefunc_def));
+void fill_win32_filefunc(zlib_filefunc_def* pzlib_filefunc_def);
+void fill_win32_filefunc64(zlib_filefunc64_def* pzlib_filefunc_def);
+void fill_win32_filefunc64A(zlib_filefunc64_def* pzlib_filefunc_def);
+void fill_win32_filefunc64W(zlib_filefunc64_def* pzlib_filefunc_def);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //_WIN32
-#endif //__MINIZIP_IOWIN32_H__
+#endif // WIN32
