@@ -163,14 +163,14 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     auto begin = mesh->begin< ::fwData::iterator::CellIterator >();
     auto end   = mesh->end< ::fwData::iterator::CellIterator >();
 
-    const size_t nbBadValues = std::count_if( begin, end,
-                                              [&normalBadValue](
-                                                  const ::fwData::iterator::CellIterator::value_type& val)
+    const auto nbBadValues = std::count_if( begin, end,
+                                            [&normalBadValue](
+                                                const ::fwData::iterator::CellIterator::value_type& val)
             {
                 return val.normal->nx == normalBadValue && val.normal->ny == normalBadValue && val.normal->nz == normalBadValue;
             });
 
-    if (nbBadValues == mesh->getNumberOfCells())
+    if (static_cast<size_t>(nbBadValues) == mesh->getNumberOfCells())
     {
         mesh->clearCellNormals();
         SLM_WARN("normals equals to (-1,-1,-1) : normals removed.");
@@ -207,7 +207,7 @@ void MeshReader::read()
     SLM_TRACE( "Trian file: " + path.string());
     SLM_ASSERT("Empty path for Trian file", !path.empty() );
 
-    size_t length;
+    std::streamsize length;
     //char *buffer;
     std::string buf;
     std::ifstream file;
@@ -224,7 +224,7 @@ void MeshReader::read()
     file.seekg(0, std::ios::beg);
 
     //buffer = new char [length];
-    buf.resize(length);
+    buf.resize(static_cast<size_t>(length));
     char* buffer = &buf[0];
 
     file.read(buffer, length);

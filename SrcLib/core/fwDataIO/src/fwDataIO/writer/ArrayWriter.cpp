@@ -63,7 +63,7 @@ void ArrayWriter::write()
 
     FW_RAISE_IF("Unable to open " << file, !fs.good());
 
-    fs.write(buff, arraySizeInBytes);
+    fs.write(buff, static_cast<std::streamsize>(arraySizeInBytes));
     fs.close();
 
 }

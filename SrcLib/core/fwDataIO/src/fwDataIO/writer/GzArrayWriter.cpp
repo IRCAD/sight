@@ -71,10 +71,10 @@ void GzArrayWriter::write()
     // file is OK : process now
     const size_t arraySizeInBytes = array->getSizeInBytes();
 
-    const unsigned int uncompressedbyteswrited =
+    const int uncompressedbyteswrited =
         gzwrite(rawFile, array->getBuffer(), static_cast<unsigned int>(arraySizeInBytes));
     gzclose(rawFile);
-    if ( uncompressedbyteswrited != arraySizeInBytes )
+    if ( uncompressedbyteswrited != static_cast<int>(arraySizeInBytes) )
     {
         std::string str = "GzArrayWriter::write unable to write ";
         str += getFile().string();

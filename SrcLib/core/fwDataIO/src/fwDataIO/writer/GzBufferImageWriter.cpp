@@ -85,7 +85,7 @@ void GzBufferImageWriter::write()
             && (uncompressedbyteswrited =
                     gzwrite(rawFile, ptr+writtenBytes, static_cast<unsigned int>(imageSizeInBytes-writtenBytes))) > 0 )
     {
-        writtenBytes += uncompressedbyteswrited;
+        writtenBytes += static_cast<size_t>(uncompressedbyteswrited);
     }
 
     gzclose(rawFile);
