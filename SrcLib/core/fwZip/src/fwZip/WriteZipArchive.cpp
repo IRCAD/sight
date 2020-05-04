@@ -143,7 +143,7 @@ public:
         m_archive(parameter.m_archive),
         m_path(parameter.m_path)
     {
-        std::streamsize nRet = openFile(m_zipDescriptor.get(), m_path, parameter.m_key);
+        const std::streamsize nRet = openFile(m_zipDescriptor.get(), m_path, parameter.m_key);
         FW_RAISE_EXCEPTION_IF(
             ::fwZip::exception::Write(
                 "Cannot open file '"
