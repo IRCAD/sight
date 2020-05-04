@@ -47,7 +47,7 @@ template <class DATATYPE>
 class locked_ptr;
 
 /**
- * @brief This class holds a owning ("shared") reference on a data.
+ * @brief This class holds a owning ("shared") reference on a data object.
  *
  * Basically, it is a regular `std::shared_ptr`, that requires to lock the data, before using them.
  * Because the reference is not 'weak', the held data will not be deleted as long as this class exists,

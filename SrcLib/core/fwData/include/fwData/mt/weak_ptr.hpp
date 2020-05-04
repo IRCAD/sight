@@ -47,7 +47,7 @@ template< class DATATYPE >
 class locked_ptr;
 
 /**
- * @brief This class holds a a non-owning ("weak") reference on a data.
+ * @brief This class holds a non-owning ("weak") reference on a data object.
  *
  * This class main purpose is to be used as class member to avoid continuous lookup in service tables.
  *
