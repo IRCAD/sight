@@ -30,6 +30,8 @@
 
 #include <fwCore/macros.hpp>
 
+#include <fwMemory/IBuffered.hpp>
+
 #include <boost/multi_array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
@@ -258,7 +260,8 @@ namespace fwData
     }
    @endcode
  */
-class FWDATA_CLASS_API Mesh : public ::fwData::Object
+class FWDATA_CLASS_API Mesh : public ::fwData::Object,
+                              public ::fwMemory::IBuffered
 {
 
 public:
@@ -936,6 +939,16 @@ protected:
     friend class ::fwData::iterator::ConstPointIterator;
     friend class ::fwData::iterator::CellIterator;
     friend class ::fwData::iterator::ConstCellIterator;
+
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
+    /**
+     * @brief Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     */
+    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
     /**
      * @brief Initializes points, cell-types, cell-data, and cell-data-offsets arrays.

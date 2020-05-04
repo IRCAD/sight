@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,7 @@
 #include "fwActivities/IValidator.hpp"
 
 #include <fwData/Composite.hpp>
+#include <fwData/mt/locked_ptr.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataCamp/getObject.hpp>
@@ -71,7 +72,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
 
         const auto it = inouts.find(key);
         SLM_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
-        ::fwData::Object::csptr obj = it->second.lock();
+        ::fwData::Object::csptr obj = it->second.getShared();
         ParameterType param;
         param.replace = key;
         if(optional)

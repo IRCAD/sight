@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,10 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_MT_OBJECTREADTOWRITELOCK_HPP__
-#define __FWDATA_MT_OBJECTREADTOWRITELOCK_HPP__
+#pragma once
 
-#include "fwData/Object.hpp"
 #include "fwData/config.hpp"
+#include "fwData/Object.hpp"
 
 #include <fwCore/mt/types.hpp>
 
@@ -35,6 +34,8 @@ namespace mt
 
 /**
  * @brief  A helper to lock object on upgradable mode.
+ * @deprecated use locked_ptr instead, or rely on ::fwServices::IService::getLockedXXX() to directly receive a
+ * locked_ptr
  */
 class FWDATA_CLASS_API ObjectReadToWriteLock
 {
@@ -43,8 +44,11 @@ public:
 
     /**
      * @brief Constructor : owns an upgradable lock on object mutex.
+     * @deprecated use locked_ptr instead, or rely on ::fwServices::IService::getLockedXXX() to directly receive a
+     * locked_ptr
      * If adopt_lock==false : the mutex is not locked (call lock() to lock mutex)
      */
+    [[deprecated("it will be removed in sight 21.0, use locked_ptr")]]
     FWDATA_API ObjectReadToWriteLock( ::fwData::Object::sptr obj, bool lock = true );
 
     /// Destructor. Does nothing
@@ -71,5 +75,3 @@ private:
 
 } // mt
 } // fwData
-
-#endif // __FWDATA_MT_OBJECTREADTOWRITELOCK_HPP__

@@ -170,7 +170,7 @@ std::string ObjectService::getRegistryInformation() const
              <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
         for (const auto& obj : service->m_inputsMap)
         {
-            ::fwData::Object::csptr object = obj.second.lock();
+            ::fwData::Object::csptr object = obj.second.lock().getShared();
             if (object)
             {
                 info << "    input: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -178,7 +178,7 @@ std::string ObjectService::getRegistryInformation() const
         }
         for (const auto& obj : service->m_inOutsMap)
         {
-            ::fwData::Object::sptr object = obj.second.lock();
+            ::fwData::Object::sptr object = obj.second.lock().getShared();
             if (object)
             {
                 info << "    inout: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -186,7 +186,7 @@ std::string ObjectService::getRegistryInformation() const
         }
         for (const auto& obj : service->m_outputsMap)
         {
-            ::fwData::Object::sptr object = obj.second;
+            ::fwData::Object::sptr object = obj.second.getShared();
             if (object)
             {
                 info << "    output: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -286,7 +286,7 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
 
-    ::fwData::Object::wptr obj = service->m_outputsMap[objKey];
+    ::fwData::Object::wptr obj = service->m_outputsMap[objKey].getShared();
 
     if (service->hasObjectId(objKey))
     {
@@ -331,7 +331,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
         auto it = service->m_inputsMap.find(objKey);
         if(it != service->m_inputsMap.end())
         {
-            return it->second.lock();
+            return it->second.lock().getShared();
         }
     }
     else if(access == ::fwServices::IService::AccessType::INOUT)
@@ -339,7 +339,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
         auto it = service->m_inOutsMap.find(objKey);
         if(it != service->m_inOutsMap.end())
         {
-            return it->second.lock();
+            return it->second.lock().getShared();
         }
     }
     else
@@ -347,7 +347,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
         auto it = service->m_outputsMap.find(objKey);
         if(it != service->m_outputsMap.end())
         {
-            return it->second;
+            return it->second.getShared();
         }
     }
     return nullptr;

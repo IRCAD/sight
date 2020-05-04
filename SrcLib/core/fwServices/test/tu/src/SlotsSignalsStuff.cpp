@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,15 +41,15 @@ namespace ut
 
 fwDataRegisterMacro(Buffer);
 
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SBasicTest );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SBasicTest )
 fwServicesRegisterObjectMacro( ::fwServices::ut::SBasicTest, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReaderTest );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReaderTest )
 fwServicesRegisterObjectMacro( ::fwServices::ut::SReaderTest, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShowTest );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShowTest )
 fwServicesRegisterObjectMacro( ::fwServices::ut::SShowTest, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReader2Test );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReader2Test )
 fwServicesRegisterObjectMacro( ::fwServices::ut::SReader2Test, ::fwServices::ut::Buffer );
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShow2Test );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShow2Test )
 fwServicesRegisterObjectMacro( ::fwServices::ut::SShow2Test, ::fwServices::ut::Buffer );
 
 const ::fwServices::IService::KeyType IBasicTest::s_BUFFER_INOUT = "buffer";
@@ -208,10 +208,12 @@ void SShow2Test::updating()
 
 void SShow2Test::updateBuffer()
 {
-    Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
-    std::this_thread::sleep_for(m_receiveRetarder);
-    ::fwData::mt::ObjectWriteLock lock(buffer);
-    ++m_receiveCount;
+    {
+        Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
+        std::this_thread::sleep_for(m_receiveRetarder);
+        ::fwData::mt::ObjectWriteLock lock(buffer);
+        ++m_receiveCount;
+    }
 
     this->updating();
 }

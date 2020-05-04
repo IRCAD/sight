@@ -876,6 +876,14 @@ const Mesh::ColorValueType* Mesh::getCellColorsBuffer() const
     return static_cast<ColorValueType*>(m_cellColors->getBuffer());
 }
 //------------------------------------------------------------------------------
+
+void Mesh::lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const
+{
+    const LocksType& myLocks = this->lock();
+    locks.insert(std::end(locks), std::begin(myLocks), std::end(myLocks));
+}
+
+//------------------------------------------------------------------------------
 // Deprecated API
 //------------------------------------------------------------------------------
 
