@@ -25,6 +25,15 @@
 #include "fwMemory/BufferObject.hpp"
 #include "fwMemory/config.hpp"
 
+namespace fwData
+{
+namespace mt
+{
+template< class DATATYPE >
+class locked_ptr;
+}
+}
+
 namespace fwMemory
 {
 
@@ -33,7 +42,11 @@ namespace fwMemory
  */
 class FWMEMORY_CLASS_API IBuffered
 {
-public:
+protected:
+
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
     /**
      * @brief Must allocate a ::fwMemory::BufferObject::Lock and store it into the vector parameter
      *

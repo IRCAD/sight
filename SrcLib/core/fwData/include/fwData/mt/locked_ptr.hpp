@@ -40,10 +40,11 @@ template <class DATATYPE>
 class weak_ptr;
 
 /**
- * @brief This class holds shared pointer on a data, and act as a mutex lock and a dump lock if relevant
+ * @brief This class holds a shared pointer on a data, and acts as a mutex and a dump lock if the data own a
+ *::fwData::Array
  */
 template< class DATATYPE >
-class locked_ptr
+class locked_ptr final
 {
 public:
 
@@ -51,7 +52,7 @@ public:
     explicit inline locked_ptr(const std::shared_ptr< DATATYPE >& data ) noexcept :
         m_data(data),
         m_locker(data->getMutex()),
-        m_BufferLocks(data)
+        m_buffer_locks(data)
     {
     }
 
@@ -74,7 +75,7 @@ public:
         {
             m_data = data;
             m_locker.unlock();
-            m_BufferLocks = BufferLocks(data);
+            m_buffer_locks = BufferLocks(data);
         }
 
         return *this;
@@ -92,17 +93,13 @@ public:
         return this->operator=(data.lock());
     }
 
-    /// Default constructors and assignment operator
+    /// Default constructors, destructor and assignment operators
     locked_ptr()                             = default;
     locked_ptr(const locked_ptr&)            = default;
     locked_ptr(locked_ptr&&)                 = default;
     locked_ptr& operator=(const locked_ptr&) = default;
     locked_ptr& operator=(locked_ptr&&)      = default;
-
-    /// Default destructor
-    virtual ~locked_ptr()
-    {
-    }
+    ~locked_ptr()                            = default;
 
     /// Returns the internal shared pointer
     inline std::shared_ptr< DATATYPE > getShared() const noexcept
@@ -144,16 +141,16 @@ private:
                                  ::fwCore::mt::WriteLock > m_locker;
 
     template< class C, class = void >
-    class BufferLocks
+    class buffer_locks final
     {
     };
 
     template<class C>
-    class BufferLocks<C, typename std::enable_if_t< std::is_base_of_v< ::fwMemory::IBuffered, C > > >
+    class buffer_locks<C, typename std::enable_if_t< std::is_base_of_v< ::fwMemory::IBuffered, C > > > final
     {
     friend locked_ptr;
 
-    inline explicit BufferLocks( const std::shared_ptr< C >& data )
+    inline explicit buffer_locks( const std::shared_ptr< C >& data )
     {
         if(data)
         {
@@ -165,16 +162,16 @@ private:
     };
 
     template<class C>
-    class BufferLocks<C, typename std::enable_if_t< !std::is_base_of_v< ::fwMemory::IBuffered, C > > >
+    class buffer_locks<C, typename std::enable_if_t< !std::is_base_of_v< ::fwMemory::IBuffered, C > > >
     {
     friend locked_ptr;
 
-    inline explicit BufferLocks( const std::shared_ptr< C >& )
+    inline explicit buffer_locks( const std::shared_ptr< C >& )
     {
     }
     };
 
-    BufferLocks<DATATYPE> m_BufferLocks;
+    buffer_locks<DATATYPE> m_buffer_locks;
 };
 
 } // namespace mt

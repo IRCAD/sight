@@ -506,14 +506,6 @@ public:
         const ::fwMemory::FileFormatType format                = ::fwMemory::OTHER,
         const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New());
 
-    /**
-     * @brief Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
-     *
-     * This is needed for IBuffered interface implementation
-     * The buffer cannot be accessed if the image is not locked
-     */
-    FWDATA_API virtual void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
-
     // ---------------------------------------
     // Deprecated API
     // ---------------------------------------
@@ -605,6 +597,20 @@ public:
     ///get data array
     [[deprecated("it will be removed in sight 22.0")]]
     FWDATA_API ::fwData::Array::sptr getDataArray() const;
+
+protected:
+
+    // To allow locked_ptr to access protected lockBuffer()
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
+    /**
+     * @brief Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     * The buffer cannot be accessed if the image is not locked
+     */
+    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
 private:
 

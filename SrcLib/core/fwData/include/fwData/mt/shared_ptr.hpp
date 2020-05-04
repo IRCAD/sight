@@ -49,8 +49,8 @@ class locked_ptr;
 /**
  * @brief This class holds a owning ("shared") reference on a data.
  *
- * Basically, it is a regular `std::shared_ptr`, that require to lock the data, before using them.
- * Because the reference is not 'weak', the hold data will not be deleted as long as this class exist,
+ * Basically, it is a regular `std::shared_ptr`, that requires to lock the data, before using them.
+ * Because the reference is not 'weak', the held data will not be deleted as long as this class exists,
  * and, of course, no other reference exists.
  *
  * This is the class to use to hold data that belongs to the current service.
@@ -58,7 +58,7 @@ class locked_ptr;
  * It must be converted to a locked_ptr in order to access the referenced object.
  */
 template <class DATATYPE>
-class shared_ptr
+class shared_ptr final
 {
 
 public:
@@ -94,23 +94,21 @@ public:
         return *this;
     }
 
-    /// Default constructors and assignment operator
+    /// Default constructors, destructor and assignment operators
     shared_ptr()                             = default;
     shared_ptr(const shared_ptr&)            = default;
     shared_ptr(shared_ptr&&)                 = default;
     shared_ptr& operator=(const shared_ptr&) = default;
     shared_ptr& operator=(shared_ptr&&)      = default;
-    virtual ~shared_ptr()
-    {
-    }
+    ~shared_ptr()                            = default;
 
-    /// Returns the locked_ptr from the weak pointer
+    /// Returns the locked_ptr from the shared pointer
     inline locked_ptr<DATATYPE> lock() const noexcept
     {
         return locked_ptr<DATATYPE>(m_data);
     }
 
-    /// Convenience function that mimic std::dynamic_pointer_cast()
+    /// Convenience function that mimics std::dynamic_pointer_cast()
     template< class CASTED_DATATYPE >
     inline shared_ptr< CASTED_DATATYPE > dynamicPointerCast() const noexcept
     {
@@ -131,7 +129,7 @@ protected:
     }
 
 private:
-    /// The data to guard
+    /// The data to store
     std::shared_ptr<DATATYPE> m_data;
 };
 

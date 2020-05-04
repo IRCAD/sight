@@ -396,13 +396,6 @@ public:
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
     /**
-     * @brief Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
-     *
-     * This is needed for IBuffered interface implementation
-     */
-    FWDATA_API virtual void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
-
-    /**
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
@@ -630,6 +623,17 @@ protected:
         bool takeOwnership                              = false,
         ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New()
         );
+
+    // To allow locked_ptr to access protected lockBuffer()
+    template< class DATATYPE >
+    friend class ::fwData::mt::locked_ptr;
+
+    /**
+     * @brief Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
+     *
+     * This is needed for IBuffered interface implementation
+     */
+    FWDATA_API void lockBuffer(std::vector< ::fwMemory::BufferObject::Lock >& locks) const override;
 
     /**
      * @brief Compute strides for given parameters

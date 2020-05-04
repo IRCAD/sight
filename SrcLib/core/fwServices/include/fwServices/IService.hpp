@@ -437,7 +437,7 @@ public:
 
     /**
      * @brief Return the input object at the given key. Asserts if the data is not of the right type.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
@@ -447,7 +447,7 @@ public:
 
     /**
      * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
@@ -457,7 +457,7 @@ public:
 
     /**
      * @brief Return the output object at the given key. Asserts if the data is not of the right type.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
@@ -491,7 +491,7 @@ public:
 
     /**
      * @brief Return a weak data pointer of the input object at the given key and index.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
@@ -500,7 +500,7 @@ public:
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key and index.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
@@ -509,7 +509,7 @@ public:
 
     /**
      * @brief Return a weak data pointer of the out object at the given key and index.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
@@ -542,7 +542,7 @@ public:
 
     /**
      * @brief Return a locked data pointer of the input object at the given key and index.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type, null pointer if not found.
      */
@@ -551,7 +551,7 @@ public:
 
     /**
      * @brief Return a locked data pointer of the in/out object at the given key and index.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type, null pointer if not found.
      */
@@ -560,7 +560,7 @@ public:
 
     /**
      * @brief Return a locked data pointer of the out object at the given key and index.
-     * @param keybase name of the base key of data to retrieve.
+     * @param group key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type, null pointer if not found.
      */

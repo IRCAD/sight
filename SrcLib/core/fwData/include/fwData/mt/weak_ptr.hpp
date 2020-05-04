@@ -51,14 +51,14 @@ class locked_ptr;
  *
  * This class main purpose is to be used as class member to avoid continuous lookup in service tables.
  *
- * In a `IService`, the `weak_ptr` member could be initialized in the `configuring()` and then 'locked'
+ * In a `IService`, the `weak_ptr` member could be initialized in the `starting()` and then 'locked'
  * and used in the `updating()` method. It will spare the lookup, and only lock the data in the `updating()`
  * which may have an impact when `updating()` is called very often.
  *
  * It must be converted to a locked_ptr in order to access the referenced object.
  */
 template <class DATATYPE>
-class weak_ptr
+class weak_ptr final
 {
 
 public:
@@ -94,15 +94,13 @@ public:
         return *this;
     }
 
-    /// Default constructors and assignment operator
+    /// Default constructors, destructor and assignment operators
     weak_ptr()                           = default;
     weak_ptr(const weak_ptr&)            = default;
     weak_ptr(weak_ptr&&)                 = default;
     weak_ptr& operator=(const weak_ptr&) = default;
     weak_ptr& operator=(weak_ptr&&)      = default;
-    virtual ~weak_ptr()
-    {
-    }
+    ~weak_ptr()                          = default;
 
     /// Returns the locked_ptr from the weak pointer
     inline locked_ptr<DATATYPE> lock() const noexcept
@@ -123,7 +121,7 @@ public:
         return weak_ptr< CASTED_DATATYPE >(std::dynamic_pointer_cast< CASTED_DATATYPE >(m_data.lock()));
     }
 
-protected:
+private:
 
     /// @todo remove me when IService and ObjectService will be ready to use lock()
     friend class ::fwServices::IService;
@@ -144,7 +142,6 @@ protected:
         return m_data.lock();
     }
 
-private:
     /// The data to guard
     std::weak_ptr< DATATYPE > m_data;
 };
