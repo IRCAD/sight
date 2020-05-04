@@ -61,7 +61,7 @@ public:
      */
     Profile();
 
-    virtual ~Profile() override;
+    ~Profile() override;
 
     /**
      * @brief       Adds a new activator.
@@ -101,20 +101,20 @@ public:
     /**
      * @brief   Starts the profile.
      */
-    virtual void start() final;
-    virtual void stop() final;
+    void start() final;
+    void stop() final;
 
     /**
      * @brief   Once started, setup the profile.
      */
-    virtual void setup() final;
-    virtual void cleanup() final;
+    void setup() final;
+    void cleanup() final;
 
     /**
      * @brief   Run the profile.
      */
-    virtual int run() final;
-    virtual void setRunCallback(RunCallbackType callback) final;
+    int run() final;
+    void setRunCallback(RunCallbackType callback) final;
 
     int defaultRun();
 

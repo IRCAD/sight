@@ -57,7 +57,7 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~Runtime() override;
+    ~Runtime() override;
 
     /**
      * @name    Public API implementation
@@ -69,14 +69,14 @@ public:
      *
      * @param[in]   repository  a path that may containing modules
      */
-    virtual void addBundles( const std::filesystem::path& repository ) override;
+    void addBundles( const std::filesystem::path& repository ) override;
 
     /**
      * @brief       Adds all module found in the given path.
      *
      * @param[in]   repository  a path that may containing modules
      */
-    virtual void addModules( const std::filesystem::path& repository ) override;
+    void addModules( const std::filesystem::path& repository ) override;
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -87,8 +87,8 @@ public:
      * @return      a shared pointer to the found module or null if none
      * @deprecated  Module has been renamed to Module, please use findModule() instead
      */
-    [[deprecated]] virtual SPTR( ::fwRuntime::Module ) findBundle( const std::string& identifier,
-                                                                   const Version& version = Version() ) const final;
+    [[deprecated]] SPTR( ::fwRuntime::Module ) findBundle( const std::string& identifier,
+                                                           const Version& version = Version() ) const final;
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -98,8 +98,8 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    virtual SPTR( ::fwRuntime::Module ) findModule( const std::string& identifier,
-                                                    const Version& version = Version() ) const final;
+    SPTR( ::fwRuntime::Module ) findModule( const std::string& identifier,
+                                            const Version& version = Version() ) const final;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -137,7 +137,7 @@ public:
      * @brief   Retrieves the iterator on the end of the extension collection.
      * @return  an iterator
      */
-    virtual ExtensionIterator extensionsEnd();
+    ExtensionIterator extensionsEnd();
 
     /**
      * @brief       Retrieves the extension instance matching the specified identifier.
@@ -146,16 +146,16 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const final;
+    std::shared_ptr< Extension > findExtension( const std::string& identifier ) const final;
 
     /// @copydoc ::fwRuntime::Runtime::getBundles
-    [[deprecated]] virtual ::fwRuntime::Runtime::ModuleContainer getBundles() final;
+    [[deprecated]] ::fwRuntime::Runtime::ModuleContainer getBundles() final;
 
     /// @copydoc ::fwRuntime::Runtime::getModules
-    virtual ::fwRuntime::Runtime::ModuleContainer getModules() final;
+    ::fwRuntime::Runtime::ModuleContainer getModules() final;
 
     /// @copydoc ::fwRuntime::Runtime::getWorkingPath
-    virtual std::filesystem::path getWorkingPath() const final;
+    std::filesystem::path getWorkingPath() const final;
 
     //@}
 

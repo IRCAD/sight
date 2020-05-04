@@ -36,7 +36,7 @@ namespace fwRuntime
 struct Extension;
 struct ExtensionRegistry;
 class IExecutable;
-struct ExecutableFactory;
+class ExecutableFactory;
 struct IPlugin;
 class Runtime;
 

@@ -36,9 +36,9 @@ namespace fwRuntime
  * classes being exported by modules.
  *
  */
-struct Executable : public IExecutable
+class Executable : public IExecutable
 {
-
+public:
     /**
      * @brief   Retrieves the executable's initialization data.
      *
@@ -52,29 +52,29 @@ struct Executable : public IExecutable
      */
     /// @{
 
-    [[deprecated]] virtual std::shared_ptr<Module> getBundle() const override;
-    virtual std::shared_ptr<Module> getModule() const override;
+    [[deprecated]] std::shared_ptr<Module> getBundle() const override;
+    std::shared_ptr<Module> getModule() const override;
 
-    virtual void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration ) override;
+    void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration ) override;
 
     /// @}
 
-    protected:
+protected:
 
-        // Overrides
-        virtual void setModule( std::shared_ptr< Module > module ) override;
+    // Overrides
+    void setModule( std::shared_ptr< Module > module ) override;
 
-    private:
+private:
 
-        /**
-         * @brief   a pointer to the module that owns the executable instance
-         */
-        std::shared_ptr< Module > m_module;
+    /**
+     * @brief   a pointer to the module that owns the executable instance
+     */
+    std::shared_ptr< Module > m_module;
 
-        /**
-         * @brief   the initialization data of the executable instance
-         */
-        std::shared_ptr< ConfigurationElement > m_initializationData;
+    /**
+     * @brief   the initialization data of the executable instance
+     */
+    std::shared_ptr< ConfigurationElement > m_initializationData;
 
 };
 

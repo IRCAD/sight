@@ -46,15 +46,15 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~EmptyPlugin() noexcept
+    ~EmptyPlugin() noexcept override
     {
     }
 
     // Overrides
-    virtual void start();
+    void start() override;
 
     // Overrides
-    virtual void stop() noexcept;
+    void stop() noexcept override;
 
 };
 

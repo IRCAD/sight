@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ struct Win32 : public Native
      *
      * @return  true or false
      */
-    bool isLoaded() const noexcept;
+    bool isLoaded() const noexcept override;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
@@ -71,17 +71,17 @@ struct Win32 : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol(const std::string& name) const;
+    void* getSymbol(const std::string& name) const override;
 
     /**
      * @brief   Loads the module.
      */
-    void load();
+    void load() override;
 
     /**
      * @brief   Undloads the module.
      */
-    void unload();
+    void unload() override;
 
     private:
 

@@ -40,6 +40,8 @@ namespace fwRuntime
 class FWRUNTIME_CLASS_API ModuleElement
 {
 public:
+    virtual ~ModuleElement() = default;
+
     /**
      * @brief   Retrieves the module that owns the extension.
      *
@@ -99,7 +101,7 @@ protected:
 
 private:
 
-    std::weak_ptr< Module >  m_module;    ///< Weak pointer to the module managing the element
+    std::weak_ptr< Module > m_module;    ///< Weak pointer to the module managing the element
     bool m_enable;                              ///< to know if module element is enabled
 
 };

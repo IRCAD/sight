@@ -54,7 +54,7 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~GenericExecutableFactory()
+    ~GenericExecutableFactory() override
     {
     }
 
@@ -63,7 +63,7 @@ public:
      *
      * @return  a pointer to an executable instance
      */
-    IExecutable* createExecutable() const
+    IExecutable* createExecutable() const override
     {
         IExecutable* result = nullptr;
         try

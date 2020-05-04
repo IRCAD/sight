@@ -63,7 +63,7 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    FWRUNTIME_API virtual ~EConfigurationElement();
+    FWRUNTIME_API ~EConfigurationElement() override;
 
     /**
      * @brief       Create and add a configuration element.

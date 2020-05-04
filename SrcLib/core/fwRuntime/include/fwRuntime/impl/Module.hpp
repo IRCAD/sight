@@ -99,65 +99,65 @@ public:
      * @brief   Starts the module.
      * @remark  The module must be enabled to be able to start.
      */
-    virtual void start() final;
-    virtual void stop() final;
+    void start() final;
+    void stop() final;
 
     /**
      * @brief   Retrieves the module identifier.
      *
      * @return  a string containing the module identifier
      */
-    virtual const std::string& getIdentifier() const final;
+    const std::string& getIdentifier() const final;
 
     /**
      * @brief   Retrieves the module location.
      *
      * @return  a path representing the module location
      */
-    virtual const std::filesystem::path& getLibraryLocation() const final;
+    const std::filesystem::path& getLibraryLocation() const final;
 
     /**
      * @brief   Retrieves the module location.
      *
      * @return  a path representing the module location
      */
-    virtual const std::filesystem::path& getResourcesLocation() const final;
+    const std::filesystem::path& getResourcesLocation() const final;
 
     /**
      * @brief   Retrieves the class representing the module executable part.
      *
      * @return  a string containing the module's plugin class
      */
-    virtual const std::string getClass() const final;
+    const std::string getClass() const final;
 
     /**
      * @brief   Retrieves the version of the module.
      *
      * @return  the module version
      */
-    virtual const Version& getVersion() const final;
+    const Version& getVersion() const final;
 
     /**
      * @brief   Retrieves the plugin instance for the specified module identifier.
      *
      * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
-    virtual SPTR( IPlugin ) getPlugin() const final;
+    SPTR( IPlugin ) getPlugin() const final;
 
     /** @copydoc ::fwRuntime::Module */
-    virtual const std::string getParameterValue( const std::string& identifier ) const final;
+    const std::string getParameterValue( const std::string& identifier ) const final;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    virtual bool hasParameter( const std::string& name ) const final;
+    bool hasParameter( const std::string& name ) const final;
 
     /// @copydoc ::fwRuntime::Module::getExtensions
-    virtual ExtensionContainer getExtensions( ) const final;
+    ExtensionContainer getExtensions( ) const final;
 
     /// @copydoc ::fwRuntime::Module::isEnable
-    virtual bool isEnable() const final;
+    bool isEnable() const final;
     //@}
 
     /**

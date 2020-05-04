@@ -38,7 +38,7 @@ class Module;
 struct ConfigurationElement;
 struct Extension;
 class IExecutable;
-struct ExecutableFactory;
+class ExecutableFactory;
 struct IPlugin;
 }
 

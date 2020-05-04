@@ -40,15 +40,9 @@ namespace fwRuntime
  * @brief   Defines the abstract executable factory class.
  *
  */
-struct FWRUNTIME_CLASS_API ExecutableFactory : public ModuleElement
+class FWRUNTIME_CLASS_API ExecutableFactory : public ModuleElement
 {
-
-    /**
-     * @name    Construction & Destruction
-     *
-     * @{
-     */
-
+public:
     /**
      * @brief       Constructor
      *
@@ -59,8 +53,7 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public ModuleElement
     /**
      * @brief   Destructor : does nothing
      */
-    FWRUNTIME_API virtual ~ExecutableFactory();
-    ///@}
+    FWRUNTIME_API ~ExecutableFactory() override;
 
     /**
      * @brief   Creates an executable object instance.
@@ -76,9 +69,9 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public ModuleElement
      */
     FWRUNTIME_API const std::string getType() const;
 
-    private:
+private:
 
-        std::string m_type; ///< a string containing the type identifier managed by the factory
+    std::string m_type;     ///< a string containing the type identifier managed by the factory
 
 };
 

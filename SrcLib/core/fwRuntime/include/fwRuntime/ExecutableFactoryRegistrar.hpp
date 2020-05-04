@@ -29,7 +29,7 @@
 namespace fwRuntime
 {
 
-struct ExecutableFactory;
+class ExecutableFactory;
 
 /**
  * @brief   Defines an executable factory registrar class.

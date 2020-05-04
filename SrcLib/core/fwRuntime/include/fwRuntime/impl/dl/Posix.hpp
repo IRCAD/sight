@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,12 +53,12 @@ struct Posix : public Native
     /**
      * @brief   Destructor.
      */
-    ~Posix() noexcept;
+    ~Posix() override noexcept;
 
     /**
      * @see ::fwRuntime::dl::Native#isLoaded
      */
-    bool isLoaded() const noexcept;
+    bool isLoaded() const noexcept override;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
@@ -67,17 +67,17 @@ struct Posix : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol( const std::string& name ) const;
+    void* getSymbol( const std::string& name ) const override;
 
     /**
      * @see ::fwRuntime::dl::Native#load
      */
-    void load();
+    void load() override;
 
     /**
      * @see ::fwRuntime::dl::Native#unload
      */
-    void unload();
+    void unload() override;
 
     private:
 
