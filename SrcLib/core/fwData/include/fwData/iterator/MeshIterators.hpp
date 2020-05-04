@@ -174,7 +174,7 @@ public:
     FWDATA_API virtual ~PointIterator() override;
 
     FWDATA_API PointIterator& operator=(const PointIterator& other) = default;
-    FWDATA_API PointIterator& operator=(const PointIteratorBase& other);
+    FWDATA_API PointIterator& operator=(const PointIteratorBase& other) override;
 
     friend class ConstPointIterator;
 };
@@ -207,10 +207,10 @@ public:
     FWDATA_API ConstPointIterator(const Mesh* mesh);
     FWDATA_API ConstPointIterator(const ConstPointIterator& other) = default;
     FWDATA_API ConstPointIterator(const PointIteratorBase& other);
-    FWDATA_API virtual ~ConstPointIterator() override;
+    FWDATA_API ~ConstPointIterator() override;
 
     FWDATA_API ConstPointIterator& operator=(const ConstPointIterator& other) = default;
-    FWDATA_API ConstPointIterator& operator=(const PointIteratorBase& other);
+    FWDATA_API ConstPointIterator& operator=(const PointIteratorBase& other) override;
 };
 
 /**
@@ -344,10 +344,10 @@ public:
     /// Constructor
     FWDATA_API CellIterator(::fwData::Mesh* mesh);
     FWDATA_API CellIterator(const CellIterator& other) = default;
-    FWDATA_API virtual ~CellIterator() override;
+    FWDATA_API ~CellIterator() override;
 
     FWDATA_API CellIterator& operator=(const CellIterator& other) = default;
-    FWDATA_API CellIterator& operator=(const CellIteratorBase& other);
+    FWDATA_API CellIterator& operator=(const CellIteratorBase& other) override;
 };
 
 /**
@@ -381,10 +381,10 @@ public:
     FWDATA_API ConstCellIterator(const ::fwData::Mesh* mesh);
     FWDATA_API ConstCellIterator(const ConstCellIterator& other) = default;
     FWDATA_API ConstCellIterator(const CellIterator& other);
-    FWDATA_API virtual ~ConstCellIterator() override;
+    FWDATA_API ~ConstCellIterator() override;
 
     FWDATA_API ConstCellIterator& operator=(const ConstCellIterator& other) = default;
-    FWDATA_API ConstCellIterator& operator=(const CellIteratorBase& other);
+    FWDATA_API ConstCellIterator& operator=(const CellIteratorBase& other) override;
 };
 
 } // namespace iterator
