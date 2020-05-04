@@ -782,7 +782,7 @@ void ImageTest::setISStreamTest()
     const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "ImageTest.raw";
 
     std::ofstream ostr(PATH, std::ios::binary);
-    ostr.write(static_cast<const char*>(image->getBuffer()), image->getSizeInBytes());
+    ostr.write(static_cast<const char*>(image->getBuffer()), static_cast<std::streamsize>(image->getSizeInBytes()));
     ostr.close();
 
     ::fwData::Image::sptr newImage = ::fwData::Image::New();
