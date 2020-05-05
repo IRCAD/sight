@@ -41,30 +41,30 @@ namespace fwVtkIO
 {
 
 /**
- * @brief Reads a Mesh from .vtk (legacy) file using VTK library.
+ * @brief Reads a Mesh from .stl file using VTK library.
  *
  */
 
-class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                   public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class StlMeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+                      public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(MeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                     ::fwDataIO::reader::factory::New< MeshReader >)
+    fwCoreClassMacro(StlMeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+                     ::fwDataIO::reader::factory::New< StlMeshReader >)
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    FWVTKIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWVTKIO_API StlMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
     //! @brief Destructor.
-    FWVTKIO_API ~MeshReader();
+    FWVTKIO_API ~StlMeshReader();
 
     //! @brief Reading operator.
     FWVTKIO_API void read() override;
 
-    /// @return ".vtk"
+    /// @return ".stl"
     FWVTKIO_API std::string extension() override;
     /// @return internal job
     FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;

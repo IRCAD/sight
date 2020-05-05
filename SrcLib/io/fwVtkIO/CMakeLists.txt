@@ -19,8 +19,10 @@ fwForwardInclude(
 )
 fwForwardLink(
     vtkFiltersModeling
-    vtkIOImage
+    vtkIOGeometry
     vtkIOLegacy
+    vtkIOPLY
+    vtkIOImage
     vtkIOXML
     vtkFiltersGeometry
     vtkIOExport

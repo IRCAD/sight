@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwVtkIO/MeshReader.hpp"
+#include "fwVtkIO/StlMeshReader.hpp"
 
 #include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
@@ -32,34 +32,32 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <vtkGenericDataObjectReader.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
-#include <vtkXMLGenericDataObjectReader.h>
+#include <vtkSTLReader.h>
 
-fwDataIOReaderRegisterMacro( ::fwVtkIO::MeshReader );
+fwDataIOReaderRegisterMacro( ::fwVtkIO::StlMeshReader );
 
 namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key) :
+StlMeshReader::StlMeshReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("Mesh reader"))
+    m_job(::fwJobs::Observer::New("stl reader"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-MeshReader::~MeshReader()
+StlMeshReader::~StlMeshReader()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReader::read()
+void StlMeshReader::read()
 {
-
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
@@ -69,7 +67,7 @@ void MeshReader::read()
 
     const auto extension = this->getFile().extension();
 
-    vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
+    vtkSmartPointer< vtkSTLReader > reader = vtkSmartPointer< vtkSTLReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
 
     vtkSmartPointer< vtkLambdaCommand > progressCallback;
@@ -78,7 +76,7 @@ void MeshReader::read()
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void*)
         {
-            auto filter = static_cast< vtkGenericDataObjectReader* >(caller);
+            auto filter = static_cast< vtkSTLReader* >(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
@@ -90,7 +88,7 @@ void MeshReader::read()
 
     vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
-    FW_RAISE_IF("MeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
+    FW_RAISE_IF("StlMeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
     ::fwVtkIO::helper::Mesh::fromVTKMesh(mesh, pMesh);
 
     m_job->finish();
@@ -98,14 +96,14 @@ void MeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string MeshReader::extension()
+std::string StlMeshReader::extension()
 {
-    return ".vtk";
+    return ".stl";
 }
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr MeshReader::getJob() const
+::fwJobs::IJob::sptr StlMeshReader::getJob() const
 {
     return m_job;
 }
