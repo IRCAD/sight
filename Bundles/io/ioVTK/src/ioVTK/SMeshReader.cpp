@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,13 +41,17 @@
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/MeshReader.hpp>
+#include <fwVtkIO/ObjMeshReader.hpp>
+#include <fwVtkIO/PlyMeshReader.hpp>
+#include <fwVtkIO/StlMeshReader.hpp>
+#include <fwVtkIO/VtpMeshReader.hpp>
 
 #include <filesystem>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, ::fwData::Mesh )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -69,14 +73,17 @@ SMeshReader::SMeshReader() noexcept
 
 void SMeshReader::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
-
     static std::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Vtk", "*.vtk");
+    dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
+    dialogFile.addFilter("OBJ File(.obj)", "*.obj");
+    dialogFile.addFilter("PLY File(.ply)", "*.ply");
+    dialogFile.addFilter("STL File(.stl)", "*.stl");
+    dialogFile.addFilter("VTK Legacy File(.vtk)", "*.vtk");
+    dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -99,14 +106,12 @@ void SMeshReader::configureWithIHM()
 
 void SMeshReader::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SMeshReader::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -125,22 +130,73 @@ void SMeshReader::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::loadMesh( const std::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
+template< typename READER >
+typename READER::sptr configureReader(const std::filesystem::path& _file )
 {
-    SLM_TRACE_FUNC();
+    typename READER::sptr reader = READER::New();
+    reader->setFile(_file);
+    return reader;
+}
 
-    ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
+//------------------------------------------------------------------------------
 
-    m_sigJobCreated->emit(reader->getJob());
+bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
+{
+    bool ok = true;
+    // Retrieve dataStruct associated with this service
+    const auto meshlockedPtr = this->getLockedInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", meshlockedPtr);
 
-    reader->setObject(_pMesh);
-    reader->setFile(vtkFile);
+    // Test extension to provide the reader
 
-    ::fwData::mt::ObjectWriteLock lock(_pMesh);
+    ::fwDataIO::reader::IObjectReader::sptr meshReader;
+
+    if(vtkFile.extension() == ".vtk")
+    {
+        meshReader = configureReader< ::fwVtkIO::MeshReader >(vtkFile);
+    }
+    else if(vtkFile.extension() == ".vtp")
+    {
+        meshReader = configureReader< ::fwVtkIO::VtpMeshReader >(vtkFile);
+    }
+    else if(vtkFile.extension() == ".obj")
+    {
+        meshReader = configureReader< ::fwVtkIO::ObjMeshReader >(vtkFile);
+    }
+    else if(vtkFile.extension() == ".stl")
+    {
+        meshReader = configureReader< ::fwVtkIO::StlMeshReader >(vtkFile);
+    }
+    else if(vtkFile.extension() == ".ply")
+    {
+        meshReader = configureReader< ::fwVtkIO::PlyMeshReader >(vtkFile);
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Extension '"+ vtkFile.extension().string() +
+                                             "' is not managed by ::ioVTK::SMeshReader."));
+    }
+
+    m_sigJobCreated->emit(meshReader->getJob());
+
+    meshReader->setObject(meshlockedPtr.getShared());
 
     try
     {
-        reader->read();
+        meshReader->read();
+    }
+    catch(::fwTools::Failed& e)
+    {
+        std::stringstream ss;
+        ss << "Warning during loading : " << e.what();
+
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
+        ok = false;
+        // Raise exception  for superior level
+        FW_RAISE_EXCEPTION(e);
     }
     catch (const std::exception& e)
     {
@@ -151,6 +207,7 @@ void SMeshReader::loadMesh( const std::filesystem::path vtkFile, ::fwData::Mesh:
             "Warning",
             ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
+        ok = false;
     }
     catch( ... )
     {
@@ -160,7 +217,10 @@ void SMeshReader::loadMesh( const std::filesystem::path vtkFile, ::fwData::Mesh:
             "Warning",
             "Warning during loading.",
             ::fwGui::dialog::IMessageDialog::WARNING);
+        ok = false;
     }
+
+    return ok;
 }
 
 //------------------------------------------------------------------------------
@@ -169,14 +229,10 @@ void SMeshReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        // Retrieve dataStruct associated with this service
-        ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pMesh);
-
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        this->loadMesh(this->getFile(), pMesh);
+        this->loadMesh(this->getFile());
         this->notificationOfUpdate();
 
         cursor.setDefaultCursor();
@@ -187,11 +243,11 @@ void SMeshReader::updating()
 
 void SMeshReader::notificationOfUpdate()
 {
-    ::fwData::Mesh::sptr pMesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pMesh);
+    const auto meshLockedPtr = this->getLockedInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
+    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", meshLockedPtr);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig = meshLockedPtr.getShared()->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
