@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,6 +49,11 @@ CPPUNIT_TEST( testMeshUpdateNormals );
 CPPUNIT_TEST( testGridUpdatePoints );
 CPPUNIT_TEST( testGridUpdateColors );
 CPPUNIT_TEST( testGridUpdateNormals );
+CPPUNIT_TEST(testReadVtkFile);
+CPPUNIT_TEST(testReadVtpFile);
+CPPUNIT_TEST(testReadObjFile);
+CPPUNIT_TEST(testReadStlFile);
+CPPUNIT_TEST(testReadPlyFile);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -68,6 +73,11 @@ public:
     void testGridUpdateColors();
     void testGridUpdateNormals();
     void testGridUpdteTexCoords();
+    void testReadVtkFile();
+    void testReadVtpFile();
+    void testReadObjFile();
+    void testReadPlyFile();
+    void testReadStlFile();
 
 };
 

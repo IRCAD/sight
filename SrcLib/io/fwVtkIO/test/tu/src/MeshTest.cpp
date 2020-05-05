@@ -25,11 +25,16 @@
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/MeshReader.hpp>
 #include <fwVtkIO/MeshWriter.hpp>
+#include <fwVtkIO/ObjMeshReader.hpp>
+#include <fwVtkIO/PlyMeshReader.hpp>
+#include <fwVtkIO/StlMeshReader.hpp>
+#include <fwVtkIO/VtpMeshReader.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwDataTools/Mesh.hpp>
 
+#include <fwTest/Data.hpp>
 #include <fwTest/generator/Mesh.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
@@ -479,6 +484,112 @@ void MeshTest::testGridUpdateNormals()
     ::fwVtkIO::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
 
     compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testReadVtkFile()
+{
+    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/vtk/sphere.vtk"));
+    CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
+                           std::filesystem::exists(testFile));
+
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+
+    ::fwVtkIO::MeshReader::sptr vtkReader = ::fwVtkIO::MeshReader::New();
+
+    vtkReader->setObject(mesh);
+    vtkReader->setFile(testFile);
+
+    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+
+    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
+    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testReadVtpFile()
+{
+    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/vtp/sphere.vtp"));
+    CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
+                           std::filesystem::exists(testFile));
+
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+
+    ::fwVtkIO::VtpMeshReader::sptr vtkReader = ::fwVtkIO::VtpMeshReader::New();
+
+    vtkReader->setObject(mesh);
+    vtkReader->setFile(testFile);
+
+    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+
+    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
+    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testReadObjFile()
+{
+    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/obj/sphere.obj"));
+    CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
+                           std::filesystem::exists(testFile));
+
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+
+    ::fwVtkIO::ObjMeshReader::sptr vtkReader = ::fwVtkIO::ObjMeshReader::New();
+
+    vtkReader->setObject(mesh);
+    vtkReader->setFile(testFile);
+
+    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+
+    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
+    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testReadPlyFile()
+{
+    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/ply/sphere.ply"));
+    CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
+                           std::filesystem::exists(testFile));
+
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+
+    ::fwVtkIO::PlyMeshReader::sptr vtkReader = ::fwVtkIO::PlyMeshReader::New();
+
+    vtkReader->setObject(mesh);
+    vtkReader->setFile(testFile);
+
+    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+
+    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
+    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testReadStlFile()
+{
+    const std::filesystem::path testFile(::fwTest::Data::dir() / ("sight/mesh/stl/sphere.stl"));
+    CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
+                           std::filesystem::exists(testFile));
+
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+
+    ::fwVtkIO::StlMeshReader::sptr vtkReader = ::fwVtkIO::StlMeshReader::New();
+
+    vtkReader->setObject(mesh);
+    vtkReader->setFile(testFile);
+
+    CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
+
+    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
+    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
 }
 
 //------------------------------------------------------------------------------
