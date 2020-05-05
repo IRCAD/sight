@@ -73,7 +73,7 @@ void GzArrayReader::read()
         throw std::ios_base::failure(str);
     }
 
-    int uncompressedBytesReaded = gzread(rawFile, buff, static_cast<unsigned int>(arraySizeInBytes));
+    const int uncompressedBytesReaded = gzread(rawFile, buff, static_cast<unsigned int>(arraySizeInBytes));
     gzclose(rawFile);
     if ( uncompressedBytesReaded != static_cast<int>(arraySizeInBytes) )
     {
