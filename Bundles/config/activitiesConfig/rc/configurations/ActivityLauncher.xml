@@ -56,6 +56,9 @@
     You can override the default configuration for activity reader/writer by adding the two parameters:
     <parameter replace="ACTIVITY_READER_CONFIG" by="ActivityReaderConfig" />
     <parameter replace="ACTIVITY_WRITER_CONFIG" by="ActivityWriterConfig" />
+
+    You can override the default activity wizard configuration by adding the parameter:
+    <parameter replace="WIZARD_CONFIG" by="activityWizardServiceConfigName" />
 -->
 <extension implements="::fwServices::registry::AppConfig">
     <id>ActivityLauncher</id>
@@ -64,6 +67,7 @@
         <param name="ICON_PATH" />
         <param name="seriesDB" />
         <param name="SEQUENCER_CONFIG" />
+        <param name="WIZARD_CONFIG" default="defaultWizardConfig"/>
         <param name="ACTIVITY_READER_CONFIG" default="ActivityReaderConfig" />
         <param name="ACTIVITY_WRITER_CONFIG" default="ActivityWriterConfig" />
         <param name="APPLICATION_ICON_PATH" default="media-0.1/icons/sight_logo.svg" />
@@ -174,15 +178,8 @@
         </service>
 
         <!-- Display the activity data selector -->
-        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard">
+        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard" config="${WIZARD_CONFIG}">
             <inout key="seriesDB" uid="${seriesDB}" />
-            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
-            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
-            <confirm>false</confirm>
-            <icons>
-                <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
-                <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
-            </icons>
         </service>
 
         <!-- Launch the activity sequentially -->
