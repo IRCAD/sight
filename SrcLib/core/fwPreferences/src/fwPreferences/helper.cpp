@@ -67,7 +67,7 @@ inline static std::string computePasswordHash( const std::string& password )
     std::stringstream stream;
     stream << std::setfill('0') << std::setw(2) << std::hex;
 
-    for(uint8_t i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    for(std::uint8_t i = 0; i < SHA256_DIGEST_LENGTH; i++)
     {
         // Cast to int to avoid ASCII code interpretation.
         stream << static_cast<int>(hash[i]);
