@@ -13,6 +13,7 @@
             <param name="appName" value="Ex Activities @PROJECT_VERSION@" />
             <param name="appIconPath" value="ExActivities-@PROJECT_VERSION@/app.ico" />
             <param name="SEQUENCER_CONFIG" value="ExActivitiesSequencerActivities" />
+            <param name="WIZARD_CONFIG" value="ExActivitiesWizardConfig" />
         </parameters>
     </extension>
 
@@ -27,15 +28,27 @@
         </config>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ExActivitiesWizardConfig</id>
+        <service>::uiMedDataQt::editor::SActivityWizard</service>
+        <desc>Custom configuration for ExActivities wizard</desc>
+        <config>
+            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
+            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
+            <confirm>false</confirm>
+            <icons>
+                <icon type="::fwData::Image" icon="media-0.1/icons/icon-2D.png" />
+            </icons>
+        </config>
+    </extension>
+
     <extension implements="::fwActivities::registry::Activities">
         <id>ExImageReadingActivity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
         <icon>media-0.1/icons/LoadActivity.svg</icon>
         <requirements>
-            <!-- Requirement with minOccurs="0" maxOccurs="0" means that the object will be automatically created by the
-                 activity launcher and will be stored in the ActivitySeries. -->
-            <requirement name="image" type="::fwData::Image" minOccurs="0" maxOccurs="0">
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
                 <desc>Image that will be read by this activity.</desc>
             </requirement>
         </requirements>
