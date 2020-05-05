@@ -237,8 +237,9 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
             for(; cellItr != cellEnd; ++cellItr)
             {
                 auto cellType = *cellItr->type;
-                if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA
-                   || cellType == ::fwData::Mesh::POINT)
+                if(cellType == static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE)
+                   || cellType == static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA)
+                   || cellType == static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT))
                 {
                     computeNormals = false;
                     break;
@@ -449,14 +450,18 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
     {
         if(indices32Bits)
         {
-            copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
-                                          indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+            copyIndices< std::uint32_t >( indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE)],
+                                          indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD)],
+                                          indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE)],
+                                          indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA)],
                                           _mesh );
         }
         else
         {
-            copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
-                                          indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+            copyIndices< std::uint16_t >( indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE)],
+                                          indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD)],
+                                          indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE)],
+                                          indexBuffer[static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA)],
                                           _mesh );
         }
     }
@@ -537,11 +542,12 @@ void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
         m_ogreMesh->sharedVertexData->vertexCount = uiNumVertices;
     }
 
-    if(m_subMeshes[::fwData::Mesh::POINT] == nullptr)
+    const size_t pointType = static_cast<size_t>(::fwData::Mesh::CellType::POINT);
+    if(m_subMeshes[pointType] == nullptr)
     {
-        m_subMeshes[::fwData::Mesh::POINT] =
-            m_ogreMesh->createSubMesh(std::to_string(::fwData::Mesh::POINT));
-        m_subMeshes[::fwData::Mesh::POINT]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
+        m_subMeshes[pointType] =
+            m_ogreMesh->createSubMesh(std::to_string(pointType));
+        m_subMeshes[pointType]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
     }
 }
 
@@ -591,8 +597,8 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const ::fwData::
             const auto subEntity = m_r2vbEntity->getSubEntity(i);
             const auto subMesh   = subEntity->getSubMesh();
 
-            const bool bQuad  = (subMesh == m_subMeshes[::fwData::Mesh::QUAD]);
-            const bool bTetra = (subMesh == m_subMeshes[::fwData::Mesh::TETRA]);
+            const bool bQuad  = (subMesh == m_subMeshes[static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD)]);
+            const bool bTetra = (subMesh == m_subMeshes[static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA)]);
 
             const ::fwData::Mesh::CellType cellType = bQuad ? ::fwData::Mesh::CellType::QUAD :
                                                       bTetra ? ::fwData::Mesh::CellType::TETRA :

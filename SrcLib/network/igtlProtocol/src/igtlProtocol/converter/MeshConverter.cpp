@@ -86,20 +86,20 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
 
         switch (cellType)
         {
-            case ::fwData::Mesh::EDGE:
+            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE):
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 dest->GetLines()->AddCell(2, cell);
                 break;
 
-            case ::fwData::Mesh::TRIANGLE:
+            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE):
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 cell[2] = cellItr->pointIdx[2];
                 dest->GetTriangleStrips()->AddCell(3, cell);
                 break;
 
-            case ::fwData::Mesh::QUAD:
+            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD):
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 cell[2] = cellItr->pointIdx[2];
@@ -107,7 +107,7 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
                 dest->GetVertices()->AddCell(4, cell);
                 break;
 
-            case ::fwData::Mesh::TETRA:
+            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA):
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 cell[2] = cellItr->pointIdx[2];
