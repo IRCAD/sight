@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -142,7 +142,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_proxyGeometry(nullptr),
-    m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
+    m_imageSize(::fwData::Image::Size({ 1, 1, 1 })),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
@@ -248,9 +248,9 @@ void RayTracingVolumeRenderer::imageUpdate(const ::fwData::Image::sptr image, co
         return;
     }
 
-    this->scaleTranslateCube(image->getSpacing(), image->getOrigin());
+    this->scaleTranslateCube(image->getSpacing2(), image->getOrigin2());
 
-    const ::fwData::Image::SizeType& newSize = image->getSize();
+    const ::fwData::Image::Size& newSize = image->getSize2();
 
     // Create new grid texture + proxy geometry if image size changed.
     if(m_imageSize != newSize)
