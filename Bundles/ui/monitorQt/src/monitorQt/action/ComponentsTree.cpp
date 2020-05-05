@@ -63,10 +63,10 @@ void ComponentsTree::updating( )
 
     for (const auto& bundle : defaultRuntime->getBundles())
     {
-        const std::string bundleName = bundle->getIdentifier();
-        const bool isBundleEnable    = bundle->isEnable();
-        QTreeWidgetItem* moduleItem  = new QTreeWidgetItem();
-        if(!isBundleEnable)
+        const std::string bundleName      = bundle->getIdentifier();
+        const bool isBundleEnabled        = bundle->isEnable();
+        QTreeWidgetItem* const moduleItem = new QTreeWidgetItem();
+        if(!isBundleEnabled)
         {
             moduleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
         }
@@ -80,10 +80,10 @@ void ComponentsTree::updating( )
 
         for (const auto& extension : bundle->getExtensions())
         {
-            const std::string point      = extension->getPoint();
-            const bool isExtensionEnable = extension->isEnable();
-            QTreeWidgetItem* item        = new QTreeWidgetItem();
-            if(!isExtensionEnable)
+            const std::string point       = extension->getPoint();
+            const bool isExtensionEnabled = extension->isEnable();
+            QTreeWidgetItem* const item   = new QTreeWidgetItem();
+            if(!isExtensionEnabled)
             {
                 item->setBackground(0, QBrush(QColor(155, 155, 155)));
             }
