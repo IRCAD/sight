@@ -24,8 +24,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/macros.hpp>
@@ -61,16 +61,16 @@ void ComponentsTree::updating( )
 
     ::fwRuntime::Runtime* defaultRuntime = ::fwRuntime::Runtime::getDefault();
 
-    for (const auto& bundle : defaultRuntime->getBundles())
+    for (const auto& module : defaultRuntime->getModules())
     {
-        const std::string bundleName      = bundle->getIdentifier();
-        const bool isBundleEnabled        = bundle->isEnable();
+        const std::string moduleName      = module->getIdentifier();
+        const bool isModuleEnabled        = module->isEnabled();
         QTreeWidgetItem* const moduleItem = new QTreeWidgetItem();
-        if(!isBundleEnabled)
+        if(!isModuleEnabled)
         {
             moduleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
         }
-        moduleItem->setText(0, QString::fromStdString(bundleName));
+        moduleItem->setText(0, QString::fromStdString(moduleName));
         m_treeContainer->addTopLevelItem( moduleItem );
 
         //Extensions
@@ -78,10 +78,10 @@ void ComponentsTree::updating( )
         extensionsItem->setText(0, QObject::tr("Extensions"));
         moduleItem->addChild( extensionsItem );
 
-        for (const auto& extension : bundle->getExtensions())
+        for (const auto& extension : module->getExtensions())
         {
             const std::string point       = extension->getPoint();
-            const bool isExtensionEnabled = extension->isEnable();
+            const bool isExtensionEnabled = extension->isEnabled();
             QTreeWidgetItem* const item   = new QTreeWidgetItem();
             if(!isExtensionEnabled)
             {

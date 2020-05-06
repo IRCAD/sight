@@ -156,8 +156,8 @@ public:
     /// @copydoc ::fwRuntime::Module::getExtensions
     ExtensionContainer getExtensions( ) const final;
 
-    /// @copydoc ::fwRuntime::Module::isEnable
-    bool isEnable() const final;
+    /// @copydoc ::fwRuntime::Module::isEnabled
+    bool isEnabled() const final;
     //@}
 
     /**

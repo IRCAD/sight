@@ -106,12 +106,12 @@ public:
         for( ExtensionContainer::const_iterator i = extensions.begin(); i != extensions.end(); ++i )
         {
             std::shared_ptr< Extension >   extension( *i );
-            if ( extension->isEnable() )
+            if ( extension->isEnabled() )
             {
                 std::copy( extension->begin(), extension->end(), output);
             }
             OSLM_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
-                          " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnable());
+                          " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnabled());
         }
     }
 
@@ -127,7 +127,7 @@ public:
 
         for( auto extension : rntm.getExtensions() )
         {
-            if( extension->getPoint() == m_id && extension->isEnable() == true
+            if( extension->getPoint() == m_id && extension->isEnabled() == true
                 && extension->validate() == Extension::Valid
                 )
             {

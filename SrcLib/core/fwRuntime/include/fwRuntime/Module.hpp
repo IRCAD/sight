@@ -127,7 +127,7 @@ public:
     /**
      * @brief   Tells if the module is enabled.
      */
-    FWRUNTIME_API virtual bool isEnable() const = 0;
+    FWRUNTIME_API virtual bool isEnabled() const = 0;
     //@}
 
 };

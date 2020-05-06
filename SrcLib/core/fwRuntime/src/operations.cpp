@@ -409,7 +409,7 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
         throw RuntimeException( identifier + ": invalid extension point identifier." );
     }
 
-    if ( point->isEnable() )
+    if ( point->isEnabled() )
     {
         elements = point->getAllConfigurationElements();
     }

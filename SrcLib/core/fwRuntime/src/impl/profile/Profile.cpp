@@ -122,7 +122,7 @@ void Profile::start()
 
         OSLM_FATAL_IF( "Validation not ok for bundle = '" << extension->getModule()->getIdentifier() <<
                        "'  (extension id = '" << extension->getIdentifier() << "' )",
-                       bundle->isEnable() && extension->validate() == Extension::Invalid );
+                       bundle->isEnabled() && extension->validate() == Extension::Invalid );
     }
 
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );

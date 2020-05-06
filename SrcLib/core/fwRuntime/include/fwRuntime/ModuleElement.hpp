@@ -67,12 +67,12 @@ public:
      *
      * @return  true or false
      */
-    FWRUNTIME_API bool isEnable() const;
+    FWRUNTIME_API bool isEnabled() const;
 
     /**
      * @brief       Set if the element is enabled or not.
      *
-     * @see         isEnable
+     * @see         isEnabled
      *
      * @param[in]   enable To know if module element is enabled
      */

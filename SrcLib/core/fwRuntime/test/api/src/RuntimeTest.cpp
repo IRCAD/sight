@@ -89,7 +89,7 @@ void RuntimeTest::testModule()
     auto moduleFromPlugin = plugin->getModule();
     CPPUNIT_ASSERT_EQUAL(module, moduleFromPlugin);
 
-    CPPUNIT_ASSERT_EQUAL(true, module->isEnable());
+    CPPUNIT_ASSERT_EQUAL(true, module->isEnabled());
     CPPUNIT_ASSERT_EQUAL(true, module->isStarted());
 }
 

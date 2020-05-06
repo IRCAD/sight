@@ -148,7 +148,7 @@ std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::
     std::shared_ptr< ExecutableFactory > resFactory;
     for(const ExecutableFactoryContainer::value_type& factory : m_executableFactories)
     {
-        if(factory->getType() == type && factory->isEnable())
+        if(factory->getType() == type && factory->isEnabled())
         {
             resFactory = factory;
             break;
@@ -263,7 +263,7 @@ std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identif
     std::shared_ptr<Module> resModule;
     for(const std::shared_ptr<Module>& module :  m_modules)
     {
-        if(module->getIdentifier() == identifier && module->getVersion() == version && module->isEnable())
+        if(module->getIdentifier() == identifier && module->getVersion() == version && module->isEnabled())
         {
             resModule = module;
             break;
@@ -301,7 +301,7 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
     std::shared_ptr<Extension> resExtension;
     for(const ExtensionContainer::value_type& extension :  m_extensions)
     {
-        if(extension->getIdentifier() == identifier && extension->isEnable())
+        if(extension->getIdentifier() == identifier && extension->isEnabled())
         {
             resExtension = extension;
             break;
@@ -341,7 +341,7 @@ std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string& 
     std::shared_ptr<ExtensionPoint> resExtensionPoint;
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
     {
-        if(extensionPoint->getIdentifier() == identifier && extensionPoint->isEnable())
+        if(extensionPoint->getIdentifier() == identifier && extensionPoint->isEnabled())
         {
             resExtensionPoint = extensionPoint;
             break;

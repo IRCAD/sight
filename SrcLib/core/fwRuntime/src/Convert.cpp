@@ -141,7 +141,7 @@ xmlNodePtr Convert::runningModulesToXml( )
                 //xmlNodePtr extensionPointsNode = xmlNewNode( NULL,  xmlCharStrdup(
                 // (str.substr(str.find_last_of("::")+1)).c_str() ) ) ;
                 //-----DEBUG------
-                if (((*iter_extensionPoints)->isEnable()) == enable_Value)
+                if (((*iter_extensionPoints)->isEnabled()) == enable_Value)
                 {
                     xmlAddChild(extensionPoint_activated_list_Node, extensionPointsNode );
                 }
@@ -167,7 +167,7 @@ xmlNodePtr Convert::runningModulesToXml( )
                   iter_extension != moduleImpl->extensionsEnd();
                   ++iter_extension)
             {
-                if (((*iter_extension)->isEnable()) == enable_Value)
+                if (((*iter_extension)->isEnabled()) == enable_Value)
                 {
                     std::string str          = (*iter_extension)->getPoint();
                     xmlNodePtr extensionNode = xmlNewNode( NULL,  xmlCharStrdup( (str.c_str() ) ) );

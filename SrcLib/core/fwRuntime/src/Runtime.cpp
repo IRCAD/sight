@@ -76,7 +76,7 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
     std::shared_ptr<Extension> resExtension;
     for(const ExtensionContainer::value_type& extension :  m_extensions)
     {
-        if(extension->getIdentifier() == identifier && extension->isEnable())
+        if(extension->getIdentifier() == identifier && extension->isEnabled())
         {
             resExtension = extension;
             break;

@@ -122,13 +122,13 @@ void RuntimeTest::testRuntime()
     CPPUNIT_ASSERT(runtime.findModule("dataReg"));
     auto bundle = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("dataReg"));
     bundle->setEnable(true);
-    CPPUNIT_ASSERT(bundle->isEnable());
+    CPPUNIT_ASSERT(bundle->isEnabled());
 
     // Test module servicesReg
     CPPUNIT_ASSERT(runtime.findModule("servicesReg"));
     auto bundle2 = std::dynamic_pointer_cast< ::fwRuntime::impl::Module >(runtime.findModule("servicesReg"));
     bundle2->setEnable(true);
-    CPPUNIT_ASSERT(bundle2->isEnable());
+    CPPUNIT_ASSERT(bundle2->isEnabled());
 
     // Test runtime extensions
     CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::ServiceFactory"));

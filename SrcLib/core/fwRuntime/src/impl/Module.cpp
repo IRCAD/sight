@@ -186,7 +186,7 @@ SPTR( ExtensionPoint ) Module::findExtensionPoint( const std::string& identifier
     std::shared_ptr<ExtensionPoint> resExtensionPoint;
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
     {
-        if(extensionPoint->getIdentifier() == identifier && extensionPoint->isEnable())
+        if(extensionPoint->getIdentifier() == identifier && extensionPoint->isEnabled())
         {
             resExtensionPoint = extensionPoint;
             break;
@@ -366,7 +366,7 @@ void Module::loadRequirements()
                 throw RuntimeException( requirement + ": required module not found." );
             }
             // Enable the required module if necessary.
-            if( !module->isEnable() )
+            if( !module->isEnabled() )
             {
                 std::dynamic_pointer_cast< impl::Module >(module)->setEnable(true);
             }
@@ -545,7 +545,7 @@ void Module::uninitialize()
 
 //------------------------------------------------------------------------------
 
-bool Module::isEnable() const
+bool Module::isEnabled() const
 {
     return m_enable;
 }

@@ -62,13 +62,13 @@ std::shared_ptr<Module> ModuleElement::getModule() const
 
 //------------------------------------------------------------------------------
 
-bool ModuleElement::isEnable() const
+bool ModuleElement::isEnabled() const
 {
     // Pre-condition.
     std::shared_ptr< impl::Module > module = std::dynamic_pointer_cast< impl::Module >(m_module.lock());
     SLM_ASSERT("module not initialized", module != nullptr );
 
-    return module->isEnable() && m_enable;
+    return module->isEnabled() && m_enable;
 }
 
 //------------------------------------------------------------------------------
