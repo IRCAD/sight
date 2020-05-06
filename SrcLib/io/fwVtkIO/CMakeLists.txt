@@ -1,12 +1,14 @@
 fwLoadProperties()
 
 find_package(VTK QUIET COMPONENTS
+    vtkFiltersGeometry
     vtkFiltersModeling
+    vtkIOExport
+    vtkIOGeometry
     vtkIOImage
     vtkIOLegacy
+    vtkIOPLY
     vtkIOXML
-    vtkFiltersGeometry
-    vtkIOExport
     vtkRenderingFreeType
     vtkRenderingOpenGL2  # Needed notably for the VtkObjExporter
     REQUIRED)
@@ -18,14 +20,14 @@ fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
 fwForwardLink(
+    vtkFiltersGeometry
     vtkFiltersModeling
+    vtkIOExport
     vtkIOGeometry
+    vtkIOImage
     vtkIOLegacy
     vtkIOPLY
-    vtkIOImage
     vtkIOXML
-    vtkFiltersGeometry
-    vtkIOExport
     vtkRenderingFreeType
     vtkRenderingOpenGL2
 )
