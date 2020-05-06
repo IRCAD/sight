@@ -301,7 +301,7 @@ const Version& Module::getVersion() const
 void Module::loadLibraries()
 {
     // Ensure the module is enabled.
-    if( m_enable == false )
+    if( m_enabled == false )
     {
         throw RuntimeException( getModuleStr(m_identifier, m_version) + ": module is not enabled." );
     }
@@ -392,7 +392,7 @@ void Module::loadRequirements()
 void Module::start()
 {
     SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " already started.", !m_started );
-    if( m_enable == false )
+    if( m_enabled == false )
     {
         throw RuntimeException( getModuleStr(m_identifier, m_version) + ": module is not enabled." );
     }
@@ -547,14 +547,14 @@ void Module::uninitialize()
 
 bool Module::isEnabled() const
 {
-    return m_enable;
+    return m_enabled;
 }
 
 //------------------------------------------------------------------------------
 
 void Module::setEnable( const bool state )
 {
-    m_enable = state;
+    m_enabled = state;
 }
 
 //------------------------------------------------------------------------------

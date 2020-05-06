@@ -414,7 +414,7 @@ private:
     SPTR( IPlugin )                 m_plugin;           ///< a shared pointer to the plugin instance
     ParameterContainer m_parameters;                    ///< all parameters
 
-    bool m_enable { false };                            ///< a boolean telling if the module is enabled or not
+    bool m_enabled { false };                           ///< a boolean telling if the module is enabled or not
     bool m_started { false };
     bool m_initialized { false };
 
