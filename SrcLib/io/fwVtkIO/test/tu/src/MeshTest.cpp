@@ -26,9 +26,13 @@
 #include <fwVtkIO/MeshReader.hpp>
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshReader.hpp>
+#include <fwVtkIO/ObjMeshWriter.hpp>
 #include <fwVtkIO/PlyMeshReader.hpp>
+#include <fwVtkIO/PlyMeshWriter.hpp>
 #include <fwVtkIO/StlMeshReader.hpp>
+#include <fwVtkIO/StlMeshWriter.hpp>
 #include <fwVtkIO/VtpMeshReader.hpp>
+#include <fwVtkIO/VtpMeshWriter.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
@@ -590,6 +594,126 @@ void MeshTest::testReadStlFile()
 
     CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
     CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testWriteVtkFile()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+
+    mesh1->adjustAllocatedMemory();
+
+    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+                                           "vtkTestMesh.vtk";
+
+    const ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
+    writer->setObject(mesh1);
+    writer->setFile(testFile);
+    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testWriteVtpFile()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+
+    mesh1->adjustAllocatedMemory();
+
+    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+                                           "vtpTestMesh.vtp";
+
+    const ::fwVtkIO::VtpMeshWriter::sptr writer = ::fwVtkIO::VtpMeshWriter::New();
+    writer->setObject(mesh1);
+    writer->setFile(testFile);
+    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testWriteObjFile()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+
+    mesh1->adjustAllocatedMemory();
+
+    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+                                           "objTestMesh.obj";
+
+    const ::fwVtkIO::ObjMeshWriter::sptr writer = ::fwVtkIO::ObjMeshWriter::New();
+    writer->setObject(mesh1);
+    writer->setFile(testFile);
+    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testWritePlyFile()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+
+    mesh1->adjustAllocatedMemory();
+
+    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+                                           "plyTestMesh.ply";
+
+    const ::fwVtkIO::PlyMeshWriter::sptr writer = ::fwVtkIO::PlyMeshWriter::New();
+    writer->setObject(mesh1);
+    writer->setFile(testFile);
+    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::testWriteStlFile()
+{
+    const ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh1);
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
+
+    mesh1->adjustAllocatedMemory();
+
+    const std::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() /
+                                           "stlTestMesh.stl";
+
+    const ::fwVtkIO::StlMeshWriter::sptr writer = ::fwVtkIO::StlMeshWriter::New();
+    writer->setObject(mesh1);
+    writer->setFile(testFile);
+    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    CPPUNIT_ASSERT(std::filesystem::exists(testFile));
 }
 
 //------------------------------------------------------------------------------

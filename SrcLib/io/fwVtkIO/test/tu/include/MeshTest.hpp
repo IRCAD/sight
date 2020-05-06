@@ -54,6 +54,11 @@ CPPUNIT_TEST(testReadVtpFile);
 CPPUNIT_TEST(testReadObjFile);
 CPPUNIT_TEST(testReadStlFile);
 CPPUNIT_TEST(testReadPlyFile);
+CPPUNIT_TEST(testWriteVtkFile);
+CPPUNIT_TEST(testWriteVtpFile);
+CPPUNIT_TEST(testWriteObjFile);
+CPPUNIT_TEST(testWriteStlFile);
+CPPUNIT_TEST(testWritePlyFile);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -78,6 +83,11 @@ public:
     void testReadObjFile();
     void testReadPlyFile();
     void testReadStlFile();
+    void testWriteVtkFile();
+    void testWriteVtpFile();
+    void testWriteObjFile();
+    void testWritePlyFile();
+    void testWriteStlFile();
 
 };
 
