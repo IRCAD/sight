@@ -33,9 +33,9 @@
 #include <fwCore/base.hpp>
 
 #include "fwRuntime/Module.hpp"
-#include "fwRuntime/impl/ExtensionPoint.hpp"
-#include "fwRuntime/impl/Runtime.hpp"
-#include "fwRuntime/impl/io/Validator.hpp"
+#include "fwRuntime/detail/ExtensionPoint.hpp"
+#include "fwRuntime/detail/Runtime.hpp"
+#include "fwRuntime/detail/io/Validator.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/helper.hpp"
 
@@ -102,8 +102,8 @@ Extension::Validity Extension::validate()
     }
 
     // Retrieves the extension point.
-    impl::Runtime* rntm( impl::Runtime::getDefault() );
-    std::shared_ptr< impl::ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
+    detail::Runtime* rntm( detail::Runtime::getDefault() );
+    std::shared_ptr< detail::ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
 
     // Checks that the point exists.
     if( !point )
@@ -112,7 +112,7 @@ Extension::Validity Extension::validate()
     }
 
     // Validates the extension.
-    std::shared_ptr< impl::io::Validator >   validator( point->getExtensionValidator() );
+    std::shared_ptr< detail::io::Validator >   validator( point->getExtensionValidator() );
     OSLM_ASSERT("The validator creation failed for the point "<<point->getIdentifier(), validator );
 
     // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>

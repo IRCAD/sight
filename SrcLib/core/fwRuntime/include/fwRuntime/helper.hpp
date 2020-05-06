@@ -24,7 +24,7 @@
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
-#include "fwRuntime/impl/io/Validator.hpp"
+#include "fwRuntime/detail/io/Validator.hpp"
 #include "fwRuntime/operations.hpp"
 #include "fwRuntime/Runtime.hpp"
 

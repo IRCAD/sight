@@ -20,27 +20,28 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
+#include "fwRuntime/detail/EmptyPlugin.hpp"
 
-#include "fwRuntime/detail/Module.hpp"
-#include "fwRuntime/detail/Runtime.hpp"
+#include "fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp"
 
 namespace fwRuntime
 {
 
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+namespace detail
 {
-    // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
 
-    // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
+//------------------------------------------------------------------------------
 
-    // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
-
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
+void EmptyPlugin::start()
+{
 }
+
+//------------------------------------------------------------------------------
+
+void EmptyPlugin::stop() noexcept
+{
+}
+
+} // namespace detail
 
 } // namespace fwRuntime

@@ -23,8 +23,8 @@
 #include "fwRuntime/helper.hpp"
 
 #include "fwRuntime/Convert.hpp"
-#include <fwRuntime/impl/ExtensionPoint.hpp>
-#include <fwRuntime/impl/Runtime.hpp>
+#include <fwRuntime/detail/ExtensionPoint.hpp>
+#include <fwRuntime/detail/Runtime.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -132,7 +132,7 @@ std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
 std::string getInfoForPoint( std::string _extension_pt  )
 {
     std::string info = "";
-    auto& rntm       = ::fwRuntime::impl::Runtime::get();
+    auto& rntm       = ::fwRuntime::detail::Runtime::get();
     if(rntm.findExtensionPoint( _extension_pt ) )
     {
         // Collects all contributed actions
@@ -173,8 +173,8 @@ std::map< std::string,
 
 std::vector< std::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(std::string extension_pt)
 {
-    auto& rntm                                     = ::fwRuntime::impl::Runtime::get();
-    std::shared_ptr< impl::ExtensionPoint >  point = rntm.findExtensionPoint(extension_pt);
+    auto& rntm                                       = ::fwRuntime::detail::Runtime::get();
+    std::shared_ptr< detail::ExtensionPoint >  point = rntm.findExtensionPoint(extension_pt);
 
     if( !point )
     {

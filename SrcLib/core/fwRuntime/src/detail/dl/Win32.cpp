@@ -20,78 +20,96 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/detail/Runtime.hpp"
-#include "fwRuntime/Runtime.hpp"
+#ifdef _WIN32
 
-#include "fwRuntime/ExecutableFactory.hpp"
-#include "fwRuntime/Extension.hpp"
-#include "fwRuntime/IExecutable.hpp"
-#include "fwRuntime/operations.hpp"
+#include "fwRuntime/detail/dl/Win32.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include <fwCore/base.hpp>
 
 namespace fwRuntime
 {
 
+namespace detail
+{
+
+namespace dl
+{
+
 //------------------------------------------------------------------------------
 
-Runtime::Runtime()
+Win32::Win32( const std::filesystem::path& modulePath ) noexcept :
+    Native(modulePath),
+    m_handle( 0 )
 {
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::~Runtime()
+bool Win32::isLoaded() const noexcept
 {
+    return m_handle != 0;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime* Runtime::getDefault()
+void* Win32::getSymbol( const std::string& name ) const
 {
-    return detail::Runtime::getDefault();
-}
+    FARPROC symbol;
 
-//------------------------------------------------------------------------------
-
-Runtime& Runtime::get()
-{
-    return detail::Runtime::get();
-}
-
-//------------------------------------------------------------------------------
-
-void Runtime::addDefaultBundles()
-{
-    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
-
-    // Now done in ::fwRuntime::init()
-    ::fwRuntime::init();
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
-{
-    std::shared_ptr<Extension> resExtension;
-    for(const ExtensionContainer::value_type& extension :  m_extensions)
+    symbol = GetProcAddress( m_handle, name.c_str() );
+    if(symbol == 0)
     {
-        if(extension->getIdentifier() == identifier && extension->isEnabled())
+        throw RuntimeException("'" + name + "': symbol retrieval failed.");
+    }
+    return symbol;
+}
+
+//------------------------------------------------------------------------------
+
+void Win32::load()
+{
+    if(m_handle == 0)
+    {
+        // Opens the dynamic library.
+        std::string lib(getFullPath().string());
+        OSLM_TRACE("Opens the dynamic library " << lib);
+        m_handle = LoadLibrary( lib.c_str() );
+        if(m_handle == 0)
         {
-            resExtension = extension;
-            break;
+            // Retrieves the last error message.
+            DWORD lastError = GetLastError();
+            char buffer[1024];
+            FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, 0, lastError, 0, buffer, 1024, 0 );
+
+            // Builds the error message and throws the exception.
+            std::string message( buffer );
+            throw RuntimeException( message );
         }
     }
-    return resExtension;
 }
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const std::filesystem::path& )
+void Win32::unload()
 {
-    FW_DEPRECATED_MSG("setWorkingPath", "22.0");
+    if(m_handle != 0)
+    {
+        BOOL result;
+        result = FreeLibrary(m_handle);
+        if(!result)
+        {
+            throw RuntimeException("Module unload failed.");
+        }
+        m_handle = 0;
+    }
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace dl
+
+} // namespace detail
 
 } // namespace fwRuntime
+
+#endif // #ifdef _WIN32

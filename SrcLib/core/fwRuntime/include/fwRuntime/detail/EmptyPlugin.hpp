@@ -20,27 +20,44 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
+#pragma once
 
-#include "fwRuntime/detail/Module.hpp"
-#include "fwRuntime/detail/Runtime.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/Plugin.hpp"
 
 namespace fwRuntime
 {
 
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+namespace detail
 {
-    // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
 
-    // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
+/**
+ * @brief   Implements a default plugin for modules that don't provide a
+ *          ::fwRuntime::IPlugin interface implementation. This plugin does nothing
+ *          by default. It has not been design to be subclassed, but subclassing
+ *          is neither forbidden.
+ *
+ * @remark  The factory for this executable structure is registered by the runtime
+ *          it-self.
+ */
+class EmptyPlugin : public Plugin
+{
+public:
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    ~EmptyPlugin() noexcept override
+    {
+    }
 
-    // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
+    // Overrides
+    void start() override;
 
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
-}
+    // Overrides
+    void stop() noexcept override;
+
+};
+
+} // namespace detail
 
 } // namespace fwRuntime

@@ -20,27 +20,49 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
+#pragma once
 
-#include "fwRuntime/detail/Module.hpp"
-#include "fwRuntime/detail/Runtime.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwRuntime
 {
-
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+namespace detail
 {
-    // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
+namespace ut
+{
 
-    // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
+/**
+ * @brief   Test Runtime : read the modules in CommonLib
+ */
+class RuntimeTest : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE( RuntimeTest );
 
-    // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+CPPUNIT_TEST( testPosix );
+#elif defined(WIN32)
+CPPUNIT_TEST( testWin32 );
+#endif
 
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
-}
+CPPUNIT_TEST( testRuntime );
+CPPUNIT_TEST_SUITE_END();
 
+public:
+    RuntimeTest();
+
+    // interface
+    void setUp();
+    void tearDown();
+
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+    void testPosix();
+#endif
+#if defined(WIN32)
+    void testWin32();
+#endif
+    void testRuntime();
+};
+
+} // namespace ut
+} // namespace detail
 } // namespace fwRuntime

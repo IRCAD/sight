@@ -20,27 +20,56 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
+#pragma once
 
-#include "fwRuntime/detail/Module.hpp"
-#include "fwRuntime/detail/Runtime.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/Version.hpp"
+
+#include <boost/utility.hpp>
+
+#include <string>
 
 namespace fwRuntime
 {
 
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+namespace detail
 {
-    // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
 
-    // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
+namespace profile
+{
 
-    // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
+/**
+ * @brief   Starts a given module. Only the identifier of the module and the version are passed to allow
+ *          loading and unloading.
+ */
+class Initializer : public boost::noncopyable
+{
 
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
-}
+public:
+
+    /**
+     * @brief       Constructor
+     *
+     * @param[in]   identifier  a string containing a module identifier
+     */
+    Initializer( const std::string& identifier, const Version& version = Version() );
+
+    /**
+     * @brief   Applies the initializer on the module.
+     *
+     * @remark  This method should be called directly.
+     */
+    void apply();
+
+protected:
+
+    const std::string m_identifier;     ///< the module identifier
+    const Version m_version;            ///< the module version
+
+};
+
+} // namespace profile
+
+} // namespace detail
 
 } // namespace fwRuntime

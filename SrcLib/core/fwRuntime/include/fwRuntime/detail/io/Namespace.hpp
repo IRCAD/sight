@@ -20,27 +20,18 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
-
-#include "fwRuntime/detail/Module.hpp"
-#include "fwRuntime/detail/Runtime.hpp"
+#pragma once
 
 namespace fwRuntime
 {
-
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+namespace detail
 {
-    // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
+/// The namespace fwRuntime::io contains classes to read and perform profile file  .
+namespace io
+{
 
-    // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
-
-    // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
-
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
 }
 
-} // namespace fwRuntime
+}
+
+}

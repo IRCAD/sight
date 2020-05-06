@@ -23,11 +23,11 @@
 #include "fwRuntime/operations.hpp"
 
 #include "fwRuntime/ConfigurationElement.hpp"
-#include "fwRuntime/impl/ExtensionPoint.hpp"
-#include "fwRuntime/impl/io/ProfileReader.hpp"
-#include "fwRuntime/impl/Module.hpp"
-#include "fwRuntime/impl/profile/Profile.hpp"
-#include "fwRuntime/impl/Runtime.hpp"
+#include "fwRuntime/detail/ExtensionPoint.hpp"
+#include "fwRuntime/detail/io/ProfileReader.hpp"
+#include "fwRuntime/detail/Module.hpp"
+#include "fwRuntime/detail/profile/Profile.hpp"
+#include "fwRuntime/detail/Runtime.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -85,8 +85,8 @@ void init(const std::filesystem::path& directory)
 
     const auto location = rntm->getWorkingPath() / MODULE_RC_PREFIX;
 
-    auto profile = std::make_shared<impl::profile::Profile>();
-    impl::profile::setCurrentProfile(profile);
+    auto profile = std::make_shared<detail::profile::Profile>();
+    detail::profile::setCurrentProfile(profile);
 
     SLM_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
 
@@ -184,7 +184,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
     const std::string bundleIdentifierAndVersion = path.begin()->string();
 
     // TEMP_FB: Change _ into - when version refactor is made
-    auto itVersionDelimiter = bundleIdentifierAndVersion.find(impl::Module::s_VERSION_DELIMITER);
+    auto itVersionDelimiter = bundleIdentifierAndVersion.find(detail::Module::s_VERSION_DELIMITER);
     auto bundleIdentifier   = bundleIdentifierAndVersion.substr(0, itVersionDelimiter);
     auto bundleVersion      = bundleIdentifierAndVersion.substr(itVersionDelimiter + 1);
 
@@ -320,7 +320,7 @@ std::shared_ptr<Module> loadBundle(const std::string& identifier, const Version&
 
 std::shared_ptr<Module> loadModule(const std::string& identifier, const Version& version)
 {
-    auto bundle = std::dynamic_pointer_cast< impl::Module >(Runtime::get().findModule(identifier, version));
+    auto bundle = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier, version));
 
     if(bundle)
     {
@@ -340,7 +340,7 @@ std::shared_ptr<Module> loadModule(const std::string& identifier, const Version&
 {
     try
     {
-        ::fwRuntime::Profile::sptr profile = ::fwRuntime::impl::io::ProfileReader::createProfile(path);
+        ::fwRuntime::Profile::sptr profile = ::fwRuntime::detail::io::ProfileReader::createProfile(path);
         profile->start();
         return profile;
     }
@@ -367,9 +367,9 @@ std::shared_ptr< Module > findModule( const std::string& identifier, const Versi
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< impl::ExtensionPoint > findExtensionPoint(const std::string& identifier)
+std::shared_ptr< detail::ExtensionPoint > findExtensionPoint(const std::string& identifier)
 {
-    return impl::Runtime::get().findExtensionPoint( identifier );
+    return detail::Runtime::get().findExtensionPoint( identifier );
 }
 
 //------------------------------------------------------------------------------
@@ -385,7 +385,7 @@ void startBundle(const std::string& identifier)
 void startModule(const std::string& identifier)
 {
     // Retrieves the specified module.
-    std::shared_ptr<Module> module = impl::Runtime::get().findModule( identifier );
+    std::shared_ptr<Module> module = detail::Runtime::get().findModule( identifier );
     if( module == nullptr )
     {
         throw RuntimeException(identifier + ": bundle not found.");
@@ -399,7 +399,7 @@ void startModule(const std::string& identifier)
 std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(const std::string& identifier)
 {
     std::vector< ConfigurationElement::sptr > elements;
-    std::shared_ptr< impl::ExtensionPoint >  point = findExtensionPoint(identifier);
+    std::shared_ptr< detail::ExtensionPoint >  point = findExtensionPoint(identifier);
 
     OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << "Bundle" <<
                point->getModule()->getIdentifier() );

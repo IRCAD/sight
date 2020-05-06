@@ -22,10 +22,10 @@
 
 #include "fwRuntime/Convert.hpp"
 
-#include "fwRuntime/impl/ExtensionPoint.hpp"
-#include "fwRuntime/impl/io/ModuleDescriptorReader.hpp"
-#include "fwRuntime/impl/Module.hpp"
-#include "fwRuntime/impl/Runtime.hpp"
+#include "fwRuntime/detail/ExtensionPoint.hpp"
+#include "fwRuntime/detail/io/ModuleDescriptorReader.hpp"
+#include "fwRuntime/detail/Module.hpp"
+#include "fwRuntime/detail/Runtime.hpp"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -105,8 +105,8 @@ xmlNodePtr Convert::runningModulesToXml( )
     xmlNodePtr inactivated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Inactivated" ) );
     xmlAddChild(node_root, inactivated_Node );
 
-    bool enable_Value      = false; // the 'do while' loop stop if enable_Value==false.
-    impl::Runtime& runtime = impl::Runtime::get();
+    bool enable_Value        = false; // the 'do while' loop stop if enable_Value==false.
+    detail::Runtime& runtime = detail::Runtime::get();
     do
     {
         enable_Value = !enable_Value;
@@ -127,8 +127,9 @@ xmlNodePtr Convert::runningModulesToXml( )
             xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions_Points" ) );
             xmlAddChild(moduleNode, extensionPoint_activated_list_Node );
 
-            auto moduleImpl = std::dynamic_pointer_cast< ::fwRuntime::impl::Module>( module );
-            for ( std::set< std::shared_ptr< ::fwRuntime::impl::ExtensionPoint > >::const_iterator iter_extensionPoints
+            auto moduleImpl = std::dynamic_pointer_cast< ::fwRuntime::detail::Module>( module );
+            for ( std::set< std::shared_ptr< ::fwRuntime::detail::ExtensionPoint > >::const_iterator
+                  iter_extensionPoints
                       =
                           moduleImpl->extensionPointsBegin();
                   iter_extensionPoints != moduleImpl->extensionPointsEnd();
@@ -323,7 +324,7 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
     ::fwRuntime::ConfigurationElement::sptr ce;
-    ce = ::fwRuntime::impl::io::ModuleDescriptorReader::processConfigurationElement(root, SPTR(impl::Module)());
+    ce = ::fwRuntime::detail::io::ModuleDescriptorReader::processConfigurationElement(root, SPTR(detail::Module)());
 
     xmlFreeDoc(doc);
 

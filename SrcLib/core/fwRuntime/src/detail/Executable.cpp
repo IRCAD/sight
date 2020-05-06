@@ -20,76 +20,46 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/detail/Runtime.hpp"
-#include "fwRuntime/Runtime.hpp"
+#include "fwRuntime/detail/Executable.hpp"
 
-#include "fwRuntime/ExecutableFactory.hpp"
-#include "fwRuntime/Extension.hpp"
-#include "fwRuntime/IExecutable.hpp"
-#include "fwRuntime/operations.hpp"
-
-#include <fwCore/spyLog.hpp>
+#include "fwRuntime/ConfigurationElement.hpp"
 
 namespace fwRuntime
 {
 
 //------------------------------------------------------------------------------
 
-Runtime::Runtime()
+std::shared_ptr<Module> Executable::getBundle() const
 {
+    FW_DEPRECATED_MSG("getBundle", "22.0");
+    return this->getModule();
+}
+//------------------------------------------------------------------------------
+
+std::shared_ptr<Module> Executable::getModule() const
+{
+    return m_module;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::~Runtime()
+const ConfigurationElement::sptr Executable::getInitializationData() const
 {
+    return m_initializationData;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime* Runtime::getDefault()
+void Executable::setModule( std::shared_ptr< Module > module )
 {
-    return detail::Runtime::getDefault();
+    m_module = module;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime& Runtime::get()
+void Executable::setInitializationData( const ConfigurationElement::sptr element )
 {
-    return detail::Runtime::get();
-}
-
-//------------------------------------------------------------------------------
-
-void Runtime::addDefaultBundles()
-{
-    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
-
-    // Now done in ::fwRuntime::init()
-    ::fwRuntime::init();
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
-{
-    std::shared_ptr<Extension> resExtension;
-    for(const ExtensionContainer::value_type& extension :  m_extensions)
-    {
-        if(extension->getIdentifier() == identifier && extension->isEnabled())
-        {
-            resExtension = extension;
-            break;
-        }
-    }
-    return resExtension;
-}
-
-//------------------------------------------------------------------------------
-
-void Runtime::setWorkingPath(const std::filesystem::path& )
-{
-    FW_DEPRECATED_MSG("setWorkingPath", "22.0");
+    m_initializationData = element;
 }
 
 //------------------------------------------------------------------------------

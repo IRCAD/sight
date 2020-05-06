@@ -20,78 +20,102 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/detail/Runtime.hpp"
-#include "fwRuntime/Runtime.hpp"
+#if defined(linux) || defined(__linux) || defined (__APPLE__)
 
-#include "fwRuntime/ExecutableFactory.hpp"
-#include "fwRuntime/Extension.hpp"
-#include "fwRuntime/IExecutable.hpp"
-#include "fwRuntime/operations.hpp"
+#include "fwRuntime/detail/dl/Posix.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include "fwRuntime/Module.hpp"
 
 namespace fwRuntime
 {
 
+namespace detail
+{
+
+namespace dl
+{
+
 //------------------------------------------------------------------------------
 
-Runtime::Runtime()
+Posix::Posix( const std::filesystem::path& modulePath ) noexcept :
+    Native(modulePath),
+    m_handle( 0 )
 {
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::~Runtime()
+Posix::~Posix() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-Runtime* Runtime::getDefault()
+bool Posix::isLoaded() const noexcept
 {
-    return detail::Runtime::getDefault();
+    return m_handle != 0;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime& Runtime::get()
+void* Posix::getSymbol( const std::string& name ) const
 {
-    return detail::Runtime::get();
-}
-
-//------------------------------------------------------------------------------
-
-void Runtime::addDefaultBundles()
-{
-    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
-
-    // Now done in ::fwRuntime::init()
-    ::fwRuntime::init();
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
-{
-    std::shared_ptr<Extension> resExtension;
-    for(const ExtensionContainer::value_type& extension :  m_extensions)
+    void* result = 0;
+    if(isLoaded() == true)
     {
-        if(extension->getIdentifier() == identifier && extension->isEnabled())
+        dlerror(); /* Clear existing error */
+        result = dlsym(m_handle, name.c_str());
+        if(result == 0) /* Check for possible errors */
         {
-            resExtension = extension;
-            break;
+            std::string message(dlerror());
+            if(message.empty() == false)
+            {
+                throw RuntimeException("Symbol retrieval failed. " + message);
+            }
         }
     }
-    return resExtension;
+    return result;
 }
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const std::filesystem::path& )
+void Posix::load()
 {
-    FW_DEPRECATED_MSG("setWorkingPath", "22.0");
+    if(m_handle == 0)
+    {
+        // Opens the dynamic library.
+        m_handle = dlopen(getFullPath().string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
+        if(m_handle == 0)
+        {
+            std::string message(dlerror());
+            throw RuntimeException("Module load failed. " + message);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
+
+void Posix::unload()
+{
+    if(m_handle != 0)
+    {
+        int result;
+        result = dlclose(m_handle);
+        if(result != 0)
+        {
+            std::string message(dlerror());
+            throw RuntimeException("Module unload failed. " + message);
+        }
+        m_handle = 0;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace dl
+
+} // namespace detail
 
 } // namespace fwRuntime
+
+#endif // #if defined(linux) || defined(__linux) || defined (__APPLE__)

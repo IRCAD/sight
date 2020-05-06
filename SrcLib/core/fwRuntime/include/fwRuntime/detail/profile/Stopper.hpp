@@ -20,27 +20,54 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
+#pragma once
 
-#include "fwRuntime/detail/Module.hpp"
-#include "fwRuntime/detail/Runtime.hpp"
+#include "fwRuntime/config.hpp"
+#include "fwRuntime/Version.hpp"
+
+#include <boost/utility.hpp>
+
+#include <string>
 
 namespace fwRuntime
 {
 
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+namespace detail
 {
-    // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
 
-    // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
+namespace profile
+{
 
-    // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
+/**
+ * @brief   Stops a given module.
+ */
+class Stopper :  public boost::noncopyable
+{
 
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
-}
+public:
+
+    /**
+     * @brief       Constructor
+     *
+     * @param[in]   _identifier  a string containing a module identifier
+     */
+    Stopper( const std::string& _identifier, const Version& version = Version() );
+
+    /**
+     * @brief   Applies the Stopper on the system.
+     *
+     * @remark  This method should be called directly.
+     */
+    void apply();
+
+private:
+
+    const std::string m_identifier;     ///< the module identifier
+    const Version m_version;            ///< the module version
+};
+
+} // namespace profile
+
+} // namespace detail
 
 } // namespace fwRuntime

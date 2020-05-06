@@ -22,10 +22,10 @@
 
 #include "RuntimeTest.hpp"
 
+#include <fwRuntime/detail/ExtensionPoint.hpp>
+#include <fwRuntime/detail/Module.hpp>
+#include <fwRuntime/detail/Runtime.hpp>
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/impl/ExtensionPoint.hpp>
-#include <fwRuntime/impl/Module.hpp>
-#include <fwRuntime/impl/Runtime.hpp>
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/Plugin.hpp>
 #include <fwRuntime/profile/Profile.hpp>

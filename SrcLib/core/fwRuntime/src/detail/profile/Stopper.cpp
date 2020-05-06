@@ -20,62 +20,55 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ModuleElement.hpp"
+#include "fwRuntime/detail/profile/Stopper.hpp"
 
 #include "fwRuntime/detail/Module.hpp"
+#include "fwRuntime/detail/Runtime.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <iostream>
+#include <sstream>
 
 namespace fwRuntime
 {
 
-ModuleElement::ModuleElement() :
-    m_module( detail::Module::getLoadingModule() ),
-    m_enable(true)
+namespace detail
 {
-    // Post-condition
-    SLM_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr );
+
+namespace profile
+{
+
+//------------------------------------------------------------------------------
+
+Stopper::Stopper( const std::string& identifier, const Version& version) :
+    m_identifier( identifier ),
+    m_version( version )
+{
 }
 
 //------------------------------------------------------------------------------
 
-ModuleElement::ModuleElement( std::shared_ptr< Module > module ) :
-    m_module( module ),
-    m_enable(true)
+void Stopper::apply()
 {
-    // Post-condition
-    SLM_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr );
+    auto module = detail::Runtime::get().findEnabledModule(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to stop module " + Module::getModuleStr(m_identifier, m_version) + ". Not found.",
+                 module == nullptr);
+    try
+    {
+        SLM_INFO("Stopping module : " + Module::getModuleStr(m_identifier, m_version));
+        module->stop();
+    }
+    catch( const std::exception& e )
+    {
+        SLM_ERROR("Unable to stop module " + Module::getModuleStr(m_identifier, m_version) + ". " + e.what());
+    }
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Module> ModuleElement::getBundle() const
-{
-    FW_DEPRECATED_MSG("getBundle", "22.0");
-    return this->getModule();
-}
+} // namespace profile
 
-//------------------------------------------------------------------------------
-
-std::shared_ptr<Module> ModuleElement::getModule() const
-{
-    return m_module.lock();
-}
-
-//------------------------------------------------------------------------------
-
-bool ModuleElement::isEnabled() const
-{
-    // Pre-condition.
-    std::shared_ptr< detail::Module > module = std::dynamic_pointer_cast< detail::Module >(m_module.lock());
-    SLM_ASSERT("module not initialized", module != nullptr );
-
-    return module->isEnabled() && m_enable;
-}
-
-//------------------------------------------------------------------------------
-
-void ModuleElement::setEnable(const bool enable)
-{
-    m_enable = enable;
-}
+} // namespace detail
 
 } // namespace fwRuntime

@@ -20,27 +20,39 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/ExecutableFactoryRegistrar.hpp"
+#include "fwRuntime/detail/dl/Library.hpp"
 
-#include "fwRuntime/detail/Module.hpp"
-#include "fwRuntime/detail/Runtime.hpp"
+#include "fwRuntime/detail/dl/Posix.hpp"
+#include "fwRuntime/detail/dl/Win32.hpp"
 
 namespace fwRuntime
 {
 
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+namespace detail
 {
-    // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
 
-    // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
+namespace dl
+{
 
-    // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
+//------------------------------------------------------------------------------
 
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
+typedef Posix LibraryImplType;
+#else
+typedef Win32 LibraryImplType;
+#endif
+
+//------------------------------------------------------------------------------
+
+Library::Library(const std::filesystem::path& modulePath) noexcept :
+    m_implementor(std::make_unique<LibraryImplType>(modulePath))
+{
 }
+
+//------------------------------------------------------------------------------
+
+} // namespace dl
+
+} // namespace detail
 
 } // namespace fwRuntime

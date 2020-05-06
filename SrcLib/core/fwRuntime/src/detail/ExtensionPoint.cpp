@@ -20,78 +20,69 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/detail/Runtime.hpp"
-#include "fwRuntime/Runtime.hpp"
+#include "fwRuntime/detail/ExtensionPoint.hpp"
 
-#include "fwRuntime/ExecutableFactory.hpp"
-#include "fwRuntime/Extension.hpp"
-#include "fwRuntime/IExecutable.hpp"
+#include "fwRuntime/detail/io/Validator.hpp"
+#include "fwRuntime/Module.hpp"
 #include "fwRuntime/operations.hpp"
-
-#include <fwCore/spyLog.hpp>
+#include "fwRuntime/RuntimeException.hpp"
 
 namespace fwRuntime
 {
 
+namespace detail
+{
+
 //------------------------------------------------------------------------------
 
-Runtime::Runtime()
+ExtensionPoint::ExtensionPoint( const std::shared_ptr< Module > bundle, const std::string& id,
+                                const std::filesystem::path& schema ) :
+    ModuleElement( bundle ),
+    m_id( id ),
+    m_schema( schema )
 {
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::~Runtime()
+const std::string& ExtensionPoint::getIdentifier() const
 {
+    return m_id;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime* Runtime::getDefault()
+std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
 {
-    return detail::Runtime::getDefault();
-}
-
-//------------------------------------------------------------------------------
-
-Runtime& Runtime::get()
-{
-    return detail::Runtime::get();
-}
-
-//------------------------------------------------------------------------------
-
-void Runtime::addDefaultBundles()
-{
-    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
-
-    // Now done in ::fwRuntime::init()
-    ::fwRuntime::init();
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
-{
-    std::shared_ptr<Extension> resExtension;
-    for(const ExtensionContainer::value_type& extension :  m_extensions)
+    if( !m_schema.empty() && !m_validator )
     {
-        if(extension->getIdentifier() == identifier && extension->isEnabled())
+        try
         {
-            resExtension = extension;
-            break;
+            std::filesystem::path schemaPath = getModule()->getResourcesLocation() / m_schema;
+            OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
+            if(!std::filesystem::exists(schemaPath))
+            {
+                // Allow to specify a schema defined elsewhere than this module
+                schemaPath = ::fwRuntime::getResourceFilePath(m_schema);
+            }
+            m_validator = std::make_shared< io::Validator >(schemaPath);
+        }
+        catch( const std::exception& e )
+        {
+            throw RuntimeException( "Error while creating a validator. " + std::string(e.what()) );
         }
     }
-    return resExtension;
+    return m_validator;
 }
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const std::filesystem::path& )
+void ExtensionPoint::operator=( const ExtensionPoint& ) noexcept
 {
-    FW_DEPRECATED_MSG("setWorkingPath", "22.0");
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace detail
 
 } // namespace fwRuntime

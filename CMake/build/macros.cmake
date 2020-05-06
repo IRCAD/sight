@@ -832,9 +832,9 @@ macro(fwUse)
         set(TARGET_TO_LINK ${PROJECT})
         if(${${PROJECT}_TYPE} MATCHES "LIBRARY")
 
-            if("${${NAME}_TYPE}" MATCHES "TEST" AND ${NAME} MATCHES "Impl" AND ${NAME} MATCHES "${PROJECT}")
+            if("${${NAME}_TYPE}" MATCHES "TEST" AND ${NAME} MATCHES "Detail" AND ${NAME} MATCHES "${PROJECT}")
                 # If we have a implementation test, link with the object library to get access to non exported symbols
-                # For instance fwRuntimeImplTest will link with the object library target fwRuntime
+                # For instance fwRuntimeDetailTest will link with the object library target fwRuntime
                 # and fwRuntimeTest will link with the shared library target fwRuntime_SHARED_LIB
                 if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
                     set(TARGET_TO_LINK ${PROJECT} ${${PROJECT}_PCH_TARGET}_PCH_OBJ)
@@ -929,8 +929,8 @@ function(findTests FWPROJECTS FILTER RESULT_VAR)
         if(${PROJECT}Test_DIR AND ("${FILTER}" STREQUAL "" OR "${${PROJECT}Test_DIR}" MATCHES "${FILTER}" ))
             list(APPEND RESULT ${PROJECT}Test)
         endif()
-        if(${PROJECT}ImplTest_DIR AND ("${FILTER}" STREQUAL "" OR "${${PROJECT}ImplTest_DIR}" MATCHES "${FILTER}" ))
-            list(APPEND RESULT ${PROJECT}ImplTest)
+        if(${PROJECT}DetailTest_DIR AND ("${FILTER}" STREQUAL "" OR "${${PROJECT}DetailTest_DIR}" MATCHES "${FILTER}" ))
+            list(APPEND RESULT ${PROJECT}DetailTest)
         endif()
     endforeach()
 

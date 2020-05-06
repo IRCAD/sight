@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include "fwRuntime/impl/profile/Profile.hpp"
+#include "fwRuntime/detail/profile/Profile.hpp"
 #include "fwRuntime/Profile.hpp"
 
+#include "fwRuntime/detail/profile/Activater.hpp"
+#include "fwRuntime/detail/profile/Initializer.hpp"
+#include "fwRuntime/detail/profile/Starter.hpp"
+#include "fwRuntime/detail/profile/Stopper.hpp"
+#include "fwRuntime/detail/profile/Uninitializer.hpp"
 #include "fwRuntime/Extension.hpp"
-#include "fwRuntime/impl/profile/Activater.hpp"
-#include "fwRuntime/impl/profile/Initializer.hpp"
-#include "fwRuntime/impl/profile/Starter.hpp"
-#include "fwRuntime/impl/profile/Stopper.hpp"
-#include "fwRuntime/impl/profile/Uninitializer.hpp"
 #include "fwRuntime/Module.hpp"
 #include "fwRuntime/Runtime.hpp"
 
@@ -57,7 +57,7 @@ struct Apply
 
 Profile::sptr Profile::New()
 {
-    return std::make_shared< impl::profile::Profile >();
+    return std::make_shared< detail::profile::Profile >();
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ void setCurrentProfile(Profile::sptr prof)
 
 Profile::sptr getCurrentProfile()
 {
-    return impl::profile::getCurrentProfile();
+    return detail::profile::getCurrentProfile();
 }
 
 //------------------------------------------------------------------------------
