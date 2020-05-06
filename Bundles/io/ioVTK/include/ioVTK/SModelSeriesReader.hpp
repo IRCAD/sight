@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwJobs
@@ -41,9 +40,8 @@ namespace ioVTK
 {
 
 /**
- * @brief  VTK Mesh Writer.
- *
- * Service writing a VTK Mesh using the fwVtkIO lib.
+ * @brief  Read VTK files and fill a ::fwMedData::ModelSeries
+ * Accepted extensions: *.vtk *.vtp *.obj *.ply *.stl
  *
  * @section Signals Signals
  * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
@@ -69,7 +67,7 @@ class IOVTK_CLASS_API SModelSeriesReader : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceMacro(SModelSeriesReader,  ::fwIO::IReader);
+    fwCoreServiceMacro(SModelSeriesReader,  ::fwIO::IReader)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -132,7 +130,12 @@ protected:
 
 private:
 
-    IOVTK_API void loadMesh( const std::filesystem::path file, ::fwData::Mesh::sptr mesh );
+    /**
+     * @brief loadMesh: read _file to load _mesh data.
+     * @param[in] _file path to the file to read.
+     * @param[out] _mesh ::fwData::Mesh::sptr, the loaded mesh.
+     */
+    IOVTK_API void loadMesh( const std::filesystem::path& _file, ::fwData::Mesh::sptr _mesh);
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 
