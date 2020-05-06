@@ -17,7 +17,7 @@
         <object>::fwMedData::ImageSeries</object>
         <desc>VTK Image Series Reader (VTK)</desc>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>
         <service>::ioVTK::SImageSeriesWriter</service>
@@ -36,7 +36,7 @@
         <type>::fwIO::IReader</type>
         <service>::ioVTK::SMeshReader</service>
         <object>::fwData::Mesh</object>
-        <desc>VTK Mesh Reader (VTK)</desc>
+        <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -57,7 +57,7 @@
         <type>::fwIO::IReader</type>
         <service>::ioVTK::SModelSeriesReader</service>
         <object>::fwMedData::ModelSeries</object>
-        <desc>VTK files (VTK)</desc>
+        <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -71,7 +71,7 @@
         <type>::fwIO::IReader</type>
         <service>::ioVTK::SSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
-        <desc>VTK File Reader (VTK)</desc>
+        <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp *.vtu *.vti *.mhd)</desc>
     </extension>
 
 </plugin>
