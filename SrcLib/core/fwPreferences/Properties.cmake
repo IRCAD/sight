@@ -10,3 +10,9 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchServices)
+
+if(WIN32)
+set( CONAN_DEPS
+    ${CONAN_OPENSSL}
+)
+endif()

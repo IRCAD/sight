@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,10 +32,149 @@
 
 #include <fwTools/Os.hpp>
 
+#include <openssl/rand.h>
+#include <openssl/sha.h>
+
+#include <iomanip>
+#include <shared_mutex>
+
 namespace fwPreferences
 {
 
 const std::string s_PREFERENCES_KEY = "preferences";
+
+// Password management static variables
+// @todo: The std::string can be replaced with a map to manage multiple user and multiple password (later)
+static std::shared_mutex s_passwordMutex;
+static std::string s_password;
+
+static const std::string s_PASSWORD_HASH_KEY = "~~Private~~";
+static unsigned char s_scramble_key[SHA256_DIGEST_LENGTH] {0};
+
+//----------------------------------------------------------------------------
+
+// Compute a sha256 paswword hash using openSSL
+inline static std::string computePasswordHash( const std::string& password )
+{
+    // Compute SHA256 using openssl
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, password.c_str(), password.length());
+    SHA256_Final(hash, &sha256);
+
+    // Convert the hash to an hexadecimal string
+    std::stringstream stream;
+    stream << std::setfill('0') << std::setw(2) << std::hex;
+
+    for(std::uint8_t i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    {
+        // Cast to int to avoid ASCII code interpretation.
+        stream << static_cast<int>(hash[i]);
+    }
+
+    return stream.str();
+}
+
+//----------------------------------------------------------------------------
+
+// Quick and simple xor encryption
+inline static std::string scramble( const std::string& original )
+{
+    std::string scrambled;
+    scrambled.resize(original.size());
+
+    for (size_t i = 0; i < original.size(); i++ )
+    {
+        scrambled[i] = original[i] ^ s_scramble_key[i%sizeof(s_scramble_key)];
+    }
+
+    return scrambled;
+}
+
+//----------------------------------------------------------------------------
+
+void setPassword(const std::string& password)
+{
+    // Protect for writing
+    std::unique_lock writeLock(s_passwordMutex);
+
+    if(password.empty())
+    {
+        // Remove the password
+        s_password = password;
+
+        // Remove the password hash
+        ::fwData::Composite::sptr prefs = getPreferences();
+        if(prefs && prefs->find(s_PASSWORD_HASH_KEY) != prefs->end() )
+        {
+            setPreference(s_PASSWORD_HASH_KEY, password);
+            savePreferences();
+        }
+    }
+    else
+    {
+        // Save the password hash to preferences
+        setPreference(s_PASSWORD_HASH_KEY, computePasswordHash(password));
+        savePreferences();
+
+        // Scramble the scramble key
+        RAND_bytes(s_scramble_key, sizeof(s_scramble_key));
+
+        // Scramble the password
+        s_password = scramble(password);
+    }
+}
+
+//----------------------------------------------------------------------------
+
+const std::string getPassword()
+{
+    // Protect for reading
+    std::shared_lock readLock(s_passwordMutex);
+
+    // Return it
+    return scramble(s_password);
+}
+
+//----------------------------------------------------------------------------
+
+bool checkPassword(const std::string& password)
+{
+    // Protect for writing
+    std::unique_lock writeLock(s_passwordMutex);
+
+    const std::string& passwordHash = getPreference(s_PASSWORD_HASH_KEY);
+
+    if(passwordHash.empty())
+    {
+        // No password hash is stored in the preferences or there is no preferences
+        // We must check against s_password
+        return password == scramble(s_password);
+    }
+    else if(computePasswordHash(password) == passwordHash)
+    {
+        // Store the verified password
+        // Scramble the scramble key
+        RAND_bytes(s_scramble_key, sizeof(s_scramble_key));
+
+        // Scramble the password
+        s_password = scramble(password);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool hasPasswordHash()
+{
+    return !getPreference(s_PASSWORD_HASH_KEY).empty();
+}
 
 //----------------------------------------------------------------------------
 
