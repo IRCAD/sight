@@ -49,7 +49,7 @@ static std::shared_mutex s_passwordMutex;
 static std::string s_password;
 
 static const std::string s_PASSWORD_HASH_KEY = "~~Private~~";
-static unsigned char s_SCRAMBLE_KEY[SHA256_DIGEST_LENGTH];
+static unsigned char s_scramble_key[SHA256_DIGEST_LENGTH] {0};
 
 //----------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ inline static std::string scramble( const std::string& original )
 
     for (size_t i = 0; i < original.size(); i++ )
     {
-        scrambled[i] = original[i] ^ s_SCRAMBLE_KEY[i%sizeof(s_SCRAMBLE_KEY)];
+        scrambled[i] = original[i] ^ s_scramble_key[i%sizeof(s_scramble_key)];
     }
 
     return scrambled;
@@ -119,7 +119,7 @@ void setPassword(const std::string& password)
         savePreferences();
 
         // Scramble the scramble key
-        RAND_bytes(s_SCRAMBLE_KEY, sizeof(s_SCRAMBLE_KEY));
+        RAND_bytes(s_scramble_key, sizeof(s_scramble_key));
 
         // Scramble the password
         s_password = scramble(password);
@@ -156,7 +156,7 @@ bool checkPassword(const std::string& password)
     {
         // Store the verified password
         // Scramble the scramble key
-        RAND_bytes(s_SCRAMBLE_KEY, sizeof(s_SCRAMBLE_KEY));
+        RAND_bytes(s_scramble_key, sizeof(s_scramble_key));
 
         // Scramble the password
         s_password = scramble(password);
