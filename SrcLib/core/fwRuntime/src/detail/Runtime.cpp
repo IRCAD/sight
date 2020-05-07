@@ -278,7 +278,7 @@ Runtime* Runtime::getDefault()
 {
     if(m_instance.get() == nullptr)
     {
-        m_instance = std::shared_ptr<Runtime>(new Runtime());
+        m_instance = std::make_shared<Runtime>();
     }
     return m_instance.get();
 }
@@ -287,11 +287,7 @@ Runtime* Runtime::getDefault()
 
 Runtime& Runtime::get()
 {
-    if(m_instance.get() == nullptr)
-    {
-        m_instance = std::shared_ptr<Runtime>(new Runtime());
-    }
-    return *m_instance.get();
+    return *Runtime::getDefault();
 }
 
 //------------------------------------------------------------------------------
