@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,6 +49,18 @@ namespace ut
 
 void PreferencesTest::setUp()
 {
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::tearDown()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::runtimeTest()
+{
     m_profile = ::fwRuntime::profile::Profile::New();
     m_profile->setName("APP_TEST");
     ::fwRuntime::profile::setCurrentProfile(m_profile);
@@ -73,13 +85,16 @@ void PreferencesTest::setUp()
     preferences->setEnable(true);
     CPPUNIT_ASSERT(preferences->isEnable());
     preferences->start();
-}
 
-//------------------------------------------------------------------------------
+    const std::string profileName = ::fwTools::UUID::generateUUID();
+    m_profile->setName(profileName);
 
-void PreferencesTest::tearDown()
-{
-    // Clean up after the test run.
+    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
+    m_preferencesPath = appPrefDir / "preferences.json";
+
+    // Check preference file dir
+    const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
+    CPPUNIT_ASSERT_EQUAL(m_preferencesPath.string(), file.string());
 }
 
 //------------------------------------------------------------------------------
@@ -89,21 +104,11 @@ void PreferencesTest::helperTest()
     const std::string preferenceKey   = "PREF_KEY_TEST";
     const std::string preferenceValue = "PREF_VALUE_TEST";
 
-    const std::string profileName = ::fwTools::UUID::generateUUID();
-    m_profile->setName(profileName);
-
-    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
-    const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
-
-    //Check preference file dir
-    const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
-    CPPUNIT_ASSERT_EQUAL(prefFile.string(), file.string());
-
-    //Check set preference
+    // Check set preference
     const bool isModified = ::fwPreferences::setPreference(preferenceKey, preferenceValue);
     CPPUNIT_ASSERT(isModified);
 
-    //Check get preference
+    // Check get preference
     const std::string value = ::fwPreferences::getPreference(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, value);
 
@@ -134,8 +139,45 @@ void PreferencesTest::helperTest()
 
     resValueInt = ::fwPreferences::getValue< std::uint32_t >(prefKeySubstitute);
     CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
+}
 
-    std::filesystem::remove(prefFile);
+//------------------------------------------------------------------------------
+
+void PreferencesTest::passwordTest()
+{
+    // Reset password field in settings
+    ::fwPreferences::setPassword(std::string());
+
+    // Test default empty password (means no password)
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::getPassword(), std::string());
+
+    // Test if there is no hash in preferences (means no password)
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::hasPasswordHash(), false);
+
+    // Test with a real password
+    const std::string password = "You are the one for me, for me, for me, formidable";
+    ::fwPreferences::setPassword(password);
+    CPPUNIT_ASSERT_EQUAL(password, ::fwPreferences::getPassword());
+
+    // Save the hash
+    ::fwPreferences::savePreferences();
+
+    // Test if there is a hash in preferences
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::hasPasswordHash(), true);
+
+    // Verify the good password
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword(password), true);
+
+    // Verify that bad password doesn't work
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword("ON DIT CHIFFRER, ET PAS CRYPTER. :-)"), false);
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::cleanup()
+{
+    // Cleanup
+    std::filesystem::remove(m_preferencesPath);
 }
 
 //------------------------------------------------------------------------------
