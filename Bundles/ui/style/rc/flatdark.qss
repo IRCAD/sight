@@ -320,7 +320,7 @@ QLabel
 QLabel[type="error"]
 {
     font-weight: bold;
-    color: red;
+    color: rgb(218, 73, 57);
 }
 
 /************************************************************************/
