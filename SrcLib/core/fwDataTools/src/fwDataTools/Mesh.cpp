@@ -80,6 +80,13 @@ bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTyp
 
 //------------------------------------------------------------------------------
 
+bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellType cell)
+{
+    return hasUniqueCellType(mesh, static_cast< ::fwData::Mesh::CellTypes >(cell));
+}
+
+//------------------------------------------------------------------------------
+
 Vector<float> computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3)
 {
     Vector<float> n(p1, p2);
