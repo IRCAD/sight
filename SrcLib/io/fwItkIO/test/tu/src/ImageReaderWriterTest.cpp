@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -121,8 +121,8 @@ void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTe
 void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
 {
     // inr only support image origin (0,0,0)
-    ::fwData::Image::OriginType origin(3, 0);
-    image->setOrigin(origin);
+    const ::fwData::Image::Origin origin = {0., 0., 0.};
+    image->setOrigin2(origin);
 
     // save image in inr
     const std::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
