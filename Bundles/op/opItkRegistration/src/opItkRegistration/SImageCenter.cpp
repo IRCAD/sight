@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,9 @@
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SImageCenter);
+fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SImageCenter)
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN        = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_IN = "image";
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
@@ -100,9 +100,9 @@ void SImageCenter::updating()
     ::fwDataTools::TransformationMatrix3D::identity(matrix);
 
     //compute the center
-    const ::fwData::Image::SizeType size       = image->getSize();
-    const ::fwData::Image::SpacingType spacing = image->getSpacing();
-    const ::fwData::Image::OriginType origin   = image->getOrigin();
+    const ::fwData::Image::Size size       = image->getSize2();
+    const ::fwData::Image::Spacing spacing = image->getSpacing2();
+    const ::fwData::Image::Origin origin   = image->getOrigin2();
 
     SLM_ASSERT("Image should be in 3 Dimensions", size.size() == 3);
 

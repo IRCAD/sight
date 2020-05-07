@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include <sstream>
-
-#include <boost/lexical_cast.hpp>
+#include "monitor/action/MemoryConsumption.hpp"
 
 #include <fwData/Array.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "monitor/action/MemoryConsumption.hpp"
+#include <fwServices/macros.hpp>
+
+#include <boost/lexical_cast.hpp>
+
+#include <sstream>
 
 namespace monitor
 {
@@ -42,7 +42,7 @@ static std::vector< ::fwData::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, ::fwData::Object )
 
 //-----------------------------------------------------------------------------
 
@@ -52,16 +52,16 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
     {
         ::fwData::Array::sptr buffer = ::fwData::Array::New();
         ::fwData::Array::SizeType size(1, memorySizeInBytes);
-        buffer->resize(::fwTools::Type::s_UINT8_TYPENAME, size, 1, true);
+        buffer->resize(size, ::fwTools::Type::s_UINT8_TYPENAME, true);
 
         OSLM_INFO("Creating a fwData::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
 
         memoryConsumer.push_back( buffer );
     }
-    catch( std::exception &e )
+    catch( std::exception& e )
     {
         std::stringstream msg;
-        msg << "Cannot allocate buffer (256 Mo) :\n" << e.what() << std::endl;
+        msg << "Cannot allocate buffer ("<< memorySizeInBytes/(1024*1024) <<" Mo) :\n" << e.what() << std::endl;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Action increase memory",
             msg.str(),
@@ -72,7 +72,8 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
 //------------------------------------------------------------------------------
 
 MemoryConsumption::MemoryConsumption( ) noexcept :
-    m_isIncreaseMode(true), m_memorySizeInBytes(1024*1024*256)     // 256 Mo
+    m_isIncreaseMode(true),
+    m_memorySizeInBytes(1024*1024*256)                             // 256 Mo
 {
 }
 
