@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,6 +38,7 @@
 #include <fwGui/dialog/ILocationDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwJobs/IJob.hpp>
 
@@ -48,13 +49,17 @@
 #include <fwTools/UUID.hpp>
 
 #include <fwVtkIO/MeshWriter.hpp>
+#include <fwVtkIO/ObjMeshWriter.hpp>
+#include <fwVtkIO/PlyMeshWriter.hpp>
+#include <fwVtkIO/StlMeshWriter.hpp>
+#include <fwVtkIO/VtpMeshWriter.hpp>
 
 #include <filesystem>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, ::fwMedData::ModelSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, ::fwMedData::ModelSeries )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -87,7 +92,7 @@ void SModelSeriesWriter::configureWithIHM()
 
     ::fwData::location::Folder::sptr result;
 
-    while (result = ::fwData::location::Folder::dynamicCast( dialog.show() ))
+    while ((result = ::fwData::location::Folder::dynamicCast( dialog.show() )))
     {
         if( std::filesystem::is_empty(result->getFolder()) )
         {
@@ -111,6 +116,33 @@ void SModelSeriesWriter::configureWithIHM()
         _sDefaultPath = result->getFolder().parent_path();
         dialog.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         this->setFolder(result->getFolder());
+
+        // Ask user to select extension
+
+        // Create a map with description that will be displayed to user, and extensions.
+        std::map < std::string, std::string > descriptionToExtension;
+        descriptionToExtension["VTK Legacy (*.vtk)"]                = ".vtk";
+        descriptionToExtension["VTK Polydata (*.vtp"]               = ".vtp";
+        descriptionToExtension["OBJ Wavefront Object (*.obj)"]      = ".obj";
+        descriptionToExtension["PLY Polygonal File Format (*.ply)"] = ".ply";
+        descriptionToExtension["STL StereoLithograpy (*.stl)"]      = ".stl";
+
+        // Fill the descriptions vector with map keys.
+        std::vector< std::string > descriptions;
+        std::transform(std::begin(descriptionToExtension), std::end(descriptionToExtension),
+                       std::back_inserter(descriptions),
+                       [](auto const& pair)
+            {
+                return pair.first;
+            });
+        ::fwGui::dialog::SelectorDialog extensionDialog;
+        extensionDialog.setTitle("Extensions");
+        extensionDialog.setMessage("Choose the extensions: ");
+        extensionDialog.setSelections(descriptions);
+
+        const auto selected = extensionDialog.show();
+        m_selectedExtension = descriptionToExtension[selected];
+
     }
     else
     {
@@ -122,14 +154,12 @@ void SModelSeriesWriter::configureWithIHM()
 
 void SModelSeriesWriter::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SModelSeriesWriter::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -145,38 +175,81 @@ void SModelSeriesWriter::info(std::ostream& _sstream )
 {
     _sstream << "SModelSeriesWriter::info";
 }
+//------------------------------------------------------------------------------
+
+template< typename WRITER >
+typename WRITER::sptr configureWriter(const std::filesystem::path& _filename)
+{
+    typename WRITER::sptr writer = WRITER::New();
+    writer->setFile(_filename);
+    return writer;
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesWriter::writeMesh(const std::filesystem::path& _filename, const ::fwData::Mesh::csptr _mesh)
+{
+    ::fwDataIO::writer::IObjectWriter::sptr meshWriter;
+    const auto ext = _filename.extension();
+    if(ext == ".vtk")
+    {
+        meshWriter = configureWriter< ::fwVtkIO::MeshWriter >(_filename);
+    }
+    else if(ext == ".vtp")
+    {
+        meshWriter = configureWriter< ::fwVtkIO::VtpMeshWriter >(_filename);
+    }
+    else if(ext == ".obj")
+    {
+        meshWriter = configureWriter< ::fwVtkIO::ObjMeshWriter >(_filename);
+    }
+    else if(ext == ".stl")
+    {
+        meshWriter = configureWriter< ::fwVtkIO::StlMeshWriter >(_filename);
+    }
+    else if(ext == ".ply")
+    {
+        meshWriter = configureWriter< ::fwVtkIO::PlyMeshWriter >(_filename);
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Extension '"+ ext.string() +
+                                             "' is not managed by ::ioVTK::SModelSeriesWriter."));
+    }
+
+    m_sigJobCreated->emit(meshWriter->getJob());
+
+    meshWriter->setObject(_mesh);
+    meshWriter->write();
+}
 
 //------------------------------------------------------------------------------
 
 void SModelSeriesWriter::updating()
 {
-    SLM_TRACE_FUNC();
-
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeries);
+        const auto modelSeriesLockedPtr = this->getLockedInput< const ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeriesLockedPtr);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
+        const auto modelSeries                                         = modelSeriesLockedPtr.getShared();
         const ::fwMedData::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
         for(const ::fwData::Reconstruction::csptr& rec :  recs)
         {
             SLM_ASSERT("Reconstruction from model series is not instanced", rec);
             ::fwData::Mesh::sptr mesh = rec->getMesh();
-
             SLM_ASSERT("Mesh from reconstruction is not instanced", mesh);
-            ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
-            m_sigJobCreated->emit(writer->getJob());
 
-            writer->setObject(mesh);
-            writer->setFile(this->getFolder() / (rec->getOrganName() + "_" + ::fwTools::UUID::get(mesh) + ".vtk"));
-
+            const std::filesystem::path filename = this->getFolder() /
+                                                   (rec->getOrganName() + "_" + ::fwTools::UUID::get(mesh) +
+                                                    m_selectedExtension);
             try
             {
-                writer->write();
+                this->writeMesh(filename, mesh);
             }
             catch (const std::exception& e)
             {

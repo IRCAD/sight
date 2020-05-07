@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwData
@@ -81,7 +80,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SModelSeriesWriter,  ::fwIO::IWriter)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -133,7 +132,20 @@ protected:
      */
     IOVTK_API void info(std::ostream& _sstream ) override;
 
+private:
+
+    /**
+     * @brief write the mesh on disk, using _filename
+     * @param[in] _filename : name of the file to write with extension. extension will be used to choose the writer.
+     * @param[in] _mesh : const pointer of the data mesh.
+     */
+    void writeMesh(const std::filesystem::path& _filename, const ::fwData::Mesh::csptr _mesh);
+
+    /// Job Created signal
     SPTR(JobCreatedSignalType) m_sigJobCreated;
+
+    ///  Stores the selectedExtension from dialog.
+    std::string m_selectedExtension;
 
 };
 
