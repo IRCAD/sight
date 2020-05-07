@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -70,26 +70,17 @@ void ImageTest::tearDown()
 void ImageTest::generator3DTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    const std::uint8_t dim = 3;
-    ::fwData::Image::SizeType size(dim);
-    size[0] = 10;
-    size[1] = 15;
-    size[2] = 23;
-    ::fwData::Image::SpacingType spacing(dim);
-    spacing[0] = 0.85;
-    spacing[1] = 2.6;
-    spacing[2] = 1.87;
-    ::fwData::Image::OriginType origin(dim);
-    origin[0]            = -45.6;
-    origin[1]            = 25.97;
-    origin[2]            = -53.9;
+    const ::fwData::Image::Size size       = {10, 15, 23};
+    const ::fwData::Image::Spacing spacing = {0.85, 2.6, 1.87};
+    const ::fwData::Image::Origin origin   = {-45.6, 25.97, -53.9};
     ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
 
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type,
+                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
 
-    CPPUNIT_ASSERT(image->getSize() == size);
-    CPPUNIT_ASSERT(image->getSpacing() == spacing);
-    CPPUNIT_ASSERT(image->getOrigin() == origin);
+    CPPUNIT_ASSERT(image->getSize2() == size);
+    CPPUNIT_ASSERT(image->getSpacing2() == spacing);
+    CPPUNIT_ASSERT(image->getOrigin2() == origin);
     CPPUNIT_ASSERT_EQUAL(type.string(), image->getType().string());
 }
 
@@ -98,22 +89,16 @@ void ImageTest::generator3DTest()
 void ImageTest::generator2DTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    const std::uint8_t dim = 2;
-    ::fwData::Image::SizeType size(dim);
-    size[0] = 10;
-    size[1] = 15;
-    std::vector<double> spacing(dim);
-    spacing[0] = 0.85;
-    spacing[1] = 2.6;
-    std::vector<double> origin(dim);
-    origin[0]            = -45.6;
-    origin[1]            = 25.97;
+    const ::fwData::Image::Size size       = {10, 15, 0};
+    const ::fwData::Image::Spacing spacing = {0.85, 2.6, 0.};
+    const ::fwData::Image::Origin origin   = {-45.6, 25.97, 0.};
     ::fwTools::Type type = ::fwTools::Type::create< std::int16_t >();
 
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
-    CPPUNIT_ASSERT(image->getSize() == size);
-    CPPUNIT_ASSERT(image->getSpacing() == spacing);
-    CPPUNIT_ASSERT(image->getOrigin() == origin);
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type,
+                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
+    CPPUNIT_ASSERT(image->getSize2() == size);
+    CPPUNIT_ASSERT(image->getSpacing2() == spacing);
+    CPPUNIT_ASSERT(image->getOrigin2() == origin);
     CPPUNIT_ASSERT_EQUAL(type.string(), image->getType().string());
 }
 
