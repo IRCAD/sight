@@ -46,9 +46,9 @@ class Profile;
  * @brief   Initializes Sight runtime and discovers default modules. To be used when building an external application
  *          with Sight.
  *
- * @param   directory   deprecated, a path to the directory where Sight is installed
+ * @param   directory   deprecated, path to the directory where Sight is installed. This is now automatically detected.
  */
-FWRUNTIME_API void init( const std::filesystem::path& directory = std::filesystem::path() );
+FWRUNTIME_API void init( [[deprecated]] const std::filesystem::path& directory = std::filesystem::path() );
 
 /**
  * @brief       Creates an executable instance for the specified configuration element.
