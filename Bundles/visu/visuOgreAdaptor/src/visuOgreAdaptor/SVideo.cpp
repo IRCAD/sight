@@ -183,7 +183,7 @@ void SVideo::updating()
             m_previousType = type;
         }
 
-        ::fwData::Image::SizeType size = imageSight->getSize();
+        const ::fwData::Image::Size size = imageSight->getSize2();
         ::fwRenderOgre::Utils::loadOgreTexture(imageSight, m_texture, ::Ogre::TEX_TYPE_2D, true);
 
         if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight )
