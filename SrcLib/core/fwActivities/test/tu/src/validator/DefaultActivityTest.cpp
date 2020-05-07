@@ -518,7 +518,7 @@ void DefaultActivityTest::bigActivityTest()
         validation = activityValidator->validate(activitySeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Activity with different image properties data should NOT be valid",
                                      false, validation.first);
-        img3->setSpacing(img2->getSpacing());
+        img3->setSpacing2(img2->getSpacing2());
     }
 }
 

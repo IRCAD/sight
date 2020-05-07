@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,7 +41,7 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKSlicer::SPlaneSlicer );
+fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKSlicer::SPlaneSlicer )
 
 namespace opVTKSlicer
 {
@@ -110,12 +110,12 @@ void SPlaneSlicer::updating()
     // HACK: Make output slice three-dimensional.
     // We need to do so in order to visualize it with ::visuVTKAdaptor::SImageSlice.
     // This is because the adaptor uses a vtkImageActor which doesn't handle 2d images.
-    auto size = slice->getSize();
-    slice->setSize({{size[0], size[1], 1}});
-    auto spacing = slice->getSpacing();
-    slice->setSpacing({{spacing[0], spacing[1], 0 }});
-    auto origin = slice->getOrigin();
-    slice->setOrigin({{origin[0], origin[1], 0}});
+    const auto size = slice->getSize2();
+    slice->setSize2({{size[0], size[1], 1}});
+    const auto spacing = slice->getSpacing2();
+    slice->setSpacing2({{spacing[0], spacing[1], 0 }});
+    const auto origin = slice->getOrigin2();
+    slice->setOrigin2({{origin[0], origin[1], 0}});
 
     auto sig = slice->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
 
@@ -174,9 +174,9 @@ void SPlaneSlicer::setReslicerExtent()
 
     SLM_ASSERT("No extentImg.", extentImg);
 
-    const auto& size    = extentImg->getSize();
-    const auto& origin  = extentImg->getOrigin();
-    const auto& spacing = extentImg->getSpacing();
+    const auto& size    = extentImg->getSize2();
+    const auto& origin  = extentImg->getOrigin2();
+    const auto& spacing = extentImg->getSpacing2();
 
     // cast size_t to int.
     std::vector<int> intSize(size.size());
@@ -270,8 +270,8 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
 
     const int idx = ::fwData::Integer::dynamicCast(index)->value();
 
-    const auto& spacing = image->getSpacing();
-    const auto& origin  = image->getOrigin();
+    const auto& spacing = image->getSpacing2();
+    const auto& origin  = image->getOrigin2();
 
     const std::uint8_t axis = static_cast<std::uint8_t>(m_orientation);
 

@@ -150,7 +150,7 @@ void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window width ", fisrtImage->getWindowWidth(), imgWindowWidth);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size x ", fisrtImage->getSize2()[0], imgSizeX_Expected);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size y ", fisrtImage->getSize2()[1], imgSizeY_Expected);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size z ", fisrtImage->getSize()[2], imgSizeZ_Expected);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size z ", fisrtImage->getSize2()[2], imgSizeZ_Expected);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing x ", fisrtImage->getSpacing2()[0], imgSpacingX);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing y ", fisrtImage->getSpacing2()[1], imgSpacingY);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing z ", fisrtImage->getSpacing2()[2], imgSpacingZ);

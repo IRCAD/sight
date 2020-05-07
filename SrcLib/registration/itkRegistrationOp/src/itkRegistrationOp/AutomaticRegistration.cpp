@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -377,8 +377,8 @@ void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::Tran
 
 double AutomaticRegistration::computeVolume(const fwData::Image::csptr& _img)
 {
-    const auto& spacing = _img->getSpacing();
-    const auto& size    = _img->getSize();
+    const auto& spacing = _img->getSpacing2();
+    const auto& size    = _img->getSize2();
 
     SLM_ASSERT("Degenerated image. Spacing and size should be of the same dimension.", spacing.size() == size.size());
 

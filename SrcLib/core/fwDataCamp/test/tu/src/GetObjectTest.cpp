@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,6 @@
 #include <fwData/Vector.hpp>
 
 #include <fwTest/generator/Image.hpp>
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataCamp::ut::GetObjectTest );
 
@@ -76,13 +75,13 @@ void GetObjectTest::getTest()
     // Visit 2
     ::fwData::Float::sptr zspacing = ::fwDataCamp::getObject< ::fwData::Float >( composite, "@values.img2.spacing.2" );
     CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
-                           img2->getSpacing()[2] - 0.001 < zspacing->value() &&
-                           zspacing->value() < img2->getSpacing()[2] + 0.001 );
+                           img2->getSpacing2()[2] - 0.001 < zspacing->value() &&
+                           zspacing->value() < img2->getSpacing2()[2] + 0.001 );
 
     // Visit 3
-    composite->setField("toto", img1);
-    img1->setField("titi", img2);
-    ::fwData::Object::sptr subObj2 = ::fwDataCamp::getObject( composite, "@fields.toto.fields.titi" );
+    composite->setField("myImage1", img1);
+    img1->setField("myImage2", img2);
+    ::fwData::Object::sptr subObj2 = ::fwDataCamp::getObject( composite, "@fields.myImage1.fields.myImage2" );
     CPPUNIT_ASSERT_MESSAGE("Image must be equal", subObj2 == img2 );
 }
 
@@ -107,11 +106,11 @@ void GetObjectTest::invalidPathTest()
 
     // no exception version
     ::fwData::Object::sptr obj = ::fwDataCamp::getObject( composite, "@values.string" );
-    CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj ==  text );
+    CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj == text );
 
     // with exception version
     obj = ::fwDataCamp::getObject( composite, "@values.string", true );
-    CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj ==  text );
+    CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj == text );
 
     // no exception version
     ::fwData::Object::sptr invalidObj = ::fwDataCamp::getObject( composite, "@values.invalidPath", false );
@@ -124,17 +123,16 @@ void GetObjectTest::invalidPathTest()
         );
     CPPUNIT_ASSERT_EQUAL(size_t(2), composite->size() );
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Vector tests
 
     // no exception version
     obj = ::fwDataCamp::getObject( composite, "@values.vector.values.0" );
-    CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj ==  intValue );
+    CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj == intValue );
 
     // with exception version
     obj = ::fwDataCamp::getObject( composite, "@values.vector.values.0", true );
-    CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj ==  intValue );
+    CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj == intValue );
 
     /// This is important to test vectors subobjects properties to ensure the visitor path is correct
 
@@ -142,15 +140,15 @@ void GetObjectTest::invalidPathTest()
     obj                            = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.2" );
     ::fwData::Float::sptr zspacing = ::std::dynamic_pointer_cast< ::fwData::Float >(obj);
     CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
-                           img->getSpacing()[2] - 0.001 < zspacing->value() &&
-                           zspacing->value() < img->getSpacing()[2] + 0.001 );
+                           img->getSpacing2()[2] - 0.001 < zspacing->value() &&
+                           zspacing->value() < img->getSpacing2()[2] + 0.001 );
 
     // with exception version
     obj      = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.2", true );
     zspacing = ::std::dynamic_pointer_cast< ::fwData::Float >(obj);
     CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
-                           img->getSpacing()[2] - 0.001 < zspacing->value() &&
-                           zspacing->value() < img->getSpacing()[2] + 0.001 );
+                           img->getSpacing2()[2] - 0.001 < zspacing->value() &&
+                           zspacing->value() < img->getSpacing2()[2] + 0.001 );
 
     // out of bounds, no exception version
     invalidObj = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.15", false );

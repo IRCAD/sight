@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,7 +48,7 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddLandmark, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddLandmark, ::fwData::Image )
 
 //------------------------------------------------------------------------------
 
@@ -118,16 +118,15 @@ void AddLandmark::updating()
         ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
             ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
-
         // create a new point
         ::fwData::Point::sptr newPoint = ::fwDataTools::fieldHelper::MedicalImageHelpers::getImageSliceIndices( image );
         // transform slice to mm
         std::transform( newPoint->getCoord().begin(), newPoint->getCoord().end(),
-                        image->getSpacing().begin(),
+                        image->getSpacing2().begin(),
                         newPoint->getCoord().begin(),
                         std::multiplies<double>() );
         std::transform( newPoint->getCoord().begin(), newPoint->getCoord().end(),
-                        image->getOrigin().begin(),
+                        image->getOrigin2().begin(),
                         newPoint->getCoord().begin(),
                         std::plus<double>() );
         // append to landmark

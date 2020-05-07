@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,17 +74,17 @@ void AddDistance::updating()
         return;
     }
     ::fwData::Point::sptr pt1 = ::fwData::Point::New();
-    std::copy( image->getOrigin().begin(),  image->getOrigin().begin() +3, pt1->getCoord().begin() );
+    std::copy( image->getOrigin2().begin(),  image->getOrigin2().begin() +3, pt1->getCoord().begin() );
 
     ::fwData::Point::sptr pt2 = ::fwData::Point::New();
-    std::copy( image->getSize().begin(),  image->getSize().begin() +3, pt2->getCoord().begin() );
+    std::copy( image->getSize2().begin(),  image->getSize2().begin() +3, pt2->getCoord().begin() );
 
     std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
-                    image->getSpacing().begin(),
+                    image->getSpacing2().begin(),
                     pt2->getCoord().begin(),
                     std::multiplies<double>() );
     std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
-                    image->getOrigin().begin(),
+                    image->getOrigin2().begin(),
                     pt2->getCoord().begin(),
                     std::plus<double>() );
 
