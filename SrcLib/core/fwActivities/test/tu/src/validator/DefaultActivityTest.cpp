@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -281,8 +281,9 @@ void DefaultActivityTest::objectTest()
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create<std::uint8_t>());
-    ::fwTest::generator::Image::generateImage(img2, img1->getSize(), img1->getSpacing(),
-                                              img1->getOrigin(), img1->getType());
+    ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
+                                              img1->getOrigin2(), img1->getType(),
+                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
     ::fwTest::generator::Image::generateRandomImage(img3, ::fwTools::Type::create<std::uint8_t>());
 
     ::fwData::Vector::sptr vector = ::fwData::Vector::New();
@@ -467,8 +468,9 @@ void DefaultActivityTest::bigActivityTest()
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create<std::uint8_t>());
     ::fwTest::generator::Image::generateRandomImage(img2, ::fwTools::Type::create<std::uint8_t>());
-    ::fwTest::generator::Image::generateImage(img3, img2->getSize(), img2->getSpacing(),
-                                              img2->getOrigin(), img2->getType());
+    ::fwTest::generator::Image::generateImage(img3, img2->getSize2(), img2->getSpacing2(),
+                                              img2->getOrigin2(), img2->getType(),
+                                              ::fwData::Image::PixelFormat::GRAY_SCALE);
     imageSeries1->setImage(img1);
     imageSeries2->setImage(img2);
     imageSeries3->setImage(img3);
@@ -511,8 +513,8 @@ void DefaultActivityTest::bigActivityTest()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Activity with correct data should be valid", true, validation.first);
     }
     {
-        ::fwData::Image::SpacingType spacing(3, 45);
-        img3->setSpacing(spacing);
+        const ::fwData::Image::Spacing spacing = {45., 45., 45.};
+        img3->setSpacing2(spacing);
         validation = activityValidator->validate(activitySeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Activity with different image properties data should NOT be valid",
                                      false, validation.first);

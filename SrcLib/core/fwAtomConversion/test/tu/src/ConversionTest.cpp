@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -605,7 +605,7 @@ class ClassNotCamped : public ::fwData::Object
 {
 public:
 
-    fwCoreClassMacro(ClassNotCamped, ::fwData::Object, ::fwData::factory::New< ClassNotCamped >);
+    fwCoreClassMacro(ClassNotCamped, ::fwData::Object, ::fwData::factory::New< ClassNotCamped >)
 
     ClassNotCamped(::fwData::Object::Key)
     {
@@ -636,7 +636,7 @@ void ConversionTest::nullPtrManagmentTest()
         ::fwAtoms::Object::sptr atom;
         {
             ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-            CPPUNIT_ASSERT( !mesh->getPointColorsArray() );
+            CPPUNIT_ASSERT( !mesh->hasPointColors() );
 
             // Create Atom
             atom = ::fwAtomConversion::convert( mesh );
@@ -647,7 +647,7 @@ void ConversionTest::nullPtrManagmentTest()
 
         ::fwData::Mesh::sptr newMesh = ::fwData::Mesh::dynamicCast( ::fwAtomConversion::convert(atom) );
         CPPUNIT_ASSERT( newMesh );
-        CPPUNIT_ASSERT( !newMesh->getPointColorsArray() );
+        CPPUNIT_ASSERT( !newMesh->hasPointColors() );
     }
 
     // null shared ptr in map is managed
@@ -724,7 +724,7 @@ class ClassNotManaged : public ::fwData::Object
 
 public:
 
-    fwCoreClassMacro(ClassNotManaged, ::fwData::Object, ::fwData::factory::New< ClassNotManaged >);
+    fwCoreClassMacro(ClassNotManaged, ::fwData::Object, ::fwData::factory::New< ClassNotManaged >)
 
     fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
 
