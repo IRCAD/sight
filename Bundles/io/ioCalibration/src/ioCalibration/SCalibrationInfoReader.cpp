@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -159,8 +159,8 @@ void SCalibrationInfoReader::updating()
                     ::fwData::Image::sptr calibImg = ::fwData::Image::New();
                     ::cvIO::Image::copyFromCv(calibImg, img);
 
-                    calibImg->setSpacing({{1., 1.}});
-                    calibImg->setOrigin({{0., 0.}});
+                    calibImg->setSpacing2({{1., 1., 1.}});
+                    calibImg->setOrigin2({{0., 0., 0.}});
 
                     const auto detectionPair = std::make_pair(calibImg, chessboardPts);
                     const auto filename      = dirEntry.filename().string();

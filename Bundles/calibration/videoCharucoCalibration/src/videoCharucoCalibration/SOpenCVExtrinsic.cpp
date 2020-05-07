@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@
 #include <iostream>
 
 fwServicesRegisterMacro(::arServices::ICalibration, ::videoCharucoCalibration::SOpenCVExtrinsic,
-                        ::arData::CameraSeries);
+                        ::arData::CameraSeries)
 
 namespace videoCharucoCalibration
 {
@@ -236,7 +236,7 @@ void SOpenCVExtrinsic::updating()
         const ::cv::Mat fundamentalMatrix = ::cv::Mat::zeros(3, 3, CV_64F);
 
         ::fwData::Image::sptr img = calInfo1->getImageContainer().front();
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
+        ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
         {
 
             const ::fwData::mt::ObjectReadLock camSeriesLock(camSeries);

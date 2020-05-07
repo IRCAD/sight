@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 
-fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVExtrinsic, ::arData::CameraSeries);
+fwServicesRegisterMacro(::arServices::ICalibration, ::videoCalibration::SOpenCVExtrinsic, ::arData::CameraSeries)
 
 namespace videoCalibration
 {
@@ -220,7 +220,7 @@ void SOpenCVExtrinsic::updating()
         ::cv::Mat fundamentalMatrix;
 
         ::fwData::Image::sptr img = calInfo1->getImageContainer().front();
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
+        ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
         {
 
             ::fwData::mt::ObjectReadLock camSeriesLock(camSeries);
