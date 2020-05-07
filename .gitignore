@@ -26,3 +26,5 @@ CMakeSettings\.json
 .vscode/
 # JetBrains IDEs
 .idea/
+# Just for the CI
+sight-git
