@@ -117,31 +117,33 @@ void SModelSeriesWriter::configureWithIHM()
         dialog.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         this->setFolder(result->getFolder());
 
-        // Ask user to select extension
+        if(m_selectedExtension.empty())
+        {
+            // Ask user to select extension
+            // Create a map with description that will be displayed to user, and extensions.
+            std::map < std::string, std::string > descriptionToExtension;
+            descriptionToExtension["VTK Legacy (*.vtk)"]                = ".vtk";
+            descriptionToExtension["VTK Polydata (*.vtp"]               = ".vtp";
+            descriptionToExtension["OBJ Wavefront Object (*.obj)"]      = ".obj";
+            descriptionToExtension["PLY Polygonal File Format (*.ply)"] = ".ply";
+            descriptionToExtension["STL StereoLithograpy (*.stl)"]      = ".stl";
 
-        // Create a map with description that will be displayed to user, and extensions.
-        std::map < std::string, std::string > descriptionToExtension;
-        descriptionToExtension["VTK Legacy (*.vtk)"]                = ".vtk";
-        descriptionToExtension["VTK Polydata (*.vtp"]               = ".vtp";
-        descriptionToExtension["OBJ Wavefront Object (*.obj)"]      = ".obj";
-        descriptionToExtension["PLY Polygonal File Format (*.ply)"] = ".ply";
-        descriptionToExtension["STL StereoLithograpy (*.stl)"]      = ".stl";
+            // Fill the descriptions vector with map keys.
+            std::vector< std::string > descriptions;
+            std::transform(std::begin(descriptionToExtension), std::end(descriptionToExtension),
+                           std::back_inserter(descriptions),
+                           [](auto const& pair)
+                {
+                    return pair.first;
+                });
+            ::fwGui::dialog::SelectorDialog extensionDialog;
+            extensionDialog.setTitle("Extensions");
+            extensionDialog.setMessage("Choose the extensions: ");
+            extensionDialog.setSelections(descriptions);
 
-        // Fill the descriptions vector with map keys.
-        std::vector< std::string > descriptions;
-        std::transform(std::begin(descriptionToExtension), std::end(descriptionToExtension),
-                       std::back_inserter(descriptions),
-                       [](auto const& pair)
-            {
-                return pair.first;
-            });
-        ::fwGui::dialog::SelectorDialog extensionDialog;
-        extensionDialog.setTitle("Extensions");
-        extensionDialog.setMessage("Choose the extensions: ");
-        extensionDialog.setSelections(descriptions);
-
-        const auto selected = extensionDialog.show();
-        m_selectedExtension = descriptionToExtension[selected];
+            const auto selected = extensionDialog.show();
+            m_selectedExtension = descriptionToExtension[selected];
+        }
 
     }
     else
@@ -167,6 +169,26 @@ void SModelSeriesWriter::stopping()
 void SModelSeriesWriter::configuring()
 {
     ::fwIO::IWriter::configuring();
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
+
+    auto ext = config.get<std::string>("extension", "");
+
+    if(!ext.empty())
+    {
+        // Make sure to lowercase extension
+        std::transform(ext.begin(), ext.end(), ext.begin(),
+                       [](unsigned char c){ return std::tolower(c); });
+
+        if(ext != "vtk" && ext != "vtp" && ext != "stl" && ext != "ply" && ext != "obj")
+        {
+            SLM_ERROR("Extensions '" + ext + "' isn't managed by ioVTK::SModelSeriesWriter");
+        }
+        else
+        {
+            m_selectedExtension = "." + ext;
+        }
+    }
+
 }
 
 //------------------------------------------------------------------------------

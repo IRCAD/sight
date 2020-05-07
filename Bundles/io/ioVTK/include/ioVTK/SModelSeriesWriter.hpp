@@ -61,6 +61,7 @@ namespace ioVTK
    <service type="::ioVTK::SModelSeriesWriter">
        <in key="data" uid="..." />
        <folder>...</folder>
+       <extension>vtk</extension>
    </service>
    @endcode
  * @subsection Input Input
@@ -68,6 +69,10 @@ namespace ioVTK
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
  * the path.
+ * - \b extension (optional): extension to use when writing files (vtk, vtp, obj, stl, ply). If nothing is set
+ * a popup will ask to user to choose one.
+ * Accepted extensions are: "vtk", "vtp", "obj" "stl" "ply"
+ * Extensions aren't case sensitive but make sure there isn't a dot "." before extension name.
  */
 class IOVTK_CLASS_API SModelSeriesWriter : public ::fwIO::IWriter
 {
