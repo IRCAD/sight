@@ -32,9 +32,24 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <vtkOBJWriter.h>
+#include <fwData/Mesh.hpp>
+#include <fwData/Material.hpp>
+
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
+
+#include <vtkVersion.h>
+#if VTK_MAJOR_VERSION >= 8 && VTK_MINOR_VERSION >= 2
+#define USE_OBJ_WRITER // Shorter than test major.minor version later.
+#include <vtkOBJWriter.h>
+#else
+#include <vtkActor.h>
+#include <vtkOBJExporter.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#endif
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::ObjMeshWriter );
 
@@ -46,17 +61,19 @@ ObjMeshWriter::ObjMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("OBJ Mesh writer"))
 {
-    SLM_TRACE_FUNC();
+
 }
 
 //------------------------------------------------------------------------------
 
 ObjMeshWriter::~ObjMeshWriter()
 {
-    SLM_TRACE_FUNC();
+
 }
 
 //------------------------------------------------------------------------------
+
+#ifdef USE_OBJ_WRITER
 
 void ObjMeshWriter::write()
 {
@@ -92,6 +109,50 @@ void ObjMeshWriter::write()
     m_job->finish();
 }
 
+#else
+
+//------------------------------------------------------------------------------
+
+void ObjMeshWriter::write()
+{
+    using namespace fwVtkIO::helper;
+
+    assert( !m_object.expired() );
+    assert( m_object.lock() );
+
+    ::fwData::Mesh::csptr pMesh = getConcreteObject();
+    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
+    ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
+
+    vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
+    vtkSmartPointer< vtkActor >  actor      = vtkSmartPointer< vtkActor >::New();
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputData(vtkMesh);
+    actor->SetMapper(mapper);
+
+    vtkProperty* property = actor->GetProperty();
+
+    property->SetSpecularColor(1., 1., 1.);
+    property->SetSpecularPower(100.); //Shininess
+
+    property->SetInterpolationToPhong();
+
+    renderer->AddActor(actor);
+
+    vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
+    renderWindow->AddRenderer(renderer);
+
+    std::string filename = (this->getFile().string().c_str());
+
+    vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
+    exporter->SetRenderWindow(renderWindow);
+    exporter->SetFilePrefix(filename.c_str());
+    exporter->Write();
+    m_job->finish();
+}
+
+#endif
 //------------------------------------------------------------------------------
 
 std::string ObjMeshWriter::extension()

@@ -46,14 +46,12 @@ MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("Mesh writer"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 MeshWriter::~MeshWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

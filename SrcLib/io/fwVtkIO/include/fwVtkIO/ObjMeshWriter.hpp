@@ -25,11 +25,15 @@
 #include "fwVtkIO/config.hpp"
 
 #include <fwData/location/SingleFile.hpp>
-#include <fwData/Mesh.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
+
+namespace fwData
+{
+class Mesh;
+}
 
 namespace fwJobs
 {
