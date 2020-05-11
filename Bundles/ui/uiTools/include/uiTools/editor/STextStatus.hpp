@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,10 +42,13 @@ namespace editor
  *
  * @code{.xml}
  * <service uid="..." type="::uiTools::editor::STextStatus">
+ *    <in key="string" uid="..." />
  *    <label> my label </label>
  *    <color> my color </color>
  * </service>
  * @endcode
+ * @subsection Input Input
+ * - \b string(::fwData::String, optional): string data to display.
  * - \b label (optional, by default "") : the text to show before size of the vector
  * - \b color (optional, by default "red") : the needed color of the displayed label in a CSS style as names (ex: red),
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
@@ -56,7 +59,7 @@ class UITOOLS_CLASS_API STextStatus : public QObject,
 
 public:
 
-    fwCoreServiceMacro(STextStatus, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(STextStatus, ::fwGui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API STextStatus();

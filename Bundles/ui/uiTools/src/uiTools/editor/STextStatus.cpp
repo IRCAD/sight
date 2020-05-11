@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,8 @@
 
 #include <fwCom/Slots.hxx>
 
+#include <fwData/String.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
@@ -38,8 +40,9 @@ namespace uiTools
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::STextStatus );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::STextStatus )
 
+const ::fwServices::IService::KeyType s_STRING_INPUT = "string";
 const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
@@ -71,6 +74,7 @@ STextStatus::~STextStatus()
 
 void STextStatus::starting()
 {
+    std::cout << "start" << std::endl;
     this->create();
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
@@ -81,6 +85,15 @@ void STextStatus::starting()
     layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
     qtContainer->setLayout(layout);
+
+    // get Input data
+    ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
+
+    if(stringInput)
+    {
+        m_labelValue->setText(QString::fromStdString(stringInput->value()));
+        std::cout << stringInput->value() << std::endl;
+    }
 
 }
 
