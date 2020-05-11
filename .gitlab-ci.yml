@@ -22,14 +22,19 @@ stages:
     - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
+    - >
+      if [ "$CI_COMMIT_REF_NAME" != "dev" ]; then
+        if [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+          git config user.name ${GITLAB_USER_ID}
+          git config user.email ${GITLAB_USER_EMAIL}
+          git fetch --all
+          git checkout dev    
+          git reset --hard origin/dev
+          git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+        fi
+      fi
+    # Reset the time of all files to improve the use of ccache.
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
-    # Configure git to allow git merge.
-    - git config user.name ${GITLAB_USER_ID}
-    - git config user.email ${GITLAB_USER_EMAIL}
-    # Checkout to dev and merge the current branche to dev without any commit.
-    - git checkout dev    
-    - git reset --hard origin/dev
-    - git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
 
 .windows_template: &windows_job
   variables:
@@ -42,13 +47,17 @@ stages:
     - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
     - chcp 1252
-    # Configure git to allow git merge.
-    - git config user.name %GITLAB_USER_ID%
-    - git config user.email %GITLAB_USER_EMAIL%
-    # Checkout to dev and merge the current branche to dev without any commit.
-    - git checkout dev    
-    - git reset --hard origin/dev
-    - git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
+    - >
+      if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
+        if "%CI_COMMIT_REF_NAME%" NEQ "master" (
+          git config user.name ${GITLAB_USER_ID}
+          git config user.email ${GITLAB_USER_EMAIL}
+          git fetch --all
+          git checkout dev    
+          git reset --hard origin/dev
+          git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
+        )
+      )
   tags:
     - shell
     - windows
@@ -69,6 +78,7 @@ sheldon:
   except:
     - dev
     - master
+    - tags
 
 build:debug-linux:
   <<: *linux_job
@@ -99,6 +109,8 @@ build:debug-linux:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/ctest.log
+  except:
+    - tags
 
 build:release-linux:
   <<: *linux_job
@@ -122,12 +134,14 @@ build:release-linux:
     # Run tests.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log  -j4
+    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/ctest.log
+  except:
+    - tags
 
 build:debug-windows:
   <<: *windows_job
@@ -144,6 +158,7 @@ build:debug-windows:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
+     -DENABLE_PCH=ON
     - ninja
     # Run tests.
     - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
@@ -155,6 +170,8 @@ build:debug-windows:
     paths:
       - build/ctest.log
       - build/fwTest.log
+  except:
+    - tags
 
 build:release-windows:
   <<: *windows_job
@@ -170,6 +187,7 @@ build:release-windows:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=ON
     - ninja
     # Run tests.
     - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
@@ -181,6 +199,8 @@ build:release-windows:
     paths:
       - build/ctest.log
       - build/fwTest.log
+  except:
+    - tags
 
 build:debian:
   image: registry.ircad.fr/sight/docker-debian:dev
@@ -221,6 +241,8 @@ build:debian:
      -DPROJECTS_TO_BUILD=VRRender
     - ninja
     - ccache -s
+  except:
+    - tags
 
 doxygen:
   <<: *linux_job
@@ -241,6 +263,8 @@ doxygen:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/Documentation/Doxygen/
+  except:
+    - tags
 
 pages:
   image: ${DOCKER_ENVDEV_MINT19}
@@ -282,7 +306,9 @@ build:sdk-release-linux:
     - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-
+  except:
+    - tags
+    
 build:sdk-debug-linux:
   <<: *linux_job
   stage: build
@@ -310,3 +336,5 @@ build:sdk-debug-linux:
     - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
+  except:
+    - tags
