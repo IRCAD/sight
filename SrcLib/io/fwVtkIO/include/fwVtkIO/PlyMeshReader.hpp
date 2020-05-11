@@ -52,15 +52,15 @@ public:
 
     fwCoreClassMacro(PlyMeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
                      ::fwDataIO::reader::factory::New< PlyMeshReader >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API PlyMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~PlyMeshReader();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void read() override;
 
     /// @return ".ply"

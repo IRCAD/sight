@@ -46,14 +46,12 @@ VtpMeshWriter::VtpMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("VTP Mesh writer"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 VtpMeshWriter::~VtpMeshWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -62,10 +60,13 @@ void VtpMeshWriter::write()
 {
     using namespace fwVtkIO::helper;
 
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SLM_ASSERT("Object pointer expired", !m_object.expired());
 
-    ::fwData::Mesh::csptr pMesh = getConcreteObject();
+    [[maybe_unused]] const auto objectLock = m_object.lock();
+
+    SLM_ASSERT("Object Lock null.", objectLock );
+
+    const ::fwData::Mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkXMLPolyDataWriter > writer = vtkSmartPointer< vtkXMLPolyDataWriter >::New();
     vtkSmartPointer< vtkPolyData > vtkMesh         = vtkSmartPointer< vtkPolyData >::New();
@@ -80,7 +81,7 @@ void VtpMeshWriter::write()
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void* )
         {
-            auto filter = static_cast<vtkXMLPolyDataWriter*>(caller);
+            const auto filter = static_cast<vtkXMLPolyDataWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );

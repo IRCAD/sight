@@ -52,15 +52,15 @@ public:
 
     fwCoreClassMacro(VtpMeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
                      ::fwDataIO::writer::factory::New< VtpMeshWriter >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API VtpMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~VtpMeshWriter();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void write() override;
 
     /// @return ".vtp"

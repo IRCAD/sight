@@ -56,15 +56,15 @@ public:
 
     fwCoreClassMacro(ObjMeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
                      ::fwDataIO::writer::factory::New< ObjMeshWriter >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API ObjMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~ObjMeshWriter();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void write() override;
 
     /// @return ".obj"

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,16 +53,16 @@ class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mes
 public:
 
     fwCoreClassMacro(MeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
-                     ::fwDataIO::writer::factory::New< MeshWriter >);
-    fwCoreAllowSharedFromThis();
+                     ::fwDataIO::writer::factory::New< MeshWriter >)
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~MeshWriter();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void write() override;
 
     /// @return ".vtk"

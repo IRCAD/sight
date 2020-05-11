@@ -53,15 +53,15 @@ public:
 
     fwCoreClassMacro(StlMeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
                      ::fwDataIO::reader::factory::New< StlMeshReader >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API StlMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~StlMeshReader();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void read() override;
 
     /// @return ".stl"

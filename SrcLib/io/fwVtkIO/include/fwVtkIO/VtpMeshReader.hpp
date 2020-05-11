@@ -54,15 +54,15 @@ public:
 
     fwCoreClassMacro(VtpMeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
                      ::fwDataIO::reader::factory::New< VtpMeshReader >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API VtpMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~VtpMeshReader();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void read() override;
 
     /// @return ".vtp"

@@ -58,14 +58,15 @@ ObjMeshReader::~ObjMeshReader()
 
 void ObjMeshReader::read()
 {
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SLM_ASSERT("Object pointer expired", !m_object.expired());
 
-    ::fwData::Mesh::sptr pMesh = getConcreteObject();
+    [[maybe_unused]] const auto objectLock = m_object.lock();
+
+    SLM_ASSERT("Object Lock null.", objectLock );
+
+    const ::fwData::Mesh::sptr pMesh = getConcreteObject();
 
     using namespace fwVtkIO::helper;
-
-    const auto extension = this->getFile().extension();
 
     vtkSmartPointer< vtkOBJReader > reader = vtkSmartPointer< vtkOBJReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
@@ -76,7 +77,7 @@ void ObjMeshReader::read()
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void*)
         {
-            auto filter = static_cast< vtkOBJReader* >(caller);
+            const auto filter = static_cast< vtkOBJReader* >(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );

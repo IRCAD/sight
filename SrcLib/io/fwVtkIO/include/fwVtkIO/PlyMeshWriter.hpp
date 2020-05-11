@@ -52,15 +52,15 @@ public:
 
     fwCoreClassMacro(PlyMeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
                      ::fwDataIO::writer::factory::New< PlyMeshWriter >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API PlyMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~PlyMeshWriter();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void write() override;
 
     /// @return ".ply"

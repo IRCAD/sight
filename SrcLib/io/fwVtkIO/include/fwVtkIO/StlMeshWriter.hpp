@@ -52,15 +52,15 @@ public:
 
     fwCoreClassMacro(StlMeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
                      ::fwDataIO::writer::factory::New< StlMeshWriter >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API StlMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~StlMeshWriter();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void write() override;
 
     /// @return ".vtk"

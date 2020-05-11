@@ -46,14 +46,12 @@ PlyMeshWriter::PlyMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("PLY Mesh writer"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 PlyMeshWriter::~PlyMeshWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -62,10 +60,13 @@ void PlyMeshWriter::write()
 {
     using namespace fwVtkIO::helper;
 
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SLM_ASSERT("Object pointer expired", !m_object.expired());
 
-    ::fwData::Mesh::csptr pMesh = getConcreteObject();
+    [[maybe_unused]] const auto objectLock = m_object.lock();
+
+    SLM_ASSERT("Object Lock null.", objectLock );
+
+    const ::fwData::Mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkPLYWriter > writer = vtkSmartPointer< vtkPLYWriter >::New();
     vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
@@ -80,7 +81,7 @@ void PlyMeshWriter::write()
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void* )
         {
-            auto filter = static_cast<vtkPLYWriter*>(caller);
+            const auto filter = static_cast<vtkPLYWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );

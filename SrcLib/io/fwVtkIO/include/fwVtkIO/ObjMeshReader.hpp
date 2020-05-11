@@ -53,15 +53,15 @@ public:
 
     fwCoreClassMacro(ObjMeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
                      ::fwDataIO::reader::factory::New< ObjMeshReader >)
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API ObjMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~ObjMeshReader();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void read() override;
 
     /// @return ".obj"

@@ -46,28 +46,27 @@ VtpMeshReader::VtpMeshReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("vtp reader"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 VtpMeshReader::~VtpMeshReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void VtpMeshReader::read()
 {
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SLM_ASSERT("Object pointer expired", !m_object.expired());
 
-    ::fwData::Mesh::sptr pMesh = getConcreteObject();
+    [[maybe_unused]] const auto objectLock = m_object.lock();
+
+    SLM_ASSERT("Object Lock null.", objectLock );
+
+    const ::fwData::Mesh::sptr pMesh = getConcreteObject();
 
     using namespace fwVtkIO::helper;
-
-    const auto extension = this->getFile().extension();
 
     vtkSmartPointer< vtkXMLGenericDataObjectReader > reader = vtkSmartPointer< vtkXMLGenericDataObjectReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
@@ -78,7 +77,7 @@ void VtpMeshReader::read()
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void*)
         {
-            auto filter = static_cast< vtkXMLGenericDataObjectReader* >(caller);
+            const auto filter = static_cast< vtkXMLGenericDataObjectReader* >(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );

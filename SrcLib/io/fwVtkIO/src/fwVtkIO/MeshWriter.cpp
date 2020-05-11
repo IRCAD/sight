@@ -60,10 +60,13 @@ void MeshWriter::write()
 {
     using namespace fwVtkIO::helper;
 
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SLM_ASSERT("Object pointer expired", !m_object.expired());
 
-    ::fwData::Mesh::csptr pMesh = getConcreteObject();
+    [[maybe_unused]] const auto objectLock = m_object.lock();
+
+    SLM_ASSERT("Object Lock null.", objectLock );
+
+    const ::fwData::Mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
     vtkSmartPointer< vtkPolyData > vtkMesh               = vtkSmartPointer< vtkPolyData >::New();
@@ -78,7 +81,7 @@ void MeshWriter::write()
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void* )
         {
-            auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
+            const auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );

@@ -60,14 +60,12 @@ ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Ke
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_job(::fwJobs::Observer::New("ModelSeries Writer"))
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 ModelSeriesObjWriter::~ModelSeriesObjWriter()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -106,12 +104,15 @@ vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr& p
 
 void ModelSeriesObjWriter::write()
 {
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SLM_ASSERT("Object pointer expired", !m_object.expired());
 
-    std::filesystem::path prefix = this->getFolder();
+    [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    ::fwMedData::ModelSeries::csptr modelSeries = getConcreteObject();
+    SLM_ASSERT("Object Lock null.", objectLock );
+
+    const std::filesystem::path prefix = this->getFolder();
+
+    const ::fwMedData::ModelSeries::csptr modelSeries = getConcreteObject();
 
     m_job->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
     std::uint64_t units = 0;
@@ -124,7 +125,7 @@ void ModelSeriesObjWriter::write()
         vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
         renderWindow->AddRenderer(renderer);
 
-        std::string filename = (prefix / (rec->getOrganName() + "_" + ::fwTools::UUID::get(rec))).string();
+        const std::string filename = (prefix / (rec->getOrganName() + "_" + ::fwTools::UUID::get(rec))).string();
 
         vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
         exporter->SetRenderWindow(renderWindow);
