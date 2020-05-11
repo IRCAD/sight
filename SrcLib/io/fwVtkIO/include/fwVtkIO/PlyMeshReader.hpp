@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,8 +44,9 @@ namespace fwVtkIO
  * @brief Reads a Mesh from .ply file using VTK library.
  */
 
-class PlyMeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                      public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class FWVTKIO_CLASS_API PlyMeshReader :
+    public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:

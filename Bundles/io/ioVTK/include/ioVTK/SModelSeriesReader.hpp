@@ -135,7 +135,7 @@ private:
      * @param[in] _file path to the file to read.
      * @param[out] _mesh ::fwData::Mesh::sptr, the loaded mesh.
      */
-    IOVTK_API void loadMesh( const std::filesystem::path& _file, ::fwData::Mesh::sptr _mesh);
+    void loadMesh( const std::filesystem::path& _file, ::fwData::Mesh::sptr _mesh);
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 

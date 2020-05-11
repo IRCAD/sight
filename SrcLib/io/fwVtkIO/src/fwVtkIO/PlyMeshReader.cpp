@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,7 @@ namespace fwVtkIO
 
 PlyMeshReader::PlyMeshReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("ply reader"))
+    m_job(::fwJobs::Observer::New("PLY Mesh reader"))
 {
 }
 

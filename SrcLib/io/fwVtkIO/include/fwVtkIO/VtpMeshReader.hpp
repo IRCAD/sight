@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,8 +46,9 @@ namespace fwVtkIO
  * Reads a VTK Mesh (.vtp) using the VTK library.
  */
 
-class VtpMeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                      public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class FWVTKIO_CLASS_API VtpMeshReader :
+    public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:

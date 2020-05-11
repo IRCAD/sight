@@ -44,9 +44,9 @@ namespace fwVtkIO
  * @brief Reads a Mesh from .vtk (legacy) file using VTK library.
  *
  */
-
-class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                   public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class FWVTKIO_CLASS_API MeshReader :
+    public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:

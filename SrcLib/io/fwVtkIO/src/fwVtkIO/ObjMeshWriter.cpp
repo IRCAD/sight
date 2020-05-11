@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -149,7 +149,7 @@ void ObjMeshWriter::write()
     vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
     renderWindow->AddRenderer(renderer);
 
-    std::string filename = (this->getFile().string().c_str());
+    const std::string filename = (this->getFile().string().c_str());
 
     vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
     exporter->SetRenderWindow(renderWindow);

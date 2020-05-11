@@ -44,7 +44,7 @@ namespace fwVtkIO
 
 MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("Mesh writer"))
+    m_job(::fwJobs::Observer::New("VTK Mesh writer"))
 {
 }
 

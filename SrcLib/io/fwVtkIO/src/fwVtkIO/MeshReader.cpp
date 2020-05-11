@@ -45,7 +45,7 @@ namespace fwVtkIO
 
 MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("Mesh reader"))
+    m_job(::fwJobs::Observer::New("VTK Mesh reader"))
 {
 }
 

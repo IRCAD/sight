@@ -46,8 +46,9 @@ namespace fwVtkIO
  * Write a VTK Mesh using the VTK lib
  */
 
-class MeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
-                   public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class FWVTKIO_CLASS_API MeshWriter :
+    public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
+    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,8 +44,9 @@ namespace fwVtkIO
  * @brief Writes a Mesh in .stl format using VTK library.
  */
 
-class StlMeshWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
-                      public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class FWVTKIO_CLASS_API StlMeshWriter :
+    public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
+    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
@@ -63,7 +64,7 @@ public:
     /// @brief Reading operator.
     FWVTKIO_API void write() override;
 
-    /// @return ".vtk"
+    /// @return ".stl"
     FWVTKIO_API std::string extension() override;
 
     /// @return internal job

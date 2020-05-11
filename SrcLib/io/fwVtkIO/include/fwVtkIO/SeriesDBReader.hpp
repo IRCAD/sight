@@ -46,8 +46,9 @@ namespace fwVtkIO
  *
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesDB.
  */
-class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                       public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
+class FWVTKIO_CLASS_API SeriesDBReader :
+    public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
+    public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
