@@ -86,43 +86,6 @@ T* createExecutableInstance(
 std::vector< ConfigurationElement::sptr > getAllConfigurationElementsForPoint(const std::string& identifier);
 
 /**
- * @brief   Retrieves all executable objects for the point having the specified identifier
- *
- * @param   identifier  a string containing the extension point identifier
- * @param   attribute   a string containing the name of the element attribute containing
- *                      the executable identifier (default is "class")
- *
- * This method use the container type specified by the template parameter. The
- * type of the elements of the container must be std::shared_ptr< T >
- * or the compilation will fail (where T is the type of the executable you want to create).
- *
- * @return  a container containing shared pointers to all created executable instances
- */
-template< typename Container, typename T >
-const Container getAllExecutableForPoint( const std::string& identifier,
-                                          const std::string& attribute = "class" )
-{
-    // Retrieves all configuration elements.
-    auto elements = getAllConfigurationElementsForPoint(identifier);
-
-    // Walks through collected configuration elements and create desired executable instances
-    Container result;
-
-    // Defines an insert iterator type for the executable container.
-    typedef std::back_insert_iterator< Container > Inserter;
-
-    Inserter iInserter( result );
-    for( auto iElement : elements)
-    {
-        std::shared_ptr< ConfigurationElement >    element( iElement );
-        std::shared_ptr< T >                       executable( createExecutableInstance< T >(element, attribute) );
-
-        iInserter = executable;
-    }
-    return result;
-}
-
-/**
  * @brief   Retrieve the configuation element with the given identifier for the
  *          given extension point
  *

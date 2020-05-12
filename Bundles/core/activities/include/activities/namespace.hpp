@@ -26,7 +26,7 @@
  * @ingroup apprequirement
  * @brief The namespace activities contains helpers and services allowing to launch activities.
  *
- * This modules allows to register the activities available for an application. It is required for application using
+ * This module allows to register the activities available for an application. It is required for application using
  * Activities.
  **/
 namespace activities

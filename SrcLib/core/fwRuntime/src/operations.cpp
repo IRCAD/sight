@@ -101,9 +101,9 @@ ConfigurationElement::sptr findConfigurationElement( const std::string& identifi
                                                      const std::string& pointIdentifier )
 {
     ConfigurationElement::sptr resultConfig;
-    auto elements     = getAllConfigurationElementsForPoint( pointIdentifier );
-    auto foundElement = ::std::find_if( elements.begin(), elements.end(),
-                                        ConfigurationElementIdentifierPredicate(identifier) );
+    const auto elements     = getAllConfigurationElementsForPoint( pointIdentifier );
+    const auto foundElement = ::std::find_if( elements.begin(), elements.end(),
+                                              ConfigurationElementIdentifierPredicate(identifier) );
     if(foundElement != elements.end())
     {
         resultConfig = *foundElement;

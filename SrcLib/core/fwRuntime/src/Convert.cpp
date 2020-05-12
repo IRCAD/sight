@@ -127,7 +127,7 @@ xmlNodePtr Convert::runningModulesToXml( )
             xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions_Points" ) );
             xmlAddChild(moduleNode, extensionPoint_activated_list_Node );
 
-            auto moduleImpl = std::dynamic_pointer_cast< ::fwRuntime::detail::Module>( module );
+            const auto moduleImpl = std::dynamic_pointer_cast< ::fwRuntime::detail::Module>( module );
             for ( std::set< std::shared_ptr< ::fwRuntime::detail::ExtensionPoint > >::const_iterator
                   iter_extensionPoints
                       =
