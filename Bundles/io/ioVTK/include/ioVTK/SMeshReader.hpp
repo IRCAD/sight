@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwJobs
@@ -126,14 +125,11 @@ protected:
 private:
 
     /**
-     * @brief Load a VTK mesh.
+     * @brief This method is used to load a mesh using the file path.
      * @param[in] _vtkFile std::filesystem::path.
-     * @param[out] _pMesh std::shared_ptr< ::fwData::Mesh >.
-     * @return bool.
-     *
-     * This method is used to load a mesh using the file path.
+     * @return true, if mesh is read, false otherwise(error or exception).
      */
-    void loadMesh( const std::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
+    bool loadMesh(const std::filesystem::path& _vtkFile);
 
     /**
      * @brief Notification method.

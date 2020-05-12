@@ -53,7 +53,46 @@ void PreferencesTest::setUp()
 
 void PreferencesTest::tearDown()
 {
-    // Clean up after the test run.
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::runtimeTest()
+{
+    m_profile = ::fwRuntime::profile::Profile::New();
+    m_profile->setName("APP_TEST");
+    ::fwRuntime::profile::setCurrentProfile(m_profile);
+
+    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
+    runtime->addDefaultBundles();
+
+    std::shared_ptr< ::fwRuntime::Bundle > dataReg = runtime->findBundle("dataReg");
+    CPPUNIT_ASSERT_MESSAGE("'dataReg bundle not found !'", dataReg);
+    dataReg->setEnable(true);
+    CPPUNIT_ASSERT(dataReg->isEnable());
+    dataReg->start();
+
+    std::shared_ptr< ::fwRuntime::Bundle > servicesReg = runtime->findBundle("servicesReg");
+    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", servicesReg);
+    servicesReg->setEnable(true);
+    CPPUNIT_ASSERT(servicesReg->isEnable());
+    servicesReg->start();
+
+    std::shared_ptr< ::fwRuntime::Bundle > preferences = runtime->findBundle("preferences");
+    CPPUNIT_ASSERT_MESSAGE("'preferences bundle not found !'", preferences);
+    preferences->setEnable(true);
+    CPPUNIT_ASSERT(preferences->isEnable());
+    preferences->start();
+
+    const std::string profileName = ::fwTools::UUID::generateUUID();
+    m_profile->setName(profileName);
+
+    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
+    m_preferencesPath = appPrefDir / "preferences.json";
+
+    // Check preference file dir
+    const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
+    CPPUNIT_ASSERT_EQUAL(m_preferencesPath.string(), file.string());
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +115,7 @@ void PreferencesTest::helperTest()
     const bool isModified = ::fwPreferences::setPreference(preferenceKey, preferenceValue);
     CPPUNIT_ASSERT(isModified);
 
-    //Check get preference
+    // Check get preference
     const std::string value = ::fwPreferences::getPreference(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, value);
 
@@ -107,8 +146,45 @@ void PreferencesTest::helperTest()
 
     resValueInt = ::fwPreferences::getValue< std::uint32_t >(prefKeySubstitute);
     CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
+}
 
-    std::filesystem::remove(prefFile);
+//------------------------------------------------------------------------------
+
+void PreferencesTest::passwordTest()
+{
+    // Reset password field in settings
+    ::fwPreferences::setPassword(std::string());
+
+    // Test default empty password (means no password)
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::getPassword(), std::string());
+
+    // Test if there is no hash in preferences (means no password)
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::hasPasswordHash(), false);
+
+    // Test with a real password
+    const std::string password = "You are the one for me, for me, for me, formidable";
+    ::fwPreferences::setPassword(password);
+    CPPUNIT_ASSERT_EQUAL(password, ::fwPreferences::getPassword());
+
+    // Save the hash
+    ::fwPreferences::savePreferences();
+
+    // Test if there is a hash in preferences
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::hasPasswordHash(), true);
+
+    // Verify the good password
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword(password), true);
+
+    // Verify that bad password doesn't work
+    CPPUNIT_ASSERT_EQUAL(::fwPreferences::checkPassword("ON DIT CHIFFRER, ET PAS CRYPTER. :-)"), false);
+}
+
+//------------------------------------------------------------------------------
+
+void PreferencesTest::cleanup()
+{
+    // Cleanup
+    std::filesystem::remove(m_preferencesPath);
 }
 
 //------------------------------------------------------------------------------

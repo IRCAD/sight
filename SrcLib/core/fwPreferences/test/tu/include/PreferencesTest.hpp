@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
- * Copyright (C) 2016 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWPREFERENCES_UT_PREFERENCESTEST_HPP__
-#define __FWPREFERENCES_UT_PREFERENCESTEST_HPP__
+#pragma once
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
@@ -34,27 +33,31 @@ namespace ut
 {
 
 /**
- * @brief Preferences unit test .
+ * @brief Preferences unit test.
  */
 class PreferencesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( PreferencesTest );
+CPPUNIT_TEST( runtimeTest );
 CPPUNIT_TEST( helperTest );
+CPPUNIT_TEST( passwordTest );
+CPPUNIT_TEST( cleanup );
 CPPUNIT_TEST_SUITE_END();
-
 
 public:
     // interface
     void setUp();
     void tearDown();
 
+    void runtimeTest();
     void helperTest();
+    void passwordTest();
+    void cleanup();
 
 private:
     ::fwRuntime::profile::Profile::sptr m_profile;
+    std::filesystem::path m_preferencesPath;
 };
 
 } //namespace ut
 } //namespace fwPreferences
-
-#endif // __FWPREFERENCES_UT_PREFERENCESTEST_HPP__

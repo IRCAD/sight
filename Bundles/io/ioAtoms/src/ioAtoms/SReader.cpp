@@ -50,6 +50,8 @@
 
 #include <fwMDSemanticPatch/PatchLoader.hpp>
 
+#include <fwPreferences/helper.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <fwZip/ReadDirArchive.hpp>
@@ -261,7 +263,8 @@ void SReader::updating()
                     }
                     else if ( extension == ".cpz" )
                     {
-                        readArchive     = ::fwZip::ReadZipArchive::New(filePath.string(), "secret");
+                        readArchive = ::fwZip::ReadZipArchive::New(filePath.string(),
+                                                                   ::fwPreferences::getPassword());
                         archiveRootName = "root.json";
                         format          = ::fwAtomsBoostIO::JSON;
                     }

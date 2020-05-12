@@ -134,6 +134,8 @@ void ModelSeriesWriterTest::testWriteMeshes()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(5);
 
+    const std::vector< std::string > allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
+
     const fs::path dir = ::fwTools::System::getTemporaryFolder() / "modelSeries";
 
     if( fs::exists(dir) )
@@ -146,45 +148,59 @@ void ModelSeriesWriterTest::testWriteMeshes()
         fs::create_directories(dir);
     }
 
-    runModelSeriesSrv(
-        "::ioVTK::SModelSeriesWriter",
-        getIOCfgFromFolder(dir),
-        modelSeries);
-
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-
-    FileContainerType files;
-    for(fs::directory_iterator it(dir); it != fs::directory_iterator(); ++it)
+    for(auto ext : allExtensions)
     {
-        files.push_back(it->path().string());
+        auto cfg    = getIOCfgFromFolder(dir);
+        auto extCfg = ::fwRuntime::EConfigurationElement::New("extension");
+        extCfg->setValue(ext);
+        cfg->addConfigurationElement(extCfg);
+
+        runModelSeriesSrv(
+            "::ioVTK::SModelSeriesWriter",
+            cfg,
+            modelSeries);
+
+        FileContainerType files;
+        for(fs::directory_iterator it(dir); it != fs::directory_iterator(); ++it)
+        {
+            if(it->path().extension() == "." + ext)
+            {
+                files.push_back(it->path().string());
+            }
+        }
+
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB().size(), files.size());
+
+        ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+
+        runModelSeriesSrv(
+            "::ioVTK::SSeriesDBReader",
+            getIOCfgFromFiles(files),
+            seriesDB);
+
+        const ::fwMedData::SeriesDB::ContainerType& series = seriesDB->getContainer();
+        CPPUNIT_ASSERT_EQUAL((size_t)1, series.size());
+
+        ::fwMedData::ModelSeries::sptr readSeries = ::fwMedData::ModelSeries::dynamicCast(series[0]);
+        CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
+
+        typedef ::fwMedData::ModelSeries::ReconstructionVectorType RecVecType;
+        const RecVecType& readRecs = readSeries->getReconstructionDB();
+        CPPUNIT_ASSERT_EQUAL(files.size(), readRecs.size());
+
+        // Skip comparing mesh with obj/ply/stl format since internal structures aren't the same.
+        if(ext != "obj" && ext != "ply" && ext != "stl")
+        {
+            const RecVecType& refRecs         = modelSeries->getReconstructionDB();
+            RecVecType::const_iterator itRef  = refRecs.begin();
+            RecVecType::const_iterator itRead = readRecs.begin();
+
+            for(; itRef != refRecs.end(); ++itRef, ++itRead)
+            {
+                CPPUNIT_ASSERT(::fwTest::helper::compare((*itRef)->getMesh(), (*itRead)->getMesh()));
+            }
+        }
     }
-
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB().size(), files.size());
-
-    runModelSeriesSrv(
-        "::ioVTK::SSeriesDBReader",
-        getIOCfgFromFiles(files),
-        seriesDB);
-
-    const ::fwMedData::SeriesDB::ContainerType& series = seriesDB->getContainer();
-    CPPUNIT_ASSERT_EQUAL((size_t)1, series.size());
-
-    ::fwMedData::ModelSeries::sptr readSeries = ::fwMedData::ModelSeries::dynamicCast(series[0]);
-    CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
-
-    typedef ::fwMedData::ModelSeries::ReconstructionVectorType RecVecType;
-    const RecVecType& readRecs = readSeries->getReconstructionDB();
-    CPPUNIT_ASSERT_EQUAL(files.size(), readRecs.size());
-
-    const RecVecType& refRecs         = modelSeries->getReconstructionDB();
-    RecVecType::const_iterator itRef  = refRecs.begin();
-    RecVecType::const_iterator itRead = readRecs.begin();
-
-    for(; itRef != refRecs.end(); ++itRef, ++itRead)
-    {
-        CPPUNIT_ASSERT(::fwTest::helper::compare((*itRef)->getMesh(), (*itRead)->getMesh()));
-    }
-
 }
 
 //------------------------------------------------------------------------------

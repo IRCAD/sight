@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -53,13 +53,17 @@
 #include <fwTools/UUID.hpp>
 
 #include <fwVtkIO/MeshReader.hpp>
+#include <fwVtkIO/ObjMeshReader.hpp>
+#include <fwVtkIO/PlyMeshReader.hpp>
+#include <fwVtkIO/StlMeshReader.hpp>
+#include <fwVtkIO/VtpMeshReader.hpp>
 
 #include <filesystem>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SModelSeriesReader, ::fwMedData::ModelSeries );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SModelSeriesReader, ::fwMedData::ModelSeries )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -87,7 +91,12 @@ void SModelSeriesReader::configureWithIHM()
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
-    dialogFile.addFilter("Vtk files", "*.vtk");
+    dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
+    dialogFile.addFilter("OBJ Files(.obj)", "*.obj");
+    dialogFile.addFilter("PLY Files(.ply)", "*.ply");
+    dialogFile.addFilter("STL Files(.stl)", "*.stl");
+    dialogFile.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
+    dialogFile.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -144,8 +153,10 @@ void SModelSeriesReader::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeries);
+        const auto modelSeriesLockedPtr = this->getLockedInOut< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeriesLockedPtr);
+
+        const auto modelSeries = modelSeriesLockedPtr.getShared();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -178,33 +189,82 @@ void SModelSeriesReader::updating()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::loadMesh( const std::filesystem::path file, ::fwData::Mesh::sptr mesh )
+template< typename READER >
+typename READER::sptr configureReader(const std::filesystem::path& _file )
 {
-    ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
+    typename READER::sptr reader = READER::New();
+    reader->setFile(_file);
+    return reader;
+}
 
-    reader->setObject(mesh);
-    reader->setFile(file);
+//------------------------------------------------------------------------------
 
-    m_sigJobCreated->emit(reader->getJob());
+void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, ::fwData::Mesh::sptr _mesh)
+{
+    // Test extension to provide the reader
+
+    ::fwDataIO::reader::IObjectReader::sptr meshReader;
+
+    if(_file.extension() == ".vtk")
+    {
+        meshReader = configureReader< ::fwVtkIO::MeshReader >(_file);
+    }
+    else if(_file.extension() == ".vtp")
+    {
+        meshReader = configureReader< ::fwVtkIO::VtpMeshReader >(_file);
+    }
+    else if(_file.extension() == ".obj")
+    {
+        meshReader = configureReader< ::fwVtkIO::ObjMeshReader >(_file);
+    }
+    else if(_file.extension() == ".stl")
+    {
+        meshReader = configureReader< ::fwVtkIO::StlMeshReader >(_file);
+    }
+    else if(_file.extension() == ".ply")
+    {
+        meshReader = configureReader< ::fwVtkIO::PlyMeshReader >(_file);
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Extension '"+ _file.extension().string() +
+                                             "' is not managed by ::ioVTK::SMeshReader."));
+    }
+
+    m_sigJobCreated->emit(meshReader->getJob());
+
+    meshReader->setObject(_mesh);
 
     try
     {
-        ::fwData::mt::ObjectWriteLock lock(mesh);
-        reader->read();
+        meshReader->read();
+    }
+    catch(::fwTools::Failed& e)
+    {
+        std::stringstream ss;
+        ss << "Warning during loading : " << e.what();
+
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
+        // Raise exception  for superior level
+        FW_RAISE_EXCEPTION(e);
     }
     catch (const std::exception& e)
     {
-        m_readFailed = true;
-        std::stringstream stream;
-        stream << "Warning during loading : " << e.what();
+        std::stringstream ss;
+        ss << "Warning during loading : " << e.what();
+
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning",
-            stream.str(),
+            ss.str(),
             ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        m_readFailed = true;
+        std::stringstream ss;
+        ss << "Warning during loading. ";
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Warning",
             "Warning during loading.",

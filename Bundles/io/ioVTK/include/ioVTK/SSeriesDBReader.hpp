@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,6 @@
 #include <fwIO/IReader.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwMedData
@@ -49,7 +48,8 @@ namespace ioVTK
 /**
  * @brief   VTK File Reader.
  *
- * Service reading a VTK file (mesh or image) using the fwVtkIO lib.
+ * Service reading a VTK files (mesh or image) using the fwVtkIO lib.
+ * Accepted extensions: *.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl
  *
  * @section Signals Signals
  * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be

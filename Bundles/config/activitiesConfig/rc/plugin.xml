@@ -6,6 +6,19 @@
 
     <xi:include href="configurations/ActivityLauncher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>defaultWizardConfig</id>
+        <service>::uiMedDataQt::editor::SActivityWizard</service>
+        <desc>Default configuration for activity wizard</desc>
+        <config>
+            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
+            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
+            <confirm>false</confirm>
+            <icons>
+                <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
+                <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
+            </icons>
+        </config>
+    </extension>
 
 </plugin>
