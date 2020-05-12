@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,17 +60,17 @@ class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::f
 public:
 
     fwCoreClassMacro(ModelSeriesObjWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
-                     ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >);
+                     ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >)
 
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
-    //! Constructor.
+    /// Constructor.
     FWVTKIO_API ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
-    //! Destructor.
+    /// Destructor.
     FWVTKIO_API ~ModelSeriesObjWriter();
 
-    //! Writing operator.
+    /// Writing operator.
     FWVTKIO_API void write() override;
 
     /**

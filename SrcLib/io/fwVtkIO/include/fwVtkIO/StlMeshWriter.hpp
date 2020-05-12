@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,32 +41,30 @@ namespace fwVtkIO
 {
 
 /**
- * @brief   Write a mesh.
- *
- * Write a VTK Mesh using the VTK lib
+ * @brief Writes a Mesh in .stl format using VTK library.
  */
 
-class FWVTKIO_CLASS_API MeshWriter :
+class FWVTKIO_CLASS_API StlMeshWriter :
     public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
     public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(MeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
-                     ::fwDataIO::writer::factory::New< MeshWriter >)
+    fwCoreClassMacro(StlMeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
+                     ::fwDataIO::writer::factory::New< StlMeshWriter >)
     fwCoreAllowSharedFromThis()
 
     /// @brief Constructor.
-    FWVTKIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API StlMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// @brief Destructor.
-    FWVTKIO_API ~MeshWriter();
+    FWVTKIO_API ~StlMeshWriter();
 
     /// @brief Reading operator.
     FWVTKIO_API void write() override;
 
-    /// @return ".vtk"
+    /// @return ".stl"
     FWVTKIO_API std::string extension() override;
 
     /// @return internal job

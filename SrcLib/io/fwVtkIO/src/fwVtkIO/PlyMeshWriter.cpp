@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,92 +20,90 @@
  *
  ***********************************************************************/
 
-#include "fwVtkIO/MeshReader.hpp"
+#include "fwVtkIO/PlyMeshWriter.hpp"
 
 #include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <vtkGenericDataObjectReader.h>
+#include <vtkPLYWriter.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
-#include <vtkXMLGenericDataObjectReader.h>
 
-fwDataIOReaderRegisterMacro( ::fwVtkIO::MeshReader );
+fwDataIOWriterRegisterMacro( ::fwVtkIO::PlyMeshWriter );
 
 namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("VTK Mesh reader"))
+PlyMeshWriter::PlyMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
+    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    m_job(::fwJobs::Observer::New("PLY Mesh writer"))
 {
 }
 
 //------------------------------------------------------------------------------
 
-MeshReader::~MeshReader()
+PlyMeshWriter::~PlyMeshWriter()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReader::read()
+void PlyMeshWriter::write()
 {
+    using namespace fwVtkIO::helper;
+
     SLM_ASSERT("Object pointer expired", !m_object.expired());
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
     SLM_ASSERT("Object Lock null.", objectLock );
 
-    const ::fwData::Mesh::sptr pMesh = getConcreteObject();
+    const ::fwData::Mesh::csptr pMesh = getConcreteObject();
 
-    using namespace fwVtkIO::helper;
+    vtkSmartPointer< vtkPLYWriter > writer = vtkSmartPointer< vtkPLYWriter >::New();
+    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
+    ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
+    writer->SetInputData( vtkMesh );
+    writer->SetFileName(this->getFile().string().c_str());
+    writer->SetFileTypeToBinary();
 
-    vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
-    reader->SetFileName(this->getFile().string().c_str());
+    vtkSmartPointer<vtkLambdaCommand> progressCallback;
 
-    vtkSmartPointer< vtkLambdaCommand > progressCallback;
-
-    progressCallback = vtkSmartPointer< vtkLambdaCommand >::New();
+    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void*)
+        [&](vtkObject* caller, long unsigned int, void* )
         {
-            const auto filter = static_cast< vtkGenericDataObjectReader* >(caller);
+            const auto filter = static_cast<vtkPLYWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
-    reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
-    m_job->addSimpleCancelHook([&] { reader->AbortExecuteOn(); });
+    m_job->addSimpleCancelHook([&] { writer->AbortExecuteOn(); });
 
-    reader->Update();
-
-    vtkDataObject* obj = reader->GetOutput();
-    vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
-    FW_RAISE_IF("MeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
-    ::fwVtkIO::helper::Mesh::fromVTKMesh(mesh, pMesh);
+    writer->Update();
 
     m_job->finish();
 }
 
 //------------------------------------------------------------------------------
 
-std::string MeshReader::extension()
+std::string PlyMeshWriter::extension()
 {
-    return ".vtk";
+    return ".ply";
 }
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr MeshReader::getJob() const
+::fwJobs::IJob::sptr PlyMeshWriter::getJob() const
 {
     return m_job;
 }

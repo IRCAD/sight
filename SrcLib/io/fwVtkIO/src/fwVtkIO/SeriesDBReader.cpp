@@ -60,8 +60,11 @@
 #include <vtkImageData.h>
 #include <vtkInformation.h>
 #include <vtkMetaImageReader.h>
+#include <vtkOBJReader.h>
+#include <vtkPLYReader.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
+#include <vtkSTLReader.h>
 #include <vtkStreamingDemandDrivenPipeline.h>
 #include <vtkStructuredPoints.h>
 #include <vtkStructuredPointsReader.h>
@@ -411,9 +414,21 @@ void SeriesDBReader::read()
         {
             obj = getObj<vtkMetaImageReader>(file, m_job);
         }
-        else if(file.extension().string() == ".vtu")
+        else if(file.extension().string() == ".vtu" || file.extension().string() == ".vtp")
         {
             obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);
+        }
+        else if(file.extension().string() == ".obj")
+        {
+            obj = getObj<vtkOBJReader>(file, m_job);
+        }
+        else if(file.extension().string() == ".stl")
+        {
+            obj = getObj<vtkSTLReader>(file, m_job);
+        }
+        else if(file.extension().string() == ".ply")
+        {
+            obj = getObj<vtkPLYReader>(file, m_job);
         }
 
         if (!img)

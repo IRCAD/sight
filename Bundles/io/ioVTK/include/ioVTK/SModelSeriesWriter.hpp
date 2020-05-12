@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <filesystem>
-
 #include <string>
 
 namespace fwData
@@ -62,6 +61,7 @@ namespace ioVTK
    <service type="::ioVTK::SModelSeriesWriter">
        <in key="data" uid="..." />
        <folder>...</folder>
+       <extension>vtk</extension>
    </service>
    @endcode
  * @subsection Input Input
@@ -69,6 +69,10 @@ namespace ioVTK
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'configureWithIHM()' should be called to define
  * the path.
+ * - \b extension (optional): extension to use when writing files (vtk, vtp, obj, stl, ply). If nothing is set
+ * a popup will ask to user to choose one.
+ * Accepted extensions are: "vtk", "vtp", "obj" "stl" "ply"
+ * Extensions aren't case sensitive but make sure there isn't a dot "." before extension name.
  */
 class IOVTK_CLASS_API SModelSeriesWriter : public ::fwIO::IWriter
 {
@@ -81,7 +85,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesWriter,  ::fwIO::IWriter);
+    fwCoreServiceMacro(SModelSeriesWriter,  ::fwIO::IWriter)
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -133,7 +137,20 @@ protected:
      */
     IOVTK_API void info(std::ostream& _sstream ) override;
 
+private:
+
+    /**
+     * @brief write the mesh on disk, using _filename
+     * @param[in] _filename : name of the file to write with extension. extension will be used to choose the writer.
+     * @param[in] _mesh : const pointer of the data mesh.
+     */
+    void writeMesh(const std::filesystem::path& _filename, const ::fwData::Mesh::csptr _mesh);
+
+    /// Job Created signal
     SPTR(JobCreatedSignalType) m_sigJobCreated;
+
+    ///  Stores the selectedExtension from dialog.
+    std::string m_selectedExtension;
 
 };
 
