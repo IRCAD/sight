@@ -22,15 +22,24 @@ stages:
     - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
+    # Get list of all tags.
+    - REPO_TAGS=$(git tag)
+    # Check with a regex if the commit ref name is found by storing the grep result in a variable. 
+    # The command '|| true' is added because grep can return 0 and break the CI.
+    - FOUND=$(grep ^$CI_COMMIT_REF_NAME$ <<< ${REPO_TAGS}) || true
+    # Check if the commit ref name is not dev, master, or a tag (FOUND is empty if it's the case),
+    # and merge the branch into dev.
     - >
-      if [ "$CI_COMMIT_REF_NAME" != "dev" ]; then
-        if [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-          git config user.name ${GITLAB_USER_ID}
-          git config user.email ${GITLAB_USER_EMAIL}
-          git fetch --all
-          git checkout dev    
-          git reset --hard origin/dev
-          git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+      if [ -z "$FOUND" ]; then
+        if [ "$CI_COMMIT_REF_NAME" != "dev" ]; then
+          if [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+            git config user.name ${GITLAB_USER_ID}
+            git config user.email ${GITLAB_USER_EMAIL}
+            git fetch --all
+            git checkout dev    
+            git reset --hard origin/dev
+            git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+          fi
         fi
       fi
     # Reset the time of all files to improve the use of ccache.
@@ -42,22 +51,33 @@ stages:
     FW_IGNORE_SLOW_TESTS: 1
     CUDA_PATH: "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1"
   before_script:
+    # Check if the commit ref name is not dev, master, or a tag (FOUND is 'true' if it's the case),
+    # and merge the branch into dev.
+    - >
+      if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
+        if "%CI_COMMIT_REF_NAME%" NEQ "master" (
+          set FOUND=false
+          for /f "tokens=*" %%a in ('git tag') do (
+            if "%CI_COMMIT_REF_NAME%" EQU "%%a" (
+              set FOUND=true
+            )
+          )
+          if "%FOUND%" EQU "false" (
+            git config user.name ${GITLAB_USER_ID}
+            git config user.email ${GITLAB_USER_EMAIL}
+            git fetch --all
+            git checkout dev    
+            git reset --hard origin/dev
+            git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
+          )
+        )
+      )
+    # Configure the build.
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
     - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
     - chcp 1252
-    - >
-      if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
-        if "%CI_COMMIT_REF_NAME%" NEQ "master" (
-          git config user.name ${GITLAB_USER_ID}
-          git config user.email ${GITLAB_USER_EMAIL}
-          git fetch --all
-          git checkout dev    
-          git reset --hard origin/dev
-          git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
-        )
-      )
   tags:
     - shell
     - windows
@@ -88,6 +108,7 @@ build:debug-linux:
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
+    # PCH are disabled because they doesn't work with ccache.
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
@@ -109,8 +130,6 @@ build:debug-linux:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/ctest.log
-  except:
-    - tags
 
 build:release-linux:
   <<: *linux_job
@@ -120,6 +139,7 @@ build:release-linux:
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
+    # PCH are disabled because they doesn't work with ccache.
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
@@ -140,8 +160,6 @@ build:release-linux:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/ctest.log
-  except:
-    - tags
 
 build:debug-windows:
   <<: *windows_job
@@ -170,8 +188,6 @@ build:debug-windows:
     paths:
       - build/ctest.log
       - build/fwTest.log
-  except:
-    - tags
 
 build:release-windows:
   <<: *windows_job
@@ -199,8 +215,6 @@ build:release-windows:
     paths:
       - build/ctest.log
       - build/fwTest.log
-  except:
-    - tags
 
 build:debian:
   image: registry.ircad.fr/sight/docker-debian:dev
@@ -241,8 +255,6 @@ build:debian:
      -DPROJECTS_TO_BUILD=VRRender
     - ninja
     - ccache -s
-  except:
-    - tags
 
 doxygen:
   <<: *linux_job
@@ -263,8 +275,6 @@ doxygen:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
     paths:
       - $CI_PROJECT_DIR/build/Documentation/Doxygen/
-  except:
-    - tags
 
 pages:
   image: ${DOCKER_ENVDEV_MINT19}
@@ -306,8 +316,6 @@ build:sdk-release-linux:
     - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-  except:
-    - tags
     
 build:sdk-debug-linux:
   <<: *linux_job
@@ -336,5 +344,3 @@ build:sdk-debug-linux:
     - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-  except:
-    - tags
