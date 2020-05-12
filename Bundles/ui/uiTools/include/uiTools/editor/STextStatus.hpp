@@ -95,6 +95,8 @@ protected:
     /// Does nothing
     virtual void swapping() override;
 
+    virtual KeyConnectionsMap getAutoConnections() const override;
+
 private:
 
     ///Slot called when a integer value is changed

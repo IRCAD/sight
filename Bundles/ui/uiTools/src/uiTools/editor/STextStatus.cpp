@@ -74,7 +74,6 @@ STextStatus::~STextStatus()
 
 void STextStatus::starting()
 {
-    std::cout << "start" << std::endl;
     this->create();
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
@@ -92,7 +91,6 @@ void STextStatus::starting()
     if(stringInput)
     {
         m_labelValue->setText(QString::fromStdString(stringInput->value()));
-        std::cout << stringInput->value() << std::endl;
     }
 
 }
@@ -168,6 +166,13 @@ void STextStatus::setStringParameter(std::string _val)
 
 void STextStatus::updating()
 {
+    // get Input data
+    ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
+
+    if(stringInput)
+    {
+        m_labelValue->setText(QString::fromStdString(stringInput->value()));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -175,6 +180,16 @@ void STextStatus::updating()
 void STextStatus::swapping()
 {
 
+}
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
+{
+
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_STRING_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
