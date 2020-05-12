@@ -59,30 +59,7 @@ void PreferencesTest::tearDown()
 
 void PreferencesTest::runtimeTest()
 {
-    m_profile = ::fwRuntime::profile::Profile::New();
-    m_profile->setName("APP_TEST");
-    ::fwRuntime::profile::setCurrentProfile(m_profile);
-
-    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultBundles();
-
-    std::shared_ptr< ::fwRuntime::Bundle > dataReg = runtime->findBundle("dataReg");
-    CPPUNIT_ASSERT_MESSAGE("'dataReg bundle not found !'", dataReg);
-    dataReg->setEnable(true);
-    CPPUNIT_ASSERT(dataReg->isEnable());
-    dataReg->start();
-
-    std::shared_ptr< ::fwRuntime::Bundle > servicesReg = runtime->findBundle("servicesReg");
-    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", servicesReg);
-    servicesReg->setEnable(true);
-    CPPUNIT_ASSERT(servicesReg->isEnable());
-    servicesReg->start();
-
-    std::shared_ptr< ::fwRuntime::Bundle > preferences = runtime->findBundle("preferences");
-    CPPUNIT_ASSERT_MESSAGE("'preferences bundle not found !'", preferences);
-    preferences->setEnable(true);
-    CPPUNIT_ASSERT(preferences->isEnable());
-    preferences->start();
+    ::fwRuntime::init();
 
     const std::string profileName = ::fwTools::UUID::generateUUID();
     m_profile->setName(profileName);
