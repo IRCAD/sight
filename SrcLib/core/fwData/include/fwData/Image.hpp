@@ -479,9 +479,9 @@ public:
     /**
      * @brief Return a lock on the image to prevent from dumping the buffer on the disk
      *
-     * When the buffer is dumped, the memory is released and the buffer will not be accissible. When lock() is called,
+     * When the buffer is dumped, the memory is released and the buffer will not be accessible. When lock() is called,
      * the buffer is restored from the disk if it was dumped and as long as the ::fwMemory::BufferObject::Lock is
-     * maintainted, the buffer will not be dumped.
+     * maintained, the buffer will not be dumped.
      *
      * An exception will be raised if you try to access while the array is not locked.
      */
