@@ -8,6 +8,14 @@
     <id>tutoGuiConfig</id>
         <config>
 
+        <object uid="text" type="::fwData::String" >
+            <value>
+            <![CDATA[
+                This is a STextStatus
+            ]]>
+            </value>
+        </object>
+
         <!-- ***************************************** Begin layouts declaration ***************************************** -->
         <service uid="myFrame" type="::gui::frame::SDefaultFrame" >
             <gui>
@@ -193,7 +201,17 @@
             <registry/>
         </service>
 
-        <service uid="subView4" type="::gui::view::SDefaultView" />
+        <service uid="subView4" type="::gui::view::SDefaultView" >
+        <gui>
+            <layout type="::fwGui::LineLayoutManager" >
+                <orientation value="horizontal" />
+                <view />
+            </layout>
+        </gui>
+         <registry>
+            <view sid="textStatus" start="yes" />
+        </registry>
+        </service>
 
         <service uid="subView5" type="::gui::view::SDefaultView" >
             <gui>
@@ -333,6 +351,12 @@
             <path>media-0.1/icons/ircad_logo.png</path>
             <height>70</height>
         </service>
+
+        <service uid="textStatus" type="::uiTools::editor::STextStatus">
+             <in key="string" uid="text" />
+             <label>Text status</label>
+             <color>#4F63CA</color>
+         </service>
 
         <service uid="actionQuit" type="::gui::action::SQuit" />
         <!-- ***************************************** End services declarations  ************************************************ -->

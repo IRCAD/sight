@@ -11,6 +11,7 @@ set( REQUIREMENTS
     servicesReg
     fwlauncher
     media
+    uiTools
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoGuiConfig)
