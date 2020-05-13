@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -41,28 +41,27 @@ namespace fwVtkIO
 {
 
 /**
- * @brief   Read a mesh.
+ * @brief Reads a Mesh from .vtk (legacy) file using VTK library.
  *
- * Read a VTK Mesh using the VTK lib
  */
-
-class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                   public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class FWVTKIO_CLASS_API MeshReader :
+    public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
 
     fwCoreClassMacro(MeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                     ::fwDataIO::reader::factory::New< MeshReader >);
-    fwCoreAllowSharedFromThis();
+                     ::fwDataIO::reader::factory::New< MeshReader >)
+    fwCoreAllowSharedFromThis()
 
-    //! @brief Constructor.
+    /// @brief Constructor.
     FWVTKIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
-    //! @brief Destructor.
+    /// @brief Destructor.
     FWVTKIO_API ~MeshReader();
 
-    //! @brief Reading operator.
+    /// @brief Reading operator.
     FWVTKIO_API void read() override;
 
     /// @return ".vtk"

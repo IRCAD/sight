@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <fwDataIO/reader/GenericObjectReader.hpp>
 
 #include <filesystem>
 
@@ -41,34 +41,31 @@ namespace fwVtkIO
 {
 
 /**
- * @brief   Write a mesh.
+ * @brief Reads a Mesh from .stl file using VTK library.
  *
- * Write a VTK Mesh using the VTK lib
  */
 
-class FWVTKIO_CLASS_API MeshWriter :
-    public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
-    public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class StlMeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+                      public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(MeshWriter, ::fwDataIO::writer::GenericObjectWriter< ::fwData::Mesh >,
-                     ::fwDataIO::writer::factory::New< MeshWriter >)
+    fwCoreClassMacro(StlMeshReader, ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
+                     ::fwDataIO::reader::factory::New< StlMeshReader >)
     fwCoreAllowSharedFromThis()
 
     /// @brief Constructor.
-    FWVTKIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API StlMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// @brief Destructor.
-    FWVTKIO_API ~MeshWriter();
+    FWVTKIO_API ~StlMeshReader();
 
     /// @brief Reading operator.
-    FWVTKIO_API void write() override;
+    FWVTKIO_API void read() override;
 
-    /// @return ".vtk"
+    /// @return ".stl"
     FWVTKIO_API std::string extension() override;
-
     /// @return internal job
     FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
@@ -76,6 +73,7 @@ private:
 
     ///Internal job
     SPTR(::fwJobs::Observer) m_job;
+
 };
 
 } // namespace fwVtkIO

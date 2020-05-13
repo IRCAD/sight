@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, ::fwMedData::SeriesDB )
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -78,11 +78,15 @@ void SSeriesDBReader::configureWithIHM()
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
-    dialogFile.addFilter("Vtk", "*.vtk *.vti *.mhd *.vtu");
-    dialogFile.addFilter("Vtk files", "*.vtk");
-    dialogFile.addFilter("Vti files", "*.vti");
-    dialogFile.addFilter("Vtu files", "*.vtu");
+    dialogFile.addFilter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
     dialogFile.addFilter("MetaImage files", "*.mhd");
+    dialogFile.addFilter("OBJ Files(.obj)", "*.obj");
+    dialogFile.addFilter("PLY Files(.ply)", "*.ply");
+    dialogFile.addFilter("STL Files(.stl)", "*.stl");
+    dialogFile.addFilter("VTI Image files", "*.vti");
+    dialogFile.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
+    dialogFile.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
+    dialogFile.addFilter("VTU Image files", "*.vtu");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
