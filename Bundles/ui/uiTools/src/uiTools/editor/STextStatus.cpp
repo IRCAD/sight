@@ -24,6 +24,7 @@
 
 #include <fwCom/Slots.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -85,11 +86,12 @@ void STextStatus::starting()
     qtContainer->setLayout(layout);
 
     // get Input data
-    const auto stringInput = this->getLockedInput< const ::fwData::String >(s_STRING_INPUT);
+    const auto stringInput = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
 
-    if(stringInput)
+    if(!stringInput.expired())
     {
-        m_labelValue->setText(QString::fromStdString(stringInput->value()));
+        const auto stringInputLock = stringInput.lock();
+        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
     }
 
 }
@@ -166,11 +168,12 @@ void STextStatus::setStringParameter(std::string _val)
 void STextStatus::updating()
 {
     // get Input data
-    const auto stringInput = this->getLockedInput< const ::fwData::String >(s_STRING_INPUT);
+    const auto stringInput = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
 
-    if(stringInput)
+    if(!stringInput.expired())
     {
-        m_labelValue->setText(QString::fromStdString(stringInput->value()));
+        const auto stringInputLock = stringInput.lock();
+        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
     }
 }
 
