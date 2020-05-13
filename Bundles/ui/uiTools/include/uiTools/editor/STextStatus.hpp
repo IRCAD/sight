@@ -38,7 +38,7 @@ namespace editor
 
 /**
  * @brief   STextStatus is used to displays and update values (int, double or string) in a QLabel.
- * Values are set using slots
+ * Values are set using slots or using a ::fwData::String input.
  *
  * @code{.xml}
  * <service uid="..." type="::uiTools::editor::STextStatus">

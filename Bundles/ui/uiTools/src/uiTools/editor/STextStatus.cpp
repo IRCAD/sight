@@ -85,7 +85,7 @@ void STextStatus::starting()
     qtContainer->setLayout(layout);
 
     // get Input data
-    const ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
+    const auto stringInput = this->getLockedInput< const ::fwData::String >(s_STRING_INPUT);
 
     if(stringInput)
     {
@@ -166,7 +166,7 @@ void STextStatus::setStringParameter(std::string _val)
 void STextStatus::updating()
 {
     // get Input data
-    const ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
+    const auto stringInput = this->getLockedInput< const ::fwData::String >(s_STRING_INPUT);
 
     if(stringInput)
     {
