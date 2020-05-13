@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,12 +51,13 @@ class IODATA_CLASS_API SAttachmentSeriesReader : public ::fwIO::IReader
 
 public:
 
-    fwCoreServiceMacro(SAttachmentSeriesReader, ::fwIO::IReader);
+    fwCoreServiceMacro(SAttachmentSeriesReader, ::fwIO::IReader)
 
     /// Super class of reader services
     typedef ::fwIO::IReader SuperClass;
 
     /// Constructor : does nothing
+    [[deprecated("This service will be removed in Sight 20.0.")]]
     IODATA_API SAttachmentSeriesReader();
 
     /** @name Specified reader service methods ( override from ::fwIO::IWriter )

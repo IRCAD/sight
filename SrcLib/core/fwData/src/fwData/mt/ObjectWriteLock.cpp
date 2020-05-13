@@ -33,8 +33,6 @@ namespace mt
 
 ObjectWriteLock::ObjectWriteLock(::fwData::Object::sptr obj, bool adopt_lock)
 {
-    FW_DEPRECATED_MSG("'ObjectWriteLock' is deprecated.", "21.0");
-
     if (adopt_lock)
     {
         m_lock = ::fwCore::mt::WriteLock(obj->getMutex());

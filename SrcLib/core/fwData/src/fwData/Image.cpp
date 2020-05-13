@@ -477,8 +477,6 @@ void Image::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& fact
 
 ::fwData::Array::sptr Image::getDataArray() const
 {
-    FW_DEPRECATED_MSG("Image's Array can no longer be accessed.", "22.0")
-
     return m_dataArray;
 }
 
@@ -486,8 +484,6 @@ void Image::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& fact
 
 void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 {
-    FW_DEPRECATED_MSG("Image's Array can no longer be accessed.", "22.0")
-
     if( !array )
     {
         array = ::fwData::Array::New();
@@ -511,8 +507,6 @@ void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 
 size_t Image::allocate()
 {
-    FW_DEPRECATED("allocate()", "resize()", "22.0")
-
     return this->resize();
 }
 //------------------------------------------------------------------------------
@@ -520,8 +514,6 @@ size_t Image::allocate()
 size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
                        const ::fwTools::Type& type, size_t numberOfComponents)
 {
-    FW_DEPRECATED("allocate(x, y, z, type, numberOfComponents)", "resize(x, y,  z, type, format)", "22.0")
-
     m_size               = { x, y, z};
     m_type               = type;
     m_numberOfComponents = numberOfComponents;
@@ -532,7 +524,6 @@ size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType
 
 size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents)
 {
-    FW_DEPRECATED("allocate(size, type, numberOfComponents)", "resize(size, type, format);", "22.0")
     this->setSize(size);
     m_type               = type;
     m_numberOfComponents = numberOfComponents;
@@ -543,8 +534,6 @@ size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t
 
 const Image::SpacingType& Image::getSpacing() const
 {
-    FW_DEPRECATED_MSG("Spacing parameter in now a std::array<double, 3>, use getSpacing2()", "22.0")
-
     const size_t dims = this->getNumberOfDimensions();
     if (m_oldSpacing.size() != dims)
     {
@@ -561,8 +550,6 @@ const Image::SpacingType& Image::getSpacing() const
 
 void Image::setSpacing(const SpacingType& spacing)
 {
-    FW_DEPRECATED_MSG("Spacing parameter in now a std::array<double, 3>", "22.0")
-
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Spacing must have a maximum of 3 dimensions"),
                           spacing.size() > 3);
 
@@ -583,8 +570,6 @@ void Image::setSpacing(const SpacingType& spacing)
 
 const Image::OriginType& Image::getOrigin() const
 {
-    FW_DEPRECATED_MSG("Origin parameter in now a std::array<double, 3>, use getOrigin2()", "22.0")
-
     const size_t dims = this->getNumberOfDimensions();
     if (m_oldOrigin.size() != dims)
     {
@@ -601,8 +586,6 @@ const Image::OriginType& Image::getOrigin() const
 
 void Image::setOrigin(const OriginType& origin)
 {
-    FW_DEPRECATED_MSG("Origin parameter in now a std::array<double, 3>", "22.0")
-
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Origin must have a maximum of 3 dimensions"),
                           origin.size() > 3);
 
@@ -623,8 +606,6 @@ void Image::setOrigin(const OriginType& origin)
 
 const Image::SizeType& Image::getSize() const
 {
-    FW_DEPRECATED_MSG("Size parameter in now a std::array<size_t, 3>, use getSize2()", "22.0")
-
     const size_t dims = this->getNumberOfDimensions();
     if (m_oldSize.size() != dims)
     {
@@ -642,7 +623,6 @@ const Image::SizeType& Image::getSize() const
 
 void Image::setSize(const SizeType& size)
 {
-    FW_DEPRECATED_MSG("Size parameter in now a std::array<size_t, 3>", "22.0")
     FW_RAISE_EXCEPTION_IF(::fwData::Exception("Origin must have a maximum of 3 dimensions"),
                           size.size() > 3);
 
@@ -663,7 +643,6 @@ void Image::setSize(const SizeType& size)
 
 ::fwTools::DynamicType Image::getPixelType() const
 {
-    FW_DEPRECATED("getPixelType(", "getType()", "22.0")
     typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
 
     static DynamicTypeMapType dynamicTypeMap = {

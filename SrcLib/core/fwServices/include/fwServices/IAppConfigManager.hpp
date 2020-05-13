@@ -43,6 +43,8 @@ public:
     fwCoreClassMacro(IAppConfigManager, ::fwTools::Object)
 
     /// Constructor. Do nothing.
+
+    [[deprecated("will be removed in sight 22.0, use ::fwServices::AppConfigManager")]]
     FWSERVICES_API IAppConfigManager();
 
     /// Destructor. Do nothing.

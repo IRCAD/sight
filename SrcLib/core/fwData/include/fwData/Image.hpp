@@ -639,9 +639,9 @@ private:
 
     /// Deprecated: set as mutable to be able to change it according to m_size, m_spacing and m_origin when we call
     /// the getters.
-    [[deprecated]] mutable SizeType m_oldSize;
-    [[deprecated]] mutable SpacingType m_oldSpacing;
-    [[deprecated]] mutable OriginType m_oldOrigin;
+    [[deprecated("will be removed in sight 22.0")]] mutable SizeType m_oldSize;
+    [[deprecated("will be removed in sight 22.0")]] mutable SpacingType m_oldSpacing;
+    [[deprecated("will be removed in sight 22.0")]] mutable OriginType m_oldOrigin;
 
     //! Preferred window center/with
     ///@{

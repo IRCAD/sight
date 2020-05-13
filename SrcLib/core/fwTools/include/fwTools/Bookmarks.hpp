@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,6 +44,7 @@ class FWTOOLS_CLASS_API Bookmarks
 {
 public:
 
+    [[deprecated("This class is no longer supported, it will be removed in sight 20.0")]]
     FWTOOLS_API Bookmarks();
 
     typedef std::string BookmarkName;

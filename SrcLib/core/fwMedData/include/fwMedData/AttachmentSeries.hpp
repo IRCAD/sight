@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ class FWMEDDATA_CLASS_API AttachmentSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassMacro(AttachmentSeries, ::fwData::Object, ::fwData::factory::New< AttachmentSeries >);
+    fwCoreClassMacro(AttachmentSeries, ::fwData::Object, ::fwData::factory::New< AttachmentSeries >)
 
     fwCampMakeFriendDataMacro((fwMedData)(AttachmentSeries));
 
@@ -53,6 +53,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
+    [[deprecated("This data will be removed in Sight 20.0")]]
     FWMEDDATA_API AttachmentSeries(::fwData::Object::Key key);
 
     /// Destructor
