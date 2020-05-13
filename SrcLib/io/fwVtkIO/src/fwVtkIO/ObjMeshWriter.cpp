@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwVtkIO/MeshWriter.hpp"
+#include "fwVtkIO/ObjMeshWriter.hpp"
 
 #include "fwVtkIO/helper/Mesh.hpp"
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
@@ -32,31 +32,50 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <vtkGenericDataObjectWriter.h>
+#include <fwData/Mesh.hpp>
+#include <fwData/Material.hpp>
+
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-fwDataIOWriterRegisterMacro( ::fwVtkIO::MeshWriter );
+#include <vtkVersion.h>
+#if VTK_MAJOR_VERSION >= 8 && VTK_MINOR_VERSION >= 2
+#define USE_OBJ_WRITER // Shorter than test major.minor version later.
+#include <vtkOBJWriter.h>
+#else
+#include <vtkActor.h>
+#include <vtkOBJExporter.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#endif
+
+fwDataIOWriterRegisterMacro( ::fwVtkIO::ObjMeshWriter );
 
 namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
+ObjMeshWriter::ObjMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("VTK Mesh writer"))
+    m_job(::fwJobs::Observer::New("OBJ Mesh writer"))
 {
+
 }
 
 //------------------------------------------------------------------------------
 
-MeshWriter::~MeshWriter()
+ObjMeshWriter::~ObjMeshWriter()
 {
+
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriter::write()
+#ifdef USE_OBJ_WRITER
+
+void ObjMeshWriter::write()
 {
     using namespace fwVtkIO::helper;
 
@@ -68,12 +87,11 @@ void MeshWriter::write()
 
     const ::fwData::Mesh::csptr pMesh = getConcreteObject();
 
-    vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
-    vtkSmartPointer< vtkPolyData > vtkMesh               = vtkSmartPointer< vtkPolyData >::New();
+    vtkSmartPointer< vtkOBJWriter > writer = vtkSmartPointer< vtkOBJWriter >::New();
+    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
     writer->SetInputData( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
-    writer->SetFileTypeToBinary();
 
     vtkSmartPointer<vtkLambdaCommand> progressCallback;
 
@@ -81,7 +99,7 @@ void MeshWriter::write()
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void* )
         {
-            const auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
+            const auto filter = static_cast<vtkOBJWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         }
         );
@@ -94,16 +112,63 @@ void MeshWriter::write()
     m_job->finish();
 }
 
+#else
+
 //------------------------------------------------------------------------------
 
-std::string MeshWriter::extension()
+void ObjMeshWriter::write()
 {
-    return ".vtk";
+    using namespace fwVtkIO::helper;
+
+    SLM_ASSERT("Object pointer expired", !m_object.expired());
+
+    [[maybe_unused]] const auto objectLock = m_object.lock();
+
+    SLM_ASSERT("Object Lock null.", objectLock );
+
+    const ::fwData::Mesh::csptr pMesh      = getConcreteObject();
+    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
+    ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
+
+    vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
+    vtkSmartPointer< vtkActor >  actor      = vtkSmartPointer< vtkActor >::New();
+
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputData(vtkMesh);
+    actor->SetMapper(mapper);
+
+    vtkProperty* property = actor->GetProperty();
+
+    property->SetSpecularColor(1., 1., 1.);
+    property->SetSpecularPower(100.); //Shininess
+
+    property->SetInterpolationToPhong();
+
+    renderer->AddActor(actor);
+
+    vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
+    renderWindow->AddRenderer(renderer);
+
+    const std::string filename = (this->getFile().string().c_str());
+
+    vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
+    exporter->SetRenderWindow(renderWindow);
+    exporter->SetFilePrefix(filename.c_str());
+    exporter->Write();
+    m_job->finish();
+}
+
+#endif
+//------------------------------------------------------------------------------
+
+std::string ObjMeshWriter::extension()
+{
+    return ".obj";
 }
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr MeshWriter::getJob() const
+::fwJobs::IJob::sptr ObjMeshWriter::getJob() const
 {
     return m_job;
 }

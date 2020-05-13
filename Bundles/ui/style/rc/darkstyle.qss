@@ -808,6 +808,12 @@ QLabel
     border: 0px solid black;
 }
 
+QLabel[type="error"]
+{
+    font-weight: bold;
+    color: rgb(218, 73, 57);
+}
+
 QTabWidget{
     border: 0px transparent black;
 }
