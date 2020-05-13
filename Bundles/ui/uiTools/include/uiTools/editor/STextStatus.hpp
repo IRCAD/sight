@@ -68,11 +68,6 @@ public:
     /// Destructor. Do nothing.
     UITOOLS_API virtual ~STextStatus();
 
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_SET_STRING_PARAMETER_SLOT;
-
 protected:
 
     /**

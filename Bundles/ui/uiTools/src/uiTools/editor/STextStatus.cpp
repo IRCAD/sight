@@ -40,14 +40,13 @@ namespace uiTools
 namespace editor
 {
 
+static const ::fwServices::IService::KeyType s_STRING_INPUT          = "string";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_STRING_PARAMETER_SLOT = "setStringParameter";
+
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::STextStatus )
-
-const ::fwServices::IService::KeyType s_STRING_INPUT = "string";
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_STRING_PARAMETER_SLOT = "setStringParameter";
-
 //-----------------------------------------------------------------------------
 
 STextStatus::STextStatus()
@@ -86,7 +85,7 @@ void STextStatus::starting()
     qtContainer->setLayout(layout);
 
     // get Input data
-    ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
+    const ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
 
     if(stringInput)
     {
@@ -167,7 +166,7 @@ void STextStatus::setStringParameter(std::string _val)
 void STextStatus::updating()
 {
     // get Input data
-    ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
+    const ::fwData::String::csptr stringInput = this->getInput< ::fwData::String >(s_STRING_INPUT);
 
     if(stringInput)
     {

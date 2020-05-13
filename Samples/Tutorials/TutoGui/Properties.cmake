@@ -10,7 +10,6 @@ set( REQUIREMENTS
     dataReg
     servicesReg
     fwlauncher
-    media
     uiTools
 )
 
