@@ -39,7 +39,8 @@ namespace fwRuntime
 class FWRUNTIME_CLASS_API Plugin : public IPlugin
 {
 public:
-    [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> getBundle() const noexcept override;
+    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
+    FWRUNTIME_API std::shared_ptr<Module> getBundle() const noexcept override;
     FWRUNTIME_API std::shared_ptr<Module> getModule() const noexcept override;
     FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) noexcept
     override;

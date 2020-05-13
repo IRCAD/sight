@@ -31,7 +31,6 @@ namespace fwRuntime
 
 std::shared_ptr<Module> Plugin::getBundle() const noexcept
 {
-    FW_DEPRECATED_MSG("getBundle", "22.0");
     return this->getModule();
 }
 

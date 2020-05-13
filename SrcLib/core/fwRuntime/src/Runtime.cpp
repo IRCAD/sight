@@ -63,8 +63,6 @@ Runtime& Runtime::get()
 
 void Runtime::addDefaultBundles()
 {
-    FW_DEPRECATED_MSG("addDefaultBundles", "22.0");
-
     // Now done in ::fwRuntime::init()
     ::fwRuntime::init();
 }
@@ -89,7 +87,6 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
 
 void Runtime::setWorkingPath(const std::filesystem::path& )
 {
-    FW_DEPRECATED_MSG("setWorkingPath", "22.0");
 }
 
 //------------------------------------------------------------------------------

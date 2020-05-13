@@ -79,6 +79,7 @@ public:
      *
      * @param[in]   workingPath a boost path.
      */
+    [[deprecated("To be removed in Sight 22.0, Sight location is now detected automatically")]]
     FWRUNTIME_API void setWorkingPath(const std::filesystem::path& workingPath);
 
     /**
@@ -100,7 +101,8 @@ public:
      * @param[in]   repository  a path that may containing modules
      * @deprecated  Bundle has been renamed to Module, please use addModules() instead
      */
-    [[deprecated]] FWRUNTIME_API virtual void addBundles( const std::filesystem::path& repository ) = 0;
+    [[deprecated("To be removed in Sight 22.0, use addModules() instead")]]
+    FWRUNTIME_API virtual void addBundles( const std::filesystem::path& repository ) = 0;
 
     /**
      * @brief       Adds all modules found in the given path.
@@ -115,7 +117,8 @@ public:
      * @remark      The given module state will be altered according to the current configuration rules.
      * @deprecated  This is now done automatically when initializing Sight.
      */
-    [[deprecated]] FWRUNTIME_API virtual void addDefaultBundles();
+    [[deprecated("To be removed in Sight 22.0, now done internally when initializing Sight with ::fwRuntime::init().")]]
+    FWRUNTIME_API virtual void addDefaultBundles();
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -126,9 +129,9 @@ public:
      * @return      a shared pointer to the found module or null if none
      * @deprecated  Bundle has been renamed to Module, please use findModule() instead
      */
-    [[deprecated]] FWRUNTIME_API virtual std::shared_ptr< Module > findBundle( const std::string& identifier,
-                                                                               const Version& version =
-                                                                                   Version() ) const = 0;
+    [[deprecated("To be removed in Sight 22.0, use findModule() instead")]]
+    FWRUNTIME_API virtual std::shared_ptr< Module > findBundle(const std::string& identifier,
+                                                               const Version& version = Version() ) const = 0;
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -166,7 +169,8 @@ public:
     //@}
 
     /// Return all modules known by the runtime
-    [[deprecated]] FWRUNTIME_API virtual ModuleContainer getBundles() = 0;
+    [[deprecated("To be removed in Sight 22.0, use getModules() instead")]]
+    FWRUNTIME_API virtual ModuleContainer getBundles() = 0;
 
     /// Return all modules known by the runtime
     FWRUNTIME_API virtual ModuleContainer getModules() = 0;

@@ -48,7 +48,9 @@ class Profile;
  *
  * @param   directory   deprecated, path to the directory where Sight is installed. This is now automatically detected.
  */
-FWRUNTIME_API void init( [[deprecated]] const std::filesystem::path& directory = std::filesystem::path() );
+FWRUNTIME_API void init( [[deprecated("To be removed in Sight 22.0,this is now automatically detected")]]
+                         const std::filesystem::path& directory = std::filesystem::path()
+                         );
 
 /**
  * @brief       Creates an executable instance for the specified configuration element.
@@ -114,7 +116,8 @@ FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string& ident
  * @return  a system valid path
  * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
  */
-[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath(const std::string& moduleIdentifier) noexcept;
+[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
+FWRUNTIME_API std::filesystem::path getBundleResourcePath(const std::string& moduleIdentifier) noexcept;
 
 /**
  * @brief   Retrieve the filesystem valid path of resources of a module.
@@ -134,8 +137,9 @@ FWRUNTIME_API std::filesystem::path getModuleResourcePath(const std::string& mod
  * @return  a system valid path
  * @deprecated  Bundle has been renamed to Module, please use getModuleResourceFilePath() instead
  */
-[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(const std::string& moduleIdentifier,
-                                                                             const std::filesystem::path& path) noexcept;
+[[deprecated("To be removed in Sight 22.0, use getModuleResourceFilePath() instead")]]
+FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(const std::string& moduleIdentifier,
+                                                              const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
@@ -158,8 +162,8 @@ FWRUNTIME_API std::filesystem::path getModuleResourceFilePath(const std::string&
  * @return  a system valid path
  * @deprecated  module has been renamed to Module, please use getModuleResourceFilePath() instead
  */
-[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(
-    const std::filesystem::path& path) noexcept;
+[[deprecated("To be removed in Sight 22.0, use getModuleResourceFilePath() instead")]]
+FWRUNTIME_API std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a module identifier.
@@ -212,8 +216,9 @@ FWRUNTIME_API std::filesystem::path getResourceFilePath(const std::filesystem::p
  * @return  a system valid path
  * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
  */
-[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<Module> module,
-                                                                          const std::filesystem::path& path) noexcept;
+[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
+FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<Module> module,
+                                                           const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified module.
@@ -235,8 +240,9 @@ FWRUNTIME_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Modul
  * @return  a system valid path
  * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
  */
-[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
-                                                                          const std::filesystem::path& path) noexcept;
+[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
+FWRUNTIME_API std::filesystem::path getBundleResourcePath(     std::shared_ptr<ConfigurationElement> element,
+                                                               const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module of the specified configuration element.
@@ -258,8 +264,9 @@ FWRUNTIME_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Confi
  * @return  a system valid path
  * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
  */
-[[deprecated]] FWRUNTIME_API std::filesystem::path getBundleResourcePath(const IExecutable* executable,
-                                                                         const std::filesystem::path& path) noexcept;
+[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
+FWRUNTIME_API std::filesystem::path getBundleResourcePath(    const IExecutable* executable,
+                                                              const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
@@ -278,7 +285,8 @@ FWRUNTIME_API std::filesystem::path getModuleResourcePath(const IExecutable* exe
  * @param   directory   a path to the directory to explore for modules
  * @deprecated  module has been renamed to Module, please use addModules() instead
  */
-[[deprecated]] FWRUNTIME_API void addBundles( const std::filesystem::path& directory );
+[[deprecated("To be removed in Sight 22.0, use addModules() instead")]]
+FWRUNTIME_API void addBundles( const std::filesystem::path& directory );
 
 /**
  * @brief   Loads all modules that can be found in the specified directory.
@@ -296,8 +304,8 @@ FWRUNTIME_API void addModules( const std::filesystem::path& directory );
  * @return  a shared pointer to the found module, or empty when it is not found
  * @deprecated  module has been renamed to Module, please use loadModule() instead
  */
-[[deprecated]] FWRUNTIME_API std::shared_ptr<Module> loadBundle( const std::string& identifier,
-                                                                 const Version& version = Version() );
+[[deprecated("To be removed in Sight 22.0, use loadModule() instead")]]
+FWRUNTIME_API std::shared_ptr<Module> loadBundle( const std::string& identifier, const Version& version = Version() );
 
 /**
  * @brief   Load a module.
@@ -327,8 +335,8 @@ FWRUNTIME_API std::shared_ptr< ::fwRuntime::Profile > startProfile( const std::f
  * @return  a shared pointer to the found module, or empty when none
  * @deprecated  module has been renamed to Module, please use findModule() instead
  */
-[[deprecated]] FWRUNTIME_API std::shared_ptr<Module> findBundle( const std::string& identifier,
-                                                                 const Version& version = Version() );
+[[deprecated("To be removed in Sight 22.0, use findModule() instead")]]
+FWRUNTIME_API std::shared_ptr<Module> findBundle(const std::string& identifier, const Version& version = Version() );
 
 /**
  * @brief   Retrieves the module with the given identifier and version
@@ -346,7 +354,8 @@ FWRUNTIME_API std::shared_ptr<Module> findModule( const std::string& identifier,
  * @param   identifier  a string containing a module identifier
  * @deprecated  Bundle has been renamed to Module, please use startModule() instead
  */
-[[deprecated]] FWRUNTIME_API void startBundle(const std::string& identifier);
+[[deprecated("To be removed in Sight 22.0, use startModule() instead")]]
+FWRUNTIME_API void startBundle(const std::string& identifier);
 
 /**
  * @brief   Starts the module specified by the given identifier.

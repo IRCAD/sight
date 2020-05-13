@@ -47,7 +47,8 @@ public:
      *
      * @return  a pointer to a module instance
      */
-    [[deprecated]] FWRUNTIME_API std::shared_ptr<Module> getBundle() const;
+    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
+    FWRUNTIME_API std::shared_ptr<Module> getBundle() const;
 
     /**
      * @brief   Retrieves the module that owns the extension.

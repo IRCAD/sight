@@ -78,7 +78,8 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      *
      * @return  a shared pointer to a module instance
      */
-    [[deprecated]] FWRUNTIME_API const std::shared_ptr< Module > getBundle() const noexcept;
+    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
+    FWRUNTIME_API const std::shared_ptr< Module > getBundle() const noexcept;
 
     /**
      * @brief   Retrieves the module the configuration element is attached to.

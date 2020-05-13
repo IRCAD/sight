@@ -156,6 +156,7 @@ private:
  * @deprecated  This should not be called outside this library and will become part of private API as of 22.0
  * @param       prof profile
  */
+[[deprecated("To be removed in Sight 22.0, profile is set by runtime internally.")]]
 FWRUNTIME_API void setCurrentProfile(::fwRuntime::Profile::sptr prof);
 
 /**

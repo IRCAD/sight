@@ -49,7 +49,6 @@ ModuleElement::ModuleElement( std::shared_ptr< Module > module ) :
 
 std::shared_ptr<Module> ModuleElement::getBundle() const
 {
-    FW_DEPRECATED_MSG("getBundle", "22.0");
     return this->getModule();
 }
 

@@ -69,6 +69,7 @@ public:
      *
      * @param[in]   repository  a path that may containing modules
      */
+    [[deprecated("To be removed in Sight 22.0, use addModules() instead")]]
     void addBundles( const std::filesystem::path& repository ) override;
 
     /**
@@ -87,8 +88,9 @@ public:
      * @return      a shared pointer to the found module or null if none
      * @deprecated  Module has been renamed to Module, please use findModule() instead
      */
-    [[deprecated]] SPTR( ::fwRuntime::Module ) findBundle( const std::string& identifier,
-                                                           const Version& version = Version() ) const final;
+    [[deprecated("To be removed in Sight 22.0, use findModule() instead")]]
+    SPTR( ::fwRuntime::Module ) findBundle( const std::string& identifier,
+                                            const Version& version = Version() ) const final;
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -149,7 +151,8 @@ public:
     std::shared_ptr< Extension > findExtension( const std::string& identifier ) const final;
 
     /// @copydoc ::fwRuntime::Runtime::getBundles
-    [[deprecated]] ::fwRuntime::Runtime::ModuleContainer getBundles() final;
+    [[deprecated("To be removed in Sight 22.0, use getModules() instead")]]
+    ::fwRuntime::Runtime::ModuleContainer getBundles() final;
 
     /// @copydoc ::fwRuntime::Runtime::getModules
     ::fwRuntime::Runtime::ModuleContainer getModules() final;

@@ -123,7 +123,6 @@ void Profile::setParams(const Profile::ParamsContainer& params)
 
 void setCurrentProfile(Profile::sptr prof)
 {
-    FW_DEPRECATED_MSG("setCurrentProfile", "22.0");
 }
 
 //------------------------------------------------------------------------------

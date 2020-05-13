@@ -96,7 +96,6 @@ void Runtime::unregisterModule( std::shared_ptr< Module > module )
 
 void Runtime::addBundles( const std::filesystem::path& repository )
 {
-    FW_DEPRECATED_MSG("addBundles", "22.0");
     this->addModules(repository);
 }
 
@@ -310,7 +309,6 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
 
 ::fwRuntime::Runtime::ModuleContainer Runtime::getBundles()
 {
-    FW_DEPRECATED_MSG("getBundles", "22.0");
     return this->getModules();
 }
 

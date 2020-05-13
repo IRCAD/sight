@@ -60,7 +60,8 @@ public:
      *
      * @return  a pointer to the originating module.
      */
-    [[deprecated]] virtual std::shared_ptr<Module> getBundle() const = 0;
+    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
+    virtual std::shared_ptr<Module> getBundle() const = 0;
 
     /**
      * @brief   Retrieves the module the executable originates from.

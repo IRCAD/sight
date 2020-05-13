@@ -123,7 +123,6 @@ std::shared_ptr< Extension > findExtension( const std::string& identifier )
 
 std::filesystem::path getBundleResourcePath(const std::string& moduleIdentifier) noexcept
 {
-    FW_DEPRECATED_MSG("getBundleResourcePath", "22.0");
     return getModuleResourcePath(moduleIdentifier);
 }
 
@@ -148,7 +147,6 @@ std::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentif
                                                 const std::filesystem::path& path) noexcept
 {
 
-    FW_DEPRECATED_MSG("getBundleResourceFilePath", "22.0");
     return getModuleResourceFilePath(bundleIdentifier, path);
 }
 
@@ -172,7 +170,6 @@ std::filesystem::path getModuleResourceFilePath(const std::string& bundleIdentif
 
 std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& path) noexcept
 {
-    FW_DEPRECATED_MSG("getBundleResourceFilePath", "22.0");
     return getModuleResourceFilePath(path);
 }
 
@@ -244,7 +241,6 @@ std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noe
 std::filesystem::path getBundleResourcePath( std::shared_ptr<Module> bundle,
                                              const std::filesystem::path& path) noexcept
 {
-    FW_DEPRECATED_MSG("getBundleResourcePath", "22.0");
     return getModuleResourcePath(bundle, path);
 }
 
@@ -261,7 +257,6 @@ std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> bundle,
 std::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
                                              const std::filesystem::path& path) noexcept
 {
-    FW_DEPRECATED_MSG("getBundleResourcePath", "22.0");
     return getModuleResourcePath(element, path);
 }
 
@@ -278,7 +273,6 @@ std::filesystem::path getModuleResourcePath( ConfigurationElement::sptr element,
 std::filesystem::path getBundleResourcePath(const IExecutable* executable,
                                             const std::filesystem::path& path) noexcept
 {
-    FW_DEPRECATED_MSG("getBundleResourcePath", "22.0");
     return getModuleResourcePath(executable, path);
 }
 
@@ -294,7 +288,6 @@ std::filesystem::path getModuleResourcePath(const IExecutable* executable,
 
 void addBundles( const std::filesystem::path& directory)
 {
-    FW_DEPRECATED_MSG("addBundles", "22.0");
     addModules(directory);
 }
 
@@ -312,7 +305,6 @@ void addModules( const std::filesystem::path& directory)
 
 std::shared_ptr<Module> loadBundle(const std::string& identifier, const Version& version)
 {
-    FW_DEPRECATED_MSG("loadBundle", "22.0");
     return loadModule(identifier, version);
 }
 
@@ -354,7 +346,6 @@ std::shared_ptr<Module> loadModule(const std::string& identifier, const Version&
 
 std::shared_ptr< Module > findBundle( const std::string& identifier, const Version& version )
 {
-    FW_DEPRECATED_MSG("findBundle", "22.0");
     return findModule( identifier, version );
 }
 
@@ -376,7 +367,6 @@ std::shared_ptr< detail::ExtensionPoint > findExtensionPoint(const std::string& 
 
 void startBundle(const std::string& identifier)
 {
-    FW_DEPRECATED_MSG("startBundle", "22.0");
     startModule(identifier);
 }
 

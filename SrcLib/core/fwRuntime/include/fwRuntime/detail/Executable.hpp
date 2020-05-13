@@ -52,7 +52,8 @@ public:
      */
     /// @{
 
-    [[deprecated]] std::shared_ptr<Module> getBundle() const override;
+    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]] std::shared_ptr<Module> getBundle() const
+    override;
     std::shared_ptr<Module> getModule() const override;
 
     void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration ) override;
