@@ -528,8 +528,6 @@ void Window::ogreResize(const QSize& _newSize)
     m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth), static_cast< unsigned int >(newHeight));
 #endif
     m_ogreRenderWindow->windowMovedOrResized();
-    const float newAspectRatio = static_cast<float>(m_ogreRenderWindow->getWidth()) /
-                                 static_cast<float>(m_ogreRenderWindow->getHeight());
 
     const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
@@ -537,7 +535,11 @@ void Window::ogreResize(const QSize& _newSize)
     for (unsigned short i = 0; i < numViewports; i++)
     {
         viewport = m_ogreRenderWindow->getViewport(i);
-        viewport->getCamera()->setAspectRatio(newAspectRatio);
+
+        const float vpWidth  = static_cast<float>(viewport->getActualWidth());
+        const float vpHeight = static_cast<float>(viewport->getActualHeight());
+
+        viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
     }
 
     if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
