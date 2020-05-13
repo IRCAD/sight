@@ -22,15 +22,9 @@ stages:
     - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
-    # Get list of all tags.
-    - REPO_TAGS=$(git tag)
-    # Check with a regex if the commit ref name is found by storing the grep result in a variable. 
-    # The command '|| true' is added because grep can return 0 and break the CI.
-    - FOUND=$(grep ^$CI_COMMIT_REF_NAME$ <<< ${REPO_TAGS}) || true
-    # Check if the commit ref name is not dev, master, or a tag (FOUND is empty if it's the case),
-    # and merge the branch into dev.
+    # Merge the branch into dev.
     - >
-      if [ -z "$FOUND" ]; then
+      if [ -z "$CI_COMMIT_TAG" ]; then
         if [ "$CI_COMMIT_REF_NAME" != "dev" ]; then
           if [ "$CI_COMMIT_REF_NAME" != "master" ]; then
             git config user.name ${GITLAB_USER_ID}
@@ -51,18 +45,11 @@ stages:
     FW_IGNORE_SLOW_TESTS: 1
     CUDA_PATH: "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1"
   before_script:
-    # Check if the commit ref name is not dev, master, or a tag (FOUND is 'true' if it's the case),
-    # and merge the branch into dev.
+    # CMerge the branch into dev.
     - >
       if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
         if "%CI_COMMIT_REF_NAME%" NEQ "master" (
-          set FOUND=false
-          for /f "tokens=*" %%a in ('git tag') do (
-            if "%CI_COMMIT_REF_NAME%" EQU "%%a" (
-              set FOUND=true
-            )
-          )
-          if "%FOUND%" EQU "false" (
+          if "%CI_COMMIT_TAG%" EQU "" (
             git config user.name ${GITLAB_USER_ID}
             git config user.email ${GITLAB_USER_EMAIL}
             git fetch --all
@@ -231,15 +218,23 @@ build:debian:
     - export CC=/usr/lib/ccache/gcc-9
     - export CXX=/usr/lib/ccache/g++-9
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    - sudo chown -R sight:sight .
+    # Merge the branch into dev.
+    - >
+      if [ -z "$CI_COMMIT_TAG" ]; then
+        if [ "$CI_COMMIT_REF_NAME" != "dev" ]; then
+          if [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+            git config user.name ${GITLAB_USER_ID}
+            git config user.email ${GITLAB_USER_EMAIL}
+            git fetch --all
+            git checkout dev    
+            git reset --hard origin/dev
+            git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+          fi
+        fi
+      fi
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
   script:
-    # Configure git to allow git merge.
-    - git config user.name ${GITLAB_USER_ID}
-    - git config user.email ${GITLAB_USER_EMAIL}
-    # Checkout to dev and merge the current branche to dev without any commit.
-    - git checkout dev
-    - git reset --hard origin/dev
-    - git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
