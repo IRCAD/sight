@@ -49,6 +49,7 @@ namespace editor
  * @endcode
  * @subsection Input Input
  * - \b string(::fwData::String, optional): string data to display.
+ * @subsection Configuration Configuration
  * - \b label (optional, by default "") : the text to show before size of the vector
  * - \b color (optional, by default "red") : the needed color of the displayed label in a CSS style as names (ex: red),
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
@@ -80,7 +81,7 @@ protected:
     virtual void configuring() override;
 
     /**
-     * @brief Install the layout.
+     * @brief Install the layout and gets the input data if it exists and displays it.
      */
     virtual void starting() override;
 
@@ -89,12 +90,16 @@ protected:
      */
     virtual void stopping() override;
 
-    /// Does nothing
+    /// Gets the input data if it exists and displays it.
     virtual void updating() override;
 
     /// Does nothing
     virtual void swapping() override;
 
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
