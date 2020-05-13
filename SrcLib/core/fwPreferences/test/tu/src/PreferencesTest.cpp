@@ -62,7 +62,8 @@ void PreferencesTest::runtimeTest()
     ::fwRuntime::init();
 
     const std::string profileName = ::fwTools::UUID::generateUUID();
-    m_profile->setName(profileName);
+    auto profile                  = ::fwRuntime::profile::getCurrentProfile();
+    profile->setName(profileName);
 
     const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
     m_preferencesPath = appPrefDir / "preferences.json";
