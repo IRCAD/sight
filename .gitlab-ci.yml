@@ -22,14 +22,18 @@ stages:
     - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
+    # Merge the branch into dev.
+    - >
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        git config user.name ${GITLAB_USER_ID}
+        git config user.email ${GITLAB_USER_EMAIL}
+        git fetch --all
+        git checkout dev
+        git reset --hard origin/dev
+        git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+      fi
+    # Reset the time of all files to improve the use of ccache.
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
-    # Configure git to allow git merge.
-    - git config user.name ${GITLAB_USER_ID}
-    - git config user.email ${GITLAB_USER_EMAIL}
-    # Checkout to dev and merge the current branche to dev without any commit.
-    - git checkout dev    
-    - git reset --hard origin/dev
-    - git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
 
 .windows_template: &windows_job
   variables:
@@ -37,18 +41,26 @@ stages:
     FW_IGNORE_SLOW_TESTS: 1
     CUDA_PATH: "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1"
   before_script:
+    # CMerge the branch into dev.
+    - >
+      if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
+        if "%CI_COMMIT_REF_NAME%" NEQ "master" (
+          if "%CI_COMMIT_TAG%" EQU "" (
+            git config user.name ${GITLAB_USER_ID}
+            git config user.email ${GITLAB_USER_EMAIL}
+            git fetch --all
+            git checkout dev
+            git reset --hard origin/dev
+            git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
+          )
+        )
+      )
+    # Configure the build.
     - conan config set storage.path="C:\cache\conan"
     - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
     - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
     - chcp 1252
-    # Configure git to allow git merge.
-    - git config user.name %GITLAB_USER_ID%
-    - git config user.email %GITLAB_USER_EMAIL%
-    # Checkout to dev and merge the current branche to dev without any commit.
-    - git checkout dev    
-    - git reset --hard origin/dev
-    - git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
   tags:
     - shell
     - windows
@@ -69,6 +81,7 @@ sheldon:
   except:
     - dev
     - master
+    - tags
 
 build:debug-linux:
   <<: *linux_job
@@ -78,6 +91,7 @@ build:debug-linux:
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
+    # PCH are disabled because they doesn't work with ccache.
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
@@ -108,6 +122,7 @@ build:release-linux:
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
+    # PCH are disabled because they doesn't work with ccache.
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
@@ -122,7 +137,7 @@ build:release-linux:
     # Run tests.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log  -j4
+    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -144,6 +159,7 @@ build:debug-windows:
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
      -DSPYLOG_LEVEL=trace
+     -DENABLE_PCH=ON
     - ninja
     # Run tests.
     - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
@@ -170,6 +186,7 @@ build:release-windows:
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=ON
      -DBUILD_DOCUMENTATION=OFF
+     -DENABLE_PCH=ON
     - ninja
     # Run tests.
     - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
@@ -197,15 +214,18 @@ build:debian:
     - export CC=/usr/lib/ccache/gcc-9
     - export CXX=/usr/lib/ccache/g++-9
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
+    # Merge the branch into dev.
+    - >
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        git config user.name ${GITLAB_USER_ID}
+        git config user.email ${GITLAB_USER_EMAIL}
+        git fetch --all
+        git checkout dev
+        git reset --hard origin/dev
+        git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+      fi
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
   script:
-    # Configure git to allow git merge.
-    - git config user.name ${GITLAB_USER_ID}
-    - git config user.email ${GITLAB_USER_EMAIL}
-    # Checkout to dev and merge the current branche to dev without any commit.
-    - git checkout dev
-    - git reset --hard origin/dev
-    - git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
@@ -282,7 +302,7 @@ build:sdk-release-linux:
     - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
     - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
     - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-
+    
 build:sdk-debug-linux:
   <<: *linux_job
   stage: build
