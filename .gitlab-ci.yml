@@ -134,6 +134,7 @@ build:debug-linux-clang:
   stage: build
   dependencies: []
   script:
+    # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - export CC=/usr/local/lib/ccache/clang-8
     - export CXX=/usr/local/lib/ccache/clang++-8
@@ -150,6 +151,7 @@ build:debug-linux-clang:
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
+    # Run tests.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
     - ctest --timeout 240 --output-on-failure -O ctest.log -j4
