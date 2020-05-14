@@ -24,17 +24,13 @@ stages:
     - sudo chown -R sight:sight .
     # Merge the branch into dev.
     - >
-      if [ -z "$CI_COMMIT_TAG" ]; then
-        if [ "$CI_COMMIT_REF_NAME" != "dev" ]; then
-          if [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-            git config user.name ${GITLAB_USER_ID}
-            git config user.email ${GITLAB_USER_EMAIL}
-            git fetch --all
-            git checkout dev    
-            git reset --hard origin/dev
-            git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
-          fi
-        fi
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        git config user.name ${GITLAB_USER_ID}
+        git config user.email ${GITLAB_USER_EMAIL}
+        git fetch --all
+        git checkout dev
+        git reset --hard origin/dev
+        git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
       fi
     # Reset the time of all files to improve the use of ccache.
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -53,7 +49,7 @@ stages:
             git config user.name ${GITLAB_USER_ID}
             git config user.email ${GITLAB_USER_EMAIL}
             git fetch --all
-            git checkout dev    
+            git checkout dev
             git reset --hard origin/dev
             git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
           )
@@ -218,20 +214,15 @@ build:debian:
     - export CC=/usr/lib/ccache/gcc-9
     - export CXX=/usr/lib/ccache/g++-9
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
-    - sudo chown -R sight:sight .
     # Merge the branch into dev.
     - >
-      if [ -z "$CI_COMMIT_TAG" ]; then
-        if [ "$CI_COMMIT_REF_NAME" != "dev" ]; then
-          if [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-            git config user.name ${GITLAB_USER_ID}
-            git config user.email ${GITLAB_USER_EMAIL}
-            git fetch --all
-            git checkout dev    
-            git reset --hard origin/dev
-            git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
-          fi
-        fi
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        git config user.name ${GITLAB_USER_ID}
+        git config user.email ${GITLAB_USER_EMAIL}
+        git fetch --all
+        git checkout dev
+        git reset --hard origin/dev
+        git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
       fi
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
   script:
