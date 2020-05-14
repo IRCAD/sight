@@ -191,17 +191,17 @@ void ImageSeriesWriter::write()
     // Spacing
     // tagkey = "0028|0030";
     std::string value;
-    std::vector<double> spacing = dataImage->getSpacing();
+    const auto spacing = dataImage->getSpacing2();
     value  = ::fwTools::getString< double >(spacing[0]);
     value += '\\';
     value += ::fwTools::getString< double >(spacing[1]);
     setValue(medprop, 0x0028, 0x0030, value);
 
     std::string origin;
-    ::fwData::Image::OriginType orginVec = dataImage->getOrigin();
-    origin                               = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[0]);
-    origin                              += '\\';
-    origin                               = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[1]);
+    const ::fwData::Image::Origin orginVec = dataImage->getOrigin2();
+    origin  = ::fwTools::getString< ::fwData::Image::Origin::value_type >(orginVec[0]);
+    origin += '\\';
+    origin  = ::fwTools::getString< ::fwData::Image::Origin::value_type >(orginVec[1]);
 
     if(dataImage->getNumberOfDimensions() > 2)
     {
@@ -216,7 +216,7 @@ void ImageSeriesWriter::write()
         setValue(medprop, 0x0018, 0x0088, value);
 
         origin += '\\';
-        origin  = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[2]);
+        origin  = ::fwTools::getString< ::fwData::Image::Origin::value_type >(orginVec[2]);
     }
 
     setValue(medprop, 0x0020, 0x0032, origin);

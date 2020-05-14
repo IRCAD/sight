@@ -109,7 +109,7 @@ private:
     unsigned short m_binding[NUM_BINDINGS];
 
     /// Number of primitives types that are handled by ::fwData::Mesh
-    static const unsigned int s_numPrimitiveTypes = ::fwData::Mesh::TETRA + 1;
+    static const unsigned int s_numPrimitiveTypes = static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA) + 1;
 
     /// Pointers on submeshes needed for reallocation check.
     /// For QUADS and TETRAS primitives, they point to r2vb submeshes.

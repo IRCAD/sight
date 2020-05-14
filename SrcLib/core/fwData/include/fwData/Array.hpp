@@ -356,8 +356,8 @@ public:
         /// allow to create a ConstIterator from an Iterator
         friend class IteratorBase<TYPE, true>;
 
-        pointer m_pointer{nullptr};
         ::fwMemory::BufferObject::Lock m_lock;
+        pointer m_pointer{nullptr};
         difference_type m_idx{0};
         difference_type m_numberOfElements;
     };
@@ -389,9 +389,13 @@ public:
     FWDATA_API size_t resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate = true);
 
     /**
-     * @brief Return a lock on the array to prevent from dumping the buffer on the disk
+     * @brief Return a lock on the array to prevent from dumping the buffer on the disk.
      *
-     * The buffer cannot be accessed if the array is not locked
+     * When the buffer is dumped, the memory is released and the buffer will not be accessible. When lock() is called,
+     * the buffer is restored from the disk if it was dumped and as long as the ::fwMemory::BufferObject::Lock is
+     * maintained, the buffer will not be dumped.
+     *
+     * An exception will be raised  if you try to access while the array is not locked.
      */
     [[nodiscard]] FWDATA_API ::fwMemory::BufferObject::Lock lock() const;
 
@@ -403,7 +407,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock()).
      * @throw ::fwData::Exception Index out of bounds
      */
     template< typename T > T& at(const ::fwData::Array::IndexType& id);
@@ -416,7 +420,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock()).
      * @throw ::fwData::Exception Index out of bounds
      */
     template< typename T > const T& at(const ::fwData::Array::IndexType& id) const;
@@ -429,7 +433,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock()).
      * @throw ::fwData::Exception Index out of bounds
      */
     template< typename T > T& at(const size_t& offset);
@@ -442,7 +446,7 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock()).
      * @throw ::fwData::Exception Index out of bounds
      */
     template< typename T > const T& at(const size_t& offset) const;
@@ -451,7 +455,7 @@ public:
      * @brief Getter for the array buffer
      *
      * @return Array's buffer, if exists, else NULL
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock()).
      * @{
      */
     FWDATA_API void* getBuffer();
@@ -468,7 +472,7 @@ public:
      * @param size           Size of the array view
      * @param type           Type of the array view
      * @param policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
-     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked
+     * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock()).
      */
     FWDATA_API void setBuffer(
         void* buf,
@@ -523,12 +527,13 @@ public:
        @endcode
      * @warning The iterator does not assert that the array type is the same as the given format. It only asserts (in
      * debug) that the iterator does not iterate outside of the buffer bounds).
+     * @note These functions lock the buffer for dump (see lock()).
      * @{
      */
-    Iterator<char> begin();
-    Iterator<char> end();
-    ConstIterator<char> begin() const;
-    ConstIterator<char> end() const;
+    FWDATA_API Iterator<char> begin();
+    FWDATA_API Iterator<char> end();
+    FWDATA_API ConstIterator<char> begin() const;
+    FWDATA_API ConstIterator<char> end() const;
     /// @}
 
     //-----------------------------------------------------
@@ -783,8 +788,8 @@ inline const T& Array::at(const size_t& offset) const
 
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array) :
-    m_pointer(static_cast<pointer>(array->getBuffer())),
     m_lock(array->lock()),
+    m_pointer(static_cast<pointer>(array->getBuffer())),
     m_idx(0),
     m_numberOfElements(static_cast<difference_type>(array->getSizeInBytes()/sizeof(TYPE)))
 {
@@ -794,8 +799,8 @@ inline Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array) :
 
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>& other) :
-    m_pointer(other.m_pointer),
     m_lock(other.m_lock),
+    m_pointer(other.m_pointer),
     m_idx(other.m_idx),
     m_numberOfElements(other.m_numberOfElements)
 {
@@ -805,8 +810,8 @@ inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE,
 
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, true>& other) :
-    m_pointer(other.m_pointer),
     m_lock(other.m_lock),
+    m_pointer(other.m_pointer),
     m_idx(other.m_idx),
     m_numberOfElements(other.m_numberOfElements)
 {

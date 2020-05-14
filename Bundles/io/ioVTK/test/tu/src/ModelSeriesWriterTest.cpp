@@ -197,7 +197,57 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
             for(; itRef != refRecs.end(); ++itRef, ++itRead)
             {
-                CPPUNIT_ASSERT(::fwTest::helper::compare((*itRef)->getMesh(), (*itRead)->getMesh()));
+                ::fwData::Mesh::csptr refMesh  = (*itRef)->getMesh();
+                ::fwData::Mesh::csptr readMesh = (*itRead)->getMesh();
+
+                CPPUNIT_ASSERT_EQUAL(refMesh->getNumberOfPoints(), readMesh->getNumberOfPoints());
+                CPPUNIT_ASSERT_EQUAL(refMesh->getNumberOfCells(), readMesh->getNumberOfCells());
+                CPPUNIT_ASSERT_EQUAL(refMesh->getCellDataSize(), readMesh->getCellDataSize());
+
+                auto refPointsItr       = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
+                auto readPointsItr      = readMesh->begin< ::fwData::iterator::ConstPointIterator >();
+                const auto refPointsEnd = refMesh->end< ::fwData::iterator::ConstPointIterator >();
+
+                for(; refPointsItr != refPointsEnd; ++refPointsItr, ++readPointsItr)
+                {
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->point->x, readPointsItr->point->x, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->point->y, readPointsItr->point->y, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->point->z, readPointsItr->point->z, 0.00001);
+
+                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->r, readPointsItr->rgba->r);
+                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->g, readPointsItr->rgba->g);
+                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->b, readPointsItr->rgba->b);
+                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->a, readPointsItr->rgba->a);
+
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->normal->nx, readPointsItr->normal->nx, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->normal->ny, readPointsItr->normal->ny, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->normal->nz, readPointsItr->normal->nz, 0.00001);
+                }
+
+                auto refCellsItr       = refMesh->begin< ::fwData::iterator::ConstCellIterator >();
+                auto readCellsItr      = readMesh->begin< ::fwData::iterator::ConstCellIterator >();
+                const auto refCellsEnd = refMesh->end< ::fwData::iterator::ConstCellIterator >();
+
+                for(; refCellsItr != refCellsEnd; ++refCellsItr, ++readCellsItr)
+                {
+                    CPPUNIT_ASSERT_EQUAL(*refCellsItr->type, *readCellsItr->type);
+                    CPPUNIT_ASSERT_EQUAL(*refCellsItr->offset, *readCellsItr->offset);
+                    CPPUNIT_ASSERT_EQUAL(refCellsItr->nbPoints, readCellsItr->nbPoints);
+
+                    for (size_t i = 0; i < refCellsItr->nbPoints; ++i)
+                    {
+                        CPPUNIT_ASSERT_EQUAL(refCellsItr->pointIdx[i], readCellsItr->pointIdx[i]);
+                    }
+
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refCellsItr->normal->nx, readCellsItr->normal->nx, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refCellsItr->normal->ny, readCellsItr->normal->ny, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refCellsItr->normal->nz, readCellsItr->normal->nz, 0.00001);
+
+                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->r, readCellsItr->rgba->r);
+                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->g, readCellsItr->rgba->g);
+                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->b, readCellsItr->rgba->b);
+                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->a, readCellsItr->rgba->a);
+                }
             }
         }
     }

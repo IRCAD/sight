@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2018 IRCAD France
- * Copyright (C) 2017-2018 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -116,8 +116,15 @@ public:
 protected:
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
+    /// @deprecated Use scaleTranslateCube(const ::fwData::Image::Spacing&, const ::fwData::Image::Origin&). It will be
+    /// removed in sight 22.0
+    [[deprecated("It will be remove in sight 22.0")]]
     FWRENDEROGRE_API void scaleTranslateCube(const ::fwData::Image::SpacingType& spacing,
                                              const ::fwData::Image::OriginType& origin);
+
+    /// Scale the volume based on the image's spacing and move it to the image origin.
+    FWRENDEROGRE_API void scaleTranslateCube(const ::fwData::Image::Spacing& spacing,
+                                             const ::fwData::Image::Origin& origin);
 
     /// Computes the camera's plane.
     FWRENDEROGRE_API ::Ogre::Plane getCameraPlane() const;

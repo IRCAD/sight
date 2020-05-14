@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWITKIO_UT_HELPER_HPP__
-#define __FWITKIO_UT_HELPER_HPP__
+#pragma once
+
+#include <fwCore/macros.hpp>
 
 namespace fwData
 {
@@ -40,6 +41,3 @@ void roundSpacing( SPTR(::fwData::Image) image);
 } //namespace helper
 } //namespace ut
 } //namespace fwItkIO
-
-
-#endif // __FWITKIO_UT_HELPER_HPP__

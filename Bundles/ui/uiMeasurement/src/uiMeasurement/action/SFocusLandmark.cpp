@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ static const ::fwCom::Slots::SlotKeyType s_DESELECT_LANDMARK_SLOT   = "deselectL
 static const ::fwCom::Slots::SlotKeyType s_DESELECT_FROM_GROUP_SLOT = "deselectFromGroup";
 static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT        = "renameGroup";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SFocusLandmark );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SFocusLandmark )
 
 //------------------------------------------------------------------------------
 
@@ -126,19 +126,19 @@ void SFocusLandmark::updating()
 
                 ::fwData::Integer::sptr paramA = ::fwData::Integer::New();
                 paramA->value()                =
-                    static_cast<int>((point[2] - pImage->getOrigin()[2] ) / pImage->getSpacing()[2] +0.5);
+                    static_cast<int>((point[2] - pImage->getOrigin2()[2] ) / pImage->getSpacing2()[2] +0.5);
                 ::fwData::Integer::sptr paramF = ::fwData::Integer::New();
                 paramF->value()                =
-                    static_cast<int>((point[1] -  pImage->getOrigin()[1]) / pImage->getSpacing()[1] +0.5);
+                    static_cast<int>((point[1] -  pImage->getOrigin2()[1]) / pImage->getSpacing2()[1] +0.5);
                 ::fwData::Integer::sptr paramS = ::fwData::Integer::New();
                 paramS->value()                =
-                    static_cast<int>((point[0] -  pImage->getOrigin()[0]) / pImage->getSpacing()[0] +0.5);
+                    static_cast<int>((point[0] -  pImage->getOrigin2()[0]) / pImage->getSpacing2()[0] +0.5);
                 if( paramS->value() >= 0 &&
                     paramF->value() >= 0 &&
                     paramA->value() >= 0 &&
-                    pImage->getSize()[0] > static_cast< ::fwData::Image::SizeType::value_type >(paramS->value()) &&
-                    pImage->getSize()[1] > static_cast< ::fwData::Image::SizeType::value_type >(paramF->value()) &&
-                    pImage->getSize()[2] > static_cast< ::fwData::Image::SizeType::value_type >(paramA->value()) )
+                    pImage->getSize2()[0] > static_cast< ::fwData::Image::Size::value_type >(paramS->value()) &&
+                    pImage->getSize2()[1] > static_cast< ::fwData::Image::Size::value_type >(paramF->value()) &&
+                    pImage->getSize2()[2] > static_cast< ::fwData::Image::Size::value_type >(paramA->value()) )
                 {
                     pImage->setField( ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, paramA );
                     pImage->setField( ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, paramF );

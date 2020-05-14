@@ -446,7 +446,13 @@ void ArrayTest::bufferAccessTest()
     ::fwData::Array::SizeType size = {10, 100};
 
     array->resize(size, ::fwTools::Type::s_UINT32, true);
-    auto lock = array->lock();
+
+    {
+        // Check that the iterator properly lock the buffer
+        CPPUNIT_ASSERT_NO_THROW(array->begin());
+        const auto itr = array->begin();
+        CPPUNIT_ASSERT_NO_THROW(array->getBuffer());
+    }
 
     std::uint32_t count                              = 0;
     ::fwData::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();

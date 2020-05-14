@@ -33,8 +33,8 @@ namespace iterator
 
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(ImageType image) :
-    m_pointer(static_cast<pointer>(image->getBuffer())),
     m_lock(image->lock()),
+    m_pointer(static_cast<pointer>(image->getBuffer())),
     m_idx(0),
     m_numberOfElements(static_cast<difference_type>(image->getSizeInBytes()/sizeof(FORMAT)))
 {
@@ -44,8 +44,8 @@ inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(ImageType image) :
 
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(const ImageIteratorBase<FORMAT, false>& other) :
-    m_pointer(other.m_pointer),
     m_lock(other.m_lock),
+    m_pointer(other.m_pointer),
     m_idx(other.m_idx),
     m_numberOfElements(other.m_numberOfElements)
 {
@@ -55,8 +55,8 @@ inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(const ImageIterator
 
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(const ImageIteratorBase<FORMAT, true>& other) :
-    m_pointer(other.m_pointer),
     m_lock(other.m_lock),
+    m_pointer(other.m_pointer),
     m_idx(other.m_idx),
     m_numberOfElements(other.m_numberOfElements)
 {
@@ -78,8 +78,8 @@ ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator
 {
     if (this != &other)
     {
-        m_pointer          = other.m_pointer;
         m_lock             = other.m_lock;
+        m_pointer          = other.m_pointer;
         m_idx              = other.m_idx;
         m_numberOfElements = other.m_numberOfElements;
     }

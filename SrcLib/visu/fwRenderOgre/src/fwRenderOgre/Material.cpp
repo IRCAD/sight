@@ -392,14 +392,16 @@ void Material::setDiffuseTexture(const ::Ogre::TexturePtr& _texture)
                 }
                 else
                 {
-
-                    texUnitState->setTextureName("");
+                    pass->removeTextureUnitState(pass->getTextureUnitStateIndex(texUnitState));
                 }
             }
             else
             {
-                SLM_ERROR("No 'diffuseTexture' texture unit state found in .material."
-                          " STexture adaptor will not work properly.");
+                if(_texture)
+                {
+                    texUnitState = pass->createTextureUnitState("diffuseTexture");
+                    texUnitState->setTexture(_texture);
+                }
             }
         }
     }

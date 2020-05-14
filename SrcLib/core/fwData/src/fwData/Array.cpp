@@ -329,7 +329,8 @@ size_t Array::resize(
 
 void* Array::getBuffer()
 {
-    FW_RAISE_EXCEPTION_IF(::fwData::Exception("The buffer cannot be accessed if the array is not locked"),
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("The buffer cannot be accessed if the array is not locked for dump "
+                                              "(see lock())"),
                           !m_bufferObject->isLocked());
     return m_bufferObject->getBuffer();
 }

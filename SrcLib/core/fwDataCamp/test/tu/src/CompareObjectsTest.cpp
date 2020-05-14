@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -68,13 +68,13 @@ void CompareObjectsTest::compareImageTest()
 
     ::fwData::Image::sptr imgComp = ::fwData::Object::copy(img);
 
-    ::fwData::Image::SpacingType spacing = imgComp->getSpacing();
-    spacing[0]                           = 42;
-    imgComp->setSpacing(spacing);
+    ::fwData::Image::Spacing spacing = imgComp->getSpacing2();
+    spacing[0]                       = 42;
+    imgComp->setSpacing2(spacing);
 
-    ::fwData::Image::OriginType origin = imgComp->getOrigin();
-    origin[2]                          = 1664;
-    imgComp->setOrigin(origin);
+    ::fwData::Image::Origin origin = imgComp->getOrigin2();
+    origin[2]                      = 1664;
+    imgComp->setOrigin2(origin);
 
     visitor::CompareObjects visitor;
     visitor.compare(img, imgComp);

@@ -57,7 +57,7 @@ DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction
     // Get mesh
     ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Can't save this mesh. It must contain only triangles !"),
-                          !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+                          !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::CellType::TRIANGLE));
     auto itr       = mesh->begin< ::fwData::iterator::ConstPointIterator >();
     const auto end = mesh->end< ::fwData::iterator::ConstPointIterator >();
     // Coordinates
@@ -157,7 +157,7 @@ DicomSurface::~DicomSurface()
         // Cells types
         std::fill(itr->type,
                   end->type,
-                  static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
+                  static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::CellType::TRIANGLE));
 
         // Cell data offset
         CellDataOffsetGenerator cellDataOffsetGenerator;

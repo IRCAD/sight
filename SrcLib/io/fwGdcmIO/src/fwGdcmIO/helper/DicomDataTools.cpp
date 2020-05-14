@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -140,10 +140,10 @@ std::size_t DicomDataTools::convertPointToFrameNumber(const ::fwData::Image::csp
                                                       const ::fwData::Point::csptr& point)
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin2()[2]) : 0;
 
     // Retrieve Z coordinate
     const double zCoordinate = static_cast<double>(point->getCoord()[2]);
@@ -151,7 +151,7 @@ std::size_t DicomDataTools::convertPointToFrameNumber(const ::fwData::Image::csp
     // Compute frame number
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Coordinates out of image bounds."),
-                          frameNumber < 1 || frameNumber > image->getSize()[2]);
+                          frameNumber < 1 || frameNumber > image->getSize2()[2]);
 
     return frameNumber;
 }
@@ -162,15 +162,15 @@ double DicomDataTools::convertFrameNumberToZCoordinate(const ::fwData::Image::cs
                                                        const std::size_t frameNumber)
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin2()[2]) : 0;
 
     // Compute coordinate
     const std::size_t frameIndex = (frameNumber-1);
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Coordinates out of image bounds."),
-                          frameIndex >= image->getSize()[2]);
+                          frameIndex >= image->getSize2()[2]);
     const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 
     return zCoordinate;

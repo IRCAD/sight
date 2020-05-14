@@ -97,13 +97,13 @@ void SeriesDBTest::testImportSeriesDB()
     CPPUNIT_ASSERT_EQUAL(size_t(2), recVect.size());
 
     ::fwData::Reconstruction::sptr rec1 = recVect.at(0);
-    ::fwData::Reconstruction::sptr rec2 = recVect.at(0);
+    ::fwData::Reconstruction::sptr rec2 = recVect.at(1);
 
     CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec1->getOrganName());
     CPPUNIT_ASSERT_EQUAL(std::string("sphere"), rec2->getOrganName());
 
     ::fwData::Mesh::sptr mesh1 = rec1->getMesh();
-    ::fwData::Mesh::sptr mesh2 = rec1->getMesh();
+    ::fwData::Mesh::sptr mesh2 = rec2->getMesh();
 
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)720);
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)362);

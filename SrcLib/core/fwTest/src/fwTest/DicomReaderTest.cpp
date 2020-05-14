@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -173,9 +173,9 @@ bool DicomReaderTest::checkSeriesJMSGenou( const ::fwMedData::ImageSeries::sptr&
         return false;
     }
 
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x origin doesn't match  :", -36.71875, img->getOrigin()[0], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y origin doesn't match  :", -88.28125, img->getOrigin()[1], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z origin doesn't match  :", 1350.300, img->getOrigin()[2], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x origin doesn't match  :", -36.71875, img->getOrigin2()[0], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y origin doesn't match  :", -88.28125, img->getOrigin2()[1], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z origin doesn't match  :", 1350.300, img->getOrigin2()[2], 0.01);
     //(0020,0037) DS [1.00000\0.00000\0.00000\0.00000\1.00000\0.00000 ]         # 48,6 Image Orientation (Patient)
     //(0020,0052) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183409.15274]         # 56,1 Frame of Reference UID
     //(0020,1040) LO (no value)                                         # 0,1 Position Reference Indicator
@@ -185,13 +185,13 @@ bool DicomReaderTest::checkSeriesJMSGenou( const ::fwMedData::ImageSeries::sptr&
     //(0028,0004) CS [MONOCHROME2 ]                                     # 12,1 Photometric Interpretation
     //(0028,0010) US 512                                                # 2,1 Rows
     //(0028,0011) US 512                                                # 2,1 Columns
-    CHECK_VALUE(ok, "Image x size doesn't match  :", 512, img->getSize()[0] );
-    CHECK_VALUE(ok, "Image y size doesn't match  :", 512, img->getSize()[1] );
-    CHECK_VALUE(ok, "Image z size doesn't match  :", 404, img->getSize()[2] );
+    CHECK_VALUE(ok, "Image x size doesn't match  :", 512, img->getSize2()[0] );
+    CHECK_VALUE(ok, "Image y size doesn't match  :", 512, img->getSize2()[1] );
+    CHECK_VALUE(ok, "Image z size doesn't match  :", 404, img->getSize2()[2] );
     //(0028,0030) DS [0.384\0.384 ]                                     # 12,2 Pixel Spacing
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x spacing doesn't match  :", 0.384, img->getSpacing()[0], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y spacing doesn't match  :", 0.384, img->getSpacing()[1], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x spacing doesn't match  :", 0.384, img->getSpacing2()[0], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y spacing doesn't match  :", 0.384, img->getSpacing2()[1], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing2()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
     CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8 );
@@ -367,9 +367,9 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const ::fwMedData::ImageSeries
         return false;
     }
 
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x origin doesn't match  :", -36.71875, img->getOrigin()[0], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y origin doesn't match  :", -88.28125, img->getOrigin()[1], 0.01);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z origin doesn't match  :", 1350.300, img->getOrigin()[2], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x origin doesn't match  :", -36.71875, img->getOrigin2()[0], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y origin doesn't match  :", -88.28125, img->getOrigin2()[1], 0.01);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z origin doesn't match  :", 1350.300, img->getOrigin2()[2], 0.01);
     //(0020,0037) DS [1.00000\0.00000\0.00000\0.00000\1.00000\0.00000 ]         # 48,6 Image Orientation (Patient)
     //(0020,0052) UI [1.2.392.200036.9116.2.6.1.48.1211418863.1225183409.15274]         # 56,1 Frame of Reference UID
     //(0020,1040) LO (no value)                                         # 0,1 Position Reference Indicator
@@ -379,13 +379,13 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const ::fwMedData::ImageSeries
     //(0028,0004) CS [MONOCHROME2 ]                                     # 12,1 Photometric Interpretation
     //(0028,0010) US 512                                                # 2,1 Rows
     //(0028,0011) US 512                                                # 2,1 Columns
-    CHECK_VALUE(ok, "Image x size doesn't match  :", 512, img->getSize()[0] );
-    CHECK_VALUE(ok, "Image y size doesn't match  :", 512, img->getSize()[1] );
-    CHECK_VALUE(ok, "Image z size doesn't match  :", 404, img->getSize()[2] );
+    CHECK_VALUE(ok, "Image x size doesn't match  :", 512, img->getSize2()[0] );
+    CHECK_VALUE(ok, "Image y size doesn't match  :", 512, img->getSize2()[1] );
+    CHECK_VALUE(ok, "Image z size doesn't match  :", 404, img->getSize2()[2] );
     //(0028,0030) DS [0.384\0.384 ]                                     # 12,2 Pixel Spacing
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x spacing doesn't match  :", 0.384, img->getSpacing()[0], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y spacing doesn't match  :", 0.384, img->getSpacing()[1], 0.001);
-    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing()[2], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image x spacing doesn't match  :", 0.384, img->getSpacing2()[0], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image y spacing doesn't match  :", 0.384, img->getSpacing2()[1], 0.001);
+    CHECK_VALUE_WITH_TOLERANCE(ok, "Image z spacing doesn't match  :", 0.399, img->getSpacing2()[2], 0.001);
     //(0028,0100) US 16                                                 # 2,1 Bits Allocated
     //(0028,0101) US 16                                                 # 2,1 Bits Stored
     CHECK_VALUE(notReallyChecked, "Image Bits Allocated correspond  :", 16, img->getType().sizeOf() * 8 );

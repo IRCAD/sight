@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -136,7 +136,7 @@ void CTMRImageIOD::write(const ::fwMedData::Series::csptr& series)
     const ::gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
 
     // Compute number of frames
-    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (image->getSize()[2]) : 1;
+    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (image->getSize2()[2]) : 1;
 
     // Write specific tags according to frame number
     for(unsigned int i = 0; i < nbFrames; ++i)

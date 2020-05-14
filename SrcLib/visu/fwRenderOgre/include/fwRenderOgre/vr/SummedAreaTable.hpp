@@ -82,10 +82,10 @@ private:
     float m_satSizeRatio;
 
     /// SAT resolution. It's computed thanks to the configured ratio and the associated image size.
-    ::fwData::Image::SizeType m_satSize;
+    ::fwData::Image::Size m_satSize;
 
     /// Current image size used to resize the SAT in case of a ratio change.
-    ::fwData::Image::SizeType m_currentImageSize;
+    ::fwData::Image::Size m_currentImageSize;
 
     /// Texture used as source during SAT GPU computation, holds the result at the end.
     ::Ogre::TexturePtr m_sourceBuffer;

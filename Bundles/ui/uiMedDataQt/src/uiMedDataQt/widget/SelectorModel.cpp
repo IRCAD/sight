@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -109,13 +109,13 @@ void SelectorModel::clear()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Image::SpacingType roundSpacing(const ::fwData::Image::SpacingType& spacing)
+::fwData::Image::Spacing roundSpacing(const ::fwData::Image::Spacing& spacing)
 {
-    ::fwData::Image::SpacingType roundSpacing;
-    for(::fwData::Image::SpacingType::value_type val :  spacing)
+    ::fwData::Image::Spacing roundSpacing;
+    for(size_t i = 0; i < 3; ++i)
     {
-        ::fwData::Image::SpacingType::value_type roundVal = ::boost::math::round(val * 100.)/100.;
-        roundSpacing.push_back(roundVal);
+        ::fwData::Image::Spacing::value_type roundVal = ::boost::math::round(spacing[i] * 100.)/100.;
+        roundSpacing[i]                               = roundVal;
     }
     return roundSpacing;
 }
@@ -264,16 +264,16 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
         ::fwData::Image::sptr image = imageSeries->getImage();
 
-        ::fwData::Image::SizeType imageNumber = image->getSize();
-        QStandardItem* imageSize = this->getInfo< ::fwData::Image::SizeType>(imageNumber, " x ");
+        ::fwData::Image::Size imageNumber = image->getSize2();
+        QStandardItem* imageSize = this->getInfo< ::fwData::Image::Size>(imageNumber, " x ");
         studyRootItem->setChild(nbRow, 3, imageSize);
 
-        ::fwData::Image::SpacingType voxelSize = roundSpacing(image->getSpacing());
-        QStandardItem* voxelSizeItem = this->getInfo< ::fwData::Image::SpacingType>(voxelSize, " x ");
+        ::fwData::Image::Spacing voxelSize = roundSpacing(image->getSpacing2());
+        QStandardItem* voxelSizeItem = this->getInfo< ::fwData::Image::Spacing>(voxelSize, " x ");
         studyRootItem->setChild(nbRow, 4, voxelSizeItem);
 
-        ::fwData::Image::OriginType patientPosition = image->getOrigin();
-        QStandardItem* originItem = this->getInfo< ::fwData::Image::OriginType>(patientPosition, ", ");
+        ::fwData::Image::Origin patientPosition = image->getOrigin2();
+        QStandardItem* originItem = this->getInfo< ::fwData::Image::Origin>(patientPosition, ", ");
         studyRootItem->setChild(nbRow, 5, originItem);
     }
 

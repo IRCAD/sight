@@ -121,21 +121,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
     ::fwServices::OSR::unregisterService(srv);
 
     // Data expected
-    const size_t dim = 3;
-    ::fwData::Image::SpacingType spacingExpected(dim);
-    spacingExpected[0] = 1.732;
-    spacingExpected[1] = 1.732;
-    spacingExpected[2] = 3.2;
-
-    ::fwData::Image::OriginType originExpected(dim);
-    originExpected[0] = 34.64;
-    originExpected[1] = 86.6;
-    originExpected[2] = 56;
-
-    ::fwData::Image::SizeType sizeExpected(dim);
-    sizeExpected[0] = 230;
-    sizeExpected[1] = 170;
-    sizeExpected[2] = 58;
+    const ::fwData::Image::Spacing spacingExpected = {1.732, 1.732, 3.2};
+    const ::fwData::Image::Origin originExpected   = {34.64, 86.6, 56};
+    const fwData::Image::Size sizeExpected         = { 230, 170, 58};
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
 
@@ -145,10 +133,10 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
     // Data read.
-    ::fwData::Image::sptr image              = imageSeries->getImage();
-    ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead  = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead       = image->getSize();
+    ::fwData::Image::sptr image = imageSeries->getImage();
+    const ::fwData::Image::Spacing spacingRead = image->getSpacing2();
+    const ::fwData::Image::Spacing originRead  = image->getOrigin2();
+    const ::fwData::Image::Size sizeRead       = image->getSize2();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );

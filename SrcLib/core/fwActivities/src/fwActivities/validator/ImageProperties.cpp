@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ fwActivitiesValidatorRegisterMacro(
 
 //-----------------------------------------------------------------------------
 
-ImageProperties::ImageProperties(::fwActivities::IValidator::Key key)
+ImageProperties::ImageProperties(::fwActivities::IValidator::Key)
 {
 }
 
@@ -55,7 +55,7 @@ ImageProperties::~ImageProperties()
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType ImageProperties::validate(
-    const ::fwActivities::registry::ActivityInfo& activityInfo,
+    const ::fwActivities::registry::ActivityInfo&,
     const ::fwData::Vector::csptr& currentSelection ) const
 {
     IValidator::ValidationType validation;
@@ -70,9 +70,9 @@ IValidator::ValidationType ImageProperties::validate(
         ::fwData::Image::sptr img0 = imgSeries0->getImage();
         SLM_ASSERT("Failed to retrieve image from image series", img0);
 
-        ::fwData::Image::SizeType size       = img0->getSize();
-        ::fwData::Image::SpacingType spacing = img0->getSpacing();
-        ::fwData::Image::OriginType origin   = img0->getOrigin();
+        ::fwData::Image::Size size       = img0->getSize2();
+        ::fwData::Image::Spacing spacing = img0->getSpacing2();
+        ::fwData::Image::Origin origin   = img0->getOrigin2();
 
         ::fwData::Vector::ContainerType::const_iterator it;
         for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
@@ -82,14 +82,14 @@ IValidator::ValidationType ImageProperties::validate(
             ::fwData::Image::sptr img = imgSeries->getImage();
             SLM_ASSERT("Failed to retrieve an image data", img);
 
-            if (  size != img->getSize() ||
-                  !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing, img->getSpacing()) ||
-                  !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin, img->getOrigin()) )
+            if (  size != img->getSize2() ||
+                  !::fwMath::isContainerEqual< const ::fwData::Image::Spacing >(spacing, img->getSpacing2()) ||
+                  !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(origin, img->getOrigin2()) )
             {
                 std::string errorMsg = "Images in selection have not the same properties :\n";
-                errorMsg += (size != img->getSize()) ? "- size\n" : "";
-                errorMsg += (spacing != img->getSpacing()) ? "- spacing\n" : "";
-                errorMsg += (origin != img->getOrigin()) ? "- origin" : "";
+                errorMsg += (size != img->getSize2()) ? "- size\n" : "";
+                errorMsg += (spacing != img->getSpacing2()) ? "- spacing\n" : "";
+                errorMsg += (origin != img->getOrigin2()) ? "- origin" : "";
 
                 validation.first  = false;
                 validation.second = errorMsg;
@@ -140,16 +140,16 @@ IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csp
                 }
                 else
                 {
-                    if (  img0->getSize() != img->getSize() ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(img0->getSpacing(),
-                                                                                            img->getSpacing()) ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(img0->getOrigin(),
-                                                                                           img->getOrigin()) )
+                    if (  img0->getSize2() != img->getSize2() ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::Spacing >(img0->getSpacing2(),
+                                                                                        img->getSpacing2()) ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(img0->getOrigin2(),
+                                                                                       img->getOrigin2()) )
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
-                        errorMsg += (img0->getSize() != img->getSize()) ? "- size\n" : "";
-                        errorMsg += (img0->getSpacing() != img->getSpacing()) ? "- spacing\n" : "";
-                        errorMsg += (img0->getOrigin() != img->getOrigin()) ? "- origin" : "";
+                        errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";
+                        errorMsg += (img0->getSpacing2() != img->getSpacing2()) ? "- spacing\n" : "";
+                        errorMsg += (img0->getOrigin2() != img->getOrigin2()) ? "- origin" : "";
 
                         validation.first  = false;
                         validation.second = errorMsg;
@@ -184,16 +184,16 @@ IValidator::ValidationType ImageProperties::validate(const ::fwData::Object::csp
                 }
                 else
                 {
-                    if (  img0->getSize() != img->getSize() ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(img0->getSpacing(),
-                                                                                            img->getSpacing()) ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(img0->getOrigin(),
-                                                                                           img->getOrigin()) )
+                    if (  img0->getSize2() != img->getSize2() ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::Spacing >(img0->getSpacing2(),
+                                                                                        img->getSpacing2()) ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::Origin >(img0->getOrigin2(),
+                                                                                       img->getOrigin2()) )
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
-                        errorMsg += (img0->getSize() != img->getSize()) ? "- size\n" : "";
-                        errorMsg += (img0->getSpacing() != img->getSpacing()) ? "- spacing\n" : "";
-                        errorMsg += (img0->getOrigin() != img->getOrigin()) ? "- origin" : "";
+                        errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";
+                        errorMsg += (img0->getSpacing2() != img->getSpacing2()) ? "- spacing\n" : "";
+                        errorMsg += (img0->getOrigin2() != img->getOrigin2()) ? "- origin" : "";
 
                         validation.first  = false;
                         validation.second = errorMsg;

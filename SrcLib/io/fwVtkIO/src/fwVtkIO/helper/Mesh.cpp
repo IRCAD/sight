@@ -473,25 +473,25 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
 
             switch( cellType )
             {
-                case ::fwData::Mesh::POINT:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT):
                     typeVtkCell = VTK_VERTEX;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     polyData->InsertNextCell( typeVtkCell, 1, cell );
                     break;
-                case ::fwData::Mesh::EDGE:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE):
                     typeVtkCell = VTK_LINE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
                     break;
-                case ::fwData::Mesh::TRIANGLE:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE):
                     typeVtkCell = VTK_TRIANGLE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
                     polyData->InsertNextCell( typeVtkCell, 3, cell );
                     break;
-                case ::fwData::Mesh::QUAD:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD):
                     typeVtkCell = VTK_QUAD;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
@@ -499,7 +499,7 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
                     cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     polyData->InsertNextCell( typeVtkCell, 4, cell );
                     break;
-                case ::fwData::Mesh::TETRA:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA):
                     typeVtkCell = VTK_LINE;
 
                     cell[0] = static_cast<vtkIdType>(itr->pointIdx[1]);
@@ -639,25 +639,25 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
 
             switch( cellType )
             {
-                case ::fwData::Mesh::POINT:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT):
                     typeVtkCell = VTK_VERTEX;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     grid->InsertNextCell( typeVtkCell, 1, cell );
                     break;
-                case ::fwData::Mesh::EDGE:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE):
                     typeVtkCell = VTK_LINE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     grid->InsertNextCell( typeVtkCell, 2, cell );
                     break;
-                case ::fwData::Mesh::TRIANGLE:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE):
                     typeVtkCell = VTK_TRIANGLE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
                     grid->InsertNextCell( typeVtkCell, 3, cell );
                     break;
-                case ::fwData::Mesh::QUAD:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD):
                     typeVtkCell = VTK_QUAD;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
@@ -665,7 +665,7 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
                     cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     grid->InsertNextCell( typeVtkCell, 4, cell );
                     break;
-                case ::fwData::Mesh::TETRA:
+                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA):
                     typeVtkCell = VTK_TETRA;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
@@ -893,39 +893,19 @@ void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 
     if(meshSrc->hasPointColors())
     {
-        const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
+        const auto dumpLock                              = meshSrc->lock();
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBPointColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfPoints() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getPointColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
 
-        size_t i = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
+        std::copy(meshColors, meshColors + size, newColors);
+
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetPointData()->SetScalars(colors);
@@ -950,38 +930,19 @@ void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 
     if(meshSrc->hasCellColors())
     {
-        const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
+        const auto dumpLock                              = meshSrc->lock();
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBCellColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfCells() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getCellColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        size_t i                 = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
+
+        std::copy(meshColors, meshColors + size, newColors);
+
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetScalars(colors);
@@ -1389,6 +1350,7 @@ void Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 }
 
 //------------------------------------------------------------------------------
+
 void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                 const ::fwData::Mesh::csptr& meshSrc )
 {
@@ -1397,38 +1359,18 @@ void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
     if(meshSrc->hasPointColors())
     {
         const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstPointIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstPointIterator >();
+
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBPointColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfPoints() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getPointColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfPoints() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
+        std::copy(meshColors, meshColors + size, newColors);
 
-        size_t i = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetPointData()->SetScalars(colors);
@@ -1454,38 +1396,19 @@ void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 
     if(meshSrc->hasCellColors())
     {
-        const auto dumpLock = meshSrc->lock();
-        auto iter           = meshSrc->begin< ::fwData::iterator::ConstCellIterator >();
-        const auto iterEnd  = meshSrc->end< ::fwData::iterator::ConstCellIterator >();
+        const auto dumpLock                              = meshSrc->lock();
+        const std::uint8_t nbComponents                  = meshSrc->hasRGBCellColors() ? 3 : 4;
+        const auto size                                  = meshSrc->getNumberOfCells() * nbComponents;
+        const ::fwData::Mesh::ColorValueType* meshColors = meshSrc->getCellColorsBuffer();
 
         const vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        const size_t nbComponents                          = iter->rgb ? 3 : 4;
         colors->SetNumberOfComponents(static_cast<int>(nbComponents));
         colors->SetName("Colors");
 
-        const vtkIdType size = static_cast<vtkIdType>(meshSrc->getNumberOfCells() * nbComponents);
-
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
-        size_t i                 = 0;
-        if (iter->rgb)
-        {
-            for (; iter != iterEnd; ++iter, i += 3)
-            {
-                newColors[i]   = iter->rgb->r;
-                newColors[i+1] = iter->rgb->g;
-                newColors[i+2] = iter->rgb->b;
-            }
-        }
-        else
-        {
-            for (; iter != iterEnd; ++iter, i += 4)
-            {
-                newColors[i]   = iter->rgba->r;
-                newColors[i+1] = iter->rgba->g;
-                newColors[i+2] = iter->rgba->b;
-                newColors[i+3] = iter->rgba->a;
-            }
-        }
+
+        std::copy(meshColors, meshColors + size, newColors);
+
         colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetCellData()->SetScalars(colors);

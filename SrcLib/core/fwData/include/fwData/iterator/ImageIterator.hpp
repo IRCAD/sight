@@ -165,8 +165,8 @@ protected:
     /// allow to create a ConstIterator from an Iterator
     friend class ImageIteratorBase<FORMAT, true>;
 
-    pointer m_pointer{nullptr};
     ::fwMemory::BufferObject::Lock m_lock;
+    pointer m_pointer{nullptr};
     difference_type m_idx{0};
     difference_type m_numberOfElements{0};
 };

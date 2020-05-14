@@ -340,8 +340,8 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 
     if(imageSeries)
     {
-        ::fwData::Image::sptr newImage    = imageSeries->getImage();
-        ::fwData::Image::SizeType newSize = newImage->getSize();
+        ::fwData::Image::sptr newImage = imageSeries->getImage();
+        const ::fwData::Image::Size newSize = newImage->getSize2();
 
         newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0]/2));

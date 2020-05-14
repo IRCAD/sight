@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
- * Copyright (C) 2016 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,9 +30,9 @@
 #include <fwData/Vector.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
+
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
@@ -97,16 +97,15 @@ void ImagePropertiesTest::propertiesTest()
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
     }
 
-
     {
-        ::fwData::Image::SizeType size(3, 100);
         ::fwData::Image::sptr img1 = ::fwData::Image::New();
         ::fwData::Image::sptr img2 = ::fwData::Image::New();
 
         ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create<std::uint8_t>());
 
-        ::fwTest::generator::Image::generateImage(img2, img1->getSize(), img1->getSpacing(),
-                                                  img1->getOrigin(), img1->getType());
+        ::fwTest::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
+                                                  img1->getOrigin2(), img1->getType(),
+                                                  ::fwData::Image::PixelFormat::GRAY_SCALE);
 
         ::fwData::Vector::sptr vector = ::fwData::Vector::New();
         vector->getContainer().push_back(img1);

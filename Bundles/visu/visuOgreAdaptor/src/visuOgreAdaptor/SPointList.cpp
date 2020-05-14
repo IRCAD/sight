@@ -198,7 +198,7 @@ void SPointList::starting()
         if(mesh)
         {
             ::fwData::mt::ObjectReadLock lock(mesh);
-            if(!m_customMaterial && mesh->getPointColorsArray() != nullptr)
+            if(!m_customMaterial && mesh->hasPointColors())
             {
                 m_materialTemplateName += "_PerPointColor";
             }

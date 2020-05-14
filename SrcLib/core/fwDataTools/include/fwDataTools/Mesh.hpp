@@ -120,6 +120,14 @@ public:
      */
     FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell);
 
+    /**
+     * @brief
+     *
+     * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
+     * @param[in]  cell CellType to find in mesh (POINT, EDGE, TRAINGLE, ...).
+     */
+    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellType cell);
+
     /// Apply a transformation 4x4 from an input mesh to an output mesh
     FWDATATOOLS_API static void transform(fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh,
                                           ::fwData::TransformationMatrix3D::csptr t );
