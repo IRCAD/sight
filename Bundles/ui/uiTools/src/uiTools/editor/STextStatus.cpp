@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,9 @@
 
 #include <fwCom/Slots.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/String.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
@@ -38,13 +41,13 @@ namespace uiTools
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::STextStatus );
+static const ::fwServices::IService::KeyType s_STRING_INPUT          = "string";
+static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const ::fwCom::Slots::SlotKeyType s_SET_STRING_PARAMETER_SLOT = "setStringParameter";
 
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_STRING_PARAMETER_SLOT = "setStringParameter";
-
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::STextStatus )
 //-----------------------------------------------------------------------------
 
 STextStatus::STextStatus()
@@ -81,6 +84,15 @@ void STextStatus::starting()
     layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
     qtContainer->setLayout(layout);
+
+    // get Input data
+    const auto stringInput = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
+
+    if(!stringInput.expired())
+    {
+        const auto stringInputLock = stringInput.lock();
+        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
+    }
 
 }
 
@@ -155,6 +167,14 @@ void STextStatus::setStringParameter(std::string _val)
 
 void STextStatus::updating()
 {
+    // get Input data
+    const auto stringInput = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
+
+    if(!stringInput.expired())
+    {
+        const auto stringInputLock = stringInput.lock();
+        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -162,6 +182,16 @@ void STextStatus::updating()
 void STextStatus::swapping()
 {
 
+}
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
+{
+
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_STRING_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
