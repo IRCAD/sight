@@ -145,6 +145,11 @@ add_compile_options(
     "$<$<CXX_COMPILER_ID:MSVC>:/W4>"
 )
 
+# AES support is enabled with pragmas on GCC, Clang needs the explicit CLI flag
+add_compile_options(
+    "$<$<CXX_COMPILER_ID:Clang>:-maes>"
+)
+
 # MSVC need special treatment
 if(MSVC)
     # Remove Command-Line Warning D9025

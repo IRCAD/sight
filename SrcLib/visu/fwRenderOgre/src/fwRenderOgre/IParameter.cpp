@@ -462,8 +462,8 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
         }
 
         const auto dumpLock = arrayObject->lock();
-        arrayObject->at< std::uint32_t >(0) = value1;
-        arrayObject->at< std::uint32_t >(1) = value2;
+        arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(value1);
+        arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(value2);
 
         this->updating();
     }
@@ -485,9 +485,9 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
         }
 
         const auto dumpLock = arrayObject->lock();
-        arrayObject->at< std::uint32_t >(0) = value1;
-        arrayObject->at< std::uint32_t >(1) = value2;
-        arrayObject->at< std::uint32_t >(2) = value3;
+        arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(value1);
+        arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(value2);
+        arrayObject->at< std::uint32_t >(2) = static_cast<std::uint32_t>(value3);
 
         this->updating();
     }

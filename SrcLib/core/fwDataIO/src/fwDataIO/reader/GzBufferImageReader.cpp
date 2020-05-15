@@ -86,7 +86,7 @@ void GzBufferImageReader::read()
     while ( (uncompressedbytesreaded =
                  gzread(rawFile, ptr + readBytes, static_cast<unsigned int>(imageSizeInBytes - readBytes))) > 0 )
     {
-        readBytes += uncompressedbytesreaded;
+        readBytes += static_cast<size_t>(uncompressedbytesreaded);
     }
 
     gzclose(rawFile);

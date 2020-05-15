@@ -219,9 +219,6 @@ private:
     /// Stores a map to convert from string to fwData::Material::RepresentationType (ex: "SURFACE" = SURFACE).
     std::map< std::string, ::fwData::Material::RepresentationType > m_representationDict;
 
-    /// Defines the current number of lights in the scene.
-    int m_lightsNumber;
-
     /// Contains the Ogre material.
     ::fwRenderOgre::Material::uptr m_materialFw;
 

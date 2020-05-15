@@ -61,14 +61,14 @@ void TransformationMatrix3DReader::read()
     std::ifstream inFile(file.string().c_str(), std::ifstream::in );
     assert( inFile.good() );
 
-    char readedValue = 0;
+    char readValue = 0;
     double value;
 
-    while ( !inFile.eof() && readedValue < 16 )
+    while ( !inFile.eof() && readValue < 16 )
     {
         inFile >> value;
-        this->getConcreteObject()->getCoefficients()[readedValue] = value;
-        readedValue++;
+        this->getConcreteObject()->getCoefficients()[static_cast<size_t>(readValue)] = value;
+        readValue++;
     }
 
     assert(this->getConcreteObject()->getCoefficients().size() == 16 );

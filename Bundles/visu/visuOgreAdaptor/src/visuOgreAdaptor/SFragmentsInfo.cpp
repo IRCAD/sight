@@ -282,8 +282,8 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
     globalTarget        = technique->createTextureDefinition(m_targetName);
     globalTarget->scope = ::Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
     globalTarget->formatList.push_back(::Ogre::PixelFormat::PF_A8B8G8R8);
-    globalTarget->height = _height;
-    globalTarget->width  = _width;
+    globalTarget->height = static_cast< ::Ogre::uint32>(_height);
+    globalTarget->width  = static_cast< ::Ogre::uint32>(_width);
 
     if(!retrieveDepth)
     {
@@ -302,8 +302,8 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
         localTarget        = technique->createTextureDefinition(localName);
         localTarget->scope = ::Ogre::CompositionTechnique::TextureScope::TS_LOCAL;
         localTarget->formatList.push_back(::Ogre::PixelFormat::PF_DEPTH32);
-        localTarget->height = _height;
-        localTarget->width  = _width;
+        localTarget->height = static_cast< ::Ogre::uint32>(_height);
+        localTarget->width  = static_cast< ::Ogre::uint32>(_width);
 
         ::Ogre::CompositionTargetPass* const localTargetPass = technique->createTargetPass();
         {
@@ -328,8 +328,8 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
         globalTargetPrimitiveID        = technique->createTextureDefinition(m_targetPrimitiveIDName);
         globalTargetPrimitiveID->scope = ::Ogre::CompositionTechnique::TextureScope::TS_GLOBAL;
         globalTargetPrimitiveID->formatList.push_back(::Ogre::PixelFormat::PF_R32_SINT);
-        globalTargetPrimitiveID->height = _height;
-        globalTargetPrimitiveID->width  = _width;
+        globalTargetPrimitiveID->height = static_cast< ::Ogre::uint32>(_height);
+        globalTargetPrimitiveID->width  = static_cast< ::Ogre::uint32>(_width);
 
         ::Ogre::CompositionTargetPass* const globalPrimitiveTargetPass = technique->createTargetPass();
         {
