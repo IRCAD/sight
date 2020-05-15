@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __PATCHMEDICALDATA_PLUGIN_HPP__
-#define __PATCHMEDICALDATA_PLUGIN_HPP__
-
-#include <fwRuntime/Plugin.hpp>
+#pragma once
 
 #include "patchMedicalData/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
 
 namespace patchMedicalData
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
- * @class   Plugin
+ * @brief   This class is started when the module is loaded.
  */
 struct PATCHMEDICALDATA_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -51,5 +49,3 @@ struct PATCHMEDICALDATA_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace patchMedicalData
-
-#endif //__PATCHMEDICALDATA_PLUGIN_HPP__

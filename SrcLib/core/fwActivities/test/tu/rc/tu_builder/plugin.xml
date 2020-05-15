@@ -1,9 +1,9 @@
-<plugin id="tu_fwActivities"  version="@PROJECT_VERSION@" >
+<plugin id="tu_builder"  version="@PROJECT_VERSION@" >
 
-    <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
+    <extension-point id="::fwActivities::registry::Activities" schema="fwActivities-0.1/activities.xsd"/>
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>Test0</id>
+        <id>TestBuilder0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
         <icon>Icon Test0</icon>
@@ -15,7 +15,7 @@
             </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="Test0">
+        <appConfig id="TestBuilderCfg0">
             <parameters>
                 <parameter replace="RefModel" by="@values.modelSeries" />
                 <parameter replace="RefImage" by="@values.imageSeries.value.image" />

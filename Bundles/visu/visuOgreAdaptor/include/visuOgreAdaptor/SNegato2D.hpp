@@ -180,7 +180,7 @@ private:
     /// Defines if the plane border is used or not.
     bool m_border { true };
 
-    using SliceIndexChangedSignalType = ::fwCom::Signal<void ()>;
+    using SliceIndexChangedSignalType = ::fwCom::Signal<void()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 };
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,9 +29,16 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Bundle> Plugin::getBundle() const noexcept
+std::shared_ptr<Module> Plugin::getBundle() const noexcept
 {
-    return m_bundle.lock();
+    return this->getModule();
+}
+
+//------------------------------------------------------------------------------
+
+std::shared_ptr<Module> Plugin::getModule() const noexcept
+{
+    return m_module.lock();
 }
 
 //------------------------------------------------------------------------------
@@ -42,9 +49,9 @@ void Plugin::setInitializationData(const ConfigurationElement::sptr) noexcept
 
 //------------------------------------------------------------------------------
 
-void Plugin::setBundle( std::shared_ptr<Bundle> bundle) noexcept
+void Plugin::setModule( std::shared_ptr<Module> module) noexcept
 {
-    m_bundle = std::weak_ptr<Bundle>(bundle);
+    m_module = module;
 }
 
 //------------------------------------------------------------------------------

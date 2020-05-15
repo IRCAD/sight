@@ -35,7 +35,6 @@
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/io/BundleDescriptorReader.hpp>
 
 #include <fwTest/generator/Image.hpp>
 

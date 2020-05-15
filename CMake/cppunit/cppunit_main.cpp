@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2004-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,6 @@
 
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/io/ProfileReader.hpp>
 
 class MiniLauncher
 {
@@ -60,7 +59,6 @@ public:
         }
 
         m_profile = ::fwRuntime::io::ProfileReader::createProfile(profilePath);
-        ::fwRuntime::profile::setCurrentProfile(m_profile);
 
         m_profile->setParams(0, NULL);
         m_profile->start();
@@ -72,7 +70,6 @@ public:
         m_profile->cleanup();
         m_profile->stop();
         m_profile.reset();
-        ::fwRuntime::profile::setCurrentProfile(m_profile);
     }
 
 private:

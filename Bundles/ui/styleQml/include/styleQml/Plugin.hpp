@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace styleQml
 {
 
 /**
- * @brief   This class is called when the styleQml bundle is loaded.
+ * @brief   This class is called when the styleQml module is loaded.
  */
 class STYLEQML_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

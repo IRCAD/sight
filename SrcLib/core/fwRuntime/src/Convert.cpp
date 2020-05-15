@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,10 +22,10 @@
 
 #include "fwRuntime/Convert.hpp"
 
-#include "fwRuntime/Bundle.hpp"
-#include "fwRuntime/ExtensionPoint.hpp"
-#include "fwRuntime/io/BundleDescriptorReader.hpp"
-#include "fwRuntime/Runtime.hpp"
+#include "fwRuntime/detail/ExtensionPoint.hpp"
+#include "fwRuntime/detail/io/ModuleDescriptorReader.hpp"
+#include "fwRuntime/detail/Module.hpp"
+#include "fwRuntime/detail/Runtime.hpp"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -96,45 +96,43 @@ void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::Confi
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr Convert::runningBundlesToXml( )
+xmlNodePtr Convert::runningModulesToXml( )
 {
-    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( BUNDLE_RC_PREFIX ) );
-    std::set< std::shared_ptr< ::fwRuntime::Bundle > > ::iterator iter_bundles;
-    ::fwRuntime::Runtime* tmp_runtime = ::fwRuntime::Runtime::getDefault();
-
+    xmlNodePtr node_root      = xmlNewNode( NULL,  xmlCharStrdup( MODULE_RC_PREFIX ) );
     xmlNodePtr activated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Activated" ) );
     xmlAddChild(node_root, activated_Node );
 
     xmlNodePtr inactivated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Inactivated" ) );
     xmlAddChild(node_root, inactivated_Node );
 
-    bool enable_Value = false;  // the 'do while' loop stop if enable_Value==false.
+    bool enable_Value        = false; // the 'do while' loop stop if enable_Value==false.
+    detail::Runtime& runtime = detail::Runtime::get();
     do
     {
         enable_Value = !enable_Value;
-        for (iter_bundles = tmp_runtime->bundlesBegin();
-             iter_bundles != tmp_runtime->bundlesEnd();
-             ++iter_bundles)
+        for (const auto& module : runtime.getModules())
         {
-            //BUNDLE
-
-            xmlNodePtr bundleNode = xmlNewNode( NULL, xmlCharStrdup( (*iter_bundles)->getIdentifier().c_str() ) );
+            //MODULE
+            xmlNodePtr moduleNode = xmlNewNode( NULL, xmlCharStrdup( module->getIdentifier().c_str() ) );
             if (enable_Value)
             {
-                xmlAddChild(activated_Node, bundleNode );
+                xmlAddChild(activated_Node, moduleNode );
             }
             else
             {
-                xmlAddChild(inactivated_Node, bundleNode );
+                xmlAddChild(inactivated_Node, moduleNode );
             }
 
             //EXTENSIONS POINTS
             xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions_Points" ) );
-            xmlAddChild(bundleNode, extensionPoint_activated_list_Node );
+            xmlAddChild(moduleNode, extensionPoint_activated_list_Node );
 
-            for ( std::set< std::shared_ptr< ::fwRuntime::ExtensionPoint > >::const_iterator iter_extensionPoints =
-                      (*iter_bundles)->extensionPointsBegin();
-                  iter_extensionPoints != (*iter_bundles)->extensionPointsEnd();
+            const auto moduleImpl = std::dynamic_pointer_cast< ::fwRuntime::detail::Module>( module );
+            for ( std::set< std::shared_ptr< ::fwRuntime::detail::ExtensionPoint > >::const_iterator
+                  iter_extensionPoints
+                      =
+                          moduleImpl->extensionPointsBegin();
+                  iter_extensionPoints != moduleImpl->extensionPointsEnd();
                   ++iter_extensionPoints)
             {
                 //EXTENSIONS POINTS
@@ -144,7 +142,7 @@ xmlNodePtr Convert::runningBundlesToXml( )
                 //xmlNodePtr extensionPointsNode = xmlNewNode( NULL,  xmlCharStrdup(
                 // (str.substr(str.find_last_of("::")+1)).c_str() ) ) ;
                 //-----DEBUG------
-                if (((*iter_extensionPoints)->isEnable()) == enable_Value)
+                if (((*iter_extensionPoints)->isEnabled()) == enable_Value)
                 {
                     xmlAddChild(extensionPoint_activated_list_Node, extensionPointsNode );
                 }
@@ -163,14 +161,14 @@ xmlNodePtr Convert::runningBundlesToXml( )
 
             //Extensions
             xmlNodePtr extension_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions" ) );
-            xmlAddChild(bundleNode, extension_activated_list_Node );
+            xmlAddChild(moduleNode, extension_activated_list_Node );
 
             for ( std::set< std::shared_ptr< ::fwRuntime::Extension > >::const_iterator iter_extension =
-                      (*iter_bundles)->extensionsBegin();
-                  iter_extension != (*iter_bundles)->extensionsEnd();
+                      moduleImpl->extensionsBegin();
+                  iter_extension != moduleImpl->extensionsEnd();
                   ++iter_extension)
             {
-                if (((*iter_extension)->isEnable()) == enable_Value)
+                if (((*iter_extension)->isEnabled()) == enable_Value)
                 {
                     std::string str          = (*iter_extension)->getPoint();
                     xmlNodePtr extensionNode = xmlNewNode( NULL,  xmlCharStrdup( (str.c_str() ) ) );
@@ -222,18 +220,18 @@ xmlNodePtr Convert::runningBundlesToXml( )
                 xmlFreeNode(extension_activated_list_Node);
             }
 
-            if (!(bundleNode->children))
+            if (!(moduleNode->children))
             {
-                xmlUnlinkNode(bundleNode);
-                xmlFreeNode(bundleNode);
+                xmlUnlinkNode(moduleNode);
+                xmlFreeNode(moduleNode);
             }
             //end cleaning
-        }//end bundles iterator
+        }//end modules iterator
     }
     while ( enable_Value );
 
     return node_root;
-}//runningBundlesToXml
+}//runningModulesToXml
 
 //------------------------------------------------------------------------------
 
@@ -326,7 +324,7 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
     xmlNodePtr root = xmlDocGetRootElement(doc);
 
     ::fwRuntime::ConfigurationElement::sptr ce;
-    ce = ::fwRuntime::io::BundleDescriptorReader::processConfigurationElement(root, SPTR(Bundle)());
+    ce = ::fwRuntime::detail::io::ModuleDescriptorReader::processConfigurationElement(root, SPTR(detail::Module)());
 
     xmlFreeDoc(doc);
 

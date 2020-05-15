@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "fwRuntime/BundleElement.hpp"
 #include "fwRuntime/config.hpp"
+#include "fwRuntime/ModuleElement.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
 #include <string>
 
 namespace fwRuntime
 {
-struct IExecutable;
+class IExecutable;
 }
 
 namespace fwRuntime
@@ -40,15 +40,9 @@ namespace fwRuntime
  * @brief   Defines the abstract executable factory class.
  *
  */
-struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
+class FWRUNTIME_CLASS_API ExecutableFactory : public ModuleElement
 {
-
-    /**
-     * @name    Construction & Destruction
-     *
-     * @{
-     */
-
+public:
     /**
      * @brief       Constructor
      *
@@ -59,8 +53,7 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
     /**
      * @brief   Destructor : does nothing
      */
-    FWRUNTIME_API virtual ~ExecutableFactory();
-    ///@}
+    FWRUNTIME_API ~ExecutableFactory() override;
 
     /**
      * @brief   Creates an executable object instance.
@@ -76,9 +69,9 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
      */
     FWRUNTIME_API const std::string getType() const;
 
-    private:
+private:
 
-        std::string m_type; ///< a string containing the type identifier managed by the factory
+    std::string m_type;     ///< a string containing the type identifier managed by the factory
 
 };
 

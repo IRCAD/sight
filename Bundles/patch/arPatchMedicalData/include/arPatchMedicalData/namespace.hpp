@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 /**
  * @ingroup apprequirement
- * @brief   The bundle patchMedicalData allows to load patches from fwStructuralPatch and fwMDSemanticPatch library.
+ * @brief   The module patchMedicalData allows to load patches from fwStructuralPatch and fwMDSemanticPatch library.
  *
  * It must be added in the application \p \<requirement\> section in order to load/save medical patient folder from a
  * different version.

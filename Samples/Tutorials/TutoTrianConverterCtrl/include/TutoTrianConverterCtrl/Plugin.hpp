@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,21 +20,21 @@
  *
  ***********************************************************************/
 
-#ifndef __TUTOTRIANCONVERTERCTRL_PLUGIN_HPP__
-#define __TUTOTRIANCONVERTERCTRL_PLUGIN_HPP__
+#pragma once
+
+#include "TutoTrianConverterCtrl/config.hpp"
+
+#include <fwData/Mesh.hpp>
 
 #include <fwRuntime/Plugin.hpp>
 
-#include <fwData/Mesh.hpp>
 #include <fwServices/IService.hpp>
-
-#include "TutoTrianConverterCtrl/config.hpp"
 
 namespace TutoTrianConverterCtrl
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 class TUTOTRIANCONVERTERCTRL_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -62,5 +62,3 @@ private:
 };
 
 } // namespace TutoTrianConverterCtrl
-
-#endif // __TUTOTRIANCONVERTERCTRL_PLUGIN_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,16 @@
  *
  ***********************************************************************/
 
-#ifndef __ACTIVITIES_NAMESPACE_HPP__
-#define __ACTIVITIES_NAMESPACE_HPP__
+#pragma once
 
 /**
  * @ingroup apprequirement
  * @brief The namespace activities contains helpers and services allowing to launch activities.
  *
- * This bundles allows to register the activities available for an application. It is required for application using
+ * This module allows to register the activities available for an application. It is required for application using
  * Activities.
  **/
 namespace activities
 {
 
 } // namespace activities
-
-#endif // __ACTIVITIES_NAMESPACE_HPP__
-
-
-
-

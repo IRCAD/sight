@@ -29,7 +29,7 @@
 namespace ctrlTF
 {
 
-/// This class is started when the bundle is loaded.
+/// This class is started when the module is loaded.
 struct CTRLTF_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 

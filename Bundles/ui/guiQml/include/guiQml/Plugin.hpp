@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace guiQml
 {
 
 /**
- * @brief   This class is called when the guiQt bundle is loaded.
+ * @brief   This class is called when the guiQt module is loaded.
  */
 class GUIQML_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 /**
  * @brief The namespace guiQml contains the basic services to build the application IHM with Qml.
  *
- * This bundle is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
+ * This module is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
  * application's Properties.cmake.
  */
 namespace guiQml

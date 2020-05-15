@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#ifndef __MEMORY_PLUGIN_HPP__
-#define __MEMORY_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
 
 namespace memory
 {
 /**
- * @brief   Implements a plugin for the memory bundle.
+ * @brief   Implements a plugin for the memory module.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -40,7 +39,7 @@ struct Plugin : public ::fwRuntime::Plugin
     /**
      * @brief Start method. (does nothing)
      *
-     * This method is used by runtime in order to initialise the bundle.
+     * This method is used by runtime in order to initialise the module.
      *
      * @exception ::fwRuntime::RuntimeException.
      */
@@ -49,12 +48,10 @@ struct Plugin : public ::fwRuntime::Plugin
     /**
      * @brief Stop method. (does nothing)
      *
-     * This method is used by runtime in order to close the bundle.
+     * This method is used by runtime in order to close the module.
      */
     void stop() noexcept;
 
 };
 
 } // namespace memory
-
-#endif //__MEMORY_PLUGIN_HPP__

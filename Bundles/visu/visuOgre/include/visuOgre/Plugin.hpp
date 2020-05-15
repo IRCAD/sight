@@ -55,7 +55,7 @@ public:
                                             bool& _skipThisMessage);
 };
 
-/// This class is started when the bundles is loaded.
+/// This class is started when the module is loaded.
 class VISUOGRE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:

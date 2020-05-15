@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,10 +35,10 @@ public:
     /// Plugin destructor
     ~Plugin() noexcept;
 
-    /// This method is used by runtime to start the bundle.
+    /// This method is used by runtime to start the module.
     void start();
 
-    /// This method is used by runtime to stop the bundle.
+    /// This method is used by runtime to stop the module.
     void stop() noexcept;
 };
 

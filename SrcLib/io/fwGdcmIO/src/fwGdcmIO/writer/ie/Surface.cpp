@@ -37,7 +37,6 @@
 #include <fwMedData/types.hpp>
 
 #include <fwRuntime/operations.hpp>
-#include <fwRuntime/profile/Profile.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 

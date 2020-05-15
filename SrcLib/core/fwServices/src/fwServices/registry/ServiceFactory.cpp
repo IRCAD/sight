@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -181,7 +181,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
                      + _srvImpl + "' is still missing. The service declaration might be missing (or misspelled)"
                      "in a .cpp file.", !info.bundle->isStarted() );
 
-        lock.unlock(); // bundle->start() may trigger calls to addFactory
+        lock.unlock(); // module->start() may trigger calls to addFactory
         info.bundle->start();
         lock.lock();
 
@@ -281,7 +281,7 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
     {
         ServiceInfo& info = iter->second;
 
-        // Either the bundle does not contain objects informations or this service does not belong to a bundle
+        // Either the bundle does not contain objects informations or this service does not belong to a module
         if(info.objectsSetFromBundle)
         {
 #ifdef _DEBUG

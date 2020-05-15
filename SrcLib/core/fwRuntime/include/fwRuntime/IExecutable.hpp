@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,31 +23,32 @@
 #pragma once
 
 #include "fwRuntime/config.hpp"
-#include "fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp"
 
+#include <memory>
 #include <string>
 
 namespace fwRuntime
 {
 
-#define REGISTER_EXECUTABLE( type, id ) static ::fwRuntime::utils::GenericExecutableFactoryRegistrar< type > registrar( \
-        id );
+namespace utils
+{
+template<typename E> class GenericExecutableFactory;
+}
 
-struct Bundle;
+class Module;
 struct ConfigurationElement;
-struct Runtime;
+class Runtime;
 
 /**
  * @brief   Defines the base executable interface.
  *
  * An executable object is an instance created by an extension
  * point of a plugin.
- *
- *
  */
-struct FWRUNTIME_CLASS_API IExecutable
+class FWRUNTIME_CLASS_API IExecutable
 {
-    friend struct Runtime;
+public:
+    template<typename E> friend class ::fwRuntime::utils::GenericExecutableFactory;
 
     /**
      * @brief   Destructor : does nothing.
@@ -55,11 +56,19 @@ struct FWRUNTIME_CLASS_API IExecutable
     FWRUNTIME_API virtual ~IExecutable();
 
     /**
-     * @brief   Retrieves the bundle the executable originates from.
+     * @brief   Retrieves the module the executable originates from.
      *
-     * @return  a pointer to the originating bundle.
+     * @return  a pointer to the originating module.
      */
-    virtual std::shared_ptr<Bundle> getBundle() const noexcept = 0;
+    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
+    virtual std::shared_ptr<Module> getBundle() const = 0;
+
+    /**
+     * @brief   Retrieves the module the executable originates from.
+     *
+     * @return  a pointer to the originating module.
+     */
+    virtual std::shared_ptr<Module> getModule() const = 0;
 
     /**
      * @brief       Initializes the executable instance with the specified
@@ -68,16 +77,16 @@ struct FWRUNTIME_CLASS_API IExecutable
      * @param[in]   configuration   a shared pointer to the configuration element used to
      *              trigger this execution
      */
-    virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) noexcept = 0;
+    virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) = 0;
 
-    protected:
+protected:
 
-        /**
-         * @brief       Updates the bundle the executable originates from.
-         *
-         * @param[in]   bundle  a pointer to the bundle the executable originates from
-         */
-        virtual void setBundle( std::shared_ptr< Bundle > bundle ) = 0;
+    /**
+     * @brief       Updates the module the executable originates from.
+     *
+     * @param[in]   module  a pointer to the module the executable originates from
+     */
+    virtual void setModule( std::shared_ptr< Module > module ) = 0;
 
 };
 

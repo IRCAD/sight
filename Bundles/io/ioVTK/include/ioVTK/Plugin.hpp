@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IOVTK_PLUGIN_HPP__
-#define __IOVTK_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -37,7 +36,7 @@ public:
     /**
      * @brief Start method.
      *
-     * This method is used by runtime in order to initialize the bundle.
+     * This method is used by runtime in order to initialize the module.
      *
      * @exception ::fwRuntime::RuntimeException
      */
@@ -46,12 +45,10 @@ public:
     /**
      * @brief Stop method.
      *
-     * This method is used by runtime in order to close the bundle.
+     * This method is used by runtime in order to close the module.
      */
     void stop() noexcept;
 
 };
 
 } // namespace ioVTK
-
-#endif //__IOVTK_PLUGIN_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,39 +22,39 @@
 
 /**
  * @defgroup requirement Requirements
- * The bundles in the \p \<requirement\> section of the \b plugin.xml are started when the bundle is started.
+ * The modules in the \p \<requirement\> section of the \b plugin.xml are started when the module is started.
  *
- * In Sight, we can automatically start bundles in two case:
- * - The bundle contains an AppConfig or an Activity: the bundle will be started when the config or the activity is
+ * In Sight, we can automatically start modules in two case:
+ * - The module contains an AppConfig or an Activity: the module will be started when the config or the activity is
  *   launched
- * - The bundle contains services: the bundle will be started when one of the services is used in an AppConfig to
+ * - The module contains services: the module will be started when one of the services is used in an AppConfig to
  * launch.
  *
- * But in some case, we must define the bundles to start manually using the \p \<requirement\> tag.
+ * But in some case, we must define the modules to start manually using the \p \<requirement\> tag.
  *
- * <b>Which bundle should I add in requirement ?</b>
+ * <b>Which module should I add in requirement ?</b>
  *
  * You must add requirement for:
- *  - bundles containing data (ex. dataReg)
- *  - bundles containing registry (ex. servicesReg, @ref activities)
- *  - bundles for @ref preferences, guiQt, visuVTKQt, @ref memory
+ *  - modules containing data (ex. dataReg)
+ *  - modules containing registry (ex. servicesReg, @ref activities)
+ *  - modules for @ref preferences, guiQt, visuVTKQt, @ref memory
  *  - ...
  */
 
 /**
  * @defgroup apprequirement Application requirements
  * @ingroup  requirement
- *  This list contains the bundles that could be added in your application's requirements.
+ *  This list contains the modules that could be added in your application's requirements.
  */
 
 /**
- * @defgroup bundlerequirement Bundles requirements
+ * @defgroup modulerequirement modules requirements
  * @ingroup  requirement
- * This list contains the bundles that could be added in bundle's requirements
+ * This list contains the modules that could be added in module's requirements
  */
 
 /**
- * @brief  The namespace fwRuntime contains classes to manage bundle, configuration element, extension point in the
+ * @brief  The namespace fwRuntime contains classes to manage module, configuration element, extension point in the
  *         runtime environment from a configuration file .
  */
 #pragma once

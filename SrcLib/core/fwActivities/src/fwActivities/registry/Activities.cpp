@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 
 #include <fwData/Vector.hpp>
 
+#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/helper.hpp>
@@ -256,15 +257,6 @@ void Activities::parseBundleInformation()
 {
     std::vector< SPTR( ::fwRuntime::Extension ) >  extensions
         = ::fwRuntime::getAllExtensionsForPoint("::fwActivities::registry::Activities");
-
-    this->parseBundleInformation(extensions);
-
-}
-
-//------------------------------------------------------------------------------
-
-void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) >& extensions)
-{
 
     for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
     {

@@ -33,8 +33,6 @@
 
 #include <fwMedData/DicomSeries.hpp>
 
-#include <fwRuntime/profile/Profile.hpp>
-
 #include <boost/algorithm/clamp.hpp>
 
 // Removes RGB macro defined in windows.h

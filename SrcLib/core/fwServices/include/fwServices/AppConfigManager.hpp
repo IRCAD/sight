@@ -112,8 +112,8 @@ public:
     FWSERVICES_API virtual void destroy() override;
 
     /**
-     * @brief Starts the bundle associated to the config
-     * @note  Does nothing if the bundle is already started or if the config id is not specified (ie. if config is set
+     * @brief Starts the module associated to the config
+     * @note  Does nothing if the module is already started or if the config id is not specified (ie. if config is set
      *        with setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem) ).
      */
     FWSERVICES_API virtual void startBundle();

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,10 +32,10 @@
 
 #include <fwCore/base.hpp>
 
-#include "fwRuntime/Bundle.hpp"
-#include "fwRuntime/ExtensionPoint.hpp"
-#include "fwRuntime/Runtime.hpp"
-#include "fwRuntime/io/Validator.hpp"
+#include "fwRuntime/Module.hpp"
+#include "fwRuntime/detail/ExtensionPoint.hpp"
+#include "fwRuntime/detail/Runtime.hpp"
+#include "fwRuntime/detail/io/Validator.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/helper.hpp"
 
@@ -44,14 +44,14 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-Extension::Extension( std::shared_ptr< Bundle > bundle, const std::string & id, const std::string & point,
-                      xmlNodePtr xmlNode )
-    : BundleElement ( bundle                    ),
-      m_id          ( id                        ),
-      m_point       ( point                     ),
-      m_xmlDoc      ( xmlNewDoc(BAD_CAST "1.0") ),
-      m_xmlNode     ( xmlCopyNode(xmlNode, 1)   ),
-      m_validity    ( UnknownValidity           )
+Extension::Extension( std::shared_ptr< Module > module, const std::string& id, const std::string& point,
+                      xmlNodePtr xmlNode ) :
+    ModuleElement( module                    ),
+    m_id( id                        ),
+    m_point( point                     ),
+    m_xmlDoc( xmlNewDoc(BAD_CAST "1.0") ),
+    m_xmlNode( xmlCopyNode(xmlNode, 1)   ),
+    m_validity( UnknownValidity           )
 {
     xmlDocSetRootElement(m_xmlDoc, m_xmlNode);
 }
@@ -102,8 +102,8 @@ Extension::Validity Extension::validate()
     }
 
     // Retrieves the extension point.
-    Runtime * rntm( Runtime::getDefault() );
-    std::shared_ptr< ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
+    detail::Runtime* rntm( detail::Runtime::getDefault() );
+    std::shared_ptr< detail::ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
 
     // Checks that the point exists.
     if( !point )
@@ -112,7 +112,7 @@ Extension::Validity Extension::validate()
     }
 
     // Validates the extension.
-    std::shared_ptr< io::Validator >   validator( point->getExtensionValidator() );
+    std::shared_ptr< detail::io::Validator >   validator( point->getExtensionValidator() );
     OSLM_ASSERT("The validator creation failed for the point "<<point->getIdentifier(), validator );
 
     // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>
@@ -126,7 +126,7 @@ Extension::Validity Extension::validate()
         m_validity = Invalid;
         const std::string identifier = m_id.empty() ? "anonymous" : m_id;
         OSLM_ERROR(
-            "In bundle " << getBundle()->getIdentifier() << ". " << identifier
+            "In bundle " << getModule()->getIdentifier() << ". " << identifier
                          << ": invalid extension XML element node does not respect schema. Verification error log is : "
                          << std::endl << validator->getErrorLog() );
     }

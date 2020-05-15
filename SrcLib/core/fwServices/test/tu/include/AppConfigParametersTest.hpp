@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWSERVICES_UT_APPCONFIGPARAMETERSTEST_HPP__
-#define __FWSERVICES_UT_APPCONFIGPARAMETERSTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 namespace fwServices
 {
@@ -41,12 +39,10 @@ CPPUNIT_TEST( appConfigParametersTest );
 CPPUNIT_TEST( concurentAccessToAppConfigParametersTest );
 CPPUNIT_TEST_SUITE_END();
 
-
 public:
     // interface
     void setUp();
     void tearDown();
-
 
     // fonctions de tests
     void appConfigParametersTest();
@@ -56,5 +52,3 @@ public:
 
 } //namespace ut
 } //namespace fwServices
-
-#endif // __FWSERVICES_UT_APPCONFIGPARAMETERSTEST_HPP__

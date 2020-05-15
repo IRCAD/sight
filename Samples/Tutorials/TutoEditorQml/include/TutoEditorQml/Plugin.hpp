@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace TutoEditorQml
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 class TUTOEDITORQML_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

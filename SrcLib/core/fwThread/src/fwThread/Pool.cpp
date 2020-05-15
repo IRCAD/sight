@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,8 @@ Pool::Pool() :
 Pool::Pool(size_t _threads) :
     m_stop(false)
 {
-    const auto availableCores = std::thread::hardware_concurrency();
     OSLM_WARN_IF( _threads << " threads were allocated in this thread pool, but you only have " <<
-                  availableCores << " physical cores on this CPU",
+                  std::thread::hardware_concurrency() << " physical cores on this CPU",
                   _threads > std::thread::hardware_concurrency());
 
     for(size_t i = 0; i < _threads; ++i)

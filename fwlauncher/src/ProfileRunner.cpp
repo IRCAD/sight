@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 #include <windows.h>
 #endif
 
-#include <fwRuntime/io/ProfileReader.hpp>
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
@@ -122,9 +121,7 @@ int main(int argc, char* argv[])
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", po::value(&bundlePaths)->default_value
-            (PathListType(1, (::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX).string())),
-        "Adds a bundle path")
+        ("bundle-path,B", "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
 
@@ -286,7 +283,7 @@ int main(int argc, char* argv[])
     profileFile = ::absolute(profileFile);
     rwd         = ::absolute(rwd);
 
-    // Automatically adds the bundle folders where the profile.xml is located if it was not already there
+    // Automatically adds the module folders where the profile.xml is located if it was not already there
     const auto profileBundlePath = profileFile.parent_path().parent_path();
     bool findProfileBundlePath   = false;
     for(const fs::path& bundlePath :  bundlePaths )
@@ -320,6 +317,8 @@ int main(int argc, char* argv[])
 #endif // _WIN32
     OSLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
+    ::fwRuntime::init();
+
     for(const fs::path& bundlePath :  bundlePaths )
     {
         if ( fs::is_directory(bundlePath))
@@ -341,7 +340,6 @@ int main(int argc, char* argv[])
         try
         {
             profile = ::fwRuntime::io::ProfileReader::createProfile(profileFile);
-            ::fwRuntime::profile::setCurrentProfile(profile);
 
             // Install a signal handler
             std::signal(SIGINT, signal_handler);

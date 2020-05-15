@@ -27,10 +27,8 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
-#include <fwRuntime/Bundle.hpp>
-#include <fwRuntime/IPlugin.hpp>
 #include <fwRuntime/operations.hpp>
-#include <fwRuntime/Runtime.hpp>
+#include <fwRuntime/Profile.hpp>
 
 #include <fwTools/Os.hpp>
 #include <fwTools/UUID.hpp>
@@ -61,33 +59,11 @@ void PreferencesTest::tearDown()
 
 void PreferencesTest::runtimeTest()
 {
-    m_profile = ::fwRuntime::profile::Profile::New();
-    m_profile->setName("APP_TEST");
-    ::fwRuntime::profile::setCurrentProfile(m_profile);
-
-    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultBundles();
-
-    std::shared_ptr< ::fwRuntime::Bundle > dataReg = runtime->findBundle("dataReg");
-    CPPUNIT_ASSERT_MESSAGE("'dataReg bundle not found !'", dataReg);
-    dataReg->setEnable(true);
-    CPPUNIT_ASSERT(dataReg->isEnable());
-    dataReg->start();
-
-    std::shared_ptr< ::fwRuntime::Bundle > servicesReg = runtime->findBundle("servicesReg");
-    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", servicesReg);
-    servicesReg->setEnable(true);
-    CPPUNIT_ASSERT(servicesReg->isEnable());
-    servicesReg->start();
-
-    std::shared_ptr< ::fwRuntime::Bundle > preferences = runtime->findBundle("preferences");
-    CPPUNIT_ASSERT_MESSAGE("'preferences bundle not found !'", preferences);
-    preferences->setEnable(true);
-    CPPUNIT_ASSERT(preferences->isEnable());
-    preferences->start();
+    ::fwRuntime::init();
 
     const std::string profileName = ::fwTools::UUID::generateUUID();
-    m_profile->setName(profileName);
+    auto profile                  = ::fwRuntime::profile::getCurrentProfile();
+    profile->setName(profileName);
 
     const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profileName);
     m_preferencesPath = appPrefDir / "preferences.json";
@@ -104,7 +80,16 @@ void PreferencesTest::helperTest()
     const std::string preferenceKey   = "PREF_KEY_TEST";
     const std::string preferenceValue = "PREF_VALUE_TEST";
 
-    // Check set preference
+    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+
+    const std::filesystem::path appPrefDir = ::fwTools::os::getUserDataDir("sight", profile->getName());
+    const std::filesystem::path prefFile   = appPrefDir / "preferences.json";
+
+    //Check preference file dir
+    const std::filesystem::path file = ::fwPreferences::getPreferencesFile();
+    CPPUNIT_ASSERT_EQUAL(prefFile.string(), file.string());
+
+    //Check set preference
     const bool isModified = ::fwPreferences::setPreference(preferenceKey, preferenceValue);
     CPPUNIT_ASSERT(isModified);
 

@@ -25,6 +25,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
+#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
@@ -108,7 +109,7 @@ void AppConfig::parseBundleInformation()
         // Get config
         ::fwRuntime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
 
-        // Get bundle
+        // Get module
         std::shared_ptr< ::fwRuntime::Bundle> bundle = ext->getBundle();
         std::string bundleId                         = bundle->getIdentifier();
         std::string bundleVersion                    = bundle->getVersion().string();

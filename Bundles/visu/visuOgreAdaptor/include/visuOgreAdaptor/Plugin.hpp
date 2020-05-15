@@ -29,7 +29,9 @@
 namespace visuOgreAdaptor
 {
 
-/// This class is started when the bundles is loaded.
+/**
+ * @brief   This class is started when the module is loaded.
+ */
 class VISUOGREADAPTOR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 

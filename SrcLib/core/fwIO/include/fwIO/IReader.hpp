@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ class FWIO_CLASS_API IReader : public ::fwServices::IService
 {
 
 public:
-    fwCoreServiceMacro(IReader, ::fwServices::IService);
+    fwCoreServiceMacro(IReader, ::fwServices::IService)
 
     /**
      * @name Slots API
@@ -193,22 +193,22 @@ protected:
      *      <folder>/home/user/myFolder</folder>
      *  </service>
      * @endcode
-     * Sample configuration for a resource (file stored in a bundle or a library):
+     * Sample configuration for a resource (file stored in a module or a library):
      * @code{.xml}
      *  <service ... >
-     *      <resource>bundle-0.1/myFile.jpg</resource>
+     *      <resource>module-0.1/myFile.jpg</resource>
      *  </service>
-     * Sample configuration for many resources (files stored in a bundle or a library):
+     * Sample configuration for many resources (files stored in a module or a library):
      * @code{.xml}
      *  <service ... >
-     *      <resource>bundle-0.1/myFile01.jpg</resource>
-     *      <resource>bundle-0.1/myFile02.jpg</resource>
+     *      <resource>module-0.1/myFile01.jpg</resource>
+     *      <resource>module-0.1/myFile02.jpg</resource>
      *      <resource>library-0.1/myFile03.jpg</resource>
      *  </service>
-     * Sample configuration for a resource folder (bundle or library path):
+     * Sample configuration for a resource folder (module or library path):
      * @code{.xml}
      *  <service ... >
-     *      <resource>bundle</resource>
+     *      <resource>module</resource>
      *  </service>
      *
      * You may specify the title of the modal file selection window with the `windowTitle` config attribute as such:

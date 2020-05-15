@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,8 @@
 #include "fwRuntime/helper.hpp"
 
 #include "fwRuntime/Convert.hpp"
+#include <fwRuntime/detail/ExtensionPoint.hpp>
+#include <fwRuntime/detail/Runtime.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -30,37 +32,6 @@
 
 namespace fwRuntime
 {
-
-//------------------------------------------------------------------------------
-
-std::pair< bool, std::string > validateConfigurationElement( std::shared_ptr< ::fwRuntime::io::Validator > _validator,
-                                                             ::fwRuntime::ConfigurationElement::sptr _element )
-{
-    SLM_ASSERT("_validator not instanced", _validator);
-    SLM_ASSERT("_element not instanced", _element);
-
-    xmlNodePtr _elementNodePtr = xmlNewNode( NULL,  xmlCharStrdup( _element->getName().c_str() ) );
-    ::fwRuntime::ConfigurationElement2XML( _element, _elementNodePtr );
-    xmlDocPtr xmlDoc   = xmlNewDoc(BAD_CAST "1.0");
-    xmlNodePtr xmlNode = xmlCopyNode(_elementNodePtr, 1);
-    xmlDocSetRootElement(xmlDoc, xmlNode);
-
-    _validator->clearErrorLog();
-
-    std::pair< bool, std::string > validationResult;
-    if( !(_validator->validate( xmlNode ) == true) )
-    {
-        validationResult.first  = false;
-        validationResult.second = _validator->getErrorLog();
-    }
-    else
-    {
-        validationResult.first = true;
-    }
-
-    xmlFreeDoc( xmlDoc );
-    return validationResult;
-}
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +52,7 @@ void ConfigurationElement2XML(::fwRuntime::ConfigurationElement::sptr _cfgElemen
 
         xmlAddChild(pNode, child);
         // If configuration element is a XML_TEXT_NODE : WARNING : even whitespace (non XML_TEXT_NODE) have been
-        // considered as valid XML_TEXT_NODE by BundleDescriptorReader!!!!
+        // considered as valid XML_TEXT_NODE by ModuleDescriptorReader!!!!
         if( !elt->getValue().empty() )
         {
             xmlNodeSetContent(child, xmlCharStrdup( elt->getValue().c_str() ));
@@ -136,16 +107,7 @@ ConfigurationElement::sptr getCfgAsAnExtension( ConfigurationElement::sptr confi
 
 std::vector< ConfigurationElement::sptr > getAllCfgForPoint( std::string _extension_pt )
 {
-    using ::fwRuntime::ConfigurationElement;
-
-    typedef std::vector< ConfigurationElement::sptr > ElementContainer;
-    typedef std::back_insert_iterator< ElementContainer > Inserter;
-
-    ElementContainer renderElements;
-    Inserter renderInserter(renderElements);
-
-    ::fwRuntime::getAllConfigurationElementsForPoint(_extension_pt, renderInserter);
-    return renderElements;
+    return ::fwRuntime::getAllConfigurationElementsForPoint(_extension_pt);
 }
 
 //------------------------------------------------------------------------------
@@ -154,17 +116,11 @@ std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
 {
     std::vector<std::string > ids;
 
-    using ::fwRuntime::ConfigurationElement;
-    typedef std::vector< ConfigurationElement::sptr > ElementContainer;
-    typedef std::back_insert_iterator< ElementContainer > Inserter;
-
     // Collects all contributed actions
-    ElementContainer elements;
-    Inserter inserter(elements);
-    ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
+    auto elements = ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt);
 
     // Creates all contributed action instances.
-    for(::fwRuntime::ConfigurationElement::sptr elt :  elements)
+    for(const ::fwRuntime::ConfigurationElement::sptr& elt :  elements)
     {
         ids.push_back(elt->getAttributeValue("id"));
     }
@@ -176,19 +132,14 @@ std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
 std::string getInfoForPoint( std::string _extension_pt  )
 {
     std::string info = "";
-    if(::fwRuntime::findExtensionPoint( _extension_pt ) )
+    auto& rntm       = ::fwRuntime::detail::Runtime::get();
+    if(rntm.findExtensionPoint( _extension_pt ) )
     {
-        using ::fwRuntime::ConfigurationElement;
-        typedef std::vector< ConfigurationElement::sptr > ElementContainer;
-        typedef std::back_insert_iterator< ElementContainer > Inserter;
-
         // Collects all contributed actions
-        ElementContainer elements;
-        Inserter inserter(elements);
-        ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
+        auto elements = ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt);
 
         // Creates all contributed action instances.
-        for(::fwRuntime::ConfigurationElement::sptr elt :  elements)
+        for(const ::fwRuntime::ConfigurationElement::sptr& elt : elements)
         {
             if( elt->getName() == "info" && elt->hasAttribute("text") )
             {
@@ -207,17 +158,11 @@ std::map< std::string,
 {
     std::map<std::string, ConfigurationElement::sptr > cfgElementMap;
 
-    using ::fwRuntime::ConfigurationElement;
-    typedef std::vector< ConfigurationElement::sptr > ElementContainer;
-    typedef std::back_insert_iterator< ElementContainer > Inserter;
-
     // Collects all contributed actions
-    ElementContainer elements;
-    Inserter inserter(elements);
-    ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
+    auto elements = ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt);
 
     // Creates all contributed action instances.
-    for(::fwRuntime::ConfigurationElement::sptr elt :  elements)
+    for(const ::fwRuntime::ConfigurationElement::sptr& elt : elements)
     {
         cfgElementMap[elt->getAttributeValue("id")] = elt;
     }
@@ -228,13 +173,14 @@ std::map< std::string,
 
 std::vector< std::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(std::string extension_pt)
 {
-    typedef std::vector< std::shared_ptr< Extension > > ExtensionContainer;
-    typedef std::back_insert_iterator< ExtensionContainer > Inserter;
+    auto& rntm                                       = ::fwRuntime::detail::Runtime::get();
+    std::shared_ptr< detail::ExtensionPoint >  point = rntm.findExtensionPoint(extension_pt);
 
-    ExtensionContainer extElements;
-    Inserter extInserter(extElements);
+    if( !point )
+    {
+        throw RuntimeException( extension_pt + ": invalid extension point identifier." );
+    }
 
-    ::fwRuntime::getAllExtensionsForPoint( extension_pt, extInserter );
-    return extElements;
+    return point->getAllExtensions();
 }
 }

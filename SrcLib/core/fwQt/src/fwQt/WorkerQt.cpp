@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 
 #include "fwQt/util/FuncSlot.hpp"
 
-#include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -77,7 +76,7 @@ class WorkerQt : public ::fwThread::Worker
 public:
     WorkerQt();
 
-    void init( int& argc, char** argv);
+    void init(int& argc, char** argv);
 
     virtual ~WorkerQt();
 

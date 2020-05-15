@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ namespace uiGenericQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ void SShowAbout::configuring()
     if(cfgFilename)
     {
         const std::string& filename = cfgFilename->getExistingAttributeValue("id");
-        // Convert the path from a bundle location
+        // Convert the path from a module location
         m_fsAboutPath = ::fwRuntime::getBundleResourceFilePath(filename);
 
         m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);

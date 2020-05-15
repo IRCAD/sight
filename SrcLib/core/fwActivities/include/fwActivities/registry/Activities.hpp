@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -210,8 +210,8 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     std::string tabInfo;
     RequirementsType requirements;
     std::string builderImpl;
-    std::string bundleId; ///< Identifier of the bundle containing the activity
-    std::string bundleVersion; ///< Version of the bundle containing the activity
+    std::string bundleId; ///< Identifier of the module containing the activity
+    std::string bundleVersion; ///< Version of the module containing the activity
 
     /// Validator implementations
     std::vector< std::string > validatorsImpl;
@@ -235,7 +235,7 @@ class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject
 public:
     typedef std::vector< ActivityInfo > ActivitiesType;
 
-    fwCoreClassMacro(Activities, ::fwCore::BaseObject, new Activities);
+    fwCoreClassMacro(Activities, ::fwCore::BaseObject, new Activities)
 
     /// Return the default global instance of Activities
     FWACTIVITIES_API static Activities::sptr getDefault();
@@ -244,13 +244,12 @@ public:
     FWACTIVITIES_API virtual ~Activities();
 
     /**
-     * @brief Parse bundle information to retrieve config parameters declaration
+     * @brief Parse module information to retrieve config parameters declaration
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      * @{
      **/
     FWACTIVITIES_API void parseBundleInformation();
-    FWACTIVITIES_API void parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) >& extensions);
     ///@}
 
     /**

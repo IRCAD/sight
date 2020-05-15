@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2017 IRCAD France
- * Copyright (C) 2016-2017 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __PREFERENCES_NAMESPACE_HPP__
-#define __PREFERENCES_NAMESPACE_HPP__
-
 /**
  * @ingroup apprequirement
  * @brief  The namespace preferences contains the service to manage the application's preferences (window size/position,
  *         default read/write directory, ...).
  *
- * This bundle must be added in the \p \<requirement\> section of your application if you want to save the
+ * This module must be added in the \p \<requirement\> section of your application if you want to save the
  * application's preferences.
  */
+#pragma once
+
 namespace preferences
 {
 
 } // namespace preferences
-
-#endif //__PREFERENCES_NAMESPACE_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __IOVTKGDCM_PLUGIN_HPP__
-#define __IOVTKGDCM_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -29,10 +28,8 @@ namespace ioVtkGdcm
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
- * @class   Plugin
+ * @brief   This class is started when the module is loaded.
  *
- * @date    2009-2011
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -50,5 +47,3 @@ struct Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace ioVtkGdcm
-
-#endif //__IOVTKGDCM_PLUGIN_HPP__

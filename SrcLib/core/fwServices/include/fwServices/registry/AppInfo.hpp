@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreClassMacro(AppInfo, ::fwCore::BaseObject, new AppInfo);
+    fwCoreClassMacro(AppInfo, ::fwCore::BaseObject, new AppInfo)
 
     /// Constructor, do nothing.
     AppInfo()
@@ -62,8 +62,8 @@ public:
     typedef std::map< std::string, std::string > ParametersType;
     ParametersType parameters;
     ::fwRuntime::ConfigurationElement::csptr config;
-    std::string bundleId; ///< Bundle identifier (used to start the bundle when the appConfig is launched)
-    std::string bundleVersion; ///< Bundle version (used to start the bundle when the appConfig is launched)
+    std::string bundleId; ///< Bundle identifier (used to start the module when the appConfig is launched)
+    std::string bundleVersion; ///< Bundle version (used to start the module when the appConfig is launched)
 };
 
 } // namespace registry

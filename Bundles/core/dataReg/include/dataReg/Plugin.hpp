@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __DATAREG_PLUGIN_HPP__
-#define __DATAREG_PLUGIN_HPP__
+#pragma once
 
 #include "dataReg/config.hpp"
 
@@ -31,7 +30,7 @@ namespace dataReg
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 class DATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -49,12 +48,10 @@ public:
     DATAREG_API void stop() noexcept;
 
 private:
-    /// Dummy variable members used to force link with fwDataCamp and fwMedDataCamp bundles
+    /// Dummy variable members used to force link with fwDataCamp and fwMedDataCamp modules
     /// Recent GCC versions (>= 5.4) strip local variables with -O2
     int m_fwDataCampVersion;
     int m_fwMedDataCampVersion;
 };
 
 } // namespace dataReg
-
-#endif //__DATAREG_PLUGIN_HPP__

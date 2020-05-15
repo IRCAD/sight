@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_CONVERT_HPP__
-#define __FWRUNTIME_CONVERT_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
@@ -56,9 +55,9 @@ public:
     FWRUNTIME_API std::string static toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgElement);
 
     /**
-     * @brief   Build an xmlNodePtr with all running Bundles
+     * @brief   Build an xmlNodePtr with all running Modules
      */
-    FWRUNTIME_API static xmlNodePtr runningBundlesToXml( );
+    FWRUNTIME_API static xmlNodePtr runningModulesToXml( );
 
     FWRUNTIME_API static ::boost::property_tree::ptree toPropertyTree(
         ::fwRuntime::ConfigurationElement::csptr _cfgElement );
@@ -78,5 +77,3 @@ private:
 };
 
 } // namespace fwRuntime
-
-#endif // __FWRUNTIME_CONVERT_HPP__

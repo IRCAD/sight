@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,12 +59,12 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(::fwServices::IService)() > FactoryType;
 
-    fwCoreClassMacro(ServiceFactory, ::fwCore::BaseObject, new ServiceFactory);
+    fwCoreClassMacro(ServiceFactory, ::fwCore::BaseObject, new ServiceFactory)
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();
 
-    /// Parse bundle information to retrieve service declaration
+    /// Parse module information to retrieve service declaration
     FWSERVICES_API void parseBundleInformation( );
 
     FWSERVICES_API void addServiceFactory( FactoryType _factory,
@@ -130,7 +130,7 @@ private:
         std::string tags;
         std::shared_ptr< ::fwRuntime::Bundle > bundle;
         FactoryType factory;
-        bool objectsSetFromBundle {false}; // True if the objects implementation are set from the bundle information
+        bool objectsSetFromBundle {false}; // True if the objects implementation are set from the module information
     };
     typedef std::unordered_map< KeyType, ServiceInfo > SrvRegContainer;
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWACTIVITIES_UT_BUILDER_ACTIVITYSERIESBUILDERTEST_HPP__
-#define __FWACTIVITIES_UT_BUILDER_ACTIVITYSERIESBUILDERTEST_HPP__
+#pragma once
 
 #include <fwActivities/registry/Activities.hpp>
 
@@ -41,7 +40,7 @@ class ActivitySeriesBuilderTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ActivitySeriesBuilderTest );
 
-CPPUNIT_TEST(builDataTest);
+CPPUNIT_TEST(buildDataTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -50,7 +49,7 @@ public:
     void setUp();
     void tearDown();
 
-    void builDataTest();
+    void buildDataTest();
 
 protected:
     SPTR( ::fwRuntime::Bundle ) m_bundle;
@@ -60,6 +59,3 @@ protected:
 
 } //namespace ut
 } //namespace fwActivities
-
-#endif //__FWACTIVITIES_UT_BUILDER_ACTIVITYSERIESBUILDERTEST_HPP__
-

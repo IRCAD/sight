@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,20 +56,20 @@ public:
     /// Associations of <pattern, value>.
     typedef std::map< std::string, std::string > FieldAdaptorType;
 
-    fwCoreClassMacro(AppConfig, ::fwCore::BaseObject, new AppConfig);
+    fwCoreClassMacro(AppConfig, ::fwCore::BaseObject, new AppConfig)
 
     /// Destructor
     FWSERVICES_API virtual ~AppConfig();
 
     /**
-     * @brief Parses bundle information to retrieve configuration declaration.
+     * @brief Parses module information to retrieve configuration declaration.
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      */
     FWSERVICES_API void parseBundleInformation();
 
     /**
-     * @brief Parses bundle information to retrieve configuration declaration.
+     * @brief Parses module information to retrieve configuration declaration.
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      */

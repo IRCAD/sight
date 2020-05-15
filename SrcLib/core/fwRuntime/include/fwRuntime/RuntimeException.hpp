@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
     /**
      * @brief   Destructor : does nothing.
      */
-    FWRUNTIME_API virtual ~RuntimeException() noexcept;
+    FWRUNTIME_API ~RuntimeException() noexcept override;
 
 };
 

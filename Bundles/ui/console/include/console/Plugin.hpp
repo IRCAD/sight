@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __CONSOLE_PLUGIN_HPP__
-#define __CONSOLE_PLUGIN_HPP__
+#pragma once
 
 #include "console/config.hpp"
 
@@ -35,7 +34,7 @@ class Worker;
 namespace console
 {
 /**
- * @brief   This class is called when the console bundle is loaded.
+ * @brief   This class is called when the console module is loaded.
  */
 class CONSOLE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -61,5 +60,3 @@ private:
 };
 
 } // namespace console
-
-#endif //__CONSOLE_PLUGIN_HPP__

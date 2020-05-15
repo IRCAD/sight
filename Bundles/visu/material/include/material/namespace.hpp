@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __MATERIAL_NAMESPACE_HPP__
-#define __MATERIAL_NAMESPACE_HPP__
-
 /**
- * @brief       Bundle containing ogre material templates and GLSL programms
+ * @brief       Module containing ogre material templates and GLSL programms
  */
+#pragma once
+
 namespace material
 {
 
 }
-#endif /* __MATERIAL_NAMESPACE_HPP__ */

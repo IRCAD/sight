@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,21 +22,9 @@
 
 #include "gui/action/SBooleanSlotCaller.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwCore/base.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwRuntime/Extension.hpp>
-#include <fwRuntime/helper.hpp>
-
 #include <fwServices/macros.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <regex>
 
@@ -45,7 +33,7 @@ namespace gui
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SBooleanSlotCaller );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SBooleanSlotCaller )
 
 //-----------------------------------------------------------------------------
 

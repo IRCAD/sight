@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2015 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __MATHS_PLUGIN_HPP__
-#define __MATHS_PLUGIN_HPP__
+#pragma once
 
 #include "maths/config.hpp"
 
@@ -31,8 +30,7 @@ namespace maths
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
- * @class   Plugin
+ * @brief   This class is started when the module is loaded.
  */
 struct MATHS_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -51,5 +49,3 @@ struct MATHS_CLASS_API Plugin : public ::fwRuntime::Plugin
 };
 
 } // namespace maths
-
-#endif //__MATHS_PLUGIN_HPP__

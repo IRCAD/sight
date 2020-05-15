@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -101,7 +101,7 @@ public:
     void landmarksConversionTest();
 
 private:
-    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp bundles
+    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp modules
     /// Recent GCC versions (>= 5.4) strip local variables with -O2
     int m_fwDataVersion;
     int m_fwMedDataVersion;

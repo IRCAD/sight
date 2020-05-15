@@ -29,7 +29,7 @@
 namespace visuOgreQt
 {
 
-/// This class is started when the bundle is loaded.
+/// This class is started when the module is loaded.
 struct VISUOGREQT_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
 

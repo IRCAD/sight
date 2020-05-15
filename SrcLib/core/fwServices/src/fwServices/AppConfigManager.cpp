@@ -118,7 +118,7 @@ void AppConfigManager::startBundle()
     SLM_ERROR_IF("Bundle is not specified, it can not be started.", m_configId.empty());
     if (!m_configId.empty() && !m_isUnitTest)
     {
-        std::shared_ptr< ::fwRuntime::Bundle > bundle = registry::AppConfig::getDefault()->getBundle(m_configId);
+        std::shared_ptr< ::fwRuntime::Module > bundle = registry::AppConfig::getDefault()->getBundle(m_configId);
         SLM_INFO_IF("Bundle '" + bundle->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
                     bundle->isStarted());
         if (!bundle->isStarted())

@@ -12,7 +12,7 @@ macro(win_install PRJ_NAME)
         set(LAUNCHER "fwlauncher.exe")
         set(LAUNCHER_PATH "bin/${LAUNCHER}") # For windows_fixup.cmake.in
         set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
-        set(CPACK_PROFILE_PATH "${FWBUNDLE_RC_PREFIX}\\\\${${FWPROJECT_NAME}_FULLNAME}\\\\profile.xml")
+        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${${FWPROJECT_NAME}_FULLNAME}\\\\profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
@@ -42,10 +42,10 @@ macro(win_install PRJ_NAME)
                 qt_plugins_setup(${REQUIREMENT})
 
                 if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${FWBUNDLE_LIB_PREFIX}")
+                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${SIGHT_MODULE_LIB_PREFIX}")
                 endif()
-                if(EXISTS "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_BUNDLES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${FWBUNDLE_RC_PREFIX}")
+                if(EXISTS "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
+                    install(DIRECTORY "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${SIGHT_MODULE_RC_PREFIX}")
                 endif()
             endif()
         endforeach()
@@ -72,7 +72,7 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
-    set(CPACK_BUNDLE_RC_PREFIX "${FWBUNDLE_RC_PREFIX}")
+    set(CPACK_BUNDLE_RC_PREFIX "${SIGHT_MODULE_RC_PREFIX}")
 
     set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
 

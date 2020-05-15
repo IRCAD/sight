@@ -9,7 +9,7 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
     foreach(CURRENT_REQUIREMENT ${${PROJECT}_REQUIREMENTS})
         # to only consider bundles and app
         get_target_property(TARGET_TYPE ${CURRENT_REQUIREMENT} TYPE)
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "BUNDLE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
+        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             list(APPEND PROJECT_REQUIREMENTS ${CURRENT_REQUIREMENT})
          endif()
     endforeach()
@@ -25,7 +25,7 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
                                 -DPROJECT_DIR="${${PROJECT}_DIR}"
                                 -DPROJECT_REQUIREMENTS="${PROJECT_REQUIREMENTS}"
                                 -DCMAKE_SCRIPTS_DIR="${FWCMAKE_BUILD_FILES_DIR}"
-                                -DPLUGIN_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}"
+                                -DPLUGIN_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}"
                                 -DREGISTERSERVICES_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${PROJECT}"
                                 -P "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
     )

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __UIIO_PLUGIN_HPP__
-#define __UIIO_PLUGIN_HPP__
+#pragma once
 
 #include <fwRuntime/Plugin.hpp>
-
 
 namespace uiIO
 {
@@ -37,14 +35,12 @@ public:
     /// PLugin destructor
     ~Plugin() noexcept;
 
-    /// This method is used by runtime to initialize the bundle.
+    /// This method is used by runtime to initialize the module.
     void start();
 
-    /// This method is used by runtime to stop the bundle.
+    /// This method is used by runtime to stop the module.
     void stop() noexcept;
 
 };
 
 } // namespace uiIO
-
-#endif //__UIIO_PLUGIN_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __IONETWORK_PLUGIN_HPP__
-#define __IONETWORK_PLUGIN_HPP__
+#pragma once
+
+#include "ioNetwork/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
-#include "ioNetwork/config.hpp"
 
 namespace ioNetwork
 {
 
 /**
- * @brief   This class is started when the bundles is loaded
+ * @brief   This class is started when the module is loaded
  */
 struct IONETWORK_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -46,8 +46,4 @@ struct IONETWORK_CLASS_API Plugin : public ::fwRuntime::Plugin
 
 };
 
-
 } // namespace ioNetwork
-
-
-#endif //__IONETWORK_PLUGIN_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@ namespace fwQml
 /**
  * @brief Defines the base class for service editing an object associated to a qml UI.
  *
- * Don't forget to register your editor in you bundle Plugin::start()
+ * Don't forget to register your editor in you module Plugin::start()
  * @code{.cpp}
     qmlRegisterType<MyEditor>("myBundle", versionMajor, versionMinor, "MyEditor");
    @endcode
@@ -46,7 +46,7 @@ class FWQML_CLASS_QT_API IQmlEditor : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(IQmlEditor, ::fwServices::IService);
+    fwCoreServiceMacro(IQmlEditor, ::fwServices::IService)
 
     /// Constructor. Do nothing.
     FWQML_QT_API IQmlEditor() noexcept;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,9 +24,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
-#include <fwRuntime/ExtensionPoint.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwServices/macros.hpp>
@@ -39,7 +38,7 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ComponentsTree, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ComponentsTree, ::fwData::Object )
 
 //------------------------------------------------------------------------------
 
@@ -60,40 +59,37 @@ void ComponentsTree::updating( )
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
 
-    ::fwRuntime::Runtime* defaultRuntime              = ::fwRuntime::Runtime::getDefault();
-    ::fwRuntime::Runtime::BundleIterator iter_bundles = defaultRuntime->bundlesBegin();
-    while (iter_bundles != defaultRuntime->bundlesEnd())
+    ::fwRuntime::Runtime* defaultRuntime = ::fwRuntime::Runtime::getDefault();
+
+    for (const auto& module : defaultRuntime->getModules())
     {
-        const std::string bundleName = (*iter_bundles)->getIdentifier();
-        bool isBundleEnable          = (*iter_bundles)->isEnable();
-        QTreeWidgetItem* bundleItem  = new QTreeWidgetItem();
-        if(!isBundleEnable)
+        const std::string moduleName      = module->getIdentifier();
+        const bool isModuleEnabled        = module->isEnabled();
+        QTreeWidgetItem* const moduleItem = new QTreeWidgetItem();
+        if(!isModuleEnabled)
         {
-            bundleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
+            moduleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
         }
-        bundleItem->setText(0, QString::fromStdString(bundleName));
-        m_treeContainer->addTopLevelItem( bundleItem );
+        moduleItem->setText(0, QString::fromStdString(moduleName));
+        m_treeContainer->addTopLevelItem( moduleItem );
 
         //Extensions
         QTreeWidgetItem* extensionsItem = new QTreeWidgetItem();
         extensionsItem->setText(0, QObject::tr("Extensions"));
-        bundleItem->addChild( extensionsItem );
-        ::fwRuntime::Bundle::ExtensionConstIterator iter_extension = (*iter_bundles)->extensionsBegin();
-        while (iter_extension != (*iter_bundles)->extensionsEnd())
+        moduleItem->addChild( extensionsItem );
+
+        for (const auto& extension : module->getExtensions())
         {
-            std::string point      = (*iter_extension)->getPoint();
-            bool isExtensionEnable = (*iter_extension)->isEnable();
-            QTreeWidgetItem* item  = new QTreeWidgetItem();
-            if(!isExtensionEnable)
+            const std::string point       = extension->getPoint();
+            const bool isExtensionEnabled = extension->isEnabled();
+            QTreeWidgetItem* const item   = new QTreeWidgetItem();
+            if(!isExtensionEnabled)
             {
                 item->setBackground(0, QBrush(QColor(155, 155, 155)));
             }
             item->setText(0, QString::fromStdString(point));
             extensionsItem->addChild( item );
-
-            ++iter_extension;
         }
-        ++iter_bundles;
     }
 
     m_dialog->show();
@@ -139,4 +135,3 @@ void ComponentsTree::stopping()
 } // namespace action
 
 } // namespace monitorQt
-

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ namespace fwRuntime
 
 /**
  * @brief   Editable configuration element : allow the self configuration element building,
- *          which reading XML structure provided by bundle descriptions
+ *          which reading XML structure provided by module descriptions
  *
  */
 class FWRUNTIME_CLASS_API EConfigurationElement : public ::fwRuntime::ConfigurationElement
@@ -63,7 +63,7 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    FWRUNTIME_API virtual ~EConfigurationElement();
+    FWRUNTIME_API ~EConfigurationElement() override;
 
     /**
      * @brief       Create and add a configuration element.

@@ -12,4 +12,4 @@ set( REQUIREMENTS # The bundles used by this application
 )
 
 # Set the configuration to use : 'tutoBasicConfig'
-bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig) 
+moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)

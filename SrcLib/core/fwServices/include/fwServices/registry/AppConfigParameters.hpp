@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@ class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassMacro(AppConfigParameters, ::fwCore::BaseObject, new AppConfigParameters);
+    fwCoreClassMacro(AppConfigParameters, ::fwCore::BaseObject, new AppConfigParameters)
 
     /// Return the default global instance of AppConfigParameters
     FWSERVICES_API static AppConfigParameters::sptr getDefault();
@@ -58,7 +58,7 @@ public:
     FWSERVICES_API virtual ~AppConfigParameters();
 
     /**
-     * @brief Parse bundle information to retrieve config parameters declaration
+     * @brief Parse module information to retrieve config parameters declaration
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      **/

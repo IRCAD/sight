@@ -50,7 +50,7 @@ macro(profile_setup ${PROJECT})
         endforeach()
 
         # to only consider bundles and app
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "BUNDLE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
+        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             # check if a bundleParam macro had been use in the properties.cmake
             # if yes, get and set bundle param and values
             if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
@@ -79,7 +79,7 @@ macro(profile_setup ${PROJECT})
     endforeach()
 
     configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
-                    "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}/profile.xml")
+                    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}/profile.xml")
 endmacro()
 
 function(findRequirements FWPROJECT_NAME)
@@ -92,7 +92,7 @@ function(findRequirements FWPROJECT_NAME)
     endif()
 
     foreach(CURRENT_REQUIREMENT ${CURRENT_REQUIREMENTS})
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "BUNDLE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
+        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             findRequirements(${CURRENT_REQUIREMENT})
         endif()
     endforeach()
@@ -100,9 +100,16 @@ function(findRequirements FWPROJECT_NAME)
     set(ALL_REQUIREMENTS ${ALL_REQUIREMENTS} PARENT_SCOPE)
 endfunction()
 
-macro(bundleParam BUNDLE_NAME)
+macro(bundleParam MODULE_NAME)
     set(options)
     set(oneValueArgs)
     set(multiValueArgs PARAM_VALUES PARAM_LIST)
-    cmake_parse_arguments("${NAME}_${BUNDLE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("${NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+endmacro()
+
+macro(moduleParam MODULE_NAME)
+    set(options)
+    set(oneValueArgs)
+    set(multiValueArgs PARAM_VALUES PARAM_LIST)
+    cmake_parse_arguments("${NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 endmacro()

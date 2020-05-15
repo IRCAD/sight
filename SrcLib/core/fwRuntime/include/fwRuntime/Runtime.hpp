@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,19 +26,19 @@
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
 
-#include <filesystem>
+#include <fwCore/macros.hpp>
 
+#include <filesystem>
 #include <set>
 #include <vector>
 
 namespace fwRuntime
 {
-struct Bundle;
+class Module;
 struct ConfigurationElement;
 struct Extension;
-struct ExtensionPoint;
-struct IExecutable;
-struct ExecutableFactory;
+class IExecutable;
+class ExecutableFactory;
 struct IPlugin;
 }
 
@@ -47,19 +47,16 @@ namespace fwRuntime
 
 /**
  * @brief   Defines the runtime class.
- *
  */
-struct FWRUNTIME_CLASS_API Runtime
+class FWRUNTIME_CLASS_API Runtime
 {
+public:
     /**
      * @name    Type Definitions
      */
     //@{
-    /// Defines the bundle container type.
-    typedef std::set< std::shared_ptr<Bundle> >     BundleContainer;
-
-    /// Defines the bundle container iterator type.
-    typedef BundleContainer::iterator BundleIterator;
+    /// Defines the module container type.
+    typedef std::set< std::shared_ptr<Module> >     ModuleContainer;
     /// Defines the extension container type.
     typedef std::set< std::shared_ptr<Extension> >  ExtensionContainer;
     /// Defines the extension container type.
@@ -70,169 +67,82 @@ struct FWRUNTIME_CLASS_API Runtime
      * @brief   Retrieves the default runtime instance.
      */
     FWRUNTIME_API static Runtime* getDefault();
+    FWRUNTIME_API static Runtime& get();
 
     /**
      * @brief   Destructor : does nothing.
      */
-    ~Runtime();
+    virtual ~Runtime();
 
     /**
-     * @brief       Set the working path where Bundles and share folder are located.
+     * @brief       Set the working path where Modules and share folder are located.
      *
      * @param[in]   workingPath a boost path.
      */
+    [[deprecated("To be removed in Sight 22.0, Sight location is now detected automatically")]]
     FWRUNTIME_API void setWorkingPath(const std::filesystem::path& workingPath);
 
     /**
-     * @brief       Get the path where Bundles and share folder are located.
+     * @brief       Get the path where Modules and share folder are located.
      *
      * @return      a boost path.
      */
-    FWRUNTIME_API std::filesystem::path getWorkingPath() const;
+    FWRUNTIME_API virtual std::filesystem::path getWorkingPath() const = 0;
 
     /**
-     * @name    Bundles
+     * @name    Modules
      *
      * @{
      */
 
     /**
-     * @brief       Adds a new bundle instance to the runtime system.
+     * @brief       Adds all modules found in the given path.
      *
-     * @remark      The given bundle state will be altered according to the current configuration rules.
-     * @param[in]   bundle  a shared pointer to the bundle instance to add
+     * @param[in]   repository  a path that may containing modules
+     * @deprecated  Bundle has been renamed to Module, please use addModules() instead
      */
-    FWRUNTIME_API void addBundle( std::shared_ptr< Bundle > bundle );
+    [[deprecated("To be removed in Sight 22.0, use addModules() instead")]]
+    FWRUNTIME_API virtual void addBundles( const std::filesystem::path& repository ) = 0;
 
     /**
-     * @brief       Unregister a bundle instance to the runtime system.
+     * @brief       Adds all modules found in the given path.
      *
-     * @param[in]   bundle  a shared pointer to the bundle instance to unregister
+     * @param[in]   repository  a path that may containing modules
      */
-    FWRUNTIME_API void unregisterBundle( std::shared_ptr< Bundle > bundle );
+    FWRUNTIME_API virtual void addModules( const std::filesystem::path& repository ) = 0;
 
     /**
-     * @brief       Adds all bundle found in the given path.
+     * @brief       Adds all modules found at the default location.
      *
-     * @param[in]   repository  a path that may containing bundles
+     * @remark      The given module state will be altered according to the current configuration rules.
+     * @deprecated  This is now done automatically when initializing Sight.
      */
-    FWRUNTIME_API void addBundles( const std::filesystem::path& repository );
+    [[deprecated("To be removed in Sight 22.0, now done internally when initializing Sight with ::fwRuntime::init().")]]
+    FWRUNTIME_API virtual void addDefaultBundles();
 
     /**
-     * @brief       Adds all bundle found at the default location.
+     * @brief       Retrieves the module for the specified idenfier.
      *
-     * @remark      The given bundle state will be altered according to the current configuration rules.
+     * @param[in]   identifier  a string containing a module identifier
+     * @param[in]   version     the version of the module (undefined by default)
+     *
+     * @return      a shared pointer to the found module or null if none
+     * @deprecated  Bundle has been renamed to Module, please use findModule() instead
      */
-    FWRUNTIME_API void addDefaultBundles();
+    [[deprecated("To be removed in Sight 22.0, use findModule() instead")]]
+    FWRUNTIME_API virtual std::shared_ptr< Module > findBundle(const std::string& identifier,
+                                                               const Version& version = Version() ) const = 0;
 
     /**
-     * @brief   Retrieves the iterator on the begining of the bundle collection.
+     * @brief       Retrieves the module for the specified idenfier.
      *
-     * @return  an iterator
+     * @param[in]   identifier  a string containing a module identifier
+     * @param[in]   version     the version of the module (undefined by default)
+     *
+     * @return      a shared pointer to the found module or null if none
      */
-    FWRUNTIME_API BundleIterator bundlesBegin();
-
-    /**
-     * @brief   Retrieves the iterator on the end of the bundle collection.
-     *
-     * @return  an iterator
-     */
-    FWRUNTIME_API BundleIterator bundlesEnd();
-
-    /**
-     * @brief       Retrieves the bundle for the specified idenfier.
-     *
-     * @param[in]   identifier  a string containing a bundle identifier
-     * @param[in]   version     the version of the bundle (undefined by default)
-     *
-     * @return      a shared pointer to the found bundle or null if none
-     */
-    FWRUNTIME_API std::shared_ptr< Bundle > findBundle( const std::string& identifier,
-                                                        const Version& version = Version() ) const;
-
-    /**
-     * @brief       Retrieves the enabled bundle for the specified idenfier.
-     *
-     * @param[in]   identifier  a string containing a bundle identifier
-     * @param[in]   version     the version of the bundle (undefined by default)
-     *
-     * @return      a shared pointer to the found bundle or null if none
-     */
-    FWRUNTIME_API std::shared_ptr< Bundle > findEnabledBundle( const std::string& identifier,
-                                                               const Version& version = Version() ) const;
-
-    //@}
-
-    /**
-     * @name    Executable, Executable Factories & Dynamic Executable Instanciation
-     *
-     * @{
-     */
-
-    /**
-     * @brief       Adds a new executable factory instance to the runtime system.
-     *
-     * @param[in]   factory a shared pointer to an executable factory
-     */
-    FWRUNTIME_API void addExecutableFactory( std::shared_ptr< ExecutableFactory > factory );
-
-    /**
-     * @brief       Unregister a new executable factory instance to the runtime system.
-     *
-     * @param[in]   factory a shared pointer to an executable factory
-     */
-    FWRUNTIME_API void unregisterExecutableFactory( std::shared_ptr< ExecutableFactory > factory );
-
-    /**
-     * @brief   Create an instance of the given executable object type.
-     *
-     * An attempt is made to retrieve a registered executable factory. If none
-     * is found, the creation will fail.
-     *
-     * @remark      This method will not try to load any bundle.
-     *
-     * @param[in]   type    a string containing an executable type
-     *
-     * @return      a pointer to the created executable instance
-     */
-    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type );
-
-    /**
-     * @brief   Create an instance of the given executable object type and configuration element.
-     *
-     * An attempt is made to find a registered executable factory. If none
-     * is found, the bundle of the given configuration element is started in the
-     * hope it will register a executable factory for the given type. Then an
-     * executable factory for the given type is searched once again and the
-     * instantiation procedure goes further.
-     *
-     * @param[in]   type                    a string containing an executable type
-     * @param[in]   configurationElement    a shared pointer to the configuration element to use for the executable
-     * initialization
-     *
-     * @return  a pointer to the created executable instance
-     */
-    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type,
-                                                         std::shared_ptr< ConfigurationElement > configurationElement );
-
-    /**
-     * @brief       Retrieves the executable factory for the given identifier.
-     *
-     * @param[in]   type    a string containing a type identifier
-     *
-     * @return      a sgared pointer to the found executable factory or null of none
-     */
-    FWRUNTIME_API std::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string& type ) const;
-
-    /**
-     * @brief       Retrieves the plugin instance for the specified bundle.
-     *
-     * @param[in]   bundle  a shared pointer to a bundle instance
-     *
-     * @return      a shared pointer to a plugin instance or null if none
-     */
-    FWRUNTIME_API std::shared_ptr< IPlugin > getPlugin( const std::shared_ptr< Bundle > bundle ) const;
-
+    FWRUNTIME_API virtual std::shared_ptr< Module > findModule( const std::string& identifier,
+                                                                const Version& version = Version() ) const = 0;
     //@}
 
     /**
@@ -240,34 +150,12 @@ struct FWRUNTIME_CLASS_API Runtime
      *
      * @{
      */
-
     /**
-     * @brief       Registers a new extension.
-     *
-     * @param[in]   extension   a shared pointer to the extension to register
-     */
-    FWRUNTIME_API void addExtension( std::shared_ptr<Extension> extension);
-
-    /**
-     * @brief       Unregister a new extension.
-     *
-     * @param[in]   extension   a shared pointer to the extension to register
-     */
-    FWRUNTIME_API void unregisterExtension( std::shared_ptr<Extension> extension);
-
-    /**
-     * @brief   Retrieves the iterator on the beginning of the extension collection.
+     * @brief   Retrieves the extension collection.
      *
      * @return  an iterator
      */
-    FWRUNTIME_API ExtensionIterator extensionsBegin();
-
-    /**
-     * @brief   Retrieves the iterator on the end of the extension collection.
-     *
-     * @return  an iterator
-     */
-    FWRUNTIME_API ExtensionIterator extensionsEnd();
+    FWRUNTIME_API virtual ExtensionContainer getExtensions() = 0;
 
     /**
      * @brief       Retrieves the extension instance matching the specified identifier.
@@ -276,63 +164,37 @@ struct FWRUNTIME_CLASS_API Runtime
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    FWRUNTIME_API std::shared_ptr< Extension > findExtension( const std::string& identifier ) const;
+    FWRUNTIME_API virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const = 0;
 
     //@}
 
-    /**
-     * @name    Extension Points
-     */
-    //@{
-    /**
-     * @brief       Registers a new extension point.
-     *
-     * @param[in]   point   a pointer to the extension point to register
-     */
-    FWRUNTIME_API void addExtensionPoint( std::shared_ptr<ExtensionPoint> point);
+    /// Return all modules known by the runtime
+    [[deprecated("To be removed in Sight 22.0, use getModules() instead")]]
+    FWRUNTIME_API virtual ModuleContainer getBundles() = 0;
+
+    /// Return all modules known by the runtime
+    FWRUNTIME_API virtual ModuleContainer getModules() = 0;
+
+protected:
 
     /**
-     * @brief       Unregister a new extension point.
-     *
-     * @param[in]   point   a pointer to the extension point to register
+     * @brief   Constructor.
      */
-    FWRUNTIME_API void unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point);
+    Runtime();
 
-    /**
-     * @brief       Retrieves the extension point instance matching the specified identifier.
-     *
-     * @param[in]   identifier  a string containing an extension point identifier
-     *
-     * @return      a shared pointer to the found extension point instance or null if none
-     */
-    FWRUNTIME_API std::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string& identifier ) const;
-    //@}
+private:
 
-    private:
+    /// Defines the executable factory container type.
+    typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer;
 
-        ///< Defines the executable factory container type.
-        typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer;
+    /// Defines the plugin container type.
+    typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;
 
-        ///< Defines the extension point container type.
-        typedef std::set< std::shared_ptr<ExtensionPoint> > ExtensionPointContainer;
+    /// The runtime instance.
+    static std::shared_ptr<Runtime> m_instance;
 
-        ///< Defines the plugin container type.
-        typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;
-
-        static std::shared_ptr<Runtime> m_instance; ///< The runtime instance.
-
-        ExecutableFactoryContainer m_executableFactories; ///< Contains all executable factories.
-        ExtensionContainer m_extensions;                  ///< Contains all registered extensions.
-        ExtensionPointContainer m_extensionPoints;        ///< Contains all registered extension points.
-        BundleContainer m_bundles;                        ///< Contains all bundles.
-        PluginContainer m_plugins;                        ///< Contains all plugins.
-
-        std::filesystem::path m_workingPath; ///< Path where Bundles and share folder are located.
-
-        /**
-         * @brief   Constructor.
-         */
-        Runtime();
+    /// Contains all registered extensions.
+    ExtensionContainer m_extensions;
 };
 
 } // namespace fwRuntime

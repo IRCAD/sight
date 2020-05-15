@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATAREG_PLUGIN_HPP__
-#define __ARDATAREG_PLUGIN_HPP__
+#pragma once
 
 #include "arDataReg/config.hpp"
 
@@ -31,7 +30,7 @@ namespace arDataReg
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief   This class is started when the module is loaded.
  */
 class ARDATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -49,7 +48,7 @@ public:
     ARDATAREG_API void stop() noexcept;
 
 private:
-    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp bundles
+    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp modules
     /// Recent GCC versions (>= 5.4) strip local variables with -O2
     int m_fwDataVersion;
     int m_fwMedDataVersion;
@@ -57,5 +56,3 @@ private:
 };
 
 } // namespace arDataReg
-
-#endif //__ARDATAREG_PLUGIN_HPP__

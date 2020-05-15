@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,26 +44,17 @@ namespace ut
 void AppConfigParametersTest::setUp()
 {
     // Set up context before running a test.
-    //Bundles location
+    //modules location
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultBundles();
 
     std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    runtime->addBundles(location);
-    CPPUNIT_ASSERT(runtime->bundlesBegin() != runtime->bundlesEnd());
+    runtime->addModules(location);
 
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
-    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", bundle);
-    bundle->setEnable(true);
-    CPPUNIT_ASSERT(bundle->isEnable());
-
-    // Test bundle servicesReg
-    std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("AppConfigParametersTest");
-    CPPUNIT_ASSERT_MESSAGE("'AppConfigParametersTest' bundle not found", bundle2);
-    bundle2->setEnable(true);
-    CPPUNIT_ASSERT(bundle2->isEnable());
+    ::fwRuntime::loadModule("servicesReg");
+    ::fwRuntime::loadModule("AppConfigParametersTest");
 
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
     appConfigParam = ::fwServices::registry::AppConfigParameters::getDefault();

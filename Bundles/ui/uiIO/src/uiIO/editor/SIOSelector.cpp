@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,6 @@
 #include <fwIO/IWriter.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -58,9 +57,9 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object )
 
-static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL   = "jobCreated";
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const ::fwCom::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
 static const ::fwCom::Signals::SignalKeyType JOB_SUCCEEDED_SIGNAL = "jobSucceeded";
 

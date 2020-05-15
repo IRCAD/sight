@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,14 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP__
-#define __FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP__
-
-#include <string>
+#pragma once
 
 #include "fwRuntime/ExecutableFactoryRegistrar.hpp"
 #include "fwRuntime/utils/GenericExecutableFactory.hpp"
 
+#include <string>
 
 namespace fwRuntime
 {
@@ -37,9 +35,6 @@ namespace utils
 
 /**
  * @brief   Defines a generic template executable factory registrar class.
- * @struct  GenericExecutableFactoryRegistrar
- * @date    2004-2009
- *
  */
 template< typename E >
 struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
@@ -50,17 +45,13 @@ struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
     /**
      * @brief   Constructor
      */
-    GenericExecutableFactoryRegistrar(const std::string& type)
-        : ExecutableFactoryRegistrar( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
+    GenericExecutableFactoryRegistrar(const std::string& type) :
+        ExecutableFactoryRegistrar( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
     {
     }
 
 };
 
-
 } // namespace utils
 
 } // namespace fwRuntime
-
-
-#endif //__FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP__
