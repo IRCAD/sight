@@ -906,7 +906,7 @@ void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 
         std::copy(meshColors, meshColors + size, newColors);
 
-        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
+        colors->SetArray(newColors, static_cast<vtkIdType>(size), 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetPointData()->SetScalars(colors);
         polyDataDst->Modified();
@@ -943,7 +943,7 @@ void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 
         std::copy(meshColors, meshColors + size, newColors);
 
-        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
+        colors->SetArray(newColors, static_cast<vtkIdType>(size), 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         polyDataDst->GetCellData()->SetScalars(colors);
         polyDataDst->Modified();
@@ -1371,7 +1371,7 @@ void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
         unsigned char* newColors = new unsigned char[static_cast<size_t>(size)];
         std::copy(meshColors, meshColors + size, newColors);
 
-        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
+        colors->SetArray(newColors, static_cast<vtkIdType>(size), 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetPointData()->SetScalars(colors);
         gridDst->Modified();
@@ -1409,7 +1409,7 @@ void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 
         std::copy(meshColors, meshColors + size, newColors);
 
-        colors->SetArray(newColors, size, 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
+        colors->SetArray(newColors, static_cast<vtkIdType>(size), 0, vtkUnsignedCharArray::VTK_DATA_ARRAY_DELETE);
 
         gridDst->GetCellData()->SetScalars(colors);
         gridDst->Modified();
