@@ -157,7 +157,7 @@ DicomSurface::~DicomSurface()
         // Cells types
         std::fill(itr->type,
                   end->type,
-                  static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::CellType::TRIANGLE));
+                  ::fwData::Mesh::CellType::TRIANGLE);
 
         // Cell data offset
         CellDataOffsetGenerator cellDataOffsetGenerator;

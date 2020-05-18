@@ -466,32 +466,33 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
 
         int typeVtkCell;
         vtkIdType cell[4];
-
         for (vtkIdType i = 0; itr != itrEnd; ++itr, ++i)
         {
-            const ::fwData::Mesh::CellTypes cellType = *itr->type;
+            const ::fwData::Mesh::CellType cellType = *itr->type;
 
             switch( cellType )
             {
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT):
+                case ::fwData::Mesh::CellType::NO_CELL:
+                    break;
+                case ::fwData::Mesh::CellType::POINT:
                     typeVtkCell = VTK_VERTEX;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     polyData->InsertNextCell( typeVtkCell, 1, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE):
+                case ::fwData::Mesh::CellType::EDGE:
                     typeVtkCell = VTK_LINE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE):
+                case ::fwData::Mesh::CellType::TRIANGLE:
                     typeVtkCell = VTK_TRIANGLE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
                     polyData->InsertNextCell( typeVtkCell, 3, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD):
+                case ::fwData::Mesh::CellType::QUAD:
                     typeVtkCell = VTK_QUAD;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
@@ -499,7 +500,7 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
                     cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     polyData->InsertNextCell( typeVtkCell, 4, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA):
+                case ::fwData::Mesh::CellType::TETRA:
                     typeVtkCell = VTK_LINE;
 
                     cell[0] = static_cast<vtkIdType>(itr->pointIdx[1]);
@@ -521,6 +522,10 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
                     cell[0] = static_cast<vtkIdType>(itr->pointIdx[1]);
                     cell[1] = static_cast<vtkIdType>(itr->pointIdx[3]);
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
+                    break;
+                default:
+                    FW_RAISE("Mesh type "<< static_cast<int>(cellType)<< " not supported.");
+
             }
             if (mesh->hasCellColors() && nbColorComponents == 3)
             {
@@ -632,32 +637,33 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
 
         int typeVtkCell;
         vtkIdType cell[4];
-
         for (vtkIdType i = 0; itr != itrEnd; ++itr, ++i)
         {
-            const ::fwData::Mesh::CellTypes cellType = *itr->type;
+            const ::fwData::Mesh::CellType cellType = *itr->type;
 
             switch( cellType )
             {
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT):
+                case ::fwData::Mesh::CellType::NO_CELL:
+                    break;
+                case ::fwData::Mesh::CellType::POINT:
                     typeVtkCell = VTK_VERTEX;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     grid->InsertNextCell( typeVtkCell, 1, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE):
+                case ::fwData::Mesh::CellType::EDGE:
                     typeVtkCell = VTK_LINE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     grid->InsertNextCell( typeVtkCell, 2, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE):
+                case ::fwData::Mesh::CellType::TRIANGLE:
                     typeVtkCell = VTK_TRIANGLE;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
                     grid->InsertNextCell( typeVtkCell, 3, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD):
+                case ::fwData::Mesh::CellType::QUAD:
                     typeVtkCell = VTK_QUAD;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
@@ -665,13 +671,16 @@ void Mesh::toVTKGrid( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkUnst
                     cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     grid->InsertNextCell( typeVtkCell, 4, cell );
                     break;
-                case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA):
+                case ::fwData::Mesh::CellType::TETRA:
                     typeVtkCell = VTK_TETRA;
                     cell[0]     = static_cast<vtkIdType>(itr->pointIdx[0]);
                     cell[1]     = static_cast<vtkIdType>(itr->pointIdx[1]);
                     cell[2]     = static_cast<vtkIdType>(itr->pointIdx[2]);
                     cell[3]     = static_cast<vtkIdType>(itr->pointIdx[3]);
                     grid->InsertNextCell( typeVtkCell, 4, cell );
+                    break;
+                default:
+                    FW_RAISE("Mesh type "<< static_cast<int>(cellType)<< " not supported.");
             }
             if (mesh->hasCellColors() && nbColorComponents == 3)
             {

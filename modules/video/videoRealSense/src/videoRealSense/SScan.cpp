@@ -388,7 +388,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     // to display the mesh, we need to create cells with one point.
     for( size_t i = 0; i < nbPoints; ++i, ++itr )
     {
-        *itr->type       = static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT);
+        *itr->type       = ::fwData::Mesh::CellType::POINT;
         *itr->offset     = i;
         *(itr+1)->offset = i+1; // to be able to iterate through point indices
         itr->pointIdx[0] = i;

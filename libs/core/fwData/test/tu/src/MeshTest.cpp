@@ -925,7 +925,7 @@ void MeshTest::iteratorTest()
         size_t count = 0;
         for (; it != itEnd; ++it)
         {
-            *it->type   = static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD);
+            *it->type   = ::fwData::Mesh::CellType::QUAD;
             *it->offset = 4*count;
             if (it != itEnd-1)
             {
