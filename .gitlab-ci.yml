@@ -22,6 +22,8 @@ stages:
     - export CXX=/usr/local/lib/ccache/g++-8
     - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
     - sudo chown -R sight:sight .
+    # Reset the time of all files to improve the use of ccache.
+    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
     # Merge the branch into dev.
     - >
       if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
@@ -32,8 +34,6 @@ stages:
         git reset --hard origin/dev
         git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
       fi
-    # Reset the time of all files to improve the use of ccache.
-    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
 
 .windows_template: &windows_job
   variables:
@@ -72,8 +72,9 @@ sheldon:
   script:
     # Download sheldon.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b dev
-    # Add merge result since sheldon check them.
+    # Stage all files from the merge to get them checked by sheldon.
     - git add * -f
+    - git reset sight-git
     # Display modified files.
     - git status
     # Run sheldon on the merge result.
@@ -91,7 +92,7 @@ build:debug-linux:
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
-    # PCH are disabled because they doesn't work with ccache.
+    # PCH are disabled because they don't work with ccache.
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
@@ -122,7 +123,7 @@ build:release-linux:
     # Build the project on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
-    # PCH are disabled because they doesn't work with ccache.
+    # PCH are disabled because they don't work with ccache.
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja

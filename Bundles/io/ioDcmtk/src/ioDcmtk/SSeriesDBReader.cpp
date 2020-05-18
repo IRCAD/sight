@@ -111,10 +111,6 @@ void SSeriesDBReader::configureWithIHM()
         m_filterType = key->getValue();
 
     }
-    else
-    {
-        m_readFailed = true;
-    }
 }
 
 //------------------------------------------------------------------------------
