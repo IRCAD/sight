@@ -33,8 +33,6 @@ namespace mt
 
 ObjectReadLock::ObjectReadLock(::fwData::Object::csptr obj, bool lock)
 {
-    FW_DEPRECATED_MSG("'ObjectReadLock' is deprecated.", "21.0");
-
     if (lock)
     {
         m_lock = ::fwCore::mt::ReadLock(obj->getMutex());

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,6 +32,7 @@ Bookmarks::Dictionary Bookmarks::m_dictionary;
 
 Bookmarks::Bookmarks()
 {
+    FW_DEPRECATED_MSG("This class is no longer supported", "20.0");
 }
 
 //-----------------------------------------------------------------------------
@@ -44,8 +45,6 @@ Bookmarks::~Bookmarks()
 
 bool Bookmarks::exist( Bookmarks::BookmarkName _id)
 {
-    FW_DEPRECATED_MSG("This class is no longer supported", "20.0");
-
     return m_dictionary.find( _id ) != m_dictionary.end();
 }
 
@@ -53,8 +52,6 @@ bool Bookmarks::exist( Bookmarks::BookmarkName _id)
 
 void Bookmarks::add( Bookmarks::BookmarkName _bookmark,  ::fwTools::Object::sptr obj )
 {
-    FW_DEPRECATED_MSG("This class is no longer supported", "20.0");
-
     OSLM_FATAL_IF("Try to set a  Bookmarks on a null object ", !obj );
     m_dictionary[ _bookmark ] = obj;
 }
@@ -63,8 +60,6 @@ void Bookmarks::add( Bookmarks::BookmarkName _bookmark,  ::fwTools::Object::sptr
 
 void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
 {
-    FW_DEPRECATED_MSG("This class is no longer supported", "20.0");
-
     m_dictionary.erase( m_dictionary.find( _bookmark ) );
 }
 
@@ -72,8 +67,6 @@ void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
 
 ::fwTools::Object::sptr Bookmarks::getObject( Bookmarks::BookmarkName _bookmark )
 {
-    FW_DEPRECATED_MSG("This class is no longer supported", "20.0");
-
     ::fwTools::Object::sptr bookmark;
     Dictionary::iterator iter = m_dictionary.find( _bookmark );
     if ( iter != m_dictionary.end()  && !iter->second.expired() )
@@ -87,8 +80,6 @@ void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
 
 std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::sptr obj )
 {
-    FW_DEPRECATED_MSG("This class is no longer supported", "20.0");
-
     std::list<Bookmarks::BookmarkName> result;
     for( Bookmarks::Dictionary::value_type elt :  m_dictionary)
     {
@@ -104,8 +95,6 @@ std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::s
 
 std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks()
 {
-    FW_DEPRECATED_MSG("This class is no longer supported", "20.0");
-
     std::list<Bookmarks::BookmarkName> result;
     for( Bookmarks::Dictionary::value_type elt :  m_dictionary)
     {

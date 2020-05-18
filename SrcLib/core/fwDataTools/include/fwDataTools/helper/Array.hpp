@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -59,7 +59,9 @@ public:
         return std::make_shared< ::fwDataTools::helper::Array >(array);
     }
 
+    [[deprecated("deprecated in sight 22.0, please use ::fwData::Array")]]
     FWDATATOOLS_API Array(const ::fwData::Array::sptr& array );
+
     FWDATATOOLS_API virtual ~Array();
 
     /**

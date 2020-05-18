@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,6 +42,7 @@ class FWRENDEROGRE_CLASS_API FixedStyleInteractor : public ::fwRenderOgre::inter
 public:
 
     /// Constructor
+    [[deprecated("will be removed in sight 21.0")]]
     FWRENDEROGRE_API FixedStyleInteractor();
 
     /// Behaviour on mouseMoveEvent
