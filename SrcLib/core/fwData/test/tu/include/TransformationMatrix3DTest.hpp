@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_UT_TRANSFORMATIONMATRIX3DTEST_HPP__
-#define __FWDATA_UT_TRANSFORMATIONMATRIX3DTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -36,6 +35,7 @@ private:
     CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
     CPPUNIT_TEST( getterSetterByCoef );
     CPPUNIT_TEST( getterSetterByArray );
+    CPPUNIT_TEST( getterSetterByMatrix );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,9 +45,8 @@ public:
 
     void getterSetterByCoef();
     void getterSetterByArray();
+    void getterSetterByMatrix();
 };
 
 } //namespace ut
 } //namespace fwData
-
-#endif //__FWDATA_UT_TRANSFORMATIONMATRIX3DTEST_HPP__

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwData/TransformationMatrix3D.hpp>
-
 #include "TransformationMatrix3DTest.hpp"
+
+#include <fwData/TransformationMatrix3D.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransformationMatrix3DTest );
@@ -31,6 +31,8 @@ namespace fwData
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void TransformationMatrix3DTest::setUp()
 {
@@ -131,6 +133,50 @@ void TransformationMatrix3DTest::getterSetterByArray()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void TransformationMatrix3DTest::getterSetterByMatrix()
+{
+    ::fwData::TransformationMatrix3D::MatrixType matrix4x4 = { { {0., 0., 1., 100.},
+                                                                 {0., 1., 0., 200.},
+                                                                 {1., 0., 0., 3000.},
+                                                                 {0., 0., 0., 1.} } };
+
+    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+
+    mat->setMatrix4x4(matrix4x4);
+
+    const auto mat2 = mat->getMatrix4x4();
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_EQUAL(matrix4x4[i][j], mat2[i][j]);
+            CPPUNIT_ASSERT_EQUAL(matrix4x4[i][j], mat->getCoefficient(i, j));
+        }
+    }
+
+    ::fwData::TransformationMatrix3D::TMCoefArray coefs = { 1, -2, .3, .4,
+                                                            5.5, 6, 7.77, 8.,
+                                                            0.09, 10., -11., 1.2,
+                                                            0, 0, 0, 1.};
+
+    mat->setCoefficients(coefs);
+
+    const auto matFromCoefs = mat->getMatrix4x4();
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_EQUAL(coefs[i * 4 + j], matFromCoefs[i][j]);
+        }
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwData
-
