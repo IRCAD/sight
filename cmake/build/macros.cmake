@@ -6,8 +6,8 @@ if(FW_BUILD_EXTERNAL)
     set(FWCMAKE_INSTALL_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/install)
     set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_LIST_DIR})
 else()
-    set(FWCMAKE_BUILD_FILES_DIR "${CMAKE_SOURCE_DIR}/CMake/build/")
-    set(FWCMAKE_INSTALL_FILES_DIR "${CMAKE_SOURCE_DIR}/CMake/install/")
+    set(FWCMAKE_BUILD_FILES_DIR "${CMAKE_SOURCE_DIR}/cmake/build/")
+    set(FWCMAKE_INSTALL_FILES_DIR "${CMAKE_SOURCE_DIR}/cmake/install/")
     # FWCMAKE_RESOURCE_PATH already set in main CMakeLists.txt
 endif()
 
@@ -305,7 +305,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
                 set(PLATFORM "Win32")
             endif()
             configure_file(
-                "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+                "${CMAKE_SOURCE_DIR}/cmake/build/project.vcxproj.user.in"
                 "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
                 IMMEDIATE @ONLY)
         endif()
@@ -424,7 +424,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
             set(PLATFORM "Win32")
         endif()
         configure_file(
-            "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+            "${CMAKE_SOURCE_DIR}/cmake/build/project.vcxproj.user.in"
             "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
             IMMEDIATE @ONLY)
     endif()
@@ -688,7 +688,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
                 set(PLATFORM "Win32")
             endif()
             configure_file(
-                "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+                "${CMAKE_SOURCE_DIR}/cmake/build/project.vcxproj.user.in"
                 "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
                 IMMEDIATE @ONLY)
         endif()
