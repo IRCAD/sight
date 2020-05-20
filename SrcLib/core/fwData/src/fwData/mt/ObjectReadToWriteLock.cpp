@@ -29,12 +29,10 @@ namespace fwData
 namespace mt
 {
 
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 ObjectReadToWriteLock::ObjectReadToWriteLock(::fwData::Object::sptr obj, bool lock)
 {
-    FW_DEPRECATED_MSG("'ObjectReadToWriteLock' is deprecated.", "21.0");
-
     if (lock)
     {
         m_lock = ::fwCore::mt::ReadToWriteLock(obj->getMutex());

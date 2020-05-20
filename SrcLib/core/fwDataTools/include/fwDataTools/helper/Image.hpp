@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,8 @@ namespace helper
 /**
  * @brief   Defines an helper to modify an ::fwData::Image by adding few medical fields
  * and create in parallel the message to announce these modifications.
+ *
+ * @deprecated will be removed in sight 22.0, please use ::fwData::Image.
  */
 class FWDATATOOLS_CLASS_API Image
 {
@@ -62,6 +64,7 @@ public:
     }
 
     /// Constructor. Initialize parameters.
+    [[deprecated("will be removed in sight 22.0, please use ::fwData::Image")]]
     FWDATATOOLS_API Image( ::fwData::Image::sptr image );
 
     /// Destrucotr. Do nothing.
@@ -73,7 +76,11 @@ public:
      * If the image hasn't landmark field, it is added and the method return true.
      *
      * @return true if the field is added.
+     *
+     * @deprecated use::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks() instead.
      */
+    [[deprecated("will be removed in sight 22.0, use "
+                 "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks()' instead.")]]
     FWDATATOOLS_API bool createLandmarks();
 
     /**
@@ -81,7 +88,11 @@ public:
      *
      * If the image has not transfer functions, the pool is
      * created and a grey level transfer function is added.
+     *
+     * @deprecated use::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool() instead.
      */
+    [[deprecated("will be removed in sight 22.0, use "
+                 "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool()' instead.")]]
     FWDATATOOLS_API bool createTransferFunctionPool();
 
     /**
@@ -90,7 +101,11 @@ public:
      * If the image hasn't frontal, axial and sagittal slice index fields, they are added.
      *
      * @return true if the fields are added.
+     *
+     * @deprecated use::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex() instead.
      */
+    [[deprecated("will be removed in sight 22.0, use "
+                 "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex()' instead.")]]
     FWDATATOOLS_API bool createImageSliceIndex();
 
     /// Send the message of modification

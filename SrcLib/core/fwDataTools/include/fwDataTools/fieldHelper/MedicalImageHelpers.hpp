@@ -105,7 +105,8 @@ public:
      * @return      Returns initialized image.
      * @deprecated  This method is not longer supported
      */
-    [[deprecated("will be removed in sight 22.0")]] FWDATATOOLS_API static ::fwData::Image::sptr initialize(
+    [[deprecated("will be removed in sight 22.0")]]
+    FWDATATOOLS_API static ::fwData::Image::sptr initialize(
         ::fwData::Image::sptr imgSrc,
         ::fwData::Image::sptr imgToInitialize =
             ::fwData::Image::sptr());

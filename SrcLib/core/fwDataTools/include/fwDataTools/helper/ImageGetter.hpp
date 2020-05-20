@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,8 @@ namespace helper
 /**
  * @brief   Defines an helper to modify an ::fwData::Image by adding few medical fields
  * and create in parallel the message to announce these modifications.
+ *
+ * @deprecated will be removed in sight 22.0, please use ::fwData::Image.
  */
 class FWDATATOOLS_CLASS_API ImageGetter
 {
@@ -61,6 +63,7 @@ public:
     }
 
     /// Constructor. Initialize parameters.
+    [[deprecated("will be removed in sight 22.0, please use ::fwData::Image")]]
     FWDATATOOLS_API ImageGetter( ::fwData::Image::csptr image );
 
     /// Destrucotr. Do nothing.

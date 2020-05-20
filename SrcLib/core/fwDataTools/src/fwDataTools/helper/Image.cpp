@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,9 +64,6 @@ Image::~Image()
 
 bool Image::createLandmarks()
 {
-    FW_DEPRECATED_MSG("'::fwDataTools::helper::Image::createLandmarks()' is deprecated, use "
-                      "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks()' instead.",
-                      "22.0")
     bool fieldIsCreated = false;
 
     // Manage image landmarks
@@ -84,10 +81,7 @@ bool Image::createLandmarks()
 
 bool Image::createTransferFunctionPool()
 {
-    FW_DEPRECATED_MSG("'::fwDataTools::helper::Image::createTransferFunctionPool()' is deprecated, use "
-                      "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool()' instead.",
-                      "22.0")
-    bool fieldIsCreated = false;
+    bool fieldIsCreated             = false;
     const std::string poolFieldName = ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId;
     ::fwData::Composite::sptr tfPool;
 
@@ -135,9 +129,6 @@ bool Image::createTransferFunctionPool()
 
 bool Image::createImageSliceIndex()
 {
-    FW_DEPRECATED_MSG("'::fwDataTools::helper::Image::createImageSliceIndex()' is deprecated, use "
-                      "'::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex()' instead.",
-                      "22.0")
     bool fieldIsCreated = false;
 
     const ::fwData::Image::SizeType& imageSize = m_image->getSize();

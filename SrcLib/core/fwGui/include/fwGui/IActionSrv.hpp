@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -144,7 +144,7 @@ public:
     FWGUI_API bool isVisible() const;
 
     /// Return true if action 'check' feedback is inverted.
-    [[deprecated("Removed in sight 21.0")]]
+    [[deprecated("Removed in sight 21.0, please use isInverted()")]]
     FWGUI_API bool getActiveStateValue() const;
 
     /// Return true if the active state should be inverted.

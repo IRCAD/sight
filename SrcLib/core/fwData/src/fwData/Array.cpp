@@ -469,9 +469,6 @@ size_t Array::resize(
     bool reallocate
     )
 {
-    FW_DEPRECATED("resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate",
-                  "resize(const SizeType &size, const ::fwTools::Type &type, bool reallocate)",
-                  "22.0")
     m_nbOfComponents = nbOfComponents;
     m_type           = type;
 
@@ -482,9 +479,6 @@ size_t Array::resize(
 
 size_t Array::resize(const SizeType& size, size_t nbOfComponents, bool reallocate)
 {
-    FW_DEPRECATED("resize(const SizeType &size, size_t nbOfComponents, bool reallocate",
-                  "resize(const SizeType &size, const ::fwTools::Type &type, bool reallocate)",
-                  "22.0")
     m_nbOfComponents = nbOfComponents;
     return this->resize(size, reallocate);
 }
@@ -515,9 +509,6 @@ size_t Array::resizeTMP(const SizeType& size, size_t nbOfComponents)
 size_t Array::resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
                      bool reallocate)
 {
-    FW_DEPRECATED("resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate)",
-                  "resize(const SizeType &size, const ::fwTools::Type &type, bool reallocate)",
-                  "22.0")
     m_nbOfComponents = nbOfComponents;
     m_type           = ::fwTools::Type::create(type);
     return this->resize( size, reallocate);
@@ -527,8 +518,6 @@ size_t Array::resize(const std::string& type, const SizeType& size, size_t nbOfC
 
 void Array::setNumberOfComponents(size_t nb)
 {
-    FW_DEPRECATED_MSG("Component attribute is deprecated, increase array dimension instead of using component", "22.0");
-
     m_nbOfComponents = (nb == 0) ? 1 : nb;
     this->resize(
         m_type,
@@ -542,7 +531,6 @@ void Array::setNumberOfComponents(size_t nb)
 
 size_t Array::getNumberOfComponents() const
 {
-    FW_DEPRECATED_MSG("Component attribute is deprecated, increase array dimension instead of using component", "22.0");
     return m_nbOfComponents;
 }
 
@@ -550,8 +538,6 @@ size_t Array::getNumberOfComponents() const
 
 size_t Array::getBufferOffset( const ::fwData::Array::IndexType& id, size_t component, size_t sizeOfType) const
 {
-    // this method should be removed in sight 22.0. There is no warning here because it will be very slow
-
     OSLM_ASSERT(
         "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
             id.size() == m_size.size()

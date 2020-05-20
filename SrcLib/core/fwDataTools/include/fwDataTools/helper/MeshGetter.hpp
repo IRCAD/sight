@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,6 +44,7 @@ namespace helper
 class FWDATATOOLS_CLASS_API MeshGetter
 {
 public:
+    [[deprecated("will be removed in sight 22.0, please use ::fwData::Mesh")]]
     FWDATATOOLS_API MeshGetter( ::fwData::Mesh::csptr mesh );
 
     FWDATATOOLS_API virtual ~MeshGetter();

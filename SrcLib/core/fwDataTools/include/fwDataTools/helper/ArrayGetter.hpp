@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,6 +39,8 @@ namespace helper
 /**
  * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
  *
+ * @deprecated will be removed in sight 22.0, please use ::fwData::Array.
+ *
  */
 class FWDATATOOLS_CLASS_API ArrayGetter
 {
@@ -60,7 +62,7 @@ public:
     {
         return std::make_shared<ArrayGetter>(array);
     }
-
+    [[deprecated("deprecated and will be removed in sight 22.0, please use ::fwData::Array")]]
     FWDATATOOLS_API ArrayGetter(const ::fwData::Array::csptr& array );
 
     FWDATATOOLS_API virtual ~ArrayGetter();
