@@ -140,6 +140,39 @@ void MeshFunctionsTest::computeBarycenterABC3D()
 
 //-----------------------------------------------------------------------------
 
+void MeshFunctionsTest::computeBarycenterABCRealCoords()
+{
+    // Second test in 3d.
+    const fwVec3d A {-0.5, 0., 3.};
+    const fwVec3d B {0.5, -0.7071, 3.7071};
+    const fwVec3d C {-0.5, -0.7071, 3.7071};
+
+    // Should be at the center of ABC
+    const fwVec3d P {-0.390021, -0.297194, 3.29787};
+
+    const fwVec3d barycentric = ::fwMath::toBarycentricCoord(P, A, B, C);
+
+    // Test if sum of barycentric coordinates are equal to 1.
+
+    const double sum = (barycentric[U] + barycentric[V] + barycentric[W]);
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
+
+    // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
+
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", barycentric[V] >= 0. && barycentric[V] <= 1 );
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", barycentric[W] >= 0. && barycentric[W] <= 1 );
+    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", (barycentric[V] + barycentric[W]) <= 1. );
+
+    // Convert back to world coordinates.
+
+    const fwVec3d P2 = ::fwMath::fromBarycentricCoord(barycentric, A, B, C);
+
+    this->compare(P, P2);
+}
+
+//-----------------------------------------------------------------------------
+
 void MeshFunctionsTest::computeBarycenterOutsideABC()
 {
     // Test with a point outside of the triangle.
