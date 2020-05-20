@@ -22,8 +22,6 @@
 
 #include "fwTest/generator/Image.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
-
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwTools/Type.hpp>
 
@@ -130,10 +128,11 @@ void Image::randomizeImage(::fwData::Image::sptr image)
 
 void Image::randomizeArray(::fwData::Array::sptr array)
 {
-    ::fwDataTools::helper::Array helper(array);
-    char* iter = helper.begin< char >();
+    const auto dumpLock = array->lock();
+    auto iter           = array->begin();
+    const auto end      = array->end();
 
-    for (; iter != helper.end< char >(); ++iter)
+    for (; iter != end; ++iter)
     {
         *iter = static_cast<char>(rand()%256);
     }

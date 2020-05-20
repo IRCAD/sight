@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 #include "fwTest/File.hpp"
 
 #include <filesystem>
-
 #include <fstream>
 
 namespace fwTest
@@ -45,8 +44,8 @@ bool File::contentEquals(const std::filesystem::path& lfile, const std::filesyst
     char lchar, rchar;
     while (true)
     {
-        lchar = lbuf->sbumpc();
-        rchar = rbuf->sbumpc();
+        lchar = static_cast<char>(lbuf->sbumpc());
+        rchar = static_cast<char>(rbuf->sbumpc());
 
         if (lchar == eof && rchar == eof)
         {

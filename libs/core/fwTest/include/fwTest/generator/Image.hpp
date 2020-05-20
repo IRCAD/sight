@@ -28,10 +28,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-
-#include <fwMath/Compare.hpp>
-
 #include <fwTools/Type.hpp>
 
 namespace fwTest
@@ -99,10 +95,11 @@ public:
     template<typename TYPE>
     static void randomizeArray(const ::fwData::Array::sptr& array)
     {
-        ::fwDataTools::helper::Array helper(array);
-        TYPE* iter = helper.begin< TYPE >();
+        const auto dumpLock = array->lock();
+        auto iter           = array->begin< TYPE >();
+        const auto end      = array->end< TYPE >();
 
-        for (; iter != helper.end< TYPE >(); ++iter)
+        for (; iter != end; ++iter)
         {
             *iter = static_cast<TYPE>(rand()%256);
         }

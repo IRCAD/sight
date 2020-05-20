@@ -6,8 +6,6 @@ set( DEPENDENCIES
     fwCore
     fwData
     fwDataCamp
-    fwDataTools
-    fwMath
     fwMedData
     fwTools
 )
@@ -16,3 +14,4 @@ set( USE_PCH_FROM_TARGET pchData )
 set( CONAN_DEPS
     ${CONAN_CPPUNIT}
 )
+set (WARNINGS_AS_ERRORS ON)
