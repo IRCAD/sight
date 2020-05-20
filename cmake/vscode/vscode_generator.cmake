@@ -108,6 +108,6 @@ function(vscodeGenerator)
         string(APPEND CONFIGS_LIST ${CONFIG})
     endforeach()
 
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/vscode/sight.code-workspace.in ${CMAKE_BINARY_DIR}/sight.code-workspace @ONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/vscode/sight.code-workspace.in ${CMAKE_BINARY_DIR}/sight.code-workspace @ONLY)
 
 endfunction()

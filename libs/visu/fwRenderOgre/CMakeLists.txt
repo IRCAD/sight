@@ -80,7 +80,7 @@ endif()
 
 set(FWPROJECT_FULLNAME ${${FWPROJECT_NAME}_FULLNAME})
 
-configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/resources.cfg.in"
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/resources.cfg.in"
                 "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/resources.cfg" @ONLY)
 
 if(NOT USE_SYSTEM_LIB)
