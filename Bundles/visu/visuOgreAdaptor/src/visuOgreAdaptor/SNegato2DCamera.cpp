@@ -328,15 +328,15 @@ void SNegato2DCamera::resetCamera()
 
         if(vpRatio > ratio)
         {
-            camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(height));
-            // Zoom out the camera, allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowHeight(camera->getOrthoWindowHeight() + camera->getOrthoWindowHeight() * 0.1f);
+            const ::Ogre::Real h = static_cast< ::Ogre::Real >(height);
+            // Zoom out the camera (add 10% of the height), allow the image to not be stuck on the viewport.
+            camera->setOrthoWindowHeight(h + h * 0.1f);
         }
         else
         {
-            camera->setOrthoWindowWidth(static_cast< ::Ogre::Real >(width));
-            // Zoom out the camera, allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowWidth(camera->getOrthoWindowWidth() + camera->getOrthoWindowWidth() * 0.1f);
+            const ::Ogre::Real w = static_cast< ::Ogre::Real >(width);
+            // Zoom out the camera (add 10% of the width), allow the image to not be stuck on the viewport.
+            camera->setOrthoWindowWidth(w + w * 0.1f);
         }
 
         const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
