@@ -42,7 +42,7 @@ function(osx_install PRJ_NAME)
         set(APP_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}")
 
         # configure qt.conf
-        install(FILES "${CMAKE_SOURCE_DIR}/CMake/install/macos/rc/qt.conf" DESTINATION "${APP_INSTALL_PATH}/Contents/Resources/" COMPONENT ApplicationBundle)
+        install(FILES "${CMAKE_SOURCE_DIR}/cmake/install/macos/rc/qt.conf" DESTINATION "${APP_INSTALL_PATH}/Contents/Resources/" COMPONENT ApplicationBundle)
 
         install(TARGETS ${EXECUTABLE_NAME} BUNDLE DESTINATION . COMPONENT ApplicationBundle)
 
@@ -119,7 +119,7 @@ function(osx_install PRJ_NAME)
                 )
 
             execute_process(
-                COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py -e MacOS/ $(find \"${SIGHT_MODULE_LIB_PREFIX}\" -iname '*.dylib') -f\"
+                COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/cmake/install/macos/osx_install_name_tool.py -e MacOS/ $(find \"${SIGHT_MODULE_LIB_PREFIX}\" -iname '*.dylib') -f\"
                 WORKING_DIRECTORY ${APP_INSTALL_PATH}/Contents
                 )
         " COMPONENT ApplicationBundle)

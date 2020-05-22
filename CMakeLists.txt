@@ -37,8 +37,8 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/linux/modules)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
 ########################################################################################################################
 # User options
@@ -65,7 +65,7 @@ set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
 set( ENABLE_QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/PrecompiledHeader.cmake)
 
 if(MSVC)
     if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
@@ -108,7 +108,7 @@ if(UNIX AND NOT APPLE)
     option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
 endif()
 
-set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
+set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 if(USE_SYSTEM_LIB)
     # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH and include BinPkgs config file
@@ -125,8 +125,8 @@ if(USE_SYSTEM_LIB)
 else()
     option(CONAN_BUILD_MISSING "Build missing conan package automatically (experimental)" OFF)
     mark_as_advanced(CONAN_BUILD_MISSING)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan-deps.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan/conan-deps.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan/conan.cmake)
 endif()
 
 ########################################################################################################################
@@ -310,7 +310,7 @@ if(PROJECTS_TO_BUILD)
     set(PACKAGE_SRC_DIR "${CMAKE_BINARY_DIR}/package_source")
     file(MAKE_DIRECTORY ${PACKAGE_SRC_DIR})
     file(COPY CMakeLists.txt COPYING COPYING.LESSER README.md DESTINATION ${PACKAGE_SRC_DIR})
-    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${PACKAGE_SRC_DIR} "." "${CMAKE_SOURCE_DIR}/CMake" "./CMake")
+    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${PACKAGE_SRC_DIR} "." "${CMAKE_SOURCE_DIR}/cmake" "./cmake")
 
     message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
 elseif(BUILD_SDK)
@@ -355,7 +355,7 @@ endif()
 # Compiler flags (We assume that we use the same flags fo C and C++ and we do only C++ here)
 ########################################################################################################################
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/flags.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 
 ########################################################################################################################
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
@@ -374,7 +374,7 @@ endforeach()
 
 if(BUILD_SDK)
     # Create the SightConfig.cmake file
-    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/SightConfig.cmake.in)
+    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/cmake/build/SightConfig.cmake.in)
 
     configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
 
@@ -398,9 +398,9 @@ if(BUILD_SDK)
         "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/conan/conan.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/conan/conan-deps.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/conan/conan.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/conan/conan-deps.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}
       COMPONENT
@@ -410,16 +410,16 @@ if(BUILD_SDK)
     # Install some files needed for the build
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/CMake/build/configure_file.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
         "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
-        "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config_command.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/plugin.xml.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/profile_config.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/profile.xml.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/plugin.xml.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/profile_config.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/profile.xml.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/registerServices.cpp.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/spyLogLevel.hpp.in"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/build
       COMPONENT
@@ -429,9 +429,9 @@ if(BUILD_SDK)
     # Install some files needed for the install
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/install/helper.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/install/get_git_rev.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/generic_install.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/helper.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/get_git_rev.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
@@ -441,7 +441,7 @@ if(BUILD_SDK)
     if(APPLE)
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
+            "${CMAKE_SOURCE_DIR}/cmake/install/osx_install.cmake"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install
           COMPONENT
@@ -449,7 +449,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/macos/rc/app.icns"
+            "${CMAKE_SOURCE_DIR}/cmake/install/macos/rc/app.icns"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/macos/rc
           COMPONENT
@@ -457,7 +457,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-          "${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py"
+          "${CMAKE_SOURCE_DIR}/cmake/install/macos/osx_install_name_tool.py"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/macos/
           COMPONENT
@@ -465,7 +465,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-          "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+          "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/build/linux
           COMPONENT
@@ -474,7 +474,7 @@ if(BUILD_SDK)
     elseif(WIN32)
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
+            "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install
           COMPONENT
@@ -482,9 +482,9 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/template.bat.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/setpath.bat.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/windows_fixup.cmake.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows
           COMPONENT
@@ -492,8 +492,8 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.template.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.template.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
           COMPONENT
@@ -501,10 +501,10 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/banner_nsis.bmp"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/dialog_nsis.bmp"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/app.ico"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/license.rtf"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/banner_nsis.bmp"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/dialog_nsis.bmp"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/app.ico"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
           COMPONENT
@@ -513,7 +513,7 @@ if(BUILD_SDK)
     elseif(UNIX)
         install(
           FILES
-          "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+          "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/build/linux
           COMPONENT
@@ -521,7 +521,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
+            "${CMAKE_SOURCE_DIR}/cmake/install/linux_install.cmake"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install
           COMPONENT
@@ -530,8 +530,8 @@ if(BUILD_SDK)
 
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/linux/linux_fixup.cmake.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/linux/template.sh.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/linux/linux_fixup.cmake.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/linux
           COMPONENT
