@@ -1,7 +1,7 @@
 
 set( NAME ctrlSelection )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE MODULE )
 set( DEPENDENCIES
     fwCom
     fwCore

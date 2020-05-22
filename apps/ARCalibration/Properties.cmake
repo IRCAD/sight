@@ -40,4 +40,4 @@ set( REQUIREMENTS
     uiPreferences
     )
 
-bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)
+moduleParam(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)

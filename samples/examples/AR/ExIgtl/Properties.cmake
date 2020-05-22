@@ -24,4 +24,4 @@ set( REQUIREMENTS
     uiPreferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExIgtlConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExIgtlConfig)

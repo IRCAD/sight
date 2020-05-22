@@ -13,4 +13,4 @@ set( REQUIREMENTS
     uiTools
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoGuiConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoGuiConfig)

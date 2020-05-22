@@ -22,4 +22,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExImageMix)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExImageMix)

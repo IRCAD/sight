@@ -23,4 +23,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExVideoTrackingConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExVideoTrackingConfig)

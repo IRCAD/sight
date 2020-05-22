@@ -16,7 +16,7 @@ set( REQUIREMENTS
     console
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto16MultithreadConsoleConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES Tuto16MultithreadConsoleConfig)
 set( CONAN_DEPS
     ${CONAN_BOOST}
 )

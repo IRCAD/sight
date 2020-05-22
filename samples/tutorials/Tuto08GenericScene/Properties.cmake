@@ -20,4 +20,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto08GenericScene)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES Tuto08GenericScene)

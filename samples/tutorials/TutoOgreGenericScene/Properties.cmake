@@ -20,4 +20,4 @@ set( REQUIREMENTS
     material
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoOgreGenericScene)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES TutoOgreGenericScene)

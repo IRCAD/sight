@@ -1,6 +1,6 @@
 set( NAME trackerAruco )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE MODULE )
 set( DEPENDENCIES
     fwRuntime
     fwCore

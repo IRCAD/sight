@@ -47,7 +47,7 @@ set( REQUIREMENTS
     visuOgreAdaptor
     )
 
-bundleParam(guiQt
+moduleParam(guiQt
     PARAM_LIST
         resource
         stylesheet
@@ -56,7 +56,7 @@ bundleParam(guiQt
         style-0.1/flatdark.qss
 ) # Allow dark theme via guiQt
 
-bundleParam(
+moduleParam(
         appXml
     PARAM_LIST
         config

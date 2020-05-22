@@ -31,4 +31,4 @@ set( REQUIREMENTS
 
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExStereoARCVConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExStereoARCVConfig)

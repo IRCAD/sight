@@ -26,5 +26,5 @@ set( REQUIREMENTS
     qtSceneConfig
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES PoCStereo)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES PoCStereo)
 

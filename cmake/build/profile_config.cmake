@@ -51,7 +51,7 @@ macro(profile_setup ${PROJECT})
 
         # to only consider bundles and app
         if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
-            # check if a bundleParam macro had been use in the properties.cmake
+            # check if a moduleParam macro had been use in the properties.cmake
             # if yes, get and set bundle param and values
             if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
                 set(CURRENT_PARAM_LIST "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST}")

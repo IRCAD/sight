@@ -1,7 +1,7 @@
 
 set( NAME 2DVisualizationActivity )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     activities

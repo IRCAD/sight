@@ -1,7 +1,7 @@
 
 set( NAME ioDicomWeb )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE MODULE )
 set( PRIORITY 1 )
 set( DEPENDENCIES
     fwCore

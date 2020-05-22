@@ -28,4 +28,4 @@ set( REQUIREMENTS
     media
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExSolvePnPConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExSolvePnPConfig)

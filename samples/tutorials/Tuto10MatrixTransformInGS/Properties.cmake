@@ -19,4 +19,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto10MatrixTransformInGS)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES Tuto10MatrixTransformInGS)

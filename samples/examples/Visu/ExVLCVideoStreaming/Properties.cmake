@@ -24,4 +24,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExVLCVideoStreamingConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExVLCVideoStreamingConfig)

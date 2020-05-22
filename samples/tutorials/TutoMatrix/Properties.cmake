@@ -19,4 +19,4 @@ set( REQUIREMENTS
     ioVTK
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoMatrixConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES TutoMatrixConfig)

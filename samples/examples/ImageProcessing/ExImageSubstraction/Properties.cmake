@@ -24,4 +24,4 @@ set( REQUIREMENTS
     basicRegistration
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExImageSubstractionConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExImageSubstractionConfig)

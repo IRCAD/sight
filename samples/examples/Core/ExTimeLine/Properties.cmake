@@ -15,4 +15,4 @@ set( REQUIREMENTS
     console
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExTimeLineConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExTimeLineConfig)

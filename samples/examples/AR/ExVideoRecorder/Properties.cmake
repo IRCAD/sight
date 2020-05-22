@@ -24,4 +24,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExVideoRecorderConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExVideoRecorderConfig)

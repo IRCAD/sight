@@ -33,4 +33,4 @@ set( REQUIREMENTS
     ctrlCamp
 )
 
-bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ExBase ExAppBase)
+moduleParam(appXml PARAM_LIST config parameters PARAM_VALUES ExBase ExAppBase)
