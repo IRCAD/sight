@@ -246,19 +246,20 @@ int main(int argc, char* argv[])
 
         while ( fs::extension(execPath) != ".app"
                 && execPath != execPath.parent_path()
-                && !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX))
+                && !fs::is_directory( execPath / fs::path(SIGHT_MODULE_RC_PREFIX))
                 )
         {
             execPath = execPath.parent_path();
         }
 
-        if ( fs::is_directory( execPath / "Contents" / fs::path(BUNDLE_RC_PREFIX) ) )
+        if ( fs::is_directory( execPath / "Contents" / fs::path(SIGHT_MODULE_RC_PREFIX) ) )
         {
             execPath = execPath / "Contents";
         }
         else
         {
-            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX) ));
+            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / fs::path(
+                                                                                SIGHT_MODULE_RC_PREFIX) ));
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
