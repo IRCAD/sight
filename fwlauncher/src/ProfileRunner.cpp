@@ -324,7 +324,7 @@ int main(int argc, char* argv[])
     {
         if ( fs::is_directory(bundlePath))
         {
-            ::fwRuntime::addBundles( bundlePath );
+            ::fwRuntime::addModules( bundlePath );
         }
         else
         {

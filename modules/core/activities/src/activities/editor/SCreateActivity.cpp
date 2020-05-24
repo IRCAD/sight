@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,8 +44,6 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-#include <fwRuntime/Bundle.hpp>
-#include <fwRuntime/Convert.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
@@ -73,12 +71,12 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::activities::editor::SCreateActivity );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::activities::editor::SCreateActivity )
 
 //------------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
-const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG       = "loadRequested";
+const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG = "loadRequested";
 
 //------------------------------------------------------------------------------
 
@@ -154,7 +152,7 @@ void SCreateActivity::starting()
     // Add the load button
     ::fwActivities::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
-    infoLoad.icon        = ::fwRuntime::getBundleResourceFilePath("media", "icons/LoadActivity.svg").string();
+    infoLoad.icon        = ::fwRuntime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);

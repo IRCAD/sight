@@ -105,7 +105,7 @@ void ServiceFactory::parseBundleInformation()
         info.objectImpl           = std::move(objects);
         info.desc                 = desc;
         info.tags                 = tags;
-        info.bundle               = cfgEltVec[0]->getBundle();
+        info.bundle               = cfgEltVec[0]->getModule();
         SLM_ASSERT("Bundle not find.", info.bundle );
 
         bundleInfoMap.emplace(std::make_pair(service, info));

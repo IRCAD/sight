@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -130,7 +130,7 @@ void SActivitySequencer::starting()
     m_widget = new QQuickWidget();
     mainLayout->addWidget(m_widget);
 
-    const auto path = ::fwRuntime::getBundleResourceFilePath("uiActivitiesQt", "uiActivitiesQt/ActivitySequencer.qml");
+    const auto path = ::fwRuntime::getModuleResourceFilePath("uiActivitiesQt", "uiActivitiesQt/ActivitySequencer.qml");
     QWidget* parent = qtContainer->getQtContainer();
     auto engine     = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);

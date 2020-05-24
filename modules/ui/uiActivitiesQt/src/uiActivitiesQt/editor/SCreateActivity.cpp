@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "uiActivitiesQt/editor/SCreateActivity.hpp"
+
+#include <boost/foreach.hpp>
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -42,13 +44,9 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-#include <fwRuntime/Bundle.hpp>
-#include <fwRuntime/Convert.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <boost/foreach.hpp>
 
 #include <QGridLayout>
 #include <QGroupBox>
@@ -135,7 +133,7 @@ void SCreateActivity::starting()
     // Add the load button
     ::fwActivities::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
-    infoLoad.icon        = ::fwRuntime::getBundleResourceFilePath("media", "icons/LoadActivity.svg").string();
+    infoLoad.icon        = ::fwRuntime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);

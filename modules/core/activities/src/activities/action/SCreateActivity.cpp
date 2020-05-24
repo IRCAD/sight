@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,10 +40,6 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-#include <fwRuntime/Bundle.hpp>
-#include <fwRuntime/Convert.hpp>
-#include <fwRuntime/operations.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>
@@ -69,12 +65,12 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, ::fwData::Vector);
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SCreateActivity, ::fwData::Vector)
 
 //------------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
-const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG    = "activitySelected";
+const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG = "activitySelected";
 
 //------------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -117,25 +117,25 @@ int Plugin::run() noexcept
 
 void Plugin::loadStyleSheet()
 {
-    if( this->getBundle()->hasParameter("resource") )
+    if( this->getModule()->hasParameter("resource") )
     {
-        const std::string resourceFile = this->getBundle()->getParameterValue("resource");
-        const auto path                = fwRuntime::getBundleResourceFilePath(resourceFile);
+        const std::string resourceFile = this->getModule()->getParameterValue("resource");
+        const auto path                = fwRuntime::getModuleResourceFilePath(resourceFile);
 
         const bool resourceLoaded = QResource::registerResource(path.string().c_str());
         SLM_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
     }
 
-    if( this->getBundle()->hasParameter("style") )
+    if( this->getModule()->hasParameter("style") )
     {
-        const std::string style = this->getBundle()->getParameterValue("style");
+        const std::string style = this->getModule()->getParameterValue("style");
         qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
     }
 
-    if( this->getBundle()->hasParameter("stylesheet") )
+    if( this->getModule()->hasParameter("stylesheet") )
     {
-        const std::string stylesheetFile = this->getBundle()->getParameterValue("stylesheet");
-        const auto path                  = fwRuntime::getBundleResourceFilePath(stylesheetFile);
+        const std::string stylesheetFile = this->getModule()->getParameterValue("stylesheet");
+        const auto path                  = fwRuntime::getModuleResourceFilePath(stylesheetFile);
 
         QFile data(QString::fromStdString(path.string()));
         QString style;

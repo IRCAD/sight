@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,12 +40,13 @@
 
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
+
+#include <filesystem>
 
 namespace uiVisuQt
 {
@@ -54,7 +55,7 @@ namespace uiVisuQt
 
 const ::fwCom::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::SnapshotEditor );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::SnapshotEditor )
 
 //------------------------------------------------------------------------------
 
@@ -78,7 +79,7 @@ void SnapshotEditor::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    std::filesystem::path path = ::fwRuntime::getBundleResourceFilePath("uiVisuQt", "camera-photo.png");
+    std::filesystem::path path = ::fwRuntime::getModuleResourceFilePath("uiVisuQt", "camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));

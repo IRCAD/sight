@@ -247,11 +247,10 @@ void SActivityWizard::createActivity(std::string activityID)
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activityID);
 
     // load activity module
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId,
-                                                                            info.bundleVersion);
-    if (!bundle->isStarted())
+    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
+    if (!module->isStarted())
     {
-        bundle->start();
+        module->start();
     }
 
     m_actSeries = ::fwMedData::ActivitySeries::New();
@@ -318,7 +317,7 @@ void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activityS
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId,
+    std::shared_ptr< ::fwRuntime::Module > bundle = ::fwRuntime::findModule(info.bundleId,
                                                                             info.bundleVersion);
     if (!bundle->isStarted())
     {

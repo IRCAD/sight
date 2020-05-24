@@ -31,8 +31,8 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <algorithm>
@@ -48,7 +48,7 @@ namespace ut
 struct ActivityRegistryTestPimpl
 {
     public:
-        SPTR(::fwRuntime::Bundle) bundle;
+        SPTR(::fwRuntime::Module) bundle;
         ::fwActivities::registry::Activities::sptr activities;
 };
 
@@ -59,8 +59,8 @@ void ActivityRegistryTest::setUp()
     m_pimpl             = std::make_shared< ActivityRegistryTestPimpl >();
     m_pimpl->activities = fwActivities::registry::Activities::New();
 
-    ::fwRuntime::addBundles(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
-    ::fwRuntime::loadBundle("tu_registry");
+    ::fwRuntime::addModules(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
+    ::fwRuntime::loadModule("tu_registry");
 
     m_pimpl->activities->parseBundleInformation();
 }

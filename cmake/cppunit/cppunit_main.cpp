@@ -43,10 +43,10 @@ class MiniLauncher
 public:
     MiniLauncher( std::filesystem::path profilePath )
     {
-        ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-        runtime->addDefaultBundles();
+        ::fwRuntime::init();
+        const auto& runtime = ::fwRuntime::Runtime::get();
 
-        const std::filesystem::path cwd = runtime->getWorkingPath();
+        const std::filesystem::path cwd = runtime.getWorkingPath();
 
         if (!std::filesystem::exists( profilePath ))
         {
@@ -60,7 +60,7 @@ public:
 
         m_profile = ::fwRuntime::io::ProfileReader::createProfile(profilePath);
 
-        m_profile->setParams(0, NULL);
+        m_profile->setParams(0, nullptr);
         m_profile->start();
         m_profile->setup();
     }

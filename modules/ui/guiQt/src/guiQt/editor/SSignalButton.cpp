@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2018 IRCAD France
- * Copyright (C) 2015-2018 IHU Strasbourg
+ * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ static const ::fwCom::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 
 static const ::fwCom::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSignalButton );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSignalButton )
 
 //-----------------------------------------------------------------------------
 
@@ -154,7 +154,7 @@ void SSignalButton::configuring()
     ::fwRuntime::ConfigurationElement::sptr iconCfg = config->findConfigurationElement("icon");
     if (iconCfg)
     {
-        m_icon = ::fwRuntime::getBundleResourceFilePath(iconCfg->getValue());
+        m_icon = ::fwRuntime::getModuleResourceFilePath(iconCfg->getValue());
     }
 
     ::fwRuntime::ConfigurationElement::sptr txt2Cfg = config->findConfigurationElement("text2");
@@ -170,7 +170,7 @@ void SSignalButton::configuring()
     {
         SLM_ASSERT("Button must be 'checkable' in order to defined 'icon2'", m_checkable);
         SLM_ASSERT("'icon' tag must be defined in order to specify 'icon2'", iconCfg);
-        m_icon2 = ::fwRuntime::getBundleResourceFilePath(icon2Cfg->getValue());
+        m_icon2 = ::fwRuntime::getModuleResourceFilePath(icon2Cfg->getValue());
     }
 
     ::fwRuntime::ConfigurationElement::sptr checkedCfg = config->findConfigurationElement("checked");

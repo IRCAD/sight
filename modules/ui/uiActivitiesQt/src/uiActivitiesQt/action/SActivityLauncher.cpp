@@ -22,6 +22,8 @@
 
 #include "uiActivitiesQt/action/SActivityLauncher.hpp"
 
+#include <boost/foreach.hpp>
+
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
@@ -43,8 +45,8 @@
 
 #include <fwMedData/ActivitySeries.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Convert.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
@@ -53,8 +55,6 @@
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwTools/UUID.hpp>
-
-#include <boost/foreach.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -457,13 +457,13 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo& info )
 {
     // Start module containing the activity if it is not started
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
+    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
     SLM_WARN_IF("Bundle '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
-                bundle->isStarted());
-    if (!bundle->isStarted())
+                module->isStarted());
+    if (!module->isStarted())
     {
         SLM_DEBUG("Start bundle '" + info.bundleId + "' used by activity '" + info.id + "'");
-        bundle->start();
+        module->start();
     }
 
     ::fwData::Vector::csptr selection = this->getInput< ::fwData::Vector >(s_SERIES_INPUT);

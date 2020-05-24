@@ -95,7 +95,7 @@ void TransferFunctionEditor::configuring()
         const auto pathCfg = config.equal_range("path");
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getBundleResourceFilePath(itCfg->second.get_value<std::string>());
+            const auto path = ::fwRuntime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
@@ -106,7 +106,7 @@ void TransferFunctionEditor::configuring()
     }
     if (useDefaultPath)
     {
-        const auto pathRoot = ::fwRuntime::getBundleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = ::fwRuntime::getModuleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -124,7 +124,7 @@ void TransferFunctionEditor::starting()
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
 
-    std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+    std::filesystem::path bundlePath = ::fwRuntime::getModuleResourcePath(std::string("uiTF"));
 
     const auto deletePath = bundlePath / "delete.png";
     m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");

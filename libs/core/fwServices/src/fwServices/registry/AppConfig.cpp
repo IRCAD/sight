@@ -25,9 +25,9 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <regex>
@@ -110,12 +110,12 @@ void AppConfig::parseBundleInformation()
         ::fwRuntime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
 
         // Get module
-        std::shared_ptr< ::fwRuntime::Bundle> bundle = ext->getBundle();
-        std::string bundleId                         = bundle->getIdentifier();
-        std::string bundleVersion                    = bundle->getVersion().string();
+        std::shared_ptr< ::fwRuntime::Module> module = ext->getModule();
+        std::string moduleId                         = module->getIdentifier();
+        std::string moduleVersion                    = module->getVersion().string();
 
         // Add app info
-        this->addAppInfo( configId, group, desc, parameters, config, bundleId, bundleVersion );
+        this->addAppInfo( configId, group, desc, parameters, config, moduleId, moduleVersion );
     }
 }
 
@@ -126,8 +126,8 @@ void AppConfig::addAppInfo( const std::string& configId,
                             const std::string& desc,
                             const AppInfo::ParametersType& parameters,
                             const ::fwRuntime::ConfigurationElement::csptr& config,
-                            const std::string& bundleId,
-                            const std::string& bundleVersion)
+                            const std::string& moduleId,
+                            const std::string& moduleVersion)
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
@@ -139,8 +139,8 @@ void AppConfig::addAppInfo( const std::string& configId,
     info->desc          = desc;
     info->config        = config;
     info->parameters    = parameters;
-    info->bundleId      = bundleId;
-    info->bundleVersion = bundleVersion;
+    info->bundleId      = moduleId;
+    info->bundleVersion = moduleVersion;
     m_reg[configId]     = info;
 }
 
@@ -221,16 +221,15 @@ const
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr< ::fwRuntime::Bundle > AppConfig::getBundle(const std::string& _configId)
+std::shared_ptr< ::fwRuntime::Module > AppConfig::getModule(const std::string& _configId)
 {
     Registry::const_iterator iter = m_reg.find( _configId );
     SLM_ASSERT("The id " <<  _configId << " is not found in the application configuration registry",
                iter != m_reg.end());
 
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(iter->second->bundleId,
-                                                                            iter->second->bundleVersion);
+    auto module = ::fwRuntime::findModule(iter->second->bundleId, iter->second->bundleVersion);
 
-    return bundle;
+    return module;
 }
 
 //-----------------------------------------------------------------------------

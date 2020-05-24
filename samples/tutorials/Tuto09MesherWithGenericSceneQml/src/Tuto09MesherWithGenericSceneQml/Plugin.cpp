@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,7 +60,7 @@ void Plugin::initialize()
 {
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
-    auto path = ::fwRuntime::getBundleResourceFilePath("Tuto09MesherWithGenericSceneQml-0.1/ui.qml");
+    auto path = ::fwRuntime::getModuleResourceFilePath("Tuto09MesherWithGenericSceneQml-0.1/ui.qml");
 
     engine->loadMainComponent(path);
 }

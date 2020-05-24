@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,9 +40,10 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <filesystem>
 #include <QIcon>
 #include <QVBoxLayout>
+
+#include <filesystem>
 
 namespace uiMeasurementQt
 {
@@ -51,7 +52,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::fwData::Image )
 
 const ::fwCom::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
@@ -78,7 +79,7 @@ void Distance::starting()
         this->getContainer() );
 
     namespace fs = std::filesystem;
-    fs::path pathImageDist = ::fwRuntime::getBundleResourceFilePath("uiMeasurementQt", "distance.png");
+    fs::path pathImageDist = ::fwRuntime::getModuleResourceFilePath("uiMeasurementQt", "distance.png");
     OSLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));

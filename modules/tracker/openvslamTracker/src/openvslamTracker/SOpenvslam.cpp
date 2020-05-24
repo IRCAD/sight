@@ -41,8 +41,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <openvslamIO/Helper.hpp>
-
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
@@ -53,6 +51,8 @@
 #include <openvslam/publish/frame_publisher.h>
 #include <openvslam/publish/map_publisher.h>
 #include <openvslam/system.h>
+
+#include <openvslamIO/Helper.hpp>
 
 namespace openvslamTracker
 {
@@ -246,7 +246,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     if(m_vocabularyPath.empty())
     {
         m_sigVocFileLoadingStarted->asyncEmit();
-        m_vocabularyPath = ::fwRuntime::getBundleResourceFilePath("openvslamTracker", "orb_vocab.dbow2").string();
+        m_vocabularyPath = ::fwRuntime::getModuleResourceFilePath("openvslamTracker", "orb_vocab.dbow2").string();
         m_sigVocFileLoaded->asyncEmit();
     }
     if(m_slamSystem == nullptr)

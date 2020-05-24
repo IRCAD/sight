@@ -25,7 +25,7 @@
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
 
-#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/Runtime.hpp>
 
@@ -45,13 +45,13 @@ void AppConfigParametersTest::setUp()
 {
     // Set up context before running a test.
     //modules location
-    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultBundles();
+    ::fwRuntime::init();
 
     std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    runtime->addModules(location);
+    auto& runtime = ::fwRuntime::Runtime::get();
+    runtime.addModules(location);
 
     ::fwRuntime::loadModule("servicesReg");
     ::fwRuntime::loadModule("AppConfigParametersTest");

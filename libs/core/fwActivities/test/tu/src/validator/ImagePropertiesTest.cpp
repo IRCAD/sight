@@ -33,8 +33,8 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/Module.hpp>
 
 #include <fwTest/generator/Image.hpp>
 

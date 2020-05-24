@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -81,7 +81,7 @@ void Plugin::start()
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
 
     // add custom controls and the singleton theme for all qml project
-    auto path = ::fwRuntime::getBundleResourcePath("guiQml");
+    auto path = ::fwRuntime::getModuleResourcePath("guiQml");
     engine->importModulePath(path);
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }

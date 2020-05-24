@@ -119,7 +119,7 @@ public:
      * @brief Retrieves the bunble from the config id
      * @param configId the config identifier
      */
-    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string& _configId);
+    FWSERVICES_API std::shared_ptr< ::fwRuntime::Module > getModule(const std::string& _configId);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.

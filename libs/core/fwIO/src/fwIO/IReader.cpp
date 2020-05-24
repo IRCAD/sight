@@ -224,7 +224,7 @@ void IReader::configuring()
         else if (config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
-            auto folder                = ::fwRuntime::getBundleResourceFilePath(resource);
+            auto folder                = ::fwRuntime::getModuleResourceFilePath(resource);
             if(folder.empty())
             {
                 // If not found in a module, look into libraries

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -50,11 +50,11 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_FATAL_IF("Bundle appXml, missing param config in profile", !this->getBundle()->hasParameter("config"));
-    m_configurationName = this->getBundle()->getParameterValue("config");
-    if( this->getBundle()->hasParameter("parameters") )
+    SLM_FATAL_IF("Bundle appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
+    m_configurationName = this->getModule()->getParameterValue("config");
+    if( this->getModule()->hasParameter("parameters") )
     {
-        m_parametersName = this->getBundle()->getParameterValue("parameters");
+        m_parametersName = this->getModule()->getParameterValue("parameters");
     }
 }
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SImage );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SImage )
 
 //-----------------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ void SImage::configuring()
     const ConfigType cfg = this->getConfigTree();
     std::string pathCfg  = cfg.get< std::string >("path");
 
-    m_path = ::fwRuntime::getBundleResourceFilePath(pathCfg);
+    m_path = ::fwRuntime::getModuleResourceFilePath(pathCfg);
 
     m_width  = cfg.get< int >("width", m_width);
     m_height = cfg.get< int >("height", m_height);

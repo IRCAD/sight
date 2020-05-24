@@ -34,8 +34,8 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Convert.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/Runtime.hpp>
 
@@ -69,15 +69,15 @@ void AppConfigTest::setUp()
 
     // Set up context before running a test.
     //modules location
+    ::fwRuntime::init();
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-    runtime->addDefaultBundles();
 
     std::filesystem::path location = ::fwRuntime::getResourceFilePath("tu_exec_fwServices-0.0");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    runtime->addBundles(location);
-    ::fwRuntime::loadBundle("servicesReg");
-    ::fwRuntime::loadBundle("AppConfigTest");
+    runtime->addModules(location);
+    ::fwRuntime::loadModule("servicesReg");
+    ::fwRuntime::loadModule("AppConfigTest");
 
     ::fwServices::registry::AppConfig::sptr appConfig = ::fwServices::registry::AppConfig::getDefault();
     appConfig->parseBundleInformation();
@@ -130,7 +130,7 @@ void AppConfigTest::addConfigTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), configs.size());
     CPPUNIT_ASSERT_EQUAL(configId, configs.front());
 
-    auto bundle = currentAppConfig->getBundle(configId);
+    auto bundle = currentAppConfig->getModule(configId);
     CPPUNIT_ASSERT(bundle);
     CPPUNIT_ASSERT_EQUAL(bundleId, bundle->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(bundleVersion, bundle->getVersion().string());

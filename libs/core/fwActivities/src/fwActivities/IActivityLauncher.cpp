@@ -31,7 +31,7 @@
 
 #include <fwDataCamp/getObject.hpp>
 
-#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwTools/dateAndTime.hpp>
@@ -121,10 +121,10 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
-    if (!bundle->isStarted())
+    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
+    if (!module->isStarted())
     {
-        bundle->start();
+        module->start();
     }
 
     for (std::string validatorImpl : info.validatorsImpl)
