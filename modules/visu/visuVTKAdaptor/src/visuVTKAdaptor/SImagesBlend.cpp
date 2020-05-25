@@ -24,6 +24,8 @@
 
 #include "visuVTKAdaptor/SImage.hpp"
 
+#include <boost/foreach.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
@@ -48,8 +50,6 @@
 #include <fwServices/op/Add.hpp>
 
 #include <fwVtkIO/vtk.hpp>
-
-#include <boost/foreach.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageCheckerboard.h>
@@ -219,6 +219,7 @@ bool SImagesBlend::checkImageInformations()
     ::fwData::Image::Origin origin;
 
     bool haveSameInfo = true;
+    bool firstImage   = true;
 
     const size_t nbImages = this->getKeyGroupSize(s_IMAGE_GROUP);
 
@@ -228,7 +229,7 @@ bool SImagesBlend::checkImageInformations()
 
         if (img && ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
         {
-            if (size.empty() && spacing.empty() && origin.empty())
+            if (firstImage)
             {
                 size    = img->getSize2();
                 spacing = img->getSpacing2();
@@ -238,6 +239,7 @@ bool SImagesBlend::checkImageInformations()
                 {
                     m_zDivision = 1;
                 }
+                firstImage = false;
             }
             else
             {
