@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,12 +23,12 @@
 #pragma once
 
 #include "fwDataTools/config.hpp"
-#include "fwDataTools/helper/ImageGetter.hpp"
 
 #include <fwCom/Connection.hpp>
 #include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 
+#include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
 namespace fwDataTools
@@ -51,7 +51,7 @@ class FWDATATOOLS_CLASS_API TransferFunction
 
 public:
 
-    fwCoreClassMacro(TransferFunction);
+    fwCoreClassMacro(TransferFunction)
 
     /// Constructor.
     FWDATATOOLS_API TransferFunction(const std::function<void()>&);

@@ -24,7 +24,6 @@
 
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/Vector.hxx"
-#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwCore/base.hpp>
 

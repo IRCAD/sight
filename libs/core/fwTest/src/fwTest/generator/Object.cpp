@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -33,11 +33,8 @@
 #include <fwData/ResectionDB.hpp>
 #include <fwData/String.hpp>
 
-#include <fwMath/IntrasecTypes.hpp>
-
-#include <filesystem>
-
 #include <cmath>
+#include <filesystem>
 
 namespace fwTest
 {
@@ -135,7 +132,10 @@ namespace generator
     pStructureTraits->setNativeGeometricExp(nativeGeoExp);
 
     ::fwData::Color::sptr color = ::fwData::Color::New();
-    color->setRGBA(rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f);
+    color->setRGBA(static_cast<float>(rand()%100) / 100.f,
+                   static_cast<float>(rand()%100) / 100.f,
+                   static_cast<float>(rand()%100) / 100.f,
+                   static_cast<float>(rand()%100) / 100.f);
     pStructureTraits->setColor(color);
 
     ::fwData::StructureTraits::CategoryContainer categories(2);
@@ -244,7 +244,10 @@ namespace generator
 ::fwData::Color::sptr Object::randomizeColor()
 {
     ::fwData::Color::sptr col = ::fwData::Color::New();
-    col->setRGBA(rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f);
+    col->setRGBA(static_cast<float>(rand()%100) / 100.f,
+                 static_cast<float>(rand()%100) / 100.f,
+                 static_cast<float>(rand()%100) / 100.f,
+                 static_cast<float>(rand()%100) / 100.f);
     return col;
 }
 
@@ -256,8 +259,10 @@ namespace generator
 {
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
 
-    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f,
-                                                                 rand()%100 / 100.f, rand()%100 / 100.f) );
+    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( static_cast<float>(rand()%100) / 100.f,
+                                                                 static_cast<float>(rand()%100) / 100.f,
+                                                                 static_cast<float>(rand()%100) / 100.f,
+                                                                 static_cast<float>(rand()%100) / 100.f) );
     tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
     tf->setIsClamped( false );
     tf->setLevel(level);
@@ -268,8 +273,10 @@ namespace generator
     {
         double value = rand()%100 - level;
         tf->addTFColor( value,
-                        ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f,
-                                                             rand()%100 / 100.f ));
+                        ::fwData::TransferFunction::TFColor( static_cast<float>(rand()%100) / 100.f,
+                                                             static_cast<float>(rand()%100) / 100.f,
+                                                             static_cast<float>(rand()%100) / 100.f,
+                                                             static_cast<float>(rand()%100) / 100.f) );
     }
 
     ::fwData::String::sptr myString = ::fwData::String::New("fieldStringValue");

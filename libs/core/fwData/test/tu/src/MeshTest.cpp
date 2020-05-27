@@ -25,9 +25,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/ObjectLock.hpp>
 
-#include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Mesh.hpp>
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::MeshTest );
 
@@ -93,12 +90,12 @@ void MeshTest::deprecatedAllocation()
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id) 0, mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id) 0, mesh->getNumberOfCells());
 
-    ::fwDataTools::helper::Mesh helper(mesh);
-    helper.insertNextPoint(10, 20, 30);
-    helper.insertNextPoint(10, 10, 10);
-    helper.insertNextPoint(20, 20, 10);
+    const auto dumpLock = mesh->lock();
+    mesh->pushPoint(10, 20, 30);
+    mesh->pushPoint(10, 10, 10);
+    mesh->pushPoint(20, 20, 10);
 
-    helper.insertNextCell(1, 2, 3);
+    mesh->pushCell(1, 2, 3);
     CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)3, mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)1, mesh->getNumberOfCells());
 
@@ -177,397 +174,113 @@ void MeshTest::deprecatedAllocation()
 
 //-----------------------------------------------------------------------------
 
-void MeshTest::deprecatedInsertion()
-{
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    ::fwDataTools::helper::Mesh helper(mesh);
-    helper.insertNextPoint(10, 20, 30);
-    helper.insertNextPoint(40, 40, 60);
-    helper.insertNextPoint(70, 80, 90);
-    helper.insertNextPoint(15, 25, 35);
-    helper.insertNextPoint(45, 55, 65);
-    helper.insertNextPoint(12, 22, 32);
-    helper.insertNextPoint(42, 52, 62);
-    helper.insertNextPoint(100, 200, 300);
-
-    helper.insertNextCell(1, 2);
-    helper.insertNextCell(1, 3, 4);
-    helper.insertNextCell(1, 2, 5, 4);
-
-    ::fwData::Mesh::CellValueType p[4] = {3, 6, 5, 1};
-    helper.insertNextCell(::fwData::Mesh::QUAD, p, 4);
-
-    ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
-    helper.insertNextCell(::fwData::Mesh::POLY, p2, 6);
-
-    ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
-    helper.insertNextCell(::fwData::Mesh::POLY, p3, 5);
-
-    CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)8, mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL((fwData::Mesh::Id)6, mesh->getNumberOfCells());
-
-    ::fwData::Mesh::PointsMultiArrayType pointArray = helper.getPoints();
-    CPPUNIT_ASSERT_EQUAL((float) 10, pointArray[0][0]);
-    CPPUNIT_ASSERT_EQUAL((float) 70, pointArray[2][0]);
-    CPPUNIT_ASSERT_EQUAL((float) 80, pointArray[2][1]);
-    CPPUNIT_ASSERT_EQUAL((float) 300, pointArray[7][2]);
-
-    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsetArray = helper.getCellDataOffsets();
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)0, cellDataOffsetArray[0]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)2, cellDataOffsetArray[1]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)9, cellDataOffsetArray[3]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)13, cellDataOffsetArray[4]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)19, cellDataOffsetArray[5]);
-
-    ::fwData::Mesh::CellDataMultiArrayType cellDataArray = helper.getCellData();
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)1,
-                          cellDataArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(
-                                            cellDataOffsetArray[0])]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)1,
-                          cellDataArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(
-                                            cellDataOffsetArray[1])]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)3,
-                          cellDataArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(
-                                            cellDataOffsetArray[3])]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)1,
-                          cellDataArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(
-                                            cellDataOffsetArray[4])]);
-    CPPUNIT_ASSERT_EQUAL( (std::uint64_t)7,
-                          cellDataArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(
-                                            cellDataOffsetArray[5])]);
-
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypesArray = helper.getCellTypes();
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::EDGE, static_cast< ::fwData::Mesh::CellTypesEnum >(cellTypesArray[0]));
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::TRIANGLE, static_cast < ::fwData::Mesh::CellTypesEnum >(cellTypesArray[1]));
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::QUAD, static_cast< ::fwData::Mesh::CellTypesEnum >(cellTypesArray[3]));
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(cellTypesArray[4]));
-    CPPUNIT_ASSERT_EQUAL( ::fwData::Mesh::POLY, static_cast< ::fwData::Mesh::CellTypesEnum >(cellTypesArray[5]));
-
-    helper.setPoint(4, 45, 59, 45);
-    CPPUNIT_ASSERT_EQUAL((float) 45, pointArray[4][0]);
-    CPPUNIT_ASSERT_EQUAL((float) 59, pointArray[4][1]);
-    CPPUNIT_ASSERT_EQUAL((float) 45, pointArray[4][2]);
-
-    ::fwData::Array::sptr array = mesh->getPointsArray();
-    ::fwDataTools::helper::Array arrayHelper(array);
-    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4}, 0)), pointArray[4][0]);
-    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4}, 1)), pointArray[4][1]);
-    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4}, 2)), pointArray[4][2]);
-}
-
-//-----------------------------------------------------------------------------
-
-void MeshTest::colorsNormals()
-{
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    ::fwDataTools::helper::Mesh helper(mesh);
-    helper.insertNextPoint(10, 20, 30);
-    helper.insertNextPoint(10, 10, 10);
-    helper.insertNextPoint(20, 20, 10);
-    helper.insertNextPoint(30, 30, 10);
-    helper.insertNextPoint(15, 20, 35);
-    helper.insertNextPoint(20, 20, 10);
-    helper.insertNextPoint(20, 63, 17);
-    helper.insertNextPoint(27, 83, 52);
-
-    helper.insertNextCell(1, 2);
-    helper.insertNextCell(1, 3, 4);
-    helper.insertNextCell(1, 2, 5, 4);
-
-    ::fwData::Mesh::CellValueType p[4] = {3, 6, 5, 1};
-    helper.insertNextCell(::fwData::Mesh::QUAD, p, 4);
-
-    ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
-    helper.insertNextCell(::fwData::Mesh::POLY, p2, 6);
-
-    ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
-    helper.insertNextCell(::fwData::Mesh::POLY, p3, 5);
-
-    mesh->allocatePointColors(::fwData::Mesh::RGBA);
-    helper.updateLock();
-    ::fwData::Mesh::PointColorsMultiArrayType pointColorArray = helper.getPointColors();
-
-    const long nbPoints = static_cast<long>(mesh->getNumberOfPoints());
-    for (long id = 0; id < nbPoints; id++)
-    {
-        for (long c = 0; c < 4; c++)
-        {
-            pointColorArray[id][c] = static_cast< ::fwData::Mesh::ColorValueType >(id * 10 + c);
-        }
-    }
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >( 0), pointColorArray[0][0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(21), pointColorArray[2][1]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(50), pointColorArray[5][0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(73), pointColorArray[7][3]);
-
-    ::fwData::Mesh::ColorValueType color[4] = {5, 8, 6, 10};
-    helper.setPointColor(5, color);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::ColorValueType >(8), pointColorArray[5][1]);
-
-    mesh->allocateCellNormals();
-    helper.updateLock();
-    ::fwData::Mesh::CellNormalsMultiArrayType cellNormalArray = helper.getCellNormals();
-
-    const long nbCells = static_cast<long>(mesh->getNumberOfCells());
-    for (long id = 0; id < nbCells; id++)
-    {
-        for (long n = 0; n < 3; n++)
-        {
-            cellNormalArray[id][n] = static_cast<float>(id) + static_cast<float>(n)/10.f;
-        }
-    }
-    CPPUNIT_ASSERT_EQUAL(0.0f, cellNormalArray[0][0]);
-    CPPUNIT_ASSERT_EQUAL(2.1f, cellNormalArray[2][1]);
-    CPPUNIT_ASSERT_EQUAL(4.2f, cellNormalArray[4][2]);
-    CPPUNIT_ASSERT_EQUAL(5.0f, cellNormalArray[5][0]);
-
-    ::fwData::Mesh::NormalValueType normal[3] = {0.9f, 0.4f, 0.2f};
-    helper.setCellNormal(4, normal);
-    CPPUNIT_ASSERT_EQUAL(0.2f, cellNormalArray[4][2]);
-}
-
-//-----------------------------------------------------------------------------
-
-void MeshTest::texCoords()
-{
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    ::fwDataTools::helper::Mesh helper(mesh);
-    helper.insertNextPoint(10, 20, 30);
-    helper.insertNextPoint(10, 10, 10);
-    helper.insertNextPoint(20, 20, 10);
-    helper.insertNextPoint(30, 30, 10);
-    helper.insertNextPoint(15, 20, 35);
-    helper.insertNextPoint(20, 20, 10);
-    helper.insertNextPoint(20, 63, 17);
-    helper.insertNextPoint(27, 83, 52);
-
-    helper.insertNextCell(1, 2);
-    helper.insertNextCell(1, 3, 4);
-    helper.insertNextCell(1, 2, 5, 4);
-
-    ::fwData::Mesh::CellValueType p[4] = {3, 6, 5, 1};
-    helper.insertNextCell(::fwData::Mesh::QUAD, p, 4);
-
-    ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
-    helper.insertNextCell(::fwData::Mesh::POLY, p2, 6);
-
-    ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
-    helper.insertNextCell(::fwData::Mesh::POLY, p3, 5);
-
-    mesh->allocateCellTexCoords();
-    helper.updateLock();
-    ::fwData::Mesh::CellTexCoordsMultiArrayType cellTexCoordArray = helper.getCellTexCoords();
-
-    const long nbCells = static_cast<long>(mesh->getNumberOfCells());
-    for (long id = 0; id < nbCells; id++)
-    {
-        for (long n = 0; n < 2; n++)
-        {
-            cellTexCoordArray[id][n] = static_cast<float>(id) + static_cast<float>(n)/10.f;
-        }
-    }
-    CPPUNIT_ASSERT_EQUAL(0.0f, cellTexCoordArray[0][0]);
-    CPPUNIT_ASSERT_EQUAL(2.1f, cellTexCoordArray[2][1]);
-    CPPUNIT_ASSERT_EQUAL(4.1f, cellTexCoordArray[4][1]);
-    CPPUNIT_ASSERT_EQUAL(5.0f, cellTexCoordArray[5][0]);
-
-    ::fwData::Mesh::TexCoordValueType TexCoord[3] = {0.9f, 0.4f};
-    helper.setCellTexCoord(4, TexCoord);
-    CPPUNIT_ASSERT_EQUAL(0.9f, cellTexCoordArray[4][0]);
-    CPPUNIT_ASSERT_EQUAL(0.4f, cellTexCoordArray[4][1]);
-}
-
-//-----------------------------------------------------------------------------
-
-void MeshTest::addingArray()
-{
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-
-    ::fwData::Mesh::Id nbPoints = 60;
-    ::fwData::Mesh::Id nbCells  = 20;
-
-    // Add point array
-    ::fwData::Array::sptr pointArray = ::fwData::Array::New();
-
-    pointArray->resize(::fwTools::Type::create< ::fwData::Mesh::PointValueType >(), {nbPoints}, 3, true);
-    ::fwDataTools::helper::Array pointArrayHelper(pointArray);
-
-    ::fwData::Mesh::PointValueType count = 0;
-    ::fwData::Mesh::PointValueType* iter = pointArrayHelper.begin< ::fwData::Mesh::PointValueType >();
-    for (; iter != pointArrayHelper.end< ::fwData::Mesh::PointValueType >(); ++iter)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            *iter = count + static_cast<float>(i)/10.0f;
-        }
-        count++;
-    }
-
-    mesh->setPointsArray(pointArray);
-    mesh->setNumberOfPoints(nbPoints);
-
-    CPPUNIT_ASSERT_EQUAL(nbPoints, mesh->getNumberOfPoints());
-
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-    ::fwData::Mesh::Id id = meshHelper.insertNextPoint(50, 50, 50);
-    CPPUNIT_ASSERT_EQUAL(nbPoints, id);
-    nbPoints++;
-    CPPUNIT_ASSERT_EQUAL(nbPoints, mesh->getNumberOfPoints());
-
-    ::fwData::Mesh::PointsMultiArrayType pointMultiArray = meshHelper.getPoints();
-    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >({0}, 0)),
-                         pointMultiArray[0][0]);
-    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >({12}, 2)),
-                         pointMultiArray[12][2]);
-    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >({45}, 1)),
-                         pointMultiArray[45][1]);
-
-    // add cells arrays
-    ::fwData::Array::sptr cellTypeArray       = ::fwData::Array::New();
-    ::fwData::Array::sptr cellDataOffsetArray = ::fwData::Array::New();
-    ::fwData::Array::sptr cellDataArray       = ::fwData::Array::New();
-
-    cellTypeArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellTypes >(), {nbCells}, 1, true);
-    cellDataOffsetArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellDataOffsetType >(), {nbCells}, 1, true);
-    cellDataArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellValueType >(), {nbCells*3}, 1, true);
-
-    ::fwDataTools::helper::Array cellTypeArrayHelper(cellTypeArray);
-    ::fwDataTools::helper::Array cellDataOffsetArrayHelper(cellDataOffsetArray);
-    ::fwDataTools::helper::Array cellDataArrayHelper(cellDataArray);
-
-    ::fwData::Mesh::CellValueType counter = 0;
-    for (std::uint64_t idCell = 0; idCell < nbCells; idCell++)
-    {
-        ::fwData::Mesh::CellTypes type = static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE);
-        cellTypeArrayHelper.setItem({size_t(idCell)}, &type);
-
-        ::fwData::Mesh::CellDataOffsetType offset = idCell*3;
-        cellDataOffsetArrayHelper.setItem({size_t(idCell)}, &offset);
-
-        ::fwData::Mesh::CellValueType cell[3] = { counter, counter+1, counter+2 };
-        counter                              += 3;
-        cellDataArrayHelper.setItem({offset}, &cell);
-    }
-    mesh->setCellTypesArray(cellTypeArray);
-    mesh->setCellDataOffsetsArray(cellDataOffsetArray);
-    mesh->setCellDataArray(cellDataArray);
-    mesh->setNumberOfCells(nbCells);
-    mesh->setCellDataSize(nbCells*3);
-
-    meshHelper.updateLock();
-    meshHelper.insertNextCell(1, 6, 25, 12 );
-
-    nbCells++;
-    CPPUNIT_ASSERT_EQUAL(nbCells, mesh->getNumberOfCells());
-
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypesMultiArray = meshHelper.getCellTypes();
-    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >({0})),
-                         cellTypesMultiArray[0]);
-    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >({12})),
-                         cellTypesMultiArray[12]);
-    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >({18})),
-                         cellTypesMultiArray[18]);
-
-    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsetsMultiArray = meshHelper.getCellDataOffsets();
-    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >({0})),
-                         cellDataOffsetsMultiArray[0]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >({12})),
-                         cellDataOffsetsMultiArray[12]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >({18})),
-                         cellDataOffsetsMultiArray[18]);
-
-    ::fwData::Mesh::CellDataOffsetType offset0  = cellTypesMultiArray[0];
-    ::fwData::Mesh::CellDataOffsetType offset12 = cellTypesMultiArray[12];
-    ::fwData::Mesh::CellDataOffsetType offset18 = cellTypesMultiArray[18];
-
-    ::fwData::Mesh::CellDataMultiArrayType cellDataMultiArray = meshHelper.getCellData();
-    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >({offset0})),
-                         cellDataMultiArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(offset0)]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >({offset12})),
-                         cellDataMultiArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(offset12)]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >({offset18})),
-                         cellDataMultiArray[static_cast< ::fwData::Mesh::CellDataMultiArrayType::index >(offset18)]);
-}
-
-//-----------------------------------------------------------------------------
-
 void MeshTest::copy()
 {
     ::fwData::Mesh::sptr mesh            = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr shallowCopyMesh = ::fwData::Mesh::New();
 
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
+    const auto dumpLock = mesh->lock();
 
-    meshHelper.insertNextPoint(10, 20, 30);
-    meshHelper.insertNextPoint(10, 10, 10);
-    meshHelper.insertNextPoint(20, 20, 10);
-    meshHelper.insertNextPoint(30, 30, 10);
-    meshHelper.insertNextPoint(15, 20, 35);
-    meshHelper.insertNextPoint(20, 20, 10);
-    meshHelper.insertNextPoint(20, 63, 17);
-    meshHelper.insertNextPoint(27, 83, 52);
+    mesh->pushPoint(10, 20, 30);
+    mesh->pushPoint(10, 10, 10);
+    mesh->pushPoint(20, 20, 10);
+    mesh->pushPoint(30, 30, 10);
+    mesh->pushPoint(15, 20, 35);
+    mesh->pushPoint(20, 20, 10);
+    mesh->pushPoint(20, 63, 17);
+    mesh->pushPoint(27, 83, 52);
 
-    meshHelper.insertNextCell(1, 2);
-    meshHelper.insertNextCell(1, 3, 4);
-    meshHelper.insertNextCell(1, 2, 5, 4);
+    mesh->pushCell(1, 2);
+    mesh->pushCell(1, 3, 4);
+    mesh->pushCell(1, 2, 5, 4);
 
     ::fwData::Mesh::CellValueType p[4] = {3, 6, 5, 1};
-    meshHelper.insertNextCell(::fwData::Mesh::QUAD, p, 4);
+    mesh->pushCell(::fwData::Mesh::CellType::QUAD, p, 4);
 
     ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
-    meshHelper.insertNextCell(::fwData::Mesh::POLY, p2, 6);
+    mesh->pushCell(::fwData::Mesh::CellType::POLY, p2, 6);
 
     ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
-    meshHelper.insertNextCell(::fwData::Mesh::POLY, p3, 5);
+    mesh->pushCell(::fwData::Mesh::CellType::POLY, p3, 5);
 
-    mesh->allocatePointColors(::fwData::Mesh::RGBA);
-    mesh->allocatePointTexCoords();
-    meshHelper.updateLock();
+    mesh->resize(mesh->getNumberOfPoints(), mesh->getNumberOfCells(), mesh->getCellDataSize(),
+                 ::fwData::Mesh::Attributes::POINT_COLORS | ::fwData::Mesh::Attributes::POINT_TEX_COORDS);
 
     // check deep copy
-    ::fwData::Mesh::sptr deepCopyMesh;
-    deepCopyMesh = ::fwData::Object::copy(mesh);
-    ::fwDataTools::helper::Mesh deepCopyMeshHelper(deepCopyMesh);
-
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), deepCopyMesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), deepCopyMesh->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), deepCopyMesh->getCellDataSize());
-
-    CPPUNIT_ASSERT(mesh->getPointsArray()->getSize() == deepCopyMesh->getPointsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellTypesArray()->getSize() == deepCopyMesh->getCellTypesArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellDataOffsetsArray()->getSize() == deepCopyMesh->getCellDataOffsetsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellDataArray()->getSize() == deepCopyMesh->getCellDataArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getPointColorsArray()->getSize() == deepCopyMesh->getPointColorsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getPointTexCoordsArray()->getSize() == deepCopyMesh->getPointTexCoordsArray()->getSize());
-
-    ::fwData::Mesh::PointsMultiArrayType meshPointArray         = meshHelper.getPoints();
-    ::fwData::Mesh::PointsMultiArrayType deepCopyMeshPointArray = deepCopyMeshHelper.getPoints();
-
-    const long nbPoints = static_cast<long>(mesh->getNumberOfPoints());
-    for (long i = 0; i < nbPoints; i++)
     {
-        for (long j = 0; j < 3; j++)
+        ::fwData::Mesh::sptr deepCopyMesh;
+        deepCopyMesh = ::fwData::Object::copy(mesh);
+        const auto copyDumpLock = deepCopyMesh->lock();
+
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), deepCopyMesh->getNumberOfPoints());
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), deepCopyMesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), deepCopyMesh->getCellDataSize());
+
+        auto pointItr         = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto pointEnd   = mesh->end< ::fwData::iterator::ConstPointIterator >();
+        auto pointItrCopyMesh = deepCopyMesh->begin< ::fwData::iterator::ConstPointIterator >();
+
+        for (; pointItr != pointEnd; ++pointItr, ++pointItrCopyMesh)
         {
-            CPPUNIT_ASSERT_EQUAL(meshPointArray[i][j], deepCopyMeshPointArray[i][j]);
+            CPPUNIT_ASSERT_EQUAL(pointItr->point->x, pointItrCopyMesh->point->x);
+            CPPUNIT_ASSERT_EQUAL(pointItr->point->y, pointItrCopyMesh->point->y);
+            CPPUNIT_ASSERT_EQUAL(pointItr->point->z, pointItrCopyMesh->point->z);
+        }
+
+        auto cellItr         = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto cellEnd   = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto cellItrCopyMesh = deepCopyMesh->begin< ::fwData::iterator::ConstCellIterator >();
+
+        for (; cellItr != cellEnd; ++cellItr, ++cellItrCopyMesh)
+        {
+            CPPUNIT_ASSERT_EQUAL(*cellItr->type, *cellItrCopyMesh->type);
+            CPPUNIT_ASSERT_EQUAL(*cellItr->offset, *cellItrCopyMesh->offset);
+            CPPUNIT_ASSERT_EQUAL(cellItr->nbPoints, cellItrCopyMesh->nbPoints);
+            for (size_t i = 0; i < cellItr->nbPoints; ++i)
+            {
+                CPPUNIT_ASSERT_EQUAL(cellItr->pointIdx[i], cellItrCopyMesh->pointIdx[i]);
+            }
         }
     }
 
     //check shallow copy
-    shallowCopyMesh->shallowCopy(mesh);
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), shallowCopyMesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), shallowCopyMesh->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), shallowCopyMesh->getCellDataSize());
+    {
+        shallowCopyMesh->shallowCopy(mesh);
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), shallowCopyMesh->getNumberOfPoints());
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), shallowCopyMesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), shallowCopyMesh->getCellDataSize());
 
-    CPPUNIT_ASSERT_EQUAL(mesh->getPointsArray(), shallowCopyMesh->getPointsArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellTypesArray(), shallowCopyMesh->getCellTypesArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataOffsetsArray(), shallowCopyMesh->getCellDataOffsetsArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataArray(), shallowCopyMesh->getCellDataArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getPointColorsArray(), shallowCopyMesh->getPointColorsArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getPointNormalsArray(), shallowCopyMesh->getPointNormalsArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getPointTexCoordsArray(), shallowCopyMesh->getPointTexCoordsArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellColorsArray(), shallowCopyMesh->getCellColorsArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellNormalsArray(), shallowCopyMesh->getCellNormalsArray());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellTexCoordsArray(), shallowCopyMesh->getCellTexCoordsArray());
+        const auto pointItr         = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto pointItrCopyMesh = shallowCopyMesh->begin< ::fwData::iterator::ConstPointIterator >();
+
+        CPPUNIT_ASSERT_EQUAL(pointItr->point, pointItrCopyMesh->point);
+        CPPUNIT_ASSERT_EQUAL(pointItr->normal, pointItrCopyMesh->normal);
+        CPPUNIT_ASSERT_EQUAL(pointItr->rgb, pointItrCopyMesh->rgb);
+        CPPUNIT_ASSERT_EQUAL(pointItr->rgba, pointItrCopyMesh->rgba);
+        CPPUNIT_ASSERT_EQUAL(pointItr->tex, pointItrCopyMesh->tex);
+
+        const auto cellItr         = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto cellItrCopyMesh = shallowCopyMesh->begin< ::fwData::iterator::ConstCellIterator >();
+
+        CPPUNIT_ASSERT_EQUAL(cellItr->type, cellItrCopyMesh->type);
+        CPPUNIT_ASSERT_EQUAL(cellItr->offset, cellItrCopyMesh->offset);
+        CPPUNIT_ASSERT_EQUAL(cellItr->pointIdx, cellItrCopyMesh->pointIdx);
+        CPPUNIT_ASSERT_EQUAL(cellItr->rgb, cellItrCopyMesh->rgb);
+        CPPUNIT_ASSERT_EQUAL(cellItr->rgba, cellItrCopyMesh->rgba);
+        CPPUNIT_ASSERT_EQUAL(cellItr->tex, cellItrCopyMesh->tex);
+
+        //Deprecated
+        CPPUNIT_ASSERT_EQUAL(mesh->getPointsArray(), shallowCopyMesh->getPointsArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellTypesArray(), shallowCopyMesh->getCellTypesArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellDataOffsetsArray(), shallowCopyMesh->getCellDataOffsetsArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellDataArray(), shallowCopyMesh->getCellDataArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getPointColorsArray(), shallowCopyMesh->getPointColorsArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getPointNormalsArray(), shallowCopyMesh->getPointNormalsArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getPointTexCoordsArray(), shallowCopyMesh->getPointTexCoordsArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellColorsArray(), shallowCopyMesh->getCellColorsArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellNormalsArray(), shallowCopyMesh->getCellNormalsArray());
+        CPPUNIT_ASSERT_EQUAL(mesh->getCellTexCoordsArray(), shallowCopyMesh->getCellTexCoordsArray());
+    }
 }
 
 //------------------------------------------------------------------------------

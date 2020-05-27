@@ -42,7 +42,7 @@ namespace helper
  * @deprecated will be removed in sight 22.0, please use ::fwData::Array.
  *
  */
-class FWDATATOOLS_CLASS_API ArrayGetter
+class FWDATATOOLS_DEPRECATED_CLASS_API ArrayGetter
 {
 
 public:

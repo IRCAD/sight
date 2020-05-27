@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -68,7 +68,7 @@ namespace generator
     for (unsigned char nb = 0; nb < nbModelSeries; ++nb)
     {
         ::fwMedData::Series::sptr modelSeries;
-        modelSeries = SeriesDB::createModelSeries(rand()%5+1);
+        modelSeries = SeriesDB::createModelSeries(static_cast<unsigned char>(rand()%5+1));
         seriesDB->getContainer().push_back(modelSeries);
     }
 

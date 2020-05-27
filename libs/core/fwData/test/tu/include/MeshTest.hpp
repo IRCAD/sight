@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,10 +34,6 @@ class MeshTest : public CPPUNIT_NS::TestFixture
 private:
     CPPUNIT_TEST_SUITE( MeshTest );
     CPPUNIT_TEST( deprecatedAllocation );
-    CPPUNIT_TEST( deprecatedInsertion );
-    CPPUNIT_TEST( colorsNormals );
-    CPPUNIT_TEST( texCoords );
-    CPPUNIT_TEST( addingArray );
     CPPUNIT_TEST( copy );
     CPPUNIT_TEST( allocationTest );
     CPPUNIT_TEST( insertion );
@@ -50,10 +46,6 @@ public:
     void tearDown();
 
     void deprecatedAllocation();
-    void deprecatedInsertion();
-    void colorsNormals();
-    void texCoords();
-    void addingArray();
     void copy();
     void allocationTest();
     void insertion();

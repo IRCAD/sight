@@ -23,7 +23,6 @@
 #pragma once
 
 #include "fwDataTools/config.hpp"
-#include "fwDataTools/helper/Image.hpp"
 
 #include <fwData/Image.hpp>
 

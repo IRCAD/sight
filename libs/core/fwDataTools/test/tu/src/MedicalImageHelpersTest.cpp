@@ -23,7 +23,6 @@
 #include "MedicalImageHelpersTest.hpp"
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Image.hpp>

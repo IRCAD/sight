@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,6 @@
 
 #include "fwDataTools/helper/PointList.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwData/Point.hpp>
@@ -64,11 +63,9 @@ PointList::computeDistance(::fwData::PointList::sptr _pointList1,
     const size_t size                                     = points1.size();
 
     ::fwData::Array::sptr outputArray = ::fwData::Array::New();
-    ::fwData::Array::SizeType arraySize;
-    arraySize.push_back(size);
-    outputArray->resize("double", arraySize, 1, true);
-    ::fwDataTools::helper::Array arrayHelper(outputArray);
-    double* distanceArray = arrayHelper.begin<double>();
+    outputArray->resize({size}, ::fwTools::Type::s_DOUBLE);
+    const auto dumpLock   = outputArray->lock();
+    auto distanceArrayItr = outputArray->begin<double>();
 
     for (size_t i = 0; i < size; ++i)
     {
@@ -76,7 +73,8 @@ PointList::computeDistance(::fwData::PointList::sptr _pointList1,
         const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
         const ::glm::dvec3 pt1                          = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
         const ::glm::dvec3 pt2                          = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
-        distanceArray[i] = ::glm::distance(pt1, pt2);
+        *distanceArrayItr = ::glm::distance(pt1, pt2);
+        ++distanceArrayItr;
     }
 
     return outputArray;
@@ -176,7 +174,8 @@ const ::fwData::Point::sptr PointList::removeClosestPoint(const ::fwData::PointL
         // Data to find the closest point
         float closest = std::numeric_limits<float>::max();
         ::fwData::Point::sptr point = nullptr;
-        size_t index = -1;
+        size_t index      = 0;
+        bool pointIsFound = false;
 
         // Find the closest one
         for(size_t i = 0; i < list.size(); ++i)
@@ -187,15 +186,15 @@ const ::fwData::Point::sptr PointList::removeClosestPoint(const ::fwData::PointL
             float tempClosest;
             if((tempClosest = ::glm::distance(p1, p2)) < _delta  && tempClosest < closest)
             {
-                closest = tempClosest;
-                point   = list[i];
-                index   = i;
+                closest      = tempClosest;
+                point        = list[i];
+                index        = i;
+                pointIsFound = true;
             }
-
         }
 
         // Remove the closest point if it has been found
-        if(index != -1)
+        if(pointIsFound)
         {
             _pointList->remove(index);
         }
