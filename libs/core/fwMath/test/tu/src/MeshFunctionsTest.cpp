@@ -39,6 +39,7 @@ namespace ut
 #define U X
 #define V Y
 #define W Z
+#define H 3
 
 const static double s_EPSILON = 10e-9;
 
@@ -160,11 +161,73 @@ void MeshFunctionsTest::computeBarycenterOutsideABC()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
-
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", !(barycentric[V] >= 0. && barycentric[V] <= 1.));
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", (barycentric[V] >= 0. && barycentric[V] <= 1.));
     CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", !(barycentric[W] >= 0. && barycentric[W] <= 1. ));
     CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", !((barycentric[V] + barycentric[W]) <= 1.) );
 
+}
+
+//-----------------------------------------------------------------------------
+
+void MeshFunctionsTest::computeBarycenterTetrahedron()
+{
+    // First test in 3d.
+    const fwVec3d A {0., 0., 0.};
+    const fwVec3d B {1., 0., 0.};
+    const fwVec3d C {0., 1., 0.};
+    const fwVec3d D {0., 0., 1.};
+
+    // Should be at the center of ABC
+    const fwVec3d P {0.25, 0.25, 0.25};
+
+    const fwPlane barycentric = ::fwMath::toBarycentricCoord(P, A, B, C, D);
+
+    // Test if sum of barycentric coordinates are equal to 1.
+
+    const double sum = (barycentric[U] + barycentric[V] + barycentric[W]+ barycentric[H]);
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w + h = 1", 1., sum, s_EPSILON);
+
+    // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
+
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", barycentric[V] >= 0. && barycentric[V] <= 1 );
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", barycentric[W] >= 0. && barycentric[W] <= 1 );
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ h ≤ 1", barycentric[H] >= 0. && barycentric[H] <= 1 );
+    CPPUNIT_ASSERT_MESSAGE("v + w + h ≤ 1", (barycentric[V] + barycentric[W] + barycentric[H]) <= 1. );
+
+    // Convert back to world coordinates.
+
+    const fwVec3d P2 = ::fwMath::fromBarycentricCoord(barycentric, A, B, C, D);
+
+    this->compare(P, P2);
+}
+
+//------------------------------------------------------------------------------
+
+void MeshFunctionsTest::computeBarycenterOutsideTetrahedron()
+{
+    // Test with a point outside of the tetrahedron.
+
+    // Second test in 3d.
+    const fwVec3d A {0., 0., 0.};
+    const fwVec3d B {1., 0., 0.};
+    const fwVec3d C {0., 1., 0.};
+    const fwVec3d D {0., 0., 1.};
+
+    const fwVec3d Pin {0.25, 0.25, 0.25};
+    const fwVec3d Pout {1., 2., 3.};
+    const fwVec3d Pedge {0.5, 0., 0.};
+    const fwVec3d Pvertex {0., 0., 0.};
+
+    const bool isInsidePin     = ::fwMath::isInsideThetrahedron(Pin, A, B, C, D);
+    const bool isInsidePout    = ::fwMath::isInsideThetrahedron(Pout, A, B, C, D);
+    const bool isInsidePedge   = ::fwMath::isInsideThetrahedron(Pedge, A, B, C, D);
+    const bool isInsidePvertex = ::fwMath::isInsideThetrahedron(Pvertex, A, B, C, D);
+
+    CPPUNIT_ASSERT_MESSAGE("Pin should be inside though is compute outside", isInsidePin);
+    CPPUNIT_ASSERT_MESSAGE("Pout should be outside though is compute inside", !isInsidePout);
+    CPPUNIT_ASSERT_MESSAGE("Pedge should be inside though is compute outside", isInsidePedge);
+    CPPUNIT_ASSERT_MESSAGE("Pvertex should be inside though is compute outside", isInsidePvertex);
 }
 
 //-----------------------------------------------------------------------------
