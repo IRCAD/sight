@@ -26,6 +26,7 @@
 
 #include <iterator>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace fwRuntime
