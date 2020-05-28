@@ -397,7 +397,7 @@ fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& 
     const double d00 = ::fwMath::dot(v0, v0);
     const double d01 = ::fwMath::dot(v0, v1);
     const double d11 = ::fwMath::dot(v1, v1);
-    const double d20 = ::fwMath::dot(v1, v0);
+    const double d20 = ::fwMath::dot(v2, v0);
     const double d21 = ::fwMath::dot(v2, v1);
 
     const double div = ((d00 * d11) - (d01 * d01));
@@ -416,6 +416,63 @@ fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& 
     baryCoord[0] = u;
     baryCoord[1] = v;
     baryCoord[2] = w;
+
+    return baryCoord;
+
+}
+
+//-----------------------------------------------------------------------------
+
+fwPlane toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& _B, const fwVec3d& _C,
+                           const fwVec3d& _D)
+{
+
+    /*
+       In general, a point with barycentric coordinates (u, v, w,h) is inside (or on) the tetrahedron(ABCD) if and only
+          if
+       0 ≤ u, v, w, h ≤ 1, or alternatively if and only if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, 0 ≤ h ≤ 1, and v + w + h ≤ 1.
+
+       The main idea of the volumic baricentric coordinate is a proportionality with the sub-tetrahedron volumes ratio
+          over the whole volume.
+       Considering one of the four vertex (_A, _B, _C, _D) v, the associated baricentric coordinate is equal to the
+          volume of the tetrahedron build with the three other vertexes and P, divided by the total tetrahedron volume.
+
+       As a result, the principle in the present algorithm, is to compute the three tetrahedron (_A,_B,_C,_P)
+          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume.
+       Then the ratio for respectivemy, _D, _C, _B vertexes are computed, and the last baricentric coordinate is
+          obtained by the formula u + v + w + h = 1
+     */
+
+    fwPlane baryCoord;
+
+    const fwVec3d vab = _B - _A; // AB Vector
+    const fwVec3d vac = _C - _A; // AC Vector
+    const fwVec3d vad = _D - _A; // AD Vector
+
+    const fwVec3d vap = _P - _A; // AP Vector
+
+    const double volumeB = ::fwMath::dot(vap, ::fwMath::cross(vac, vad));
+    const double volumeC = ::fwMath::dot(vap, ::fwMath::cross(vad, vab));
+    const double volumeD = ::fwMath::dot(vap, ::fwMath::cross(vab, vac));
+
+    const double volumeTot = ::fwMath::dot(vab, ::fwMath::cross(vac, vad));
+
+    // Don't test the case in release to avoid performance issue.
+    SLM_ASSERT("Degenerate triangle case leads to zero division.", volumeTot != 0.);
+
+    // Inverse the denominator to speed up computation of v & w.
+    const double invdenom = 1. / volumeTot;
+
+    // Barycentric coordinates
+    const double v = volumeB * invdenom;
+    const double w = volumeC * invdenom;
+    const double h = volumeD * invdenom;
+    const double u = 1. - v - w - h; // deduce last coordinate from the two others.
+
+    baryCoord[0] = u;
+    baryCoord[1] = v;
+    baryCoord[2] = w;
+    baryCoord[3] = h;
 
     return baryCoord;
 
@@ -454,6 +511,62 @@ fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A, const
     worldCoordinates[2] = z;
 
     return worldCoordinates;
+}
+
+//-----------------------------------------------------------------------------
+
+fwVec3d fromBarycentricCoord(const fwPlane& _baryCoord, const fwVec3d& _A, const fwVec3d& _B, const fwVec3d& _C,
+                             const fwVec3d& _D)
+{
+    /*
+       General formula (if [u, v, w, h] is normalized).
+       x = (u * _A.x + v * _B.x + w * _C.x + h * _D.x)
+       y = (u * _A.y + v * _B.y + w * _C.y + h * _D.y)
+       z = (u * _A.z + v * _B.z + w * _C.z + h * _D.z)
+     */
+
+    fwVec3d worldCoordinates;
+
+    // Use standard notation for clarity.
+    const double u = _baryCoord[0];
+    const double v = _baryCoord[1];
+    const double w = _baryCoord[2];
+    const double h = _baryCoord[3];
+
+    [[maybe_unused]] const double sum = u + v + w + h; // Only used in the following assertion.
+
+    // Don't test in release to avoid performance issue.
+    SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
+               , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+
+    const double x = (u * _A[0] + v * _B[0] + w * _C[0] + h * _D[0]);
+    const double y = (u * _A[1] + v * _B[1] + w * _C[1] + h * _D[1]);
+    const double z = (u * _A[2] + v * _B[2] + w * _C[2] + h * _D[2]);
+
+    worldCoordinates[0] = x;
+    worldCoordinates[1] = y;
+    worldCoordinates[2] = z;
+
+    return worldCoordinates;
+}
+
+//------------------------------------------------------------------------------
+
+bool isInsideThetrahedron(const fwVec3d& _P, const fwVec3d& _A,
+                          const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D)
+{
+
+    /*
+       There are several wais to determine if a point is inside a tetrahedron.
+       The present lgorithm make use of the barycentric coordinates
+       It first the baricentric coordinate of the point inside the tetrahedron, and then checks if all of them are
+          inbetween 0 and 1
+     */
+    const fwPlane barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
+    return 0 <= barycentricCoord[0] &&  barycentricCoord[0] <= 1
+           &&  0 <= barycentricCoord[1] &&  barycentricCoord[1] <= 1
+           &&  0 <= barycentricCoord[2] &&  barycentricCoord[2] <= 1
+           &&  0 <= barycentricCoord[3] &&  barycentricCoord[3] <= 1;
 }
 
 //-----------------------------------------------------------------------------

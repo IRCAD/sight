@@ -97,6 +97,45 @@ FWMATH_API fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
 FWMATH_API fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A,
                                         const fwVec3d& _B, const fwVec3d& _C);
 
+/**
+ * @brief Converts the barycentric coordinates of a point inside a tetrahedron, from the world coordinates.
+ * Assert if the _A_B_C_D triangle is flat to avoid zero division.
+ * Note: no tests are performed in release mode to avoid performance issue.
+ * @param _P world coordinates of the point (x, y, z).
+ * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
+ * @param _C third vertex of the tetrahedron (_Cx, _Cy, _Cz) (can also be called v3).
+ * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
+ * @return barycentric coordinates (u, v, w, h).
+ */
+FWMATH_API fwPlane toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
+                                      const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D);
+
+/**
+ * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w+h isn't equal to 1.
+ * Note: no tests are performed in release mode to avoid performance issue.
+ * @param _baryCoord barycentric coordinates (u, v, w, h) that belongs to the _A_B_C_D tetrahedron.
+ * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
+ * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
+ * @param _C third vertex of the tetrahedron (_Cx, _Cy, _Cz) (can also be called v3).
+ * @param _C fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
+ * @return world coordinates (x, y, z).
+ */
+FWMATH_API fwVec3d fromBarycentricCoord(const fwPlane& _baryCoord, const fwVec3d& _A,
+                                        const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D);
+
+/**
+ * @brief Determine if the point _P is inside the tetrahedron made of (ABCD).
+ * @param _P world coordinates of the point (x, y, z).
+ * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az).
+ * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz).
+ * @param _C third vertex of the tetrahedron (_Cx, _Cy, _Cz).
+ * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
+ * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise
+ */
+FWMATH_API bool isInsideThetrahedron(const fwVec3d& _P, const fwVec3d& _A,
+                                     const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D);
+
 //-----------------------------------------------------------------------------
 
 template <typename T, typename U>
