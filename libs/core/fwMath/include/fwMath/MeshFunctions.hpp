@@ -25,9 +25,11 @@
 #include "fwMath/config.hpp"
 #include "fwMath/IntrasecTypes.hpp"
 
+#include <boost/unordered_map.hpp>
+
 #include <fwCore/base.hpp>
 
-#include <boost/unordered_map.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <cmath>
 #include <utility>
@@ -108,8 +110,8 @@ FWMATH_API fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return barycentric coordinates (u, v, w, h).
  */
-FWMATH_API fwPlane toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
-                                      const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D);
+FWMATH_API ::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                                           const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
 
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w+h isn't equal to 1.
@@ -121,8 +123,8 @@ FWMATH_API fwPlane toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
  * @param _C fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return world coordinates (x, y, z).
  */
-FWMATH_API fwVec3d fromBarycentricCoord(const fwPlane& _baryCoord, const fwVec3d& _A,
-                                        const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D);
+FWMATH_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, const ::glm::dvec3& _A,
+                                             const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
 
 /**
  * @brief Determine if the point _P is inside the tetrahedron made of (ABCD).
@@ -133,8 +135,8 @@ FWMATH_API fwVec3d fromBarycentricCoord(const fwPlane& _baryCoord, const fwVec3d
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise
  */
-FWMATH_API bool isInsideThetrahedron(const fwVec3d& _P, const fwVec3d& _A,
-                                     const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D);
+FWMATH_API bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                                     const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
 
 //-----------------------------------------------------------------------------
 

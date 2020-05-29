@@ -73,6 +73,18 @@ void MeshFunctionsTest::compare(const fwVec3d& _expected, const fwVec3d& _actual
 
 //-----------------------------------------------------------------------------
 
+void MeshFunctionsTest::compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual)
+{
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Conversion world-barycentric-world error.", _expected[X], _actual[X],
+                                         s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Conversion world-barycentric-world error.", _expected[Y], _actual[Y],
+                                         s_EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Conversion world-barycentric-world error.", _expected[Z], _actual[Z],
+                                         s_EPSILON);
+}
+
+//-----------------------------------------------------------------------------
+
 void MeshFunctionsTest::computeBarycenterABC2D()
 {
     // With the same Z it correspond to a 2d case
@@ -172,15 +184,15 @@ void MeshFunctionsTest::computeBarycenterOutsideABC()
 void MeshFunctionsTest::computeBarycenterTetrahedron()
 {
     // First test in 3d.
-    const fwVec3d A {0., 0., 0.};
-    const fwVec3d B {1., 0., 0.};
-    const fwVec3d C {0., 1., 0.};
-    const fwVec3d D {0., 0., 1.};
+    const ::glm::dvec3 A {0., 0., 0.};
+    const ::glm::dvec3 B {1., 0., 0.};
+    const ::glm::dvec3 C {0., 1., 0.};
+    const ::glm::dvec3 D {0., 0., 1.};
 
     // Should be at the center of ABC
-    const fwVec3d P {0.25, 0.25, 0.25};
+    const ::glm::dvec3 P {0.25, 0.25, 0.25};
 
-    const fwPlane barycentric = ::fwMath::toBarycentricCoord(P, A, B, C, D);
+    const ::glm::dvec4 barycentric = ::fwMath::toBarycentricCoord(P, A, B, C, D);
 
     // Test if sum of barycentric coordinates are equal to 1.
 
@@ -197,7 +209,7 @@ void MeshFunctionsTest::computeBarycenterTetrahedron()
 
     // Convert back to world coordinates.
 
-    const fwVec3d P2 = ::fwMath::fromBarycentricCoord(barycentric, A, B, C, D);
+    const ::glm::dvec3 P2 = ::fwMath::fromBarycentricCoord(barycentric, A, B, C, D);
 
     this->compare(P, P2);
 }
@@ -209,15 +221,15 @@ void MeshFunctionsTest::computeBarycenterOutsideTetrahedron()
     // Test with a point outside of the tetrahedron.
 
     // Second test in 3d.
-    const fwVec3d A {0., 0., 0.};
-    const fwVec3d B {1., 0., 0.};
-    const fwVec3d C {0., 1., 0.};
-    const fwVec3d D {0., 0., 1.};
+    const ::glm::dvec3 A {0., 0., 0.};
+    const ::glm::dvec3 B {1., 0., 0.};
+    const ::glm::dvec3 C {0., 1., 0.};
+    const ::glm::dvec3 D {0., 0., 1.};
 
-    const fwVec3d Pin {0.25, 0.25, 0.25};
-    const fwVec3d Pout {1., 2., 3.};
-    const fwVec3d Pedge {0.5, 0., 0.};
-    const fwVec3d Pvertex {0., 0., 0.};
+    const ::glm::dvec3 Pin {0.25, 0.25, 0.25};
+    const ::glm::dvec3 Pout {1., 2., 3.};
+    const ::glm::dvec3 Pedge {0.5, 0., 0.};
+    const ::glm::dvec3 Pvertex {0., 0., 0.};
 
     const bool isInsidePin     = ::fwMath::isInsideThetrahedron(Pin, A, B, C, D);
     const bool isInsidePout    = ::fwMath::isInsideThetrahedron(Pout, A, B, C, D);

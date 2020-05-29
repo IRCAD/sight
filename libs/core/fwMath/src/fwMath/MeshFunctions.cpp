@@ -26,6 +26,8 @@
 
 #include <boost/unordered_map.hpp>
 
+#include <glm/glm.hpp>
+
 #include <list>
 #include <map>
 #include <set>
@@ -423,8 +425,9 @@ fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& 
 
 //-----------------------------------------------------------------------------
 
-fwPlane toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& _B, const fwVec3d& _C,
-                           const fwVec3d& _D)
+::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
+                                const ::glm::dvec3& _C,
+                                const ::glm::dvec3& _D)
 {
 
     /*
@@ -443,19 +446,19 @@ fwPlane toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& 
           obtained by the formula u + v + w + h = 1
      */
 
-    fwPlane baryCoord;
+    ::glm::dvec4 baryCoord;
 
-    const fwVec3d vab = _B - _A; // AB Vector
-    const fwVec3d vac = _C - _A; // AC Vector
-    const fwVec3d vad = _D - _A; // AD Vector
+    const ::glm::dvec3 vab = _B - _A; // AB Vector
+    const ::glm::dvec3 vac = _C - _A; // AC Vector
+    const ::glm::dvec3 vad = _D - _A; // AD Vector
 
-    const fwVec3d vap = _P - _A; // AP Vector
+    const ::glm::dvec3 vap = _P - _A; // AP Vector
 
-    const double volumeB = ::fwMath::dot(vap, ::fwMath::cross(vac, vad));
-    const double volumeC = ::fwMath::dot(vap, ::fwMath::cross(vad, vab));
-    const double volumeD = ::fwMath::dot(vap, ::fwMath::cross(vab, vac));
+    const double volumeB = ::glm::dot(vap, ::glm::cross(vac, vad));
+    const double volumeC = ::glm::dot(vap, ::glm::cross(vad, vab));
+    const double volumeD = ::glm::dot(vap, ::glm::cross(vab, vac));
 
-    const double volumeTot = ::fwMath::dot(vab, ::fwMath::cross(vac, vad));
+    const double volumeTot = ::glm::dot(vab, ::glm::cross(vac, vad));
 
     // Don't test the case in release to avoid performance issue.
     SLM_ASSERT("Degenerate triangle case leads to zero division.", volumeTot != 0.);
@@ -515,8 +518,9 @@ fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A, const
 
 //-----------------------------------------------------------------------------
 
-fwVec3d fromBarycentricCoord(const fwPlane& _baryCoord, const fwVec3d& _A, const fwVec3d& _B, const fwVec3d& _C,
-                             const fwVec3d& _D)
+::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
+                                  const ::glm::dvec3& _C,
+                                  const ::glm::dvec3& _D)
 {
     /*
        General formula (if [u, v, w, h] is normalized).
@@ -524,8 +528,6 @@ fwVec3d fromBarycentricCoord(const fwPlane& _baryCoord, const fwVec3d& _A, const
        y = (u * _A.y + v * _B.y + w * _C.y + h * _D.y)
        z = (u * _A.z + v * _B.z + w * _C.z + h * _D.z)
      */
-
-    fwVec3d worldCoordinates;
 
     // Use standard notation for clarity.
     const double u = _baryCoord[0];
@@ -539,21 +541,14 @@ fwVec3d fromBarycentricCoord(const fwPlane& _baryCoord, const fwVec3d& _A, const
     SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
                , sum < 1. + 10e-9 && sum > 1. - 10e-9);
 
-    const double x = (u * _A[0] + v * _B[0] + w * _C[0] + h * _D[0]);
-    const double y = (u * _A[1] + v * _B[1] + w * _C[1] + h * _D[1]);
-    const double z = (u * _A[2] + v * _B[2] + w * _C[2] + h * _D[2]);
+    return u * _A + v * _B + w * _C + h * _D;
 
-    worldCoordinates[0] = x;
-    worldCoordinates[1] = y;
-    worldCoordinates[2] = z;
-
-    return worldCoordinates;
 }
 
 //------------------------------------------------------------------------------
 
-bool isInsideThetrahedron(const fwVec3d& _P, const fwVec3d& _A,
-                          const fwVec3d& _B, const fwVec3d& _C, const fwVec3d& _D)
+bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                          const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D)
 {
 
     /*
@@ -562,7 +557,7 @@ bool isInsideThetrahedron(const fwVec3d& _P, const fwVec3d& _A,
        It first the baricentric coordinate of the point inside the tetrahedron, and then checks if all of them are
           inbetween 0 and 1
      */
-    const fwPlane barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
+    const ::glm::dvec4 barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
     return 0 <= barycentricCoord[0] &&  barycentricCoord[0] <= 1
            &&  0 <= barycentricCoord[1] &&  barycentricCoord[1] <= 1
            &&  0 <= barycentricCoord[2] &&  barycentricCoord[2] <= 1

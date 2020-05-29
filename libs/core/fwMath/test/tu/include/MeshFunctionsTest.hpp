@@ -26,6 +26,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace fwMath
 {
 namespace ut
@@ -44,6 +46,8 @@ private:
 
     /// Compare value of 2 fwVec3d.
     void compare(const fwVec3d& _expected, const fwVec3d& _actual);
+    /// Compare value of 2 ::glm::dvec3.
+    void compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual);
 
 public:
 
