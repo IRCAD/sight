@@ -52,7 +52,7 @@ ServiceFactory::sptr ServiceFactory::getDefault()
 
 void ServiceFactory::parseBundleInformation()
 {
-    SrvRegContainer bundleInfoMap;
+    SrvRegContainer moduleInfoMap;
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::shared_ptr< ::fwRuntime::Extension > ExtensionType;
@@ -101,48 +101,48 @@ void ServiceFactory::parseBundleInformation()
 
         ServiceInfo info;
         info.serviceType          = type;
-        info.objectsSetFromBundle = !objects.empty();
+        info.objectsSetFromModule = !objects.empty();
         info.objectImpl           = std::move(objects);
         info.desc                 = desc;
         info.tags                 = tags;
-        info.bundle               = cfgEltVec[0]->getModule();
-        SLM_ASSERT("Bundle not find.", info.bundle );
+        info.module               = cfgEltVec[0]->getModule();
+        SLM_ASSERT("Module not find.", info.module );
 
-        bundleInfoMap.emplace(std::make_pair(service, info));
+        moduleInfoMap.emplace(std::make_pair(service, info));
     }
 
-    this->printInfoMap( bundleInfoMap );
+    this->printInfoMap( moduleInfoMap );
 
     ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     // Merge data info
-    for(SrvRegContainer::value_type bundle : bundleInfoMap)
+    for(SrvRegContainer::value_type module : moduleInfoMap)
     {
-        SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( bundle.first );
+        SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( module.first );
 
         if ( iter != m_srvImplTosrvInfo.end() )
         {
             OSLM_DEBUG(
-                "We already have informations about this service  (from register macro) ( "<< bundle.first <<
+                "We already have informations about this service  (from register macro) ( "<< module.first <<
                     " )." );
 
             ServiceInfo& info       = iter->second;
-            ServiceInfo& infoBundle = bundle.second;
+            ServiceInfo& infoModule = module.second;
 
-            SLM_ASSERT("Try to add bundle, but bundle exists.", !info.bundle );
-            SLM_ASSERT("Try to add bundle, but this srv is already registered and doesn't have the same srv type.",
-                       infoBundle.serviceType == info.serviceType );
-            SLM_ASSERT("Try to add bundle, but the service '"
-                       << bundle.first << "' is already registered and does not have the same objects.",
-                       infoBundle.objectImpl.empty() || infoBundle.objectImpl == info.objectImpl );
+            SLM_ASSERT("Try to add a module, but this module already exists.", !info.module );
+            SLM_ASSERT("Try to add a module, but this srv is already registered and doesn't have the same srv type.",
+                       infoModule.serviceType == info.serviceType );
+            SLM_ASSERT("Try to add a module, but the service '"
+                       << module.first << "' is already registered and does not have the same objects.",
+                       infoModule.objectImpl.empty() || infoModule.objectImpl == info.objectImpl );
 
-            info.bundle               = infoBundle.bundle;
-            info.desc                 = infoBundle.desc;
-            info.objectsSetFromBundle = infoBundle.objectsSetFromBundle;
+            info.module               = infoModule.module;
+            info.desc                 = infoModule.desc;
+            info.objectsSetFromModule = infoModule.objectsSetFromModule;
         }
         else
         {
             ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
-            m_srvImplTosrvInfo.emplace(std::make_pair(bundle.first, bundle.second));
+            m_srvImplTosrvInfo.emplace(std::make_pair(module.first, module.second));
         }
 
     }
@@ -173,22 +173,22 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
     }
     else
     {
-        OSLM_ASSERT( "A bundle must declare the factory named"
+        OSLM_ASSERT( "A module must declare the factory named"
                      << _srvImpl
-                     <<", the service declaration might be missing (or misspelled) in a bundle plugin.",
-                     info.bundle );
-        OSLM_ASSERT( "The module '" + info.bundle->getIdentifier() + "' is already loaded and the factory '"
+                     <<", the service declaration might be missing (or misspelled) in a module plugin.",
+                     info.module );
+        OSLM_ASSERT( "The module '" + info.module->getIdentifier() + "' is already loaded and the factory '"
                      + _srvImpl + "' is still missing. The service declaration might be missing (or misspelled)"
-                     "in a .cpp file.", !info.bundle->isStarted() );
+                     "in a .cpp file.", !info.module->isStarted() );
 
         lock.unlock(); // module->start() may trigger calls to addFactory
-        info.bundle->start();
+        info.module->start();
         lock.lock();
 
         ::fwRuntime::profile::getCurrentProfile()->setup();
 
         FW_RAISE_EXCEPTION_IF(
-            ::fwData::Exception( "After loading the module " + info.bundle->getIdentifier() + " , factory " + _srvImpl
+            ::fwData::Exception( "After loading the module " + info.module->getIdentifier() + " , factory " + _srvImpl
                                  + " is still missing. The service declaration might be missing (or misspelled) "
                                  "in a cpp file."),
             !info.factory );
@@ -282,7 +282,7 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
         ServiceInfo& info = iter->second;
 
         // Either the module does not contain objects informations or this service does not belong to a module
-        if(info.objectsSetFromBundle)
+        if(info.objectsSetFromModule)
         {
 #ifdef _DEBUG
             const auto itFind = std::find(info.objectImpl.begin(), info.objectImpl.end(), oimpl);
@@ -319,8 +319,8 @@ void ServiceFactory::printInfoMap( const SrvRegContainer& src ) const
         }
 #endif
 
-        OSLM_DEBUG_IF("  - bundle = " <<  srvReg.second.bundle->getIdentifier(), srvReg.second.bundle );
-        OSLM_DEBUG_IF("  - bundle = ( no bundle registered )", !srvReg.second.bundle );
+        OSLM_DEBUG_IF("  - module = " <<  srvReg.second.module->getIdentifier(), srvReg.second.module );
+        OSLM_DEBUG_IF("  - module = ( no module registered )", !srvReg.second.module );
 
         OSLM_DEBUG_IF("  - name after creation = "
                       <<  srvReg.second.factory()->getClassname(), srvReg.second.factory );
@@ -336,7 +336,7 @@ void ServiceFactory::checkServicesNotDeclaredInPluginXml() const
     //Print information
     for(SrvRegContainer::value_type srvReg :  m_srvImplTosrvInfo)
     {
-        if ( !srvReg.second.bundle )
+        if ( !srvReg.second.module )
         {
             OSLM_WARN("Service " << srvReg.first << " is not declared/found in a plugin.xml." );
         }

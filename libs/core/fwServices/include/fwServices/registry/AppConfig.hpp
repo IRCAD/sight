@@ -91,8 +91,8 @@ public:
                                     const std::string& desc,
                                     const AppInfo::ParametersType& parameters,
                                     const ::fwRuntime::ConfigurationElement::csptr& config,
-                                    const std::string& bundleId,
-                                    const std::string& bundleVersion);
+                                    const std::string& moduleId,
+                                    const std::string& moduleVersion);
 
     /**
      * @brief  Return the adapted config with the identifier configId.

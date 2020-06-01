@@ -59,9 +59,6 @@ public:
     void validatorTest();
     void bigActivityTest();
 
-protected:
-    SPTR( ::fwRuntime::Module ) m_bundle;
-
 private:
 
     /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp modules

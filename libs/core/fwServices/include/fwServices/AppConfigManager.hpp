@@ -112,13 +112,6 @@ public:
     FWSERVICES_API virtual void destroy() override;
 
     /**
-     * @brief Starts the module associated to the config
-     * @note  Does nothing if the module is already started or if the config id is not specified (ie. if config is set
-     *        with setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem) ).
-     */
-    FWSERVICES_API virtual void startBundle();
-
-    /**
      * @brief Sets if we are testing the class.
      * @param _isUnitTest Use true to set it as a test.
      */
@@ -143,6 +136,13 @@ private:
     typedef ::std::pair< std::string, bool > ConfigAttribute;
     typedef ::fwServices::helper::ProxyConnections ProxyConnections;
     typedef ::fwServices::IService::Config ServiceConfig;
+
+    /**
+     * @brief Starts the module associated to the config
+     * @note  Does nothing if the module is already started or if the config id is not specified (ie. if config is set
+     *        with setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem) ).
+     */
+    FWSERVICES_API virtual void startModule();
 
     ::fwData::Object::sptr findObject(const std::string& uid, const std::string& errMsgTail) const;
 

@@ -139,8 +139,8 @@ void AppConfig::addAppInfo( const std::string& configId,
     info->desc          = desc;
     info->config        = config;
     info->parameters    = parameters;
-    info->bundleId      = moduleId;
-    info->bundleVersion = moduleVersion;
+    info->moduleId      = moduleId;
+    info->moduleVersion = moduleVersion;
     m_reg[configId]     = info;
 }
 
@@ -227,7 +227,7 @@ std::shared_ptr< ::fwRuntime::Module > AppConfig::getModule(const std::string& _
     SLM_ASSERT("The id " <<  _configId << " is not found in the application configuration registry",
                iter != m_reg.end());
 
-    auto module = ::fwRuntime::findModule(iter->second->bundleId, iter->second->bundleVersion);
+    auto module = ::fwRuntime::findModule(iter->second->moduleId, iter->second->moduleVersion);
 
     return module;
 }

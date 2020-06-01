@@ -317,11 +317,11 @@ void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activityS
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< ::fwRuntime::Module > bundle = ::fwRuntime::findModule(info.bundleId,
+    std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId,
                                                                             info.bundleVersion);
-    if (!bundle->isStarted())
+    if (!module->isStarted())
     {
-        bundle->start();
+        module->start();
     }
 
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));

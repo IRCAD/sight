@@ -48,7 +48,6 @@ namespace ut
 struct ActivityRegistryTestPimpl
 {
     public:
-        SPTR(::fwRuntime::Module) bundle;
         ::fwActivities::registry::Activities::sptr activities;
 };
 

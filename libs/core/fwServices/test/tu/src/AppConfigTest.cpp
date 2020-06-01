@@ -115,13 +115,13 @@ void AppConfigTest::addConfigTest()
     const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const std::string group("TestGroup");
     const std::string desc("Description");
-    const std::string bundleId("dataReg");
-    const std::string bundleVersion("0.1");
+    const std::string moduleId("dataReg");
+    const std::string moduleVersion("0.1");
     ::fwServices::registry::AppInfo::ParametersType parameters;
 
     ::fwRuntime::ConfigurationElement::csptr config = this->buildConfig();
 
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, bundleId, bundleVersion);
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId, moduleVersion);
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
     CPPUNIT_ASSERT_EQUAL(false, allCconfigs.empty());
@@ -130,10 +130,10 @@ void AppConfigTest::addConfigTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), configs.size());
     CPPUNIT_ASSERT_EQUAL(configId, configs.front());
 
-    auto bundle = currentAppConfig->getModule(configId);
-    CPPUNIT_ASSERT(bundle);
-    CPPUNIT_ASSERT_EQUAL(bundleId, bundle->getIdentifier());
-    CPPUNIT_ASSERT_EQUAL(bundleVersion, bundle->getVersion().string());
+    auto module = currentAppConfig->getModule(configId);
+    CPPUNIT_ASSERT(module );
+    CPPUNIT_ASSERT_EQUAL(moduleId, module->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(moduleVersion, module->getVersion().string());
 
     ::fwServices::registry::FieldAdaptorType replaceFields;
 

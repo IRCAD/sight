@@ -128,9 +128,9 @@ private:
         std::vector<std::string> objectImpl;
         std::string desc;
         std::string tags;
-        std::shared_ptr< ::fwRuntime::Module > bundle;
+        std::shared_ptr< ::fwRuntime::Module > module;
         FactoryType factory;
-        bool objectsSetFromBundle {false}; // True if the objects implementation are set from the module information
+        bool objectsSetFromModule {false}; // True if the objects implementation are set from the module information
     };
     typedef std::unordered_map< KeyType, ServiceInfo > SrvRegContainer;
 
