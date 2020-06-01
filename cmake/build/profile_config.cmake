@@ -8,10 +8,10 @@ macro(profile_setup ${PROJECT})
     endif()
 
     #Clear last set
-    unset(ACTIVATE_LIST)
+    unset(XML_ACTIVATE)
     # unset start for the current app
-    unset(START_BUNDLES)
-    unset(START_BUNDLE_LIST)
+    unset(START_MODULES)
+    unset(XML_START_MODULES)
 
     # set a variable used in the configure_file command
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
@@ -22,29 +22,28 @@ macro(profile_setup ${PROJECT})
     list(REMOVE_DUPLICATES ALL_REQUIREMENTS)
     list(SORT ALL_REQUIREMENTS)
 
-    # Manage bundle starting
-    # add a start for ctrl app
+    # Manage module starting
     if(${PROJECT}_START)
-        list(APPEND START_BUNDLES "${PROJECT}")
+        list(APPEND START_MODULES "${PROJECT}")
     endif()
 
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
         # get the start option of the current requirement if exists
         if(${CURRENT_REQUIREMENT}_START)
-            list(APPEND START_BUNDLES "${CURRENT_REQUIREMENT}")
+            list(APPEND START_MODULES "${CURRENT_REQUIREMENT}")
         endif()
     endforeach()
 
-    list(SORT START_BUNDLES)
+    list(SORT START_MODULES)
 
-    # Manage bundle activation
+    # Manage module activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
 
         # Ensure that we start this module before the "START_BEFORE"
         foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
-            list(FIND START_BUNDLES ${CURRENT_START_BEFORE} INDEX_START_BEFORE )
+            list(FIND START_MODULES ${CURRENT_START_BEFORE} INDEX_START_BEFORE )
             if(NOT ${INDEX_START_BEFORE} EQUAL -1)
-                 list(INSERT START_BUNDLES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
+                 list(INSERT START_MODULES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
                  break()
             endif()
         endforeach()
@@ -52,30 +51,30 @@ macro(profile_setup ${PROJECT})
         # to only consider modules and app
         if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             # check if a moduleParam macro had been use in the properties.cmake
-            # if yes, get and set bundle param and values
+            # if yes, get and set module param and values
             if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
                 set(CURRENT_PARAM_LIST "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST}")
                 set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
 
                 #set activate tag with parameters
-                list(APPEND ACTIVATE_LIST "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" >")
+                list(APPEND XML_ACTIVATE "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" >")
                 foreach(CURRENT_PARAM ${CURRENT_PARAM_LIST})
                     list(FIND CURRENT_PARAM_LIST "${CURRENT_PARAM}" CURRENT_INDEX)
                     list(GET CURRENT_PARAM_VALUES "${CURRENT_INDEX}" CURRENT_VALUE)
-                    list(APPEND ACTIVATE_LIST "        <param id=\"${CURRENT_PARAM}\" value=\"${CURRENT_VALUE}\" />")
+                    list(APPEND XML_ACTIVATE "        <param id=\"${CURRENT_PARAM}\" value=\"${CURRENT_VALUE}\" />")
                 endforeach()
 
-                list(APPEND ACTIVATE_LIST "    </activate>")
+                list(APPEND XML_ACTIVATE "    </activate>")
             # else simply set the activate tag
             else()
-                 list(APPEND ACTIVATE_LIST "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" />")
+                 list(APPEND XML_ACTIVATE "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" />")
             endif()
         endif()
     endforeach()
-    string(REPLACE ";" "\n" ACTIVATE_LIST "${ACTIVATE_LIST}")
+    string(REPLACE ";" "\n" XML_ACTIVATE "${XML_ACTIVATE}")
 
-    foreach(CURRENT_BUNDLES ${START_BUNDLES})
-        set(START_BUNDLE_LIST "${START_BUNDLE_LIST}\n    <start id=\"${CURRENT_BUNDLES}\" />")
+    foreach(CURRENT_MODULE ${START_MODULES})
+        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${CURRENT_MODULE}\" />")
     endforeach()
 
     configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
@@ -86,8 +85,8 @@ function(findRequirements FWPROJECT_NAME)
     list(APPEND ALL_REQUIREMENTS ${FWPROJECT_NAME})
 
     set(CURRENT_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS})
-    if(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
-        list(APPEND CURRENT_REQUIREMENTS ${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES})
+    if(${FWPROJECT_NAME}_MODULE_DEPENDENCIES)
+        list(APPEND CURRENT_REQUIREMENTS ${${FWPROJECT_NAME}_MODULE_DEPENDENCIES})
         list(REMOVE_DUPLICATES CURRENT_REQUIREMENTS)
     endif()
 

@@ -15,8 +15,8 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
     endforeach()
 
     # Add each bundle deps to the requirement list
-    foreach(CURRENT_BUNDLE_DEPS ${${PROJECT}_BUNDLE_DEPENDENCIES})
-        list(APPEND PROJECT_REQUIREMENTS ${CURRENT_BUNDLE_DEPS})
+    foreach(CURRENT_MODULE_DEPS ${${PROJECT}_MODULE_DEPENDENCIES})
+        list(APPEND PROJECT_REQUIREMENTS ${CURRENT_MODULE_DEPS})
     endforeach()
 
     set(PLUGIN_CONFIG_COMMAND   ${CMAKE_COMMAND}

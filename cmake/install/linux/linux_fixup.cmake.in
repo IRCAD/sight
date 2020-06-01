@@ -7,8 +7,8 @@ include(@FWCMAKE_INSTALL_FILES_DIR@/helper.cmake)
 # Run the script when installing but not a second time when running CPack
 if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
 
-    #Find all /*/.so* in /Bundles /plugins and /vlc/plugins
-    file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+    #Find all /*/.so* in /Modules /plugins and /vlc/plugins
+    file(GLOB_RECURSE MODULES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
     file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS
         "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*"
         "@CMAKE_INSTALL_PREFIX@/vlc/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*"
@@ -16,14 +16,14 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
 
     include(BundleUtilities)
     set(LIBS "")
-    list(APPEND LIBS ${BUNDLES} ${PLUGINS} @QT_PLUGINS@)
+    list(APPEND LIBS ${MODULES} ${PLUGINS} @QT_PLUGINS@)
     # Also add modules from the SDK
     if(@FW_BUILD_EXTERNAL@)
 
         foreach(REQUIREMENT @PROJECT_REQUIREMENTS@)
-            file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@Sight_LIBRARY_DIR@/${REQUIREMENT}*/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
-            if(BUNDLES)
-                list(APPEND LIBS ${BUNDLES})
+            file(GLOB_RECURSE MODULES FOLLOW_SYMLINKS "@Sight_LIBRARY_DIR@/${REQUIREMENT}*/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+            if(MODULES)
+                list(APPEND LIBS ${MODULES})
             endif()
         endforeach()
 
@@ -32,13 +32,13 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
     set(USE_SYSTEM_LIB @USE_SYSTEM_LIB@)
     if(NOT USE_SYSTEM_LIB)
         #Look for all directories containing '.so*' files
-        findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
+        findLibsAndModules(LIBS_MODULES_DIRECTORIES)
 
-        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @FW_EXTERNAL_LIBRARIES_DIR@)
-        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
+        list(APPEND LIBS_MODULES_DIRECTORIES @FW_EXTERNAL_LIBRARIES_DIR@)
+        list(APPEND LIBS_MODULES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
 
         if(@FW_BUILD_EXTERNAL@)
-            list(APPEND FWLIBS_BUNDLES_DIRECTORIES @Sight_LIBRARY_DIR@)
+            list(APPEND LIBS_MODULES_DIRECTORIES @Sight_LIBRARY_DIR@)
         endif()
         set(LAUNCHER_PATH @CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@)
 
@@ -52,7 +52,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
         endforeach()
 
         #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
-        fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+        fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${LIBS_MODULES_DIRECTORIES}")
     endif()
 
     #Move all libraries in 'lib' folder

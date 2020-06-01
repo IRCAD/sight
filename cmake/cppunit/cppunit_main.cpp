@@ -31,7 +31,7 @@
 #include <cppunit/XmlOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 
-#ifdef BUNDLE_TEST_PROFILE
+#ifdef MODULE_TEST_PROFILE
 
 #include <filesystem>
 
@@ -87,7 +87,7 @@ struct Options
     std::string xmlReportFile;
     std::vector< std::string > testsToRun;
 
-#ifdef BUNDLE_TEST_PROFILE
+#ifdef MODULE_TEST_PROFILE
     std::string profile;
 #endif
 
@@ -95,9 +95,9 @@ struct Options
         verbose(false),
         xmlReport(false),
         listTests(false)
-#ifdef BUNDLE_TEST_PROFILE
+#ifdef MODULE_TEST_PROFILE
         ,
-        profile( BUNDLE_TEST_PROFILE )
+        profile( MODULE_TEST_PROFILE )
 #endif
     {
     }
@@ -130,8 +130,8 @@ struct Options
                     << "    -x,--xml          Output results to a xml file" << std::endl
                     << "    -o FILE           Specify xml file name" << std::endl
                     << "    -l,--list         Lists test names" << std::endl
-#ifdef BUNDLE_TEST_PROFILE
-                    << "    -p,--profile      Profile to launch for bundle tests" << std::endl
+#ifdef MODULE_TEST_PROFILE
+                    << "    -p,--profile      Profile to launch for module tests" << std::endl
 #endif
                     << "    test1 ... testN   Test names to run" << std::endl
                     << std::endl;
@@ -159,7 +159,7 @@ struct Options
             {
                 this->listTests = true;
             }
-#ifdef BUNDLE_TEST_PROFILE
+#ifdef MODULE_TEST_PROFILE
             else if( arg == "--profile" || arg == "-p")
             {
                 args++;
@@ -197,7 +197,7 @@ int main( int argc, char* argv[] )
         return 1;
     }
 
-#ifdef BUNDLE_TEST_PROFILE
+#ifdef MODULE_TEST_PROFILE
     MiniLauncher miniLaucher( options.profile );
 #endif
 

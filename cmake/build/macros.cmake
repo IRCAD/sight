@@ -364,7 +364,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
     endif()
     if(TEST_RC_DIR)
         if(EXISTS "${TEST_RC_DIR}/profile.xml")
-            target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DBUNDLE_TEST_PROFILE=\"${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}/profile.xml\")
+            target_compile_definitions(${FWPROJECT_NAME} PRIVATE -DMODULE_TEST_PROFILE=\"${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}/profile.xml\")
         endif()
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}")
 
@@ -608,7 +608,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+    set(MODULE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
 
@@ -632,14 +632,14 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BUNDLE_DIR})
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BUNDLE_DIR})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${MODULE_DIR})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${MODULE_DIR})
         # Fixed path for multi-config builds (e.g. msvc)
         foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
             string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-            set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
-            set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
-            set_target_properties(${FWPROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
+            set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${MODULE_DIR})
+            set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${MODULE_DIR})
+            set_target_properties(${FWPROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${MODULE_DIR})
         endforeach()
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
@@ -686,7 +686,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
             ${${FWPROJECT_NAME}_CMAKE_FILES})
     endif()
 
-    # Adds project into folder bundle or apps
+    # Adds project into folder module or apps
     if(TYPE STREQUAL "APP")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "app")
         if(MSVC_IDE)
@@ -755,8 +755,8 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
 
-    if(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
-        message(WARNING "Module ${FWPROJECT_NAME} links with other modules (${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES}), "
+    if(${FWPROJECT_NAME}_MODULE_DEPENDENCIES)
+        message(WARNING "Module ${FWPROJECT_NAME} links with other modules (${${FWPROJECT_NAME}_MODULE_DEPENDENCIES}), "
                         "this feature will be removed in version 21.0 of Sight")
     endif()
 endmacro()
@@ -823,7 +823,7 @@ endmacro()
 macro(fwDefineDependencies)
 
     set(${NAME}_DEPENDENCIES)
-    set(${NAME}_BUNDLE_DEPENDENCIES)
+    set(${NAME}_MODULE_DEPENDENCIES)
 
     foreach(PROJECT ${ARGV})
         list(APPEND ${NAME}_DEPENDENCIES ${PROJECT})
@@ -831,7 +831,7 @@ macro(fwDefineDependencies)
     endforeach()
 
     set(${NAME}_DEPENDENCIES ${${NAME}_DEPENDENCIES} PARENT_SCOPE)
-    set(${NAME}_BUNDLE_DEPENDENCIES ${${NAME}_BUNDLE_DEPENDENCIES} PARENT_SCOPE)
+    set(${NAME}_MODULE_DEPENDENCIES ${${NAME}_MODULE_DEPENDENCIES} PARENT_SCOPE)
 
 endmacro()
 

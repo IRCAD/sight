@@ -1,8 +1,8 @@
-#This script is called at install time only on linux OS
-#It will be configured at configure time, only '@' variables will be replaced.
-#function to find libs and Bundles/* directories
+# This script is called at install time only on linux OS
+# It will be configured at configure time, only '@' variables will be replaced.
+# function to find libs and modules directories
 
-function(findFwlibsAndBundles FWLIBS_BUNDLES_DIRECTORIES)
+function(findLibsAndModules LIBS_MODULES_DIRECTORIES)
     file(GLOB_RECURSE LIBS ${CMAKE_INSTALL_PREFIX}/${SIGHT_MODULE_LIB_PREFIX}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*)
     if(${FW_BUILD_EXTERNAL})
         file(GLOB_RECURSE LIBS ${Sight_LIBRARY_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*)
@@ -17,12 +17,12 @@ function(findFwlibsAndBundles FWLIBS_BUNDLES_DIRECTORIES)
     if(FOLDERS)
         list(REMOVE_DUPLICATES FOLDERS)
     endif()
-    set(${FWLIBS_BUNDLES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
+    set(${LIBS_MODULES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
 endfunction()
 
 macro(qt_plugins_setup PROJECT_NAME)
 
-    # check if there is a PLUGINS variable in the current bundle properties.cmake
+    # check if there is a PLUGINS variable in Properties.cmake of the current module
     if(${PROJECT_NAME}_PLUGINS)
         if(NOT USE_SYSTEM_LIB)
             if(FW_BUILD_EXTERNAL)
