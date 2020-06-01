@@ -16,7 +16,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP|(NSIS.*))
 
     set(LIBS)
     list(APPEND LIBS ${BUNDLES} ${PLUGINS} @QT_PLUGINS@)
-    # Also add bundles from the SDK
+    # Also add modules from the SDK
     if(@FW_BUILD_EXTERNAL@)
 
         foreach(REQUIREMENT @PROJECT_REQUIREMENTS@)

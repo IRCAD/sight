@@ -38,7 +38,7 @@ macro(win_install PRJ_NAME)
         # install requirements
         foreach(REQUIREMENT ${PROJECT_LIST})
             if(${REQUIREMENT}_EXTERNAL)
-                # search and setup qt plugins for each bundles
+                # search and setup qt plugins for each modules
                 qt_plugins_setup(${REQUIREMENT})
 
                 if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")

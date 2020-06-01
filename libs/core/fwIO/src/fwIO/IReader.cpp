@@ -229,7 +229,7 @@ void IReader::configuring()
             {
                 // If not found in a module, look into libraries
                 folder = ::fwRuntime::getLibraryResourceFilePath(resource);
-                SLM_ERROR_IF("Resource '" + resource + "' has not been found in any bundle or library", folder.empty());
+                SLM_ERROR_IF("Resource '" + resource + "' has not been found in any module or library", folder.empty());
             }
 
             this->setFolder(folder);

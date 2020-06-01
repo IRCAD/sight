@@ -313,7 +313,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-        qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each bundles
+        qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each modules
         install(
             TARGETS ${FWPROJECT_NAME}
             RUNTIME DESTINATION bin
@@ -643,7 +643,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         endforeach()
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each bundles
+            qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each modules
             install(
                 TARGETS ${FWPROJECT_NAME}
                 RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
@@ -756,7 +756,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
     endif()
 
     if(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
-        message(WARNING "Bundle ${FWPROJECT_NAME} links with other bundles (${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES}), "
+        message(WARNING "Module ${FWPROJECT_NAME} links with other modules (${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES}), "
                         "this feature will be removed in version 21.0 of Sight")
     endif()
 endmacro()

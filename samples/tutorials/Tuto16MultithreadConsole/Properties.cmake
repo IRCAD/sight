@@ -11,7 +11,7 @@ set( REQUIREMENTS
     servicesReg
     fwlauncher
     appXml
-    # The bundle console is used to run a console application with a main loop
+    # The module console is used to run a console application with a main loop
     # Typically it can be used for server command line applications
     console
 )

@@ -40,7 +40,7 @@ macro(profile_setup ${PROJECT})
     # Manage bundle activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
 
-        # Ensure that we start this bundle before the "START_BEFORE"
+        # Ensure that we start this module before the "START_BEFORE"
         foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
             list(FIND START_BUNDLES ${CURRENT_START_BEFORE} INDEX_START_BEFORE )
             if(NOT ${INDEX_START_BEFORE} EQUAL -1)
@@ -49,7 +49,7 @@ macro(profile_setup ${PROJECT})
             endif()
         endforeach()
 
-        # to only consider bundles and app
+        # to only consider modules and app
         if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             # check if a moduleParam macro had been use in the properties.cmake
             # if yes, get and set bundle param and values

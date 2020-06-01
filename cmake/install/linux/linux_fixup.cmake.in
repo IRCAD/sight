@@ -17,7 +17,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
     include(BundleUtilities)
     set(LIBS "")
     list(APPEND LIBS ${BUNDLES} ${PLUGINS} @QT_PLUGINS@)
-    # Also add bundles from the SDK
+    # Also add modules from the SDK
     if(@FW_BUILD_EXTERNAL@)
 
         foreach(REQUIREMENT @PROJECT_REQUIREMENTS@)
@@ -44,7 +44,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
 
         # We need to copy first the libraries as stated by the BundleUtilities documentation :
         # "If you pass plugins to fixup_bundle as the libs parameter, you should install them or
-        #  copy them into the bundle before calling fixup_bundle. The <libs> parameter is a list
+        #  copy them into the module before calling fixup_bundle. The <libs> parameter is a list
         #  of libraries that must be fixed up, but that cannot be determined by otool output
         #  analysis (i.e. plugins)."
         foreach(LIB ${LIBS})

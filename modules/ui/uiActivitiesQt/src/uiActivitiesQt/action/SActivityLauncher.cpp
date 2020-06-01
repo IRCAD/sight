@@ -458,11 +458,11 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
 {
     // Start module containing the activity if it is not started
     std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
-    SLM_WARN_IF("Bundle '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
+    SLM_WARN_IF("Module '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
                 module->isStarted());
     if (!module->isStarted())
     {
-        SLM_DEBUG("Start bundle '" + info.bundleId + "' used by activity '" + info.id + "'");
+        SLM_DEBUG("Start module '" + info.bundleId + "' used by activity '" + info.id + "'");
         module->start();
     }
 

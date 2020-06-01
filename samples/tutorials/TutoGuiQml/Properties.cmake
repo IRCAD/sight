@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwServices
     fwQml
 )
-set( REQUIREMENTS # The bundles used by this application
+set( REQUIREMENTS # The modules used by this application
     dataReg
     servicesReg
     gui

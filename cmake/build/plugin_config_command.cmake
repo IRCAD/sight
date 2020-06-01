@@ -173,7 +173,7 @@ if(EXTENSION_LIST)
     string(REPLACE ";" "\n" EXTENSION_LIST "${EXTENSION_LIST}")
 endif()
 
-# retrieves the class representing the bundle executable part.
+# retrieves the class representing the module executable part.
 if(PRJ_CPP_FILES)
     set(PROJECT_CLASS "class=\"::${PROJECT_NAME}::Plugin\"")
     set(PROJECT_LIBRARY "    <library name=\"${PROJECT_NAME}\" />")

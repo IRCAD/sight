@@ -50,7 +50,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_FATAL_IF("Bundle appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
+    SLM_FATAL_IF("Module appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
     m_configurationName = this->getModule()->getParameterValue("config");
     if( this->getModule()->hasParameter("parameters") )
     {

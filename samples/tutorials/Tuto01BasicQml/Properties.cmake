@@ -1,7 +1,7 @@
 set( NAME Tuto01BasicQml ) # Name of the application
 set( VERSION 0.1 ) # Version of the application
 set( TYPE APP ) # Type APP represent "Application"
-set( START ON) # This bundle will be automatically started
+set( START ON) # This module will be automatically started
 set( DEPENDENCIES
     fwRuntime
     fwData

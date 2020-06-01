@@ -5,9 +5,9 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
     set(PROJECT_NAME ${PROJECT})
 
-    # Filter bundles and app requirements from the requirement list
+    # Filter modules and app requirements from the requirement list
     foreach(CURRENT_REQUIREMENT ${${PROJECT}_REQUIREMENTS})
-        # to only consider bundles and app
+        # to only consider modules and app
         get_target_property(TARGET_TYPE ${CURRENT_REQUIREMENT} TYPE)
         if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             list(APPEND PROJECT_REQUIREMENTS ${CURRENT_REQUIREMENT})

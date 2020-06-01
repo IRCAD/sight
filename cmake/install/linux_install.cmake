@@ -34,7 +34,7 @@ macro(linux_install PRJ_NAME)
 
         foreach(REQUIREMENT ${PROJECT_LIST})
             if(${REQUIREMENT}_EXTERNAL)
-                # search and setup qt plugins for each bundles
+                # search and setup qt plugins for each modules
                 qt_plugins_setup(${REQUIREMENT})
 
                 if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")

@@ -34,7 +34,7 @@ namespace style
 {
 /**
  * @brief Selector of theme/style.
- * Theme should be stored in the rc/ folder of this bundle.
+ * Theme should be stored in the rc/ folder of this module.
  *
  * When a new theme is applied on an application, it will be saved in preference file with "THEME" key.
  * SStyleSelector will first load & apply the theme saved in preference file.

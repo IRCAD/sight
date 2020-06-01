@@ -28,7 +28,7 @@
  *
  * To configure the loading mode (here 'lazy') , add the following line in your application's Properties.cmake
  * @code{cmake}
-    bundleParam(memory PARAM_LIST loading_mode PARAM_VALUES lazy)
+    moduleParam(memory PARAM_LIST loading_mode PARAM_VALUES lazy)
    @endcode
  */
 #pragma once

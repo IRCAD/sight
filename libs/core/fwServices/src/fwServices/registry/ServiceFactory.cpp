@@ -177,7 +177,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
                      << _srvImpl
                      <<", the service declaration might be missing (or misspelled) in a bundle plugin.",
                      info.bundle );
-        OSLM_ASSERT( "The bundle '" + info.bundle->getIdentifier() + "' is already loaded and the factory '"
+        OSLM_ASSERT( "The module '" + info.bundle->getIdentifier() + "' is already loaded and the factory '"
                      + _srvImpl + "' is still missing. The service declaration might be missing (or misspelled)"
                      "in a .cpp file.", !info.bundle->isStarted() );
 
@@ -188,7 +188,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
         ::fwRuntime::profile::getCurrentProfile()->setup();
 
         FW_RAISE_EXCEPTION_IF(
-            ::fwData::Exception( "After loading the bundle " + info.bundle->getIdentifier() + " , factory " + _srvImpl
+            ::fwData::Exception( "After loading the module " + info.bundle->getIdentifier() + " , factory " + _srvImpl
                                  + " is still missing. The service declaration might be missing (or misspelled) "
                                  "in a cpp file."),
             !info.factory );
@@ -281,7 +281,7 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
     {
         ServiceInfo& info = iter->second;
 
-        // Either the bundle does not contain objects informations or this service does not belong to a module
+        // Either the module does not contain objects informations or this service does not belong to a module
         if(info.objectsSetFromBundle)
         {
 #ifdef _DEBUG

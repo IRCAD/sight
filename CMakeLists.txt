@@ -60,7 +60,7 @@ option(VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
 mark_as_advanced(ENABLE_PCH)
 mark_as_advanced(VERBOSE_PCH)
 
-# QML_IMPORT_PATH allows qtCreator to find the qml modules created in our bundles
+# QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
 set( ENABLE_QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
@@ -168,7 +168,7 @@ if(ADDITIONAL_REPOSITORIES)
 endif()
 
 ########################################################################################################################
-# Default paths settings for libraries, bundles and resources
+# Default paths settings for libraries, modules and resources
 ########################################################################################################################
 
 if(WIN32)
