@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SServerListener);
+fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::SServerListener)
 
 namespace ioIGTL
 {
