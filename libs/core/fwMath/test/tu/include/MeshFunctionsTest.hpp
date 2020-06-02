@@ -26,6 +26,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <glm/glm.hpp>
+
 namespace fwMath
 {
 namespace ut
@@ -41,8 +43,8 @@ private:
     CPPUNIT_TEST( computeBarycenterABCRealCoords);
     CPPUNIT_TEST_SUITE_END();
 
-    /// Compare value of 2 fwVec3d.
-    void compare(const fwVec3d& _expected, const fwVec3d& _actual);
+    /// Compare value of 2 ::glm::dvec3.
+    void compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual);
 
 public:
 

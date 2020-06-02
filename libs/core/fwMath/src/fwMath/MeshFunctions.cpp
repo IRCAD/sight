@@ -458,4 +458,72 @@ fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A, const
 
 //-----------------------------------------------------------------------------
 
+::glm::dvec3 toBarycentricCoord(const glm::dvec3& _P, const glm::dvec3& _A, const glm::dvec3& _B, const glm::dvec3& _C)
+{
+    ::glm::dvec3 baryCoord;
+
+    const ::glm::dvec3 v0 = _B - _A; // AB Vector
+    const ::glm::dvec3 v1 = _C - _A; // AC Vector
+    const ::glm::dvec3 v2 = _P - _A; // AP Vector
+
+    // Precompute some dot products.
+    const double d00 = ::glm::dot(v0, v0);
+    const double d01 = ::glm::dot(v0, v1);
+    const double d11 = ::glm::dot(v1, v1);
+    const double d20 = ::glm::dot(v2, v0);
+    const double d21 = ::glm::dot(v2, v1);
+
+    const double div = ((d00 * d11) - (d01 * d01));
+
+    // Don't test the case in release to avoid performance issue.
+    SLM_ASSERT("Degenerate triangle case leads to zero division.", div != 0.);
+
+    // Inverse the denominator to speed up computation of v & w.
+    const double invdenom = 1. / div;
+
+    // Barycentric coordinates
+    const double v = ((d11 * d20) - (d01* d21)) * invdenom;
+    const double w = ((d00 * d21) - (d01 * d20)) * invdenom;
+    const double u = 1. - v - w; // deduce last coordinate from the two others.
+
+    baryCoord.x = u;
+    baryCoord.y = v;
+    baryCoord.z = w;
+
+    ::glm::normalize(baryCoord); // not sure if needed.
+
+    return baryCoord;
+}
+
+//-----------------------------------------------------------------------------
+
+::glm::dvec3 fromBarycentricCoord(const ::glm::dvec3& _baryCoord, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
+                                  const ::glm::dvec3& _C)
+{
+    ::glm::dvec3 worldCoordinates;
+
+    // Use standard notation for clarity.
+    const double u = _baryCoord[0];
+    const double v = _baryCoord[1];
+    const double w = _baryCoord[2];
+
+    [[maybe_unused]] const double sum = u + v + w; // Only used in the following assertion.
+
+    // Don't test in release to avoid performance issue.
+    SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
+               , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+
+    const double x = (u * _A[0] + v * _B[0] + w * _C[0]);
+    const double y = (u * _A[1] + v * _B[1] + w * _C[1]);
+    const double z = (u * _A[2] + v * _B[2] + w * _C[2]);
+
+    worldCoordinates[0] = x;
+    worldCoordinates[1] = y;
+    worldCoordinates[2] = z;
+
+    return worldCoordinates;
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace fwMath
