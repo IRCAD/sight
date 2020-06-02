@@ -277,7 +277,8 @@ void SNegato2DCamera::resetCamera()
 
     const float vpWidth  = static_cast<float>(viewport->getActualWidth());
     const float vpHeight = static_cast<float>(viewport->getActualHeight());
-    camera->setAspectRatio(vpWidth / vpHeight);
+    const float vpRatio  = vpWidth / vpHeight;
+    camera->setAspectRatio(vpRatio);
 
     // HACK: Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
     camera->setNearClipDistance(1e-3f);
@@ -292,24 +293,51 @@ void SNegato2DCamera::resetCamera()
 
     if(size[0] > 0 && size[1] > 0 && size[2] > 0)
     {
+        float ratio   = 0;
+        double width  = 0.;
+        double height = 0.;
         switch(m_currentNegatoOrientation)
         {
             case Orientation::X_AXIS:
+            {
                 camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(-90.f));
                 camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(-90.f));
-                camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
+                width  = static_cast<double>(size[1]) * spacing[1];
+                height = static_cast<double>(size[2]) * spacing[2];
+                ratio  = static_cast< float >(width / height);
                 break;
+            }
             case Orientation::Y_AXIS:
+            {
                 camNode->rotate(::Ogre::Vector3::UNIT_X, ::Ogre::Degree(90.f));
-                camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[2]) * spacing[2]));
+                width  = static_cast<double>(size[0]) * spacing[0];
+                height = static_cast<double>(size[2]) * spacing[2];
+                ratio  = static_cast< float >(width / height);
                 break;
+            }
             case Orientation::Z_AXIS:
+            {
                 camNode->rotate(::Ogre::Vector3::UNIT_Z, ::Ogre::Degree(180.f));
                 camNode->rotate(::Ogre::Vector3::UNIT_Y, ::Ogre::Degree(180.f));
-                camera->setOrthoWindowHeight(static_cast< ::Ogre::Real >(static_cast<double>(size[1]) * spacing[1]));
+                height = static_cast<double>(size[0]) * spacing[0];
+                width  = static_cast<double>(size[1]) * spacing[1];
+                ratio  = static_cast< float >(width / height);
                 break;
+            }
         }
-        camera->setOrthoWindowHeight(camera->getOrthoWindowHeight() + camera->getOrthoWindowHeight() * 0.1f);
+
+        if(vpRatio > ratio)
+        {
+            const ::Ogre::Real h = static_cast< ::Ogre::Real >(height);
+            // Zoom out the camera (add 10% of the height), allow the image to not be stuck on the viewport.
+            camera->setOrthoWindowHeight(h + h * 0.1f);
+        }
+        else
+        {
+            const ::Ogre::Real w = static_cast< ::Ogre::Real >(width);
+            // Zoom out the camera (add 10% of the width), allow the image to not be stuck on the viewport.
+            camera->setOrthoWindowWidth(w + w * 0.1f);
+        }
 
         const size_t orientation = static_cast<size_t>(m_currentNegatoOrientation);
         ::Ogre::Vector3 camPos(
