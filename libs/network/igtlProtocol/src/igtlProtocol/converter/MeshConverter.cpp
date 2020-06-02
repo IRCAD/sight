@@ -24,10 +24,10 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 
+#include <boost/numeric/conversion/cast.hpp>
+
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
-
-#include <boost/numeric/conversion/cast.hpp>
 
 #include <igtlPolyDataMessage.h>
 
@@ -82,24 +82,24 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
 
     for(size_t i = 0; i < nbCells; ++i, ++cellItr)
     {
-        const ::fwData::Mesh::CellTypes cellType = *cellItr->type;
+        const ::fwData::Mesh::CellType cellType = *cellItr->type;
 
         switch (cellType)
         {
-            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE):
+            case ::fwData::Mesh::CellType::EDGE:
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 dest->GetLines()->AddCell(2, cell);
                 break;
 
-            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE):
+            case ::fwData::Mesh::CellType::TRIANGLE:
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 cell[2] = cellItr->pointIdx[2];
                 dest->GetTriangleStrips()->AddCell(3, cell);
                 break;
 
-            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD):
+            case ::fwData::Mesh::CellType::QUAD:
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 cell[2] = cellItr->pointIdx[2];
@@ -107,13 +107,15 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
                 dest->GetVertices()->AddCell(4, cell);
                 break;
 
-            case static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA):
+            case ::fwData::Mesh::CellType::TETRA:
                 cell[0] = cellItr->pointIdx[0];
                 cell[1] = cellItr->pointIdx[1];
                 cell[2] = cellItr->pointIdx[2];
                 cell[3] = cellItr->pointIdx[3];
                 dest->GetVertices()->AddCell(4, cell);
                 break;
+            default:
+                OSLM_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(cellType));
         }
     }
 }

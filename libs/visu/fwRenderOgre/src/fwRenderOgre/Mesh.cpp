@@ -67,25 +67,25 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     for (; cellItr != cellEnd; ++cellItr)
     {
         const auto type = *cellItr->type;
-        if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE) )
+        if ( type == ::fwData::Mesh::CellType::TRIANGLE )
         {
             *pTriangles++ = static_cast<T>(cellItr->pointIdx[0]);
             *pTriangles++ = static_cast<T>(cellItr->pointIdx[1]);
             *pTriangles++ = static_cast<T>(cellItr->pointIdx[2]);
         }
-        else if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::QUAD) )
+        else if ( type == ::fwData::Mesh::CellType::QUAD )
         {
             *pQuads++ = static_cast<T>(cellItr->pointIdx[0]);
             *pQuads++ = static_cast<T>(cellItr->pointIdx[1]);
             *pQuads++ = static_cast<T>(cellItr->pointIdx[2]);
             *pQuads++ = static_cast<T>(cellItr->pointIdx[3]);
         }
-        else if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE) )
+        else if ( type == ::fwData::Mesh::CellType::EDGE )
         {
             *pEdges++ = static_cast<T>(cellItr->pointIdx[0]);
             *pEdges++ = static_cast<T>(cellItr->pointIdx[1]);
         }
-        else if ( type == static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA) )
+        else if ( type == ::fwData::Mesh::CellType::TETRA )
         {
             *pTetras++ = static_cast<T>(cellItr->pointIdx[0]);
             *pTetras++ = static_cast<T>(cellItr->pointIdx[1]);
@@ -237,9 +237,8 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
             for(; cellItr != cellEnd; ++cellItr)
             {
                 auto cellType = *cellItr->type;
-                if(cellType == static_cast<std::uint8_t>(::fwData::Mesh::CellType::EDGE)
-                   || cellType == static_cast<std::uint8_t>(::fwData::Mesh::CellType::TETRA)
-                   || cellType == static_cast<std::uint8_t>(::fwData::Mesh::CellType::POINT))
+                if(cellType == ::fwData::Mesh::CellType::EDGE || cellType == ::fwData::Mesh::CellType::TETRA
+                   || cellType == ::fwData::Mesh::CellType::POINT)
                 {
                     computeNormals = false;
                     break;
@@ -307,7 +306,7 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
     {
         auto cellType = _pointsOnly ?
                         ::fwData::Mesh::CellType::POINT :
-                        static_cast< ::fwData::Mesh::CellType>(*cellItr->type);
+                        *cellItr->type;
         if(cellType == ::fwData::Mesh::CellType::POINT)
         {
             numIndices[static_cast<unsigned int>(::fwData::Mesh::CellType::POINT)] += 1;

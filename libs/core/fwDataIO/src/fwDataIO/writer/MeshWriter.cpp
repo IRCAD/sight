@@ -59,8 +59,7 @@ void MeshWriter::write()
 
     ::fwData::Mesh::csptr mesh = this->getConcreteObject();
     FW_RAISE_IF("Can't convert this Mesh to Trian file",
-                !::fwDataTools::Mesh::hasUniqueCellType(mesh,
-                                                        static_cast<std::uint8_t>(::fwData::Mesh::CellType::TRIANGLE)));
+                !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::CellType::TRIANGLE));
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);

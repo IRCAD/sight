@@ -113,7 +113,7 @@ void ImageExtruderTest::extrudeTriangleMesh()
         size_t pt = 0;
         for(size_t index = 0; index < 36; index += 3)
         {
-            *it->type   = static_cast< unsigned char >(::fwData::Mesh::CellType::TRIANGLE);
+            *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
             *it->offset = index;
 
             if(it != itPrevEnd)
@@ -212,7 +212,7 @@ void ImageExtruderTest::extrudeQuadMesh()
         size_t pt = 0;
         for(size_t index = 0; index < 24; index += 4)
         {
-            *it->type   = static_cast< unsigned char >(::fwData::Mesh::CellType::QUAD);
+            *it->type   = ::fwData::Mesh::CellType::QUAD;
             *it->offset = index;
 
             if(it != itPrevEnd)
