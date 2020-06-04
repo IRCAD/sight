@@ -44,7 +44,7 @@ namespace fwData
  * destruction of the buffer. Else, this class will provide an array "view" of the buffer.
  *
  * The array can be multi-dimensional, the number of dimensions is defined by the number of elements in the size vector
- * (setSize()).
+ * (getSize()).
  *
  * @section Usage Usage
  *
@@ -58,7 +58,8 @@ namespace fwData
  * memory.
  *
  * To resize the array, you must define the Type ([u]int[8|16|32|64], double, float) and the size of the buffer. You can
- * use setSize(size) and setType(type) or directly call resize(size, type).
+ * use setType(const ::fwTools::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
+ * resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate).
  *
  * @section Access Buffer access
  *
@@ -261,13 +262,14 @@ public:
     FWDATA_API virtual bool getIsBufferOwner() const;
 
     /**
+     * @{
      * @brief Setter for array's type
      *
      * @param type new array type
      */
     FWDATA_API virtual void setType(const std::string& type);
     FWDATA_API virtual void setType(const ::fwTools::Type& type);
-
+    /// @}
     /**
      * @brief Getter for array's type
      *

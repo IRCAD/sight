@@ -73,13 +73,15 @@ class PointList;
  * allocate enough memory.
  *
  * To resize the image, you must you must define the Type ([u]int[8|16|32|64], double, float), the size and the pixel
- * format of the buffer. You can use setSize(size), setType(type) and  setPixelFormalt(format) or directly call
- * resize(size, type, format).
+ * format of the buffer. You can use setSize2(const Size& size), setType(::fwTools::Type type) and
+ * ssetPixelFormat(PixelFormat format) or directly call
+ * resize(const Size& size, const ::fwTools::Type& type, PixelFormat format).
  *
  * @section Access Buffer access
  *
- * You can access voxel values using at<type>(IndexType id) or at<type>(IndexType x, IndexType y, IndexType z)
- * methods. These methods are slow and should not be used to parse the entire buffer (see iterators).
+ * You can access voxel values using at<type>(IndexType id) or
+ * at<type>(IndexType x, IndexType y, IndexType z, IndexType c) methods. These methods are slow and should not be used
+ * to parse the entire buffer (see iterators).
  *
  * You can also use getPixelAsString() to retrieve the value as a string (useful for displaying information).
  *
