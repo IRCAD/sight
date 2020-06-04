@@ -1,6 +1,8 @@
-## What does this MR do?
+## Description
 
 (Briefly describe what this MR is about)
+
+Closes #number
 
 ## How to test it?
 
@@ -20,13 +22,3 @@
 
 - [ ] Build on Windows
 - [ ] ...
-
-## Associated Issues/Merge Requests
-
-- Issues
-  - Fixes repo#number
-  - [ ] depends on repo#number
-
-- Merge requests
-  - See also repo!number
-  - [ ] depends on repo!number
