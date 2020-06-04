@@ -51,9 +51,13 @@ public:
     /// Constructor
     explicit inline locked_ptr(const std::shared_ptr< DATATYPE >& data ) noexcept :
         m_data(data),
-        m_locker(data->getMutex()),
         m_buffer_locks(data)
     {
+        if(m_data)
+        {
+            m_locker = std::conditional_t< std::is_const< DATATYPE >::value, ::fwCore::mt::ReadLock,
+                                           ::fwCore::mt::WriteLock >(data->getMutex());
+        }
     }
 
     /// Constructor
@@ -73,8 +77,16 @@ public:
     {
         if( data != m_data )
         {
+            if(m_data)
+            {
+                m_locker.unlock();
+            }
             m_data = data;
-            m_locker.unlock();
+            if(m_data)
+            {
+                m_locker = std::conditional_t< std::is_const< DATATYPE >::value, ::fwCore::mt::ReadLock,
+                                               ::fwCore::mt::WriteLock >(data->getMutex());
+            }
             m_buffer_locks = BufferLocks(data);
         }
 
