@@ -74,8 +74,7 @@ Module::Module( const std::filesystem::path& location,
     // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
     std::string strLocation           = location.string();
     std::filesystem::path strRCPrefix = MODULE_RC_PREFIX;
-    strRCPrefix = std::filesystem::weakly_canonical(strRCPrefix);
-    const auto itModule = strLocation.find(strRCPrefix.string());
+    const auto itModule               = strLocation.find(strRCPrefix.string());
     if(itModule != std::string::npos)
     {
         strLocation.replace(itModule, strRCPrefix.string().length(), std::string(MODULE_LIB_PREFIX));
