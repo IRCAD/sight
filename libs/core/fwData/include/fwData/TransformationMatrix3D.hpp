@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,12 +40,13 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 {
 
 public:
-    fwCoreClassMacro(TransformationMatrix3D, ::fwData::Object, ::fwData::factory::New< TransformationMatrix3D >);
+    fwCoreClassMacro(TransformationMatrix3D, ::fwData::Object, ::fwData::factory::New< TransformationMatrix3D >)
 
     fwCampMakeFriendDataMacro((fwData)(TransformationMatrix3D));
 
     typedef double TM3DType;
     typedef std::array<TM3DType, 16> TMCoefArray;
+    typedef std::array< std::array< TM3DType, 4 >, 4 > MatrixType;
 
     /**
      * @brief Constructor
@@ -92,6 +93,17 @@ public:
         return s;
     }
 
+    /**
+     * @brief Returns matrix coeficients as a 4x4 matrix (Row major).
+     * @return 4x4 matrix (std::array< std::array< double, 4> 4>).
+     */
+    FWDATA_API MatrixType getMatrix4x4() const;
+    /**
+     * @brief Sets coeficients as a 4x4 matrix (Row major).
+     * @param _matrix : matrix coeficients as std::array< std::array< double, 4 > 4 >.
+     */
+    FWDATA_API void setMatrix4x4(const MatrixType& _matrix);
+
 protected:
 
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
@@ -133,6 +145,32 @@ inline void TransformationMatrix3D::setCoefficient(size_t l, size_t c, Transform
 {
     size_t pos = l * MATRIX_SIZE + c;
     m_vCoefficients.at(pos) = val;
+}
+
+//------------------------------------------------------------------------------
+
+inline TransformationMatrix3D::MatrixType TransformationMatrix3D::getMatrix4x4() const
+{
+    // linear index to 2d.
+    const TransformationMatrix3D::MatrixType
+        matrix4x4 {{
+                       {m_vCoefficients[0], m_vCoefficients[1], m_vCoefficients[2], m_vCoefficients[3]},
+                       {m_vCoefficients[4], m_vCoefficients[5], m_vCoefficients[6], m_vCoefficients[7]},
+                       {m_vCoefficients[8], m_vCoefficients[9], m_vCoefficients[10], m_vCoefficients[11]},
+                       {m_vCoefficients[12], m_vCoefficients[13], m_vCoefficients[14], m_vCoefficients[15]}
+                   }};
+    return matrix4x4;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransformationMatrix3D::setMatrix4x4(const TransformationMatrix3D::MatrixType& _matrix)
+{
+    // 2d to linear index.
+    m_vCoefficients = { _matrix[0][0], _matrix[0][1], _matrix[0][2], _matrix[0][3],
+                        _matrix[1][0], _matrix[1][1], _matrix[1][2], _matrix[1][3],
+                        _matrix[2][0], _matrix[2][1], _matrix[2][2], _matrix[2][3],
+                        _matrix[3][0], _matrix[3][1], _matrix[3][2], _matrix[3][3]};
 }
 
 //-----------------------------------------------------------------------------
