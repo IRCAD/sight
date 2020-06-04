@@ -6,5 +6,8 @@ target_compile_definitions(${FWPROJECT_NAME} PRIVATE MODULE_RC_PREFIX="${SIGHT_M
 find_package(CppUnit QUIET REQUIRED)
 
 fwInclude(${CPPUNIT_INCLUDE_DIR})
-fwLink(${CPPUNIT_LIBRARY} ${CMAKE_DL_LIBS})
 
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${CPPUNIT_LIBRARY} ${CMAKE_DL_LIBS})
+
+# Link with the library objects instead of
+target_link_libraries(${FWPROJECT_NAME} PUBLIC fwRuntime_obj)

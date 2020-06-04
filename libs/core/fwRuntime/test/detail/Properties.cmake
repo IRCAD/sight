@@ -1,7 +1,7 @@
 set( NAME fwRuntimeDetailTest )
 set( VERSION  )
 set( TYPE TEST )
-set( DEPENDENCIES fwCore fwRuntime )
+set( DEPENDENCIES fwCore )
 set( REQUIREMENTS dataReg servicesReg )
 set( WARNINGS_AS_ERRORS ON )
 

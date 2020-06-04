@@ -5,6 +5,7 @@ set( DEPENDENCIES fwCore fwTools)
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET fwCore )
 set( WARNINGS_AS_ERRORS ON)
+set( GENERATE_OBJECT_LIB ON) # Needed for fwRuntimeDetailTest
 
 set( CONAN_DEPS
     ${CONAN_BOOST}
