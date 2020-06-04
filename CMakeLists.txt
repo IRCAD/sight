@@ -402,6 +402,7 @@ if(BUILD_SDK)
         "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/conan/conan.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/conan/conan-deps.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}
       COMPONENT
