@@ -470,14 +470,18 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
+     * @param x x index
+     * @param y y index
+     * @param z z index
+     * @param c component index
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock())
      * @throw ::fwData::Exception Index out of bounds
      */
-    template< typename T > T& at(IndexType x, IndexType y, IndexType z);
-    template< typename T > T at(IndexType x, IndexType y, IndexType z) const;
+    template< typename T > T& at(IndexType x, IndexType y, IndexType z, IndexType c = 0);
+    template< typename T > T at(IndexType x, IndexType y, IndexType z, IndexType c = 0) const;
     /// @}
     ///
 
@@ -850,19 +854,19 @@ inline T Image::at(IndexType id) const
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T& Image::at(IndexType x, IndexType y, IndexType z)
+inline T& Image::at(IndexType x, IndexType y, IndexType z, IndexType c)
 {
     const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
-    return *reinterpret_cast<T*>(this->getPixelBuffer(offset));
+    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset))+c);
 }
 
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T Image::at(IndexType x, IndexType y, IndexType z) const
+inline T Image::at(IndexType x, IndexType y, IndexType z, IndexType c) const
 {
     const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
-    return *reinterpret_cast<T*>(this->getPixelBuffer(offset));
+    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset))+c);
 }
 
 //-----------------------------------------------------------------------------
