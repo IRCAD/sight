@@ -29,8 +29,8 @@
 namespace ioIGTL
 {
 
-static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL    = "connected";
-static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL = "disconnected";
+const ::fwCom::Signals::SignalKeyType INetworkSender::s_CONNECTED_SIGNAL    = "connected";
+const ::fwCom::Signals::SignalKeyType INetworkSender::s_DISCONNECTED_SIGNAL = "disconnected";
 
 static const ::fwServices::IService::KeyType s_OBJECTS_INOUT = "objects";
 

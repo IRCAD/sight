@@ -47,6 +47,12 @@ public:
 
 protected:
 
+    /// Defines the signal's name emitted when service is connected.
+    IOIGTL_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
+
+    /// Defines the signal's name emitted when service is disconnected.
+    IOIGTL_API static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
+
     /// Does nothing.
     IOIGTL_API void updating() override;
 

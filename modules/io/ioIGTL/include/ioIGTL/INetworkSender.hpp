@@ -48,6 +48,12 @@ public:
 
 protected:
 
+    /// Defines the signal's name emitted when service is connected.
+    IOIGTL_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
+
+    /// Defines the signal's name emitted when service is disconnected.
+    IOIGTL_API static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
+
     /**
      * @brief Sends input objects
      * @pre The service must be started.
@@ -66,7 +72,7 @@ protected:
      * @brief Sends the obj at the specified index.
      * @pre the configuration group must exists.
      */
-    virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
+    IOIGTL_API virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
 
     /// Defines the signal emitted when service is connected.
     typedef ::fwCom::Signal< void () > ConnectedSignalType;
