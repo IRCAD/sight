@@ -54,13 +54,4 @@ void INetworkListener::updating()
 
 //-----------------------------------------------------------------------------
 
-void INetworkListener::swapping()
-{
-    // Classic default approach to update service when object change.
-    this->stopping();
-    this->starting();
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace ioIGTL.

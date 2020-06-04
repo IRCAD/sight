@@ -44,7 +44,7 @@ public:
     IOIGTL_API INetworkSender();
 
     /// Destoys the interface.
-    IOIGTL_API virtual ~INetworkSender();
+    IOIGTL_API ~INetworkSender() override;
 
 protected:
 
@@ -52,10 +52,7 @@ protected:
      * @brief Sends input objects
      * @pre The service must be started.
      */
-    IOIGTL_API virtual void updating() override;
-
-    /// Stops and restarts the service.
-    IOIGTL_API virtual void swapping() override;
+    IOIGTL_API void updating() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -63,7 +60,7 @@ protected:
      *
      * Connect ::fwData::Object::s_MODIFIED_SIG to s_UPDATE_SLOT.
      */
-    IOIGTL_API virtual KeyConnectionsMap getAutoConnections() const override;
+    IOIGTL_API KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Sends the obj at the specified index.

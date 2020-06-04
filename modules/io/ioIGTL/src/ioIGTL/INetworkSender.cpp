@@ -70,15 +70,6 @@ void INetworkSender::updating()
 
 //-----------------------------------------------------------------------------
 
-void INetworkSender::swapping()
-{
-    // Classic default approach to update service when object change.
-    this->stopping();
-    this->starting();
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;

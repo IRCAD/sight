@@ -43,15 +43,12 @@ public:
     IOIGTL_API INetworkListener();
 
     /// Destoys the interface.
-    IOIGTL_API virtual ~INetworkListener();
+    IOIGTL_API ~INetworkListener() override;
 
 protected:
 
     /// Does nothing.
-    IOIGTL_API virtual void updating() override;
-
-    /// Stops and restarts the service.
-    IOIGTL_API virtual void swapping() override;
+    IOIGTL_API void updating() override;
 
     /// Defines the signal emitted when service is connected.
     typedef ::fwCom::Signal< void () > ConnectedSignalType;
