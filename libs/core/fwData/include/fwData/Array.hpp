@@ -44,7 +44,7 @@ namespace fwData
  * destruction of the buffer. Else, this class will provide an array "view" of the buffer.
  *
  * The array can be multi-dimensional, the number of dimensions is defined by the number of elements in the size vector
- * (@see setSize()).
+ * (setSize()).
  *
  * @section Usage Usage
  *
@@ -56,6 +56,9 @@ namespace fwData
  * @warning The allocated size can be different from the array size: it can happen if you called resize(..., false).
  * It may be useful when you don't want to reallocate the image too often, but you need to be sure to allocate enough
  * memory.
+ *
+ * To resize the array, you must define the Type ([u]int[8|16|32|64], double, float) and the size of the buffer. You can
+ * use setSize(size) and setType(type) or directly call resize(size, type).
  *
  * @section Access Buffer access
  *
@@ -98,6 +101,36 @@ namespace fwData
     for (; iter != iterEnd; ++iter)
     {
         (*iter) = value;
+    }
+   @endcode
+ *
+ * While these two examples will produce the same results, their performance will be different.
+ *
+ * Using iterators: high performance
+ *
+ * @code{.cpp}
+    auto iter          = array->begin<std::int16_t>();
+    const auto iterEnd = array->end<std::int16_t>();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        value = *iter;
+    }
+   @endcode
+ *
+ * Using ``at<std::int16_t>({x, y, z})`` : low performance
+ *
+ * @code{.cpp}
+    const auto size = array->getSize();
+    for (size_t z=0 ; z<size[2] ; ++z)
+    {
+        for (size_t y=0 ; y<size[1] ; ++y)
+        {
+            for (size_t x=0 ; x<size[0] ; ++x)
+            {
+                value = array->at<std::int16_t>({x, y, z});
+            }
+        }
     }
    @endcode
  */

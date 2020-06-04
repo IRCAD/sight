@@ -27,6 +27,8 @@
 #include "fwData/iterator/ImageIterator.hpp"
 #include "fwData/Object.hpp"
 
+#include <boost/shared_array.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
@@ -34,8 +36,6 @@
 
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
-
-#include <boost/shared_array.hpp>
 
 #include <filesystem>
 #include <vector>
@@ -72,6 +72,10 @@ class PointList;
  * calling resize(). It may be useful when you don't want to reallocate the image too often, but you need to be sure to
  * allocate enough memory.
  *
+ * To resize the image, you must you must define the Type ([u]int[8|16|32|64], double, float), the size and the pixel
+ * format of the buffer. You can use setSize(size), setType(type) and  setPixelFormalt(format) or directly call
+ * resize(size, type, format).
+ *
  * @section Access Buffer access
  *
  * You can access voxel values using at<type>(IndexType id) or at<type>(IndexType x, IndexType y, IndexType z)
@@ -105,7 +109,7 @@ class PointList;
  * @warning The iterator does not assert that the image type is the same as the given format. It only asserts (in debug)
  * that the iterator does not iterate outside of the buffer bounds).
  *
- * Example :
+ * \b Example :
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
     img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
@@ -118,6 +122,34 @@ class PointList;
         iter->g = val2;
         iter->b = val2;
         iter->a = val4;
+    }
+   @endcode
+ *
+ * While these two examples will produce the same results, their performance will be different.
+ *
+ * Using iterators: high performance
+ * @code{.cpp}
+    auto iter          = image->begin<std::int16_t>();
+    const auto iterEnd = image->end<std::int16_t>();
+
+    for (; iter != iterEnd; ++iter)
+    {
+        value = *iter;
+    }
+   @endcode
+ *
+ * Using at<std::int16_t>({x, y, z}) : low performance
+ * @code{.cpp}
+    const auto size = image->getSize2();
+    for (size_t z=0 ; z<size[2] ; ++z)
+    {
+        for (size_t y=0 ; y<size[1] ; ++y)
+        {
+            for (size_t x=0 ; x<size[0] ; ++x)
+            {
+                value = array->at<std::int16_t>(x, y, z);
+            }
+        }
     }
    @endcode
  */
