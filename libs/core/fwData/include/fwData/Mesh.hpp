@@ -28,11 +28,11 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/iterator/MeshIterators.hpp"
 
+#include <boost/multi_array.hpp>
+
 #include <fwCore/macros.hpp>
 
 #include <fwMemory/IBuffered.hpp>
-
-#include <boost/multi_array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
 
@@ -284,17 +284,6 @@ public:
         TETRA
     } CellTypesEnum;
 
-    enum class CellType : std::uint8_t
-    {
-        NO_CELL = 0,
-        POINT,
-        EDGE,
-        TRIANGLE,
-        QUAD,
-        POLY,
-        TETRA
-    };
-
     [[deprecated("replaced by CellType (sight 22.0)")]] typedef enum
     {
         RGB  = 3,
@@ -311,6 +300,8 @@ public:
             POINT_TEX_COORDS = 1 << 5,
             CELL_TEX_COORDS  = 1 << 6
     };
+
+    typedef ::fwData::iterator::CellType CellType;
 
     typedef float PointValueType;
     typedef std::uint8_t ColorValueType;

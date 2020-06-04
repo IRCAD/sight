@@ -53,6 +53,17 @@ struct TexCoords {
     float v;
 };
 
+enum class CellType : std::uint8_t
+{
+    NO_CELL = 0,
+    POINT,
+    EDGE,
+    TRIANGLE,
+    QUAD,
+    POLY,
+    TETRA
+};
+
 /**
  * @brief Base class for mesh's point iterators
  *
@@ -224,7 +235,7 @@ class CellIteratorBase
 public:
 
     typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_data_value_type;
-    typedef typename std::conditional<isConst, const std::uint8_t, std::uint8_t>::type cell_type_value_type;
+    typedef typename std::conditional<isConst, const CellType, CellType>::type cell_type_value_type;
     typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_offset_value_type;
 
     typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;

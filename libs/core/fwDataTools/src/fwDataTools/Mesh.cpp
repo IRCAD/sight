@@ -62,6 +62,13 @@ void Mesh::initRand()
 
 bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell)
 {
+    return hasUniqueCellType(mesh, static_cast< ::fwData::Mesh::CellTypes >(cell));
+}
+
+//------------------------------------------------------------------------------
+
+bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellType cell)
+{
     bool res            = true;
     const auto dumpLock = mesh->lock();
 
@@ -76,13 +83,6 @@ bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTyp
         }
     }
     return res;
-}
-
-//------------------------------------------------------------------------------
-
-bool Mesh::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellType cell)
-{
-    return hasUniqueCellType(mesh, static_cast< ::fwData::Mesh::CellTypes >(cell));
 }
 
 //------------------------------------------------------------------------------
@@ -113,15 +113,15 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
     {
         Vector<float> n;
 
-        const ::fwData::Mesh::CellTypes type = *cellItr->type;
+        const ::fwData::Mesh::CellType type = *cellItr->type;
         switch (type)
         {
-            case 0:
-            case 1:
-            case 2:
+            case ::fwData::Mesh::CellType::NO_CELL:
+            case ::fwData::Mesh::CellType::POINT:
+            case ::fwData::Mesh::CellType::EDGE:
                 n = vZero;
                 break;
-            case 3:
+            case ::fwData::Mesh::CellType::TRIANGLE:
             {
                 auto pItr = pointBegin + cellItr->pointIdx[0];
                 const Point p1(pItr->point->x, pItr->point->y, pItr->point->z);
@@ -132,8 +132,9 @@ void generateRegionCellNormals(const ::fwData::Mesh::sptr& mesh, const ::fwData:
                 n = computeTriangleNormal(p1, p2, p3);
             }
             break;
-            case 4:
-            case 5:
+            case ::fwData::Mesh::CellType::QUAD:
+            case ::fwData::Mesh::CellType::POLY:
+            case ::fwData::Mesh::CellType::TETRA:
             {
                 const auto nbPoints = cellItr->nbPoints;
                 for (size_t i = 0; i < nbPoints; ++i)

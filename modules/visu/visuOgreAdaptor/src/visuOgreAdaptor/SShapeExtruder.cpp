@@ -699,7 +699,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 
         for(size_t index = 0; index < _triangulation.size()*3; index += 3)
         {
-            *it->type   = static_cast< unsigned char >(::fwData::Mesh::CellType::TRIANGLE);
+            *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
             *it->offset = index;
 
             if(it != itPrevEnd)
