@@ -399,7 +399,7 @@ fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& 
     const double d00 = ::fwMath::dot(v0, v0);
     const double d01 = ::fwMath::dot(v0, v1);
     const double d11 = ::fwMath::dot(v1, v1);
-    const double d20 = ::fwMath::dot(v2, v0);
+    const double d20 = ::fwMath::dot(v1, v0);
     const double d21 = ::fwMath::dot(v2, v1);
 
     const double div = ((d00 * d11) - (d01 * d01));
