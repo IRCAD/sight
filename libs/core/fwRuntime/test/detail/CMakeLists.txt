@@ -9,5 +9,5 @@ fwInclude(${CPPUNIT_INCLUDE_DIR})
 
 target_link_libraries(${FWPROJECT_NAME} PRIVATE ${CPPUNIT_LIBRARY} ${CMAKE_DL_LIBS})
 
-# Link with the library objects instead of
+# Link with the library objects instead of classical shared library
 target_link_libraries(${FWPROJECT_NAME} PUBLIC fwRuntime_obj)
