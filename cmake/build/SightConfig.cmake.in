@@ -1,7 +1,13 @@
+# Use new policy to use CMAKE_CXX_STANDARD in try_compile() macro
+cmake_policy(SET CMP0067 NEW)
+
 set(FW_BUILD_EXTERNAL 1)
 
 include("${CMAKE_CURRENT_LIST_DIR}/SightRequirements.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/macros.cmake")
+
+# Needed for FindFilesystem.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 
 set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
 

@@ -95,7 +95,7 @@ const std::regex Native::getNativeName() const
 #if defined(linux) || defined(__linux)
     nativeName = std::regex(
         "lib" + m_modulePath.filename().string() + "\\.so." +
-        "[0-9]\\.[0-9]" );
+        "[0-9\\.]*" );
 #elif defined(WIN32)
     nativeName = std::regex(
         m_modulePath.filename().string() + "\\.dll");

@@ -82,7 +82,11 @@ void RuntimeTest::testPosix()
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
 
     auto path = nativeLibrary->getPath();
-    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("libdataReg.so.0.1"), path );
+    // The library picked will be one of these
+    const bool testPath = std::filesystem::path("libdataReg.so.0.1") == path ||
+                          std::filesystem::path("libdataReg.so.0") == path ||
+                          std::filesystem::path("libdataReg.so") == path;
+    CPPUNIT_ASSERT_EQUAL( testPath, true);
 }
 
 #elif defined(WIN32)
