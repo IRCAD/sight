@@ -97,7 +97,7 @@ void SMultipleTF::configuring()
         const auto pathCfg = config->equal_range(s_PATH_CONFIG);
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getBundleResourceFilePath(itCfg->second.get_value<std::string>());
+            const auto path = ::fwRuntime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
@@ -109,13 +109,13 @@ void SMultipleTF::configuring()
             m_tfPerPath    = configAttr->get<bool>(s_TF_PER_PATH_CONFIG, m_tfPerPath);
 
             m_deleteIcon =
-                ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
-            m_newIcon  = ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_NEW_ICON_CONFIG, m_newIcon));
+                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
+            m_newIcon  = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_NEW_ICON_CONFIG, m_newIcon));
             m_copyIcon =
-                ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_COPY_ICON_CONFIG, m_copyIcon));
+                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_COPY_ICON_CONFIG, m_copyIcon));
             m_reinitializeIcon =
-                ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
-            m_renameIcon = ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
+                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
+            m_renameIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
             m_iconHeight = configAttr->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
@@ -124,7 +124,7 @@ void SMultipleTF::configuring()
 
     if(useDefaultPath)
     {
-        const auto pathRoot = ::fwRuntime::getBundleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = ::fwRuntime::getModuleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }

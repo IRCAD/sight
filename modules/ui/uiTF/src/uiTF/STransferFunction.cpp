@@ -115,7 +115,7 @@ void STransferFunction::configuring()
         const auto pathCfg = config->equal_range(s_PATH_CONFIG);
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getBundleResourceFilePath(itCfg->second.get_value<std::string>());
+            const auto path = ::fwRuntime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
@@ -126,13 +126,13 @@ void STransferFunction::configuring()
             useDefaultPath = configAttr->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
 
             m_deleteIcon =
-                ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
-            m_newIcon          = ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_NEW_ICON_CONFIG, m_newIcon));
+                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
+            m_newIcon          = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_NEW_ICON_CONFIG, m_newIcon));
             m_reinitializeIcon =
-                ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
-            m_renameIcon = ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
-            m_importIcon = ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_IMPORT_ICON_CONFIG, m_importIcon));
-            m_exportIcon = ::fwRuntime::getBundleResourceFilePath(configAttr->get(s_EXPORT_ICON_CONFIG, m_exportIcon));
+                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
+            m_renameIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
+            m_importIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_IMPORT_ICON_CONFIG, m_importIcon));
+            m_exportIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_EXPORT_ICON_CONFIG, m_exportIcon));
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
             m_iconHeight = configAttr->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
@@ -141,7 +141,7 @@ void STransferFunction::configuring()
 
     if(useDefaultPath)
     {
-        const auto pathRoot = ::fwRuntime::getBundleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = ::fwRuntime::getModuleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }
