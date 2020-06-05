@@ -1,0 +1,73 @@
+<!--
+    This tutorial shows a Qt3D scene.
+-->
+<plugin id="TutoSceneQt3D" version="@PROJECT_VERSION@">
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>TutoSceneQt3D</id>
+        <config>
+            <service uid="ihm" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>TutoSceneQt3D</name>
+                        <icon>TutoSceneQt3D-0.1/tuto.ico</icon>
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Quit action -->
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
+            <!-- main view -->
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" minWidth="1080" minHeight="720" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                </registry>
+            </service>
+
+            <!--
+                Generic empty scene
+            -->
+            <service uid="genericScene" type="::fwRenderQt3D::SRender">
+                <scene>
+                    <background color="#2d2d2d" />
+                </scene>
+            </service>
+
+            <start uid="ihm" />
+        </config>
+    </extension>
+</plugin>
