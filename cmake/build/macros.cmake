@@ -516,9 +516,11 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}
         )
 
-        install(
-            FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX} OPTIONAL
-        )
+        if(WIN32)
+            install(
+                FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX} OPTIONAL
+            )
+        endif()
 
         # Add all targets to the build-tree export set
         export( EXPORT Sight-${FWPROJECT_NAME}Targets
@@ -571,9 +573,15 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
                 TARGETS ${FWPROJECT_NAME}
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX}
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}
-                FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX}
                 OPTIONAL NAMELINK_SKIP
             )
+
+            if(WIN32)
+                install(
+                    FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX}
+                    OPTIONAL
+                )
+            endif()
         endif()
     endif()
 
