@@ -72,7 +72,7 @@ class PointList;
  * calling resize(). It may be useful when you don't want to reallocate the image too often, but you need to be sure to
  * allocate enough memory.
  *
- * To resize the image, you must you must define the Type ([u]int[8|16|32|64], double, float), the size and the pixel
+ * To resize the image, you must define the Type ([u]int[8|16|32|64], double, float), the size and the pixel
  * format of the buffer. You can use setSize2(const Size& size), setType(::fwTools::Type type) and
  * ssetPixelFormat(PixelFormat format) or directly call
  * resize(const Size& size, const ::fwTools::Type& type, PixelFormat format).
