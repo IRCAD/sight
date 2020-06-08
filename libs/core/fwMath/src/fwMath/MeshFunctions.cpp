@@ -552,7 +552,7 @@ bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
 {
 
     /*
-       There are several wais to determine if a point is inside a tetrahedron.
+       There are several ways to determine if a point is inside a tetrahedron.
        The present lgorithm make use of the barycentric coordinates
        It first the baricentric coordinate of the point inside the tetrahedron, and then checks if all of them are
           inbetween 0 and 1
