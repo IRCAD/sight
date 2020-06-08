@@ -55,37 +55,40 @@ namespace fwData
  * And some additional arrays to store the mesh attributes (normals, texture coordinates and colors for points and
  * cells).
  *
- * \b Example : \n
- * m_nbPoints = number of mesh points  * 3 \n
- * m_points = [ x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3, ... ] \n
- * m_nbCells = number of mesh cells \n
- * m_cellTypes.size = m_nbCells \n
- * m_cellTypes = [TRIANGLE, TRIANGLE, QUAD, QUAD, TRIANGLE ... ] \n
- * m_cellDataOffsets.size = m_nbCells \n
- * m_cellDataOffsets = [0, 3, 6, 10, 14, ... ] (offset shifting in  m_cellData = +3 if triangle cell rr +4 if quad cell)
- * \n
- * m_cellsDataSize = m_nbCells * <nb_points_per_cell> (m_nbCells * 3 if only triangle cell)
- * m_cellData = [0, 1, 2, 0, 1, 3, 0, 1, 3, 5... ] ( correspond to point id ) \n
+ * \b Example:
+ * - m_nbPoints = number of mesh points  * 3
+ * - m_points = [ x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3, ... ]
+ * - m_nbCells = number of mesh cells
+ * - m_cellTypes.size = m_nbCells
+ * - m_cellTypes = [TRIANGLE, TRIANGLE, QUAD, QUAD, TRIANGLE ... ]
+ * - m_cellDataOffsets.size = m_nbCells
+ * - m_cellDataOffsets = [0, 3, 6, 10, 14, ... ] (offset shifting in  m_cellData = +3 if triangle cell rr +4 if quad
+ * cell)
  *
- * Get the points coordinates of the third cell \n
- * m_cellTypes[2] => cell type = QUAD \n
- * m_cellDataOffsets[2] => index in m_cellData of cell definition = 6 \n
- * index of p1 = m_cellData[6] = 0 \n
- * index of p2 = m_cellData[6+1] = 1 \n
- * index of p3 = m_cellData[6+2] = 3 \n
- * index of p4 = m_cellData[6+3] = 5 \n
- * p1 = [ x0=m_points[0]  y0 z0 ] ( 0 * 3 = 0 ) \n
- * p2 = [ x1=m_points[3]  y1 z1 ] ( 1 * 3 = 3 ) \n
- * p3 = [ x3=m_points[9]  y3 z3 ] ( 3 * 3 = 9 ) \n
- * p4 = [ x5=m_points[15] y5 z5 ] ( 5 * 3 = 15 ) \n
+ * - m_cellsDataSize = m_nbCells * <nb_points_per_cell> (m_nbCells * 3 if only triangle cell)
+ * - m_cellData = [0, 1, 2, 0, 1, 3, 0, 1, 3, 5... ] ( correspond to point id )
  *
- * There is other arrays to stock normal by points, normal by edges, color by points or color by cells, to short : \n
- * Normal arrays contains normal vector (x,y,z) \n
- * normals.size = number of mesh points (respc cells) \n
- * normals = [ x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3, ... ] \n
- * Color arrays contains RGBA colors \n
- * colors.size = number of mesh points (respc cells) * 4 \n
- * colors = [ r0, g0, b0, a0, r1, g1, b1, a1, ... ] \n
+ * Get the points coordinates of the third cell:
+ * @verbatim
+    m_cellTypes[2] => cell type = QUAD
+    m_cellDataOffsets[2] => index in m_cellData of cell definition = 6
+    index of p1 = m_cellData[6] = 0
+    index of p2 = m_cellData[6+1] = 1
+    index of p3 = m_cellData[6+2] = 3
+    index of p4 = m_cellData[6+3] = 5
+    p1 = [ x0=m_points[0]  y0 z0 ] ( 0 * 3 = 0 )
+    p2 = [ x1=m_points[3]  y1 z1 ] ( 1 * 3 = 3 )
+    p3 = [ x3=m_points[9]  y3 z3 ] ( 3 * 3 = 9 )
+    p4 = [ x5=m_points[15] y5 z5 ] ( 5 * 3 = 15 )
+   @endverbatim
+ *
+ * There is other arrays to stock normal by points, normal by edges, color by points or color by cells :
+ * - Normal arrays contains normal vector (x,y,z)
+ * - normals.size = number of mesh points (respc cells)
+ *  -normals = [ x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3, ... ]
+ * - Color arrays contains RGBA colors
+ * - colors.size = number of mesh points (respc cells) * 4
+ * - colors = [ r0, g0, b0, a0, r1, g1, b1, a1, ... ]
  *
  * @section Usage Usage
  *
@@ -680,11 +683,11 @@ public:
      *
      * @param id point index
      * @param t texCoord
-     * /// @}
      */
     FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, const std::array< ::fwData::Mesh::TexCoordValueType, 2>& t);
     FWDATA_API void setPointTexCoord(::fwData::Mesh::Id id, ::fwData::Mesh::TexCoordValueType u,
                                      ::fwData::Mesh::TexCoordValueType v);
+    /// @}
 
     /**
      * @{

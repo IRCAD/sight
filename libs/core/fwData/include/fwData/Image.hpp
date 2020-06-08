@@ -88,6 +88,24 @@ class PointList;
  * @warning The image must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
  * disk.
  *
+ * \b Example:
+ *
+ * @code{.cpp}
+
+    // 3D image of std::int16_t
+
+    // prevent the buffer to be dumped on the disk
+    const auto dumpLock = image->lock();
+
+    // retrieve the value at index (x, y, z)
+    value = image->at<std::int16_t>(x, y, z);
+
+    // or you can compute the index like
+    const auto size = image->getSize2();
+    const size_t index = x + y*size[0] + z*size[0]*size[1];
+    value = image->at<std::int16_t>(index);
+   @endcode
+ *
  * @subsection Iterators Iterators
  *
  * To parse the buffer from beginning to end, the iterator can be used (::fwData::iterator::ImageIteratorBase).
@@ -114,7 +132,7 @@ class PointList;
  * \b Example :
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 1, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
     auto iter    = img->begin<Color>();
     const auto iterEnd = img->end<Color>();
 
@@ -127,34 +145,38 @@ class PointList;
     }
    @endcode
  *
- * While these two examples will produce the same results, their performance will be different.
- *
- * Using iterators: high performance
- * @code{.cpp}
-    auto iter          = image->begin<std::int16_t>();
-    const auto iterEnd = image->end<std::int16_t>();
-
-    for (; iter != iterEnd; ++iter)
-    {
-        value = *iter;
-    }
-   @endcode
- *
- * Using at<std::int16_t>({x, y, z}) : low performance
+ */
+/* *INDENT-OFF* */
+/**
+ * @note If you need to know (x, y, z) indices, you can parse the array looping from the last dimension to the first,
+ * like:
  * @code{.cpp}
     const auto size = image->getSize2();
+
+    auto iter    = image->begin<Color>();
+
     for (size_t z=0 ; z<size[2] ; ++z)
     {
         for (size_t y=0 ; y<size[1] ; ++y)
         {
             for (size_t x=0 ; x<size[0] ; ++x)
             {
-                value = array->at<std::int16_t>(x, y, z);
+                // do something with x and y ....
+
+                // retrieve the value
+                val1 = iter->r;
+                val2 = iter->g;
+                val3 = iter->b;
+                val4 = iter->a;
+
+                // increment iterator
+                ++iter;
             }
         }
     }
    @endcode
  */
+/* *INDENT-ON* */
 class FWDATA_CLASS_API Image : public ::fwData::Object,
                                public ::fwMemory::IBuffered
 {

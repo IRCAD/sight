@@ -69,6 +69,24 @@ namespace fwData
  * @warning The array must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
  * disk.
  *
+ * \b Example:
+ *
+ * @code{.cpp}
+
+    // 2D array of std::int16_t
+
+    // prevent the buffer to be dumped on the disk
+    const auto dumpLock = array->lock();
+
+    // retrieve the value at index (x, y)
+    value = array->at<std::int16_t>({x, y});
+
+    // or you can compute the index like
+    const auto size = array->getSize();
+    const size_t index = x + y*size[0];
+    value = array->at<std::int16_t>(index);
+   @endcode
+ *
  * @subsection Iterators Iterators
  *
  * To parse the buffer from beginning to end, the iterator can be used.
@@ -92,7 +110,10 @@ namespace fwData
  * @warning The iterator does not assert that the array type is the same as the given format. It only asserts (in debug)
  * that the iterator does not iterate outside of the buffer bounds).
  *
- * Example :
+ * \b Example :
+ */
+/* *INDENT-OFF* */
+/**
  * @code{.cpp}
     ::fwData::Array::sptr array = ::fwData::Array::New();
     array->resize({1920, 1080}, ::fwTools::Type::s_INT16);
@@ -105,36 +126,27 @@ namespace fwData
     }
    @endcode
  *
- * While these two examples will produce the same results, their performance will be different.
- *
- * Using iterators: high performance
- *
+ * @note If you need to know (x, y) indices, you can parse the array looping from the last dimension to the first, like:
  * @code{.cpp}
-    auto iter          = array->begin<std::int16_t>();
-    const auto iterEnd = array->end<std::int16_t>();
+    auto iter = array->begin<std::int16_t>();
 
-    for (; iter != iterEnd; ++iter)
-    {
-        value = *iter;
-    }
-   @endcode
- *
- * Using ``at<std::int16_t>({x, y, z})`` : low performance
- *
- * @code{.cpp}
     const auto size = array->getSize();
-    for (size_t z=0 ; z<size[2] ; ++z)
+    for (size_t y=0 ; y<size[1] ; ++y)
     {
-        for (size_t y=0 ; y<size[1] ; ++y)
+        for (size_t x=0 ; x<size[0] ; ++x)
         {
-            for (size_t x=0 ; x<size[0] ; ++x)
-            {
-                value = array->at<std::int16_t>({x, y, z});
-            }
+            // do something with x and y ....
+
+            // retrieve the value
+            *iter = value;
+
+            // increment iterator
+            ++iter;
         }
     }
    @endcode
  */
+/* *INDENT-ON* */
 class FWDATA_CLASS_API Array : public ::fwData::Object,
                                public ::fwMemory::IBuffered
 {
@@ -300,9 +312,11 @@ public:
      */
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t sizeOfType );
 
-    ::fwMemory::BufferObject::sptr getBufferObject () const;
+    /// Return buffer object
+    ::fwMemory::BufferObject::sptr getBufferObject() const;
 
-    void setBufferObject (const ::fwMemory::BufferObject::sptr& val);
+    /// Set buffer object
+    void setBufferObject (const ::fwMemory::BufferObject::sptr& bufferObj);
 
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
@@ -741,9 +755,9 @@ inline ::fwMemory::BufferObject::sptr Array::getBufferObject () const
 
 //-----------------------------------------------------------------------------
 
-inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
+inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& bufferObj)
 {
-    m_bufferObject = val;
+    m_bufferObject = bufferObj;
 }
 
 //------------------------------------------------------------------------------
