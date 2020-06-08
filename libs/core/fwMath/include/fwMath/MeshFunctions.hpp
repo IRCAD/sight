@@ -102,7 +102,7 @@ FWMATH_API fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d
 /**
  * @brief Converts the barycentric coordinates of a point inside a tetrahedron, from the world coordinates.
  * Assert if the _A_B_C_D triangle is flat to avoid zero division.
- * Note: no tests are performed in release mode to avoid performance issue.
+ * @note no tests are performed in release mode to avoid performance issue.
  * @param _P world coordinates of the point (x, y, z).
  * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
  * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
