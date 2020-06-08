@@ -133,7 +133,7 @@ FWMATH_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, con
  * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz).
  * @param _C third vertex of the tetrahedron (_Cx, _Cy, _Cz).
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
- * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise
+ * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
 FWMATH_API bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
                                      const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
