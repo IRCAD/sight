@@ -44,7 +44,7 @@ namespace fwData
  *
  * @section Structure Structure
  *
- * The mesh structure contains some information stock in ::fwData::Array
+ * The mesh structure contains some information stocked in ::fwData::Array
  *
  * - An array (m_points) which contains point coord (x,y,z)
  * - An array (m_cellTypes) which contains cell type (TRIAN or QUAD for the moment)
