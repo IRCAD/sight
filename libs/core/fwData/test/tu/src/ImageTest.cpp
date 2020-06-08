@@ -25,8 +25,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-
 #include <fwMemory/stream/in/Raw.hpp>
 
 #include <fwTest/generator/Image.hpp>
