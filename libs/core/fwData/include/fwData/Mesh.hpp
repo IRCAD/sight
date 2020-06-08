@@ -52,7 +52,7 @@ namespace fwData
  * create a triangle cell, 4 for quad cell.
  * - An array (m_cellDataOffsets) which contains indexes relative to m_cellData, to retrieve the first point necessary
  * to the cell creation.
- * An some additional arrays to store the mesh attributes (normals, texture coordinates and colors for points and
+ * And some additional arrays to store the mesh attributes (normals, texture coordinates and colors for points and
  * cells).
  *
  * \b Example : \n
