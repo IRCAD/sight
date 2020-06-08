@@ -431,19 +431,19 @@ fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A, const fwVec3d& 
 {
 
     /*
-       In general, a point with barycentric coordinates (u, v, w,h) is inside (or on) the tetrahedron(ABCD) if and only
-          if
-       0 ≤ u, v, w, h ≤ 1, or alternatively if and only if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, 0 ≤ h ≤ 1, and v + w + h ≤ 1.
+       In general, a point with barycentric coordinates (u, v, w,h) is inside (or on) the tetrahedron(ABCD)
+          if and only if 0 ≤ u, v, w, h ≤ 1, or alternatively
+          if and only if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, 0 ≤ h ≤ 1, and v + w + h ≤ 1.
 
        The main idea of the volumic baricentric coordinate is a proportionality with the sub-tetrahedron volumes ratio
-          over the whole volume.
-       Considering one of the four vertex (_A, _B, _C, _D) v, the associated baricentric coordinate is equal to the
-          volume of the tetrahedron build with the three other vertexes and P, divided by the total tetrahedron volume.
+          over the whole volume. Considering one of the four vertex (_A, _B, _C, _D), the associated baricentric
+          coordinate are equal to the volume of the tetrahedron build with the three other vertexes and P,
+          divided by the total tetrahedron volume.
 
        As a result, the principle in the present algorithm, is to compute the three tetrahedron (_A,_B,_C,_P)
-          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume.
-       Then the ratio for respectivemy, _D, _C, _B vertexes are computed, and the last baricentric coordinate is
-          obtained by the formula u + v + w + h = 1
+          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume. Then the ratio for respectivemy,
+          _D, _C, _B vertexes are computed, and the last baricentric coordinate is obtained by the formula
+          u + v + w + h = 1
      */
 
     ::glm::dvec4 baryCoord;
