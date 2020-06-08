@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,17 +34,18 @@ namespace ioNetwork
 /**
  *
  * @brief Abstract class for network listeners if you want create a new network listener you must be inherit
- *
+ * @deprecated please use the interface ::igtlIO::INetworkListener.
  */
-class IONETWORK_CLASS_API INetworkListener : public ::fwServices::IController
+class IONETWORK_DEPRECATED_CLASS_API INetworkListener : public ::fwServices::IController
 {
 
 public:
-    fwCoreServiceMacro(INetworkListener, ::fwServices::IController);
+    fwCoreServiceMacro(INetworkListener, ::fwServices::IController)
 
     /**
      * @brief Service connected signal is emitted when listener is connected
      */
+    [[deprecated("removed in sight 21.0, please use the interface ::igtlIO::INetworkListener")]]
     IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
 
     /**

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,12 +23,11 @@
 #pragma once
 
 #include "ioIGTL/config.hpp"
+#include "ioIGTL/INetworkListener.hpp"
 
 #include <fwData/Object.hpp>
 
 #include <igtlNetwork/Client.hpp>
-
-#include <ioNetwork/INetworkListener.hpp>
 
 #include <cstdint>
 #include <future>
@@ -69,12 +68,12 @@ namespace ioIGTL
  * @note : hostname, port and deviceName of this service can be a value or a nameKey from preference settings
    (for example <server>%HOSTNAME%:%PORT%</server>, <deviceName>%DEVICE_NAME%</deviceName>)
  */
-class IOIGTL_CLASS_API STDataListener : public ::ioNetwork::INetworkListener
+class IOIGTL_CLASS_API STDataListener : public ::ioIGTL::INetworkListener
 {
 
 public:
 
-    fwCoreServiceMacro(STDataListener, ::ioNetwork::INetworkListener);
+    fwCoreServiceMacro(STDataListener, ::ioIGTL::INetworkListener)
 
     /// Constructor
     IOIGTL_API STDataListener();

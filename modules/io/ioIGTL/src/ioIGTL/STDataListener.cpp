@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,8 @@
 
 #include <arData/MatrixTL.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -36,12 +38,10 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::STDataListener, ::arData::MatrixTL);
+fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::STDataListener, ::arData::MatrixTL)
 
 namespace ioIGTL
 {
