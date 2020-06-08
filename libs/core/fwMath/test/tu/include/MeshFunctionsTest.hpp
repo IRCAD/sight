@@ -61,7 +61,7 @@ public:
     void computeBarycenterABC3D();
     /// Computes barrycentric coordinates on a point outside a ABC triangle.
     void computeBarycenterOutsideABC();
-    /// Computes barrycentric coordinates on a point inside a ABCD Tetrahedron in 3D.
+    /// Computes barycentric coordinates on a point inside a ABCD Tetrahedron in 3D.
     void computeBarycenterTetrahedron();
     /// Computes barrycentric coordinates on a point outside a ABCD Tetrahedron.
     void computeBarycenterOutsideTetrahedron();
