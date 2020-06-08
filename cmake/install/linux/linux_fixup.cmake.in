@@ -42,15 +42,6 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
         endif()
         set(LAUNCHER_PATH @CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@)
 
-        # We need to copy first the libraries as stated by the BundleUtilities documentation :
-        # "If you pass plugins to fixup_bundle as the libs parameter, you should install them or
-        #  copy them into the module before calling fixup_bundle. The <libs> parameter is a list
-        #  of libraries that must be fixed up, but that cannot be determined by otool output
-        #  analysis (i.e. plugins)."
-        foreach(LIB ${LIBS})
-            file(COPY ${LIB} DESTINATION "@CMAKE_INSTALL_PREFIX@/bin/")
-        endforeach()
-
         #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
         fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${LIBS_MODULES_DIRECTORIES}")
     endif()
@@ -60,7 +51,10 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
     file(GLOB_RECURSE FIXED_LIBS "@CMAKE_INSTALL_PREFIX@/bin/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
 
     foreach(LIB ${FIXED_LIBS})
-        file(COPY ${LIB} DESTINATION "@CMAKE_INSTALL_PREFIX@/lib/")
+        get_filename_component(LIB_FILE_NAME ${LIB} NAME)
+        if(NOT EXISTS "@CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/${LIB_FILE_NAME}")
+            file(COPY ${LIB} DESTINATION "@CMAKE_INSTALL_PREFIX@/lib/")
+        endif()
         file(REMOVE ${LIB})
     endforeach()
 
