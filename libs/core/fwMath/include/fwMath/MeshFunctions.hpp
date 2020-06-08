@@ -115,7 +115,7 @@ FWMATH_API ::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::
 
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w+h isn't equal to 1.
- * Note: no tests are performed in release mode to avoid performance issue.
+ * @note no tests are performed in release mode to avoid performance issue.
  * @param _baryCoord barycentric coordinates (u, v, w, h) that belongs to the _A_B_C_D tetrahedron.
  * @param _A first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
  * @param _B second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
