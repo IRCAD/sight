@@ -25,7 +25,7 @@
 #include <fwMath/MeshFunctions.hpp>
 #include <fwMath/VectorFunctions.hpp>
 
-#include <fwCore/Profiling.hpp>
+#include <cmath>
 
 namespace fwMath
 {
@@ -96,9 +96,11 @@ void MeshFunctionsTest::computeBarycenterABC2D()
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", barycentric[V] >= 0. && barycentric[V] <= 1. );
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", barycentric[W] >= 0. && barycentric[W] <= 1. );
-    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", (barycentric[V] + barycentric[W]) <= 1. );
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", std::isgreaterequal(barycentric[V], 0.) &&  std::islessequal(barycentric[V],
+                                                                                                     1. ));
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", std::isgreaterequal( barycentric[W], 0.) && std::islessequal(barycentric[W],
+                                                                                                     1. ) );
+    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", std::islessequal(barycentric[V] + barycentric[W],  1.) );
 
     // Convert back to world coordinates.
 
@@ -129,9 +131,11 @@ void MeshFunctionsTest::computeBarycenterABC3D()
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", barycentric[V] >= 0. && barycentric[V] <= 1. );
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", barycentric[W] >= 0. && barycentric[W] <= 1. );
-    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", (barycentric[V] + barycentric[W]) <= 1. );
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", std::isgreaterequal(barycentric[V], 0.) &&  std::islessequal(barycentric[V],
+                                                                                                     1. ));
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", std::isgreaterequal( barycentric[W], 0.) && std::islessequal(barycentric[W],
+                                                                                                     1. ) );
+    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", std::islessequal(barycentric[V] + barycentric[W],  1.) );
 
     // Convert back to world coordinates.
 
@@ -163,9 +167,11 @@ void MeshFunctionsTest::computeBarycenterABCRealCoords()
 
     // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
 
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", barycentric[V] >= 0. && barycentric[V] <= 1. );
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", barycentric[W] >= 0. && barycentric[W] <= 1. );
-    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", (barycentric[V] + barycentric[W]) <= 1. );
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", std::isgreaterequal(barycentric[V], 0.) &&  std::islessequal(barycentric[V],
+                                                                                                     1. ));
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", std::isgreaterequal( barycentric[W], 0.) && std::islessequal(barycentric[W],
+                                                                                                     1. ) );
+    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", std::islessequal(barycentric[V] + barycentric[W],  1.) );
 
     // Convert back to world coordinates.
 
@@ -195,12 +201,8 @@ void MeshFunctionsTest::computeBarycenterOutsideABC()
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("u + v + w = 1", 1., sum, s_EPSILON);
 
-    // Test if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, and v + w ≤ 1
-
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1 " + std::to_string(
-                               barycentric[V]), !(barycentric[V] >= 0. && barycentric[V] <= 1.));
-    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", !(barycentric[W] >= 0. && barycentric[W] <= 1. ));
-    CPPUNIT_ASSERT_MESSAGE("v + w ≤ 1", !((barycentric[V] + barycentric[W]) <= 1.) );
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ v ≤ 1", barycentric[V] > 1.); // v = 20
+    CPPUNIT_ASSERT_MESSAGE("0 ≤ w ≤ 1", barycentric[W] > 1. ); //w = 20
 
 }
 
