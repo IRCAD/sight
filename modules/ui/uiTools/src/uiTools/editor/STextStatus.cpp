@@ -116,9 +116,9 @@ void STextStatus::starting()
     const auto stringInput     = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
     const auto stringInputLock = stringInput.lock();
 
-    if(stringInputLock.has_value())
+    if(stringInputLock)
     {
-        m_labelValue->setText(QString::fromStdString(stringInputLock.value()->value()));
+        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
     }
 
 }
@@ -141,9 +141,9 @@ void STextStatus::updating()
     const auto stringInput     = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
     const auto stringInputLock = stringInput.lock();
 
-    if(stringInputLock.has_value())
+    if(stringInputLock)
     {
-        m_labelValue->setText(QString::fromStdString(stringInputLock.value()->value()));
+        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
     }
 }
 

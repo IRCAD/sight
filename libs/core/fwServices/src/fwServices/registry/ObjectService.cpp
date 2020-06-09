@@ -331,7 +331,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
         auto it = service->m_inputsMap.find(objKey);
         if(it != service->m_inputsMap.end())
         {
-            return it->second.lock().getShared();
+            return it->second.getShared();
         }
     }
     else if(access == ::fwServices::IService::AccessType::INOUT)
@@ -339,7 +339,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
         auto it = service->m_inOutsMap.find(objKey);
         if(it != service->m_inOutsMap.end())
         {
-            return it->second.lock().getShared();
+            return it->second.getShared();
         }
     }
     else
