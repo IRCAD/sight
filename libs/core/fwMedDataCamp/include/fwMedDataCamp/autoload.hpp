@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "fwMedDataCamp/ActivitySeries.hpp"
-#include "fwMedDataCamp/AttachmentSeries.hpp"
 #include "fwMedDataCamp/DicomSeries.hpp"
 #include "fwMedDataCamp/ImageSeries.hpp"
 #include "fwMedDataCamp/Series.hpp"
@@ -57,8 +56,6 @@ struct runner
         localDeclarefwMedDataImageSeries();
         localDeclarefwMedDataModelSeries();
         localDeclarefwMedDataActivitySeries();
-        localDeclarefwMedDataAttachmentSeriesAttachmentAvailability();
-        localDeclarefwMedDataAttachmentSeries();
         localDeclarefwMedDataNavigationSeries();
     }
 
