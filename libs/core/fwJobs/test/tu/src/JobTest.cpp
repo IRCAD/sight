@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -145,6 +145,7 @@ void JobTest::APIAndStateTest()
 
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::CANCELED, job.getState() );
         CPPUNIT_ASSERT_NO_THROW( job.wait() );
+        worker->stop();
     }
 
     {
@@ -261,6 +262,7 @@ void JobTest::GenericCallbackTest()
                             || ::fwJobs::IJob::CANCELED == job.getState() );
 
             CPPUNIT_ASSERT( static_cast< std::uint64_t>(loops) > job.getDoneWorkUnits() );
+            worker->stop();
         }
 
     }
@@ -440,6 +442,7 @@ void JobTest::AggregationTest()
                        + (job2->getDoneWorkUnits() / job2->getTotalWorkUnits())
                        + (job1->getDoneWorkUnits() / job1->getTotalWorkUnits()))/3 ),
             jobs2->getDoneWorkUnits());
+        worker->stop();
 
     }
 
@@ -481,7 +484,7 @@ void JobTest::AggregationTest()
         CPPUNIT_ASSERT_EQUAL((decltype(jobs1->getSubJobs().size())) 3, jobs1->getSubJobs().size());
 
         jobs1->run().get();
-
+        worker->stop();
     }
 
     { // weight test
@@ -710,6 +713,7 @@ void JobTest::ObserverTest()
             std::this_thread::sleep_for( std::chrono::milliseconds(30) );
             job.cancel().wait();
             CPPUNIT_ASSERT( progress > job.getDoneWorkUnits() );
+            worker->stop();
         }
 
         {
@@ -733,6 +737,7 @@ void JobTest::ObserverTest()
             std::this_thread::sleep_for( std::chrono::milliseconds(30) );
             job.cancel().wait();
             CPPUNIT_ASSERT( progress > job.getDoneWorkUnits() );
+            worker->stop();
         }
     }
 }
