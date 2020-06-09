@@ -24,7 +24,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -41,13 +40,13 @@ namespace uiTools
 namespace editor
 {
 
-static const ::fwServices::IService::KeyType s_STRING_INPUT          = "string";
+static const ::fwServices::IService::KeyType s_STRING_INPUT = "string";
+
 static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 static const ::fwCom::Slots::SlotKeyType s_SET_STRING_PARAMETER_SLOT = "setStringParameter";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::STextStatus )
 //-----------------------------------------------------------------------------
 
 STextStatus::STextStatus()
@@ -72,52 +71,20 @@ STextStatus::~STextStatus()
 
 //------------------------------------------------------------------------------
 
-void STextStatus::starting()
-{
-    this->create();
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-
-    QHBoxLayout* layout = new QHBoxLayout();
-    layout->addWidget(m_labelStaticText);
-    layout->addWidget(m_labelValue);
-
-    layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-
-    qtContainer->setLayout(layout);
-
-    // get Input data
-    const auto stringInput = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
-
-    if(!stringInput.expired())
-    {
-        const auto stringInputLock = stringInput.lock();
-        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
-    }
-
-}
-
-//------------------------------------------------------------------------------
-
-void STextStatus::stopping()
-{
-    this->destroy();
-}
-
-//------------------------------------------------------------------------------
-
 void STextStatus::configuring()
 {
     this->initialize();
 
-    auto txtCfg = m_configuration->findConfigurationElement("label");
-    SLM_ASSERT("'<label>' configuration element is missing.", txtCfg);
-    QString txt = QString::fromStdString(txtCfg->getValue());
-
-    m_labelStaticText->setText(QString(txt + ": "));
+    const auto txtCfg = m_configuration->findConfigurationElement("label");
+    if(txtCfg)
+    {
+        const QString txt = QString::fromStdString(txtCfg->getValue());
+        m_labelStaticText->setText(QString(txt + ": "));
+    }
 
     QString color = "red";
 
-    auto colorCfg = m_configuration->findConfigurationElement("color");
+    const auto colorCfg = m_configuration->findConfigurationElement("color");
     if(colorCfg)
     {
         const QString txtColor = QString::fromStdString(colorCfg->getValue());
@@ -128,6 +95,63 @@ void STextStatus::configuring()
     }
 
     m_labelStaticText->setStyleSheet(m_labelStaticText->styleSheet() + " color: " + color + ";");
+}
+
+//------------------------------------------------------------------------------
+
+void STextStatus::starting()
+{
+    this->create();
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+
+    QHBoxLayout* const layout = new QHBoxLayout();
+    layout->addWidget(m_labelStaticText);
+    layout->addWidget(m_labelValue);
+
+    layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
+
+    qtContainer->setLayout(layout);
+
+    // Get input data.
+    const auto stringInput     = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
+    const auto stringInputLock = stringInput.lock();
+
+    if(stringInputLock.has_value())
+    {
+        m_labelValue->setText(QString::fromStdString(stringInputLock.value()->value()));
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_STRING_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void STextStatus::updating()
+{
+    // Get input data.
+    const auto stringInput     = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
+    const auto stringInputLock = stringInput.lock();
+
+    if(stringInputLock.has_value())
+    {
+        m_labelValue->setText(QString::fromStdString(stringInputLock.value()->value()));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void STextStatus::stopping()
+{
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -165,36 +189,5 @@ void STextStatus::setStringParameter(std::string _val)
 
 //------------------------------------------------------------------------------
 
-void STextStatus::updating()
-{
-    // get Input data
-    const auto stringInput = this->getWeakInput< const ::fwData::String >(s_STRING_INPUT);
-
-    if(!stringInput.expired())
-    {
-        const auto stringInputLock = stringInput.lock();
-        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void STextStatus::swapping()
-{
-
-}
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
-{
-
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_STRING_INPUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace editor
-} // namespace uiTools
+} // namespace editor.
+} // namespace uiTools.
