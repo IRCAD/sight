@@ -113,22 +113,22 @@ struct ThresholdFilter
         ::fwData::Image::csptr imageIn = param.imageIn;
         ::fwData::Image::sptr imageOut = param.imageOut;
         SLM_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3 );
+
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
         imageOut->resize(); // Allocate the image buffer
 
-        const auto inDumpLock  = imageIn->lock();
-        const auto outDumpLock = imageOut->lock();
-
-        // Get image buffers
+        // Get iterators on image buffers
         auto it1          = imageIn->begin<PIXELTYPE>();
         const auto it1End = imageIn->end<PIXELTYPE>();
         auto it2          = imageOut->begin<PIXELTYPE>();
         const auto it2End = imageOut->end<PIXELTYPE>();
 
+        const PIXELTYPE maxValue = std::numeric_limits<PIXELTYPE>::max();
+
         // Fill the target buffer considering the thresholding
         for(; it1 != it1End && it2 != it2End; ++it1, ++it2 )
         {
-            * it2 = ( *it1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
+            * it2 = ( *it1 < thresholdValue ) ? 0 : maxValue;
         }
     }
 };
@@ -139,21 +139,23 @@ void SThreshold::updating()
 {
     ThresholdFilter::Parameter param; // filter parameters: threshold value, image source, image target
 
-    ::fwData::Object::csptr input                  = this->getInput< ::fwData::Object >(s_IMAGE_INPUT);
-    ::fwMedData::ImageSeries::csptr imageSeriesSrc = ::fwMedData::ImageSeries::dynamicConstCast(input);
-    ::fwData::Image::csptr imageSrc                = ::fwData::Image::dynamicConstCast(input);
+    // retrieve the input object
+    auto input = this->getLockedInput< ::fwData::Object >(s_IMAGE_INPUT);
+
+    // try to dynamic cast to an Image and an ImageSeries to know whick type of data we use
+    ::fwMedData::ImageSeries::csptr imageSeriesSrc = ::fwMedData::ImageSeries::dynamicConstCast(input.getShared());
+    ::fwData::Image::csptr imageSrc                = ::fwData::Image::dynamicConstCast(input.getShared());
     ::fwData::Object::sptr output;
 
     // Get source/target image
     if(imageSeriesSrc)
     {
         param.imageIn                                  = imageSeriesSrc->getImage();
-        ::fwMedData::ImageSeries::sptr imageSeriesDest = ::fwMedData::ImageSeries::New();
-
-        ::fwData::Object::DeepCopyCacheType cache;
-        imageSeriesDest->::fwMedData::Series::cachedDeepCopy(imageSeriesSrc, cache);
+        ::fwMedData::ImageSeries::sptr imageSeriesDest = ::fwMedData::ImageSeries::copy(imageSeriesSrc);
+        // define the input image series as the reference
         imageSeriesDest->setDicomReference(imageSeriesSrc->getDicomReference());
 
+        // create the output image
         ::fwData::Image::sptr imageOut = ::fwData::Image::New();
         imageSeriesDest->setImage(imageOut);
         param.imageOut = imageOut;
@@ -161,7 +163,8 @@ void SThreshold::updating()
     }
     else if(imageSrc)
     {
-        param.imageIn                  = imageSrc;
+        param.imageIn = imageSrc;
+        // create the output image
         ::fwData::Image::sptr imageOut = ::fwData::Image::New();
         param.imageOut                 = imageOut;
         output                         = imageOut;
@@ -173,15 +176,23 @@ void SThreshold::updating()
 
     param.thresholdValue = m_threshold;
 
-    /*
-     * The dispatcher allows to apply the filter on any type of image.
-     * It invokes the template functor ThresholdFilter using the image type.
-     */
-    ::fwTools::Type type = param.imageIn->getType(); // image type
+    // get image type
+    ::fwTools::Type type = param.imageIn->getType();
 
-    // Invoke filter functor
+    /* The dispatcher allows to apply the filter on any type of image.
+     * It invokes the template functor ThresholdFilter using the image type.
+     * - template parameters:
+     *   - ::fwTools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
+     *     supportted by ::fwTools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+     *     std::uint32_t, std::int64_t, std::uint64_t, float, double)
+     *   - ThresholdFilter: functor struct or class
+     * - parameters:
+     *   - type: ::fwTools::Type of the image
+     *   - param: struct containing the functor parameters (here the input and output images and the threshold value)
+     */
     ::fwTools::Dispatcher< ::fwTools::SupportedDispatcherTypes, ThresholdFilter >::invoke( type, param );
 
+    // register the output image to be accesible by the other service from the XML configuration
     this->setOutput(s_IMAGE_OUTPUT, output);
 }
 
