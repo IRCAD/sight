@@ -44,7 +44,7 @@ namespace fwData
  * destruction of the buffer. Else, this class will provide an array "view" of the buffer.
  *
  * The array can be multi-dimensional, the number of dimensions is defined by the number of elements in the size vector
- * (@see setSize()).
+ * (getSize()).
  *
  * @section Usage Usage
  *
@@ -57,6 +57,10 @@ namespace fwData
  * It may be useful when you don't want to reallocate the image too often, but you need to be sure to allocate enough
  * memory.
  *
+ * To resize the array, you must define the Type ([u]int[8|16|32|64], double, float) and the size of the buffer. You can
+ * use setType(const ::fwTools::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
+ * resize(const SizeType& size, const ::fwTools::Type& type, bool reallocate).
+ *
  * @section Access Buffer access
  *
  * You can access buffer values using at<type>(const size_t& offset) or at<type>({x, y, z}) methods. These methods are
@@ -64,6 +68,24 @@ namespace fwData
  *
  * @warning The array must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
  * disk.
+ *
+ * \b Example:
+ *
+ * @code{.cpp}
+
+    // 2D array of std::int16_t
+
+    // prevent the buffer to be dumped on the disk
+    const auto dumpLock = array->lock();
+
+    // retrieve the value at index (x, y)
+    value = array->at<std::int16_t>({x, y});
+
+    // or you can compute the index like
+    const auto size = array->getSize();
+    const size_t index = x + y*size[0];
+    value = array->at<std::int16_t>(index);
+   @endcode
  *
  * @subsection Iterators Iterators
  *
@@ -88,7 +110,10 @@ namespace fwData
  * @warning The iterator does not assert that the array type is the same as the given format. It only asserts (in debug)
  * that the iterator does not iterate outside of the buffer bounds).
  *
- * Example :
+ * \b Example :
+ */
+/* *INDENT-OFF* */
+/**
  * @code{.cpp}
     ::fwData::Array::sptr array = ::fwData::Array::New();
     array->resize({1920, 1080}, ::fwTools::Type::s_INT16);
@@ -100,7 +125,28 @@ namespace fwData
         (*iter) = value;
     }
    @endcode
+ *
+ * @note If you need to know (x, y) indices, you can parse the array looping from the last dimension to the first, like:
+ * @code{.cpp}
+    auto iter = array->begin<std::int16_t>();
+
+    const auto size = array->getSize();
+    for (size_t y=0 ; y<size[1] ; ++y)
+    {
+        for (size_t x=0 ; x<size[0] ; ++x)
+        {
+            // do something with x and y ....
+
+            // retrieve the value
+            *iter = value;
+
+            // increment iterator
+            ++iter;
+        }
+    }
+   @endcode
  */
+/* *INDENT-ON* */
 class FWDATA_CLASS_API Array : public ::fwData::Object,
                                public ::fwMemory::IBuffered
 {
@@ -228,13 +274,14 @@ public:
     FWDATA_API virtual bool getIsBufferOwner() const;
 
     /**
+     * @{
      * @brief Setter for array's type
      *
      * @param type new array type
      */
     FWDATA_API virtual void setType(const std::string& type);
     FWDATA_API virtual void setType(const ::fwTools::Type& type);
-
+    /// @}
     /**
      * @brief Getter for array's type
      *
@@ -265,9 +312,11 @@ public:
      */
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t sizeOfType );
 
-    ::fwMemory::BufferObject::sptr getBufferObject () const;
+    /// Return buffer object
+    ::fwMemory::BufferObject::sptr getBufferObject() const;
 
-    void setBufferObject (const ::fwMemory::BufferObject::sptr& val);
+    /// Set buffer object
+    void setBufferObject (const ::fwMemory::BufferObject::sptr& bufferObj);
 
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
@@ -706,9 +755,9 @@ inline ::fwMemory::BufferObject::sptr Array::getBufferObject () const
 
 //-----------------------------------------------------------------------------
 
-inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
+inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& bufferObj)
 {
-    m_bufferObject = val;
+    m_bufferObject = bufferObj;
 }
 
 //------------------------------------------------------------------------------

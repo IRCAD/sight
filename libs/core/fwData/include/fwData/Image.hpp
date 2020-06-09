@@ -27,6 +27,8 @@
 #include "fwData/iterator/ImageIterator.hpp"
 #include "fwData/Object.hpp"
 
+#include <boost/shared_array.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
@@ -34,8 +36,6 @@
 
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
-
-#include <boost/shared_array.hpp>
 
 #include <filesystem>
 #include <vector>
@@ -72,15 +72,39 @@ class PointList;
  * calling resize(). It may be useful when you don't want to reallocate the image too often, but you need to be sure to
  * allocate enough memory.
  *
+ * To resize the image, you must define the Type ([u]int[8|16|32|64], double, float), the size and the pixel
+ * format of the buffer. You can use setSize2(const Size& size), setType(::fwTools::Type type) and
+ * setPixelFormat(PixelFormat format) or directly call
+ * resize(const Size& size, const ::fwTools::Type& type, PixelFormat format).
+ *
  * @section Access Buffer access
  *
- * You can access voxel values using at<type>(IndexType id) or at<type>(IndexType x, IndexType y, IndexType z)
- * methods. These methods are slow and should not be used to parse the entire buffer (see iterators).
+ * You can access voxel values using at<type>(IndexType id) or
+ * at<type>(IndexType x, IndexType y, IndexType z, IndexType c) methods. These methods are slow and should not be used
+ * to parse the entire buffer (see iterators).
  *
  * You can also use getPixelAsString() to retrieve the value as a string (useful for displaying information).
  *
  * @warning The image must be locked for dump before accessing the buffer. It prevents the buffer to be dumped on the
  * disk.
+ *
+ * \b Example:
+ *
+ * @code{.cpp}
+
+    // 3D image of std::int16_t
+
+    // prevent the buffer to be dumped on the disk
+    const auto dumpLock = image->lock();
+
+    // retrieve the value at index (x, y, z)
+    value = image->at<std::int16_t>(x, y, z);
+
+    // or you can compute the index like
+    const auto size = image->getSize2();
+    const size_t index = x + y*size[0] + z*size[0]*size[1];
+    value = image->at<std::int16_t>(index);
+   @endcode
  *
  * @subsection Iterators Iterators
  *
@@ -105,10 +129,10 @@ class PointList;
  * @warning The iterator does not assert that the image type is the same as the given format. It only asserts (in debug)
  * that the iterator does not iterate outside of the buffer bounds).
  *
- * Example :
+ * \b Example :
  * @code{.cpp}
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    img->resize(1920, 1080, 0, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 1, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
     auto iter    = img->begin<Color>();
     const auto iterEnd = img->end<Color>();
 
@@ -120,7 +144,39 @@ class PointList;
         iter->a = val4;
     }
    @endcode
+ *
  */
+/* *INDENT-OFF* */
+/**
+ * @note If you need to know (x, y, z) indices, you can parse the array looping from the last dimension to the first,
+ * like:
+ * @code{.cpp}
+    const auto size = image->getSize2();
+
+    auto iter    = image->begin<Color>();
+
+    for (size_t z=0 ; z<size[2] ; ++z)
+    {
+        for (size_t y=0 ; y<size[1] ; ++y)
+        {
+            for (size_t x=0 ; x<size[0] ; ++x)
+            {
+                // do something with x and y ....
+
+                // retrieve the value
+                val1 = iter->r;
+                val2 = iter->g;
+                val3 = iter->b;
+                val4 = iter->a;
+
+                // increment iterator
+                ++iter;
+            }
+        }
+    }
+   @endcode
+ */
+/* *INDENT-ON* */
 class FWDATA_CLASS_API Image : public ::fwData::Object,
                                public ::fwMemory::IBuffered
 {
@@ -438,14 +494,18 @@ public:
      * @brief Get the value of an element
      *
      * @tparam T Type in which the pointer will be returned
+     * @param x x index
+     * @param y y index
+     * @param z z index
+     * @param c component index
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
      * @throw ::fwData::Exception The buffer cannot be accessed if the array is not locked (see lock())
      * @throw ::fwData::Exception Index out of bounds
      */
-    template< typename T > T& at(IndexType x, IndexType y, IndexType z);
-    template< typename T > T at(IndexType x, IndexType y, IndexType z) const;
+    template< typename T > T& at(IndexType x, IndexType y, IndexType z, IndexType c = 0);
+    template< typename T > T at(IndexType x, IndexType y, IndexType z, IndexType c = 0) const;
     /// @}
     ///
 
@@ -818,19 +878,19 @@ inline T Image::at(IndexType id) const
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T& Image::at(IndexType x, IndexType y, IndexType z)
+inline T& Image::at(IndexType x, IndexType y, IndexType z, IndexType c)
 {
     const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
-    return *reinterpret_cast<T*>(this->getPixelBuffer(offset));
+    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset))+c);
 }
 
 //------------------------------------------------------------------------------
 
 template< typename T >
-inline T Image::at(IndexType x, IndexType y, IndexType z) const
+inline T Image::at(IndexType x, IndexType y, IndexType z, IndexType c) const
 {
     const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
-    return *reinterpret_cast<T*>(this->getPixelBuffer(offset));
+    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset))+c);
 }
 
 //-----------------------------------------------------------------------------
