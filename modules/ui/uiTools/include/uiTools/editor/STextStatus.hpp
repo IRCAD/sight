@@ -38,6 +38,7 @@ namespace editor
 
 /**
  * @brief This service is used to displays and update values (int, double or string) in a QLabel.
+ * Values are set using slots or using a ::fwData::String input.
  *
  * @section Slots Slots
  * - \b setIntParameter(int): display the value in the QLabel.
