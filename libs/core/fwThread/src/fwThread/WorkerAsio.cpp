@@ -180,7 +180,8 @@ WorkerAsio::WorkerAsio() :
 
 WorkerAsio::~WorkerAsio()
 {
-
+    SLM_ASSERT("Worker must be properly stopped. Try to call stop() from the caller thread before.",
+               !m_thread->joinable());
 }
 
 //------------------------------------------------------------------------------
