@@ -1,6 +1,7 @@
 stages:
   - lint
   - build
+  - test
   - doc
   - deploy
 
@@ -308,58 +309,216 @@ pages:
   only:
     - dev
 
-build:sdk-release-linux:
+build:sdk-debug-linux:
   <<: *linux_job
   stage: build
-  when : manual
   dependencies: []
   script:
     # Build the project on the merge result.
-    - mkdir -p /home/sight/sdk/install /home/sight/sdk/build
-    - cd /home/sight/sdk/build
+    - mkdir -p $CI_PROJECT_DIR/sdk
+    - rm -rf $CI_PROJECT_DIR/sdk/* $CI_PROJECT_DIR/build/* $CI_PROJECT_DIR/install/*
+    - cd $CI_PROJECT_DIR/build/
     - ccache -s
+    # PCH are disabled because they don't work with ccache.
+    - >
+      cmake $CI_PROJECT_DIR
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_BUILD_TYPE=Debug
+      -DBUILD_TESTS=OFF
+      -DBUILD_DOCUMENTATION=OFF
+      -DENABLE_PCH=OFF
+      -DBUILD_SDK=ON
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
+    - ninja
+    - ninja install
+    - ninja package
+    - ccache -s
+    # Retrieve package name and store it as environment files since inherited environment variable is experimental
+    # and need to explicitly enabled (https://docs.gitlab.com/ee/ci/variables/#enable-inherited-environment-variables-core-only)
+    - export SDK_FILE_PATH=$(find $CI_PROJECT_DIR/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})
+    - mv ${SDK_FILE_PATH} $CI_PROJECT_DIR/sdk/sdk.tar.gz
+    - echo "export SDK_NAME=${SDK_NAME}" > $CI_PROJECT_DIR/sdk/SDK_NAME.env
+    - cat $CI_PROJECT_DIR/sdk/SDK_NAME.env
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_SLUG}-SDK"
+    paths:
+      - $CI_PROJECT_DIR/sdk/SDK_NAME.env
+      - $CI_PROJECT_DIR/sdk/sdk.tar.gz
+
+build:sdk-release-linux:
+  <<: *linux_job
+  stage: build
+  dependencies: []
+  script:
+    # Build the project on the merge result.
+    - mkdir -p $CI_PROJECT_DIR/sdk
+    - rm -rf $CI_PROJECT_DIR/sdk/* $CI_PROJECT_DIR/build/* $CI_PROJECT_DIR/install/*
+    - cd $CI_PROJECT_DIR/build/
+    - ccache -s
+    # PCH are disabled because they don't work with ccache.
     - >
      cmake $CI_PROJECT_DIR
      -G Ninja
-     -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
+     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
      -DCMAKE_BUILD_TYPE=Release
      -DBUILD_TESTS=OFF
      -DBUILD_DOCUMENTATION=OFF
      -DENABLE_PCH=OFF
      -DBUILD_SDK=ON
-    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ninja install
     - ninja package
     - ccache -s
-    - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
-    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
-    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
-    
-build:sdk-debug-linux:
+    # Retrieve package name and store it as environment files since inherited environment variable is experimental
+    # and need to explicitly enabled (https://docs.gitlab.com/ee/ci/variables/#enable-inherited-environment-variables-core-only)
+    - export SDK_FILE_PATH=$(find $CI_PROJECT_DIR/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
+    - export SDK_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH})
+    - mv ${SDK_FILE_PATH} $CI_PROJECT_DIR/sdk/sdk.tar.gz
+    - echo "export SDK_NAME=${SDK_NAME}" > $CI_PROJECT_DIR/sdk/SDK_NAME.env
+    - cat $CI_PROJECT_DIR/sdk/SDK_NAME.env
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_SLUG}-SDK"
+    paths:
+      - $CI_PROJECT_DIR/sdk/SDK_NAME.env
+      - $CI_PROJECT_DIR/sdk/sdk.tar.gz
+
+test:sdk-debug-linux:
   <<: *linux_job
-  stage: build
-  when : manual
-  dependencies: []
+  stage: test
+  dependencies:
+    - build:sdk-debug-linux
   script:
-    # Build the project on the merge result.
-    - mkdir -p /home/sight/sdk/install /home/sight/sdk/build
-    - cd /home/sight/sdk/build
-    - ccache -s
+    # Uncompress the sdk.
+    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env    
+    - cd $CI_PROJECT_DIR/sdk
+    - tar xvfa $CI_PROJECT_DIR/sdk/sdk.tar.gz
+    - find . -type f -iname '*' -exec touch -t 197001010000 {} \;
+    # Clean garbage from previous stage
+    - rm -rf $CI_PROJECT_DIR/build/* $CI_PROJECT_DIR/install/*
+    # Checkout 
+    - cd $CI_PROJECT_DIR/build
     - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=/home/sight/sdk/install
-     -DCMAKE_BUILD_TYPE=Debug
-     -DBUILD_TESTS=OFF
-     -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=OFF
-     -DBUILD_SDK=ON
-    - find . -type f -iname '*.?pp' -exec touch -f -a -m -t 197001010000 {} \;
-    - ninja
-    - ninja install
-    - ninja package
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        export SAMPLE_BRANCH="dev"
+      else
+        export SAMPLE_BRANCH="$CI_COMMIT_REF_NAME"
+      fi
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/sight/sight-sdk-sample.git -b $SAMPLE_BRANCH sight-sdk-sample
+    # Reset the time of all files to improve the use of ccache.
+    - cd $CI_PROJECT_DIR/build/sight-sdk-sample
+    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
+    - mkdir -p $CI_PROJECT_DIR/build/sight-sdk-sample-build
+    - cd $CI_PROJECT_DIR/build/sight-sdk-sample-build
     - ccache -s
-    - export SDK_FILE_PATH=$(find /home/sight/sdk/build -maxdepth 1 -iname '*.tar.gz' -type f -print -quit)
-    - export SDK_FILE_NAME=$(basename -s .tar.gz ${SDK_FILE_PATH}).tar.gz
-    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T ${SDK_FILE_PATH} "https://conan.ircad.fr/artifactory/data/sdk/${SDK_FILE_NAME}"
+    # PCH are disabled because they don't work with ccache.
+    - >
+      cmake $CI_PROJECT_DIR/build/sight-sdk-sample
+      -DSight_DIR=$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib/cmake/sight
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_BUILD_TYPE=Debug
+      -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
+    - ninja
+    - ccache -s
+    # Launch sight-sdk-sample
+    - LD_LIBRARY_PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib:$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib/sight:$LD_LIBRARY_PATH
+    - PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/bin:$PATH
+    - ./sight-sdk-sample
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_SLUG}-SDK"
+    paths:
+      - $CI_PROJECT_DIR/sdk/SDK_NAME.env
+      - $CI_PROJECT_DIR/sdk/sdk.tar.gz
+
+test:sdk-release-linux:
+  <<: *linux_job
+  stage: test
+  dependencies:
+    - build:sdk-release-linux
+  script:
+    # Uncompress the sdk.
+    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env    
+    - cd $CI_PROJECT_DIR/sdk
+    - tar xvfa $CI_PROJECT_DIR/sdk/sdk.tar.gz
+    - find . -type f -iname '*' -exec touch -t 197001010000 {} \;
+    # Clean garbage from previous stage
+    - rm -rf $CI_PROJECT_DIR/build/* $CI_PROJECT_DIR/install/*
+    # Checkout 
+    - cd $CI_PROJECT_DIR/build
+    - >
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        export SAMPLE_BRANCH="dev"
+      else
+        export SAMPLE_BRANCH="$CI_COMMIT_REF_NAME"
+      fi
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/sight/sight-sdk-sample.git -b $SAMPLE_BRANCH sight-sdk-sample
+    # Reset the time of all files to improve the use of ccache.
+    - cd $CI_PROJECT_DIR/build/sight-sdk-sample
+    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
+    - mkdir -p $CI_PROJECT_DIR/build/sight-sdk-sample-build
+    - cd $CI_PROJECT_DIR/build/sight-sdk-sample-build
+    - ccache -s
+    # PCH are disabled because they don't work with ccache.
+    - >
+      cmake $CI_PROJECT_DIR/build/sight-sdk-sample
+      -DSight_DIR=$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib/cmake/sight
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_BUILD_TYPE=Release
+      -DENABLE_PCH=OFF
+    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
+    - ninja
+    - ccache -s
+    # Launch sight-sdk-sample
+    - LD_LIBRARY_PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib:$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib/sight:$LD_LIBRARY_PATH
+    - PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/bin:$PATH
+    - ./sight-sdk-sample
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_SLUG}-SDK"
+    paths:
+      - $CI_PROJECT_DIR/sdk/SDK_NAME.env
+      - $CI_PROJECT_DIR/sdk/sdk.tar.gz
+
+deploy:sdk-release-linux:
+  <<: *linux_job
+  stage: deploy
+  when: manual
+  dependencies:
+    - test:sdk-release-linux
+  script:
+    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env
+    - >
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        export ARTIFACTORY_NAME=${SDK_NAME}
+      else
+        export ARTIFACTORY_NAME="sight-Release-latest-$CI_COMMIT_REF_NAME-Linux"
+      fi
+    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T $CI_PROJECT_DIR/sdk/sdk.tar.gz "https://conan.ircad.fr/artifactory/data/sdk/${ARTIFACTORY_NAME}"
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_SLUG}-SDK"
+    paths:
+      - $CI_PROJECT_DIR/sdk/sdk.tar.gz
+
+deploy:sdk-debug-linux:
+  <<: *linux_job
+  stage: deploy
+  when: manual
+  dependencies:
+    - test:sdk-debug-linux
+  script:
+    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env
+    - >
+      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+        export ARTIFACTORY_NAME=${SDK_NAME}
+      else
+        export ARTIFACTORY_NAME="sight-Debug-latest-$CI_COMMIT_REF_NAME-Linux"
+      fi
+    - curl -u${CONAN_USERNAME}:${CONAN_PASSWORD} -T $CI_PROJECT_DIR/sdk/sdk.tar.gz "https://conan.ircad.fr/artifactory/data/sdk/${ARTIFACTORY_NAME}"
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_SLUG}-SDK"
+    paths:
+      - $CI_PROJECT_DIR/sdk/sdk.tar.gz
