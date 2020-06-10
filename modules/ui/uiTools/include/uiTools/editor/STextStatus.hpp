@@ -37,83 +37,88 @@ namespace editor
 {
 
 /**
- * @brief   STextStatus is used to displays and update values (int, double or string) in a QLabel.
+ * @brief This service is used to displays and update values (int, double or string) in a QLabel.
  * Values are set using slots or using a ::fwData::String input.
  *
+ * @section Slots Slots
+ * - \b setIntParameter(int): display the value in the QLabel.
+ * - \b setDoubleParameter(double): display the value in the QLabel.
+ * - \b setBoolParameter(int): display the value in the QLabel.
+ * - \b setStringParameter(int): display the value in the QLabel.
+ *
+ * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::uiTools::editor::STextStatus">
- *    <in key="string" uid="..." />
- *    <label> my label </label>
- *    <color> my color </color>
- * </service>
- * @endcode
+    <service uid="..." type="::uiTools::editor::STextStatus">
+        <in key="string" uid="..." />
+        <label>my label</label>
+        <color>#FF0000</color>
+    </service>
+   @endcode
+ *
  * @subsection Input Input
  * - \b string(::fwData::String, optional): string data to display.
+ *
  * @subsection Configuration Configuration
- * - \b label (optional, by default "") : the text to show before size of the vector
- * - \b color (optional, by default "red") : the needed color of the displayed label in a CSS style as names (ex: red),
+ * - \b label (optional, default="") : text to show before size of the vector
+ * - \b color (optional, default="red") : needed color of the displayed label in a CSS style as names (ex: red),
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
  */
-class UITOOLS_CLASS_API STextStatus : public QObject,
-                                      public ::fwGui::editor::IEditor
+class UITOOLS_CLASS_API STextStatus final : public QObject,
+                                            public ::fwGui::editor::IEditor
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(STextStatus, ::fwGui::editor::IEditor)
 
-    /// Constructor. Do nothing.
+    /// Initializes slots and member.
     UITOOLS_API STextStatus();
 
-    /// Destructor. Do nothing.
-    UITOOLS_API virtual ~STextStatus();
+    /// Destroys the service.
+    UITOOLS_API ~STextStatus() override;
 
-protected:
+private:
 
-    /**
-     * @brief Configure the service
-     */
-    virtual void configuring() override;
+    /// Configures the service.
+    void configuring() override;
 
-    /**
-     * @brief Install the layout and gets the input data if it exists and displays it.
-     */
-    virtual void starting() override;
-
-    /**
-     * @brief Destroy the layout.
-     */
-    virtual void stopping() override;
+    /// Installs the layout and gets the input data if it exists and displays it.
+    void starting() override;
 
     /// Gets the input data if it exists and displays it.
-    virtual void updating() override;
+    void updating() override;
 
-    /// Does nothing
-    virtual void swapping() override;
+    /// Destroys the layout.
+    void stopping() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_STRING_INPUT to s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
-private:
-
-    ///Slot called when a integer value is changed
+    /// Sets the interger to display.
     void setIntParameter(int _val);
-    ///Slot called when a double value is changed
+
+    /// Sets the double to display.
     void setDoubleParameter(double _val);
-    ///Slot called when a boolean value is changed
+
+    /// Sets the boolean to display.
     void setBoolParameter(bool _val);
-    ///Slot called when a enum value is changed
+
+    /// Sets the string to display.
     void setStringParameter(std::string _val);
 
-    ///Value to be displayed
+    /// Stores the label.
     QPointer< QLabel > m_labelValue;
-    ///Static text to be displayed (ex: MyValue: #Value )
+
+    /// Stores the static text to be displayed.
     QPointer< QLabel > m_labelStaticText;
 
 };
 
-} // namespace editor
-} // namespace uiTools
+} // namespace editor.
+} // namespace uiTools.

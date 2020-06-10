@@ -224,7 +224,7 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType&
 template< class DATATYPE, typename CONST_DATATYPE >
 inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& key) const
 {
-    auto lockedInput = getWeakInput< DATATYPE >(key).lock();
+    auto lockedInput = this->getWeakInput< DATATYPE >(key).lock();
     SLM_ASSERT("Cannot acquire a lock on '" + key + "'.", lockedInput);
     return lockedInput;
 }
@@ -244,7 +244,7 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyTy
 template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyType& key) const
 {
-    auto lockedOutput = getWeakOutput< DATATYPE >(key).lock();
+    auto lockedOutput = this->getWeakOutput< DATATYPE >(key).lock();
     SLM_ASSERT("Cannot acquire a lock on '" + key + "'.", lockedOutput);
     return lockedOutput;
 }
@@ -255,7 +255,7 @@ template< class DATATYPE, typename CONST_DATATYPE >
 inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& keybase,
                                                                            size_t index) const
 {
-    auto lockedInput = getWeakInput< DATATYPE >(keybase, index).lock();
+    auto lockedInput = this->getWeakInput< DATATYPE >(keybase, index).lock();
     SLM_ASSERT("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", lockedInput);
     return lockedInput;
 }
@@ -265,7 +265,7 @@ inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const
 template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& keybase, size_t index) const
 {
-    auto lockedInOut = getWeakInOut< DATATYPE >(keybase, index).lock();
+    auto lockedInOut = this->getWeakInOut< DATATYPE >(keybase, index).lock();
     SLM_ASSERT("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", lockedInOut);
     return lockedInOut;
 }
@@ -275,7 +275,7 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyTy
 template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::geLockedOutput(const KeyType& keybase, size_t index) const
 {
-    auto lockedOutput = getWeakOutput< DATATYPE >(keybase, index).lock();
+    auto lockedOutput = this->getWeakOutput< DATATYPE >(keybase, index).lock();
     SLM_ASSERT("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", lockedOutput);
     return lockedOutput;
 }
