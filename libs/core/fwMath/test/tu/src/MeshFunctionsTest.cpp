@@ -75,18 +75,6 @@ void MeshFunctionsTest::compare(const ::glm::dvec3& _expected, const ::glm::dvec
 
 //-----------------------------------------------------------------------------
 
-void MeshFunctionsTest::compare(const ::glm::dvec3& _expected, const ::glm::dvec3& _actual)
-{
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Conversion world-barycentric-world error.", _expected[X], _actual[X],
-                                         s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Conversion world-barycentric-world error.", _expected[Y], _actual[Y],
-                                         s_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Conversion world-barycentric-world error.", _expected[Z], _actual[Z],
-                                         s_EPSILON);
-}
-
-//-----------------------------------------------------------------------------
-
 void MeshFunctionsTest::computeBarycenterABC2D()
 {
     // With the same Z it correspond to a 2d case
