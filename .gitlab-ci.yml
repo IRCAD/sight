@@ -34,6 +34,9 @@ stages:
         git checkout dev
         git reset --hard origin/dev
         git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+        export EXTRA_BRANCH="dev"
+      else
+        export EXTRA_BRANCH="${CI_COMMIT_REF_NAME}"
       fi
 
 .windows_template: &windows_job
@@ -44,6 +47,7 @@ stages:
   before_script:
     # CMerge the branch into dev.
     - >
+      set EXTRA_BRANCH="%CI_COMMIT_REF_NAME%"
       if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
         if "%CI_COMMIT_REF_NAME%" NEQ "master" (
           if "%CI_COMMIT_TAG%" EQU "" (
@@ -53,6 +57,7 @@ stages:
             git checkout dev
             git reset --hard origin/dev
             git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
+            set EXTRA_BRANCH="dev"
           )
         )
       )
@@ -85,67 +90,6 @@ sheldon:
     - master
     - tags
 
-build:debug-linux:
-  <<: *linux_job
-  stage: build
-  dependencies: []
-  script:
-    # Build the project on the merge result.
-    - cd $CI_PROJECT_DIR/build/
-    - ccache -s
-    # PCH are disabled because they don't work with ccache.
-    - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Debug
-     -DBUILD_TESTS=ON
-     -DBUILD_DOCUMENTATION=OFF
-     -DSPYLOG_LEVEL=trace
-     -DENABLE_PCH=OFF
-    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
-    - ninja
-    - ccache -s
-    # Run tests.
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
-  artifacts:
-    when: always
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - $CI_PROJECT_DIR/build/ctest.log
-
-build:release-linux:
-  <<: *linux_job
-  stage: build
-  dependencies: []
-  script:
-    # Build the project on the merge result.
-    - cd $CI_PROJECT_DIR/build/
-    - ccache -s
-    # PCH are disabled because they don't work with ccache.
-    - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Release
-     -DBUILD_TESTS=ON
-     -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=OFF
-    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
-    - ninja
-    - ccache -s
-    # Run tests.
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log -j4
-  artifacts:
-    when: always
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-    paths:
-      - $CI_PROJECT_DIR/build/ctest.log
-
 build:debug-linux-clang:
   <<: *linux_job
   stage: build
@@ -157,20 +101,20 @@ build:debug-linux-clang:
     - export CXX=/usr/local/lib/ccache/clang++-8
     - ccache -s
     - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Debug
-     -DBUILD_TESTS=ON
-     -DBUILD_DOCUMENTATION=OFF
-     -DSPYLOG_LEVEL=trace
-     -DENABLE_PCH=OFF
+      cmake $CI_PROJECT_DIR
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_BUILD_TYPE=Debug
+      -DBUILD_TESTS=ON
+      -DBUILD_DOCUMENTATION=OFF
+      -DSPYLOG_LEVEL=trace
+      -DENABLE_PCH=OFF
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
-    # Run tests.
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data-dev
+    # Run unit tests.
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data
     - ctest --timeout 240 --output-on-failure -O ctest.log -j4
   artifacts:
     when: always
@@ -186,18 +130,18 @@ build:debug-windows:
     # Build the project on the merge result.
     - cd "%CI_PROJECT_DIR%/build"
     - >
-     cmake %CI_PROJECT_DIR%
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
-     -DCMAKE_BUILD_TYPE=Debug
-     -DBUILD_TESTS=ON
-     -DBUILD_DOCUMENTATION=OFF
-     -DSPYLOG_LEVEL=trace
-     -DENABLE_PCH=ON
+      cmake %CI_PROJECT_DIR%
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
+      -DCMAKE_BUILD_TYPE=Debug
+      -DBUILD_TESTS=ON
+      -DBUILD_DOCUMENTATION=OFF
+      -DSPYLOG_LEVEL=trace
+      -DENABLE_PCH=ON
     - ninja
-    # Run tests.
-    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
-    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
+    # Run unit tests.
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b %EXTRA_BRANCH%
+    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data
     - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
     when: always
@@ -214,18 +158,18 @@ build:release-windows:
     # Build the project on the merge result.
     - cd "%CI_PROJECT_DIR%/build"
     - >
-     cmake %CI_PROJECT_DIR%
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
-     -DCMAKE_BUILD_TYPE=Release
-     -DBUILD_TESTS=ON
-     -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=ON
+      cmake %CI_PROJECT_DIR%
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
+      -DCMAKE_BUILD_TYPE=Release
+      -DBUILD_TESTS=ON
+      -DBUILD_DOCUMENTATION=OFF
+      -DENABLE_PCH=ON
     - ninja
-    # Run tests.
-    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b dev sight-data-dev
-    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data-dev
-    - ctest --timeout 120 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
+    # Run unit tests.
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b %EXTRA_BRANCH%
+    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data
+    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
     when: always
     name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
@@ -264,15 +208,15 @@ build:debian:
     - cd $CI_PROJECT_DIR/build/
     - ccache -s
     - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Release
-     -DBUILD_TESTS=OFF
-     -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=OFF
-     -DUSE_SYSTEM_LIB=ON
-     -DPROJECTS_TO_BUILD=VRRender
+      cmake $CI_PROJECT_DIR
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_BUILD_TYPE=Release
+      -DBUILD_TESTS=OFF
+      -DBUILD_DOCUMENTATION=OFF
+      -DENABLE_PCH=OFF
+      -DUSE_SYSTEM_LIB=ON
+      -DPROJECTS_TO_BUILD=VRRender
     - ninja
     - ccache -s
 
@@ -284,12 +228,12 @@ doxygen:
     # Generate the dox on the merge result.
     - cd $CI_PROJECT_DIR/build/
     - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Release
-     -DBUILD_TESTS=OFF
-     -DBUILD_DOCUMENTATION=ON
+      cmake $CI_PROJECT_DIR
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_BUILD_TYPE=Release
+      -DBUILD_TESTS=OFF
+      -DBUILD_DOCUMENTATION=ON
     - ninja doc
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -305,7 +249,7 @@ pages:
     - mv build/Documentation/Doxygen/html/ public/
   artifacts:
     paths:
-    - public
+      - public
   only:
     - dev
 
@@ -325,12 +269,18 @@ build:sdk-debug-linux:
       -G Ninja
       -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
       -DCMAKE_BUILD_TYPE=Debug
-      -DBUILD_TESTS=OFF
+      -DBUILD_TESTS=ON
       -DBUILD_DOCUMENTATION=OFF
       -DENABLE_PCH=OFF
       -DBUILD_SDK=ON
+      -DSPYLOG_LEVEL=trace
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
+    # Run unit tests.
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data
+    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
+    # Install and build the SDK package
     - ninja install
     - ninja package
     - ccache -s
@@ -346,6 +296,8 @@ build:sdk-debug-linux:
     paths:
       - $CI_PROJECT_DIR/sdk/SDK_NAME.env
       - $CI_PROJECT_DIR/sdk/sdk.tar.gz
+      - $CI_PROJECT_DIR/build/ctest.log
+    when: always
 
 build:sdk-release-linux:
   <<: *linux_job
@@ -359,16 +311,22 @@ build:sdk-release-linux:
     - ccache -s
     # PCH are disabled because they don't work with ccache.
     - >
-     cmake $CI_PROJECT_DIR
-     -G Ninja
-     -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-     -DCMAKE_BUILD_TYPE=Release
-     -DBUILD_TESTS=OFF
-     -DBUILD_DOCUMENTATION=OFF
-     -DENABLE_PCH=OFF
-     -DBUILD_SDK=ON
+      cmake $CI_PROJECT_DIR
+      -G Ninja
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_BUILD_TYPE=Release
+      -DBUILD_TESTS=ON
+      -DBUILD_DOCUMENTATION=OFF
+      -DENABLE_PCH=OFF
+      -DBUILD_SDK=ON
+      -DSPYLOG_LEVEL=error
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
+    # Run unit tests.
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data
+    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
+    # Install and build the SDK package
     - ninja install
     - ninja package
     - ccache -s
@@ -384,6 +342,8 @@ build:sdk-release-linux:
     paths:
       - $CI_PROJECT_DIR/sdk/SDK_NAME.env
       - $CI_PROJECT_DIR/sdk/sdk.tar.gz
+      - $CI_PROJECT_DIR/build/ctest.log
+    when: always
 
 test:sdk-debug-linux:
   <<: *linux_job
@@ -392,21 +352,15 @@ test:sdk-debug-linux:
     - build:sdk-debug-linux
   script:
     # Uncompress the sdk.
-    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env    
+    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env
     - cd $CI_PROJECT_DIR/sdk
     - tar xvfa $CI_PROJECT_DIR/sdk/sdk.tar.gz
     - find . -type f -iname '*' -exec touch -t 197001010000 {} \;
     # Clean garbage from previous stage
     - rm -rf $CI_PROJECT_DIR/build/* $CI_PROJECT_DIR/install/*
-    # Checkout 
+    # Checkout
     - cd $CI_PROJECT_DIR/build
-    - >
-      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-        export SAMPLE_BRANCH="dev"
-      else
-        export SAMPLE_BRANCH="$CI_COMMIT_REF_NAME"
-      fi
-    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/sight/sight-sdk-sample.git -b $SAMPLE_BRANCH sight-sdk-sample
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/sight/sight-sdk-sample.git -b ${EXTRA_BRANCH}
     # Reset the time of all files to improve the use of ccache.
     - cd $CI_PROJECT_DIR/build/sight-sdk-sample
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -441,21 +395,15 @@ test:sdk-release-linux:
     - build:sdk-release-linux
   script:
     # Uncompress the sdk.
-    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env    
+    - source $CI_PROJECT_DIR/sdk/SDK_NAME.env
     - cd $CI_PROJECT_DIR/sdk
     - tar xvfa $CI_PROJECT_DIR/sdk/sdk.tar.gz
     - find . -type f -iname '*' -exec touch -t 197001010000 {} \;
     # Clean garbage from previous stage
     - rm -rf $CI_PROJECT_DIR/build/* $CI_PROJECT_DIR/install/*
-    # Checkout 
+    # Checkout
     - cd $CI_PROJECT_DIR/build
-    - >
-      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-        export SAMPLE_BRANCH="dev"
-      else
-        export SAMPLE_BRANCH="$CI_COMMIT_REF_NAME"
-      fi
-    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/sight/sight-sdk-sample.git -b $SAMPLE_BRANCH sight-sdk-sample
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/sight/sight-sdk-sample.git -b ${EXTRA_BRANCH}
     # Reset the time of all files to improve the use of ccache.
     - cd $CI_PROJECT_DIR/build/sight-sdk-sample
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
