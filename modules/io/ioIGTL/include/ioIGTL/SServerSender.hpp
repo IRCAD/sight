@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,13 +23,12 @@
 #pragma once
 
 #include "ioIGTL/config.hpp"
+#include "ioIGTL/INetworkSender.hpp"
 
 #include <fwData/Object.hpp>
 
 #include <igtlNetwork/Client.hpp>
 #include <igtlNetwork/Server.hpp>
-
-#include <ioNetwork/INetworkSender.hpp>
 
 #include <cstdint>
 #include <future>
@@ -58,12 +57,12 @@ namespace ioIGTL
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
 
-class IOIGTL_CLASS_API SServerSender : public ::ioNetwork::INetworkSender
+class IOIGTL_CLASS_API SServerSender : public ::ioIGTL::INetworkSender
 {
 
 public:
 
-    fwCoreServiceMacro(SServerSender,  ::ioNetwork::INetworkSender );
+    fwCoreServiceMacro(SServerSender,  ::ioIGTL::INetworkSender )
 
     /// Constructor
     IOIGTL_API SServerSender();

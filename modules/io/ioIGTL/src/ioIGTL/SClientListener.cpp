@@ -40,7 +40,7 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SClientListener)
+fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::SClientListener)
 
 const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 

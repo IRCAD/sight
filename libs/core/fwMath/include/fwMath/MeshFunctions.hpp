@@ -29,7 +29,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
 
 #include <cmath>
 #include <utility>
@@ -84,8 +84,8 @@ FWMATH_API bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& 
  * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return barycentric coordinates (u, v, w).
  */
-FWMATH_API fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
-                                      const fwVec3d& _B, const fwVec3d& _C);
+FWMATH_API ::glm::dvec3 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                                           const ::glm::dvec3& _B, const ::glm::dvec3& _C);
 
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w isn't equal to 1.
@@ -96,8 +96,8 @@ FWMATH_API fwVec3d toBarycentricCoord(const fwVec3d& _P, const fwVec3d& _A,
  * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return world coordinates (x, y, z).
  */
-FWMATH_API fwVec3d fromBarycentricCoord(const fwVec3d& _baryCoord, const fwVec3d& _A,
-                                        const fwVec3d& _B, const fwVec3d& _C);
+FWMATH_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec3& _baryCoord, const ::glm::dvec3& _A,
+                                             const ::glm::dvec3& _B, const ::glm::dvec3& _C);
 
 /**
  * @brief Converts the barycentric coordinates of a point inside a tetrahedron, from the world coordinates.

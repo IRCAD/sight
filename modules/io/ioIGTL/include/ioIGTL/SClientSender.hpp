@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,10 +23,9 @@
 #pragma once
 
 #include "ioIGTL/config.hpp"
+#include "ioIGTL/INetworkSender.hpp"
 
 #include <igtlNetwork/Client.hpp>
-
-#include <ioNetwork/INetworkSender.hpp>
 
 namespace ioIGTL
 {
@@ -53,12 +52,12 @@ namespace ioIGTL
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
    (for example <server>%HOSTNAME%:%PORT%</server>)
  */
-class IOIGTL_CLASS_API SClientSender : public ::ioNetwork::INetworkSender
+class IOIGTL_CLASS_API SClientSender : public ::ioIGTL::INetworkSender
 {
 
 public:
 
-    fwCoreServiceMacro(SClientSender, ::ioNetwork::INetworkSender);
+    fwCoreServiceMacro(SClientSender, ::ioIGTL::INetworkSender)
 
     /// Constructor
     IOIGTL_API SClientSender();

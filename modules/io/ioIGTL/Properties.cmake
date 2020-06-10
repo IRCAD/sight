@@ -15,6 +15,5 @@ set( DEPENDENCIES
     fwPreferences
     fwIO
     igtlNetwork
-    ioNetwork
 )
 set( REQUIREMENTS)
