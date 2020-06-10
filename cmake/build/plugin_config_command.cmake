@@ -1,4 +1,4 @@
-# CMake script file launch at build time before the build of each Bundle
+# CMake script file launch at build time before the build of each module
 
 # set variables used in the configure_file command
 set(PROJECT_NAME ${PROJECT})

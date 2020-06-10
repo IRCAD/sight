@@ -135,7 +135,7 @@ std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier)
 
     if(module == nullptr)
     {
-        SLM_ERROR("Could not find bundle " + moduleIdentifier + "'");
+        SLM_ERROR("Could not find module " + moduleIdentifier + "'");
         return std::filesystem::path();
     }
     return module->getResourcesLocation();
@@ -152,18 +152,18 @@ std::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentif
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getModuleResourceFilePath(const std::string& bundleIdentifier,
+std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentifier,
                                                 const std::filesystem::path& path) noexcept
 {
     Runtime* rntm                     = Runtime::getDefault();
-    std::shared_ptr<Module>    bundle = rntm->findModule( bundleIdentifier );
+    std::shared_ptr<Module>    module = rntm->findModule( moduleIdentifier );
 
-    if(bundle == nullptr)
+    if(module == nullptr)
     {
-        SLM_ERROR("Could not find bundle '" + bundleIdentifier + "'");
+        SLM_ERROR("Could not find module '" + moduleIdentifier + "'");
         return std::filesystem::path();
     }
-    return getModuleResourcePath(bundle, path);
+    return getModuleResourcePath(module, path);
 }
 
 //------------------------------------------------------------------------------
@@ -178,36 +178,36 @@ std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& pat
 std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& path) noexcept
 {
     SLM_ASSERT("Path should be relative", path.is_relative());
-    const std::string bundleIdentifierAndVersion = path.begin()->string();
+    const std::string moduleIdentifierAndVersion = path.begin()->string();
 
     // TEMP_FB: Change _ into - when version refactor is made
-    auto itVersionDelimiter = bundleIdentifierAndVersion.find(detail::Module::s_VERSION_DELIMITER);
-    auto bundleIdentifier   = bundleIdentifierAndVersion.substr(0, itVersionDelimiter);
-    auto bundleVersion      = bundleIdentifierAndVersion.substr(itVersionDelimiter + 1);
+    auto itVersionDelimiter = moduleIdentifierAndVersion.find(detail::Module::s_VERSION_DELIMITER);
+    auto moduleIdentifier   = moduleIdentifierAndVersion.substr(0, itVersionDelimiter);
+    auto moduleVersion      = moduleIdentifierAndVersion.substr(itVersionDelimiter + 1);
 
     // Strip the module name
-    std::filesystem::path pathWithoutBundle;
+    std::filesystem::path pathWithoutModule;
     for(auto itPath = ++path.begin(); itPath != path.end(); itPath++)
     {
-        pathWithoutBundle /= *itPath;
+        pathWithoutModule /= *itPath;
     }
 
     try
     {
         Runtime* rntm = Runtime::getDefault();
-        Version version(bundleVersion);
-        std::shared_ptr<Module>    bundle = rntm->findModule( bundleIdentifier, version );
+        Version version(moduleVersion);
+        std::shared_ptr<Module> module = rntm->findModule( moduleIdentifier, version );
 
-        if(bundle == nullptr)
+        if(module == nullptr)
         {
-            SLM_ERROR("Could not find bundle '" + bundleIdentifier + "' with version '" + version.string() + "'");
+            SLM_ERROR("Could not find module '" + moduleIdentifier + "' with version '" + version.string() + "'");
             return std::filesystem::path();
         }
-        return getModuleResourcePath(bundle, pathWithoutBundle );
+        return getModuleResourcePath(module, pathWithoutModule );
     }
     catch(...)
     {
-        SLM_ERROR("Error looking for bundle '" + bundleIdentifier + "' with version '" + bundleVersion + "'");
+        SLM_ERROR("Error looking for module '" + moduleIdentifier + "' with version '" + moduleVersion + "'");
         return std::filesystem::path();
     }
 }
@@ -231,7 +231,7 @@ std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noe
     {
         // If not found in a module, look into libraries
         file = ::fwRuntime::getLibraryResourceFilePath(path);
-        SLM_ERROR_IF("Resource '" + path.string() + "' has not been found in any bundle or library", file.empty());
+        SLM_ERROR_IF("Resource '" + path.string() + "' has not been found in any module or library", file.empty());
     }
     return file;
 }
@@ -246,10 +246,10 @@ std::filesystem::path getBundleResourcePath( std::shared_ptr<Module> bundle,
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> bundle,
+std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> module,
                                              const std::filesystem::path& path) noexcept
 {
-    return bundle->getResourcesLocation() / path;
+    return module->getResourcesLocation() / path;
 }
 
 //------------------------------------------------------------------------------
@@ -312,18 +312,18 @@ std::shared_ptr<Module> loadBundle(const std::string& identifier, const Version&
 
 std::shared_ptr<Module> loadModule(const std::string& identifier, const Version& version)
 {
-    auto bundle = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier, version));
+    auto module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier, version));
 
-    if(bundle)
+    if(module)
     {
-        bundle->setEnable(true);
-        if(!bundle->isStarted())
+        module->setEnable(true);
+        if(!module->isStarted())
         {
-            bundle->start();
+            module->start();
         }
     }
 
-    return bundle;
+    return module;
 }
 
 //------------------------------------------------------------------------------
@@ -378,7 +378,7 @@ void startModule(const std::string& identifier)
     std::shared_ptr<Module> module = detail::Runtime::get().findModule( identifier );
     if( module == nullptr )
     {
-        throw RuntimeException(identifier + ": bundle not found.");
+        throw RuntimeException(identifier + ": module not found.");
     }
     // Starts the found module.
     module->start();
@@ -391,7 +391,7 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
     std::vector< ConfigurationElement::sptr > elements;
     std::shared_ptr< detail::ExtensionPoint >  point = findExtensionPoint(identifier);
 
-    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << "Bundle" <<
+    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << " Module" <<
                point->getModule()->getIdentifier() );
 
     if( !point )

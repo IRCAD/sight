@@ -14,7 +14,7 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
          endif()
     endforeach()
 
-    # Add each bundle deps to the requirement list
+    # Add each module deps to the requirement list
     foreach(CURRENT_MODULE_DEPS ${${PROJECT}_MODULE_DEPENDENCIES})
         list(APPEND PROJECT_REQUIREMENTS ${CURRENT_MODULE_DEPS})
     endforeach()
