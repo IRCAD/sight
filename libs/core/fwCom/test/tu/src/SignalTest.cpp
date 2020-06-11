@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,9 +29,9 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 
-#include <fwThread/Worker.hpp>
-
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <fwThread/Worker.hpp>
 
 #include <string>
 
@@ -508,6 +508,7 @@ void SignalTest::asyncArgumentLossTest()
 
     sig->disconnectAll();
     CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
+    worker->stop();
 }
 
 //-----------------------------------------------------------------------------
@@ -676,6 +677,7 @@ void SignalTest::asyncEmitTest()
     }
 
     CPPUNIT_ASSERT(connection.expired());
+    worker->stop();
 }
 
 } //namespace ut

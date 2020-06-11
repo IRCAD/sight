@@ -100,6 +100,11 @@ void ActiveWorkers::initRegistry()
 void ActiveWorkers::clearRegistry()
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
+
+    for (const auto& elt: m_workers)
+    {
+        elt.second->stop();
+    }
     m_workers.clear();
 }
 

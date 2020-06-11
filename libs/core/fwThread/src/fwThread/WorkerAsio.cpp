@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,10 +23,10 @@
 #include "fwThread/Timer.hpp"
 #include "fwThread/Worker.hpp"
 
-#include <fwCore/TimeStamp.hpp>
-
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
+
+#include <fwCore/TimeStamp.hpp>
 
 namespace fwThread
 {
@@ -182,12 +182,8 @@ WorkerAsio::~WorkerAsio()
 {
     std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
 
-    if(m_thread->joinable())
-    {
-        FW_DEPRECATED_MSG("Try to call stop() from the caller thread before. It is dangerous to rely on the destructor"
-                          "to join the thread because it could be called from itself.", "20.0");
-        this->stop();
-    }
+    SLM_ASSERT("Worker must be properly stopped. Try to call stop() from the caller thread before.",
+               !m_thread->joinable());
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -234,6 +234,7 @@ void SlotTest::asyncTest ()
     CPPUNIT_ASSERT_EQUAL( 4.2f, f3.get() );
     CPPUNIT_ASSERT( f3.valid() );
     CPPUNIT_ASSERT( a.m_method1 );
+    w->stop();
 }
 
 //-----------------------------------------------------------------------------
@@ -307,6 +308,7 @@ void SlotTest::slotBaseTest ()
     CPPUNIT_ASSERT_EQUAL( 4.2f, f3.get() );
     CPPUNIT_ASSERT( f3.valid() );
     CPPUNIT_ASSERT( a.m_method1 );
+    w->stop();
 }
 
 //-----------------------------------------------------------------------------
@@ -393,6 +395,8 @@ void SlotTest::workerSwapTest()
                 CPPUNIT_ASSERT(b.m_threadId == w1->getThreadId());
             }
         }
+        w1->stop();
+        w2->stop();
     }
 
     //Tests weakcalls to hold slot worker while running weakcall (asyncRun test)
@@ -426,6 +430,8 @@ void SlotTest::workerSwapTest()
         future2.wait();
 
         CPPUNIT_ASSERT(b.m_threadId == w2->getThreadId());
+        w1->stop();
+        w2->stop();
     }
 
     //Tests weakcalls to hold slot worker while running weakcall (asyncCall test)
@@ -461,7 +467,8 @@ void SlotTest::workerSwapTest()
         CPPUNIT_ASSERT(b.m_threadId == w2->getThreadId());
         CPPUNIT_ASSERT(future1.get() == std::thread::id());
         CPPUNIT_ASSERT(future2.get() == w1->getThreadId());
-
+        w1->stop();
+        w2->stop();
     }
 
 }
@@ -469,4 +476,3 @@ void SlotTest::workerSwapTest()
 } //namespace ut
 
 } //namespace fwCom
-

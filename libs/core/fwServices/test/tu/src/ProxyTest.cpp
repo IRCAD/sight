@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -152,6 +152,7 @@ void ProxyTest::basicTest()
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), slot->getNumberOfConnections());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), slot2->getNumberOfConnections());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), slot3->getNumberOfConnections());
+    worker->stop();
 }
 
 //------------------------------------------------------------------------------

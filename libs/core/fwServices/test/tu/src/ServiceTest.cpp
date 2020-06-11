@@ -311,8 +311,10 @@ void ServiceTest::testStartStopUpdateExceptions()
     // Test on a different worker
     {
         auto service = ::fwServices::add< ::fwServices::ut::TestService>("::fwServices::ut::TestServiceImplementation");
-        service->setWorker(::fwThread::Worker::New());
+        auto worker  = ::fwThread::Worker::New();
+        service->setWorker(worker);
         ServiceTest::startStopUpdateExceptions(service);
+        worker->stop();
     }
 
 }
@@ -368,6 +370,7 @@ struct TestServiceSignals : public ::fwCom::HasSlots
 
 TestServiceSignals::~TestServiceSignals()
 {
+    m_worker->stop();
 }
 
 //------------------------------------------------------------------------------
