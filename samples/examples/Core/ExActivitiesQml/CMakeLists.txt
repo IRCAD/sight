@@ -1,7 +1,5 @@
 fwLoadProperties()
 
-generic_install()
-
 find_package(Qt5 QUIET COMPONENTS Core Qml REQUIRED)
 
 fwForwardInclude(
