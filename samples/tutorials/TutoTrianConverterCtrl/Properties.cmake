@@ -15,6 +15,7 @@ set( REQUIREMENTS
     servicesReg
     ioVTK
     ioData
+    fwlauncher
 )
 set( CONAN_DEPS
     ${CONAN_BOOST}

@@ -26,4 +26,4 @@ set( REQUIREMENTS
     visuVTKVRAdaptor
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExVolumeRendering)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExVolumeRendering)

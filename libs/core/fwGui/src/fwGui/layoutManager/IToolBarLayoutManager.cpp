@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,9 @@
 
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
 
-#include <fwRuntime/operations.hpp>
-
 #include <boost/lexical_cast.hpp>
+
+#include <fwRuntime/operations.hpp>
 
 namespace fwGui
 {
@@ -85,13 +85,13 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             if( toolBarItem->hasAttribute("icon") )
             {
-                info.m_icon = ::fwRuntime::getBundleResourceFilePath(toolBarItem->getAttributeValue("icon"));
+                info.m_icon = ::fwRuntime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon"));
             }
 
             if( toolBarItem->hasAttribute("icon2") )
             {
                 SLM_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
-                info.m_icon2 = ::fwRuntime::getBundleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
+                info.m_icon2 = ::fwRuntime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
             }
 
             if( toolBarItem->hasAttribute("style") )
@@ -136,7 +136,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             if( (*iter)->hasAttribute("icon") )
             {
-                info.m_icon = ::fwRuntime::getBundleResourceFilePath((*iter)->getExistingAttributeValue("icon" ));
+                info.m_icon = ::fwRuntime::getModuleResourceFilePath((*iter)->getExistingAttributeValue("icon" ));
             }
             m_actionInfo.push_back( info );
         }

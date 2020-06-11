@@ -24,11 +24,11 @@
 
 #include <fwActivities/registry/Activities.hpp>
 
+#include <cppunit/extensions/HelperMacros.h>
+
 #include <fwCore/macros.hpp>
 
-#include <fwRuntime/Bundle.hpp>
-
-#include <cppunit/extensions/HelperMacros.h>
+#include <fwRuntime/Module.hpp>
 
 namespace fwActivities
 {
@@ -58,9 +58,6 @@ public:
     void objectTest();
     void validatorTest();
     void bigActivityTest();
-
-protected:
-    SPTR( ::fwRuntime::Bundle ) m_bundle;
 
 private:
 

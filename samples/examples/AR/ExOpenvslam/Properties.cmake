@@ -28,4 +28,4 @@ set( REQUIREMENTS
     visuOgreQt
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExOpenvslamConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExOpenvslamConfig)

@@ -7,40 +7,40 @@ include(@FWCMAKE_INSTALL_FILES_DIR@/helper.cmake)
 # Run the script when installing but not a second time when running CPack
 if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP|(NSIS.*))/")
 
-    #Find all /*/.dll in /Bundles /plugins /share
-    file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
+    #Find all /*/.dll in /Modules /plugins /share
+    file(GLOB_RECURSE MODULES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
     file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
     file(GLOB_RECURSE SHARE FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/share/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
 
     include(BundleUtilities)
 
     set(LIBS)
-    list(APPEND LIBS ${BUNDLES} ${PLUGINS} @QT_PLUGINS@)
-    # Also add bundles from the SDK
+    list(APPEND LIBS ${MODULES} ${PLUGINS} @QT_PLUGINS@)
+    # Also add modules from the SDK
     if(@FW_BUILD_EXTERNAL@)
 
         foreach(REQUIREMENT @PROJECT_REQUIREMENTS@)
-            file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@Sight_LIBRARY_DIR@/${REQUIREMENT}*/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
-            if(BUNDLES)
-                list(APPEND LIBS ${BUNDLES})
+            file(GLOB_RECURSE MODULES FOLLOW_SYMLINKS "@Sight_LIBRARY_DIR@/${REQUIREMENT}*/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+            if(MODULES)
+                list(APPEND LIBS ${MODULES})
             endif()
         endforeach()
 
     endif()
 
     #Look for all directories containing '.dll' files
-    findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
+    findLibsAndModules(LIBS_MODULES_DIRECTORIES)
 
-    list(APPEND FWLIBS_BUNDLES_DIRECTORIES @FW_EXTERNAL_LIBRARIES_DIR@)
+    list(APPEND LIBS_MODULES_DIRECTORIES @FW_EXTERNAL_LIBRARIES_DIR@)
 
     if(@FW_BUILD_EXTERNAL@)
-        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @Sight_LIBRARY_DIR@)
+        list(APPEND LIBS_MODULES_DIRECTORIES @Sight_LIBRARY_DIR@)
     endif()
     set(LAUNCHER_PATH @CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@)
 
     # Ignore VLC dll to avoid "fatal error LNK1328: missing string table"
     set(IGNORE_VLC_DLL "videoVLC.dll;libvlc.dll;libvlccore.dll")
-    # Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
-    fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}" IGNORE_ITEM ${IGNORE_VLC_DLL})
+    # Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like modules, plugins and share)
+    fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${LIBS_MODULES_DIRECTORIES}" IGNORE_ITEM ${IGNORE_VLC_DLL})
 
 endif()

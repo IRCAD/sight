@@ -32,8 +32,8 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 
 // Registers the fixture into the 'registry'
@@ -51,8 +51,8 @@ void ActivitySeriesBuilderTest::setUp()
     m_activities = ::fwActivities::registry::Activities::New();
 
     // Set up context before running a test.
-    ::fwRuntime::addBundles(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
-    ::fwRuntime::loadBundle("tu_builder");
+    ::fwRuntime::addModules(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
+    ::fwRuntime::loadModule("tu_builder");
 
     m_activities->parseBundleInformation();
 }
@@ -64,7 +64,7 @@ void ActivitySeriesBuilderTest::tearDown()
     ::fwActivities::registry::Activities::getDefault()->clearRegistry();
 
     // Clean up after the test run.
-    m_bundle.reset();
+    m_module.reset();
 }
 
 //------------------------------------------------------------------------------

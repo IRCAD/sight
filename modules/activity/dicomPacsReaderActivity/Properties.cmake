@@ -1,7 +1,7 @@
 
 set( NAME dicomPacsReaderActivity )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
     2DVisualizationActivity

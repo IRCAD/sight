@@ -41,7 +41,7 @@
         fwlauncher
         appXml # it will be automatically started when the application launches
     )
-    bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)
+    moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)
    @endcode
  */
 #pragma once

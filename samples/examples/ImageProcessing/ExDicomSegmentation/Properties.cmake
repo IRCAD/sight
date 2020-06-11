@@ -32,4 +32,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExDicomSegmentationAppConfigBase)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExDicomSegmentationAppConfigBase)

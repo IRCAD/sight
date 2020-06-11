@@ -24,11 +24,11 @@
 
 #include <fwActivities/registry/Activities.hpp>
 
+#include <cppunit/extensions/HelperMacros.h>
+
 #include <fwCore/macros.hpp>
 
-#include <fwRuntime/Bundle.hpp>
-
-#include <cppunit/extensions/HelperMacros.h>
+#include <fwRuntime/Module.hpp>
 
 namespace fwActivities
 {
@@ -52,7 +52,7 @@ public:
     void buildDataTest();
 
 protected:
-    SPTR( ::fwRuntime::Bundle ) m_bundle;
+    SPTR( ::fwRuntime::Module ) m_module;
     SPTR( ::fwActivities::registry::Activities ) m_activities;
 
 };

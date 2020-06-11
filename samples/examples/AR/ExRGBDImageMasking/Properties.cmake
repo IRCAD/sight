@@ -31,4 +31,4 @@ set( REQUIREMENTS
     depthSegmentation
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDImageMasking)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDImageMasking)

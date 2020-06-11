@@ -112,7 +112,7 @@ void signal_handler(int signal)
 
 int main(int argc, char* argv[])
 {
-    PathListType bundlePaths;
+    PathListType modulePaths;
     PathType rwd;
     PathType profileFile;
     ::fwRuntime::profile::Profile::ParamsContainer profileArgs;
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", "Adds a bundle path")
+        ("module-path,B", "Adds a module path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
 
@@ -246,19 +246,20 @@ int main(int argc, char* argv[])
 
         while ( fs::extension(execPath) != ".app"
                 && execPath != execPath.parent_path()
-                && !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX))
+                && !fs::is_directory( execPath / fs::path(SIGHT_MODULE_RC_PREFIX))
                 )
         {
             execPath = execPath.parent_path();
         }
 
-        if ( fs::is_directory( execPath / "Contents" / fs::path(BUNDLE_RC_PREFIX) ) )
+        if ( fs::is_directory( execPath / "Contents" / fs::path(SIGHT_MODULE_RC_PREFIX) ) )
         {
             execPath = execPath / "Contents";
         }
         else
         {
-            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX) ));
+            OSLM_ERROR_IF("Module directory not found.", !fs::is_directory( execPath / fs::path(
+                                                                                SIGHT_MODULE_RC_PREFIX) ));
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
@@ -279,35 +280,35 @@ int main(int argc, char* argv[])
     OSLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
                        profileFile), !std::filesystem::exists(profileFile.string()));
 
-    std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), ::absolute );
+    std::transform( modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
     rwd         = ::absolute(rwd);
 
     // Automatically adds the module folders where the profile.xml is located if it was not already there
-    const auto profileBundlePath = profileFile.parent_path().parent_path();
-    bool findProfileBundlePath   = false;
-    for(const fs::path& bundlePath :  bundlePaths )
+    const auto profileModulePath = profileFile.parent_path().parent_path();
+    bool findProfileModulePath   = false;
+    for(const fs::path& modulePath :  modulePaths )
     {
-        if(profileBundlePath == bundlePath)
+        if(profileModulePath == modulePath)
         {
-            findProfileBundlePath = true;
+            findProfileModulePath = true;
         }
     }
-    if(!findProfileBundlePath)
+    if(!findProfileModulePath)
     {
-        bundlePaths.push_back(profileBundlePath);
+        modulePaths.push_back(profileModulePath);
     }
 #if SLM_INFO_ENABLED
-    for(const fs::path& bundlePath :  bundlePaths )
+    for(const fs::path& modulePath :  modulePaths )
     {
-        OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
-                      vm.count("bundle-path") );
+        OSLM_INFO_IF( "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
+                      vm.count("module-path") );
     }
 #endif
-    for(const fs::path& bundlePath :  bundlePaths )
+    for(const fs::path& modulePath :  modulePaths )
     {
-        OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
-                           bundlePath), !std::filesystem::exists(bundlePath.string()) );
+        OSLM_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
+                           modulePath), !std::filesystem::exists(modulePath.string()) );
     }
 
 #ifdef _WIN32
@@ -319,15 +320,15 @@ int main(int argc, char* argv[])
 
     ::fwRuntime::init();
 
-    for(const fs::path& bundlePath :  bundlePaths )
+    for(const fs::path& modulePath :  modulePaths )
     {
-        if ( fs::is_directory(bundlePath))
+        if ( fs::is_directory(modulePath))
         {
-            ::fwRuntime::addBundles( bundlePath );
+            ::fwRuntime::addModules( modulePath );
         }
         else
         {
-            OSLM_ERROR( "Bundle path " << bundlePath << " do not exists or is not a directory.");
+            OSLM_ERROR( "Module path " << modulePath << " do not exists or is not a directory.");
         }
     }
 

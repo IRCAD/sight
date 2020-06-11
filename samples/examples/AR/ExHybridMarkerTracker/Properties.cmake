@@ -29,4 +29,4 @@ set(REQUIREMENTS
         preferences
         )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExHybridMarkerTrackerConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExHybridMarkerTrackerConfig)

@@ -43,8 +43,8 @@
 
 #include <fwMedDataCamp/Version.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwTest/generator/Image.hpp>
@@ -72,8 +72,8 @@ void DefaultActivityTest::setUp()
     FwCoreNotUsedMacro(m_fwMedDataCampVersion);
 
     // Set up context before running a test.
-    ::fwRuntime::addBundles(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
-    ::fwRuntime::loadBundle("tu_validator");
+    ::fwRuntime::addModules(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
+    ::fwRuntime::loadModule("tu_validator");
 
     ::fwActivities::registry::Activities::getDefault()->parseBundleInformation();
 }

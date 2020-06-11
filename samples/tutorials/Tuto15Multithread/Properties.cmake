@@ -17,4 +17,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES tuto15MultithreadConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES tuto15MultithreadConfig)

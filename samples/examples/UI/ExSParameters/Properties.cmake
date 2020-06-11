@@ -14,4 +14,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex07SParametersConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES Ex07SParametersConfig)

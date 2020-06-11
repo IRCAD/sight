@@ -67,13 +67,13 @@ static const ::fwServices::IService::KeyType s_TF_POOL_OUTPUT = "tfPool";
 
 SMultipleTF::SMultipleTF()
 {
-    const std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+    const std::filesystem::path modulePath = ::fwRuntime::getModuleResourcePath(std::string("uiTF"));
 
-    m_deleteIcon       = bundlePath / "delete.png";
-    m_newIcon          = bundlePath / "new.png";
-    m_copyIcon         = bundlePath / "new.png";
-    m_renameIcon       = bundlePath / "rename.png";
-    m_reinitializeIcon = bundlePath / "reinitialize.png";
+    m_deleteIcon       = modulePath / "delete.png";
+    m_newIcon          = modulePath / "new.png";
+    m_copyIcon         = modulePath / "new.png";
+    m_renameIcon       = modulePath / "rename.png";
+    m_reinitializeIcon = modulePath / "reinitialize.png";
 }
 
 //------------------------------------------------------------------------------

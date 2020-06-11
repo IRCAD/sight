@@ -224,12 +224,12 @@ void IReader::configuring()
         else if (config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
-            auto folder                = ::fwRuntime::getBundleResourceFilePath(resource);
+            auto folder                = ::fwRuntime::getModuleResourceFilePath(resource);
             if(folder.empty())
             {
                 // If not found in a module, look into libraries
                 folder = ::fwRuntime::getLibraryResourceFilePath(resource);
-                SLM_ERROR_IF("Resource '" + resource + "' has not been found in any bundle or library", folder.empty());
+                SLM_ERROR_IF("Resource '" + resource + "' has not been found in any module or library", folder.empty());
             }
 
             this->setFolder(folder);

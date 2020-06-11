@@ -25,4 +25,4 @@ set( REQUIREMENTS
     ctrlPicking
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRegistrationConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExRegistrationConfig)

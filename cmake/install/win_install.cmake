@@ -38,7 +38,7 @@ macro(win_install PRJ_NAME)
         # install requirements
         foreach(REQUIREMENT ${PROJECT_LIST})
             if(${REQUIREMENT}_EXTERNAL)
-                # search and setup qt plugins for each bundles
+                # search and setup qt plugins for each modules
                 qt_plugins_setup(${REQUIREMENT})
 
                 if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
@@ -72,7 +72,7 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
-    set(CPACK_BUNDLE_RC_PREFIX "${SIGHT_MODULE_RC_PREFIX}")
+    set(CPACK_SIGHT_MODULE_RC_PREFIX "${SIGHT_MODULE_RC_PREFIX}")
 
     set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
 

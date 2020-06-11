@@ -22,4 +22,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExFrameByFrameConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExFrameByFrameConfig)

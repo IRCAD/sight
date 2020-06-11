@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@
 namespace uiActivitiesQml
 {
 
-fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivityView );
+fwServicesRegisterMacro( ::fwQml::IQmlEditor, ::uiActivitiesQml::SActivityView )
 
 static const fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
@@ -110,17 +110,16 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         ::fwActivities::registry::ActivityInfo info;
         info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
-        std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId,
-                                                                                info.bundleVersion);
-        SLM_INFO_IF("Bundle '" + bundle->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
-                    "started !", bundle->isStarted())
-        if (!bundle->isStarted())
+        std::shared_ptr< ::fwRuntime::Module > module = ::fwRuntime::findModule(info.bundleId, info.bundleVersion);
+        SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
+                    "started !", module->isStarted())
+        if (!module->isStarted())
         {
-            bundle->start();
+            module->start();
         }
 
         // get Activity path, it allows to retrieve the associated Qml file
-        const auto path = ::fwRuntime::getBundleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
+        const auto path = ::fwRuntime::getModuleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
 
         ReplaceMapType replaceMap;
         this->translateParameters(m_parameters, replaceMap);

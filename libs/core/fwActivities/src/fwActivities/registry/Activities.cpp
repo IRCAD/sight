@@ -22,15 +22,15 @@
 
 #include "fwActivities/registry/Activities.hpp"
 
+#include <boost/foreach.hpp>
+
 #include <fwData/Vector.hpp>
 
-#include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/helper.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/Runtime.hpp>
-
-#include <boost/foreach.hpp>
 
 #include <limits>
 #include <regex>
@@ -118,10 +118,10 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension)& ext) :
     id(ext->findConfigurationElement("id")->getValue()),
     title(ext->findConfigurationElement("title")->getValue()),
     description(ext->findConfigurationElement("desc")->getValue()),
-    icon(::fwRuntime::getBundleResourceFilePath(ext->findConfigurationElement("icon")->getValue()).string()),
+    icon(::fwRuntime::getModuleResourceFilePath(ext->findConfigurationElement("icon")->getValue()).string()),
     tabInfo(title),
-    bundleId(ext->getBundle()->getIdentifier()),
-    bundleVersion(ext->getBundle()->getVersion().string()),
+    bundleId(ext->getModule()->getIdentifier()),
+    bundleVersion(ext->getModule()->getVersion().string()),
     appConfig(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
 {
     if(ext->findConfigurationElement("tabinfo"))
@@ -260,7 +260,7 @@ void Activities::parseBundleInformation()
 
     for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
     {
-        OSLM_DEBUG("Parsing <" << ext->getBundle()->getIdentifier() << "> Activities");
+        OSLM_DEBUG("Parsing <" << ext->getModule()->getIdentifier() << "> Activities");
         ActivityInfo info(ext);
 
         ::fwCore::mt::WriteLock lock(m_registryMutex);

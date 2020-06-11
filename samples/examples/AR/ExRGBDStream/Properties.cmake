@@ -31,4 +31,4 @@ set( REQUIREMENTS
     videoTools
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDStream)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDStream)

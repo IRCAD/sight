@@ -3,7 +3,7 @@
 
 <profile name="@PROJECT@" version="@PROJECT_VERSION@" check-single-instance="@UNIQUE@">
 
-@ACTIVATE_LIST@
-@START_BUNDLE_LIST@
+@XML_ACTIVATE@
+@XML_START_MODULES@
 
 </profile>

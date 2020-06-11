@@ -12,9 +12,9 @@ set( REQUIREMENTS
     uiIO
     visuVTKQt
     vtkSimpleNegato
-    opImageFilter # bundle containing the action to performs a threshold
+    opImageFilter # module containing the action to performs a threshold
     fwlauncher
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES FilterConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES FilterConfig)

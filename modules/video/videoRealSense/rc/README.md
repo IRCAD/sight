@@ -8,7 +8,7 @@ For a complete documentation of the realsense presets please visit [this page](h
 The simpliest way is to use the [realsense-viewer application](https://github.com/IntelRealSense/librealsense/tree/master/tools/realsense-viewer) and save your preset as a .json file.
 
 
-#### 2. Auto-load presets in videoRealSense Bundle
+#### 2. Auto-load presets in videoRealSense module
 
 You need first copy the json file in the _rc/presets_ folder.
 To be loaded correclty the preset file should have a name like "NAMEPreset.json".

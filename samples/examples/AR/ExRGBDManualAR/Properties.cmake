@@ -34,4 +34,4 @@ set( REQUIREMENTS
 
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDManualARConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExRGBDManualARConfig)

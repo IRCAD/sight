@@ -25,4 +25,4 @@ set( REQUIREMENTS
     ctrlCamp
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto09MesherWithGenericScene)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES Tuto09MesherWithGenericScene)

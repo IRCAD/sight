@@ -15,4 +15,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoScene2DConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoScene2DConfig)

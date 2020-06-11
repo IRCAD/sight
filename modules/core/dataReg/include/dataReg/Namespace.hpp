@@ -37,7 +37,7 @@
  * @code{xml}
     <plugin id="Tuto01Basic" version="@PROJECT_VERSION@">
 
-        <!-- The bundles in requirements are automatically started when this Application is launched. -->
+        <!-- The modules in requirements are automatically started when this Application is launched. -->
         <requirement id="dataReg" />
         <requirement id="servicesReg" />
 

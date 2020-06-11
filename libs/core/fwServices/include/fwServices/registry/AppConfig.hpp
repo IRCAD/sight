@@ -91,8 +91,8 @@ public:
                                     const std::string& desc,
                                     const AppInfo::ParametersType& parameters,
                                     const ::fwRuntime::ConfigurationElement::csptr& config,
-                                    const std::string& bundleId,
-                                    const std::string& bundleVersion);
+                                    const std::string& moduleId,
+                                    const std::string& moduleVersion);
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -119,7 +119,7 @@ public:
      * @brief Retrieves the bunble from the config id
      * @param configId the config identifier
      */
-    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string& _configId);
+    FWSERVICES_API std::shared_ptr< ::fwRuntime::Module > getModule(const std::string& _configId);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.

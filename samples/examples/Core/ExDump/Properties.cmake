@@ -40,6 +40,6 @@ set( REQUIREMENTS
 )
 
 # Set the reading mode to "lazy", so the buffers will only be read in memory when they are used.
-bundleParam(memory PARAM_LIST loading_mode PARAM_VALUES lazy)
+moduleParam(memory PARAM_LIST loading_mode PARAM_VALUES lazy)
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExDumpConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExDumpConfig)

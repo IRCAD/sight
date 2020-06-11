@@ -53,7 +53,7 @@ public:
     }
 
     /// Destructor, do nothing.
-    virtual ~AppInfo()
+    ~AppInfo() override
     {
     }
 
@@ -62,8 +62,8 @@ public:
     typedef std::map< std::string, std::string > ParametersType;
     ParametersType parameters;
     ::fwRuntime::ConfigurationElement::csptr config;
-    std::string bundleId; ///< Bundle identifier (used to start the module when the appConfig is launched)
-    std::string bundleVersion; ///< Bundle version (used to start the module when the appConfig is launched)
+    std::string moduleId; ///< Module identifier (used to start the module when the appConfig is launched)
+    std::string moduleVersion; ///< Module version (used to start the module when the appConfig is launched)
 };
 
 } // namespace registry

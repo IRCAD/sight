@@ -22,4 +22,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoVectorField)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES TutoVectorField)

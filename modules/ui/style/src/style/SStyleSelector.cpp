@@ -72,7 +72,7 @@ void SStyleSelector::starting()
 {
     m_styleMap["DEFAULT"] = std::filesystem::path("");
 
-    const auto styleRc = ::fwRuntime::getBundleResourcePath("style");
+    const auto styleRc = ::fwRuntime::getModuleResourcePath("style");
 
     // Stores each rcc & qss
 

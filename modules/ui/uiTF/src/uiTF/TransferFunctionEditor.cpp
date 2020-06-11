@@ -95,7 +95,7 @@ void TransferFunctionEditor::configuring()
         const auto pathCfg = config.equal_range("path");
         for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getBundleResourceFilePath(itCfg->second.get_value<std::string>());
+            const auto path = ::fwRuntime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
@@ -106,7 +106,7 @@ void TransferFunctionEditor::configuring()
     }
     if (useDefaultPath)
     {
-        const auto pathRoot = ::fwRuntime::getBundleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = ::fwRuntime::getModuleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -124,29 +124,29 @@ void TransferFunctionEditor::starting()
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
 
-    std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+    std::filesystem::path modulePath = ::fwRuntime::getModuleResourcePath(std::string("uiTF"));
 
-    const auto deletePath = bundlePath / "delete.png";
+    const auto deletePath = modulePath / "delete.png";
     m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");
     m_deleteButton->setToolTip(QString("Delete"));
 
-    const auto newPath = bundlePath / "new.png";
+    const auto newPath = modulePath / "new.png";
     m_newButton = new QPushButton(QIcon(newPath.string().c_str()), "");
     m_newButton->setToolTip(QString("New"));
 
-    const auto reinitializePath = bundlePath / "reinitialize.png";
+    const auto reinitializePath = modulePath / "reinitialize.png";
     m_reinitializeButton = new QPushButton(QIcon(reinitializePath.string().c_str()), "");
     m_reinitializeButton->setToolTip(QString("Reinitialize"));
 
-    const auto renamePath = bundlePath / "rename.png";
+    const auto renamePath = modulePath / "rename.png";
     m_renameButton = new QPushButton(QIcon(renamePath.string().c_str()), "");
     m_renameButton->setToolTip(QString("Rename"));
 
-    const auto importPath = bundlePath / "import.png";
+    const auto importPath = modulePath / "import.png";
     m_importButton = new QPushButton(QIcon(importPath.string().c_str()), "");
     m_importButton->setToolTip(QString("Import"));
 
-    const auto exportPath = bundlePath / "export.png";
+    const auto exportPath = modulePath / "export.png";
     m_exportButton = new QPushButton(QIcon(exportPath.string().c_str()), "");
     m_exportButton->setToolTip(QString("Export"));
 

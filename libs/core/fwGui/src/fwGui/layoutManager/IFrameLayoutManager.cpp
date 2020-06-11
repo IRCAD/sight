@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 
 #include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 
+#include <boost/lexical_cast.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Integer.hpp>
@@ -33,8 +35,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <filesystem>
 
@@ -93,7 +93,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
 
     if(!icon.empty())
     {
-        m_frameInfo.m_iconPath = ::fwRuntime::getBundleResourceFilePath(icon.at(0)->getValue());
+        m_frameInfo.m_iconPath = ::fwRuntime::getModuleResourceFilePath(icon.at(0)->getValue());
         OSLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
                     std::filesystem::exists(m_frameInfo.m_iconPath));
     }

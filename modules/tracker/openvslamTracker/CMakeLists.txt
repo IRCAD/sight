@@ -22,7 +22,7 @@ if(UNIX)
     if(NOT USE_SYSTEM_LIB)
         message(STATUS "Downdload vocabulary file")
         file(DOWNLOAD "https://owncloud.ircad.fr/index.php/s/KodeswDPQpcJ0mS/download"
-            "${CMAKE_BINARY_DIR}/${FWBUNDLE_RC_PREFIX}/${NAME}-${VERSION}/orb_vocab.dbow2"
+            "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${NAME}-${VERSION}/orb_vocab.dbow2"
             SHOW_PROGRESS
             EXPECTED_HASH SHA256=33a6808d3d963f23c938d17c64b199194dfeaa2a5649fa130d01fab54c82797f)
     endif()

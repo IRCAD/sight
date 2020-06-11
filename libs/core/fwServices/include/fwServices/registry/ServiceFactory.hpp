@@ -24,13 +24,13 @@
 
 #include "fwServices/config.hpp"
 
+#include <boost/unordered_map.hpp>
+
 #include <fwCore/mt/types.hpp>
 
-#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Module.hpp>
 
 #include <fwTools/Object.hpp>
-
-#include <boost/unordered_map.hpp>
 
 #include <unordered_map>
 
@@ -128,9 +128,9 @@ private:
         std::vector<std::string> objectImpl;
         std::string desc;
         std::string tags;
-        std::shared_ptr< ::fwRuntime::Bundle > bundle;
+        std::shared_ptr< ::fwRuntime::Module > module;
         FactoryType factory;
-        bool objectsSetFromBundle {false}; // True if the objects implementation are set from the module information
+        bool objectsSetFromModule {false}; // True if the objects implementation are set from the module information
     };
     typedef std::unordered_map< KeyType, ServiceInfo > SrvRegContainer;
 

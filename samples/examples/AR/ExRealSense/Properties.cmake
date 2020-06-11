@@ -30,4 +30,4 @@ set( REQUIREMENTS
     videoQt
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExRealSense)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExRealSense)

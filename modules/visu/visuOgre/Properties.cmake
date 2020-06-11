@@ -1,6 +1,6 @@
 set( NAME visuOgre )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     fwRuntime

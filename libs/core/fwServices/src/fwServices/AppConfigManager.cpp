@@ -39,7 +39,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
 
-#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <boost/foreach.hpp>
@@ -97,7 +97,7 @@ void AppConfigManager::launch()
 {
     FW_PROFILE("launch");
 
-    this->startBundle();
+    this->startModule();
     this->create();
     this->start();
     this->update();
@@ -113,17 +113,17 @@ void AppConfigManager::stopAndDestroy()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::startBundle()
+void AppConfigManager::startModule()
 {
-    SLM_ERROR_IF("Bundle is not specified, it can not be started.", m_configId.empty());
+    SLM_ERROR_IF("Module is not specified, it can not be started.", m_configId.empty());
     if (!m_configId.empty() && !m_isUnitTest)
     {
-        std::shared_ptr< ::fwRuntime::Module > bundle = registry::AppConfig::getDefault()->getBundle(m_configId);
-        SLM_INFO_IF("Bundle '" + bundle->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
-                    bundle->isStarted());
-        if (!bundle->isStarted())
+        std::shared_ptr< ::fwRuntime::Module > module = registry::AppConfig::getDefault()->getModule(m_configId);
+        SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
+                    module->isStarted());
+        if (!module->isStarted())
         {
-            bundle->start();
+            module->start();
         }
     }
 }
@@ -292,7 +292,7 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
                    ext->getPoint() == className);
 
         // Start dll to retrieve proxy and register object
-        ext->getBundle()->start();
+        ext->getModule()->start();
     }
 
     ::fwData::Object::sptr obj = ::fwData::factory::New(type.first);

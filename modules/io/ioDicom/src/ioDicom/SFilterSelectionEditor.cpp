@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -49,7 +49,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::fwData::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ void SFilterSelectionEditor::starting()
     this->fillAvailableFilters();
     topLayout->addWidget(m_availableFilterListWidget);
 
-    auto path = ::fwRuntime::getBundleResourcePath("media");
+    auto path = ::fwRuntime::getModuleResourcePath("media");
 
     // Add filter button
     m_addFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Plus.svg").string())), "Add");
@@ -575,7 +575,7 @@ bool SFilterSelectionEditor::sortFilters(const ::fwDicomIOFilter::IFilter::sptr&
 
 QIcon SFilterSelectionEditor::getFilterIcon(::fwDicomIOFilter::IFilter::sptr filter)
 {
-    const std::filesystem::path path = ::fwRuntime::getBundleResourcePath(std::string("media"));
+    const std::filesystem::path path = ::fwRuntime::getModuleResourcePath(std::string("media"));
     QIcon icons[]                    = {
         QIcon(QString::fromStdString((path / "icons/Modifier.svg").string())),
         QIcon(QString::fromStdString((path / "icons/Sorter.svg").string())),

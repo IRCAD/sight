@@ -18,4 +18,4 @@ set( REQUIREMENTS
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES MesherConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES MesherConfig)

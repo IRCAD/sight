@@ -22,4 +22,4 @@ set( REQUIREMENTS
     visuVTKQt
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExDetectCamMotionConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExDetectCamMotionConfig)

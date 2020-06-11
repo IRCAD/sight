@@ -28,4 +28,4 @@ set( REQUIREMENTS
     dataManagerConfig
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES PoCMeshManualRegistration)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES PoCMeshManualRegistration)

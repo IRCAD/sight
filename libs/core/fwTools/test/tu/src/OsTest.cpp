@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,9 +24,9 @@
 
 #include <fwTools/Os.hpp>
 
-#include <fwCore/base.hpp>
-
 #include <boost/dll.hpp>
+
+#include <fwCore/base.hpp>
 
 #include <filesystem>
 
@@ -66,10 +66,11 @@ void Os::getSharedLibraryPath()
 #if defined(WIN32)
         const fs::path expectedPath = fs::path(execPath.string()) / "fwCore.dll";
 #elif defined(__APPLE__)
-        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / BUNDLE_LIB_PREFIX /
+        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / SIGHT_MODULE_LIB_PREFIX /
                                       "libfwCore.0.dylib";
 #else
-        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / BUNDLE_LIB_PREFIX / "libfwCore.so.0";
+        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / SIGHT_MODULE_LIB_PREFIX /
+                                      "libfwCore.so.0";
 #endif
         CPPUNIT_ASSERT_EQUAL(expectedPath, fwCorePath);
     }

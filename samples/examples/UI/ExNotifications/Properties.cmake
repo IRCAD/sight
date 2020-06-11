@@ -15,5 +15,5 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExNotificationsConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExNotificationsConfig)
 

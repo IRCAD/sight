@@ -166,9 +166,9 @@ void SScan::configuring()
 
     }
 
-    static const auto s_bundlePath = ::fwRuntime::getBundleResourcePath(std::string("videoRealSense"));
+    static const auto s_modulePath = ::fwRuntime::getModuleResourcePath(std::string("videoRealSense"));
     // Parse presets files
-    this->loadPresets(s_bundlePath / "presets");
+    this->loadPresets(s_modulePath / "presets");
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 <plugin id="Tuto02DataServiceBasic" version="@PROJECT_VERSION@">
 
-    <!-- The bundles in requirements are automatically started when this 
+    <!-- The modules in requirements are automatically started when this 
          Application is launched. -->
     <requirement id="dataReg" />
     <requirement id="servicesReg" />

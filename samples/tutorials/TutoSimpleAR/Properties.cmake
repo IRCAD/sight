@@ -32,4 +32,4 @@ set( REQUIREMENTS
     visuVTKQt
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoSimpleARConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES TutoSimpleARConfig)

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +20,9 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/helper.hpp>
+#include "memory/Plugin.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwTools/System.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/policy/AlwaysDump.hpp>
@@ -33,7 +30,11 @@
 #include <fwMemory/policy/NeverDump.hpp>
 #include <fwMemory/policy/ValveDump.hpp>
 
-#include "memory/Plugin.hpp"
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/operations.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwTools/System.hpp>
 
 namespace memory
 {
@@ -52,10 +53,10 @@ void Plugin::start()
 
     const std::string modeKey = "loading_mode";
 
-    if ( this->getBundle()->hasParameter(modeKey) )
+    if ( this->getModule()->hasParameter(modeKey) )
     {
         ::fwCore::mt::WriteLock lock( manager->getMutex() );
-        std::string mode = this->getBundle()->getParameterValue(modeKey);
+        std::string mode = this->getModule()->getParameterValue(modeKey);
         if (mode == "lazy")
         {
             manager->setLoadingMode(::fwMemory::BufferManager::LAZY);

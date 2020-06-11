@@ -31,5 +31,5 @@ set( REQUIREMENTS
     visuOgreQt
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES PoCMergePointcloud)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES PoCMergePointcloud)
 

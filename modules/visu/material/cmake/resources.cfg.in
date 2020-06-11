@@ -2,23 +2,23 @@
 
 # This group must be loaded first
 [Materials]
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/commun
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/billboard
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/core
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/core
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/overlays/
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/textures/
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/commun
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/billboard
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/core
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/core
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/overlays/
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/textures/
 
 [compositors]
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/sao
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/compositors/frag
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/sao
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/compositors/frag
 
 [compositorsPostFX]
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/postFX
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/postFX
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/textures/postFX
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/compositors/postFX
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/glsl/postFX
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/postFX
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/textures/postFX
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/compositors/postFX
 
 [materialsTemplate]
-FileSystem=./@FWBUNDLE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/scene
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/materials/scene
 

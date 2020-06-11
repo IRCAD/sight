@@ -1,7 +1,7 @@
 
 set( NAME appXml )
 set( VERSION 0.2 )
-set( TYPE BUNDLE )
+set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     fwCore

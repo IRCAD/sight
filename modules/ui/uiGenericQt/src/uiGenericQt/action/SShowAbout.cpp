@@ -87,7 +87,7 @@ void SShowAbout::configuring()
     {
         const std::string& filename = cfgFilename->getExistingAttributeValue("id");
         // Convert the path from a module location
-        m_fsAboutPath = ::fwRuntime::getBundleResourceFilePath(filename);
+        m_fsAboutPath = ::fwRuntime::getModuleResourceFilePath(filename);
 
         m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
         SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);

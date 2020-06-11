@@ -84,14 +84,14 @@ fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::STransferFunction)
 
 STransferFunction::STransferFunction()
 {
-    const std::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+    const std::filesystem::path modulePath = ::fwRuntime::getModuleResourcePath(std::string("uiTF"));
 
-    m_deleteIcon       = bundlePath / "delete.png";
-    m_newIcon          = bundlePath / "new.png";
-    m_reinitializeIcon = bundlePath / "reinitialize.png";
-    m_renameIcon       = bundlePath / "rename.png";
-    m_importIcon       = bundlePath / "import.png";
-    m_exportIcon       = bundlePath / "export.png";
+    m_deleteIcon       = modulePath / "delete.png";
+    m_newIcon          = modulePath / "new.png";
+    m_reinitializeIcon = modulePath / "reinitialize.png";
+    m_renameIcon       = modulePath / "rename.png";
+    m_importIcon       = modulePath / "import.png";
+    m_exportIcon       = modulePath / "export.png";
 }
 
 //------------------------------------------------------------------------------

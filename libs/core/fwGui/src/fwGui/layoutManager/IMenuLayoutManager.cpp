@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -74,7 +74,7 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
 
             if( menuItem->hasAttribute("icon") )
             {
-                info.m_icon = ::fwRuntime::getBundleResourceFilePath(menuItem->getAttributeValue("icon"));
+                info.m_icon = ::fwRuntime::getModuleResourceFilePath(menuItem->getAttributeValue("icon"));
             }
 
             if( menuItem->hasAttribute("style") )
@@ -170,4 +170,3 @@ std::vector< ::fwGui::container::fwMenu::sptr > IMenuLayoutManager::getMenus()
 
 } // namespace layoutManager
 } // namespace fwGui
-

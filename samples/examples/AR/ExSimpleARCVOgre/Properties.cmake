@@ -32,4 +32,4 @@ set( REQUIREMENTS
     visuOgreQt
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExSimpleARCVOgreConfig)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExSimpleARCVOgreConfig)

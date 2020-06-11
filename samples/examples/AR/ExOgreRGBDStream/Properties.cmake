@@ -31,4 +31,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES ExOgreRGBDStream)
+moduleParam(appXml PARAM_LIST config PARAM_VALUES ExOgreRGBDStream)
