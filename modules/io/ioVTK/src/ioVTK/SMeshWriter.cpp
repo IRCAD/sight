@@ -162,8 +162,6 @@ void SMeshWriter::updating()
         else
         {
             extensionToUse = providedExtension;
-            // Remove extension from file to avoid double extensions "file.ext.ext".
-            fileToWrite.replace_extension("");
         }
 
         ::fwDataIO::writer::IObjectWriter::sptr meshWriter;
