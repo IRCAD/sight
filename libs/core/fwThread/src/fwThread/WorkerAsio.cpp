@@ -180,6 +180,8 @@ WorkerAsio::WorkerAsio() :
 
 WorkerAsio::~WorkerAsio()
 {
+    std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
+
     SLM_ASSERT("Worker must be properly stopped. Try to call stop() from the caller thread before.",
                !m_thread->joinable());
 }
