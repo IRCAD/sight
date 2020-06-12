@@ -362,10 +362,13 @@ int main(int argc, char* argv[])
             profile = ::fwRuntime::io::ProfileReader::createProfile(profileFile);
 
             // Install a signal handler
-            std::signal(SIGQUIT, signal_handler);
             std::signal(SIGINT, signal_handler);
             std::signal(SIGTERM, signal_handler);
+
+#ifndef WIN32
             std::signal(SIGHUP, signal_handler);
+            std::signal(SIGQUIT, signal_handler);
+#endif
 
             profile->setParams(profileArgs);
 
