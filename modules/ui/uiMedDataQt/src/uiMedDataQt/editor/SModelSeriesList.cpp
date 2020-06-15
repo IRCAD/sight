@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "uiMedDataQt/editor/SModelSeriesList.hpp"
+
+#include <boost/format.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -44,8 +46,6 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwMedData/ModelSeries.hpp>
-
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/IService.hpp>
@@ -53,8 +53,6 @@
 #include <fwServices/op/Get.hpp>
 
 #include <fwTools/fwID.hpp>
-
-#include <boost/format.hpp>
 
 #include <QCheckBox>
 #include <QGroupBox>
@@ -71,24 +69,26 @@ namespace editor
 
 class ValueView
 {
+
 public:
+
     //------------------------------------------------------------------------------
 
-    virtual std::string apply(::fwData::Object::sptr obj)
+    virtual std::string apply(::fwData::Object::sptr _obj)
     {
-        if(obj->isA("::fwData::String"))
+        if(_obj->isA("::fwData::String"))
         {
-            ::fwData::String::sptr fwValue = ::fwData::String::dynamicCast(obj);
+            ::fwData::String::sptr fwValue = ::fwData::String::dynamicCast(_obj);
             return fwValue->getValue();
         }
-        else if(obj->isA("::fwData::Integer"))
+        else if(_obj->isA("::fwData::Integer"))
         {
-            ::fwData::Integer::sptr fwValue = ::fwData::Integer::dynamicCast(obj);
+            ::fwData::Integer::sptr fwValue = ::fwData::Integer::dynamicCast(_obj);
             return ::boost::lexical_cast<std::string>(fwValue->getValue());
         }
-        else if(obj->isA("::fwData::Float"))
+        else if(_obj->isA("::fwData::Float"))
         {
-            ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(obj);
+            ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(_obj);
             return ::boost::lexical_cast<std::string>(fwValue->getValue());
         }
         else
@@ -98,35 +98,37 @@ public:
         }
     }
 };
+
+//------------------------------------------------------------------------------
 
 class PositiveView : public ValueView
 {
 
 public:
+
     //------------------------------------------------------------------------------
 
-    virtual std::string apply(::fwData::Object::sptr obj)
+    virtual std::string apply(::fwData::Object::sptr _obj)
     {
-        if(obj->isA("::fwData::Integer"))
+        if(_obj->isA("::fwData::Integer"))
         {
-            ::fwData::Integer::sptr fwValue = ::fwData::Integer::dynamicCast(obj);
+            ::fwData::Integer::sptr fwIntValue = ::fwData::Integer::dynamicCast(_obj);
 
-            if(fwValue->getValue() > 0)
+            if(fwIntValue->getValue() > 0)
             {
                 std::stringstream ss;
-                ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(obj);
+                ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(_obj);
                 ss << ::boost::format("%11.2f") % (fwValue->getValue());
                 return ss.str();
             }
             return "Unknown";
         }
-        else if(obj->isA("::fwData::Float"))
+        else if(_obj->isA("::fwData::Float"))
         {
-            ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(obj);
+            ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(_obj);
             if(fwValue->getValue() > 0)
             {
                 std::stringstream ss;
-                ::fwData::Float::sptr fwValue = ::fwData::Float::dynamicCast(obj);
                 ss << ::boost::format("%11.2f") % (fwValue->getValue());
                 return ss.str();
             }
@@ -140,13 +142,17 @@ public:
     }
 };
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries);
+//------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
-const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries)
 
-const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
+static const ::fwCom::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+
+static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+
+//------------------------------------------------------------------------------
 
 SModelSeriesList::SModelSeriesList() noexcept :
     m_enableHideAll(true)
@@ -167,73 +173,6 @@ SModelSeriesList::~SModelSeriesList() noexcept
     {
         delete cIt.second;
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SModelSeriesList::starting()
-{
-    SLM_TRACE_FUNC();
-    this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-
-    QVBoxLayout* layout       = new QVBoxLayout;
-    QHBoxLayout* layoutButton = new QHBoxLayout;
-    layout->addLayout(layoutButton);
-
-    m_tree = new QTreeWidget();
-
-    m_tree->setColumnCount(m_headers.size());
-    m_tree->setHeaderLabels(m_headers);
-
-    if (m_enableHideAll)
-    {
-        // check box "show"
-        m_showCheckBox = new QCheckBox( tr("Hide all organs"));
-        m_showCheckBox->setToolTip(tr("Show or hide all organs"));
-        layoutButton->addWidget( m_showCheckBox, 0 );
-        QObject::connect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
-
-        m_checkAllButton = new QPushButton(tr("Check all"));
-        layoutButton->addWidget(m_checkAllButton, 0);
-        QObject::connect( m_checkAllButton, SIGNAL(clicked()), this, SLOT(onCheckAllCheckBox()) );
-
-        m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
-        layoutButton->addWidget(m_unCheckAllButton, 0);
-        QObject::connect( m_unCheckAllButton, SIGNAL(clicked()), this, SLOT(onUnCheckAllCheckBox()) );
-    }
-
-    layout->addWidget( m_tree, 1 );
-
-    qtContainer->setLayout( layout );
-
-    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-
-    this->updating();
-
-    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
-}
-
-//------------------------------------------------------------------------------
-
-void SModelSeriesList::stopping()
-{
-    SLM_TRACE_FUNC();
-
-    if(m_showCheckBox)
-    {
-        QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
-    }
-
-    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
-    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-
-    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -277,6 +216,70 @@ void SModelSeriesList::configuring()
 
 //------------------------------------------------------------------------------
 
+void SModelSeriesList::starting()
+{
+    SLM_TRACE_FUNC();
+    this->create();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+
+    QVBoxLayout* layout       = new QVBoxLayout;
+    QHBoxLayout* layoutButton = new QHBoxLayout;
+    layout->addLayout(layoutButton);
+
+    m_tree = new QTreeWidget();
+
+    m_tree->setColumnCount(m_headers.size());
+    m_tree->setHeaderLabels(m_headers);
+
+    if(m_enableHideAll)
+    {
+        // check box "show"
+        m_showCheckBox = new QCheckBox( tr("Hide all organs"));
+        m_showCheckBox->setToolTip(tr("Show or hide all organs"));
+        layoutButton->addWidget( m_showCheckBox, 0 );
+        QObject::connect(m_showCheckBox, &QCheckBox::stateChanged, this,
+                         &::uiMedDataQt::editor::SModelSeriesList::onShowReconstructions);
+
+        m_checkAllButton = new QPushButton(tr("Check all"));
+        layoutButton->addWidget(m_checkAllButton, 0);
+        QObject::connect(m_checkAllButton, &QPushButton::clicked, this,
+                         &::uiMedDataQt::editor::SModelSeriesList::onCheckAllCheckBox);
+
+        m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
+        layoutButton->addWidget(m_unCheckAllButton, 0);
+        QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this,
+                         &::uiMedDataQt::editor::SModelSeriesList::onUnCheckAllCheckBox);
+    }
+
+    layout->addWidget( m_tree, 1 );
+
+    qtContainer->setLayout( layout );
+
+    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+
+    this->updating();
+
+    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 void SModelSeriesList::updating()
 {
     m_tree->blockSignals(true);
@@ -285,14 +288,25 @@ void SModelSeriesList::updating()
     this->refreshVisibility();
 
     m_tree->blockSignals(false);
-
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::swapping()
+void SModelSeriesList::stopping()
 {
-    this->updating();
+    SLM_TRACE_FUNC();
+
+    if(m_showCheckBox)
+    {
+        QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
+    }
+
+    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
+    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -305,15 +319,15 @@ void SModelSeriesList::updateReconstructions()
 
     SLM_ASSERT("container not instanced", container);
 
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
-    SLM_ASSERT("The inout key '" + s_MODEL_SERIES_INOUT + "' is not defined.", modelSeries);
+    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
+        this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
     container->setEnabled( hasReconstructions );
 
     if(hasReconstructions)
     {
-        this->fillTree();
+        this->fillTree(modelSeries);
         if(m_showCheckBox)
         {
             const bool showAllRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -324,12 +338,10 @@ void SModelSeriesList::updateReconstructions()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::fillTree()
+void SModelSeriesList::fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries >& _modelSeries)
 {
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
-    SLM_ASSERT("The inout key '" + s_MODEL_SERIES_INOUT + "' is not defined.", modelSeries);
 
-    auto& reconstructions = modelSeries->getReconstructionDB();
+    auto& reconstructions = _modelSeries->getReconstructionDB();
 
     if(!m_tree->selectedItems().empty())
     {
@@ -362,10 +374,10 @@ void SModelSeriesList::fillTree()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* )
+void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem*)
 {
-    SLM_ASSERT( "Current selected item is null", current );
-    std::string id = current->data(0, Qt::UserRole).toString().toStdString();
+    SLM_ASSERT("Current selected item is null", _current);
+    std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
 
     ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
 
@@ -374,20 +386,20 @@ void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem* current, QTreeWidg
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onCurrentItemChanged ( QTreeWidgetItem* current, int column )
+void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, int _column)
 {
-    this->onOrganChoiceVisibility(current, column);
+    this->onOrganChoiceVisibility(_current, _column);
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* item, int )
+void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int)
 {
-    std::string id = item->data(0, Qt::UserRole).toString().toStdString();
+    std::string id = _item->data(0, Qt::UserRole).toString().toStdString();
     ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
     SLM_ASSERT("rec not instanced", rec);
 
-    const bool itemIsChecked = (item->checkState(0) == Qt::Checked);
+    const bool itemIsChecked = (_item->checkState(0) == Qt::Checked);
 
     if (rec->getIsVisible() != itemIsChecked)
     {
@@ -402,20 +414,20 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* item, int )
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onShowReconstructions(int state )
+void SModelSeriesList::onShowReconstructions(int _state)
 {
-    const bool visible = static_cast<bool>(state);
+    const bool visible = static_cast<bool>(_state);
 
     m_checkAllButton->setEnabled(!visible);
     m_unCheckAllButton->setEnabled(!visible);
     m_tree->setEnabled(!visible);
 
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
-    SLM_ASSERT("The inout key '" + s_MODEL_SERIES_INOUT + "' is not defined.", modelSeries);
+    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
+        this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     {
-        ::fwDataTools::helper::Field helper( modelSeries );
-        helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(state == Qt::Unchecked));
+        ::fwDataTools::helper::Field helper( modelSeries.getShared() );
+        helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(_state == Qt::Unchecked));
     }
 }
 
@@ -423,9 +435,9 @@ void SModelSeriesList::onShowReconstructions(int state )
 
 void SModelSeriesList::refreshVisibility()
 {
-    for( int i = 0; i < m_tree->topLevelItemCount(); ++i )
+    for( int i = 0; i < m_tree->topLevelItemCount(); ++i)
     {
-        QTreeWidgetItem* item = m_tree->topLevelItem( i );
+        QTreeWidgetItem* item = m_tree->topLevelItem(i);
         std::string id        = item->data(0, Qt::UserRole).toString().toStdString();
         ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
         item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked );
@@ -434,25 +446,12 @@ void SModelSeriesList::refreshVisibility()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::showReconstructions(bool show)
+void SModelSeriesList::showReconstructions(bool _show)
 {
     if(m_showCheckBox)
     {
-        m_showCheckBox->setCheckState(show ? Qt::Unchecked : Qt::Checked );
+        m_showCheckBox->setCheckState(_show ? Qt::Unchecked : Qt::Checked );
     }
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -471,16 +470,16 @@ void SModelSeriesList::onUnCheckAllCheckBox()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onCheckAllBoxes( bool visible )
+void SModelSeriesList::onCheckAllBoxes(bool _visible)
 {
     for( int i = 0; i < m_tree->topLevelItemCount(); ++i )
     {
         QTreeWidgetItem* item = m_tree->topLevelItem( i );
-        item->setCheckState(0, visible ? Qt::Checked : Qt::Unchecked );
+        item->setCheckState(0, _visible ? Qt::Checked : Qt::Unchecked );
     }
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace editor
-} // namespace uiMedDataQt
+} // namespace editor.
+} // namespace uiMedDataQt.
