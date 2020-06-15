@@ -8,7 +8,7 @@ elseif(UNIX)
     include(${FWCMAKE_INSTALL_FILES_DIR}/linux_install.cmake)
 endif()
 
-macro(generic_install)
+function(generic_install)
 
     if(${FWPROJECT_NAME}_GENERIC_INSTALL_API_CHECK)
         message(WARNING "generic_install() called twice for the target '${FWPROJECT_NAME}'.\nIt is probably present "
@@ -41,4 +41,4 @@ macro(generic_install)
         endif()
     endif()
 
-endmacro()
+endfunction()

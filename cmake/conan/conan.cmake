@@ -156,7 +156,11 @@ macro(installConanDepsForSDK)
     foreach(CONAN_DEP ${CONAN_DEPENDENCIES})
         string(REGEX REPLACE "([^\/]*)/.*" "\\1" CONAN_REQUIREMENT ${CONAN_DEP})
         string(TOUPPER ${CONAN_REQUIREMENT} CONAN_REQUIREMENT )
-        install(DIRECTORY "${CONAN_${CONAN_REQUIREMENT}_ROOT}/" DESTINATION ".")
+        install(DIRECTORY "${CONAN_${CONAN_REQUIREMENT}_ROOT}/" DESTINATION "."
+                USE_SOURCE_PERMISSIONS
+                PATTERN "qt.conf" EXCLUDE # We remove the qt.conf from Qt package because it does not match
+                                          # our plugin path. Our plugin path is set in WorkerQt.cpp
+                )
     endforeach()
 
 endmacro()
