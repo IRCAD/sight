@@ -111,7 +111,7 @@ void signal_handler(int signal)
         profile->cleanup();
         profile->stop();
     }
-    catch(std::exception& e)
+    catch(const std::exception& e)
     {
         OSLM_FATAL( e.what() );
         exit(1);
@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
                 profile->stop();
             }
         }
-        catch(std::exception& e)
+        catch(const std::exception& e)
         {
             OSLM_FATAL( e.what() );
             retValue = 3;
