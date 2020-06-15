@@ -26,6 +26,8 @@
 
 #include <boost/unordered_map.hpp>
 
+#include <glm/glm.hpp>
+
 #include <list>
 #include <map>
 #include <set>
@@ -373,6 +375,64 @@ bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexInde
 
 //-----------------------------------------------------------------------------
 
+::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
+                                const ::glm::dvec3& _C,
+                                const ::glm::dvec3& _D)
+{
+
+    /*
+       In general, a point with barycentric coordinates (u, v, w,h) is inside (or on) the tetrahedron(ABCD)
+          if and only if 0 ≤ u, v, w, h ≤ 1, or alternatively
+          if and only if 0 ≤ v ≤ 1, 0 ≤ w ≤ 1, 0 ≤ h ≤ 1, and v + w + h ≤ 1.
+
+       The main idea of the volumic baricentric coordinate is a proportionality with the sub-tetrahedron volumes ratio
+          over the whole volume. Considering one of the four vertex (_A, _B, _C, _D), the associated baricentric
+          coordinate are equal to the volume of the tetrahedron build with the three other vertexes and P,
+          divided by the total tetrahedron volume.
+
+       As a result, the principle in the present algorithm, is to compute the three tetrahedron (_A,_B,_C,_P)
+          (_A,_B,_D_P) (_A,_C,_D,_P) volume and the (_A,_B,_C,_D) volume. Then the ratio for respectivemy,
+          _D, _C, _B vertexes are computed, and the last baricentric coordinate is obtained by the formula
+          u + v + w + h = 1
+     */
+
+    ::glm::dvec4 baryCoord;
+
+    const ::glm::dvec3 vab = _B - _A; // AB Vector
+    const ::glm::dvec3 vac = _C - _A; // AC Vector
+    const ::glm::dvec3 vad = _D - _A; // AD Vector
+
+    const ::glm::dvec3 vap = _P - _A; // AP Vector
+
+    const double volumeB = ::glm::dot(vap, ::glm::cross(vac, vad));
+    const double volumeC = ::glm::dot(vap, ::glm::cross(vad, vab));
+    const double volumeD = ::glm::dot(vap, ::glm::cross(vab, vac));
+
+    const double volumeTot = ::glm::dot(vab, ::glm::cross(vac, vad));
+
+    // Don't test the case in release to avoid performance issue.
+    SLM_ASSERT("Degenerate triangle case leads to zero division.", volumeTot != 0.);
+
+    // Inverse the denominator to speed up computation of v & w.
+    const double invdenom = 1. / volumeTot;
+
+    // Barycentric coordinates
+    const double v = volumeB * invdenom;
+    const double w = volumeC * invdenom;
+    const double h = volumeD * invdenom;
+    const double u = 1. - v - w - h; // deduce last coordinate from the two others.
+
+    baryCoord[0] = u;
+    baryCoord[1] = v;
+    baryCoord[2] = w;
+    baryCoord[3] = h;
+
+    return baryCoord;
+
+}
+
+//-----------------------------------------------------------------------------
+
 ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec3& _baryCoord, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
                                   const ::glm::dvec3& _C)
 {
@@ -392,6 +452,54 @@ bool removeOrphanVertices( fwVertexPosition& _vertex, fwVertexIndex& _vertexInde
     worldCoordinates = u * _A + v * _B + w * _C;
 
     return worldCoordinates;
+}
+
+//-----------------------------------------------------------------------------
+
+::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
+                                  const ::glm::dvec3& _C,
+                                  const ::glm::dvec3& _D)
+{
+    /*
+       General formula (if [u, v, w, h] is normalized).
+       x = (u * _A.x + v * _B.x + w * _C.x + h * _D.x)
+       y = (u * _A.y + v * _B.y + w * _C.y + h * _D.y)
+       z = (u * _A.z + v * _B.z + w * _C.z + h * _D.z)
+     */
+
+    // Use standard notation for clarity.
+    const double u = _baryCoord[0];
+    const double v = _baryCoord[1];
+    const double w = _baryCoord[2];
+    const double h = _baryCoord[3];
+
+    [[maybe_unused]] const double sum = u + v + w + h; // Only used in the following assertion.
+
+    // Don't test in release to avoid performance issue.
+    SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
+               , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+
+    return u * _A + v * _B + w * _C + h * _D;
+
+}
+
+//------------------------------------------------------------------------------
+
+bool isInsideThetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                          const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D)
+{
+
+    /*
+       There are several ways to determine if a point is inside a tetrahedron.
+       The present algorithm make use of the barycentric coordinates.
+       It first the baricentric coordinate of the point inside the tetrahedron, and then checks if all of them are
+          in between 0 and 1.
+     */
+    const ::glm::dvec4 barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
+    return 0 <= barycentricCoord[0] &&  barycentricCoord[0] <= 1
+           &&  0 <= barycentricCoord[1] &&  barycentricCoord[1] <= 1
+           &&  0 <= barycentricCoord[2] &&  barycentricCoord[2] <= 1
+           &&  0 <= barycentricCoord[3] &&  barycentricCoord[3] <= 1;
 }
 
 //-----------------------------------------------------------------------------

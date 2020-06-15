@@ -41,6 +41,8 @@ private:
     CPPUNIT_TEST( computeBarycenterABC3D);
     CPPUNIT_TEST( computeBarycenterOutsideABC);
     CPPUNIT_TEST( computeBarycenterABCRealCoords);
+    CPPUNIT_TEST( computeBarycenterTetrahedron);
+    CPPUNIT_TEST( computeBarycenterOutsideTetrahedron);
     CPPUNIT_TEST_SUITE_END();
 
     /// Compare value of 2 ::glm::dvec3.
@@ -60,6 +62,10 @@ public:
     void computeBarycenterABCRealCoords();
     /// Computes barrycentric coordinates on a point outside a ABC triangle.
     void computeBarycenterOutsideABC();
+    /// Computes barycentric coordinates on a point inside a ABCD Tetrahedron in 3D.
+    void computeBarycenterTetrahedron();
+    /// Computes barycentric coordinates on a point outside a ABCD Tetrahedron.
+    void computeBarycenterOutsideTetrahedron();
 
 };
 
