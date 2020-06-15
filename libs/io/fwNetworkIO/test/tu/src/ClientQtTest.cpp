@@ -32,8 +32,6 @@
 
 #include <fwTest/Exception.hpp>
 
-#include <cppunit/Exception.h>
-
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwNetworkIO::ut::ClientQtTest );
 
 namespace fwNetworkIO
