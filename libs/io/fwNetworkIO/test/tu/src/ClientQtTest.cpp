@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -82,12 +82,12 @@ static ::fwTest::Exception e(""); // force link with fwTest
 void ClientQtTest::setUp()
 {
     // Set up context before running a test.
-    char arg1[] = "ClientQtTest";
+    static char arg1[] = "ClientQtTest";
 #if defined(__linux)
-    char arg2[]         = "-platform";
-    char arg3[]         = "offscreen";
+    static char arg2[]  = "-platform";
+    static char arg3[]  = "offscreen";
     static char* argv[] = {arg1, arg2, arg3, nullptr};
-    int argc            = 3;
+    static int argc     = 3;
 #else
     static char* argv[] = {arg1, 0};
     static int argc     = 1;
