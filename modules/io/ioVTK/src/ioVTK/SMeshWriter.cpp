@@ -194,7 +194,7 @@ void SMeshWriter::updating()
 
         m_sigJobCreated->emit(meshWriter->getJob());
 
-        meshWriter->setObject(meshlockedPtr.getShared());
+        meshWriter->setObject(meshlockedPtr.get_shared());
 
         try
         {

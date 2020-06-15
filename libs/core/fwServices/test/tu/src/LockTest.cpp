@@ -182,55 +182,55 @@ void LockTest::testScopedLock()
     ::fwData::mt::weak_ptr< const ::fwData::Integer > weakInput(input);
     {
         auto sharedInput = weakInput.lock();
-        CPPUNIT_ASSERT_EQUAL(input, sharedInput.getShared());
+        CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
     }
 
     ::fwData::mt::weak_ptr< ::fwData::Integer > weakInOut(inout);
     {
         auto sharedInOut = weakInOut.lock();
-        CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.getShared());
+        CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
     }
 
     ::fwData::mt::weak_ptr< ::fwData::Integer > weakOutput(output);
     {
         auto sharedOutput = weakOutput.lock();
-        CPPUNIT_ASSERT_EQUAL(output, sharedOutput.getShared());
+        CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
     }
 
     // Test basic scoped lock from service getters
     weakInput = lockedService->getWeakInput< ::fwData::Integer >(::fwServices::ut::LockedService::s_INPUT);
     {
         auto sharedInput = weakInput.lock();
-        CPPUNIT_ASSERT_EQUAL(input, sharedInput.getShared());
+        CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
     }
 
     weakInOut = lockedService->getWeakInOut< ::fwData::Integer >(::fwServices::ut::LockedService::s_INOUT);
     {
         auto sharedInOut = weakInOut.lock();
-        CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.getShared());
+        CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
     }
 
     weakOutput = lockedService->getWeakOutput< ::fwData::Integer >(::fwServices::ut::LockedService::s_OUTPUT);
     {
         auto sharedOutput = weakOutput.lock();
-        CPPUNIT_ASSERT_EQUAL(output, sharedOutput.getShared());
+        CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
     }
 
     // Test basic scoped lock from service direct locker
     {
         auto sharedInput = lockedService->getLockedInput< ::fwData::Integer >(::fwServices::ut::LockedService::s_INPUT);
-        CPPUNIT_ASSERT_EQUAL(input, sharedInput.getShared());
+        CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
     }
 
     {
         auto sharedInOut = lockedService->getLockedInOut< ::fwData::Integer >(::fwServices::ut::LockedService::s_INOUT);
-        CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.getShared());
+        CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
     }
 
     {
         auto sharedOutput = lockedService->getLockedOutput< ::fwData::Integer >(
             ::fwServices::ut::LockedService::s_OUTPUT);
-        CPPUNIT_ASSERT_EQUAL(output, sharedOutput.getShared());
+        CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
     }
 
     // cleanup
@@ -253,7 +253,7 @@ void LockTest::testDumpLock()
 
     {
         auto sharedInput = lockedService->getLockedInput< ::fwData::Image >(::fwServices::ut::LockedService::s_INPUT);
-        CPPUNIT_ASSERT(image == sharedInput.getShared());
+        CPPUNIT_ASSERT(image == sharedInput.get_shared());
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(image->getBuffer());
     }
@@ -267,7 +267,7 @@ void LockTest::testDumpLock()
 
     {
         auto sharedInput = lockedService->getLockedInput< ::fwData::Mesh >(::fwServices::ut::LockedService::s_INPUT);
-        CPPUNIT_ASSERT(mesh == sharedInput.getShared());
+        CPPUNIT_ASSERT(mesh == sharedInput.get_shared());
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(0.f, 0.f, 0.f));
     }
@@ -299,7 +299,7 @@ void LockTest::testThreadedLock()
         auto weakInput = lockedService->getWeakInput< const ::fwData::Integer >(
             ::fwServices::ut::LockedService::s_INPUT);
         auto sharedInput = weakInput.lock();
-        CPPUNIT_ASSERT_EQUAL(input, sharedInput.getShared());
+        CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
 
         std::thread t1(&::fwServices::ut::LockedService::starting, lockedService);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));

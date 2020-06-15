@@ -69,7 +69,7 @@ inline SPTR(DATATYPE) IService::getOutput(const KeyType& key) const
     auto iterator = m_outputsMap.find(key);
     if(iterator != m_outputsMap.end())
     {
-        output = std::dynamic_pointer_cast<DATATYPE>( iterator->second.getShared() );
+        output = std::dynamic_pointer_cast<DATATYPE>( iterator->second.get_shared() );
         OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", output);
     }
 
@@ -169,7 +169,7 @@ inline ::fwData::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType&
     if(iterator != m_outputsMap.end())
     {
         // The Key has been found, we can cast it to the right type
-        output = std::dynamic_pointer_cast< DATATYPE >(iterator->second.getShared());
+        output = std::dynamic_pointer_cast< DATATYPE >(iterator->second.get_shared());
         OSLM_ASSERT(
             "DynamicCast " << ::fwCore::TypeDemangler< DATATYPE >().getClassname() << " failed", !output.expired());
     }
@@ -225,7 +225,7 @@ template< class DATATYPE, typename CONST_DATATYPE >
 inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& key) const
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(key).lock();
-    SLM_ASSERT("Cannot acquire a lock on '" + key + "'.", lockedInput);
+    FW_RAISE_IF("Cannot acquire a lock on '" + key + "'.", !lockedInput);
     return lockedInput;
 }
 
@@ -235,7 +235,7 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& key) const
 {
     auto lockedInOut = getWeakInOut< DATATYPE >(key).lock();
-    SLM_ASSERT("Cannot acquire a lock on '" + key + "'.", lockedInOut);
+    FW_RAISE_IF("Cannot acquire a lock on '" + key + "'.", !lockedInOut);
     return lockedInOut;
 }
 
@@ -245,7 +245,7 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyType& key) const
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(key).lock();
-    SLM_ASSERT("Cannot acquire a lock on '" + key + "'.", lockedOutput);
+    FW_RAISE_IF("Cannot acquire a lock on '" + key + "'.", !lockedOutput);
     return lockedOutput;
 }
 
@@ -256,7 +256,7 @@ inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const
                                                                            size_t index) const
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(keybase, index).lock();
-    SLM_ASSERT("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", lockedInput);
+    FW_RAISE_IF("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", !lockedInput);
     return lockedInput;
 }
 
@@ -266,7 +266,7 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& keybase, size_t index) const
 {
     auto lockedInOut = this->getWeakInOut< DATATYPE >(keybase, index).lock();
-    SLM_ASSERT("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", lockedInOut);
+    FW_RAISE_IF("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", !lockedInOut);
     return lockedInOut;
 }
 
@@ -276,7 +276,7 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::geLockedOutput(const KeyType& keybase, size_t index) const
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(keybase, index).lock();
-    SLM_ASSERT("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", lockedOutput);
+    FW_RAISE_IF("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", !lockedOutput);
     return lockedOutput;
 }
 

@@ -114,7 +114,7 @@ public:
     ~locked_ptr()                            = default;
 
     /// Returns the internal shared pointer
-    inline std::shared_ptr< DATATYPE > getShared() const noexcept
+    inline std::shared_ptr< DATATYPE > get_shared() const noexcept
     {
         return m_data;
     }

@@ -123,7 +123,7 @@ protected:
 
     /// Convenience getter shared_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    inline std::shared_ptr<DATATYPE> getShared() const noexcept
+    inline std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data;
     }

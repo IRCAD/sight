@@ -154,9 +154,7 @@ void SModelSeriesReader::updating()
     {
         // Retrieve dataStruct associated with this service
         const auto modelSeriesLockedPtr = this->getLockedInOut< ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeriesLockedPtr);
-
-        const auto modelSeries = modelSeriesLockedPtr.getShared();
+        const auto modelSeries          = modelSeriesLockedPtr.get_shared();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

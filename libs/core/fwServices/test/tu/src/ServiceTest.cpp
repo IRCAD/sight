@@ -151,21 +151,21 @@ void ServiceTest::testServiceCreationWithMultipleData()
     CPPUNIT_ASSERT_EQUAL(false, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INOUT, srv));
 
     // Test getting the service object
-    CPPUNIT_ASSERT_EQUAL(obj1, srv->getLockedInOut< ::fwData::Integer >(dataKey1).getShared());
+    CPPUNIT_ASSERT_EQUAL(obj1, srv->getLockedInOut< ::fwData::Integer >(dataKey1).get_shared());
 
     srv->registerObject(obj2, dataKey2, AccessType::INOUT);
     CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey2, AccessType::INOUT, srv));
     CPPUNIT_ASSERT(obj2 == ::fwServices::OSR::getRegistered(dataKey2, AccessType::INOUT, srv));
 
     // Test getting the service object
-    CPPUNIT_ASSERT_EQUAL(obj2, srv->getLockedInOut< ::fwData::Integer >(dataKey2).getShared());
+    CPPUNIT_ASSERT_EQUAL(obj2, srv->getLockedInOut< ::fwData::Integer >(dataKey2).get_shared());
 
     srv->registerInput(obj3, dataKey3);
     CPPUNIT_ASSERT_EQUAL(true, ::fwServices::OSR::isRegistered(dataKey3, AccessType::INPUT, srv));
     CPPUNIT_ASSERT(obj3 == ::fwServices::OSR::getRegistered(dataKey3, AccessType::INPUT, srv));
 
     // Test getting the service object
-    CPPUNIT_ASSERT(obj3 == srv->getLockedInput< ::fwData::Integer >(dataKey3).getShared());
+    CPPUNIT_ASSERT(obj3 == srv->getLockedInput< ::fwData::Integer >(dataKey3).get_shared());
 
     // Test unregistering the objects
     srv->unregisterInOut(dataKey1);
@@ -206,7 +206,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     CPPUNIT_ASSERT(obj == ::fwServices::OSR::getRegistered(dataKey, ::fwServices::IService::AccessType::INOUT, srv));
 
     // Test getting the service its object
-    CPPUNIT_ASSERT_EQUAL(obj, srv->getLockedInOut< ::fwData::Integer >(dataKey).getShared());
+    CPPUNIT_ASSERT_EQUAL(obj, srv->getLockedInOut< ::fwData::Integer >(dataKey).get_shared());
 
     srv->unregisterInOut(dataKey);
     CPPUNIT_ASSERT_EQUAL(false,
@@ -250,7 +250,7 @@ void ServiceTest::testServiceCreationWithUUID()
     // Test getting the service its object
     ::fwServices::IService::sptr service2bis = ::fwServices::get(myUUID2);
     CPPUNIT_ASSERT(service2bis);
-    CPPUNIT_ASSERT_EQUAL(obj, service2bis->getLockedInOut< ::fwData::Integer >(dataKey).getShared());
+    CPPUNIT_ASSERT_EQUAL(obj, service2bis->getLockedInOut< ::fwData::Integer >(dataKey).get_shared());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2bis->getID());
     CPPUNIT_ASSERT( !::fwTools::fwID::exist(myUUID3) );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices("::fwServices::ut::TestService").size() );
@@ -618,7 +618,7 @@ void ServiceTest::testWithInAndOut()
     CPPUNIT_ASSERT_EQUAL(obj->value(), outInteger->value());
 
     ::fwData::Integer::csptr outInteger2 = service->getLockedOutput< ::fwData::Integer >(
-        ::fwServices::ut::TestServiceWithData::s_OUTPUT).getShared();
+        ::fwServices::ut::TestServiceWithData::s_OUTPUT).get_shared();
     CPPUNIT_ASSERT(outInteger2);
 
     CPPUNIT_ASSERT_EQUAL(obj->value(), outInteger2->value());
