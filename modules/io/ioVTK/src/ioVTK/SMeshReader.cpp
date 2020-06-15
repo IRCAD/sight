@@ -145,7 +145,6 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
     bool ok = true;
     // Retrieve dataStruct associated with this service
     const auto meshlockedPtr = this->getLockedInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", meshlockedPtr);
 
     // Test extension to provide the reader
 

@@ -143,7 +143,6 @@ void SMeshWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         const auto meshlockedPtr = this->getLockedInput< const ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", meshlockedPtr);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

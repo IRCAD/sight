@@ -85,7 +85,7 @@ void SQuit::updating()
 {
     ::fwGui::Cursor cursor;
     cursor.setCursor(::fwGui::ICursor::BUSY);
-    ::fwGui::Application::getDefault()->exit(0);
+    ::fwGui::Application::New()->exit(0);
     cursor.setDefaultCursor();
 }
 
