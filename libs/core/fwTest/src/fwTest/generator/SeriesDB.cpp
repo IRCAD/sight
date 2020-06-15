@@ -117,6 +117,7 @@ namespace generator
     const std::string DATE        = "20130418";
     const std::string TIME        = "095948.689872 ";
     const std::string PHYSICIAN   = "Dr^Jekyl";
+    const std::string CONSULTANT  = "Dr^Doolite";
     const std::string DESCRIPTION = "Say 33. ";
     const std::string PATIENT_AGE = "042Y";
 
@@ -124,6 +125,7 @@ namespace generator
     study->setDate( DATE );
     study->setTime( TIME );
     study->setReferringPhysicianName( PHYSICIAN );
+    study->setConsultingPhysicianName(CONSULTANT);
     study->setDescription( DESCRIPTION );
     study->setPatientAge( PATIENT_AGE );
 
