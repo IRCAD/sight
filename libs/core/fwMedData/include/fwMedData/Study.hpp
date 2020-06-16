@@ -151,6 +151,7 @@ private:
     DicomValueType m_referringPhysicianName;
 
     /// Defines the referring physician name.
+    /// @todo: This should be a list (DicomValuesType).
     DicomValueType m_consultingPhysicianName;
 
     /// Defines the description of this study.

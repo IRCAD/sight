@@ -50,12 +50,16 @@ void Study::shallowCopy(const ::fwData::Object::csptr& _source)
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( other );
-    m_instanceUID            = other->m_instanceUID;
-    m_date                   = other->m_date;
-    m_time                   = other->m_time;
-    m_referringPhysicianName = other->m_referringPhysicianName;
-    m_description            = other->m_description;
-    m_patientAge             = other->m_patientAge;
+    m_instanceUID             = other->m_instanceUID;
+    m_date                    = other->m_date;
+    m_time                    = other->m_time;
+    m_referringPhysicianName  = other->m_referringPhysicianName;
+    m_consultingPhysicianName = other->m_consultingPhysicianName;
+    m_description             = other->m_description;
+    m_patientAge              = other->m_patientAge;
+    m_patientSize             = other->m_patientSize;
+    m_patientWeight           = other->m_patientWeight;
+    m_patientBodyMassIndex    = other->m_patientBodyMassIndex;
 }
 
 //------------------------------------------------------------------------------
@@ -68,12 +72,16 @@ void Study::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCache
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
-    m_instanceUID            = other->m_instanceUID;
-    m_date                   = other->m_date;
-    m_time                   = other->m_time;
-    m_referringPhysicianName = other->m_referringPhysicianName;
-    m_description            = other->m_description;
-    m_patientAge             = other->m_patientAge;
+    m_instanceUID             = other->m_instanceUID;
+    m_date                    = other->m_date;
+    m_time                    = other->m_time;
+    m_referringPhysicianName  = other->m_referringPhysicianName;
+    m_consultingPhysicianName = other->m_consultingPhysicianName;
+    m_description             = other->m_description;
+    m_patientAge              = other->m_patientAge;
+    m_patientSize             = other->m_patientSize;
+    m_patientWeight           = other->m_patientWeight;
+    m_patientBodyMassIndex    = other->m_patientBodyMassIndex;
 }
 
 //------------------------------------------------------------------------------
