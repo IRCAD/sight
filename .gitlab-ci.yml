@@ -378,6 +378,10 @@ test:sdk-debug-linux:
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
+    # Launch tutosdk in background, wait 5s, and terminate it
+    - xvfb-run -a ./bin/tutosdk &
+    - sleep 5s
+    - killall -r "fwlauncher.*"
     # Launch sight-sdk-sample
     - LD_LIBRARY_PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib:$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib/sight:$LD_LIBRARY_PATH
     - PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/bin:$PATH
@@ -421,6 +425,10 @@ test:sdk-release-linux:
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     - ninja
     - ccache -s
+    # Launch tutosdk in background, wait 5s, and terminate it
+    - xvfb-run -a ./bin/tutosdk &
+    - sleep 5s
+    - killall -r "fwlauncher.*"
     # Launch sight-sdk-sample
     - LD_LIBRARY_PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib:$CI_PROJECT_DIR/sdk/${SDK_NAME}/lib/sight:$LD_LIBRARY_PATH
     - PATH=$CI_PROJECT_DIR/sdk/${SDK_NAME}/bin:$PATH
