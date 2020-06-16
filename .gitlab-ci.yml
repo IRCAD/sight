@@ -6,7 +6,7 @@ stages:
   - deploy
 
 .linux_template: &linux_job
-  image: ${DOCKER_ENVDEV_MINT19}
+  image: "${SIGHT_CI_MINT19}:dev"
   variables:
     FW_IGNORE_SLOW_TESTS: 1
   before_script:
@@ -241,7 +241,7 @@ doxygen:
       - $CI_PROJECT_DIR/build/Documentation/Doxygen/
 
 pages:
-  image: ${DOCKER_ENVDEV_MINT19}
+  image: "${SIGHT_CI_MINT19}:dev"
   stage: deploy
   dependencies:
     - doxygen
