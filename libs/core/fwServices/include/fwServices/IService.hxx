@@ -225,7 +225,14 @@ template< class DATATYPE, typename CONST_DATATYPE >
 inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const KeyType& key) const
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(key).lock();
-    FW_RAISE_IF("Cannot acquire a lock on '" + key + "'.", !lockedInput);
+
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception(
+            "Service with ID '" + this->getID() + "' cannot acquire a locked input with key '" + key + "'."
+            ),
+        !lockedInput
+        );
+
     return lockedInput;
 }
 
@@ -235,7 +242,14 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& key) const
 {
     auto lockedInOut = getWeakInOut< DATATYPE >(key).lock();
-    FW_RAISE_IF("Cannot acquire a lock on '" + key + "'.", !lockedInOut);
+
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception(
+            "Service with ID '" + this->getID() + "' cannot acquire a locked inout with key '" + key + "'."
+            ),
+        !lockedInOut
+        );
+
     return lockedInOut;
 }
 
@@ -245,7 +259,14 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyType& key) const
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(key).lock();
-    FW_RAISE_IF("Cannot acquire a lock on '" + key + "'.", !lockedOutput);
+
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception(
+            "Service with ID '" + this->getID() + "' cannot acquire a locked out with key '" + key + "'."
+            ),
+        !lockedOutput
+        );
+
     return lockedOutput;
 }
 
@@ -256,7 +277,20 @@ inline ::fwData::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const
                                                                            size_t index) const
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(keybase, index).lock();
-    FW_RAISE_IF("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", !lockedInput);
+
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception(
+            "Service with ID '"
+            + this->getID()
+            + "' cannot acquire a locked input with '"
+            + keybase
+            + "'["
+            + std::to_string(index)
+            + "]."
+            ),
+        !lockedInput
+        );
+
     return lockedInput;
 }
 
@@ -266,7 +300,20 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& keybase, size_t index) const
 {
     auto lockedInOut = this->getWeakInOut< DATATYPE >(keybase, index).lock();
-    FW_RAISE_IF("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", !lockedInOut);
+
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception(
+            "Service with ID '"
+            + this->getID()
+            + "' cannot acquire a locked input with '"
+            + keybase
+            + "'["
+            + std::to_string(index)
+            + "]."
+            ),
+        !lockedInOut
+        );
+
     return lockedInOut;
 }
 
@@ -276,7 +323,20 @@ template< class DATATYPE >
 inline ::fwData::mt::locked_ptr< DATATYPE > IService::geLockedOutput(const KeyType& keybase, size_t index) const
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(keybase, index).lock();
-    FW_RAISE_IF("Cannot acquire a lock on '" + keybase + "'[" + std::to_string(index) + "].", !lockedOutput);
+
+    FW_RAISE_EXCEPTION_IF(
+        ::fwData::Exception(
+            "Service with ID '"
+            + this->getID()
+            + "' cannot acquire a locked input with '"
+            + keybase
+            + "'["
+            + std::to_string(index)
+            + "]."
+            ),
+        !lockedOutput
+        );
+
     return lockedOutput;
 }
 
