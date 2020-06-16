@@ -64,7 +64,12 @@ void Study::writeGeneralStudyModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0020>(m_object->getDate(), dataset);
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0030>(m_object->getTime(), dataset);
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x0090>(m_object->getReferringPhysicianName(), dataset);
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x009C>(m_object->getConsultingPhysicianName(), dataset);
+
+    //TODO: >getConsultingPhysicianName() contains only 1 value, gdcm wants a list (VM : 1-N).
+    ::gdcm::String<> consultingPhysisicianName[] = {m_object->getConsultingPhysicianName()};
+
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String<>, 0x0008, 0x009C>(consultingPhysisicianName, 1,
+                                                                                         dataset);
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0008, 0x1030>(m_object->getDescription(), dataset);
 
     // Study 's accession number - Type 2
@@ -79,12 +84,14 @@ void Study::writePatientStudyModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue<0x0010, 0x1010>(m_object->getPatientAge(), dataset);
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0010, 0x1020>(
-        std::stoi(m_object->getPatientSize()), dataset);
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0010, 0x1030>(
-        std::stoi(m_object->getPatientWeight()), dataset);
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<int, 0x0010, 0x1022>(
-        std::stoi(m_object->getPatientBodyMassIndex()), dataset);
+    // Following tags are represented as Decimal String, in GDCM DS = Double.
+    // To avoid exception of stod, we need to test first if string is empty.
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1020>(
+        m_object->getPatientSize().empty() ? 0. : std::stod(m_object->getPatientSize()), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1030>(
+        m_object->getPatientWeight().empty() ? 0. : std::stod(m_object->getPatientWeight()), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1022>(
+        m_object->getPatientBodyMassIndex().empty() ? 0. : std::stod(m_object->getPatientBodyMassIndex()), dataset);
 }
 
 //------------------------------------------------------------------------------
