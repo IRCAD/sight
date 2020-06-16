@@ -838,6 +838,9 @@ void AppConfigTest::optionalKeyTest()
     CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data2").expired());
     CPPUNIT_ASSERT(srv1->getWeakInput< ::fwData::Object>("data3").expired() );
 
+    // Check that null data object throws an exception
+    CPPUNIT_ASSERT_THROW(srv1->getLockedInput< ::fwData::Object>("data2"), ::fwData::Exception);
+
     // Create data 2
     ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
 

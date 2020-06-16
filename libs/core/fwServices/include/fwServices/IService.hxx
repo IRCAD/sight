@@ -262,7 +262,7 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyT
 
     FW_RAISE_EXCEPTION_IF(
         ::fwData::Exception(
-            "Service with ID '" + this->getID() + "' cannot acquire a locked out with key '" + key + "'."
+            "Service with ID '" + this->getID() + "' cannot acquire a locked output with key '" + key + "'."
             ),
         !lockedOutput
         );
@@ -305,7 +305,7 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyTy
         ::fwData::Exception(
             "Service with ID '"
             + this->getID()
-            + "' cannot acquire a locked input with '"
+            + "' cannot acquire a locked inout with '"
             + keybase
             + "'["
             + std::to_string(index)
@@ -328,7 +328,7 @@ inline ::fwData::mt::locked_ptr< DATATYPE > IService::geLockedOutput(const KeyTy
         ::fwData::Exception(
             "Service with ID '"
             + this->getID()
-            + "' cannot acquire a locked input with '"
+            + "' cannot acquire a locked output with '"
             + keybase
             + "'["
             + std::to_string(index)
