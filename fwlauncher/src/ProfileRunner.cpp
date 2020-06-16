@@ -104,8 +104,27 @@ volatile sig_atomic_t gSignalStatus = 0;
 void signal_handler(int signal)
 {
     gSignalStatus = signal;
-    ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    ::fwRuntime::profile::getCurrentProfile()->stop();
+
+    try
+    {
+        const ::fwRuntime::profile::Profile::sptr& profile = ::fwRuntime::profile::getCurrentProfile();
+        profile->cleanup();
+        profile->stop();
+    }
+    catch(const std::exception& e)
+    {
+        OSLM_FATAL( e.what() );
+        exit(1);
+    }
+    catch(...)
+    {
+        SLM_FATAL( "An unrecoverable error has occurred." );
+        exit(2);
+    }
+
+    // We use brutal exit because when interrupted by a signal, we never get out from run,
+    // even if the program is fully terminated
+    exit(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -344,6 +363,12 @@ int main(int argc, char* argv[])
 
             // Install a signal handler
             std::signal(SIGINT, signal_handler);
+            std::signal(SIGTERM, signal_handler);
+
+#ifndef WIN32
+            std::signal(SIGHUP, signal_handler);
+            std::signal(SIGQUIT, signal_handler);
+#endif
 
             profile->setParams(profileArgs);
 
@@ -354,21 +379,21 @@ int main(int argc, char* argv[])
                 profile->stop();
             }
         }
-        catch(std::exception& e)
+        catch(const std::exception& e)
         {
             OSLM_FATAL( e.what() );
-            retValue = 1;
+            retValue = 3;
         }
         catch(...)
         {
             SLM_FATAL( "An unrecoverable error has occurred." );
-            retValue = 1;
+            retValue = 4;
         }
     }
     else
     {
         OSLM_ERROR( "Profile file " << profileFile << " do not exists or is not a regular file.");
-        retValue = 1;
+        retValue = 5;
     }
 
     return retValue;
