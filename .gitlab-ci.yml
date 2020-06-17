@@ -40,6 +40,7 @@ stages:
 .windows_template: &windows_job
   variables:
     CONAN_USER_HOME: $CI_PROJECT_DIR/conan
+    FW_IGNORE_SLOW_TESTS: 1
     CUDA_PATH: "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1"
   before_script:
     # CMerge the branch into dev.
@@ -166,7 +167,7 @@ build:release-windows:
     # Run unit tests.
     - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b %EXTRA_BRANCH%
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data
-    - ctest --timeout 240 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
+    - ctest --timeout 480 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
     when: always
     name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
@@ -276,7 +277,7 @@ build:sdk-debug-linux:
     # Run unit tests.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data
-    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
+    - ctest --timeout 480 --output-on-failure -O ctest.log -j4
     # Install and build the SDK package
     - ninja install
     - ninja package
@@ -322,7 +323,7 @@ build:sdk-release-linux:
     # Run unit tests.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data
-    - ctest --timeout 240 --output-on-failure -O ctest.log -j4
+    - ctest --timeout 480 --output-on-failure -O ctest.log -j4
     # Install and build the SDK package
     - ninja install
     - ninja package
