@@ -145,7 +145,6 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
     bool ok = true;
     // Retrieve dataStruct associated with this service
     const auto meshlockedPtr = this->getLockedInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", meshlockedPtr);
 
     // Test extension to provide the reader
 
@@ -179,7 +178,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
 
     m_sigJobCreated->emit(meshReader->getJob());
 
-    meshReader->setObject(meshlockedPtr.getShared());
+    meshReader->setObject(meshlockedPtr.get_shared());
 
     try
     {
@@ -244,10 +243,9 @@ void SMeshReader::updating()
 void SMeshReader::notificationOfUpdate()
 {
     const auto meshLockedPtr = this->getLockedInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", meshLockedPtr);
 
     ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = meshLockedPtr.getShared()->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig = meshLockedPtr.get_shared()->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

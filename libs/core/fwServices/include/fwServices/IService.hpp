@@ -32,6 +32,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwData/Exception.hpp>
 #include <fwData/Object.hpp>
 #include <fwData/mt/locked_ptr.hpp>
 #include <fwData/mt/weak_ptr.hpp>
@@ -519,7 +520,8 @@ public:
     /**
      * @brief Return a locked data pointer of the input object at the given key.
      * @param key name of the data to retrieve.
-     * @return locked data pointer in the right type, null pointer if not found.
+     * @return locked data pointer in the right type.
+     * @throw ::fwData::Exception if the data object is not found.
      */
     template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
     inline ::fwData::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& key) const;
@@ -527,7 +529,8 @@ public:
     /**
      * @brief Return a locked data pointer of the in/out object at the given key.
      * @param key name of the data to retrieve.
-     * @return locked data pointer in the right type, null pointer if not found.
+     * @return locked data pointer in the right type.
+     * @throw ::fwData::Exception if the data object is not found.
      */
     template< class DATATYPE >
     inline ::fwData::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& key) const;
@@ -535,7 +538,8 @@ public:
     /**
      * @brief Return a locked data pointer of the out object at the given key.
      * @param key name of the data to retrieve.
-     * @return locked data pointer in the right type, null pointer if not found.
+     * @return locked data pointer in the right type.
+     * @throw ::fwData::Exception if the data object is not found.
      */
     template< class DATATYPE >
     inline ::fwData::mt::locked_ptr< DATATYPE > getLockedOutput(const KeyType& key) const;
@@ -544,7 +548,8 @@ public:
      * @brief Return a locked data pointer of the input object at the given key and index.
      * @param group key of data to retrieve.
      * @param index of the data to retrieve.
-     * @return locked data pointer in the right type, null pointer if not found.
+     * @return locked data pointer in the right type.
+     * @throw ::fwData::Exception if the data object is not found.
      */
     template< class DATATYPE, typename CONST_DATATYPE = std::add_const_t< DATATYPE > >
     inline ::fwData::mt::locked_ptr< CONST_DATATYPE > getLockedInput(const KeyType& keybase, size_t index) const;
@@ -553,7 +558,8 @@ public:
      * @brief Return a locked data pointer of the in/out object at the given key and index.
      * @param group key of data to retrieve.
      * @param index of the data to retrieve.
-     * @return locked data pointer in the right type, null pointer if not found.
+     * @return locked data pointer in the right type.
+     * @throw ::fwData::Exception if the data object is not found.
      */
     template< class DATATYPE >
     inline ::fwData::mt::locked_ptr< DATATYPE > getLockedInOut(const KeyType& keybase, size_t index) const;
@@ -562,7 +568,8 @@ public:
      * @brief Return a locked data pointer of the out object at the given key and index.
      * @param group key of data to retrieve.
      * @param index of the data to retrieve.
-     * @return locked data pointer in the right type, null pointer if not found.
+     * @return locked data pointer in the right type.
+     * @throw ::fwData::Exception if the data object is not found.
      */
     template< class DATATYPE >
     inline ::fwData::mt::locked_ptr< DATATYPE > geLockedOutput(const KeyType& keybase, size_t index) const;

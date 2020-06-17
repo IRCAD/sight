@@ -143,8 +143,8 @@ void SThreshold::updating()
     auto input = this->getLockedInput< ::fwData::Object >(s_IMAGE_INPUT);
 
     // try to dynamic cast to an Image and an ImageSeries to know whick type of data we use
-    ::fwMedData::ImageSeries::csptr imageSeriesSrc = ::fwMedData::ImageSeries::dynamicConstCast(input.getShared());
-    ::fwData::Image::csptr imageSrc                = ::fwData::Image::dynamicConstCast(input.getShared());
+    ::fwMedData::ImageSeries::csptr imageSeriesSrc = ::fwMedData::ImageSeries::dynamicConstCast(input.get_shared());
+    ::fwData::Image::csptr imageSrc                = ::fwData::Image::dynamicConstCast(input.get_shared());
     ::fwData::Object::sptr output;
 
     // Get source/target image

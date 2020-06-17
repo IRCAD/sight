@@ -181,8 +181,7 @@ void SSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", seriesDB);
+        auto lockedSeriesDB = this->getLockedInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
 
         ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
 
@@ -191,19 +190,18 @@ void SSeriesDBReader::updating()
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
-        ::fwMedDataTools::helper::SeriesDB sdbHelper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB sdbHelper(lockedSeriesDB.get_shared());
         sdbHelper.clear();
         // Notify removal.
         sdbHelper.notify();
 
         {
-            ::fwData::mt::ObjectWriteLock lock(seriesDB);
-            seriesDB->shallowCopy(localSeriesDB);
+            lockedSeriesDB->shallowCopy(localSeriesDB);
         }
 
-        ::fwMedData::SeriesDB::ContainerType addedSeries = seriesDB->getContainer();
+        ::fwMedData::SeriesDB::ContainerType addedSeries = lockedSeriesDB->getContainer();
 
-        auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+        auto sig = lockedSeriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
             ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
         sig->asyncEmit(addedSeries);
 

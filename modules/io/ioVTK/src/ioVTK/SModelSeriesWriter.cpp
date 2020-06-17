@@ -253,12 +253,11 @@ void SModelSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         const auto modelSeriesLockedPtr = this->getLockedInput< const ::fwMedData::ModelSeries >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeriesLockedPtr);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        const auto modelSeries                                         = modelSeriesLockedPtr.getShared();
+        const auto modelSeries                                         = modelSeriesLockedPtr.get_shared();
         const ::fwMedData::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
         for(const ::fwData::Reconstruction::csptr& rec :  recs)
         {

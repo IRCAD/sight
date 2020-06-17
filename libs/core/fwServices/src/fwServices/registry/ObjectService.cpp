@@ -170,7 +170,7 @@ std::string ObjectService::getRegistryInformation() const
              <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
         for (const auto& obj : service->m_inputsMap)
         {
-            ::fwData::Object::csptr object = obj.second.lock().getShared();
+            ::fwData::Object::csptr object = obj.second.lock().get_shared();
             if (object)
             {
                 info << "    input: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -178,7 +178,7 @@ std::string ObjectService::getRegistryInformation() const
         }
         for (const auto& obj : service->m_inOutsMap)
         {
-            ::fwData::Object::sptr object = obj.second.lock().getShared();
+            ::fwData::Object::sptr object = obj.second.lock().get_shared();
             if (object)
             {
                 info << "    inout: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -186,7 +186,7 @@ std::string ObjectService::getRegistryInformation() const
         }
         for (const auto& obj : service->m_outputsMap)
         {
-            ::fwData::Object::sptr object = obj.second.getShared();
+            ::fwData::Object::sptr object = obj.second.get_shared();
             if (object)
             {
                 info << "    output: key = " << obj.first << ", classname = " << object->getClassname() << std::endl;
@@ -286,7 +286,7 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
 
-    ::fwData::Object::wptr obj = service->m_outputsMap[objKey].getShared();
+    ::fwData::Object::wptr obj = service->m_outputsMap[objKey].get_shared();
 
     if (service->hasObjectId(objKey))
     {
@@ -347,7 +347,7 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
         auto it = service->m_outputsMap.find(objKey);
         if(it != service->m_outputsMap.end())
         {
-            return it->second.getShared();
+            return it->second.get_shared();
         }
     }
     return nullptr;

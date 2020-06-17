@@ -860,7 +860,7 @@ void IService::autoConnect()
                     auto itObj = m_outputsMap.find(objectCfg.m_key);
                     if(itObj != m_outputsMap.end())
                     {
-                        obj = itObj->second.getShared();
+                        obj = itObj->second.get_shared();
                     }
                     break;
                 }
