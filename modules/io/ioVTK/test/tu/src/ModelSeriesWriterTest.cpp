@@ -150,7 +150,18 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
     for(auto ext : allExtensions)
     {
-        auto cfg    = getIOCfgFromFolder(dir);
+        // Create subfolers per extensions ("/vtk", "/vtp", ...)
+        if(fs::exists(dir / ext))
+        {
+            CPPUNIT_ASSERT_MESSAGE(std::string("Directory ") + dir.string() + "/" + ext + " must be empty",
+                                   fs::is_empty(dir / ext));
+        }
+        else
+        {
+            fs::create_directories(dir / ext);
+        }
+
+        auto cfg    = getIOCfgFromFolder(dir / ext);
         auto extCfg = ::fwRuntime::EConfigurationElement::New("extension");
         extCfg->setValue(ext);
         cfg->addConfigurationElement(extCfg);
@@ -161,7 +172,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
             modelSeries);
 
         FileContainerType files;
-        for(fs::directory_iterator it(dir); it != fs::directory_iterator(); ++it)
+        for(fs::directory_iterator it(dir / ext); it != fs::directory_iterator(); ++it)
         {
             if(it->path().extension() == "." + ext)
             {
@@ -169,7 +180,11 @@ void ModelSeriesWriterTest::testWriteMeshes()
             }
         }
 
-        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB().size(), files.size());
+        // Ensure reading order (modelSeries generator will prefix each file with a number).
+        std::sort(files.begin(), files.end());
+
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of saved files",
+                                     modelSeries->getReconstructionDB().size(), files.size());
 
         ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
@@ -179,49 +194,58 @@ void ModelSeriesWriterTest::testWriteMeshes()
             seriesDB);
 
         const ::fwMedData::SeriesDB::ContainerType& series = seriesDB->getContainer();
-        CPPUNIT_ASSERT_EQUAL((size_t)1, series.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesDB Size", (size_t)1, series.size());
 
         ::fwMedData::ModelSeries::sptr readSeries = ::fwMedData::ModelSeries::dynamicCast(series[0]);
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
 
         typedef ::fwMedData::ModelSeries::ReconstructionVectorType RecVecType;
         const RecVecType& readRecs = readSeries->getReconstructionDB();
-        CPPUNIT_ASSERT_EQUAL(files.size(), readRecs.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), readRecs.size());
 
-        // Skip comparing mesh with obj/ply/stl format since internal structures aren't the same.
-        if(ext != "obj" && ext != "ply" && ext != "stl")
+        const RecVecType& refRecs         = modelSeries->getReconstructionDB();
+        RecVecType::const_iterator itRef  = refRecs.begin();
+        RecVecType::const_iterator itRead = readRecs.begin();
+
+        for(; itRef != refRecs.end(); ++itRef, ++itRead)
         {
-            const RecVecType& refRecs         = modelSeries->getReconstructionDB();
-            RecVecType::const_iterator itRef  = refRecs.begin();
-            RecVecType::const_iterator itRead = readRecs.begin();
+            ::fwData::Mesh::csptr refMesh  = (*itRef)->getMesh();
+            ::fwData::Mesh::csptr readMesh = (*itRead)->getMesh();
 
-            for(; itRef != refRecs.end(); ++itRef, ++itRead)
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of Points.",
+                                         refMesh->getNumberOfPoints(), readMesh->getNumberOfPoints());
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of Cells.",
+                                         refMesh->getNumberOfCells(), readMesh->getNumberOfCells());
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell Data size.", refMesh->getCellDataSize(),
+                                         readMesh->getCellDataSize());
+
+            // Don't test internal structures for obj, ply and stl, since some of them are missing.
+            if(ext != "obj" && ext != "ply" && ext != "stl")
             {
-                ::fwData::Mesh::csptr refMesh  = (*itRef)->getMesh();
-                ::fwData::Mesh::csptr readMesh = (*itRead)->getMesh();
-
-                CPPUNIT_ASSERT_EQUAL(refMesh->getNumberOfPoints(), readMesh->getNumberOfPoints());
-                CPPUNIT_ASSERT_EQUAL(refMesh->getNumberOfCells(), readMesh->getNumberOfCells());
-                CPPUNIT_ASSERT_EQUAL(refMesh->getCellDataSize(), readMesh->getCellDataSize());
-
                 auto refPointsItr       = refMesh->begin< ::fwData::iterator::ConstPointIterator >();
                 auto readPointsItr      = readMesh->begin< ::fwData::iterator::ConstPointIterator >();
                 const auto refPointsEnd = refMesh->end< ::fwData::iterator::ConstPointIterator >();
 
                 for(; refPointsItr != refPointsEnd; ++refPointsItr, ++readPointsItr)
                 {
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->point->x, readPointsItr->point->x, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->point->y, readPointsItr->point->y, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->point->z, readPointsItr->point->z, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.x ", refPointsItr->point->x, readPointsItr->point->x,
+                                                         0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.y", refPointsItr->point->y, readPointsItr->point->y,
+                                                         0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.z", refPointsItr->point->z, readPointsItr->point->z,
+                                                         0.00001);
 
-                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->r, readPointsItr->rgba->r);
-                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->g, readPointsItr->rgba->g);
-                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->b, readPointsItr->rgba->b);
-                    CPPUNIT_ASSERT_EQUAL(refPointsItr->rgba->a, readPointsItr->rgba->a);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color R", refPointsItr->rgba->r, readPointsItr->rgba->r);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color G", refPointsItr->rgba->g, readPointsItr->rgba->g);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color B", refPointsItr->rgba->b, readPointsItr->rgba->b);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color A", refPointsItr->rgba->a, readPointsItr->rgba->a);
 
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->normal->nx, readPointsItr->normal->nx, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->normal->ny, readPointsItr->normal->ny, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refPointsItr->normal->nz, readPointsItr->normal->nz, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal x", refPointsItr->normal->nx,
+                                                         readPointsItr->normal->nx, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal y", refPointsItr->normal->ny,
+                                                         readPointsItr->normal->ny, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal z", refPointsItr->normal->nz,
+                                                         readPointsItr->normal->nz, 0.00001);
                 }
 
                 auto refCellsItr       = refMesh->begin< ::fwData::iterator::ConstCellIterator >();
@@ -230,23 +254,27 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
                 for(; refCellsItr != refCellsEnd; ++refCellsItr, ++readCellsItr)
                 {
-                    CPPUNIT_ASSERT_EQUAL(*refCellsItr->type, *readCellsItr->type);
-                    CPPUNIT_ASSERT_EQUAL(*refCellsItr->offset, *readCellsItr->offset);
-                    CPPUNIT_ASSERT_EQUAL(refCellsItr->nbPoints, readCellsItr->nbPoints);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell type", *refCellsItr->type, *readCellsItr->type);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell offset", *refCellsItr->offset, *readCellsItr->offset);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell nbrPoints", refCellsItr->nbPoints, readCellsItr->nbPoints);
 
                     for (size_t i = 0; i < refCellsItr->nbPoints; ++i)
                     {
-                        CPPUNIT_ASSERT_EQUAL(refCellsItr->pointIdx[i], readCellsItr->pointIdx[i]);
+                        CPPUNIT_ASSERT_EQUAL_MESSAGE("Celle point index", refCellsItr->pointIdx[i],
+                                                     readCellsItr->pointIdx[i]);
                     }
 
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refCellsItr->normal->nx, readCellsItr->normal->nx, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refCellsItr->normal->ny, readCellsItr->normal->ny, 0.00001);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL(refCellsItr->normal->nz, readCellsItr->normal->nz, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal x", refCellsItr->normal->nx,
+                                                         readCellsItr->normal->nx, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal y", refCellsItr->normal->ny,
+                                                         readCellsItr->normal->ny, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal z", refCellsItr->normal->nz,
+                                                         readCellsItr->normal->nz, 0.00001);
 
-                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->r, readCellsItr->rgba->r);
-                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->g, readCellsItr->rgba->g);
-                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->b, readCellsItr->rgba->b);
-                    CPPUNIT_ASSERT_EQUAL(refCellsItr->rgba->a, readCellsItr->rgba->a);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color R", refCellsItr->rgba->r, readCellsItr->rgba->r);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color G", refCellsItr->rgba->g, readCellsItr->rgba->g);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color B", refCellsItr->rgba->b, readCellsItr->rgba->b);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color A", refCellsItr->rgba->a, readCellsItr->rgba->a);
                 }
             }
         }

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,11 @@
  *
  ***********************************************************************/
 
-#ifndef __FWTEST_GENERATOR_SERIESDB_HPP__
-#define __FWTEST_GENERATOR_SERIESDB_HPP__
+#pragma once
 
 #include "fwTest/config.hpp"
 
 #include <fwCore/base.hpp>
-
 
 namespace fwData
 {
@@ -50,10 +48,8 @@ namespace fwTest
 namespace generator
 {
 
-
 /**
- * @brief   This class contains helper to generate Medical Data (SeriesDB, ImageSeries, ...).
- * @class   Patient
+ * @brief Contains helper to generate Medical Data (SeriesDB, ImageSeries, ...).
  *
  */
 class SeriesDB
@@ -72,10 +68,8 @@ public:
                                                                  const unsigned char nbModelSeries,
                                                                  const unsigned char nbActivitySeries);
 
-
     /// Returns a Patient with dummy informations
     FWTEST_API static SPTR(::fwMedData::Patient) createPatient();
-
 
     /// Returns a Study with dummy informations
     FWTEST_API static SPTR(::fwMedData::Study) createStudy();
@@ -101,13 +95,14 @@ public:
     /**
      * @brief Generate a reconstruction.
      * @param rec   reconstruction to generate
+     * @param index index of the reconstruction in reconstruction list (optional).
+     * If index > -1, it will be used to prefix organName (and filename) by the index (ex: '0_Liver...')
+     * this can be helpful in tests to ensure taht readers will load reconstruction in the same order than the
+     * reconstructionDB.
      */
-    FWTEST_API static void generateReconstruction(SPTR(::fwData::Reconstruction) rec);
-
+    FWTEST_API static void generateReconstruction(SPTR(::fwData::Reconstruction) rec, int index = -1);
 
 };
 
 } // namespace generator
 } // namespace fwTest
-
-#endif // __FWTEST_GENERATOR_SERIESDB_HPP__

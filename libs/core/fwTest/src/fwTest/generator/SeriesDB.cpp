@@ -204,8 +204,8 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     for (unsigned char nb = 0; nb < nbReconstruction; ++nb)
     {
         ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
-
-        SeriesDB::generateReconstruction(rec);
+        // Generates reconstruction with a prefixed index in organName "0_Liver", "1_Liver", ...
+        SeriesDB::generateReconstruction(rec, static_cast<int>(nb));
 
         recDB.push_back(rec);
     }
@@ -234,10 +234,22 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec)
+void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec, int index)
 {
     rec->setIsVisible(true);
-    rec->setOrganName("liver");
+    const std::string name = "Liver";
+    std::string organName;
+    //If needed, prefix organ name by the number of the reconstruction, to ensure the same reading order for tests.
+    if(index > -1)
+    {
+        organName = std::to_string(index) + "_" + name;
+    }
+    else
+    {
+        organName = name;
+    }
+
+    rec->setOrganName(organName);
     rec->setStructureType("Liver");
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
