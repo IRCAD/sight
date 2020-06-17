@@ -242,15 +242,15 @@ bool SMultipleTF::hasPoolName(const std::string& _name) const
 
 std::string SMultipleTF::createPoolName(const std::string& _basename) const
 {
-    bool bHasTransferFunctionName = true;
-    std::string newName           = _basename;
-    int cpt                       = 1;
-    while(bHasTransferFunctionName)
+    bool hasTransferFunctionName = true;
+    std::string newName          = _basename;
+    int cpt                      = 1;
+    while(hasTransferFunctionName)
     {
         std::stringstream tmpStr;
         tmpStr <<  _basename <<  "_" <<  cpt;
-        newName                  = tmpStr.str();
-        bHasTransferFunctionName = this->hasPoolName(newName);
+        newName                 = tmpStr.str();
+        hasTransferFunctionName = this->hasPoolName(newName);
         cpt++;
     }
 

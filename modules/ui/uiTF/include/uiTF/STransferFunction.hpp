@@ -91,33 +91,22 @@ Q_OBJECT
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(STransferFunction, ::fwGui::editor::IEditor)
 
     /// Does nothing.
     UITF_API STransferFunction();
 
     /// Does nothing.
-    UITF_API virtual ~STransferFunction() noexcept;
+    UITF_API ~STransferFunction() noexcept override;
 
-private:
+protected:
 
     /// Configures the transfer function editor.
-    virtual void configuring() override;
+    UITF_API void configuring() override;
 
     /// Starts the service, creates container, place in buttons, comboBox, layout, and connect them.
-    virtual void starting() override;
-
-    /// Does nothing.
-    virtual void updating() override;
-
-    /// Stops the service, disconnect buttons and combo box, delete them and clean the container.
-    virtual void stopping() override;
-
-    /**
-     * @brief Selects the current transfer function.
-     * @param _key key of the swapped data.
-     */
-    void swapping(const KeyType& _key) override;
+    UITF_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -127,7 +116,21 @@ private:
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT.
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT.
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    UITF_API KeyConnectionsMap getAutoConnections() const override;
+
+    /// Does nothing.
+    UITF_API void updating() override;
+
+    /**
+     * @brief Selects the current transfer function.
+     * @param _key key of the swapped data.
+     */
+    UITF_API void swapping(const KeyType& _key) override;
+
+    /// Stops the service, disconnect buttons and combo box, delete them and clean the container.
+    UITF_API void stopping() override;
+
+private:
 
     /**
      * @brief Initializes the transfer functions.
@@ -186,28 +189,28 @@ private Q_SLOTS:
 private:
 
     /// Contains the list of all TF preset.
-    QComboBox* m_pTransferFunctionPreset;
+    QComboBox* m_transferFunctionPreset { nullptr };
 
     /// Contains the delete TF button.
-    QPushButton* m_deleteButton;
+    QPushButton* m_deleteButton { nullptr };
 
     /// Contains the new TF button.
-    QPushButton* m_newButton;
+    QPushButton* m_newButton { nullptr };
 
     /// Contains the reset TF button.
-    QPushButton* m_reinitializeButton;
+    QPushButton* m_reinitializeButton { nullptr };
 
     /// Contains the rename TF button.
-    QPushButton* m_renameButton;
+    QPushButton* m_renameButton { nullptr };
 
     /// Contains the import TF button.
-    QPushButton* m_importButton;
+    QPushButton* m_importButton { nullptr };
 
     /// Contains the export TF button.
-    QPushButton* m_exportButton;
+    QPushButton* m_exportButton { nullptr };
 
     /// Contains the current selected TF.
-    ::fwData::TransferFunction::sptr m_selectedTF;
+    ::fwData::TransferFunction::sptr m_selectedTF { nullptr };
 
     /// Stores path were looking for TF presets.
     typedef std::vector< std::filesystem::path > PathContainerType;
@@ -236,6 +239,7 @@ private:
 
     /// Defines icons height.
     unsigned int m_iconHeight { 16 };
+
 };
 
-}
+} // namespace uiTF.
