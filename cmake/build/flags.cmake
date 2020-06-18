@@ -60,9 +60,10 @@ elseif(PYTHONINTERP_FOUND)
 
     # Debug flags
     elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        option(THOROUGH_DEBUG "Use slow but thorough debuging" OFF)
+        option(SIGHT_ENABLE_FULL_DEBUG "Compile Sight in Full Debug Mode: slow but all the debug symbols are enabled (Default: OFF)" OFF)
 
-        if(THOROUGH_DEBUG)
+        if(SIGHT_ENABLE_FULL_DEBUG)
+            message(STATUS "Compiling Sight in full debug.")
             set(PYTHON_DEBUG_COMMAND "import common; print(\"{0}\".format(common.get_thorough_debug_cxx_flags()), sep='', end='', flush=True)")
         else()
             set(PYTHON_DEBUG_COMMAND "import common; print(\"{0}\".format(common.get_debug_cxx_flags()), sep='', end='', flush=True)")
