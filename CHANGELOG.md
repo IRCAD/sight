@@ -1,3 +1,1704 @@
+# sight 20.0.0
+
+## Bug fixes:
+
+### .gitlab
+
+*Improve sheldon stage.*
+
+Use sheldon and build the project on the merge result instead of the working branche.
+
+*Improve sheldon stage.*
+
+### activities
+
+*Split bundle to separate gui services from core services.*
+
+Separate service using Qt Widget from other services in order to use generic service with a Qml application, because Qt widgets cannot be instantiated in a Qml application.
+
+A new bundle `uiActivitiesQt` was created where `SCreateActivity` and `SActivityLauncher` has been moved. The old `SCreateActivity` and `SActivityLauncher` services has been kept in activities but set as deprecated. A fatal would be raised if you use them in a Qml application.
+
+`ENABLE_QML_APPLICATION` variable has been added in the main CMakeList to define if there is a Qml application that will be launched. It is temporary because we need to keep the old API until sight 21.0 and allow to remove the dependency to Qt Widgets in activities bundle.
+
+### ActivityLauncher
+
+*Fix reader/writer configuration.*
+
+Fix the reader and writer configurations used by `ActivityLauncher` config: use the configuration given in parameters instead of the default one.
+
+### AppConfig
+
+*Fix XML variable regex.*
+
+The regex is used to know if the xml attribute contains a variable (`${...}`). But in a few cases, for example in signal/slot connections, the variable is followed by other chars. For these cases, the regex should not be limited to `${...}`but to `${...}....`.
+The unit tests have been updated to check this error.
+
+### AppConfigManager
+
+*Fix useless variable.*
+
+Remove wrong `#ifdef` arround `FwCoreNotUsedMacro(ret);`
+
+### Array
+
+*Implement missing copy constructor in Array iterator.*
+
+Implement copy constructor for const iterator and assignment operator.
+
+### build
+
+*Fix build on linux with gcc7 in release mode.*
+
+- fixed sheldon coding style and define in fwCom
+- fixed unused variable (release mode) in fwServices
+
+### CalibrationInfoReader
+
+*Wrong image channel order.*
+
+* Convert to the sight's default color format when reading calibration inputs.
+* Sort the calibration input by their filename.
+* Update the related tests.
+
+### CI
+
+*Disable slow tests until they all pass.*
+
+*Sheldon-mr job doesn't work.*
+
+According to #402, the sheldon-mr job seems to fail when merge commit are present in-between dev and the current mr branch.
+
+Here the `git merge-base` function has been replaced by a diff of revision list between the MR branch and dev, and then keep the oldest common ancestor.
+
+**Explanations**
+
+* `git rev-list --first-parent origin/${CI_COMMIT_REF_NAME}`: revision list of the MR branch
+* `git rev-list --first-parent origin/dev`: revision list of dev (/!\\ we need to check is there is a limitation on number)
+* `diff -u <(git rev-list --first-parent origin/${CI_COMMIT_REF_NAME}) <(git rev-list --first-parent dev)` : basic diff between the two list
+* `| sed -ne 's/^ //p'`: removes the diff line ("+" "-", etc), to keep only the common revisions
+* `| head -1`: keep the first form common revisions.
+
+This is, indeed, a bit over-complicated, and can be simplified by a simple merge on the CI side, and then run sheldon, but this avoid any potential merge conflicts checking beforehand.
+
+*Use CI_JOB_TOKEN when cloning sight-data.*
+
+### CMake
+
+*Disable RelWithDebInfo build type.*
+
+*Resolve Qt plugins path in SDK mode.*
+
+Do not install the qt.conf from our Conan package that points to a bad plugin location. This overrides the location set in `WorkerQt.cpp`, preventing Qt application built with the SDK from launching.
+
+Besides this, I also fixed file permissions of installed files (executable were not actually executable) and I corrected a warning at the end of a CMake run because of a wrong usage of `PARENT_SCOPE` in the macro `generic_install()`.
+
+*Resolve missing export when using SDK mode.*
+
+The systematic build of the object library broke the SDK build, because the export was missing for the object library. However, this means users would have to link for instance against `fwCore_SHARED_LIB` instead of `fwCore` which is the object library. This is counter-intuitive and really not desirable.
+
+We chose to invert the logic. `fwCore` is now the shared library and `fwCore_obj` is the object library. This solves the problem for external users but not for sight developers who would need to modify all `CMakeLists.txt` to link fwCore_obj with 3rd party libraries instead of fwCore. We found a middle-ground by building the object library **only** when the variable GENERATE_OBJECT_LIB is set. This variable was set for `fwRuntime` to enable the build of `fwRuntimeDetailTest`. Its `CMakeLists.txt` was last modified to link against `fwRuntime_obj` instead of `fwRuntime`.
+
+On top of that, some corrections were made because of the rework of `fwRuntime` and the usage of `std::filesystem`.
+
+*Conan cmake script not correctly downloaded.*
+
+- Add check hash of `conan.cmake` file for:
+  * avoid downloading if the file already exists and is valid
+  * download the file if it's corrupted
+
+*Add cmake 3.17.0 support.*
+
+Add cmake 3.17.0 support
+
+*Fix the plugin config command.*
+
+Include the appropriate headers in generated `registerService` files.
+
+*Strip cmake compilation flags on Windows.*
+
+Avoids cmake adding a space at the end of compilation flags
+
+*Fix executable installer.*
+
+This enables the packaging of executable programs under windows.
+
+By the way, the call of generic_install() is now done automatically for all APP and EXECUTABLE targets, thus enabling packaging automatically. A warning is displayed if the macro is called in the CMakeLists.txt of the application.
+
+### conan-deps
+
+*Update hybrid_marker_tracker version.*
+
+Update hybrid_marker_tracker library version that fixes memory leak.
+
+### ConfigLauncher
+
+*Add existing deferred objects to configuration.*
+
+* Notify xml sub-configurations that optional objects already exist.
+* Deprecate `IAppConfigManager`.
+* Improve the documentation of modified classes.
+
+### dataReg
+
+*Add missing include to compile with latest VS2019 16.6.0.*
+
+### Dispatcher
+
+*Fix wrong mapping for uint8 type.*
+
+`isMapping` method is used by Dispatcher to find the right type for calling template functor.
+
+### doxygen
+
+*Doxygen uses the correct README.md to generate the main page.*
+
+Update Doxyfile to fix the path of the main README.md. Now the doxygen is generated using the main README file as the main page.
+
+### ExIgtl
+
+*Add auto-connections INetworkSender.*
+
+* Add missing auto-connections method in INetworkSender
+* Fix ExIgtl example
+* Add JetBrains IDEs (CLion) project folder in git ignore file
+
+### ExImageMix
+
+*Fix image voxel information.*
+
+Remove the useless hack that skipped some events in VTK picker interactor, so the information was not up-to-date.
+
+### ExSimpleARCVOgre
+
+*Add missing media bundle.*
+
+This solves the crash of ExSimpleARCVOgre at start. The bundle media was missing.
+
+### fwData/Image
+
+*Deep copy.*
+
+* Fixes an assert raised in debug when the image is locked and deep copied.
+* Don't let the data array expire.
+* Add a test to ensure this doesn't happen again.
+* Fix ExDump.
+
+### fwGdcmIOTest
+
+*Test fails.*
+
+Fixes fwGdcmIOTest by using correct type when setting Tags Values.
+
+* ConsultingPhysicianName is a list
+* Patient Size/Weight/MassIndex are double
+* Attributes was missing when copying a Study
+
+### fwGuiQt
+
+*Allow notifications to work with ogre scenes.*
+
+Fixes notifications for app that used Ogre scenes.
+Moves the dialog according to the parent.
+
+### fwLauncher
+
+*Allow to exit when receiving signals.*
+
+- Use regular exit() to stop program execution when receiving SIGINT, SIGTERM, SIGQUIT signals.
+
+### fwMath
+
+*Use glm vector when computing barycenters and fix mistake.*
+
+* Replace all `fwVec3` structure by `::glm::dvec3`, along with glm maths functions.
+* Fix mistake in dot product when computing barycentric coordinates.
+* Update unit-test
+
+### fwRenderOgre
+
+*Fix query flags and ray mask.*
+
+* Sets all pickable adaptors query flags to a default value ('::Ogre::SceneManager::ENTITY_TYPE_MASK').
+* Sets pickers query mask to a default value ('::Ogre::SceneManager::ENTITY_TYPE_MASK').
+* Query flags on adaptors are now sets, (previously, they was added).
+* Updates documentations on updated files.
+
+It allows pickers to pick all adaptors by default. This can be adjusted in xml by modifying the query mask of the picker, and the query flags of adaptors
+
+### fwVtkIO
+
+*Fix warnings (as error) when building with Clang.*
+
+### gitlab
+
+*Improve sheldon stage.*
+
+Fix the build on dev, master and tags
+
+### HybridMarkerTracking
+
+*Fix tracking issues with strong distortion.*
+
+Removing re-definition of member variable and undistort displayed image allows to correctly re-project tracking position on videos with strong distortions.
+
+### IActivitySequencer
+
+*Retrieve more data on update.*
+
+The sequencer allows to store all data related to all activities in a member called `requirements`. When the sequencer checks an activity for the first time, it'll create it and add all it's needed data that already exist in the `requirement` list into the activity composite.
+
+If we have two activities `A1` and `A2`, `A1` needs an image called `CT` and `A2` needs the same image, and also a matrix `MA` created by `A1`.
+
+You launch A1 after adding its needed data in the wizard (`CT`), at this time, the sequencer stores `CT` in its `requirements` list.
+
+So A1 is open, the sequencer will check if needed data for A2 have been loaded (Allows to enable a button in the view). To do that, `A2` is created and the sequencer adds the `CT` into the composite of `A2`, but `MA` is missing, nothing is launched.
+
+Now `A1` has created the matrix `MA` and asks the sequencer to open the next activity, `A2`. The sequencer checks needed data, but `A2` is created, and the sequencer only updates data that are contained in the composite of `A2`.
+
+* These modifications allow to update data and also to add potential new data generated by a previous activity (`IActivitySequencer::getActivity`).
+* Now, before checking a next activity, the sequencer stores data of the current one (the current one has maybe created a new data).
+* `IActivitySequencer`::parseActivities``returns the last valid activity. Before modifications, the next one was launched.
+
+### Image
+
+*Fix the iterator when using a different type than the image.*
+
+The image iterator is now computed based on the format of the iterator instead of using the image type. You can now use Iterator on int16 image. It can be useful to fill the image with zeros. You can also parse int32 image with int64 iterator to gain performance.
+`SLM_WARN` have been added when you use an iterator on a different type.
+
+### ioDcmtk
+
+*Fix the series DB reader and the CI last modification time of file.*
+
+### ioIGTL
+
+*Fix the module loading on windows.*
+
+- Moves the module `ioNetwork` to SrcLib, it only contains interface. Furthermore some modules like `ioIGTL` links with it, and link between modules are prohibited.
+
+### ioVTK
+
+*Vtk Mesh readers and writers only support VTK Legacy files format.*
+
+Add more Mesh format in VTK readers/writers.
+
+* VTK Polydata (\*.vtp)
+* Wavefront OBJ (\*.obj)
+* Stereo lithography format (\*.stl)
+* Polygonal File Format (\*.ply)
+
+This was added to improve compatibility with other VTK sofwares (paraview for example), it seems that the \*.vtk format is a legacy format and we should use \*.vtp when dealing with polydata (our ::fwData::Mesh).
+
+**Note:** when using OBJ/PLY/STL format you may loose some informations (point normals/point color/...), often it saves only global geometry of the data (points, edges, ...).
+
+### IParameter
+
+*Add missing makeCurrent in IParameter.*
+
+Add missing `makeCurrent` in `fwRenderOgre/IParameter`
+
+### ModelSeries
+
+*Add const in model series helper.*
+
+Update `::fwMedDataTools::ModelSeries`to add const on shared pointer parameters. It allows to call the helper with const sptr.
+
+### OgreVolumeRendering
+
+*Fix the ambient occlusion.*
+
+* Fix a crash in `SummedAreaTable` due to bad storage (when `m sat Size[0]` is 256, the old `std:uint8_t` stores 0).
+* Fix a crash when the software is closed.
+
+### openVSlamIOTest
+
+*Add missing dependencies for link.*
+
+This adds ffmpeg and Qt as explicit dependencies. There is clearly a bug in the OpenCV target but until this is fixed upstream, we can use this solution.
+
+### openvslamTracker
+
+*Do not download the vocabulary file each time.*
+
+Check the file hash to prevent it to be downloaded on each CMake configuring step.
+
+### RayTracingVolumeRenderer
+
+*Correctly blend the volume with the scene behind it.*
+
+* Fix alpha blending between the volume and the scene behind it.
+* Fix z-fighting between the negato picking widget and the negato plane when OIT is enabled.
+* Fix z-fighting between the volume and the negato planes.
+
+### SActivitySequencer
+
+*Qml import path is not properly defined.*
+
+Check if a `qml` folder exist on the application root folder (for installed application) and use the conan path otherwise.
+
+### SArucoTracker
+
+*Doesn't display marker if image components < 4.*
+
+Test the number of components of the input image before doing OpenCV conversion.
+
+With this modification we can now handle both 3 and 4 components images.
+
+### SCalibrationInfoReader
+
+*Don't convert the image if loading failed.*
+
+Fix a crash when loading a folder containing files not readable as images.
+
+### SeriesDBReader
+
+*Skip structured report and improve the activity data view.*
+
+When you load a DICOM folder that contains a `SR` modality with the reader ``::vtk`Gdcm`::Series`FBReader`, it throws an execption. Now it's skipped with a message.
+
+The activity data view is also improved in this MR.
+
+### SFrameMatrixSynchronizer
+
+*Use new image API.*
+
+* Fix the issue when the number of components are not properly reset (#423)
+* Add a missing write lock on matrices.
+* Use the new image API
+
+### SFrameWriter
+
+*Add missing else statement.*
+
+### Sight
+
+*Fail to compile with Clang.*
+
+This adds the AES flag for Clang, allowing to build fwZip successfully.
+
+Initially, the MR was opened to fix this issue but actually many targets failed to compile with Clang, thus other minor fixes are included.
+
+### SMatricesReader
+
+*Fix default path.*
+
+Fix the default path in `::ioTimeline::SMatricesReader`. The default path must be a folder, so we use the parent path of the selected file to set the default reader path. It allows to re-open the file dialog in the same folder.
+
+### SMatrixWriter
+
+*Add fixed floating point format and set float precision.*
+
+Set floating precision fixed to 7 digits.
+
+### SMesh
+
+*Fix recursive read lock.*
+
+Update ``::visuOgreAdaptor::SMesh``to remove a read lock in an internal method and only call it in the slots. It fixes a random freeze when starting the adaptor in a large application.
+
+*Fix auto reset in mesh adaptor.*
+
+Fix auto reset camera in `::visuOgreAdaptor::SMesh`:
+
+* call auto reset when the vertices are modified
+* call request render when the adaptor is started
+
+### SNegato2DCamera
+
+*Modify camera position in function of the image.*
+
+Modify the AutoReset camera method to reset the camera position in function of the image and not the world position.
+If there is other adaptors than SNegato2D, the scene will be autoreset with the position of the image. It avoids some strange scalling due to other adaptors.
+
+### SNegato3D
+
+*Properly use the ITransformable interface.*
+
+Properly use the ITransformable interface in SNegato3D.
+
+### spylog
+
+*Reduce usage of FW_DEPRECATED Macro.*
+
+Small cleanup of usage of `FW_DEPRECATED` macros.
+
+* Macros was removed from widely used functions
+* keyword `[[deprecated]]` was added where it was missing
+
+### SText
+
+*Fix text configuration.*
+
+The `text` configuration was wrong when parsing xml file.
+
+### STransferFunction
+
+*Avoid assert when icons path are not initialized.*
+
+- Fix crash when icons path are not initialized in `StransferFunction` service.
+- When icons path were not defined, we have this assert: `Assertion 'path.is_relative()' failed. Path should be relative`
+
+### STransform
+
+*Remove or add the node instead of change the visibility.*
+
+Show or hide the transform node directly impact attached entities and services like `::visuOgreAdaptor::SMesh`, that can't manage its visibility since STransform change it any time.
+Now, the node is juste remove or add from it's parent to avoid a visibility error.
+
+### STransformEditor
+
+*Add missing lock.*
+
+Add missing mutex lock in `uiVisuQt::STransformEditor`
+
+### SVector
+
+*Fix the visibility update of SVector.*
+* Add two slots to show and hide the vector
+
+### SVideoWriter
+
+*Computes video framerate.*
+
+* Removes the default framerate value hardcoded to 30 fps in SVideoWriter
+* Computes framerate using the timestamps of the first frames in the timeline
+
+### SVolumeRender
+
+*Fix usage of transfer functions.*
+
+* Create a new service `uiTF`::STransferFunction``instead of `uiTF`::TransferFunctionEditor``(it also fix the swapping method and lock data).
+* Improve the TF usage in `visuOgreAdaptor::SVolumeRender`.
+* Set the sampling rate at starting of `visuOgreAdaptor::SVolumeRender`.
+* Fix the `GridProxyGeometry` by avoid uniforms sharing between programs.
+* Fix the `makeCurrent` method.
+
+*Fix a crash with the volume render.*
+
+*Double lock when updating the volume sampling.*
+
+### test
+
+*IoVTKTest randomly crashes.*
+
+Fix ioVTKTest random crash. Sometimes writer doesn't load the reconstructions in the same order than the reader saved it.
+
+We need to force writer to load file in a specific order:
+
+* prefix reconstruction filename by its index in reconstructionDB (like "0_Liver")
+* sort filenames by alphabetical order, using the previous prefixed index, to ensure that reconstructions are loaded in the same order than the generated ones.
+* add messages in CPPUNIT assert marco to help to find failing tests.
+
+### TutoTrianConverterCtrl
+
+*Console application cannot be launched with parameters.*
+
+Forward arguments of .bat/.sh scripts to fwLauncher.
+
+### videoVLC
+
+*Fix VLC plugins dir.*
+
+* use current working path to find VLC plugins folder in `videoVLC` for installed applications
+* fix cmake install target for apps using libvlc:
+  * on Windows (with MSVC2019) VLC is now manually installed to avoid `fatal error LNK1328: missing string table` in fixup_bundle
+  * on linux vlc plugins path is now analysed by the fixup_bundle script to find required dependencies
+* update VLC conan package to the version 3.0.6-r5
+
+### visuOgreAdaptor
+
+*Properly generate the r2vb in SMesh.*
+
+### visuOgreQt
+
+*Intel mesa regressions.*
+
+* Fix regressions when using intel mesa GPU following the context handling MR (!249)
+* Handle buffer swapping manually instead of relying on ogre.
+
+*Remove unused variables.*
+
+* Fixes a warning on the CI preventing sight from building.
+* Removes an unused parameter in `visuOgreQt::Window`.
+
+*Always force rendering when the window is exposed.*
+
+* Fix the call to `renderNow` in `visuOgreQt/Window`
+* Request render when changing visibility parameters in `ExSimpleARCVOgre`
+
+*Send mouse modifiers as keyboard events.*
+
+* Take mouse modifiers into account for mouse events.
+* This is a quick fix and should be refactored later on.
+
+## Documentation:
+
+### fwData
+
+*Improve doxygen of Image, Mesh and Array.*
+
+* add examples, fix some mistakes.
+* improve `Image::at(x, y, z, c)` to add the component parameter, it allows to retrieves the value of an element of a image with components
+
+### README
+
+*Remove broken install links.*
+
+Remove broken links pointing to old documentation pages.
+
+### visuOgreQt
+
+*Clean the bundle.*
+
+Cleans the `visuOgreQt` bundle.
+
+## Refactor:
+
+### Boost
+
+*Replace boost use by C++17 new features.*
+
+Replace usage of Boost by **standard library** versions of:
+- `boost::filesystem`
+- `boost::make_unique`
+- `boost::any`
+- `boost`::assign``(most of them, some were left because of specific boost containers such as bimaps)
+
+Also, `fwQtTest` failed a lot during testing, so a fix has been proposed. It should no longer fail now.
+
+### CMake
+
+*Rename THOROUGH_DEBUG option.*
+
+Rename `THOROUG_DEBUG` into `SIGHT_ENABLE_FULL_DEBUG`
+
+### deprecated
+
+*Remove last remaining deprecated classes and methods for sight 20.0.*
+
+* Remove deprecated class Bookmarks
+* Remove deprecated class AttachmentSeries and the associated reader and converter class (atom patches have been kept to support the loading of old data).
+  * it implies the increment of MedicalData version to V14 and V16AR
+* Remove the stop of the worker in its destructor
+  * it implies to properly stop the workers before to clear the worker registry (::fwThread::ActiveWorkers). In fact, the workers should be stopped by the classes that created them, but as the API to remove a worker from the registry does not exist, it will be done in #521.
+  * it also implies to stop manually the workers used in the unit tests and not managed by the registry
+
+*Remove the use of deprecated Image, Mesh and Array API.*
+
+* Remove the last remaining usage of the deprecated API of Image, Array and Mesh outside of fwData and fwDataTools: add a `2` after get/setSize, get/setOrigin, get/SetSpacing.
+* Fix dump lock on Image and Arry iterators: lock bust be called before accessing the buffer.
+* Improve the documentation about the dump lock.
+
+*Use new Image, Mesh and Array API.*
+
+Refactor some services and libraries to use new Image, Mesh and Array API:
+
+* refactor `igtlProtocol` library to use new API
+* refactor `fwCommand` library to use new API
+* remove useless helpers includes
+* fix MeshIterator: set 'operator=()' as virtual and remove redundant cast
+
+### filetree
+
+*Rename root folders.*
+
+All root folders were renamed, and first of all, Bundles into modules. We also chose to stick to lower-case only and so we renamed all existing folders to their lower counterpart. Besides this SrcLib was shortened into libs and Utilities in utils.
+
+Here was the old file tree:
+
+| Apps
+| Bundles
+| CMake
+| fwlauncher
+| Samples
+ \ Examples
+  | PoC
+  | Tutorials
+| SrcLib
+| Utilities
+
+And here is the new one:
+
+| apps
+| cmake
+| fwlauncher
+| libs
+| modules
+| samples
+ \ examples
+  | poc
+  | tutorials
+| utils
+
+### fwData
+
+*Clean fwData and fwTest with new API of Image, Mesh and Array.*
+
+* Update `config.hpp.in` to add `<PROJECT_NAME>_DEPRECATED_CLASS_API`, it allows to set the `deprecated` attribut on a class (display a compilation warning).
+* Update `fwTest` and `fwData` libraries to remove the dependency to `fwDataTools`
+* Clean `fwDataTools` to remove the use of deprecated helpers, but the helpers are still here.
+* fix SImagesBlend adaptor: fix size, spacing and origin comparison
+
+*Use new Image, Mesh and Array API in uiXXX Bundles.*
+
+* Use new Image, Mesh and Array API in uiXXX bundles
+* Improve `ioVTK` and `fwVTKIO` unit tests
+* Fix `fwTest` Image generator (number of components was not properly set)
+* Fix `::fwData::Image`, add a missing const on `getPixelAsString` method
+
+*Improve the API of `::fwData::Array`.*
+
+Simplifies Array API by moving the methods from the helper to the data itself:
+
+* deprecate `::fwDataTools::helper::Array`
+* integrate the useful methods from the helper to `::fwData::Array`
+* deprecate the component attribute
+* add `Iterator<Type>` and `ConstIterator<Type>` to iterate through the array buffer
+
+### fwDataTools
+
+*Use the new Mesh API.*
+
+* Refactor Mesh iterator to access values on a const variable.
+* Use the new Mesh API in ``::fwDataTools::Mesh``to compute normals and improve unit tests.
+  * Also fix the normals: when the cell contains more than 3 points, only the last 3 points were used to compute the normal.
+* Improve Image ans Array documentation.
+
+### fwRenderOgre
+
+*Use the new API for Mesh, Image and Array.*
+
+Refactor `fwRenderOgre` and `uiVisuOgre` to use new Image, Array and Mesh API.
+
+*Clean the media folder.*
+
+Sorts glsl, metarial and compostior.
+
+### fwRuntime
+
+*Remove usage of deprecated methods.*
+
+* This removes the usage of all deprecated methods by !282
+* This removes the usage of the term `bundle` in local variables, private functions, comments.
+
+*Rename 'Bundle' into 'Module'".*
+
+The first intent of this MR is to rename the term 'Bundle' into 'Module'. As stated in #404, 'Bundle' is not a term widely spread in software for the meaning we give to it. More often, software use either the term 'Module' or 'Plugin'. Late in summer 2019, we decided to choose 'Module'.
+
+However we did not want that change to be a breaking change. So as usual, during two major versions, 'Bundle' and 'Module' terms are likely to coexist and the old API should be deprecated but maintained. Most code mentioning 'Bundle' lies in `fwRuntime`. I realized a lot of code present in that library was never used outside. It would have been useless to double every method and class for non-public code.
+
+I've been keeping saying we do not clearly separate public and private API in our libraries. I decided so to try to achieve that in fwRuntime. After doing this, the only deprecation of the public API will be faster.
+
+To separate the private and the public API in _Sight_ **libraries**, I propose to add `detail` folders both in `include` and `src` folders. Symbols in `detail` folders will be hidden/not exported, thus reducing the size of the shared library and speeding up debugging (when doing this at a large scale of course). This has many advantages in terms of readability of code, maintenance (like this deprecation), etc...
+
+However, one drawback is that since symbols are not exported, it was no longer possible to unit-test private classes and methods. To overcome this, I propose to compile libraries in two steps. One `OBJECT_LIBRARY`, then the usual `SHARED_LIBRARY`, that uses the previous as input of course. This way, the unit-test can build directly with the `OBJECT_LIBRARY` (so the precompiled .obj) directly, removing the need of export, and allowing the test of private classes and methods.
+
+**But**, this was not that simple. In our tests that are often more functional tests than unit-tests, we face two issues:
+- we have circular dependencies between libraries, so the test may try to link against both the OBJECT_LIBRARY and the SHARED_LIBRARY, causing awful runtime errors,
+- we use lots of static singletons to register types, factories, etc... The same singleton may be instanced both in the OBJECT_LIBRARY and the SHARED_LIBRARY, ending up with a doublon and not a singleton.
+
+The first issue can be tackled, I tried at some point, but it was quite hard, especially as soon as we load modules. The second is even harder sometimes. At the end I chose an alternative. I propose to split tests in two. One for the public API (ex: `fwRuntimeTest`) and one for the implementation (ex: `fwRuntimeImplTest`). The implementation test should be much more minimal and should not require many dependencies, thus reducing the possibility of these two problems to occur. At least that's my hope. :candle:
+
+### fwServices
+
+*Remove the old API from fwServices.*
+
+Remove all the deprecated methods from IService and its associated helpers and registries.
+Remove IService default object.
+
+**Note**: the default auto-connection on the first service's object to the 'modified' signal is removed. Check your log to know if your auto-connections are connect.
+
+### guiQt
+
+*Improve SParameters.*
+
+* Fix a bad call to `m_illum`.
+* Allow to avoid the automatic update of `SParameters`.
+* Add option in `SParameters` to hide the reset button.
+
+### Image
+
+*Improve the API of ::fwData::Image.*
+
+Improve the API of `::fwData::Image`:
+
+* Add the pixel format information: GRAY_SCALE, RGB, RGBA, BGR, BGRA
+  * Add an iterator for the different formats
+  * the format involve the number of components
+* Prevent to use more than 3 dimensions: the size, spacing and origin are defined in a `std::array`
+  * 4D images are no longer allowed
+* The ``::fwData::Array``is no longer accessible from the image
+* Update Dispatcher to use ``::fwTools::Type``instead of ``::fwTools::DynamicType``and deprecate DynamicType.
+* **Most** of the old API is still supported with deprecated warning:
+  * the new getter/setter for size, origin and spacing are temporary post-fixed by `2` (ex: getSize2())
+* Increase the version of Medical Data to serialize the image format (V12, V14AR, V16RD)
+* Update `WARNINGS_AS_ERRORS` macro to allow deprecated warnings.
+
+Example:
+
+```cpp
+`::fwData::Image::sptr`img = ::fwData::Image::New();
+
+img->resize({1920, 1080}, ::fwTools::Type::s_UINT8, ::fwData::Image::PixelFormat::RGBA);
+
+typedef `::fwData::Image::RGBAIteration`RGBAIteration;
+
+auto lock    = img->lock(); // to prevent buffer dumping
+auto iter    = img->begin<RGBAIteration>();
+const auto iterEnd = img->end<RGBAIteration>();
+
+for (; iter != iterEnd; ++iter)
+{
+    iter->r = static_cast<std::uint8_t>(rand()%256);
+    iter->g = static_cast<std::uint8_t>(rand()%256);
+    iter->b = static_cast<std::uint8_t>(rand()%256);
+    iter->a = static_cast<std::uint8_t>(rand()%256);
+}
+```
+
+### IO
+
+*Use the new Image, Mesh and Array API.*
+
+- Use the new Image, Array and Mesh API in readers and writers.
+- Fix Mesh iterators to properly access the values, even if the variable is const.
+- Update Image to add the missing API for lazy readers : it requires access to the buffer object to read streams.
+
+*Use the new Image, Mesh and Array API.*
+
+- Refactor fwVtkIO, fwItkIO, igtlProtocol and associated bundles to use the new Image, Mesh and Array API.
+- Fix Image iterator: the end of the const iterator was not correct.
+- Improve mesh iterator to allow point and cell colors with 3 components (RGB).
+
+### iterator
+
+*Improve iterator to access values.*
+
+- Update Image and Array iterators to allow to access values on const iterators.
+- Refactor Image iterator to remove complicated format and only use simple struct.
+  - removed warnings when getting an iterator on a type different from the array type. It allows to iterate through a multiple value structure at the same time.
+
+Now, to iterate through an Array or an Image, you can use a struct like:
+
+```cpp
+
+struct RGBA{
+    std::uint8t r;
+    std::uint8t g;
+    std::uint8t b;
+    std::uint8t a;
+}
+```
+
+Then:
+
+```cpp
+
+`::fwData::Image::sptr`image = ::fwData::Image::New();
+image->resize(125, 125, 12, ::fwTools::Type::s_UINT8, ::fwData::Image::RGBA);
+
+auto itr = image->begin< RGBA >();
+const auto itrEnd = image->end< RGBA >();
+
+for (; itr != itrEnd ; ++itr)
+{
+    itr->r = 12.0;
+    itr->g = 12.0;
+    itr->b = 12.0;
+    itr->a = 12.0;
+}
+```
+
+### media
+
+*Fuse all media bundles.*
+
+* Deprecate `arMedia` bundle.
+* Copy all `arMedia` content into `media`.
+* Fixes xml files that used these bundles.
+
+### Mesh
+
+*Improve the API of ::fwData::Mesh.*
+
+Refactor the mesh API:
+- deprecate the access to the points, cells and other arrays
+- rename allocate method to reserve
+   - allow to allocate the color, normal and texture arrays in the same reserve method
+- add resize method to allocate the memory and set the number of points and cells
+- add iterator to iterate through the points and cells
+
+**Allocation**:
+The two methods `reserve()` and `resize()` allow to allocate the mesh arrays. The difference between the two methods is
+that resize modify the number of points and cells.
+
+- `pushPoint()` and `pushCell()` methods allow to add new points or cells, it increments the number of points and allocate the memory if needed.
+- `setPoint()` and `setCell()` methods allow to change the value in a given index.
+
+Example with `resize()`, `setPoint()` and `setCell()`:
+
+```cpp
+    `::fwData::Mesh::sptr`mesh = ::fwData::Mesh::New();
+
+    mesh->resize(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
+    const auto lock = mesh->lock();
+
+    for (size_t i = 0; i < NB_POINTS; ++i)
+    {
+        const std::uint8_t val                                            = static_cast<uint8_t>(i);
+        const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+        const float floatVal                                              = static_cast<float>(i);
+        const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+        const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
+        const size_t value                                                = 3*i;
+        mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
+        mesh->setPointColor(i, color);
+        mesh->setPointNormal(i, normal);
+        mesh->setPointTexCoord(i, texCoords);
+    }
+
+    for (size_t i = 0; i < NB_CELLS; ++i)
+    {
+        mesh->setCell(i, i, i+1, i+2);
+
+        const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+        const float floatVal                                              = static_cast<float>(i);
+        const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+        const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
+        const size_t value                                                = 3*i;
+        mesh->setCellColor(i, color);
+        mesh->setCellNormal(i, normal);
+        mesh->setCellTexCoord(i, texCoords);
+    }
+```
+
+Example with `reseve()`, `pushPoint()` and `pushCell()`
+
+```cpp
+    `::fwData::Mesh::sptr`mesh = ::fwData::Mesh::New();
+
+    mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
+    const auto lock = mesh->lock();
+
+    for (size_t i = 0; i < NB_POINTS; ++i)
+    {
+        const std::uint8_t val                                            = static_cast<uint8_t>(i);
+        const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+        const float floatVal                                              = static_cast<float>(i);
+        const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+        const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
+        const size_t value                                                = 3*i;
+        const size_t value                                   = 3*i;
+        const auto id =
+            mesh->pushPoint(static_cast<float>(value), static_cast<float>(value+1), static_cast<float>(value+2));
+        mesh->setPointColor(id, color);
+        mesh->setPointNormal(id, normal);
+        mesh->setPointTexCoord(id, texCoords);
+    }
+
+    for (size_t i = 0; i < NB_CELLS; ++i)
+    {
+        const auto id = mesh->pushCell(i, i+1, i+2);
+
+        const `::fwData::Mesh::ColorValueType`val                          = static_cast< `::fwData::Mesh::ColorValueType`>(i);
+        const std::array< ::fwData::Mesh::ColorValueType, 4> color        = {val, val, val, val};
+        const float floatVal                                              = static_cast<float>(i);
+        const std::array< ::fwData::Mesh::NormalValueType, 3> normal      = {floatVal, floatVal, floatVal};
+        const std::array< ::fwData::Mesh::TexCoordValueType, 2> texCoords = {floatVal, floatVal};
+        const size_t value                                                = 3*i;
+        mesh->setCellColor(id, color);
+        mesh->setCellNormal(id, normal);
+        mesh->setCellTexCoord(id, texCoords);
+    }
+```
+
+**Iterators**
+
+To access the mesh points and cells, you should uses the following iterators:
+- `::fwData::iterator::PointIterator:`to iterate through mesh points
+- `::fwData::iterator::ConstPointIterator:`to iterate through mesh points read-only
+- `::fwData::iterator::CellIterator:`to iterate through mesh cells
+- `::fwData::iterator::ConstCellIterator:`to iterate through mesh cells read-only
+
+Example to iterate through points:
+
+```cpp
+    `::fwData::Mesh::sptr`mesh = ::fwData::Mesh::New();
+    mesh->resize(25, 33, ::fwData::Mesh::TRIANGLE);
+    auto iter    = mesh->begin< `::fwData::iterator::PointIterator`>();
+    const auto iterEnd = mesh->end< `::fwData::iterator::PointIterator`>();
+    float p[3] = {12.f, 16.f, 18.f};
+
+   for (; iter != iterEnd; ++iter)
+   {
+       iter->point->x = p[0];
+       iter->point->y = p[1];
+       iter->point->z = p[2];
+   }
+```
+
+Example to iterate through cells:
+
+```cpp
+    `::fwData::Mesh::sptr`mesh = ::fwData::Mesh::New();
+    mesh->resize(25, 33, ::fwData::Mesh::TRIANGLE);
+    auto iter         = mesh->begin< `::fwData::iterator::ConstCellIterator`>();
+    const auto endItr = mesh->end< `::fwData::iterator::ConstCellIterator`>();
+
+    auto itrPt = mesh->begin< `::fwData::iterator::ConstPointIterator`>();
+    float p[3];
+
+    for(; iter != endItr; ++iter)
+    {
+        const auto nbPoints = iter->nbPoints;
+
+        for(size_t i = 0 ; i < nbPoints ; ++i)
+        {
+            auto pIdx = static_cast< `::fwData::iterator::ConstCellIterator::difference_type`>(iter->pointIdx[i]);
+
+            `::fwData::iterator::ConstPointIterator`pointItr(itrPt + pIdx);
+            p[0] = pointItr->point->x;
+            p[1] = pointItr->point->y;
+            p[2] = pointItr->point->z;
+        }
+    }
+```
+
+`pushCell()` and `setCell()` may not be very efficient, you can use `CellIterator` to define the cell. But take care to
+properly define all the cell attribute.
+
+Example of defining cells usign iterators
+
+```cpp
+    `::fwData::Mesh::sptr`mesh = ::fwData::Mesh::New();
+    mesh->resize(25, 33, ::fwData::Mesh::QUAD);
+    auto it          = mesh->begin< `::fwData::iterator::CellIterator`>();
+    const auto itEnd = mesh->end< `::fwData::iterator::CellIterator`>();
+
+    const auto cellType = ::fwData::Mesh::QUAD;
+    const size_t nbPointPerCell = 4;
+
+    size_t count = 0;
+    for (; it != itEnd; ++it)
+    {
+        // define the cell type and cell offset
+        (*it->type)   = cellType;
+        (*it->offset) = nbPointPerCell*count;
+
+        // /!\ define the next offset to be able to iterate through point indices
+        if (it != itEnd-1)
+        {
+            (*(it+1)->offset) = nbPointPerCell*(count+1);
+        }
+
+        // define the point indices
+        for (size_t i = 0; i < 4; ++i)
+        {
+            `::fwData::Mesh::CellValueType`ptIdx = val;
+            it->pointIdx[i] = ptIdx;
+        }
+    }
+```
+
+### MeshIterator
+
+*Cast cell type into CellType enum instead of using std::uint8_t.*
+
+When iterating through mesh cells, the iterator return the type as a CellType enum instead of a std::uint8_t. It allow to avoid a static_cast to compare the type to the enum.
+
+### OgreViewer
+
+*Recreate the whole application.*
+
+* Cleans `visuOgreAdaptor`.
+  * Cleans the documentations of all adaptors and fix it for some of them.
+  * Draws border of negatos and allow to enable/disable them from the xml.
+* Creates a new `OgreViewer`.
+* Adds a missing documentation in `LineLayoutManagerBase`.
+* Creates a xml color parser.
+* Fixes the fragment info adaptor by listening the viewport instead of the layer.
+* Improves the slide view builder
+
+### RayTracingVolumeRenderer
+
+*Separate ray marching, sampling, compositing, and lighting code.*
+
+* Simplifies the volume ray tracing shader to make it more understandable.
+* Reduces macro definition combinations.
+
+### resource
+
+*Fuse all media bundles.*
+
+* Adds `arMedia` and `media` into a folder `resource`.
+* Adds a new bundle `flatIcon` with flat theme icons.
+
+### SNegato2DCamera
+
+*Improve 2D negato interactions.*
+
+* Add a new adaptor to replace the `Negato2D` interactor style.
+* Precisely zoom on a voxel using the mouse cursor.
+* Deprecate `::visuOgreAdaptor::SInteractorStyle`.
+* Update OgreViewer to use the new adaptor.
+* Decouple camera management from the negato adaptor.
+* Fix interactors to work within a viewport smaller than the whole render window.
+* Fix the camera's aspect ratio when the viewport width and height ratios are not the same.
+
+### STrackballCamera
+
+*Move the trackball interaction to a new adaptor.*
+
+* Decouples the trackball interactor from the layer.
+* Moves trackball interactions to a new service.
+* Makes 'fixed' interactions the default.
+* Deprecate parts of the `SInteractorStyle`.
+
+### Tuto
+
+*Use new API of Image, Mesh and Array.*
+
+Refactor some services and libraries to use new Image, Mesh and Array API:
+
+* Refactor Tuto14 and Tuto16 specific algorithms to use the new API
+* Refactor `scene` to use new API and remove some warnings
+* Refactor `visuVTKAdaptor` to use new API
+* Refactor `itkRegistrationOp` library to use new API
+
+### video
+
+*Video use new data api.*
+
+Refactor some services and libraries to use new Image, Mesh and Array API:
+
+* Refactor `videoCalibration`
+* Refactor trackers, frame grabbers
+* Refactor `cvIO`: conversion between openCV and sight
+
+### visuVTKAdaptor
+
+*Use the new Image, Mesh and Array API.*
+
+* update `fwDataTools` to remove the last uses of the deprecated API except the helpers
+* refactor `visuVTKAdaptor` `vtkSimpleNegato`and `vtkSimpleMesh` to remove the deprecated API
+* refactor `opImageFilter` and the associated library to remove the deprecated API
+* fix `::scene2D`::SComputeHistogram``due to a missing include and remove the deprecated API
+* fix ``::fwRenderOgre::Utils``due to a missing include and remove the deprecated API for the image conversion
+
+### VRWidgetsInteractor
+
+*Move the clipping interaction to a separate class.*
+
+* Refactors vr widget interaction. Splits `VRWidgetsInteractor` into `TrackballInteractor` and `ClippingBoxInteractor` and deprecates it.
+* Adds right mouse button interaction to the trackball.
+* Renames `VRWidget` to `ClippingBox`.
+
+## New features:
+
+### ActivityLauncher
+
+*Update the activityLauncher configuration to change icons paths and readers configuration.*
+
+Allow to customize the activity wizard used by the sequencer. You can use different icons and/or define the readers to use.
+
+* Add a parameter in ActivityLauncher configuration `WIZARD_CONFIG` to define the custom configuration.
+* Update ExActivities sample to customize the wizard.
+
+### ARCalibration
+
+*Load calibration input image folders.*
+
+* Add a service to load image folders with calibration inputs.
+* Move the detection method to the `calibration3d` library.
+
+*Live reprojection for intrinsic calibration.*
+
+* Compute the reprojection error for each new frame following the calibration.
+* Display the reprojected points and the reprojection error.
+* Display the detected points.
+* Add the ability to undistort the video images once the calibration is computed.
+* Modify SSolvePnP to always update the camera parameters.
+
+### build
+
+*Embed PDB file when installing Sight in debug mode on Windows platform.*
+
+Add `install(FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX} OPTIONAL)`
+
+### ci
+
+*Build sight-sdk-sample with the SDK.*
+
+* Refactor a bit linux release and debug jobs to build in SDK mode and install/package the SDK. The SDK is an artifact of the job and passed to other dependent jobs
+* Add jobs that use the SDK artifact and unpack and use it to build sight-sample-sdk
+* The SDK artifact can be used to manually deploy the SDK on artifactory
+
+*Use LFS repo for sight-data.*
+
+This replaces the usage of sight-data with a new repository with LFS support. This speed-ups the download time because git LFS can parallelize batch downloads. This is particularly useful for the CI:
+- Previously we used `curl` to retrieve the archive then `tar` to decompress the archive, **the whole process took around 170s**.
+- The new `git clone` commands, **this takes only 45s**.
+
+For some ci tasks like deploying issues and merge requests templates, we will use `GIT_LFS_SKIP_SMUDGE=1` which allows to skip completely the download of binaries.
+
+*Remove macos support.*
+
+* remove macos jobs in gitlab-ci script
+* add warning message to inform users that macos is no longer supported
+
+### cmake
+
+*Conan update and compilation flag sharing.*
+
+* Update ogre to patched version 1.12.2
+  ** Match shader input/ouput attribute names in vertex/geometry/fragment shaders.
+  ** Fix varying parsing for the volume proxy bricks shaders.
+  ** Replace the deprecated scene node iterator.
+  ** Remove the debug plugin configuration on windows.
+  ** Explicitly convert quaternions to matrices.
+  ** Fix normal rendering.
+
+* Add Visula studio 2019 support with conan package available on artifactory. All conan packages have been updated
+
+* Share "optimized" debug compiler flags across all conan package and Sight. Some previous work on array API (and in many place in our code or our dependencies) showed very bad performance in debug. To mitigate this, we want to use optimized debug build with `-Og -g` (unix) or `/Ox /Oy- /Ob1 /Z7 /MDd` (windows) which will effectively make the speed almost reach release build, while being "debuggable".
+
+  The drawbacks are:
+  ** the build will take a bit longer (max 10% longer on gcc/clang, 30% on MSVC)
+  ** some lines may be "optimized" out
+  ** we loose /RTC1 on windows
+
+  To allow "full" debugging on Sight, we plan to add a special option to use regular flags.
+
+A new option `THOROUGH_DEBUG` has been added to allow full debugging without optimization, if needed. On windows it also add /sdl /RTC1 which performs additional security checks.
+
+Also be sure to have the latest version of conan and that you use the latest `settings.yml` on Windows or macOS (sometimes there is a `settings.yml.new` and you need to rename it `settings.yml`). On Linux, Sight automatically download an updated `settings.yml`, but you can still update conan.
+
+To update conan: `pip3 install --upgrade conan`
+
+*C++17 support.*
+
+This updates our Sight build to support C++17 standard.
+
+Some modifications were also needed from some of our dependencies:
+- Camp (patched upstream)
+- ITK (updated to 5.0.1)
+- Flann (imported patch from upstream)
+- Sofa (updated to 19.06.01 and patched locally)
+
+### conan
+
+*Update Qt, PCL, Opencv & Eigen.*
+
+*Update conan package to support CUDA 7.5 arch.*
+
+This is mainly for supporting correctly NVIDIA RTX GPU
+
+### conan-deps
+
+*Support Visual compiler 16 for Visual Studio 2019.*
+
+Now Sight can be compiled with the latest Visual compiler 16 provided
+with Visual Studio 2019.
+
+### core
+
+*Use RAII mechanism and weak_prt / shared_ptr pattern to protect fwData against race condition and memory dumping.*
+
+Three class has been added: `weak_ptr`, `locked_ptr`, `shared_ptr`. Each of them will "store" the pointer to the real data object, but in a different manner and with a different way to access it.
+
+You will receive a `weak_ptr` when calling `IServices::getWeak[Input|Inout|Output]()` and a a `locked_ptr` when calling `IServices::getLocked[Input|Inout|Output]()`
+
+weak_ptr will use a hidden `std`::weak_ptr``to hold the real data, but it can only be accessed by "locking" it through a `locked_ptr`. `locked_ptr` will hold a `std::shared_ptr`, but also a mutex lock to guard against concurrent access and a buffer lock to prevent dumping on disk when the data object have an array object. RAII mechanism will ensure that everything is unlocked once the `locked_ptr` is destroyed. The underlying lock mutex will be a **write** mutex locker if the pointer is **NOT const**, a **read** mutex locker if the pointer **is const**. Using an `Input` will anyway force you to have const pointer, forcing you to use a **read** mutex locker. You can simply get the original data object through a std`::shared_ptr`by calling `locked_ptr::getShared()`
+
+*Simplifies macros in fwCore and enables WARNINGS_AS_ERRORS in some core libs.*
+
+* Warnings in Sight core was mainly due to the call of macro with fewer parameters than required.
+* We have now a macro `fwCoreClassMacro` with three versions:
+  * fwCoreClassMacro(_class);
+  * fwCoreClassMacro(_class, _parentClass);
+  * fwCoreClassMacro(_class, _parentClass, _factory);
+* The macro `fwCoreServiceClassDefinitionsMacro` used in services has been simplified and replaced by `fwCoreServiceMacro(_class, _parentClass);`
+* All old deprecated macros have been placed in the `macros-legacy.hpp` file (still included by `macros.hpp` for now - until **Sight 22.0**)
+* List of new projects that no longer generate warnings during compilation (new cmake option `WARNINGS_AS_ERRORS` enabled):
+  * arData
+  * arDataTest
+  * fwCom
+  * fwComTest
+  * fwCore
+  * fwCoreTest
+  * fwData
+  * fwDataTest
+  * fwMedData
+  * fwMedDataTest
+  * fwRuntime
+  * fwRuntimeTest
+  * fwServices
+  * fwServicesTest
+  * fwTools
+  * fwToolsTest
+  * fwRenderOgre
+  * fwRenderOgreTest
+
+### ctrlPicking
+
+*Add a new bundle for picking operation services.*
+
+* merge `::uiVisuOgre::SAddPoint`, ``::echoSimulation::STransformPickedPoint``and ``::uiMeasurement::SManageLandmarks``into `::ctrlPicking::SManagePoint`
+* Allow to have a maximum number of points in a pointlist via `::opPicking::SAddPoint`.
+* Allow to avoid points to be removed in `::ctrlPicking::SManagePoint`.
+* Deprecate `::uiVisuOgre::SAddPoint`.
+* Deprecate `::uiMeasurement::SManageLandmarks`.
+
+### debian
+
+*Build sight on Debian-med.*
+
+Added several patches to build sight on Debian-med
+
+* fix launcher library path
+* fix version getter: in debian workflow, Sight version should be passed from the build parameters and not from the git repository
+* do not install conan deps since we use system libraries
+* add missing copy constructor for fwData`::ImageIterator`(new warning in gcc9)
+* fix support of VTK 7
+* remove redundant move in return statement in fwCom \[-Werror=redundant-move\]
+* fix build flag for project using system lib
+* add a new debian gitlab-ci build job
+* fix the source path of dcmtk scp config file
+
+### ExActivitiesQml
+
+*Implement activities for Qml applications.*
+
+Create a Qml sample to launch activities: `ExActivitiesQml`
+
+* Create base class for activity launcher and sequencer service to share the code between qml and qt services.
+* Move qml style from `guiQml` to `styleQml` bundles, it is required because some bundles require it and we don't want to start guiQml bundle before them.
+* Improve `AppManager` to manage input parameters and to generate unique identifier
+* Create an Qml object `ActivityLauncher` to help launching activities in a Qml application
+
+### flatdark
+
+*Update flatdark.qss to add style for persia.*
+
+Modify `flatdark.qss` to add specific style for `Persia` application.
+
+### fwData
+
+*Allow locked_ptr to work with nullptr.*
+
+- If a data is optional, it can be null. But the AppConfig manager try to get a locked_ptr of the data, and the locked_ptr try to lock a nullptr, so an exception is thrown. Now, locked_ptr allows nullptr.
+
+- Fix a crash when clicking on `Reinitialize` or `Delete` in the Volume TF editor.
+
+*Get/set a 4x4 Matrix from TranformationMatrix3D.*
+
+- Add new functions to get/set a TransformationMatrix3D from/to a 4x4 Matrix (array of array). This ensure the row major order and avoid linear to 2d conversions before setting coefficients.
+
+### fwGui
+
+*Manage more gui aspects.*
+
+* Manage label of SCamera.
+* Remove a "pading" warning in flatdark.qss.
+* Add tooltips on button in the WindowLevel.
+* Change the color of disabled QLabel.
+* Allow to set the size of each borders in layouts, and manage spacing between widget in the same layout.
+* Fix the icons aliasing in the wizard.
+* Fix the opacity in `fwGuiQt`
+
+*Manage inverse actions.*
+
+Handle the inverse actions behavior.
+
+When the inverse is set, it means that the behavior of toolbar button (or menu item) is inverted. It is like if it's internal state return false when it is checked and true when unchecked.
+
+*Add parameter to specify the tool button style in ToolBar.*
+
+Enable to display the text beside or under the icons in a toolBar.
+
+### fwGuiQt
+
+*Allow to set a background color on toolbars, menus and layouts.*
+
+### fwPreferences
+
+*Add password management capabilities.*
+
+This MR allow to specify a password, retrieve it from memory (it is stored in a scrambled form) and compare its sha256 hash to the one stored in preferences. This password is then used by SWriter and SReader to write and read encrypted data.
+
+The code rely on fwPreferences helper and should be accessible from anywhere as static variable is used to hold the password in memory. This functions should be thread safe.
+
+### fwRenderOgre
+
+*Simplify fullscreen toggling.*
+
+* Make fullscreen toggling easier and more efficient.
+* Add slots to enable/disable fullscreen on the render service.
+* Add an action service to select a screen for fullscreen rendering.
+* Add a shortcut to return to windowed mode.
+* Fix bundle linking in `uiVisuOgre`.
+
+*Configurable viewports.*
+
+* Configure viewports for each layer.
+* Refactor the overlay system to enable overlays per viewport (layer).
+* Fix adaptors to render text using the new overlay system.
+
+*Allow pickers to pick both side of meshes.*
+
+Take into account the culling mode of entities for the picking.
+It allows to know which sides of the triangle to pick.
+
+See Sight/sight#373
+
+### fwRenderOgre/Text
+
+*Crisp font rendering.*
+
+* Improve font rendering by taking into account the dpi and rendering text at the font size.
+* Update the dpi on text objects when switching to a screen with a different DPI.
+* Handle vertical alignment for texts.
+* Update all adaptors to use this new font rendering method.
+
+### fwServices
+
+*Raise an exception when IService::getLockedInput() return a NULL locked_ptr.*
+
+Throw an exception when `IService::getLockedXXX()` retrieve a NULL data object.
+
+### fwZip
+
+*Add "encryption" support when reading and writing jsonz archives.*
+
+- add encryption and update internal minizip to version "1.2".
+
+### gui
+
+*Add notification popups in sight applications.*
+
+* Notification can be displayed at 7 fixed positions (from top-left to bottom right including top & bottom centers).
+* 3 Types of notifications: INFO, SUCCESS, FAILURE (background color changes).
+* Notifications appears / disappears with a fade-in/out effect on opacity.
+* Two ways of displaying notifications:
+  * Centralized by the new `SNotifier` service:
+    * Using new IService signals `infoNotified`, `successNotified` and `failureNotified` connected to SNotifier slots `popInfo`, `popSuccess`, `popfailure`.
+    * `SNotifier` can queue multiple notifications, if queue is full the oldest one is removed.
+    * `SNotifier` handles also position of the notification per application/config (ex: always at TOP_RIGHT).
+  * Or notification can be displayed by calling directly `::fwGui::NotificationDialog::show()`, loosing the advantages of the centralized system (position, queue, ...).
+* Add `ExNotifications` sample & `SDisplayTestNotification` service to test and to show how it can work.
+
+### ImageSeries
+
+*Add more attributes to our medical data.*
+
+* Adds more attributes to our medical data folder.
+* Creates patch related to these data.
+* Add tests related to these new data versions.
+
+### MeshFunctions
+
+*Add function to convert point coordinates to barycentric one in tetrahedron.*
+
+Add functions and test to convert a points coordinates to barycentric coordinates to its barycentric coordinate inside of a tetrahedron. Add corresponding unit test.
+
+*Add function to convert world coordinates to barycentric.*
+
+* Add functions and test to convert from world coordinates to barycentric coordinates if a point belongs to a triangle.
+* Add corresponding unit test.
+
+### MeshPickerInteractor
+
+*New service for mesh picking interactions.*
+
+### OpenVSlam
+
+*Integrate OpenVSLAM in sight.*
+
+* openvslamIO is a library that contains some conversion classes & functions in order to easily convert from/to sight to/from openvslam structures. OpenvslamIO is unit tested.
+
+* openvslamTracker contains SOpenvslam service to interface with openvslam process
+  * start/stop/pause/resume tracking
+  * Get camera pose for each frames given to the service
+  * Get the map as a `::fwData::Mesh`pointcloud
+  * Save/Load the map.
+  * Save Trajectories as .txt files (matrix or vector/quaternions format).
+
+* ExOpenvslam is an example that show all possibilities that offer the openvlsam integration in sight.
+
+**Note**: this is a preliminary integration so for now openvslam runs only on linux and with monocular perspectives cameras (very classical models).
+
+### SActivitySequencer
+
+*Add new editor to display an activity stepper.*
+
+The list of the activities are displayed in a toolbar, the buttons are enabled only if the activity can be launched (if all its parameters are present). The sequencer uses the data from the previously launched activity to create the current one.
+
+Create a new `ActivityLauncher` configuration to simplify the launch of an activity sequencer.
+
+Improve `ExActivities` sample to use `ActivitySequencer` configuration and add volume rendering activity
+
+### SAxis
+
+*Add a configurable marker.*
+
+Add a configurable marker on `visuOgreAdaptor::SAxis`
+
+### SFrameMatrixSynchronizer
+
+*Add new signals to be consistent with SMatrixTLSynchronizer.*
+
+  -  Add slots to be compatible with the baviour of `SMatrixTLSynchronizer` in order to connect with a `SStatus` service. The `ExStereoARCV` example is updated to show its usage.
+
+  -  The configuration of `SMatrixTLSynchronizer` is updated to take into account the wish to send the status of some matrices in timelines in `SMatrixSynchronizer`.
+
+  -  Now, it's possible to add the tag `sendStatus` in a `<key uid="matrixX" sendStatus="true|false"/>`.
+
+  -  In this way, if you have multiple timelines and multiple matrices, you can choose which one you want to send its status like:
+
+```xml
+<inout group="matrices0">
+   <key uid="matrix0" sendStatus="true"/>
+   <key uid="matrix1" /> <!-- sendStatus is set to false by default -->
+   <key uid="matrix2" />
+</inout>
+<inout group="matrices1">
+   <key uid="matrix3" sendStatus="true"/>
+   <key uid="matrix4" />
+</inout>
+```
+
+### SImage
+
+*Add editor to display an image.*
+
+Create an editor ``::guiQt::editor::SImage``to display an image in a view.
+
+### SImageMultiDistance
+
+*Improve interactions and resources management.*
+
+* Fixe `::visuOgreadaptor::SImageMultiDistance`.
+* Add auto-snap on distances.
+* Update distance on multiple scene.
+* Improve resources management.
+* Use our new interactor API.
+
+### SLight
+
+*Manage point light.*
+
+* Adds point light in addition of directional light.
+* Allows to manage point light position with `SLightEditor`.
+* Fixes the specular color computation in `Lighting.glsl`.
+* Allows to manage ambient color of materials in a new service `SOrganMaterialEditor`.
+* Deprecates the service `OrganMaterialEditor`.
+
+### SMesh
+
+*Add default visibility configuration.*
+
+* Add default visibility state in configuration of a mesh.
+* Add a usage example of this feature in `ExSimpleARCVOgre`
+
+### SMultipleTF
+
+*Add new adaptor to manage TF composite.*
+
+Creates a new adaptor to display a composite of TF and interact with them.
+
+The following actions are available:
+
+* Left mouse click: selects a new current TF or move the current clicked TF point.
+* Left mouse double click: adds a new TF point to the current TF or open a color dialog to change the current clicked TF point.
+* Middle mouse click: adjusts the transfer function window/level by moving the mouse left/right and up/down respectively.
+* Right mouse click: remove the current clicked TF point or open a context menu to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
+
+### SNegato2D
+
+*Take the slide position into account.*
+
+* Take into account the slice position to have the right picking information.
+* Retrieve the viewport size in the event method for `SNegato2D`.
+
+### SParameters
+
+*Manage dependencies.*
+
+Adds dependencies system on `SParameters`.
+
+### SPointList
+
+*Add slots to update and toggle visibility.*
+
+* Add a `toggleVisibility` slot in `SPointList`
+* Implement this feature in `ExOpenvslam`
+
+### SPreferencesConfiguration
+
+*Add the possibility to specify a file in the preferences.*
+
+### SRGBDImageMasking
+
+*New service to perform depth image masking.*
+
+### SSeriesSignal
+
+*Listen the modified signal.*
+
+### SSquare
+
+*Deferred position update and mouse interaction toggling.*
+
+- Implement deferred position update, via the "autoRefresh" xml attribute
+- Allow to enable/disable mouse interaction, via the "interaction" xml attribute
+
+### SsquareAdaptor
+
+*Add slots on scene2d SSquare.*
+
+Add a slot to the scene2D Ssquare adaptor which allows the change the configuration parameters of the square. This will allow the movement of the square by changing the values of `X` and `Y` on the widget slider.
+
+### STextStatus
+
+*Add input string.*
+
+Add an input ``::fwData::String``and display it.
+
+### Stransform
+
+*Check if the matrix is null.*
+
+Check if the given matrix of `visuOgreAdaptor`::STransform``is null to avoid a computation error with Ogre's nodes.
+
+### style
+
+*Add QLabel error style.*
+
+Add a style in the qss to make a QLabel red and bold for errors.
+
+*Add service and preference to switch from one theme to another.*
+
+- Selected style is saved in preference file (if it exists), and then reloaded when you re-launch the app.
+
+### SVector
+
+*Add parameter to configure the vector visibility on start.*
+
+Add `visible` parameter in `SVector` configuration to manage the visibility of the vector on start.
+
+### SVideo
+
+*Add update visibility on SVideo Ogre adaptor.*
+
+Add a `updateVisibility` slot in `visuOgreAdaptor::SVideo`
+
+### SVolumeRender
+
+*Buffer the input image in a background thread.*
+
+* Add a new option to load input images into textures in another thread.
+* Add a new worker type able to handle graphical resources in parallel.
+
+### Tuto06Filter
+
+*Update the tutorial to follow the API changes (fwData and RAII).*
+
+* Improve Tuto06Filter documentation according to sight-doc.
+* Use new service API in SThreshold
+* Remove useless dump locks in SThreshold
+* Use SSlotCaller action instead of calling the operator service in the menu
+* Add some comments
+
+### ui
+
+*Improve gui aesthetic.*
+
+* Improve the background management in 'fwGuiQt'.
+* Disable parameters in 'uiMeasurement::SLandmarks' instead of hide them.
+* Allow to configure the style of 'SActivityWizard'.
+* Poperly use the 'hideActions' mode on toolbars.
+* Properly set bounding boxes on 'visuOgreAdaptor::SAxis'.
+* Add a flatdark theme.
+
+### uiMeasurementQT
+
+*Allow to remove landmarks with SLandmarks.*
+
+* Allows to add or remove landmarks from picking information with the service 'uiMeasurementQt::editor::SLandmarks'.
+* Updates the documentation.
+
+### visuOgreAdaptor
+
+*Improve the negato camera.*
+
+Compute the camera ratio relatively to the viewport size
+
+*Add a punch tool to the volume rendering.*
+
+Adds a punch tool, a new adaptor to creates extruded meshes from a lasso tools, and a service to remove image voxels that are in meshes.
+
+* The service `SShapeExtruder` works as follows:
+  * The drawn shape is stored as a points list belonging to a 2D plane in the near of the camera, and a second one is stored in the far of the camera.
+  * Once the shape is closed, a triangulation is done on the two points list with a constrained Bowyer-Watson algorithm.
+  * Then, for each segment of the shape, two triangles are created between the segment at the near plane and the far plane.
+
+*New adaptor to output renderTarget as an image.*
+
+Add a new adaptor `SFragmentsInfo` that takes informations of the configured layer like, informations can be color, depth or primitive ID.
+
+Some minors updates are also pushed in this MR:
+
+1. SMaterial can now be configured with a `representatioMode` (SURFACE/POINT/EDGE/WIREFRAME).
+1. Add new conversion function in `fwRenderOgre`::helper::Camera``to convert from screen space to NDC or viewspace. deprecates the old ones.
+
+*Directional light editing.*
+
+Adds a visual feedback to light adaptors.
+
+*Allow to manage TF windowing with SNegato2DCamera.*
+
+* Add TF windowing management with SNegato2DCamera.
+* Fix a configuring error from SPicker.
+
+*Add new adaptors to resize a viewport.*
+
+* Add a new compositor to draw borders in viewports.
+* Add an adaptor to resize viewports
+
+*Interact with the 3D negato.*
+
+* Add the same interactions on the negato as in VTK
+* Add a priority to the image interactors
+* Add the ability to cancel interactions
+* Deprecate the old selection interactor API
+
+*Add a new adaptor to display a vector.*
+
+Add `SVector`, a new adaptor that displays a vector.
+
+### visuOgreQt
+
+*Properly compute cameras aspect ratio.*
+
+If an Ogre layer has a ratio different of 1:1, the camera aspect ratio of the layer is badly computed. It's due to the resize event that retrieves the wrong viewport ratio.
+
+*Use qt to create the OpenGL contexts for ogre.*
+
+* Add a new class to create OpenGL contexts for ogre.
+* Move the offscreen rendering manager to `visuOgreQt` and instantiate it through a factory.
+* Fix material management for the VR widgets.
+
+## Performances:
+
+### videoCalibration
+
+*Speedup chessboard detection.*
+
+* Add a scaling factor to the input to run the detection algorithm on a downscaled image.
+* Const-overload `::cvIO::moveToCV`.
+* Add a new preference parameter to configure the scaling in ARCalibration.
+
+
 # sight 19.0.0
 
 ## Bug fixes:
