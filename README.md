@@ -47,11 +47,7 @@ Lots of **tutorials** and **examples** can also be found in the `Samples` direct
 
 ## Install
 
-See [detailed install instructions](https://sight.pages.ircad.fr/sight-doc/Installation/index.html) for each supported platforms :
-
-* [Windows](https://sight.pages.ircad.fr/sight-doc/Installation/src/WindowsInstall.html)
-* [Linux](https://sight.pages.ircad.fr/sight-doc/Installation/src/LinuxInstall.html)
-* [MacOs](https://sight.pages.ircad.fr/sight-doc/Installation/src/MacOSXInstall.html)
+See [detailed install instructions](https://sight.pages.ircad.fr/sight-doc/Installation/index.html) for Windows and Linux.
 
 ## Documentation
 
