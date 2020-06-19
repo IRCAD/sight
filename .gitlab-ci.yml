@@ -6,6 +6,8 @@ stages:
   - deploy
 
 .linux_template: &linux_job
+  variables:
+    FW_IGNORE_SLOW_TESTS: 1
   image: "${SIGHT_CI_MINT19}:dev"
   before_script:
     - sudo ln -sfnv /usr/local/cuda-10.1 /usr/local/cuda
