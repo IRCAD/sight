@@ -14,14 +14,11 @@ cmake_policy(SET CMP0067 NEW)
 # On Windows, if the user doesn't specify a value,
 # 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
 # So we need to check this variable at this point.
-set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: Debug, Release, RelWithDebInfo or MinSizeRel")
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release;RelWithDebInfo;MinSizeRel")
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: Debug, Release")
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release")
 
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
-        AND NOT CMAKE_BUILD_TYPE STREQUAL "Release"
-        AND NOT CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
-        AND NOT CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}' (required Debug, Release, RelWithDebInfo or MinSizeRel)")
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}' (required Debug, Release)")
 endif()
 
 project (sight)
