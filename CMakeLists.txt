@@ -1,24 +1,31 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.13)
 
 # Use new policy for 'install_name' and RPATH on macOS (use `cmake --help-policy CMP0068` for details)
 cmake_policy(SET CMP0068 NEW)
 # Use new policy for `FindOpenGL` to prefer GLVND by default when available on linux (use `cmake --help-policy CMP0072` for details).
 cmake_policy(SET CMP0072 NEW)
+# Use new policy for 'Honor visibility properties for all target types.' (use `cmake --help-policy CMP0063` for details)
+cmake_policy(SET CMP0063 NEW)
+# Adds support for the new IN_LIST operator.
+cmake_policy(SET CMP0057 NEW)
+# Use new policy to use CMAKE_CXX_STANDARD in try_compile() macro
+cmake_policy(SET CMP0067 NEW)
 
 # On Windows, if the user doesn't specify a value,
 # 'CMAKE_BUILD_TYPE' is automatically initialized to 'Debug' after 'project()'.
 # So we need to check this variable at this point.
-set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: Debug, Release, RelWithDebInfo or MinSizeRel")
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release;RelWithDebInfo;MinSizeRel")
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: Debug, Release")
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug;Release")
 
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
-        AND NOT CMAKE_BUILD_TYPE STREQUAL "Release"
-        AND NOT CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
-        AND NOT CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}' (required Debug, Release, RelWithDebInfo or MinSizeRel)")
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}' (required Debug, Release)")
 endif()
 
 project (sight)
+
+if(APPLE)
+    message(WARNING "macOS is no more officially supported and complete support will be removed in sight 21.0")
+endif()
 
 enable_testing()
 
@@ -27,7 +34,8 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/macros.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
 ########################################################################################################################
 # User options
@@ -49,11 +57,12 @@ option(VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
 mark_as_advanced(ENABLE_PCH)
 mark_as_advanced(VERBOSE_PCH)
 
-# QML_IMPORT_PATH allows qtCreator to find the qml modules created in our bundles
+# QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
+set( ENABLE_QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/PrecompiledHeader.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/PrecompiledHeader.cmake)
 
 if(MSVC)
     if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
@@ -89,78 +98,6 @@ set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 
 ########################################################################################################################
-# Compile flags
-########################################################################################################################
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Workarround to avoid compile error about OpenGL on macos >= 10.14
-if(APPLE)
-    add_definitions(-DGL_SILENCE_DEPRECATION)
-endif()
-
-if(MSVC AND ENABLE_PCH)
-    # Store debug information in the .obj file instead of a PDB.
-    string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-    # Force set debug compile flags.
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "Debug flags" FORCE)
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" CACHE STRING "RelWithDebInfo flags" FORCE)
-endif()
-
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
-
-# Set warning level and function export visibility on Unix
-if(UNIX)
-    if(APPLE)
-        # actually the flag -fvisibility=hidden makes application crash on OSX
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility-ms-compat")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility-ms-compat")
-        set(CMAKE_MACOSX_RPATH ON)
-    else()
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
-    endif()
-    # Color for ninja and Clang on Linux and OSX
-    if (CMAKE_GENERATOR STREQUAL "Ninja")
-        if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
-        #Color output for gcc > 4.9
-        elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8.99")
-            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color")
-        endif()
-    endif()
-elseif(MSVC)
-    # Force to always compile with W4
-    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-    endif()
-endif()
-
-# Use external/system includes available from Visual Studio 15.6
-# source https://gitlab.kitware.com/cmake/cmake/issues/17904
-if (MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /experimental:external /external:W0 ")
-    set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
-endif()
-
-# Building with all your cores on Visual Studio IDE
-if(MSVC_IDE)
-    set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} /MP")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-endif()
-
-if(${WIN32} AND ${MSVC})
-    if(${MSVC_VERSION} GREATER 1914)
-        add_definitions(" -D_ENABLE_EXTENDED_ALIGNED_STORAGE")
-    endif()
-endif()
-
-########################################################################################################################
 # External libraries management
 ########################################################################################################################
 
@@ -168,7 +105,7 @@ if(UNIX AND NOT APPLE)
     option(USE_SYSTEM_LIB "Use system libraries to compile sight" OFF)
 endif()
 
-set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
+set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 if(USE_SYSTEM_LIB)
     # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH and include BinPkgs config file
@@ -185,8 +122,8 @@ if(USE_SYSTEM_LIB)
 else()
     option(CONAN_BUILD_MISSING "Build missing conan package automatically (experimental)" OFF)
     mark_as_advanced(CONAN_BUILD_MISSING)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan-deps.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan/conan.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan/conan-deps.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan/conan.cmake)
 endif()
 
 ########################################################################################################################
@@ -228,18 +165,22 @@ if(ADDITIONAL_REPOSITORIES)
 endif()
 
 ########################################################################################################################
-# Default paths settings for libraries, bundles and resources
+# Default paths settings for libraries, modules and resources
 ########################################################################################################################
 
 if(WIN32)
     set(FW_INSTALL_PATH_SUFFIX )
-    set(FWBUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
-    set(FWBUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}")
+    set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
+    set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}")
 else()
     set(FW_INSTALL_PATH_SUFFIX "sight")
-    set(FWBUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}")
-    set(FWBUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
+    set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}")
+    set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
 endif()
+
+# For backward compatibility with Sight < 20.0
+set(FWBUNDLE_LIB_PREFIX "${SIGHT_MODULE_LIB_PREFIX}")
+set(FWBUNDLE_RC_PREFIX "${SIGHT_MODULE_RC_PREFIX}")
 
 set(LIBRARY_OUTPUT_DIR lib/${FW_INSTALL_PATH_SUFFIX})
 
@@ -266,7 +207,7 @@ if(ADDITIONAL_REPOSITORIES)
     list(LENGTH ADDITIONAL_REPOSITORIES ADDITIONAL_REPOSITORIES_LEN)
     math(EXPR ADDITIONAL_REPOSITORIES_LEN ${ADDITIONAL_REPOSITORIES_LEN}-1)
 
-    foreach(REPO_INDEX RANGE -${ADDITIONAL_REPOSITORIES_LEN} - 1)
+    foreach(REPO_INDEX RANGE ${ADDITIONAL_REPOSITORIES_LEN})
         list(GET ADDITIONAL_REPOSITORIES ${REPO_INDEX} ADDITIONAL_REPO)
         list(GET ADDITIONAL_REPOSITORIES_OPTION ${REPO_INDEX} ADDITIONAL_REPO_OPTION)
 
@@ -315,6 +256,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     set(${NAME}_DISABLE_PCH       "${DISABLE_PCH}")
     set(${NAME}_CONAN_DEPS        "${CONAN_DEPS}")
     set(${NAME}_WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}")
+    set(${NAME}_GENERATE_OBJECT_LIB "${GENERATE_OBJECT_LIB}")
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
@@ -335,7 +277,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
         set(${NAME}_UNIQUE "${UNIQUE}")
     endif()
 
-    if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
+    if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "MODULE" OR TYPE STREQUAL "APP" AND START)
         set(${NAME}_START "${START}")
     endif()
 
@@ -366,7 +308,7 @@ if(PROJECTS_TO_BUILD)
     set(PACKAGE_SRC_DIR "${CMAKE_BINARY_DIR}/package_source")
     file(MAKE_DIRECTORY ${PACKAGE_SRC_DIR})
     file(COPY CMakeLists.txt COPYING COPYING.LESSER README.md DESTINATION ${PACKAGE_SRC_DIR})
-    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${PACKAGE_SRC_DIR} "." "${CMAKE_SOURCE_DIR}/CMake" "./CMake")
+    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${PACKAGE_SRC_DIR} "." "${CMAKE_SOURCE_DIR}/cmake" "./cmake")
 
     message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
 elseif(BUILD_SDK)
@@ -397,63 +339,29 @@ if(BUILD_TESTS)
     list(REMOVE_DUPLICATES PROJECT_LIST)
 endif()
 
-# Find and install Conan packages
+########################################################################################################################
+# Conan packages and definition
+########################################################################################################################
+
 if(NOT USE_SYSTEM_LIB)
     findConanDeps("${PROJECT_LIST}" CONAN_DEPS_LIST)
     installConanDeps("${CONAN_DEPS_LIST}")
     add_definitions(${CONAN_DEFINES})
-
-    # Import the shared C flags, we use python for that
-    find_package(PythonInterp 3 QUIET)
-    if(PYTHONINTERP_FOUND)
-        # Set PYTHONPATH environment to be able to import common
-        set(OLD_PYTHONPATH $ENV{PYTHONPATH})
-        set(ENV{PYTHONPATH} ${CONAN_COMMON_ROOT})
-
-        # Execute common.get_c_flags() and store it to ${SIGHT_C_FLAGS}
-        execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_c_flags()), sep='', end='', flush=True)"
-            OUTPUT_VARIABLE SIGHT_C_FLAGS
-        )
-        string(STRIP ${SIGHT_C_FLAGS} SIGHT_C_FLAGS)
-
-        # Execute common.get_cxx_flags() and store it to ${SIGHT_CXX_FLAGS}
-        execute_process(
-            COMMAND ${PYTHON_EXECUTABLE} -u -c "import common; print(\"{0}\".format(common.get_cxx_flags()), sep='', end='', flush=True)"
-            OUTPUT_VARIABLE SIGHT_CXX_FLAGS
-        )
-        string(STRIP ${SIGHT_CXX_FLAGS} SIGHT_CXX_FLAGS)
-
-        # Restore old PYTHONPATH environment
-        set(ENV{PYTHONPATH} ${OLD_PYTHONPATH})
-        unset(OLD_PYTHONPATH)
-    else()
-        # Use default values. This is a failsafe path, the options and flags maybe outdated.
-        if(WIN32)
-            set(SIGHT_C_FLAGS "/favor:blend /fp:strict /Qfast_transcendentals /arch:AVX /MP /bigobj /EHsc")
-            set(SIGHT_CXX_FLAGS "${SIGHT_C_FLAGS}")
-        else()
-            set(SIGHT_C_FLAGS "-march=x86-64 -mtune=generic -mfpmath=sse -mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -maes -mpclmul -mf16c")
-            set(SIGHT_CXX_FLAGS "${SIGHT_C_FLAGS}")
-        endif()
-    endif()
-
-    # Assign the shared C flags to everything
-    set(CMAKE_C_FLAGS "${SIGHT_C_FLAGS} ${CMAKE_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${SIGHT_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
-
-    unset(SIGHT_C_FLAGS)
-    unset(SIGHT_CXX_FLAGS)
 endif()
 
-# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
-setExternalLibrariesDir()
+########################################################################################################################
+# Compiler flags (We assume that we use the same flags fo C and C++ and we do only C++ here)
+########################################################################################################################
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 
 ########################################################################################################################
 # Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
 ########################################################################################################################
 
-unset(APP_TO_BUILD)
+# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
+setExternalLibrariesDir()
+
 foreach(PROJECT ${PROJECT_LIST})
     addProject(${PROJECT})
 endforeach()
@@ -464,7 +372,7 @@ endforeach()
 
 if(BUILD_SDK)
     # Create the SightConfig.cmake file
-    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/CMake/build/SightConfig.cmake.in)
+    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/cmake/build/SightConfig.cmake.in)
 
     configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
 
@@ -488,9 +396,10 @@ if(BUILD_SDK)
         "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
         "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/macros.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/conan/conan.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/conan/conan-deps.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/conan/conan.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/conan/conan-deps.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}
       COMPONENT
@@ -500,16 +409,16 @@ if(BUILD_SDK)
     # Install some files needed for the build
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/CMake/build/configure_file.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
         "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
-        "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/plugin_config_command.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/plugin.xml.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/profile_config.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/build/profile.xml.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/registerServices.cpp.in"
-        "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/plugin.xml.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/profile_config.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/build/profile.xml.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/registerServices.cpp.in"
+        "${CMAKE_SOURCE_DIR}/cmake/build/spyLogLevel.hpp.in"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/build
       COMPONENT
@@ -519,9 +428,9 @@ if(BUILD_SDK)
     # Install some files needed for the install
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/CMake/install/generic_install.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/install/helper.cmake"
-        "${CMAKE_SOURCE_DIR}/CMake/install/get_git_rev.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/generic_install.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/helper.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/get_git_rev.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
@@ -531,7 +440,7 @@ if(BUILD_SDK)
     if(APPLE)
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/osx_install.cmake"
+            "${CMAKE_SOURCE_DIR}/cmake/install/osx_install.cmake"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install
           COMPONENT
@@ -539,7 +448,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/macos/rc/app.icns"
+            "${CMAKE_SOURCE_DIR}/cmake/install/macos/rc/app.icns"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/macos/rc
           COMPONENT
@@ -547,7 +456,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-          "${CMAKE_SOURCE_DIR}/CMake/install/macos/osx_install_name_tool.py"
+          "${CMAKE_SOURCE_DIR}/cmake/install/macos/osx_install_name_tool.py"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/macos/
           COMPONENT
@@ -555,7 +464,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-          "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+          "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/build/linux
           COMPONENT
@@ -564,7 +473,7 @@ if(BUILD_SDK)
     elseif(WIN32)
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/win_install.cmake"
+            "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install
           COMPONENT
@@ -572,9 +481,9 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/template.bat.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/setpath.bat.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/windows_fixup.cmake.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows
           COMPONENT
@@ -582,8 +491,8 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/NSIS.template.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.template.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
           COMPONENT
@@ -591,10 +500,10 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/banner_nsis.bmp"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/dialog_nsis.bmp"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/app.ico"
-            "${CMAKE_SOURCE_DIR}/CMake/install/windows/NSIS/rc/license.rtf"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/banner_nsis.bmp"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/dialog_nsis.bmp"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/app.ico"
+            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
           COMPONENT
@@ -603,7 +512,7 @@ if(BUILD_SDK)
     elseif(UNIX)
         install(
           FILES
-          "${CMAKE_SOURCE_DIR}/CMake/build/linux/template.sh.in"
+          "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/build/linux
           COMPONENT
@@ -611,7 +520,7 @@ if(BUILD_SDK)
         )
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/linux_install.cmake"
+            "${CMAKE_SOURCE_DIR}/cmake/install/linux_install.cmake"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install
           COMPONENT
@@ -620,8 +529,8 @@ if(BUILD_SDK)
 
         install(
           FILES
-            "${CMAKE_SOURCE_DIR}/CMake/install/linux/template.sh.in"
-            "${CMAKE_SOURCE_DIR}/CMake/install/linux/linux_fixup.cmake.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/linux/template.sh.in"
+            "${CMAKE_SOURCE_DIR}/cmake/install/linux/linux_fixup.cmake.in"
           DESTINATION
             ${FWCONFIG_PACKAGE_LOCATION}/install/linux
           COMPONENT

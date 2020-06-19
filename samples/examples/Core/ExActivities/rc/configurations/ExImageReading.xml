@@ -1,0 +1,84 @@
+<!-- This configuration allows to read an image and display it in a simple scene -->
+<extension implements="::fwServices::registry::AppConfig">
+    <id>ExImageReading</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="image" />
+        <param name="validationChannel" default="validationChannel" />
+    </parameters>
+    <config>
+
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="imageScene" start="yes" />
+                <toolBar sid="toolBar" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************************************************************************************* -->
+        <!-- Toolbar -->
+        <!-- ******************************************************************************************************* -->
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Import image" icon="media-0.1/icons/Import.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionImport" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************************************************************************************* -->
+        <!-- Actions -->
+        <!-- ******************************************************************************************************* -->
+
+        <service uid="actionImport" type="::uiIO::editor::SIOSelector">
+            <inout key="data" uid="${image}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioVTK::SImageReader" />
+        </service>
+
+        <!-- The action is hidden,  -->
+
+        <!-- ******************************************************************************************************* -->
+        <!-- Services -->
+        <!-- ******************************************************************************************************* -->
+
+        <service uid="imageScene" type="::vtkSimpleNegato::SRenderer" autoConnect="yes">
+            <in key="image" uid="${image}" />
+        </service>
+
+        <!-- ******************************************************************************************************* -->
+        <!-- Connections -->
+        <!-- ******************************************************************************************************* -->
+
+        <!-- The channel is used to call "SActivitySequencer::checkNext" slot, to enable the next activity when the
+             image is loaded. -->
+        <connect channel="${validationChannel}">
+            <signal>${image}/modified</signal>
+        </connect>
+
+
+        <!-- ******************************************************************************************************* -->
+        <!-- Start -->
+        <!-- ******************************************************************************************************* -->
+
+        <start uid="mainView" />
+
+        <!-- imageScene is started by the mainview, it should be updated to display the image when it exists on start. -->
+        <update uid="imageScene" />
+
+    </config>
+</extension>

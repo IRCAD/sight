@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="0 0 131.72 131.72" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<metadata>
+<rdf:RDF>
+<cc:Work rdf:about="">
+<dc:format>image/svg+xml</dc:format>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+<dc:title/>
+</cc:Work>
+</rdf:RDF>
+</metadata>
+<g transform="translate(-250.19 -121.94)">
+<text x="246.47722" y="272.52441" fill="#000000" font-family="DejaVu Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="246.47722" y="272.52441"/></text>
+<text transform="scale(.91596 1.0917)" x="291.01212" y="211.66046" fill="#005544" font-family="DejaVu Sans" font-size="50px" font-weight="bold" letter-spacing="0px" stroke="#000000" stroke-width=".30863" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="291.01212" y="211.66046" fill="#005544" font-size="50px" font-weight="bold" stroke="#000000" stroke-width=".30863"/></text>
+<path d="m330.1 188.98-40.075-31.611 40.96-31.89-0.0205 18.707s17.025-2.3762 27.13 7.0778c10.104 9.454 10.045 31.424 10.045 31.424s-5.5857-9.7629-15.832-13.358c-10.247-3.5948-21.913-1.7071-21.913-1.7071l-0.29243 21.357z" fill="#721e53" fill-rule="evenodd" stroke="#000" stroke-width="2.4475"/>
+<path d="m302 186.61 40.075 31.611-40.96 31.89 0.0206-18.707s-17.025 2.3762-27.13-7.0778c-10.104-9.454-10.045-31.424-10.045-31.424s5.5857 9.7629 15.832 13.358c10.247 3.5948 21.913 1.7071 21.913 1.7071l0.29239-21.357z" fill="#721e53" fill-rule="evenodd" stroke="#000" stroke-width="2.4475"/>
+</g>
+</svg>

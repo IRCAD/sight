@@ -1,0 +1,9 @@
+set( NAME fwTools )
+set( VERSION 0.1 )
+set( TYPE LIBRARY )
+set( DEPENDENCIES fwCore )
+set( REQUIREMENTS  )
+set( WARNINGS_AS_ERRORS ON)
+set( CONAN_DEPS
+    ${CONAN_BOOST}
+)

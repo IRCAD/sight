@@ -16,10 +16,15 @@ syntax: glob
 # reject and backup file
 *.rej
 *.orig
-
 # macos
 .DS_Store
-
-# vs 2017 cmake project files
-\.vs*
+# VisualStudio
+.vs/
 CMakeSettings\.json
+# VSCode
+*.code-workspace
+.vscode/
+# JetBrains IDEs
+.idea/
+# Just for the CI
+sight-git

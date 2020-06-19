@@ -1,0 +1,44 @@
+{
+    "context" : "MedicalData",
+    "origin_version" : "V15AR",
+    "target_version" : "V14AR",
+    "patcher" : "DefaultPatcher",
+    "links" : [
+        {
+            "::fwMedData::Series" : "2",
+            "::fwMedData::Series" : "1"
+        },
+        {
+            "::fwMedData::ImageSeries" : "3",
+            "::fwMedData::ImageSeries" : "2"
+        },
+        {
+            "::fwMedData::ModelSeries" : "3",
+            "::fwMedData::ModelSeries" : "2"
+        },
+        {
+            "::fwMedData::ActivitySeries" : "2",
+            "::fwMedData::ActivitySeries" : "1"
+        },
+        {
+            "::fwMedData::AttachmentSeries" : "2",
+            "::fwMedData::AttachmentSeries" : "1"
+        },
+        {
+            "::fwMedData::DicomSeries" : "2",
+            "::fwMedData::DicomSeries" : "1"
+        },
+        {
+            "::fwMedData::NavigationSeries" : "2",
+            "::fwMedData::NavigationSeries" : "1"
+        },
+        {
+            "::fwMedData::CameraSeries" : "3",
+            "::fwMedData::CameraSeries" : "2"
+        },
+        {
+            "::fwMedData::Study" : "2",
+            "::fwMedData::Study" : "1"
+        }
+    ]
+}

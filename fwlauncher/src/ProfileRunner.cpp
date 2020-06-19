@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,11 +24,10 @@
 #include <windows.h>
 #endif
 
-#include <fwRuntime/io/ProfileReader.hpp>
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
@@ -59,7 +58,7 @@
 //------------------------------------------------------------------------------
 
 namespace po = ::boost::program_options;
-namespace fs = ::boost::filesystem;
+namespace fs = std::filesystem;
 
 typedef fs::path PathType;
 typedef std::vector< PathType > PathListType;
@@ -90,11 +89,11 @@ std::pair<std::string, std::string> parsePns(const std::string& s)
 }
 #endif
 
-/// Wrapper for boost::filesystem::absolute, needed by clang 3.0 in use with
+/// Wrapper for std::filesystem::absolute, needed by clang 3.0 in use with
 /// std::transform
 PathType absolute( const PathType& path )
 {
-    return fs::absolute(path).normalize();
+    return fs::weakly_canonical(path);
 }
 
 //-----------------------------------------------------------------------------
@@ -105,15 +104,34 @@ volatile sig_atomic_t gSignalStatus = 0;
 void signal_handler(int signal)
 {
     gSignalStatus = signal;
-    ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    ::fwRuntime::profile::getCurrentProfile()->stop();
+
+    try
+    {
+        const ::fwRuntime::profile::Profile::sptr& profile = ::fwRuntime::profile::getCurrentProfile();
+        profile->cleanup();
+        profile->stop();
+    }
+    catch(const std::exception& e)
+    {
+        OSLM_FATAL( e.what() );
+        exit(1);
+    }
+    catch(...)
+    {
+        SLM_FATAL( "An unrecoverable error has occurred." );
+        exit(2);
+    }
+
+    // We use brutal exit because when interrupted by a signal, we never get out from run,
+    // even if the program is fully terminated
+    exit(0);
 }
 
 //-----------------------------------------------------------------------------
 
 int main(int argc, char* argv[])
 {
-    PathListType bundlePaths;
+    PathListType modulePaths;
     PathType rwd;
     PathType profileFile;
     ::fwRuntime::profile::Profile::ParamsContainer profileArgs;
@@ -122,9 +140,7 @@ int main(int argc, char* argv[])
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", po::value(&bundlePaths)->default_value
-            (PathListType(1, (::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX).string())),
-        "Adds a bundle path")
+        ("module-path,B", "Adds a module path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
 
@@ -216,7 +232,7 @@ int main(int argc, char* argv[])
         logFileStream.close();
         if (!logFileExists)
         {
-            ::boost::system::error_code err;
+            std::error_code err;
             PathType sysTmp = fs::temp_directory_path(err);
             if(err.value() != 0)
             {
@@ -249,19 +265,20 @@ int main(int argc, char* argv[])
 
         while ( fs::extension(execPath) != ".app"
                 && execPath != execPath.parent_path()
-                && !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX))
+                && !fs::is_directory( execPath / fs::path(SIGHT_MODULE_RC_PREFIX))
                 )
         {
             execPath = execPath.parent_path();
         }
 
-        if ( fs::is_directory( execPath / "Contents" / fs::path(BUNDLE_RC_PREFIX) ) )
+        if ( fs::is_directory( execPath / "Contents" / fs::path(SIGHT_MODULE_RC_PREFIX) ) )
         {
             execPath = execPath / "Contents";
         }
         else
         {
-            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX) ));
+            OSLM_ERROR_IF("Module directory not found.", !fs::is_directory( execPath / fs::path(
+                                                                                SIGHT_MODULE_RC_PREFIX) ));
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
@@ -277,40 +294,40 @@ int main(int argc, char* argv[])
 
     // Check if path exist
     OSLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
-                       rwd), !::boost::filesystem::exists(rwd.string()) );
+                       rwd), !std::filesystem::exists(rwd.string()) );
 
     OSLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
-                       profileFile), !::boost::filesystem::exists(profileFile.string()));
+                       profileFile), !std::filesystem::exists(profileFile.string()));
 
-    std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), ::absolute );
+    std::transform( modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
     rwd         = ::absolute(rwd);
 
-    // Automatically adds the bundle folders where the profile.xml is located if it was not already there
-    const auto profileBundlePath = profileFile.parent_path().parent_path();
-    bool findProfileBundlePath   = false;
-    for(const fs::path& bundlePath :  bundlePaths )
+    // Automatically adds the module folders where the profile.xml is located if it was not already there
+    const auto profileModulePath = profileFile.parent_path().parent_path();
+    bool findProfileModulePath   = false;
+    for(const fs::path& modulePath :  modulePaths )
     {
-        if(profileBundlePath == bundlePath)
+        if(profileModulePath == modulePath)
         {
-            findProfileBundlePath = true;
+            findProfileModulePath = true;
         }
     }
-    if(!findProfileBundlePath)
+    if(!findProfileModulePath)
     {
-        bundlePaths.push_back(profileBundlePath);
+        modulePaths.push_back(profileModulePath);
     }
-#if (SPYLOG_LEVEL >= 4 ) // Log level info
-    for(const fs::path& bundlePath :  bundlePaths )
+#if SLM_INFO_ENABLED
+    for(const fs::path& modulePath :  modulePaths )
     {
-        OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
-                      vm.count("bundle-path") );
+        OSLM_INFO_IF( "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
+                      vm.count("module-path") );
     }
 #endif
-    for(const fs::path& bundlePath :  bundlePaths )
+    for(const fs::path& modulePath :  modulePaths )
     {
-        OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
-                           bundlePath), !::boost::filesystem::exists(bundlePath.string()) );
+        OSLM_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
+                           modulePath), !std::filesystem::exists(modulePath.string()) );
     }
 
 #ifdef _WIN32
@@ -320,15 +337,17 @@ int main(int argc, char* argv[])
 #endif // _WIN32
     OSLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
-    for(const fs::path& bundlePath :  bundlePaths )
+    ::fwRuntime::init();
+
+    for(const fs::path& modulePath :  modulePaths )
     {
-        if ( fs::is_directory(bundlePath))
+        if ( fs::is_directory(modulePath))
         {
-            ::fwRuntime::addBundles( bundlePath );
+            ::fwRuntime::addModules( modulePath );
         }
         else
         {
-            OSLM_ERROR( "Bundle path " << bundlePath << " do not exists or is not a directory.");
+            OSLM_ERROR( "Module path " << modulePath << " do not exists or is not a directory.");
         }
     }
 
@@ -341,10 +360,15 @@ int main(int argc, char* argv[])
         try
         {
             profile = ::fwRuntime::io::ProfileReader::createProfile(profileFile);
-            ::fwRuntime::profile::setCurrentProfile(profile);
 
             // Install a signal handler
             std::signal(SIGINT, signal_handler);
+            std::signal(SIGTERM, signal_handler);
+
+#ifndef WIN32
+            std::signal(SIGHUP, signal_handler);
+            std::signal(SIGQUIT, signal_handler);
+#endif
 
             profile->setParams(profileArgs);
 
@@ -355,21 +379,21 @@ int main(int argc, char* argv[])
                 profile->stop();
             }
         }
-        catch(std::exception& e)
+        catch(const std::exception& e)
         {
             OSLM_FATAL( e.what() );
-            retValue = 1;
+            retValue = 3;
         }
         catch(...)
         {
             SLM_FATAL( "An unrecoverable error has occurred." );
-            retValue = 1;
+            retValue = 4;
         }
     }
     else
     {
         OSLM_ERROR( "Profile file " << profileFile << " do not exists or is not a regular file.");
-        retValue = 1;
+        retValue = 5;
     }
 
     return retValue;

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="0 0 700 660" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<filter id="b" x="-.25" y="-.25" width="1.5" height="1.5" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" result="blur" stdDeviation="2"/>
+<feColorMatrix result="bluralpha" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0 "/>
+<feOffset dx="5" dy="5" in="bluralpha" result="offsetBlur"/>
+<feMerge>
+<feMergeNode in="offsetBlur"/>
+<feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+<linearGradient id="a" x1="40" x2="560" y1="1132.4" y2="1132.4" gradientUnits="userSpaceOnUse">
+<stop stop-color="#800015" offset="0"/>
+<stop stop-color="#ff8080" offset=".26923"/>
+<stop stop-color="#ff8000" offset=".46154"/>
+<stop stop-color="#ffbf00" offset=".57692"/>
+<stop stop-color="#ffff08" offset=".84615"/>
+<stop stop-color="#fff" offset=".92308"/>
+</linearGradient>
+</defs>
+<metadata>
+<rdf:RDF>
+<cc:Work rdf:about="">
+<dc:format>image/svg+xml</dc:format>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+<dc:title/>
+</cc:Work>
+</rdf:RDF>
+</metadata>
+<g transform="translate(20 18.313)">
+<rect x="-20" y="-18.313" width="700" height="660" fill="#2c2c2c"/>
+</g>
+<g transform="translate(60.5 -495.31)">
+<path d="m-40 1132.4h80l120-140 80-100 140-160 100-120h80v520z" fill="url(#a)" stroke="#fff" stroke-dasharray="3, 1"/>
+<path d="m483 612.86c0 1.3807-1.1193 2.5-2.5 2.5s-2.5-1.1193-2.5-2.5 1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5z" fill="#ffff08" stroke="#000" stroke-miterlimit="5.8" stroke-width=".9"/>
+<path transform="translate(-140.5 165.21)" d="m483 612.86c0 1.3807-1.1193 2.5-2.5 2.5s-2.5-1.1193-2.5-2.5 1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5z" fill="#ffbf00" stroke="#000" stroke-miterlimit="5.8" stroke-width=".9"/>
+<path transform="translate(-200.5 233.79)" d="m483 612.86c0 1.3807-1.1193 2.5-2.5 2.5s-2.5-1.1193-2.5-2.5 1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5z" fill="#ff8000" stroke="#000" stroke-miterlimit="5.8" stroke-width=".9"/>
+<path transform="translate(-301.93 355.21)" d="m483 612.86c0 1.3807-1.1193 2.5-2.5 2.5s-2.5-1.1193-2.5-2.5 1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5z" fill="#ff8080" stroke="#000" stroke-miterlimit="5.8" stroke-width=".9"/>
+<path transform="translate(-439.79 519.5)" d="m483 612.86c0 1.3807-1.1193 2.5-2.5 2.5s-2.5-1.1193-2.5-2.5 1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5z" fill="#800015" stroke="#000" stroke-miterlimit="5.8" stroke-width=".9"/>
+<path d="m-40 1072.4h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 1012.4h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 952.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 892.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 832.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 712.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 652.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 592.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 532.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<path d="m-40 772.36h5" fill="none" stroke="#fff" stroke-width=".70711px"/>
+<rect x="559.16" y="612.31" width="30.66" height="520.05" fill="#fff"/>
+<path d="m-40 532.36v600h660" fill="none" stroke="#fff" stroke-width="2"/>
+<text x="-35" y="1131.3622" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="1131.3622" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0</tspan></text>
+<text x="-35" y="1072.3622" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="1072.3622" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.1</tspan></text>
+<text x="-35" y="1012.3622" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="1012.3622" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.2</tspan></text>
+<text x="-35" y="952.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="952.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.3</tspan></text>
+<text x="-35" y="892.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="892.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.4</tspan></text>
+<text x="-35" y="832.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="832.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.5</tspan></text>
+<text x="-35" y="772.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="772.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.6</tspan></text>
+<text x="-35" y="712.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="712.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.7</tspan></text>
+<text x="-35" y="652.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="652.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.8</tspan></text>
+<text x="-35" y="592.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="592.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">0.9</tspan></text>
+<text x="-35" y="532.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-35" y="532.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">1</tspan></text>
+<text x="-15" y="522.36218" fill="#ffffff" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:119.00000572%" xml:space="preserve"><tspan x="-15" y="522.36218" fill="#ffffff" font-size="12px" style="line-height:119.00000572%">%</tspan></text>
+<g transform="translate(-129.92 205.37)" fill="#f00" filter="url(#b)" stroke="#000" stroke-width="3.4">
+<path d="m699.99 908.91h-39.516v-148.92c-14.438 13.5-31.453 23.484-51.047 29.953v-35.859c10.312-3.3748 21.516-9.7733 33.609-19.195 12.094-9.4217 20.391-20.414 24.891-32.977h32.062z" fill="#f00" stroke="#000"/>
+</g>
+<path d="m561.5 612.31h28" fill="none" stroke="#fff" stroke-dasharray="2.94782211, 0.98260737" stroke-width=".98261"/>
+</g>
+</svg>

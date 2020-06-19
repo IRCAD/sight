@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.0" viewBox="0 0 131.72 131.72" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g transform="translate(-374.93 -725.15)">
+<g transform="translate(-.89031 2.182)">
+<path d="m442.99 764.28c22.456 0.17711 41.622-6.2168 41.622-6.2168s-9.4315 13.779-9.1673 30.005c0.26422 16.226 9.0259 30.274 9.0259 30.274s-19.175-6.4495-41.631-6.272c-22.456 0.17745-42.19 6.1758-42.19 6.1758s8.5973-14.056 8.8604-30.282c0.26311-16.226-8.8508-29.909-8.8508-29.909s19.875 6.0473 42.331 6.2244z" fill="#909090" stroke="#000" stroke-width="5.8664"/>
+<path d="m442.55 754.68-14.464-25.053h28.929z" stroke-width="0"/>
+<path transform="scale(1,-1)" d="m442.55-822.98-14.464-25.053h28.929z" stroke-width="0"/>
+<path d="m403.18 788.65-23.995 13.441 0.35714-27.5z" stroke-width="0"/>
+<path transform="scale(-1,1)" d="m-481.29 789.21-22.888 13.214v-26.429z" stroke-width="0"/>
+</g>
+<rect transform="matrix(.68585 .72774 -.71091 .70328 0 0)" x="865" y="141.03" width="19.837" height="162.46" ry="4.5743" color="#000000" color-rendering="auto" fill="#d0d4ca" image-rendering="auto" shape-rendering="auto" solid-color="#000000" style="isolation:auto;mix-blend-mode:normal"/>
+</g>
+<metadata>
+<rdf:RDF>
+<cc:Work>
+<dc:format>image/svg+xml</dc:format>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+<dc:publisher>
+<cc:Agent rdf:about="http://openclipart.org/">
+<dc:title>Openclipart</dc:title>
+</cc:Agent>
+</dc:publisher>
+<dc:title/>
+<dc:date>2011-03-16T17:15:34</dc:date>
+<dc:description>Radiological warning symbol as seen in nuclear facilities</dc:description>
+<dc:source>https://openclipart.org/detail/127777/radioactive-warning-by-flooredmusic</dc:source>
+<dc:creator>
+<cc:Agent>
+<dc:title>flooredmusic</dc:title>
+</cc:Agent>
+</dc:creator>
+<dc:subject>
+<rdf:Bag>
+<rdf:li>nuclear</rdf:li>
+<rdf:li>radiation</rdf:li>
+<rdf:li>radioactive</rdf:li>
+<rdf:li>radiological</rdf:li>
+<rdf:li>science</rdf:li>
+<rdf:li>sign</rdf:li>
+<rdf:li>symbol</rdf:li>
+<rdf:li>warning</rdf:li>
+</rdf:Bag>
+</dc:subject>
+</cc:Work>
+<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+</cc:License>
+</rdf:RDF>
+</metadata>
+</svg>
