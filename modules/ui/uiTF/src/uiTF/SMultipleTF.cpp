@@ -116,16 +116,41 @@ void SMultipleTF::configuring()
             useDefaultPath = configAttr->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
             m_tfPerPath    = configAttr->get<bool>(s_TF_PER_PATH_CONFIG, m_tfPerPath);
 
-            m_deleteIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
-            m_newIcon  = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_NEW_ICON_CONFIG, m_newIcon));
-            m_copyIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_COPY_ICON_CONFIG, m_copyIcon));
-            m_reinitializeIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
-            m_renameIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
-            m_importIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_IMPORT_ICON_CONFIG, m_importIcon));
-            m_exportIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_EXPORT_ICON_CONFIG, m_exportIcon));
+            const auto deleteIconCfg = configAttr->get_optional<std::string>(s_DELETE_ICON_CONFIG);
+            if(deleteIconCfg)
+            {
+                m_deleteIcon = ::fwRuntime::getModuleResourceFilePath(deleteIconCfg.value());
+            }
+            const auto newIconCfg = configAttr->get_optional<std::string>(s_NEW_ICON_CONFIG);
+            if(newIconCfg)
+            {
+                m_newIcon = ::fwRuntime::getModuleResourceFilePath(newIconCfg.value());
+            }
+            const auto copyIconCfg = configAttr->get_optional<std::string>(s_COPY_ICON_CONFIG);
+            if(copyIconCfg)
+            {
+                m_copyIcon = ::fwRuntime::getModuleResourceFilePath(copyIconCfg.value());
+            }
+            const auto reinitializeIconCfg = configAttr->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
+            if(reinitializeIconCfg)
+            {
+                m_reinitializeIcon = ::fwRuntime::getModuleResourceFilePath(reinitializeIconCfg.value());
+            }
+            const auto renameIconCfg = configAttr->get_optional<std::string>(s_RENAME_ICON_CONFIG);
+            if(renameIconCfg)
+            {
+                m_renameIcon = ::fwRuntime::getModuleResourceFilePath(renameIconCfg.value());
+            }
+            const auto importIconCfg = configAttr->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
+            if(importIconCfg)
+            {
+                m_importIcon = ::fwRuntime::getModuleResourceFilePath(importIconCfg.value());
+            }
+            const auto exportIconCfg = configAttr->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
+            if(exportIconCfg)
+            {
+                m_exportIcon = ::fwRuntime::getModuleResourceFilePath(exportIconCfg.value());
+            }
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
             m_iconHeight = configAttr->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
@@ -706,7 +731,15 @@ void SMultipleTF::importPool()
     const ::fwData::Composite::sptr tfPool = ::fwData::Composite::New();
 
     const ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+
     reader->registerInOut(tfPool, ::fwIO::s_DATA_KEY);
+
+    ::fwServices::IService::ConfigType config;
+    config.add("archive.<xmlattr>.backend", "json");
+    config.add("archive.extension", ".tfp");
+    config.add("extensions.extension", ".tfp");
+
+    reader->configure(config);
     reader->start();
     reader->configureWithIHM();
     reader->update().wait();
@@ -718,7 +751,7 @@ void SMultipleTF::importPool()
     {
         int index = 0;
         {
-            std::string poolName = tfPool->begin()->first.c_str();
+            std::string poolName(reader->getFile().filename().stem().string());
 
             // Get the composite.
             const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
@@ -750,10 +783,13 @@ void SMultipleTF::exportPool()
     writer->registerInput(m_currentTFPool, ::fwIO::s_DATA_KEY);
 
     ::fwServices::IService::ConfigType config;
-    config.add("config.patcher.<xmlattr>.context", s_CONTEXT_TF);
-    config.add("config.patcher.<xmlattr>.version", s_VERSION_TF);
+    config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
+    config.add("patcher.<xmlattr>.version", s_VERSION_TF);
+    config.add("archive.<xmlattr>.backend", "json");
+    config.add("archive.extension", ".tfp");
+    config.add("extensions.extension", ".tfp");
 
-    writer->setConfiguration(config);
+    writer->configure(config);
     writer->start();
     writer->configureWithIHM();
     writer->update().wait();

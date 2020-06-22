@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,11 +47,9 @@ namespace ioAtoms
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
-   <service type="::ioAtoms::SWriter">
-       <in key="data" uid="..." />
-       <config>
+    <service type="::ioAtoms::SWriter">
+        <in key="data" uid="..." />
         <patcher context="..." version="..." />
 
         <archive backend="json">
@@ -69,12 +67,12 @@ namespace ioAtoms
             <extension label="Medical workspace">.mw</extension>
             <extension>.vpz</extension>
         </extensions>
-
-       </config>
-   </service>
+    </service>
    @endcode
+ *
  * @subsection Input Input
  * - \b data [::fwData::Object]: object to write.
+ *
  * @subsection Configuration Configuration
  * - \b patcher defines the atom patcher to use to convert the atoms (see ::fwAtomsPatch::PatchingManager)
  *    - \b context (optional, default=MedicalData): context of the atom patcher
@@ -97,7 +95,7 @@ class IOATOMS_CLASS_API SWriter : public ::fwIO::IWriter
 
 public:
 
-    fwCoreServiceMacro(SWriter, ::fwIO::IWriter);
+    fwCoreServiceMacro(SWriter, ::fwIO::IWriter)
 
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
