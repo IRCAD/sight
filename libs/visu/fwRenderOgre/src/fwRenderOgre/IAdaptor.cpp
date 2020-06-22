@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -87,9 +87,9 @@ void IAdaptor::initialize()
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setLayerID(const std::string& id)
+void IAdaptor::setLayerID(const std::string& _id)
 {
-    m_layerID = id;
+    m_layerID = _id;
 }
 
 //------------------------------------------------------------------------------
@@ -101,12 +101,12 @@ const std::string& IAdaptor::getLayerID() const
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setRenderService( SRender::sptr service)
+void IAdaptor::setRenderService( SRender::sptr _service)
 {
-    SLM_ASSERT("service not instanced", service);
+    SLM_ASSERT("service not instanced", _service);
     SLM_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
 
-    m_renderService = service;
+    m_renderService = _service;
 }
 
 //------------------------------------------------------------------------------
@@ -145,4 +145,4 @@ void fwRenderOgre::IAdaptor::requestRender()
 
 //------------------------------------------------------------------------------
 
-} // namespace fwRenderOgre
+} // namespace fwRenderOgre.

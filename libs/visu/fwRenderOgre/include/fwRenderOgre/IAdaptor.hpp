@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,76 +40,81 @@ namespace fwRenderOgre
 /**
  * @brief Interface providing behavior of Ogre adaptor services
  */
-class FWRENDEROGRE_CLASS_API IAdaptor : public ::fwServices::IService,
-                                        public ::fwServices::IHasServices
+class FWRENDEROGRE_CLASS_API IAdaptor :
+    public ::fwServices::IService,
+    public ::fwServices::IHasServices
 {
+
 friend class SRender;
+
 public:
-    fwCoreClassMacro(IAdaptor, ::fwServices::IService);
 
-    /// Set the layer ID
-    FWRENDEROGRE_API void setLayerID(const std::string& id);
+    /// Generates default methods.
+    fwCoreClassMacro(IAdaptor, ::fwServices::IService)
 
+    /// Sets the layer ID.
+    FWRENDEROGRE_API void setLayerID(const std::string& _id);
+
+    /// @returns the layer ID of this adaptor.
     FWRENDEROGRE_API const std::string& getLayerID() const;
 
-    /// Set the render service using this adaptor
-    FWRENDEROGRE_API void setRenderService( SRender::sptr service );
+    /// Sets the render service using this adaptor.
+    FWRENDEROGRE_API void setRenderService(SRender::sptr _service);
 
-    /// Get the render service using this adaptor
+    /// @returns the render service using this adaptor
     FWRENDEROGRE_API SRender::sptr getRenderService() const;
 
+    /// @returns the layer where this adaptor is attached.
     FWRENDEROGRE_API Layer::sptr getLayer() const;
 
 protected:
 
-    /// Constructor
+    /// Creates the adaptor.
     FWRENDEROGRE_API IAdaptor() noexcept;
 
-    /// Destructor
-    FWRENDEROGRE_API virtual ~IAdaptor() noexcept;
-
-    //@{
-    /// Overrides
-    FWRENDEROGRE_API virtual void info(std::ostream& _sstream ) override;
-    //@}
+    /// Destroys the adaptor.
+    FWRENDEROGRE_API ~IAdaptor() noexcept override;
 
     /**
-     * @brief Parse common adaptor parameters:
+     * @brief Write information in a stream.
+     *
+     * This method is used by operator<<(std::ostream & _sstream, IService& _service)
+     * to avoid declaration of << by all services.
+     */
+    FWRENDEROGRE_API void info(std::ostream& _sstream) override;
+
+    /**
+     * @brief Parses common adaptor parameters
+     *
      * @code{.xml}
             <config layer="..." />
        @endcode
+     *
      * @subsection Configuration Configuration:
-     * - \b layer (mandatory): id of the layer where this adaptor applies.
+     * - \b layer (mandatory, string): id of the layer where this adaptor applies.
      */
     FWRENDEROGRE_API void configureParams();
 
-    /// Register the adaptor into its SRender service
+    /// Registers the adaptor into its render service.
     FWRENDEROGRE_API void initialize();
 
     /**
-     * @brief Get the Ogre SceneManager
+     * @brief Gets the Ogre SceneManager
      * @return Ogre default scene manager
      */
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager();
 
-    /// Ask the render service (SRender) to update
+    /// Asks the render service to update rendering.
     FWRENDEROGRE_API virtual void requestRender();
 
-    std::string msgHead() const;
-
-    /// Layer ID
+    /// Defines the layer ID:
     ::std::string m_layerID;
 
-    /// Render service which this adaptor is attached
+    /// Contqins the t=render service which this adaptor is attached.
     ::fwRenderOgre::SRender::wptr m_renderService;
+
 };
 
-// ------------------------------------------------------------------------
-
-inline std::string IAdaptor::msgHead() const
-{
-    return "[ Adaptor '" + this->getID() + "'] ";
-}
 //------------------------------------------------------------------------------
 
-} //namespace fwRenderOgre
+} // namespace fwRenderOgre.
