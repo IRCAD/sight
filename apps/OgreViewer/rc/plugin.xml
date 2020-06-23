@@ -424,14 +424,16 @@
 
             <service uid="organManagerCfg"  type="::fwServices::SConfigController" >
                 <appConfig id="OgreOrganManager" />
-                <inout key="organManagerModelSeries" uid="modelSeries" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
+                <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
+                <inout key="organManagerModelSeries" uid="modelSeries" />
             </service>
 
             <service uid="extrudedMeshesManagerCfg"  type="::fwServices::SConfigController" >
                 <appConfig id="OgreOrganManager" />
-                <inout key="organManagerModelSeries" uid="extrudedModelSeries" />
                 <parameter replace="WID_PARENT" by="extrudedMeshesParameterView" />
+                <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
+                <inout key="organManagerModelSeries" uid="extrudedModelSeries" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->

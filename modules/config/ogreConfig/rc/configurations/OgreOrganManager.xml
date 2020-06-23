@@ -2,13 +2,17 @@
     <id>OgreOrganManager</id>
     <parameters>
         <param name="WID_PARENT" />
+        <param name="MODELSERIESLIST_ENABLE_DELETE_CONFIG" default="false" />
         <param name="organManagerModelSeries" />
     </parameters>
-
     <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${organManagerModelSeries}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
+
+        <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="organView" type="::gui::view::SDefaultView" >
             <gui>
@@ -23,68 +27,73 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="listOrganEditor" start="yes" />
-                <view sid="organMaterialEditor" start="no" />
-                <view sid="representationEditor" start="no" />
-                <view sid="textureSelector" start="no" />
-                <view sid="materialSelector" start="no" />
-                <view sid="shaderParameters" start="no" />
+                <view sid="listOrganEditorSrv" start="yes" />
+                <view sid="organMaterialEditorSrv" start="no" />
+                <view sid="representationEditorSrv" start="no" />
+                <view sid="textureSelectorSrv" start="no" />
+                <view sid="materialSelectorSrv" start="no" />
+                <view sid="shaderParametersSrv" start="no" />
             </registry>
         </service>
 
-        <service uid="updaterReconst" type="::ctrlSelection::updater::SObjFromSlot" >
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="updaterReconstSrv" type="::ctrlSelection::updater::SObjFromSlot" >
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="::uiReconstructionQt::SOrganMaterialEditor" >
-            <inout key="reconstruction" uid="reconstruction" />
-        </service>
-        <service uid="representationEditor" type="::uiReconstructionQt::RepresentationEditor" >
-            <inout key="reconstruction" uid="reconstruction" />
-        </service>
-        <service uid="textureSelector" type="::uiVisuOgre::STextureSelector" >
-            <inout key="reconstruction" uid="reconstruction" />
-        </service>
-        <service uid="materialSelector" type="::uiVisuOgre::SMaterialSelector" >
-            <inout key="reconstruction" uid="reconstruction" />
-        </service>
-        <service uid="shaderParameters" type="::uiVisuOgre::SShaderParameterEditor" >
-            <inout key="reconstruction" uid="reconstruction" />
-        </service>
-
-        <service uid="listOrganEditor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
+        <service uid="listOrganEditorSrv" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
             <inout key="modelSeries" uid="${organManagerModelSeries}" />
             <columns>
                 <organ_name>@organ_name</organ_name>
                 <volume_cc view="positive" >@volume</volume_cc>
             </columns>
+            <config enableDelete="${MODELSERIESLIST_ENABLE_DELETE_CONFIG}" />
         </service>
 
+        <service uid="organMaterialEditorSrv" type="::uiReconstructionQt::SOrganMaterialEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="representationEditorSrv" type="::uiReconstructionQt::RepresentationEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="textureSelectorSrv" type="::uiVisuOgre::STextureSelector" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="materialSelectorSrv" type="::uiVisuOgre::SMaterialSelector" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="shaderParametersSrv" type="::uiVisuOgre::SShaderParameterEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
         <connect>
-            <signal>listOrganEditor/reconstructionSelected</signal>
-            <slot>updaterReconst/add</slot>
+            <signal>listOrganEditorSrv/reconstructionSelected</signal>
+            <slot>updaterReconstSrv/add</slot>
         </connect>
 
         <connect>
-            <signal>listOrganEditor/emptiedSelection</signal>
-            <slot>updaterReconst/remove</slot>
+            <signal>listOrganEditorSrv/emptiedSelection</signal>
+            <slot>updaterReconstSrv/remove</slot>
         </connect>
 
         <connect>
-            <signal>materialSelector/selected</signal>
-            <slot>shaderParameters/update</slot>
+            <signal>materialSelectorSrv/selected</signal>
+            <slot>shaderParametersSrv/update</slot>
         </connect>
 
-        <!-- START AND STOP SERVICES -->
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
         <start uid="organView" />
-        <start uid="updaterReconst" />
+        <start uid="updaterReconstSrv" />
 
-        <!-- Deferred start -->
-        <start uid="materialSelector" />
-        <start uid="representationEditor" />
-        <start uid="shaderParameters" />
-        <start uid="organMaterialEditor" />
-        <start uid="textureSelector" />
+        <start uid="materialSelectorSrv" />
+        <start uid="representationEditorSrv" />
+        <start uid="shaderParametersSrv" />
+        <start uid="organMaterialEditorSrv" />
+        <start uid="textureSelectorSrv" />
 
     </config>
 </extension>

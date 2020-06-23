@@ -22,8 +22,6 @@
 
 #include "uiMedDataQt/editor/SModelSeriesList.hpp"
 
-#include <boost/format.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
@@ -54,9 +52,13 @@
 
 #include <fwTools/fwID.hpp>
 
+#include <boost/format.hpp>
+
+#include <QAction>
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QListWidgetItem>
+#include <QMenu>
 #include <QString>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
@@ -93,7 +95,7 @@ public:
         }
         else
         {
-            SLM_WARN(obj->getClassname() +  " is not a printable object  : ");
+            SLM_WARN(_obj->getClassname() +  " is not a printable object  : ");
             return "";
         }
     }
@@ -136,7 +138,7 @@ public:
         }
         else
         {
-            SLM_WARN(obj->getClassname() +  " is not a printable object  : ");
+            SLM_WARN(_obj->getClassname() +  " is not a printable object  : ");
             return "";
         }
     }
@@ -154,8 +156,7 @@ static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries
 
 //------------------------------------------------------------------------------
 
-SModelSeriesList::SModelSeriesList() noexcept :
-    m_enableHideAll(true)
+SModelSeriesList::SModelSeriesList() noexcept
 {
     m_sigReconstructionSelected = newSignal< ReconstructionSelectedSignalType >( s_RECONSTRUCTION_SELECTED_SIG );
     m_sigEmptiedSelection       = newSignal< EmptiedSelectionSignalType >( s_EMPTIED_SELECTION_SIG );
@@ -182,12 +183,13 @@ void SModelSeriesList::configuring()
     SLM_TRACE_FUNC();
     this->initialize();
 
-    if( m_configuration->findConfigurationElement( "enable_hide_all" ) )
+    const ConfigType configType = this->getConfigTree();
+    const auto config           = configType.get_child_optional("config.<xmlattr>");
+
+    if(config)
     {
-        const std::string& hide = m_configuration->findConfigurationElement("enable_hide_all")->getValue();
-        SLM_ASSERT("'enable_hide_all' attribute value must be 'true' or 'false' (found '" + hide + "')",
-                   hide == "true" || hide == "false");
-        m_enableHideAll = (hide == "true");
+        m_enableHideAll = config->get<bool>("enable_hide_all", m_enableHideAll);
+        m_enableDelete  = config->get<bool>("enableDelete", m_enableDelete);
     }
 
     const ::fwRuntime::ConfigurationElement::sptr& columns = m_configuration->findConfigurationElement( "columns" );
@@ -252,6 +254,14 @@ void SModelSeriesList::starting()
                          &::uiMedDataQt::editor::SModelSeriesList::onUnCheckAllCheckBox);
     }
 
+    if(m_enableDelete)
+    {
+        m_deleteAllButton = new QPushButton(tr("Delete all"));
+        layoutButton->addWidget(m_deleteAllButton, 0);
+        QObject::connect(m_deleteAllButton, &QPushButton::clicked, this,
+                         &::uiMedDataQt::editor::SModelSeriesList::onDeleteAllCheckBox );
+    }
+
     layout->addWidget( m_tree, 1 );
 
     qtContainer->setLayout( layout );
@@ -263,6 +273,14 @@ void SModelSeriesList::starting()
 
     QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
                      this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
+
+    if(m_enableDelete)
+    {
+        m_tree->setContextMenuPolicy(Qt::CustomContextMenu);
+        QObject::connect(m_tree, &QTreeWidget::customContextMenuRequested, this,
+                         &::uiMedDataQt::editor::SModelSeriesList::onCustomContextMenuRequested);
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -296,13 +314,30 @@ void SModelSeriesList::stopping()
 {
     SLM_TRACE_FUNC();
 
-    if(m_showCheckBox)
+    if(m_enableHideAll)
     {
-        QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
+        QObject::disconnect(m_showCheckBox, &QCheckBox::stateChanged, this,
+                            &::uiMedDataQt::editor::SModelSeriesList::onShowReconstructions);
+
+        QObject::disconnect(m_checkAllButton, &QPushButton::clicked, this,
+                            &::uiMedDataQt::editor::SModelSeriesList::onCheckAllCheckBox);
+
+        QObject::disconnect(m_unCheckAllButton, &QPushButton::clicked, this,
+                            &::uiMedDataQt::editor::SModelSeriesList::onUnCheckAllCheckBox);
+    }
+
+    if(m_enableDelete)
+    {
+        QObject::disconnect(m_deleteAllButton, &QPushButton::clicked, this,
+                            &::uiMedDataQt::editor::SModelSeriesList::onDeleteAllCheckBox );
+
+        QObject::disconnect(m_tree, &QTreeWidget::customContextMenuRequested, this,
+                            &::uiMedDataQt::editor::SModelSeriesList::onCustomContextMenuRequested);
     }
 
     QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
                         this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
+
     QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
                         this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
@@ -325,9 +360,9 @@ void SModelSeriesList::updateReconstructions()
     bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
     container->setEnabled( hasReconstructions );
 
+    this->fillTree(modelSeries);
     if(hasReconstructions)
     {
-        this->fillTree(modelSeries);
         if(m_showCheckBox)
         {
             const bool showAllRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -426,7 +461,7 @@ void SModelSeriesList::onShowReconstructions(int _state)
         this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     {
-        ::fwDataTools::helper::Field helper( modelSeries.getShared() );
+        ::fwDataTools::helper::Field helper( modelSeries.get_shared() );
         helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(_state == Qt::Unchecked));
     }
 }
@@ -476,6 +511,62 @@ void SModelSeriesList::onCheckAllBoxes(bool _visible)
     {
         QTreeWidgetItem* item = m_tree->topLevelItem( i );
         item->setCheckState(0, _visible ? Qt::Checked : Qt::Unchecked );
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesList::onDeleteAllCheckBox()
+{
+    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries =
+        this->getLockedInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+
+    // Remove all reconstructions.
+    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = modelSeries->getReconstructionDB();
+    modelSeries->setReconstructionDB(::fwMedData::ModelSeries::ReconstructionVectorType());
+
+    // Send the signals.
+    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsRemovedSignalType >(
+        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
+    sig->asyncEmit(reconstructions);
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
+{
+    QModelIndex index = m_tree->indexAt(_pos);
+    if (index.isValid())
+    {
+        QAction* const deleteAction = new QAction("Delete");
+        QObject::connect(deleteAction, &QAction::triggered, this, [ = ]()
+                {
+                    ::fwData::mt::locked_ptr< ::fwMedData::ModelSeries > modelSeries
+                        = this->getLockedInOut< ::fwMedData::ModelSeries >(
+                              s_MODEL_SERIES_INOUT);
+
+                    ::fwMedData::ModelSeries::ReconstructionVectorType deletedReconstructions;
+
+                    // Remove reconstruction.
+                    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions
+                        = modelSeries->getReconstructionDB();
+                    const ::fwMedData::ModelSeries::ReconstructionVectorType::iterator recIt
+                        = reconstructions.begin() + index.row();
+                    const ::fwData::Reconstruction::sptr reconstruction = *recIt;
+                    reconstructions.erase(recIt);
+                    modelSeries->setReconstructionDB(reconstructions);
+
+                    // Send the signals.
+                    deletedReconstructions.push_back(reconstruction);
+                    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsRemovedSignalType >(
+                        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
+                    sig->asyncEmit(deletedReconstructions);
+                });
+
+        QMenu contextMenu;
+        contextMenu.addAction(deleteAction);
+        contextMenu.exec(QCursor::pos());
+
     }
 }
 

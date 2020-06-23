@@ -31,9 +31,9 @@
 
 #include <fwData/Reconstruction.hpp>
 
-#include <fwMedData/ModelSeries.hpp>
-
 #include <fwGui/editor/IEditor.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -86,11 +86,14 @@ class ValueView;
  * - \b modelSeries [::fwMedData::ModelSeries]: model series containing the organs to list
  *
  * @subsection Configuration Configuration
- * \b enable_hide_all: if 'true', allows to hide all models through a single checkbox displayed in UI (default
- * value is 'true', allowed values are 'true' and 'false').
- * \b column: defines colums to be shown in reconstruction list. XML child element names follow
- * ::fwData::Reconstruction serialization attribute names. The name of the tag will be used as the column name.
- * The attribute 'view' is optional and has the following values:
+ * - \b enable_hide_all (optional, bool, default=true): if 'true', allows to hide all models through a single checkbox
+ *      displayed in UI.
+ * - \b enableDelete (optional, bool, default=false): if 'true', allows to delete models through a single button
+ *      displayed in UI.
+ * - \b column (optional, string, default=""): defines colums to be shown in reconstruction list. XML child element
+ *      names follow ::fwData::Reconstruction serialization attribute names.
+ *      The name of the tag will be used as the column name.
+ *      The attribute 'view' is optional and has the following values:
  *  - positive: a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList final :
@@ -111,7 +114,7 @@ public:
     /// Cleans ressources.
     UIMEDDATAQT_API ~SModelSeriesList() noexcept override;
 
-private:
+protected:
 
     /// Configures the editor.
     void configuring() override;
@@ -138,6 +141,8 @@ private:
 
     /// Disconnects connections.
     void stopping() override;
+
+private:
 
     /// Updates reconstructions.
     void updateReconstructions();
@@ -179,6 +184,12 @@ private Q_SLOTS:
     /// Shows reconstructions, called when m_unCheckAllButton is clicked.
     void onUnCheckAllCheckBox();
 
+    /// Deletes all reconstructions, called when m_deleteAllButton is clicked.
+    void onDeleteAllCheckBox();
+
+    /// Opens a context menu to deletes a specific reconstruction.
+    void onCustomContextMenuRequested(const QPoint& _pos);
+
 private:
 
     /// Contains the button to check all reconstructions.
@@ -186,6 +197,9 @@ private:
 
     /// Contains the button to uncheck all reconstructions.
     QPointer<QPushButton> m_unCheckAllButton;
+
+    /// Contains the button to delete all reconstructions.
+    QPointer<QPushButton> m_deleteAllButton;
 
     /// Contains the button to hide or show all reconstructions.
     QPointer< QCheckBox > m_showCheckBox;
@@ -198,7 +212,10 @@ private:
     DisplayedInformation m_displayedInfo;
 
     /// Enables m_showCheckBox.
-    bool m_enableHideAll;
+    bool m_enableHideAll { true };
+
+    /// Enables m_deleteAllButton.
+    bool m_enableDelete { false };
 
     /// Defines the header of the tree.
     QStringList m_headers;
