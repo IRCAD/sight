@@ -79,7 +79,7 @@ namespace uiTF
  * - \b reinitializeIcon (optional): path of the reinitialize button icon.
  * - \b renameIcon (optional): path of the rename button icon.
  * - \b importIcon (optional): path of the import button icon.
- * - \b exportIcon (optional): path of the export button icon.*
+ * - \b exportIcon (optional): path of the export button icon.
  * - \b iconWidth (optional, default="16"): icon width.
  * - \b iconHeight (optional, default="16"): icon height.
  */
@@ -136,9 +136,10 @@ private:
     /**
      * @brief Checks if the composite contains the specified key.
      * @param _name the name used to search.
+     * @param _tfPools the inout of this service, this parameter avoid dead lock.
      * @return True if the pool named _name is found.
      */
-    bool hasPoolName(const std::string& _name) const;
+    bool hasPoolName(const std::string& _name, ::fwData::Composite::csptr _tfPools) const;
 
     /**
      * @brief Create a string that represents a TF pool name not already present in the composite.
@@ -146,9 +147,10 @@ private:
      * For example, if CT-GreyLevel is already used, it will return CT-GreyLevel_1.
      *
      * @param _basename the name of the TF pool to create.
+     * @param _tfPools the inout of this service, this parameter avoid dead lock.
      * @return The new name of the TF pool.
      */
-    std::string createPoolName(const std::string& _basename) const;
+    std::string createPoolName(const std::string& _basename, ::fwData::Composite::csptr _tfPools) const;
 
     /**
      * @brief Initializes the composite.

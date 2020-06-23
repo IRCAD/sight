@@ -22,7 +22,7 @@
 
 #pragma once
 
-// Transfert functions editors.
+/// Transfert functions editors.
 namespace uiTF
 {
 }
