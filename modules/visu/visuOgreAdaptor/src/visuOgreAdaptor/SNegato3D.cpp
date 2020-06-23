@@ -52,12 +52,10 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT          = "newImage";
-static const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT         = "sliceType";
-static const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT        = "sliceIndex";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT    = "updateOpacity";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_SET_VISIBILITY_SLOT    = "setVisibility";
+static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT       = "newImage";
+static const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT      = "sliceType";
+static const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT     = "sliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT = "updateOpacity";
 
 static const ::fwCom::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
@@ -87,8 +85,7 @@ SNegato3D::SNegato3D() noexcept :
     newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
     newSlot(s_UPDATE_OPACITY_SLOT, &SNegato3D::setPlanesOpacity, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato3D::setPlanesOpacity, this);
-    newSlot(s_SET_VISIBILITY_SLOT, &SNegato3D::setVisibility, this);
+    newSlot("setVisibility", &SNegato3D::updateVisibility, this);
 
     m_pickedVoxelSignal = newSignal<PickedVoxelSigType>(s_PICKED_VOXEL_SIG);
 }
@@ -230,7 +227,7 @@ void SNegato3D::starting()
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_OPACITY_SLOT );
     return connections;
 }
 
@@ -450,13 +447,13 @@ void SNegato3D::setPlanesOpacity()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::setVisibility(bool _visibility)
+void SNegato3D::setVisible(bool _visible)
 {
     const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
     const ::fwData::mt::ObjectReadLock imageLock(image);
 
-    image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visibility));
+    image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visible));
 
     this->setPlanesOpacity();
 
@@ -464,9 +461,17 @@ void SNegato3D::setVisibility(bool _visibility)
     auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
 
     {
-        ::fwCom::Connection::Blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
-        visUpdateSig->asyncEmit(_visibility);
+        const ::fwCom::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
+        visUpdateSig->asyncEmit(_visible);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::setVisibilityDeprecatedSlot(bool _visible)
+{
+    FW_DEPRECATED_MSG("::visuOgreAdaptor::SNegato3D::setVisibility is no longer supported", "21.0")
+    ::fwRenderOgre::IAdaptor::updateVisibility(_visible);
 }
 
 //------------------------------------------------------------------------------

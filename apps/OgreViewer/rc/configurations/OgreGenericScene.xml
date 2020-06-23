@@ -262,7 +262,6 @@
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x04000000" />
         </service>
 
-
         <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >
             <config layer="defaultLayer" visible="false" origin="true" label="false" />
         </service>
@@ -513,11 +512,11 @@
         </connect>
 
         <connect channel="${3DNEGATO_VISIBILITY_RECEIVER_CHANNEL}" >
-            <slot>3DNegatoAdp/setVisibility</slot>
+            <slot>3DNegatoAdp/updateVisibility</slot>
         </connect>
 
         <connect channel="${MESHES_VISIBILITY_RECEIVER_CHANNEL}" >
-            <slot>modeSeriesAdp/showReconstructions</slot>
+            <slot>modeSeriesAdp/updateVisibility</slot>
         </connect>
 
         <connect channel="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}" >

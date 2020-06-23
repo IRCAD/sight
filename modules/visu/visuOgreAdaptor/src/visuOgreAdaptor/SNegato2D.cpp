@@ -44,7 +44,6 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
@@ -63,7 +62,7 @@ static const std::string s_BORDER_CONFIG      = "border";
 SNegato2D::SNegato2D() noexcept :
     m_helperTF(std::bind(&SNegato2D::updateTF, this))
 {
-    newSlot(s_NEWIMAGE_SLOT, &SNegato2D::newImageDeprecatedSlot, this);
+    newSlot("newImage", &SNegato2D::newImageDeprecatedSlot, this);
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
 

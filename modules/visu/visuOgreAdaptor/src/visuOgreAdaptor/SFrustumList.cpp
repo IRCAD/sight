@@ -40,10 +40,8 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT             = "clear";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT       = "addFrustum";
+static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
+static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT = "addFrustum";
 
 static const std::string s_CAMERA_NAME_INPUT = "camera";
 static const std::string s_NEAR_CONFIG       = "near";
@@ -56,8 +54,6 @@ static const std::string s_NB_MAX_CONFIG     = "nbMax";
 
 SFrustumList::SFrustumList() noexcept
 {
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustumList::updateVisibility, this);
-    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustumList::toggleVisibility, this);
     newSlot(s_CLEAR_SLOT, &SFrustumList::clear, this);
     newSlot(s_ADD_FRUSTUM_SLOT, &SFrustumList::addFrustum, this);
 }
@@ -143,18 +139,12 @@ void SFrustumList::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SFrustumList::updateVisibility(bool _isVisible)
+void SFrustumList::setVisible(bool _visible)
 {
-    m_visibility = _isVisible;
-    this->updateAllVisibility();
-}
-
-//-----------------------------------------------------------------------------
-
-void SFrustumList::toggleVisibility()
-{
-    m_visibility = !m_visibility;
-    this->updateAllVisibility();
+    for(auto camera : m_frustumList)
+    {
+        camera->setDebugDisplayEnabled(_visible);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -169,8 +159,8 @@ void SFrustumList::addFrustum()
     camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
                                                                   + std::to_string(m_currentCamIndex)));
     camera->setMaterial(m_materialAdaptor->getMaterial());
-    camera->setVisible(m_visibility);
-    camera->setDebugDisplayEnabled(m_visibility);
+    camera->setVisible(m_isVisible);
+    camera->setDebugDisplayEnabled(m_isVisible);
 
     // Clipping
     if(m_near != 0.f)
@@ -231,16 +221,6 @@ void SFrustumList::addFrustum()
     m_currentCamIndex++;
 
     this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void SFrustumList::updateAllVisibility()
-{
-    for(auto camera : m_frustumList)
-    {
-        camera->setDebugDisplayEnabled(m_visibility);
-    }
 }
 
 //-----------------------------------------------------------------------------

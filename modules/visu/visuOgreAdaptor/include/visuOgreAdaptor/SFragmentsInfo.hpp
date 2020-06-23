@@ -44,47 +44,51 @@ namespace visuOgreAdaptor
     </service>
    @endcode
  *
- * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the mesh's layer.
- * - \b width (optional): fixed width of snapshot.
- * - \b height (optional): fixed height of snaphot.
- * NOTE: if width & height are missing (or one of them), size of the snapshot will be connected to the layer:
- * if the layer is resized the snaphot will be resized.
- * - \b flip (optional): flip result images, default: false.
- *
  * @subsection InOut InOut:
  * - \b image [::fwData::Image] (optional): image containing the snapshot of the layer color buffer.
  * - \b depth [::fwData::Image] (optional): image containing the snapshot of the layer depth buffer.
  * - \b primitiveID [::fwData::Image] (optional): image containing the primitive ID of the layer.
+ *
+ * @subsection Configuration Configuration:
+ * - \b layer (mandatory): defines the mesh's layer.
+ * - \b width (optional): fixed width of snapshot.
+ * - \b height (optional): fixed height of snaphot.
+ *      NOTE: if width & height are missing (or one of them), size of the snapshot will be connected to the layer:
+ *      if the layer is resized the snaphot will be resized.
+ * - \b flip (optional): flip result images, default: false.
  */
 class VISUOGREADAPTOR_CLASS_API SFragmentsInfo final :
     public ::fwRenderOgre::IAdaptor,
     public ::Ogre::Viewport::Listener,
     public ::Ogre::RenderTargetListener
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SFragmentsInfo, ::fwRenderOgre::IAdaptor)
 
     /// Initializes the adaptor.
     VISUOGREADAPTOR_API SFragmentsInfo() noexcept;
 
     /// Destroys the adaptor.
-    VISUOGREADAPTOR_API virtual ~SFragmentsInfo() noexcept final;
+    VISUOGREADAPTOR_API virtual ~SFragmentsInfo() noexcept override;
 
-private:
+protected:
 
     /// Configures the layer and retrieves the size of the output image.
-    virtual void configuring() final;
+    VISUOGREADAPTOR_API void configuring() final;
 
     /// Intializes adaptor and connection to layer signals.
-    virtual void starting() final;
+    VISUOGREADAPTOR_API void starting() final;
 
     /// Updates the service. Convert render target texture to ::fwData::Image.
-    virtual void updating() noexcept final;
+    VISUOGREADAPTOR_API void updating() noexcept final;
 
-    /// Destroys adaptor, only calls @ref ::visuOgreAdaptor::destroyCompositor().
-    virtual void stopping() final;
+    /// Destroys adaptor, only calls ::visuOgreAdaptor::destroyCompositor().
+    VISUOGREADAPTOR_API void stopping() final;
+
+private:
 
     /**
      * @brief Creates the compositor which copy the layer color buffer to a global render target.
@@ -99,7 +103,7 @@ private:
     /**
      * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.
      *
-     * Call @ref ::visuOgreAdaptor::destroyCompositor() and @ref ::visuOgreAdaptor::createCompositor(int, int).
+     * Call @ref ::visuOgreAdaptor::destroyCompositor() and ::visuOgreAdaptor::createCompositor(int, int).
      *
      * @param _viewport related layer's viewport.
      */

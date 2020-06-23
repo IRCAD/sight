@@ -38,6 +38,7 @@ namespace visuOgreQt
 class VISUOGREQT_CLASS_API OffScreenRenderWindowInteractorManager final :
     public ::fwRenderOgre::IRenderWindowInteractorManager
 {
+
 public:
 
     fwCoreClassMacro(OffScreenRenderWindowInteractorManager, ::fwRenderOgre::IRenderWindowInteractorManager)

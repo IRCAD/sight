@@ -39,6 +39,23 @@ namespace fwRenderOgre
 
 /**
  * @brief Interface providing behavior of Ogre adaptor services
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool): sets whether the adaptor is shown or not.
+ * - \b toggleVisibility(): toggle whether the adaptor is shown or not.
+ * - \b show(): shows the adaptor.
+ * - \b hide(): hides the hide.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="...">
+        <config layer="default" visible="true" />
+    </service>
+   @endcode
+ *
+ * @subsection Configuration Configuration:
+ * - \b layer (mandatory, string) : defines the adaptor's layer.
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class FWRENDEROGRE_CLASS_API IAdaptor :
     public ::fwServices::IService,
@@ -67,9 +84,24 @@ public:
     /// @returns the layer where this adaptor is attached.
     FWRENDEROGRE_API Layer::sptr getLayer() const;
 
+    /**
+     * @brief SLOT: sets the visibility of the adaptor.
+     * @param _isVisible the visibility status.
+     * @see setVisible(bool)
+     */
+    FWRENDEROGRE_API void updateVisibility(bool _isVisible);
+
 protected:
 
-    /// Creates the adaptor.
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+
+    /// Initializes slots.
     FWRENDEROGRE_API IAdaptor() noexcept;
 
     /// Destroys the adaptor.
@@ -107,11 +139,26 @@ protected:
     /// Asks the render service to update rendering.
     FWRENDEROGRE_API virtual void requestRender();
 
+    /// SLOT: toggles the visibility of the adaptor.
+    FWRENDEROGRE_API void toggleVisibility();
+
+    /// SLOT: shows the adaptor.
+    FWRENDEROGRE_API void show();
+
+    /// SLOT: hides the adaptor.
+    FWRENDEROGRE_API void hide();
+
+    /// Sets the visibility of the adaptor.
+    FWRENDEROGRE_API virtual void setVisible(bool _visible);
+
     /// Defines the layer ID:
     ::std::string m_layerID;
 
     /// Contqins the t=render service which this adaptor is attached.
     ::fwRenderOgre::SRender::wptr m_renderService;
+
+    /// Enables the adaptor visibility.
+    bool m_isVisible { true };
 
 };
 

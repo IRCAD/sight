@@ -34,10 +34,22 @@
 namespace fwRenderOgre
 {
 
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_SHOW_SLOT              = "show";
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_HIDE_SLOT              = "hide";
+
+static const std::string s_LAYER_CONFIG   = "layer";
+static const std::string s_VISIBLE_CONFIG = "visible";
+
 //------------------------------------------------------------------------------
 
 IAdaptor::IAdaptor() noexcept
 {
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &IAdaptor::updateVisibility, this);
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, &IAdaptor::toggleVisibility, this);
+    newSlot(s_SHOW_SLOT, &IAdaptor::show, this);
+    newSlot(s_HIDE_SLOT, &IAdaptor::hide, this);
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +71,8 @@ void IAdaptor::info(std::ostream& _sstream )
 void IAdaptor::configureParams()
 {
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-    m_layerID = config.get<std::string>("layer");
+    m_layerID   = config.get<std::string>(s_LAYER_CONFIG);
+    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }
 
 //------------------------------------------------------------------------------
@@ -132,7 +145,7 @@ Layer::sptr IAdaptor::getLayer() const
 
 //------------------------------------------------------------------------------
 
-void fwRenderOgre::IAdaptor::requestRender()
+void IAdaptor::requestRender()
 {
     auto renderService = this->getRenderService();
     if ( (renderService->getStatus() == ::fwServices::IService::STARTED ||
@@ -141,6 +154,41 @@ void fwRenderOgre::IAdaptor::requestRender()
     {
         this->getRenderService()->requestRender();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void IAdaptor::updateVisibility(bool _isVisible)
+{
+    m_isVisible = _isVisible;
+    this->setVisible(m_isVisible);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::toggleVisibility()
+{
+    this->updateVisibility(!m_isVisible);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::show()
+{
+    this->updateVisibility(true);
+}
+//------------------------------------------------------------------------------
+
+void IAdaptor::hide()
+{
+    this->updateVisibility(false);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::setVisible(bool)
+{
+    SLM_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
 }
 
 //------------------------------------------------------------------------------

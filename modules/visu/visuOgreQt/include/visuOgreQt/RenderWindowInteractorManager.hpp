@@ -49,6 +49,7 @@ namespace visuOgreQt
 class VISUOGREQT_CLASS_API RenderWindowInteractorManager : public QObject,
                                                            public ::fwRenderOgre::IRenderWindowInteractorManager
 {
+
 Q_OBJECT
 
 public:

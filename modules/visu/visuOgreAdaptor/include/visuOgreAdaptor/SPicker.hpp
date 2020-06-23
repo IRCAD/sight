@@ -52,32 +52,35 @@ namespace visuOgreAdaptor
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): filters out entities with mismatching flags when picking.
  */
-
 class VISUOGREADAPTOR_CLASS_API SPicker final : public ::fwRenderOgre::IAdaptor
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SPicker, ::fwRenderOgre::IAdaptor)
 
     /// Initializes the adaptor.
     VISUOGREADAPTOR_API SPicker() noexcept;
 
     /// Destroys the adaptor.
-    VISUOGREADAPTOR_API virtual ~SPicker() noexcept;
+    VISUOGREADAPTOR_API ~SPicker() noexcept override;
 
-private:
+protected:
 
     /// Configures the picker's query mask and priority.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the interactor and adds it to the layer.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Updates the service. Doesn't do anything here.
-    virtual void updating() noexcept override;
+    VISUOGREADAPTOR_API void updating() noexcept override;
 
     /// Destroys the interactor and removes it from the layer.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Determines the execution order of the picking interactor.
     int m_priority { 2 };

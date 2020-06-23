@@ -34,13 +34,13 @@ struct VISUOGREQT_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
 
     /// Destroys the plugin.
-    ~Plugin() noexcept;
+    VISUOGREQT_API ~Plugin() noexcept override;
 
     /// Starts the plugin, does nothing here.
-    VISUOGREQT_API void start();
+    VISUOGREQT_API void start() override;
 
     /// Stops the plugin, does nothing here.
-    VISUOGREQT_API void stop() noexcept;
+    VISUOGREQT_API void stop() noexcept override;
 
 };
 

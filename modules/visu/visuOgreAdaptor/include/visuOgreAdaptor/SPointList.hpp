@@ -57,6 +57,8 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b updateVisibility(bool): Sets whether the points are visible or not.
  * - \b toggleVisibility(): Toggle whether the points are visible or not.
+ * - \b show(): shows the video.
+ * - \b hide(): hides the video.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -70,35 +72,32 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out
  * - \b pointList [::fwData::PointList] (optional): point list to display.
  * - \b mesh [::fwData::Mesh] (optional): point based mesh to display. If the mesh contains any topology, it will be
- * ignored and only raw vertices will be displayed.
- * or add some fields.
+ *      ignored and only raw vertices will be displayed. or add some fields.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the mesh's layer.
+ * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera when this mesh is modified, "yes" or "no".
- * - \b transform (optional, string, default="") : the name of the Ogre transform node where to attach the mesh, as it
- * was specified
- * in the STransform adaptor.
- * Either of the following (whether a material is configured in the XML scene or not) :
- * - \b materialName (optional, string, default="") : name of the Ogre material, as defined in the
- *::visuOgreAdaptor::SMaterial you want
- * to be bound to.
- * Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
- * template, the texture adaptor and the shading mode) :
- * - \b materialTemplate (optional, string, default='Billboard_Default') : the name of the base Ogre material for the
- * internally
- * created SMaterial.
- * - \b textureName (optional, string, default="") : the name of the Ogre texture that the mesh will use.
- * - \b radius (optional, float, default=1.f) : billboard radius.
- * - \b displayLabel (optional, bool, default=false) : display the label points (default = false).
+ * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
+ *      was specified in the STransform adaptor.
+ *      Either of the following (whether a material is configured in the XML scene or not) :
+ * - \b materialName (optional, string, default=""): name of the Ogre material, as defined in the
+ *      ::visuOgreAdaptor::SMaterial you want to be bound to.
+ *      Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
+ *      template, the texture adaptor and the shading mode).
+ * - \b materialTemplate (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
+ *      internally created SMaterial.
+ * - \b textureName (optional, string, default=""): the name of the Ogre texture that the mesh will use.
+ * - \b radius (optional, float, default=1.f): billboard radius.
+ * - \b displayLabel (optional, bool, default=false): display the label points (default = false).
  * - \b labelColor (optional, hexadecimal, default=0xFFFFFF): color of the label in hexadecimal.
  * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
- * - \b fixedSize (optional, bool, default=false) : if true, the billboard will have a fixed size in screen space.
+ * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
  * - \b queryFlags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  * matching mask.
  * - \b visible (optional, bool, default=true): If pointlist should be visible or not at start.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VISUOGREADAPTOR_CLASS_API SPointList final :
     public ::fwRenderOgre::IAdaptor,
@@ -107,21 +106,22 @@ class VISUOGREADAPTOR_CLASS_API SPointList final :
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SPointList, ::fwRenderOgre::IAdaptor)
 
     /// Creates the adaptor, sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SPointList() noexcept;
 
     /// Destoyes Ogre resource.
-    VISUOGREADAPTOR_API virtual ~SPointList() noexcept;
+    VISUOGREADAPTOR_API ~SPointList() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates a mesh in the default Ogre resource group.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -133,28 +133,27 @@ private:
      * Connect ::fwData::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
      * Connect ::fwData::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the generated mesh.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the point list visibility.
+     * @param _visible the visibility status of the point list.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
+
+private:
 
     /**
      * @brief Get the point list visibility.
      * @return True if the point list is visible.
      */
     bool getVisibility() const;
-
-    /**
-     * @brief Sets whether the point list is to be seen or not.
-     * @param _isVisible set to true to show the point list.
-     */
-    void updateVisibility(bool _isVisible);
-
-    /// Toggle the visibility of the point list.
-    void toggleVisibility();
 
     /**
      * @brief Updates the point list from a point list, checks if color, number of vertices have changed, and updates
@@ -216,25 +215,22 @@ private:
     std::string m_materialTemplateName { "Billboard_Default" };
 
     /// Definees the attached texture adaptor UID.
-    std::string m_textureName {""};
-
-    /// Defines if the entity visible or not.
-    bool m_isVisible {true};
+    std::string m_textureName;
 
     /// Contains the mesh support used to render the pointlist.
-    ::fwRenderOgre::Mesh::sptr m_meshGeometry {nullptr};
+    ::fwRenderOgre::Mesh::sptr m_meshGeometry { nullptr };
 
     /// Defines the billboards scale.
-    float m_radius {1.f};
+    float m_radius { 1.f };
 
     /// Defines if label numbers are displayed.
-    bool m_displayLabel {false};
+    bool m_displayLabel { false };
 
     /// Contains the RGB color for the label point color.
-    ::fwData::Color::sptr m_labelColor {nullptr};
+    ::fwData::Color::sptr m_labelColor { nullptr };
 
     /// Defines the mask for picking requests.
-    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+    std::uint32_t m_queryFlags { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
 
     /// Stores label of each point.
     std::vector< ::fwRenderOgre::Text* > m_labels;
@@ -246,7 +242,7 @@ private:
     ::Ogre::SceneNode* m_sceneNode { nullptr };
 
     /// Defines the TrueType font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    std::string m_fontSource { "DejaVuSans.ttf" };
 
     /// Defines the font size in points.
     size_t m_fontSize { 16 };

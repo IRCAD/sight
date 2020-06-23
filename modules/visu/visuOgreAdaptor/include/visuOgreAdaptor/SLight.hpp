@@ -75,6 +75,7 @@ class VISUOGREADAPTOR_CLASS_API SLight final : public ::fwRenderOgre::ILight
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SLight, ::fwRenderOgre::ILight)
 
     /// Creates the service.
@@ -84,125 +85,124 @@ public:
     VISUOGREADAPTOR_API SLight(::fwRenderOgre::ILight::Key key);
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~SLight() noexcept;
+    VISUOGREADAPTOR_API ~SLight() noexcept override;
 
     /**
      * @brief Gets the name of the light.
      * @return The name of the light.
      */
-    VISUOGREADAPTOR_API virtual const std::string& getName() const override;
+    VISUOGREADAPTOR_API const std::string& getName() const override;
 
     /**
      * @brief Sets the name of the light.
      * @param _name the new light name.
      */
-    VISUOGREADAPTOR_API virtual void setName(const std::string& _name) override;
+    VISUOGREADAPTOR_API void setName(const std::string& _name) override;
 
     /**
      * @brief Gets the type of the light.
      * @return The light type.
      */
-    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const override;
+    VISUOGREADAPTOR_API ::Ogre::Light::LightTypes getType() const override;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the new light type.
      */
-    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type) override;
+    VISUOGREADAPTOR_API void setType(::Ogre::Light::LightTypes _type) override;
 
     /**
      * @brief Gets the diffuse color of the light.
      * @return The light diffuse color.
      */
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const override;
+    VISUOGREADAPTOR_API ::Ogre::ColourValue getDiffuseColor() const override;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the new light diffuse color.
      */
-    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override;
+    VISUOGREADAPTOR_API void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override;
 
     /**
      * @brief Gets the specular color of the light.
      * @return The light specular color.
      */
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const override;
+    VISUOGREADAPTOR_API ::Ogre::ColourValue getSpecularColor() const override;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _specularColor the new light specular color.
      */
-    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override;
+    VISUOGREADAPTOR_API void setSpecularColor(::Ogre::ColourValue _specularColor) override;
 
     /**
      * @brief Gets the light activation state.
      * @return The light activation state.
      */
-    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const override;
+    VISUOGREADAPTOR_API bool isSwitchedOn() const override;
 
     /**
      * @brief Sets the light activation state.
      * @param _on the light new activation state.
      */
-    VISUOGREADAPTOR_API virtual void switchOn(bool _on) override;
+    VISUOGREADAPTOR_API void switchOn(bool _on) override;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around x axis.
      * @return The theta offset of the light.
      */
-    VISUOGREADAPTOR_API virtual float getThetaOffset() const override;
+    VISUOGREADAPTOR_API float getThetaOffset() const override;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
      * @param _thetaOffset the value of the thta offset.
      * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override;
+    VISUOGREADAPTOR_API void setThetaOffset(float _thetaOffset) override;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around y axis.
      * @return The phi of the light.
      */
-    VISUOGREADAPTOR_API virtual float getPhiOffset() const override;
+    VISUOGREADAPTOR_API float getPhiOffset() const override;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
      * @param _phiOffset the phi of the thta offset.
      * @pre The type of the light must be ::Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override;
+    VISUOGREADAPTOR_API void setPhiOffset(float _phiOffset) override;
 
     /**
      * @brief Indicates if the light is attached to a parent node or not.
      * @return True if the light is attached.
      */
     [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    VISUOGREADAPTOR_API virtual bool isOrphanNode() const override;
+    VISUOGREADAPTOR_API bool isOrphanNode() const override;
 
     /// Parent tranform id setter.
     [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    VISUOGREADAPTOR_API virtual void setParentTransformName(
-        const fwRenderOgre::SRender::OgreObjectIdType&) override;
+    VISUOGREADAPTOR_API void setParentTransformName(const fwRenderOgre::SRender::OgreObjectIdType&) override;
 
     /**
      * @brief Enables the light visual feedback.
      * @param _enable the visual feedback visibility state.
      */
-    VISUOGREADAPTOR_API virtual void enableVisualFeedback(bool _enable) override;
+    VISUOGREADAPTOR_API void enableVisualFeedback(bool _enable) override;
 
     /**
      * @brief Indicates if the visual feedback is enabled.
      * @return True if the visual feedback is activated.
      */
-    VISUOGREADAPTOR_API virtual bool isVisualFeedbackOn() const override;
+    VISUOGREADAPTOR_API bool isVisualFeedbackOn() const override;
 
-private:
+protected:
 
     /// Configures the service.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Adds a new light to the scene manager.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -212,16 +212,18 @@ private:
      * Connect ::fwData::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      * Connect ::fwData::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the light position and orientation.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Removes the light from the scene manager.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Containes the Ogre light managed by this adaptor.
-    ::Ogre::Light* m_light {nullptr};
+    ::Ogre::Light* m_light { nullptr };
 
     /// Defines the name of the associated Ogre light.
     std::string m_lightName;

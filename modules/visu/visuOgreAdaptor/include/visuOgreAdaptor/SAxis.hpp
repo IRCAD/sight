@@ -45,8 +45,10 @@ namespace visuOgreAdaptor
  * @brief This adaptor shows a simple coordinate system.
  *
  * @section Slots Slots
- * -\b updateVisibility(bool): Sets whether the axis is shown or not.
- * -\b toggleVisibility(): Toggle whether the axis is shown or not.
+ * - \b updateVisibility(bool): sets whether the axis is shown or not.
+ * - \b toggleVisibility(): toggle whether the axis is shown or not.
+ * - \b show(): shows the axis.
+ * - \b hide(): hides the axis.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -56,10 +58,9 @@ namespace visuOgreAdaptor
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the mesh's layer.
+ * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
- * was specified
- * in the STransform adaptor.
+ *      was specified in the STransform adaptor.
  * - \b visible (optional, bool, default=true): the visibility of the axis.
  * - \b origin (optional, bool, default=false): the origin visibility.
  * - \b originColor (optional, hexadecimal, default=#FFFFFF): the color of the axis origin.
@@ -71,47 +72,45 @@ class VISUOGREADAPTOR_CLASS_API SAxis final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::ITransformable
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SAxis, ::fwRenderOgre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~SAxis() noexcept;
+    VISUOGREADAPTOR_API ~SAxis() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates manual objects in the default ogre resource group.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Sends a render request.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Deletes ogre's resources.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
 
     /**
-     * @brief SLOT: sets the visibility of the axis.
-     * @param _isVisible the visibility status.
+     * @brief Sets the axis visibility.
+     * @param _visible the visibility status of the axis.
      */
-    void updateVisibility(bool _isVisible);
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
-    /// SLOT: toggles the visibility of the axis.
-    void toggleVisibility();
+private:
 
     /// Contains the material data.
     ::fwData::Material::sptr m_material { nullptr };
 
     /// Defines the axis length in scene units.
     float m_length { 50.f };
-
-    /// Enables axis visibility.
-    bool m_isVisible { true };
 
     /// Enables the visibility of axis labels.
     bool m_enableLabel { true };

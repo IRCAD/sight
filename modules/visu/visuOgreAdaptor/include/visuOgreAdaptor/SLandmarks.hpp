@@ -51,7 +51,7 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines landmarks layer.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
- * was specified
+ *      was specified
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  *
@@ -61,23 +61,25 @@ class VISUOGREADAPTOR_CLASS_API SLandmarks final :
 
     public ::fwRenderOgre::ITransformable
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SLandmarks, ::fwRenderOgre::IAdaptor)
 
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SLandmarks() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SLandmarks() noexcept;
+    VISUOGREADAPTOR_API ~SLandmarks() noexcept override;
 
-private:
+protected:
 
     /// Configure the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Initialize material and update the service.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -93,13 +95,15 @@ private:
      * Connect ::fwData::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
      * Connect ::fwData::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INPUT to s_UPDATE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Draws landmarks.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Destroys Ogre resources and the material.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Destroy Ogre's resources.
     void clearData();
