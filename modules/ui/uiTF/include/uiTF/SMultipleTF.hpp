@@ -78,6 +78,8 @@ namespace uiTF
  * - \b copyIcon (optional): path of the copy button icon.
  * - \b reinitializeIcon (optional): path of the reinitialize button icon.
  * - \b renameIcon (optional): path of the rename button icon.
+ * - \b importIcon (optional): path of the import button icon.
+ * - \b exportIcon (optional): path of the export button icon.*
  * - \b iconWidth (optional, default="16"): icon width.
  * - \b iconHeight (optional, default="16"): icon height.
  */
@@ -184,6 +186,12 @@ private Q_SLOTS:
     /// Renames the current selected TF pool.
     void renamePool();
 
+    /// Imports a TF pool.
+    void importPool();
+
+    /// Exports the current selected TF pool.
+    void exportPool();
+
 private:
 
     /// If true, all TF contains in each path will be merged in a TF pool, else, one TF pool will be create for each
@@ -211,6 +219,12 @@ private:
     /// Contains the rename TF pool button.
     QPushButton* m_renameButton { nullptr };
 
+    /// Contains the import TF button.
+    QPushButton* m_importButton { nullptr };
+
+    /// Contains the export TF button.
+    QPushButton* m_exportButton { nullptr };
+
     /// Contains the current selected TF pool.
     ::fwData::Composite::sptr m_currentTFPool { nullptr };
 
@@ -228,6 +242,12 @@ private:
 
     /// Defines the path of the rename button icon.
     std::filesystem::path m_renameIcon;
+
+    /// Defines the path of the import button icon.
+    std::filesystem::path m_importIcon;
+
+    /// Defines the path of the export button icon.
+    std::filesystem::path m_exportIcon;
 
     /// Defines icons width.
     unsigned int m_iconWidth { 16 };

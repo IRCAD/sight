@@ -35,6 +35,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwIO/IReader.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
@@ -54,6 +55,8 @@ static const std::string s_NEW_ICON_CONFIG          = "newIcon";
 static const std::string s_COPY_ICON_CONFIG         = "copyIcon";
 static const std::string s_REINITIALIZE_ICON_CONFIG = "reinitializeIcon";
 static const std::string s_RENAME_ICON_CONFIG       = "renameIcon";
+static const std::string s_IMPORT_ICON_CONFIG       = "importIcon";
+static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
@@ -62,6 +65,9 @@ static const ::fwServices::IService::KeyType s_CURRENT_TF_POOL_INPUT = "currentT
 static const ::fwServices::IService::KeyType s_TF_POOLS_INOUT = "tfPools";
 
 static const ::fwServices::IService::KeyType s_TF_POOL_OUTPUT = "tfPool";
+
+static const std::string s_CONTEXT_TF = "TF_POOL";
+static const std::string s_VERSION_TF = "V1";
 
 //------------------------------------------------------------------------------
 
@@ -74,6 +80,8 @@ SMultipleTF::SMultipleTF()
     m_copyIcon         = modulePath / "new.png";
     m_renameIcon       = modulePath / "rename.png";
     m_reinitializeIcon = modulePath / "reinitialize.png";
+    m_importIcon       = modulePath / "import.png";
+    m_exportIcon       = modulePath / "export.png";
 }
 
 //------------------------------------------------------------------------------
@@ -116,6 +124,8 @@ void SMultipleTF::configuring()
             m_reinitializeIcon =
                 ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
             m_renameIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
+            m_importIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_IMPORT_ICON_CONFIG, m_importIcon));
+            m_exportIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_EXPORT_ICON_CONFIG, m_exportIcon));
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
             m_iconHeight = configAttr->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
@@ -157,6 +167,12 @@ void SMultipleTF::starting()
     m_renameButton = new QPushButton(QIcon(m_renameIcon.string().c_str()), "");
     m_renameButton->setToolTip(QString("Rename"));
 
+    m_importButton = new QPushButton(QIcon(m_importIcon.string().c_str()), "");
+    m_importButton->setToolTip(QString("Import"));
+
+    m_exportButton = new QPushButton(QIcon(m_exportIcon.string().c_str()), "");
+    m_exportButton->setToolTip(QString("Export"));
+
     if(m_iconWidth > 0 && m_iconHeight > 0)
     {
         m_deleteButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
@@ -164,6 +180,8 @@ void SMultipleTF::starting()
         m_copyButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_reinitializeButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_renameButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_importButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_exportButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
     }
 
     // Layout management
@@ -175,6 +193,8 @@ void SMultipleTF::starting()
     layout->addWidget(m_copyButton);
     layout->addWidget(m_reinitializeButton);
     layout->addWidget(m_renameButton);
+    layout->addWidget(m_importButton);
+    layout->addWidget(m_exportButton);
 
     qtContainer->setLayout(layout);
 
@@ -185,6 +205,8 @@ void SMultipleTF::starting()
     QObject::connect(m_copyButton, &QPushButton::clicked, this, &SMultipleTF::copyPool);
     QObject::connect(m_reinitializeButton, &QPushButton::clicked, this, &SMultipleTF::reinitializePools);
     QObject::connect(m_renameButton, &QPushButton::clicked, this, &SMultipleTF::renamePool);
+    QObject::connect(m_importButton, &QPushButton::clicked, this, &SMultipleTF::importPool);
+    QObject::connect(m_exportButton, &QPushButton::clicked, this, &SMultipleTF::exportPool);
 
     // Initializes the TF pool from paths.
     this->initializePools();
@@ -691,6 +713,66 @@ void SMultipleTF::renamePool()
             messageBox.show();
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SMultipleTF::importPool()
+{
+    // Get the composite.
+    const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+    SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
+
+    ::fwDataTools::helper::Composite compositeHelper(tfPools);
+
+    const ::fwData::Composite::sptr tfPool = ::fwData::Composite::New();
+
+    const ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    reader->registerInOut(tfPool, ::fwIO::s_DATA_KEY);
+    reader->start();
+    reader->configureWithIHM();
+    reader->update().wait();
+    reader->stop().wait();
+    ::fwServices::OSR::unregisterService(reader);
+
+    // Check the loaded composite.
+    if(tfPool->size() >= 1)
+    {
+        std::string poolName = tfPool->begin()->first.c_str();
+        if(this->hasPoolName(poolName))
+        {
+            poolName = this->createPoolName(poolName);
+        }
+
+        {
+            ::fwData::mt::ObjectWriteLock tfPoolsLock(tfPools);
+            compositeHelper.add(poolName, tfPool);
+        }
+
+        m_tfPoolsPreset->addItem(QString(poolName.c_str()));
+        this->presetChoice(static_cast<int>((*tfPools).size()-1));
+
+        compositeHelper.notify();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMultipleTF::exportPool()
+{
+    const ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
+    writer->registerInput(m_currentTFPool, ::fwIO::s_DATA_KEY);
+
+    ::fwServices::IService::ConfigType config;
+    config.add("config.patcher.<xmlattr>.context", s_CONTEXT_TF);
+    config.add("config.patcher.<xmlattr>.version", s_VERSION_TF);
+
+    writer->setConfiguration(config);
+    writer->start();
+    writer->configureWithIHM();
+    writer->update().wait();
+    writer->stop().wait();
+    ::fwServices::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------

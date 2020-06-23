@@ -76,6 +76,9 @@ static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
 
 static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
 
+static const std::string s_CONTEXT_TF = "TF";
+static const std::string s_VERSION_TF = "V1";
+
 //------------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::STransferFunction)
@@ -501,6 +504,11 @@ void STransferFunction::exportTF()
 
     writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
 
+    ::fwServices::IService::ConfigType config;
+    config.add("config.patcher.<xmlattr>.context", s_CONTEXT_TF);
+    config.add("config.patcher.<xmlattr>.version", s_VERSION_TF);
+
+    writer->setConfiguration(config);
     writer->start();
     writer->configureWithIHM();
     writer->update().wait();
