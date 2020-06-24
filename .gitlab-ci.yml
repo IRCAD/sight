@@ -46,8 +46,8 @@ stages:
     CUDA_PATH: "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1"
   before_script:
     # CMerge the branch into dev.
-    - >
-      set EXTRA_BRANCH="%CI_COMMIT_REF_NAME%"
+    - set EXTRA_BRANCH=%CI_COMMIT_REF_NAME%
+    - >            
       if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
         if "%CI_COMMIT_REF_NAME%" NEQ "master" (
           if "%CI_COMMIT_TAG%" EQU "" (
@@ -57,7 +57,7 @@ stages:
             git checkout dev
             git reset --hard origin/dev
             git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
-            set EXTRA_BRANCH="dev"
+            set EXTRA_BRANCH=dev
           )
         )
       )
@@ -140,7 +140,7 @@ build:debug-windows:
       -DENABLE_PCH=ON
     - ninja
     # Run unit tests.
-    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b %EXTRA_BRANCH%
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b "%EXTRA_BRANCH%"
     - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data
     - ctest --timeout 480 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
   artifacts:
