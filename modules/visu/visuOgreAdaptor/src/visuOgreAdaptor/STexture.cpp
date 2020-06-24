@@ -83,7 +83,7 @@ void STexture::configuring()
     m_filtering = config.get<std::string>(s_FILTERING_CONFIG, m_filtering);
     m_wrapping  = config.get<std::string>(s_WRAPPING_CONFIG, m_wrapping);
     m_useAlpha  = config.get<bool>(s_USE_ALPHA_CONFIG, m_useAlpha);
-    m_isDynamic = config.get<bool>(s_DYNAMIC_CONFIG);
+    m_isDynamic = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
 }
 
 //------------------------------------------------------------------------------
