@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+import re
+import sys
+
+commit_msg_path = sys.argv[1]
+commit_msg_help = """
+Required commit message:
+ type(scope): description
+  - type: enh, feat, fix, refactor
+  - scope: build, ci, core, doc, graphics, io, physics, test, ui, vision
+or
+ type: description
+  - type: merge, misc, style
+"""
+
+with open(commit_msg_path) as commit_msg_file:
+    commit_msg_content = commit_msg_file.readline()
+    message_regex = r'(?:(?P<scoped_type>enh|feat|fix|refactor)\((?P<scope>build|ci|core|doc|graphics|io|physics|test|ui|vision)\)|(?P<unscoped_type>merge|misc|style)): (?P<subject>[a-z].*?(?:\b|[\]\)\'\"\`])$)'
+
+    if not re.match(message_regex, commit_msg_content):
+        sys.stderr.write("\n'" + commit_msg_content.strip() + "' message doesn't follow commit rules.\n")
+        sys.stderr.write(commit_msg_help)
+        sys.stderr.write('Take a look at the project push rules regex, and experiment https://regex101.com\n')
+        sys.exit(1)
