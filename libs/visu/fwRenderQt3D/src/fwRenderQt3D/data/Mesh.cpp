@@ -109,6 +109,7 @@ Qt3DRender::QMaterial* const Mesh::getMaterial() const
 
 void Mesh::setMaterial(Qt3DRender::QMaterial* _material)
 {
+    SLM_ASSERT("Material can't be set to null value.", _material);
     m_material = _material;
 }
 
@@ -116,6 +117,7 @@ void Mesh::setMaterial(Qt3DRender::QMaterial* _material)
 
 void Mesh::setScene(::fwRenderQt3D::core::GenericScene* _scene)
 {
+    SLM_ASSERT("Scene can't be set to null value.", _scene);
     m_scene = _scene;
 }
 
@@ -123,16 +125,28 @@ void Mesh::setScene(::fwRenderQt3D::core::GenericScene* _scene)
 
 void Mesh::setMesh(::fwData::Mesh::sptr _mesh)
 {
+    SLM_ASSERT("::fwData::Mesh pointer does not exist.", _mesh);
+
     // Sets the number of points (for a mesh of triangles).
     m_numberOfPoints = static_cast<int>(_mesh->getNumberOfPoints());
 
-    // Declares buffers.
+    // Declares buffers and attributes after removing them if necessary.
     m_posBuffer    = new Qt3DRender::QBuffer(m_geometry);
     m_normalBuffer = new Qt3DRender::QBuffer(m_geometry);
     m_indexBuffer  = new Qt3DRender::QBuffer(m_geometry);
 
+    if(m_posAttrib && m_normalAttrib && m_indexAttrib)
+    {
+        m_geometry->removeAttribute(m_posAttrib);
+        m_geometry->removeAttribute(m_normalAttrib);
+        m_geometry->removeAttribute(m_indexAttrib);
+    }
+
+    m_posAttrib    = new Qt3DRender::QAttribute(m_geometry);
+    m_normalAttrib = new Qt3DRender::QAttribute(m_geometry);
+    m_indexAttrib  = new Qt3DRender::QAttribute(m_geometry);
+
     // Configures rendering attributes.
-    m_posAttrib = new Qt3DRender::QAttribute(m_geometry);
     m_posAttrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     m_posAttrib->setBuffer(m_posBuffer);
     m_posAttrib->setVertexBaseType(Qt3DRender::QAttribute::Float);
@@ -144,7 +158,6 @@ void Mesh::setMesh(::fwData::Mesh::sptr _mesh)
 
     m_geometry->addAttribute(m_posAttrib);
 
-    m_normalAttrib = new Qt3DRender::QAttribute(m_geometry);
     m_normalAttrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     m_normalAttrib->setBuffer(m_normalBuffer);
     m_normalAttrib->setVertexBaseType(Qt3DRender::QAttribute::Float);
@@ -156,7 +169,6 @@ void Mesh::setMesh(::fwData::Mesh::sptr _mesh)
 
     m_geometry->addAttribute(m_normalAttrib);
 
-    m_indexAttrib = new Qt3DRender::QAttribute(m_geometry);
     m_indexAttrib->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
     m_indexAttrib->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
     m_indexAttrib->setBuffer(m_indexBuffer);
@@ -188,6 +200,7 @@ void Mesh::centerCameraOnMesh()
 
 void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
 {
+    SLM_ASSERT("::fwData::Mesh pointer does not exist.", _mesh);
 
     // Declares data arrays which are associated with QBuffers.
     QByteArray posBufferData;
@@ -267,15 +280,16 @@ void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
             {
                 maxZ = itrPt->point->z;
             }
-            if(itrPt->point->z < maxZ)
+            if(itrPt->point->z > maxZ)
             {
                 maxZ = itrPt->point->z;
             }
         }
     }
 
-    m_minExtent  = QVector3D(minX, minY, minZ);
-    m_maxExtent  = QVector3D(maxX, maxY, maxZ);
+    m_minExtent = QVector3D(minX, minY, minZ);
+    m_maxExtent = QVector3D(maxX, maxY, maxZ);
+
     m_meshCenter =
         QVector3D((m_minExtent.x()+m_maxExtent.x())/2, (m_minExtent.y()+m_maxExtent.y())/2,
                   (m_minExtent.z()+m_maxExtent.z())/2);

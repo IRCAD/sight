@@ -4,12 +4,11 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( PRIORITY 2)
 set( DEPENDENCIES
-    fwCore
+    fwCom
     fwData
-    fwGui
-    fwGuiQt
     fwRenderQt3D
     fwRuntime
+    fwServices
 )
 set( REQUIREMENTS  )
 
