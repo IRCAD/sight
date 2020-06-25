@@ -90,7 +90,7 @@ void SMesh::starting()
     this->initialize();
 
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).getShared();
+    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).get_shared();
     SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Create a Qt3D mesh from sight data.
@@ -121,7 +121,7 @@ void SMesh::starting()
 void SMesh::updating()
 {
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).getShared();
+    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).get_shared();
     SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Update the mesh and center camera if necessary.
@@ -155,7 +155,7 @@ void SMesh::updateVisibility(bool _visibility)
 void SMesh::modifyVertices()
 {
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).getShared();
+    auto mesh = this->getLockedInOut< ::fwData::Mesh >(s_MESH_INOUT).get_shared();
     SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Update mesh position and normal buffers.
