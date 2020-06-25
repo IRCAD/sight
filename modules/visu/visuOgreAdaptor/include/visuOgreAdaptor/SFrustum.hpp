@@ -39,8 +39,10 @@ namespace visuOgreAdaptor
  * @brief This adaptor displays the frustum of an ::arData::Camera.
  *
  * @section Slots Slots
- * -\b updateVisibility(bool): Sets whether the frustum is shown or not.
- * -\b toggleVisibility(): Toggles whether the frustum is shown or not.
+ * - \b updateVisibility(bool): sets whether the frustum is shown or not.
+ * - \b toggleVisibility(): toggles whether the frustum is shown or not.
+ * - \b show(): shows the frustum.
+ * - \b hide(): hides the frustum.
  *
  * @section XML XML Configuration
  *
@@ -60,28 +62,31 @@ namespace visuOgreAdaptor
  * - \b near (optional, float, default=1.0): near clipping distance of the ::Ogre::Camera
  * - \b far (optional, float, default=20.0): far clipping distance of the ::Ogre::Camera
  * - \b color (optional, hexadecimal, default=0xFF0000): frustum's color
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VISUOGREADAPTOR_CLASS_API SFrustum final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::ITransformable
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SFrustum, ::fwRenderOgre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SFrustum() noexcept;
 
     /// Does nothing
-    VISUOGREADAPTOR_API virtual ~SFrustum() noexcept;
+    VISUOGREADAPTOR_API ~SFrustum() noexcept override;
 
-private:
+protected:
 
     /// Configures.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Manually creates a frustum.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -90,34 +95,30 @@ private:
      * Connect ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
      * Connect ::arData::Camera::s_MODIFIED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Deletes the frustum.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Checks if the camera has changed, and updates it if it has.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
+
+    /**
+     * @brief Sets the frustum visibility.
+     * @param _visible the visibility status of the frustum.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
+
+private:
 
     /// Sets ::Ogre::Camera from arData::Camera parameters.
     void setOgreCamFromData();
-
-    /**
-     * @brief SLOT: sets the visibility of the frustum.
-     * @param _isVisible the visibility status.
-     */
-    void updateVisibility(bool _isVisible);
-
-    /// SLOT: toggles the visibility of the frustum.
-    void toggleVisibility();
 
     /// Contains the Ogre's camera (frustum) representing arData::Camera position and parameters.
     ::Ogre::Camera* m_ogreCamera { nullptr };
 
     /// Contains the material data.
     ::fwData::Material::sptr m_material { nullptr };
-
-    /// Enables the frustum visibility.
-    bool m_visibility { true };
 
     /// Defines the near clipping distance.
     float m_near { 1.f };

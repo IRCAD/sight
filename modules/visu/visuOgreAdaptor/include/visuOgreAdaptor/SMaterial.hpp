@@ -54,10 +54,10 @@ namespace visuOgreAdaptor
  * @brief This adaptor adapts a ::fwData::Material, allowing to tweak material parameters.
  *
  * @section Slots Slots
- * - \b updateField(::fwData::Object::FieldsContainerType) : Listen to the fields in the ::fwData::Material.
- * - \b swapTexture() : Listen to the ::visuOgreAdaptor::STexture changes.
- * - \b addTexture() : Called when a texture is added in the ::fwData::Material.
- * - \b removeTexture() : Called when a texture is removed in the ::fwData::Material.
+ * - \b updateField(::fwData::Object::FieldsContainerType): listen to the fields in the ::fwData::Material.
+ * - \b swapTexture(): listen to the ::visuOgreAdaptor::STexture changes.
+ * - \b addTexture(): called when a texture is added in the ::fwData::Material.
+ * - \b removeTexture(): called when a texture is removed in the ::fwData::Material.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -70,26 +70,27 @@ namespace visuOgreAdaptor
  *
  * @subsection In-Out In-Out
  * - \b material [::fwData::Material]: adapted material. The material may be modified to comply to the configuration
- * of the adaptor.
+ *      of the adaptor.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the mesh's layer.
- * - \b materialTemplate (optional, string, default="") : name of the base Ogre material/
- * - \b materialName (optional, string, default="") : name of the Ogre material. This is necessary to bind a
- * ::visuOgreAdaptor:SMesh or a ::visuOgreAdaptor:SModelSeries to this material;
- * simply specify the same Ogre material in its configuration.
- * - \b textureName (optional, string, default="") : the Ogre texture name used the material. Use it if you want to
- * reference a texture managed by an another ::visuOgreAdaptor::STexture.
- *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode.
- *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals.
+ * - \b layer (mandatory, string): defines the mesh's layer.
+ * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
+ * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
+ *      ::visuOgreAdaptor:SMesh or a ::visuOgreAdaptor:SModelSeries to this material;
+ *      simply specify the same Ogre material in its configuration.
+ * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
+ *      reference a texture managed by an another ::visuOgreAdaptor::STexture.
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong): name of the used shading mode.
+ *  - \b normalLength (optional, default=0.1): factor defining the length of the normals.
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
- *  representation mode as in ::fwData::Material.
+ *      representation mode as in ::fwData::Material.
  */
 class VISUOGREADAPTOR_CLASS_API SMaterial final : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SMaterial, ::fwRenderOgre::IAdaptor)
 
     /**
@@ -113,7 +114,7 @@ public:
     VISUOGREADAPTOR_API SMaterial() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SMaterial() noexcept;
+    VISUOGREADAPTOR_API ~SMaterial() noexcept override;
 
     /// Gets Ogre associated material.
     VISUOGREADAPTOR_API ::Ogre::MaterialPtr getMaterial();
@@ -145,13 +146,13 @@ public:
     /// Gets the internal material code.
     VISUOGREADAPTOR_API fwRenderOgre::Material* getMaterialFw() const;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the material.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -163,13 +164,15 @@ private:
      * Connect ::fwData::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT
      * Connect ::fwData::Material::s_REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to s_REMOVE_TEXTURE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates fixed function pipeline parameters.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Release Ogre resources.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /**
      * @brief SLOT: updates the material from the input data fields.

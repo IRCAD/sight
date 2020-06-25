@@ -47,9 +47,7 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT         = "updateTF";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
@@ -64,8 +62,6 @@ static const std::string VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 SVideo::SVideo() noexcept
 {
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SVideo::updateVisibility, this);
-    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SVideo::toggleVisibility, this);
     newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
 }
 
@@ -217,6 +213,7 @@ void SVideo::updating()
 
             // Slightly offset the plane in Z to allow some space for other entities, thus they can be rendered on top
             m_sceneNode->setPosition(0, 0, -1);
+            m_sceneNode->setVisible(m_isVisible);
 
             ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
             SLM_ASSERT("Default camera not found", cam);
@@ -250,23 +247,13 @@ void SVideo::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SVideo::updateVisibility(bool _isVisible)
+void SVideo::setVisible(bool _visible)
 {
     if(m_entity)
     {
-        m_entity->setVisible(_isVisible);
+        m_entity->setVisible(_visible);
 
         this->requestRender();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SVideo::toggleVisibility()
-{
-    if(m_entity)
-    {
-        this->updateVisibility(!m_entity->isVisible());
     }
 }
 

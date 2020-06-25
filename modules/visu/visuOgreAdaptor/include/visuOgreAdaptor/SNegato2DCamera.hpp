@@ -63,7 +63,8 @@ namespace visuOgreAdaptor
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image](mandatory): image viewed in negato mode, used for auto connections only.
- * Modification signals can be used to reset the camera's position and orientation. Useless without autoConnect="yes".
+ *      Modification signals can be used to reset the camera's position and orientation. Useless without
+ *      autoConnect="yes".
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
@@ -78,23 +79,22 @@ class VISUOGREADAPTOR_CLASS_API SNegato2DCamera final : public ::fwRenderOgre::I
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SNegato2DCamera, ::fwRenderOgre::IAdaptor)
 
     /// Creates the service and initializes slots.
     VISUOGREADAPTOR_API SNegato2DCamera() noexcept;
 
     /// Destroyes the service.
-    VISUOGREADAPTOR_API virtual ~SNegato2DCamera() noexcept;
+    VISUOGREADAPTOR_API ~SNegato2DCamera() noexcept override;
 
-private:
-
-    using Orientation = ::fwDataTools::helper::MedicalImage::Orientation;
+protected:
 
     /// Configures the layer, interaction priority and camera orientation.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Adds negato camera interactions to the layer.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -104,19 +104,23 @@ private:
      * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_CHANGE_ORIENTATION_SLOT
      * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_MOVE_BACK_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Does nothing.
-    virtual void updating() noexcept override;
+    VISUOGREADAPTOR_API void updating() noexcept override;
 
     /**
      * @brief Retrieves the current transfer function.
      * @param _key key of the swapped data.
      */
-    virtual void swapping(const KeyType& _key) override;
+    VISUOGREADAPTOR_API void swapping(const KeyType& _key) override;
 
     /// Removes negato camera interactions from the layer.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
+
+    using Orientation = ::fwDataTools::helper::MedicalImage::Orientation;
 
     /**
      * @brief Zooms in the scene at the current cursor position.
@@ -124,7 +128,7 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    virtual void wheelEvent(Modifier, int _delta, int _x, int _y) final;
+    void wheelEvent(Modifier, int _delta, int _x, int _y) override;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -138,7 +142,7 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    virtual void mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) final;
+    void mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) override;
 
     /**
      * @brief Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the
@@ -147,7 +151,7 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    virtual void buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) final;
+    void buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
 
     /**
      * @brief Disables mouse movements.
@@ -155,7 +159,7 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    virtual void buttonReleaseEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) final;
+    void buttonReleaseEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
 
     /**
      * @brief Resets the camera when the 'R' key is pressed.
@@ -163,7 +167,7 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    virtual void keyPressEvent(int _key, Modifier, int _x, int _y) final;
+    void keyPressEvent(int _key, Modifier, int _x, int _y) override;
 
     /// SLOT: resets the camera's zoom.
     void resetCamera();

@@ -44,9 +44,6 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-
 static const std::string s_CAMERA_INPUT = "camera";
 static const std::string s_NEAR_CONFIG  = "near";
 static const std::string s_FAR_CONFIG   = "far";
@@ -56,8 +53,6 @@ static const std::string s_COLOR_CONFIG = "color";
 
 SFrustum::SFrustum() noexcept
 {
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
-    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +103,7 @@ void SFrustum::starting()
     // Create camera
     m_ogreCamera = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_CAMERA_INPUT));
     m_ogreCamera->setMaterial(materialAdaptor->getMaterial());
-    m_ogreCamera->setVisible(true);
+    m_ogreCamera->setVisible(m_isVisible);
 
     // Clipping
     if(m_near != 0.f)
@@ -151,7 +146,7 @@ void SFrustum::starting()
 void SFrustum::updating()
 {
     this->setOgreCamFromData();
-    m_ogreCamera->setDebugDisplayEnabled(m_visibility);
+    m_ogreCamera->setDebugDisplayEnabled(m_isVisible);
     this->requestRender();
 }
 
@@ -194,18 +189,10 @@ void SFrustum::setOgreCamFromData()
 
 //-----------------------------------------------------------------------------
 
-void SFrustum::updateVisibility(bool _isVisible)
+void SFrustum::setVisible(bool _isVisible)
 {
-    m_visibility = _isVisible;
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void SFrustum::toggleVisibility()
-{
-    m_visibility = !m_visibility;
-    this->updating();
+    m_ogreCamera->setDebugDisplayEnabled(_isVisible);
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------

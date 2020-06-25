@@ -70,26 +70,28 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D final : public ::fwRenderOgre::IAdaptor
 {
+
 public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SNegato2D, ::fwRenderOgre::IAdaptor)
 
     /// Creates the service and initializes slots.
     VISUOGREADAPTOR_API SNegato2D() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API virtual ~SNegato2D() noexcept;
+    VISUOGREADAPTOR_API ~SNegato2D() noexcept override;
 
-private:
+protected:
 
     /// Configures the service.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Instantiates the texture, material, pass and texture unit state.
     /// Sets the connection between attached data and the received slot.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -100,22 +102,24 @@ private:
      * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICETYPE_SLOT
      * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICEINDEX_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /**
      * @brief Retrieves the current transfer function.
      * @param _key key of the swapped data.
      */
-    virtual void swapping(const KeyType& _key) override;
+    VISUOGREADAPTOR_API void swapping(const KeyType& _key) override;
 
     /// Disconnects the attached data from the received slot.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Updates the displayed transfer function.
-    virtual void updateTF();
+    void updateTF();
 
     /// Sets the filtering type.
     void setFiltering(::fwRenderOgre::Plane::FilteringEnumType _filtering);

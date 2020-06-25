@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,10 +34,22 @@
 namespace fwRenderOgre
 {
 
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_SHOW_SLOT              = "show";
+const ::fwCom::Slots::SlotKeyType IAdaptor::s_HIDE_SLOT              = "hide";
+
+static const std::string s_LAYER_CONFIG   = "layer";
+static const std::string s_VISIBLE_CONFIG = "visible";
+
 //------------------------------------------------------------------------------
 
 IAdaptor::IAdaptor() noexcept
 {
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &IAdaptor::updateVisibility, this);
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, &IAdaptor::toggleVisibility, this);
+    newSlot(s_SHOW_SLOT, &IAdaptor::show, this);
+    newSlot(s_HIDE_SLOT, &IAdaptor::hide, this);
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +71,8 @@ void IAdaptor::info(std::ostream& _sstream )
 void IAdaptor::configureParams()
 {
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-    m_layerID = config.get<std::string>("layer");
+    m_layerID   = config.get<std::string>(s_LAYER_CONFIG);
+    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }
 
 //------------------------------------------------------------------------------
@@ -87,9 +100,9 @@ void IAdaptor::initialize()
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setLayerID(const std::string& id)
+void IAdaptor::setLayerID(const std::string& _id)
 {
-    m_layerID = id;
+    m_layerID = _id;
 }
 
 //------------------------------------------------------------------------------
@@ -101,12 +114,12 @@ const std::string& IAdaptor::getLayerID() const
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setRenderService( SRender::sptr service)
+void IAdaptor::setRenderService( SRender::sptr _service)
 {
-    SLM_ASSERT("service not instanced", service);
+    SLM_ASSERT("service not instanced", _service);
     SLM_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
 
-    m_renderService = service;
+    m_renderService = _service;
 }
 
 //------------------------------------------------------------------------------
@@ -132,7 +145,7 @@ Layer::sptr IAdaptor::getLayer() const
 
 //------------------------------------------------------------------------------
 
-void fwRenderOgre::IAdaptor::requestRender()
+void IAdaptor::requestRender()
 {
     auto renderService = this->getRenderService();
     if ( (renderService->getStatus() == ::fwServices::IService::STARTED ||
@@ -143,6 +156,41 @@ void fwRenderOgre::IAdaptor::requestRender()
     }
 }
 
+//-----------------------------------------------------------------------------
+
+void IAdaptor::updateVisibility(bool _isVisible)
+{
+    m_isVisible = _isVisible;
+    this->setVisible(m_isVisible);
+}
+
 //------------------------------------------------------------------------------
 
-} // namespace fwRenderOgre
+void IAdaptor::toggleVisibility()
+{
+    this->updateVisibility(!m_isVisible);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::show()
+{
+    this->updateVisibility(true);
+}
+//------------------------------------------------------------------------------
+
+void IAdaptor::hide()
+{
+    this->updateVisibility(false);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::setVisible(bool)
+{
+    SLM_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace fwRenderOgre.

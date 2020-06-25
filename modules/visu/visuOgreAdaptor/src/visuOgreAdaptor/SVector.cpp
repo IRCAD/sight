@@ -40,11 +40,7 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT     = "updateLength";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT              = "show";
-static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
 
 static const std::string s_COLOR_CONFIG   = "color";
 static const std::string s_LENGTH_CONFIG  = "length";
@@ -54,11 +50,7 @@ static const std::string s_VISIBLE_CONFIG = "visible";
 
 SVector::SVector() noexcept
 {
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SVector::updateVisibility, this);
-    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SVector::toggleVisibility, this);
     newSlot(s_UPDATE_LENGTH_SLOT, &SVector::updateLength, this);
-    newSlot(s_SHOW_SLOT, &SVector::show, this);
-    newSlot(s_HIDE_SLOT, &SVector::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -220,23 +212,14 @@ void SVector::deleteVector()
 
 //-----------------------------------------------------------------------------
 
-void SVector::updateVisibility(bool _isVisible)
+void SVector::setVisible(bool _visible)
 {
-    m_isVisible = _isVisible;
-
     if(m_sceneNode)
     {
-        m_sceneNode->setVisible(m_isVisible);
+        m_sceneNode->setVisible(_visible);
     }
 
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SVector::toggleVisibility()
-{
-    this->updateVisibility(!m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -246,19 +229,6 @@ void SVector::updateLength(float _length)
     m_length = _length;
 
     this->update();
-}
-
-//-----------------------------------------------------------------------------
-void SVector::show()
-{
-    this->updateVisibility(true);
-}
-
-//-----------------------------------------------------------------------------
-
-void SVector::hide()
-{
-    this->updateVisibility(false);
 }
 
 //-----------------------------------------------------------------------------

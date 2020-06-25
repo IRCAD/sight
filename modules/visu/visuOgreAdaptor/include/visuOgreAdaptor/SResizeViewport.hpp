@@ -55,29 +55,33 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SResizeViewport final : public ::fwRenderOgre::IAdaptor
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SResizeViewport, ::fwRenderOgre::IAdaptor)
 
     /// Initializes slots.
     VISUOGREADAPTOR_API SResizeViewport() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SResizeViewport() noexcept;
+    VISUOGREADAPTOR_API ~SResizeViewport() noexcept override;
 
-private:
+protected:
 
     /// Configures the new viewport's dimensions.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Starts the adaptor, records the initial viewport dimensions.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Updates the adaptor. Unused here.
-    virtual void updating() noexcept override;
+    VISUOGREADAPTOR_API void updating() noexcept override;
 
     /// Stops the adaptor. Unused here.
-    virtual void stopping() noexcept override;
+    VISUOGREADAPTOR_API void stopping() noexcept override;
+
+private:
 
     /// Switches to the initial/new viewport depending on the input.
     void resizeViewport(bool _resize);

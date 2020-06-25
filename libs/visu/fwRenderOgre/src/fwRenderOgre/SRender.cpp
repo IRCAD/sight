@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -263,8 +263,6 @@ void SRender::starting()
 void SRender::stopping()
 {
     this->makeCurrent();
-
-    m_connections.disconnect();
 
     m_interactorManager->getRenderTarget()->removeAllListeners();
     m_viewportOverlaysMap.clear();
@@ -544,10 +542,10 @@ void SRender::disableFullscreen()
 
 // ----------------------------------------------------------------------------
 
-void SRender::enableFullscreen(int screen)
+void SRender::enableFullscreen(int _screen)
 {
     m_fullscreen = true;
-    m_interactorManager->setFullscreen(m_fullscreen, screen);
+    m_interactorManager->setFullscreen(m_fullscreen, _screen);
 
     m_fullscreenSetSig->asyncEmit(true);
 }

@@ -42,7 +42,6 @@ class PostWindowRenderListener;
  * Displays the last FPS and the triangle count.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service uid="renderStatsAdaptor" type="::visuOgreAdaptor::SRenderStats">
         <config layer="default" color="#ff0000" fontSize="12"/>
@@ -50,35 +49,39 @@ class PostWindowRenderListener;
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : not really used but it is needed to be bound to a render service.
+ * - \b layer (mandatory, string): not really used but it is needed to be bound to a render service.
  * - \b color (optional, hexadecimal, default=#FFFFFF): stats' text color
  * - \b fontSize (optional, unsigned int, default=12): stats font size in points.
  */
 class VISUOGREADAPTOR_CLASS_API SRenderStats final : public ::fwRenderOgre::IAdaptor
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SRenderStats, ::fwRenderOgre::IAdaptor)
 
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SRenderStats() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SRenderStats() noexcept override;
+    VISUOGREADAPTOR_API ~SRenderStats() noexcept override;
 
-private:
+protected:
 
     /// Configures stats color and size.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Initializes the overlay text displaying the stats.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Does nothing.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Destroys the overlay text.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     friend class PostWindowRenderListener;
 

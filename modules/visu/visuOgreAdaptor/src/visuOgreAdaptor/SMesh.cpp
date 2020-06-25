@@ -46,7 +46,6 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "modifyColors";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
@@ -54,7 +53,6 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modif
 static const std::string s_MESH_INOUT = "mesh";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
-static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_MATERIAL_NAME_CONFIG     = "materialName";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
 static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
@@ -69,7 +67,6 @@ SMesh::SMesh() noexcept
 {
     m_material = ::fwData::Material::New();
 
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SMesh::updateVisibility, this);
     newSlot(s_MODIFY_COLORS_SLOT, &SMesh::modifyPointColors, this);
     newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
     newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
@@ -128,7 +125,6 @@ void SMesh::configuring()
 
     m_isDynamic         = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
     m_isDynamicVertices = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
-    m_isVisible         = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 
     if(config.count(s_QUERY_CONFIG))
     {
@@ -250,14 +246,13 @@ void SMesh::stopping()
 
 //-----------------------------------------------------------------------------
 
-void visuOgreAdaptor::SMesh::updateVisibility(bool _isVisible)
+void visuOgreAdaptor::SMesh::setVisible(bool _visible)
 {
-    m_isVisible = _isVisible;
     if(m_entity)
     {
-        m_entity->setVisible(_isVisible);
+        m_entity->setVisible(_visible);
 
-        m_meshGeometry->setVisible(_isVisible);
+        m_meshGeometry->setVisible(_visible);
 
         this->requestRender();
     }

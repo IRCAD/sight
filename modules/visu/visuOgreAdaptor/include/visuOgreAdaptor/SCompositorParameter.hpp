@@ -58,38 +58,41 @@ class CompositorListener;
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the compositor's layer.
- * - \b compositorName (mandatory, string) : the name of the associated Ogre compositor.
- * - \b parameter (mandatory, string) : name of the shader parameter to set.
- * - \b technique (optional, string, default="") : name of the technique, default to the first in the compositor.
- * - \b shaderType (optional, string, default="") : the type of the shader (vertex, geometry, fragment). Default to
- * fragment.
+ * - \b compositorName (mandatory, string): the name of the associated Ogre compositor.
+ * - \b parameter (mandatory, string): name of the shader parameter to set.
+ * - \b technique (optional, string, default=""): name of the technique, default to the first in the compositor.
+ * - \b shaderType (optional, string, default=""): the type of the shader (vertex, geometry, fragment). Default to
+ *      fragment.
  */
 class VISUOGREADAPTOR_CLASS_API SCompositorParameter final : public ::fwRenderOgre::IParameter
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SCompositorParameter, ::fwRenderOgre::IParameter)
 
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SCompositorParameter() noexcept;
 
     /// Does nothing
-    VISUOGREADAPTOR_API virtual ~SCompositorParameter() noexcept;
+    VISUOGREADAPTOR_API ~SCompositorParameter() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the compositor listener.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Sets the parameter as dirty.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Removes the compositor listener.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Updates parameter according to the attached fwData::Object.
     void updateValue(::Ogre::MaterialPtr& _mat);

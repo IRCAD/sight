@@ -42,9 +42,11 @@ namespace visuOgreAdaptor
  * @brief This adaptor shows a simple line.
  *
  * @section Slots Slots
- * -\b updateVisibility(bool): Sets whether the line is shown or not.
- * -\b toggleVisibility(): Toggle whether the line is shown or not.
- * -\b updateLength(float): Update the line length
+ * - \b updateVisibility(bool): Sets whether the line is shown or not.
+ * - \b toggleVisibility(): Toggle whether the line is shown or not.
+ * - \b show(): shows the line.
+ * - \b hide(): hides the line.
+ * - \b updateLength(float): Update the line length
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -56,40 +58,50 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the line's layer
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
- * was specified
- * in the STransform adaptor
+ *      was specified in the STransform adaptor
  * - \b length (optional, float, default=50.0): length of the line in mm (default 50)
  * - \b dashLength (optional, float, default=2.5): length of a dash
  * - \b color (optional, hexadecimal, default=#FFFFFF): color of the line
  * - \b dashed (optional, bool, default=false): display a dashed line instead of a solid line
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VISUOGREADAPTOR_CLASS_API SLine final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::ITransformable
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SLine, ::fwRenderOgre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SLine() noexcept;
 
     /// Does nothing
-    VISUOGREADAPTOR_API virtual ~SLine() noexcept;
+    VISUOGREADAPTOR_API ~SLine() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates a mesh in the Default Ogre resource group
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the line visibility.
+     * @param _visible the visibility status of the line.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
+
+private:
 
     /**
      * @brief Attachs a node in the scene graph.
@@ -109,15 +121,6 @@ private:
      */
     void updateLength(float _length);
 
-    /**
-     * @brief SLOT: sets the visibility of the frustum.
-     * @param _isVisible the visibility status.
-     */
-    void updateVisibility(bool _isVisible);
-
-    /// SLOT: toggles the visibility of the frustum.
-    void toggleVisibility();
-
     /// Contains the Ogre material adaptor.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
@@ -132,9 +135,6 @@ private:
 
     /// Defines the color of the line.
     ::Ogre::ColourValue m_color;
-
-    /// Enables the visibility of the line.
-    bool m_isVisible {true };
 
     /// Enables if the line is dashed or not.
     bool m_dashed { false };

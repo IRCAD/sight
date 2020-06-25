@@ -37,7 +37,6 @@ namespace visuOgreAdaptor
  * @brief This adaptor binds a ::fwData::TransformationMatrix3D to an Ogre scene node.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service type="::visuOgreAdaptor::STransform">
         <inout key="transform" uid="..." />
@@ -51,7 +50,7 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): Defines the transform's layer.
  * - \b transform (mandatory, string): Name of the Ogre Transform.
- * - \b parent (optional, string, default="") : Name of the parent Ogre Transform you want to attach to.
+ * - \b parent (optional, string, default=""): Name of the parent Ogre Transform you want to attach to.
  */
 class VISUOGREADAPTOR_CLASS_API STransform final :
     public ::fwRenderOgre::IAdaptor,
@@ -60,21 +59,22 @@ class VISUOGREADAPTOR_CLASS_API STransform final :
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(STransform, ::fwRenderOgre::IAdaptor)
 
     /// Creates the service.
     VISUOGREADAPTOR_API STransform() noexcept;
 
     /// Destroys the service.
-    VISUOGREADAPTOR_API ~STransform() noexcept;
+    VISUOGREADAPTOR_API ~STransform() noexcept override;
 
-private:
+protected:
 
     /// Retrieves id sets in the configurations.
-    void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
-    void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -82,22 +82,24 @@ private:
      *
      * Connect ::fwData::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates m_transformNode from the ::fwData::TransformationMatrix3D.
-    void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Does nothing.
-    void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Defines the Parent transform identifier.
-    ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId {""};
+    ::fwRenderOgre::SRender::OgreObjectIdType m_parentTransformId;
 
     /// Contains the Ogre transform node.
-    ::Ogre::SceneNode* m_transformNode {nullptr};
+    ::Ogre::SceneNode* m_transformNode { nullptr };
 
     /// Contains the Ogre parent transform sceneNode.
-    ::Ogre::SceneNode* m_parentTransformNode {nullptr};
+    ::Ogre::SceneNode* m_parentTransformNode { nullptr };
 
     /// Defines the Ogre transformation of this service
     ::Ogre::Affine3 m_ogreTransform;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __FWRENDEROGRE_NAMESPACE_HPP__
-#define __FWRENDEROGRE_NAMESPACE_HPP__
+#pragma once
 
-/**
- * @brief       The namespace fwRenderOgre contains classes for rendering with Ogre. *
- */
+/// The namespace fwRenderOgre contains classes for rendering with Ogre.
 namespace fwRenderOgre
 {
 }
-#endif /* __FWRENDEROGRE_NAMESPACE_HPP__ */
