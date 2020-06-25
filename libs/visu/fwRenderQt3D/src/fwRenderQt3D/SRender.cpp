@@ -22,9 +22,9 @@
 
 #include "fwRenderQt3D/SRender.hpp"
 
-#include "fwRenderQt3D/GenericScene.hpp"
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include "fwRenderQt3D/core/GenericScene.hpp"
+#include "fwRenderQt3D/IAdaptor.hpp"
+#include "fwRenderQt3D/registry/Adaptor.hpp"
 
 #include <fwRuntime/operations.hpp>
 
@@ -33,37 +33,41 @@
 #include <fwServices/op/Add.hpp>
 
 #include <QColor>
-#include <QForwardRenderer>
 #include <QQmlEngine>
 #include <QString>
 
+#include <Qt3DExtras/QAbstractCameraController>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DExtras/Qt3DWindow>
 
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QRenderSettings>
 
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <iostream>
-#include <string>
-
-// fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderQt3D::SRender )
-
-//-----------------------------------------------------------------------------
-
 namespace fwRenderQt3D
 {
 
+static const std::string s_SCENE_CONFIG            = "scene";
+static const std::string s_BACKGROUND_CONFIG       = "background";
+static const std::string s_BACKGROUND_COLOR_CONFIG = "color";
+static const std::string s_ADAPTOR_CONFIG          = "adaptor";
+
 //-----------------------------------------------------------------------------
 
-SRender::SRender() noexcept
+SRender::SRender()
 {
+    // Allow using GenericScene and FrameGraph as QML types when using SRender service in QML applications.
+    qmlRegisterType< ::fwRenderQt3D::core::GenericScene >("fwRenderQt3D", 1, 0, "GenericScene");
+    qmlRegisterType< ::fwRenderQt3D::core::FrameGraph >("fwRenderQt3D", 1, 0, "FrameGraph");
+    qRegisterMetaType< ::fwRenderQt3D::core::GenericScene* >("::fwRenderQt3D::core::GenericScene*");
+    qRegisterMetaType< ::fwRenderQt3D::core::FrameGraph* >("::fwRenderQt3D::core::FrameGraph*");
 }
 
 //-----------------------------------------------------------------------------
 
-SRender::~SRender() noexcept
+SRender::~SRender()
 {
 }
 
@@ -73,36 +77,27 @@ void SRender::configuring()
 {
     this->initialize();
 
-    // Allow using GenericScene as QML type when using SRender service in QML applications
-    qmlRegisterType< GenericScene >("fwRenderQt3D", 1, 0, "GenericScene");
-
-    // Define default background color value
-    std::string color = "black";
-
+    // Get scene configuration
     const ConfigType config = this->getConfigTree();
-    if(!config.empty())
+    const auto sceneCfg     = config.get_child_optional(s_SCENE_CONFIG);
+    SLM_ASSERT("One scene must be configured.", sceneCfg);
+
+    // Get background tag and its attributes if it is defined.
+    const auto backgroundAttr = sceneCfg->get_child_optional(s_BACKGROUND_CONFIG + ".<xmlattr>");
+    if(backgroundAttr)
     {
-        // Get scene configuration
-        SLM_ERROR_IF("One scene must be configured.", config.count("scene") != 1);
-        const ConfigType sceneCfg = config.get_child("scene");
-
-        if(!sceneCfg.empty())
-        {
-            // Get background tag and its attributes if it is defined
-            if(sceneCfg.count("background"))
-            {
-                const ConfigType backgroundCfg = sceneCfg.get_child("background");
-
-                const ConfigType attributes = backgroundCfg.get_child("<xmlattr>");
-                if (attributes.count("color"))
-                {
-                    color = attributes.get<std::string>("color");
-                }
-            }
-        }
+        const std::string color = backgroundAttr->get<std::string>(s_BACKGROUND_COLOR_CONFIG, "#000000");
+        m_backgroundColor = QColor(QString::fromStdString(color));
     }
 
-    m_backgroundColor = QColor(QString::fromStdString(color));
+    // Get adaptor tags.
+    const auto adaptorConfigs = sceneCfg->equal_range(s_ADAPTOR_CONFIG);
+    for(auto it = adaptorConfigs.first; it != adaptorConfigs.second; ++it )
+    {
+        const std::string uid = it->second.get<std::string>("<xmlattr>.uid");
+        auto& registry        = ::fwRenderQt3D::registry::getAdaptorRegistry();
+        registry[uid] = this->getID();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -113,26 +108,33 @@ void SRender::starting()
 
     m_qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
-    // Renders a Qt3DWindow into a QWidget and displays it
+    // Renders a Qt3DWindow which is then displayed as a QWidget.
     m_3dView = new Qt3DExtras::Qt3DWindow();
 
-    m_scene = new ::fwRenderQt3D::GenericScene(false);
+    // Creates a Qt3D generic scene.
+    m_scene = new ::fwRenderQt3D::core::GenericScene(false);
 
-    Qt3DRender::QCamera* const camera = m_3dView->camera();
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera->setPosition(QVector3D(0, 10.0f, 40.0f));
+    // Configures m_3dView camera and sets it as the scene's camera.
+    QPointer< Qt3DRender::QCamera > const camera = m_3dView->camera();
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 10000.0f);
+    camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
+    camera->setPosition(QVector3D(0.0f, 10.0f, 40.0f));
     camera->setViewCenter(QVector3D(0, 0, 0));
 
-    Qt3DExtras::QOrbitCameraController* const cameraController = new Qt3DExtras::QOrbitCameraController(m_scene);
-    cameraController->setCamera(camera);
-    cameraController->setLinearSpeed(50.0f);
-    cameraController->setLookSpeed(180.0f);
+    m_scene->setCamera(camera);
+    m_scene->getCameraController()->setCamera(camera);
 
+    // Associates Qt3D entity with Qt3D render view.
     m_3dView->setRootEntity(m_scene);
-    m_3dView->defaultFrameGraph()->setClearColor(m_backgroundColor);
 
-    QWidget* viewWidget = QWidget::createWindowContainer(m_3dView);
-    QVBoxLayout* layout = new QVBoxLayout;
+    // Configures rendering parameters.
+    m_scene->getFrameGraph()->setClearColor(m_backgroundColor);
+    m_3dView->setActiveFrameGraph(m_scene->getFrameGraph());
+    m_3dView->renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::Always);
+
+    // Converts Qt3D window to QWidget and places it in render service qt container.
+    QPointer< QWidget > viewWidget = QWidget::createWindowContainer(m_3dView);
+    QPointer< QVBoxLayout > layout = new QVBoxLayout;
     layout->addWidget(viewWidget);
     layout->setContentsMargins(0, 0, 0, 0);
     m_qtContainer->setLayout(layout);
@@ -153,27 +155,6 @@ void SRender::stopping()
 
 //------------------------------------------------------------------------------
 
-void SRender::setQtContainer(SPTR(::fwGuiQt::container::QtContainer)_qtContainer)
-{
-    m_qtContainer = _qtContainer;
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::set3DView(Qt3DExtras::Qt3DWindow* _3dView)
-{
-    m_3dView = _3dView;
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::setScene(::fwRenderQt3D::GenericScene* _scene)
-{
-    m_scene = _scene;
-}
-
-//------------------------------------------------------------------------------
-
 SPTR(::fwGuiQt::container::QtContainer) SRender::getQtContainer()
 {
     return m_qtContainer;
@@ -188,9 +169,30 @@ Qt3DExtras::Qt3DWindow* SRender::get3DView()
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3D::GenericScene* SRender::getScene()
+::fwRenderQt3D::core::GenericScene* SRender::getScene()
 {
     return m_scene;
 }
 
-}// namespace fwRenderQt3D
+//------------------------------------------------------------------------------
+
+void SRender::setQtContainer(::fwGuiQt::container::QtContainer::sptr _qtContainer)
+{
+    m_qtContainer = _qtContainer;
+}
+
+//------------------------------------------------------------------------------
+
+void SRender::set3DView(Qt3DExtras::Qt3DWindow* _3dView)
+{
+    m_3dView = _3dView;
+}
+
+//------------------------------------------------------------------------------
+
+void SRender::setScene(::fwRenderQt3D::core::GenericScene* _scene)
+{
+    m_scene = _scene;
+}
+
+} // namespace fwRenderQt3D

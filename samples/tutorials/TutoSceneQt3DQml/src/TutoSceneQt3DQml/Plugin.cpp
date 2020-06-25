@@ -22,6 +22,8 @@
 
 #include "TutoSceneQt3DQml/Plugin.hpp"
 
+#include "TutoSceneQt3DQml/AppManager.hpp"
+
 #include <fwQml/QmlEngine.hpp>
 
 #include <fwRuntime/operations.hpp>
@@ -53,12 +55,17 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
+    // Registers custom AppManager class as QML type.
+    qmlRegisterType< AppManager >("tutosceneqt3d", 1, 0, "AppManager");
+
+    // Declares an app manager used only to allow fwRenderQt3D features as QML types.
     std::unique_ptr< ::fwServices::AppManager > appManager = std::unique_ptr< ::fwServices::AppManager >(
         new ::fwServices::AppManager );
     appManager->create();
 
-    auto renderSrv = appManager->addService("::fwRenderQt3D::SRender", "genericScene", true, false);
-    renderSrv->configure();
+    // Adds services to the app manager. Those services are only used to register QML types.
+    appManager->addService("::fwRenderQt3D::SRender", "genericScene", true, false);
+    appManager->addService("::visuQt3DAdaptor::SMesh", "meshAdaptor", true, false);
 }
 
 //------------------------------------------------------------------------------
@@ -87,4 +94,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace TutoSceneQt3DQml
+} // namespace TutoSceneQt3DQml.

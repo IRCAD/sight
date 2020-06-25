@@ -20,9 +20,23 @@
  *
  ***********************************************************************/
 
-#include <fwServices/macros.hpp>
+#pragma once
 
-#include <fwRenderQt3D/SRender.hpp>
+#include <map>
+#include <string>
 
-/// Register SRender service in Services registry.
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderQt3D::SRender )
+namespace fwRenderQt3D
+{
+
+class IAdaptor;
+
+namespace registry
+{
+
+typedef std::map<std::string, std::string> AdaptorRegistryType;
+
+AdaptorRegistryType& getAdaptorRegistry();
+
+} // namespace registry.
+
+} // namespace fwRenderQt3D.

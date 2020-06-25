@@ -20,109 +20,107 @@
  *
  ***********************************************************************/
 
-#include "fwRenderQt3D/GenericScene.hpp"
+#include "fwRenderQt3D/core/GenericScene.hpp"
 
+#include "fwRenderQt3D/core/FrameGraph.hpp"
+#include "fwRenderQt3D/data/Mesh.hpp"
+
+#include <fwVtkIO/MeshReader.hpp>
+
+#include <QClearBuffers>
 #include <QPhongMaterial>
 
 #include <Qt3DCore/QEntity>
 
-#include <Qt3DExtras/QCylinderMesh>
-#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QOrbitCameraController>
-
-#include <Qt3DInput/QInputSettings>
-
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QRenderSettings>
 
 namespace fwRenderQt3D
 {
 
-GenericScene::GenericScene(bool _isQml, Qt3DCore::QNode* parent) :
-    QEntity(parent)
+namespace core
 {
-    // Defines the camera that will be used to render te scene
+
+GenericScene::GenericScene(bool _isQml, Qt3DCore::QNode* _parent) :
+    QEntity(_parent)
+{
+    // Defines the camera that will be used to render the scene.
     m_camera = new Qt3DRender::QCamera(this);
-    m_camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    m_camera->setPosition(QVector3D(0, 10.0f, 40.0f));
-    m_camera->setViewCenter(QVector3D(0, 0, 0));
+    m_camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 10000.0f);
+    m_camera->setPosition(QVector3D(0.f, 0.f, 0.f));
+    m_camera->setViewCenter(QVector3D(0.f, 0.f, 0.f));
 
     // Defines a camera controller allowing user to control camera with the mouse
-    // and sets it as a child of the scene entity
+    // and sets it as a child of the scene entity.
     m_cameraController = new Qt3DExtras::QOrbitCameraController(this);
     m_cameraController->setCamera(m_camera);
-    m_cameraController->setLinearSpeed(50.0f);
-    m_cameraController->setLookSpeed(180.0f);
+    m_cameraController->setLinearSpeed(500.0f);
+    m_cameraController->setLookSpeed(480.0f);
 
-    Qt3DCore::QEntity* const cylinderEntity = new Qt3DCore::QEntity(this);
-
-    Qt3DExtras::QCylinderMesh* const cylinderMesh = new Qt3DExtras::QCylinderMesh(this);
-    cylinderMesh->setLength(10);
-    cylinderMesh->setRadius(2);
-    cylinderMesh->setRings(100);
-    cylinderMesh->setSlices(20);
-
-    Qt3DExtras::QPhongMaterial* const cylinderMaterial = new Qt3DExtras::QPhongMaterial(this);
-    cylinderMaterial->setAmbient(QColor(150, 0, 100));
-
-    cylinderEntity->addComponent(cylinderMesh);
-    cylinderEntity->addComponent(cylinderMaterial);
+    // Defines a default framegraph.
+    m_frameGraph = new FrameGraph();
+    m_frameGraph->setCamera(m_camera);
+    m_frameGraph->setBuffersToClear(Qt3DRender::QClearBuffers::AllBuffers);
 
     if(_isQml)
     {
         m_inputSettings = new Qt3DInput::QInputSettings(this);
         this->addComponent(m_inputSettings);
 
-        // Define default renderer
-        m_defaultFrameGraph = new Qt3DExtras::QForwardRenderer();
-        m_defaultFrameGraph->setClearColor("#2d2d2d");
-        m_defaultFrameGraph->setCamera(m_camera);
-
-        // Defines render settings allowing to define custom framegraphs
-        // Sets previously defined ForwardRenderer as default renderer
+        // Defines render settings allowing to define custom framegraphs.
+        // Sets previously defined ForwardRenderer as default renderer.
         m_renderSettings = new Qt3DRender::QRenderSettings(this);
-        m_renderSettings->setActiveFrameGraph(m_defaultFrameGraph);
+        m_renderSettings->setActiveFrameGraph(m_frameGraph);
         this->addComponent(m_renderSettings);
     }
 }
+
+//------------------------------------------------------------------------------
 
 GenericScene::~GenericScene()
 {
 }
 
-// --- GETTERS ---
+//------------------------------------------------------------------------------
 
-Qt3DRender::QCamera* GenericScene::getCamera()
+Qt3DRender::QCamera* const GenericScene::getCamera() const
 {
     return m_camera;
 }
 
 //------------------------------------------------------------------------------
 
-Qt3DExtras::QAbstractCameraController* GenericScene::getCameraController()
+Qt3DExtras::QAbstractCameraController* const GenericScene::getCameraController() const
 {
     return m_cameraController;
 }
 
 //------------------------------------------------------------------------------
 
-Qt3DInput::QInputSettings* GenericScene::getInputSettings()
+Qt3DInput::QInputSettings* const GenericScene::getInputSettings() const
 {
     return m_inputSettings;
 }
 
 //------------------------------------------------------------------------------
 
-Qt3DRender::QRenderSettings* GenericScene::getRenderSettings()
+Qt3DRender::QRenderSettings* const GenericScene::getRenderSettings() const
 {
     return m_renderSettings;
 }
 
-// --- SETTERS ---
+//------------------------------------------------------------------------------
+
+FrameGraph* const GenericScene::getFrameGraph() const
+{
+    return m_frameGraph;
+}
+
+//------------------------------------------------------------------------------
 
 void GenericScene::setCamera(Qt3DRender::QCamera* _camera)
 {
     m_camera = _camera;
+    m_frameGraph->setCamera(_camera);
 }
 
 //------------------------------------------------------------------------------
@@ -146,11 +144,13 @@ void GenericScene::setRenderSettings(Qt3DRender::QRenderSettings* _renderSetting
     m_renderSettings = _renderSettings;
 }
 
-// ---------------------------
+//------------------------------------------------------------------------------
 
-Qt3DExtras::QForwardRenderer* GenericScene::getDefaultFrameGraph()
+void GenericScene::setFrameGraph(FrameGraph* _frameGraph)
 {
-    return m_defaultFrameGraph;
+    m_frameGraph = _frameGraph;
 }
 
-}
+} // namespace core.
+
+} // namespace fwRenderQt3D.

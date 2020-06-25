@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,28 @@
  *
  ***********************************************************************/
 
-/**
- * @ingroup apprequirement
- * @brief This bundles contains data and services used to display a 2D Qt scene.
- *
- * It must be started in the application or activity requirement.
- */
 #pragma once
 
-namespace visuQt3D
+#include <fwRuntime/Plugin.hpp>
+
+namespace visuQt3DAdaptor
 {
 
-} // namespace visuQt3D
+/**
+ * @brief This class is started when the module is loaded.
+ */
+struct Plugin : public ::fwRuntime::Plugin
+{
+
+    /// Destroys the plugin.
+    ~Plugin() noexcept;
+
+    /// Starts the plugin, does nothing here.
+    void start();
+
+    /// Stops the plugin, does nothing here.
+    void stop() noexcept;
+
+};
+
+} // namespace visuQt3DAdaptor.

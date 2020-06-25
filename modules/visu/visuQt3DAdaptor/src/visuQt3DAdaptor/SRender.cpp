@@ -20,43 +20,9 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include <fwRenderQt3D/SRender.hpp>
 
-#include "TutoSceneQt3DQml/config.hpp"
+#include <fwServices/macros.hpp>
 
-#include <fwRuntime/Plugin.hpp>
-
-namespace TutoSceneQt3DQml
-{
-
-/**
- * @brief This class starts the software when the bundles is loaded.
- */
-class TUTOSCENEQT3DQML_CLASS_API Plugin : public ::fwRuntime::Plugin
-{
-
-public:
-
-    /// Constructor.
-    TUTOSCENEQT3DQML_API Plugin() noexcept;
-
-    /// Destructor. Does nothing.
-    TUTOSCENEQT3DQML_API ~Plugin() noexcept;
-
-private:
-
-    /// Registers fwRenderQt3D features to be used as QML types.
-    void start() override;
-
-    /// Does nothing.
-    void stop() noexcept override;
-
-    /// Runs 'ui.qml' containing the scene declaration.
-    void initialize() override;
-
-    /// Does nothing.
-    void uninitialize() noexcept override;
-
-};
-
-} // namespace TutoSceneQt3DQml.
+/// Register SRender service in Services registry.
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderQt3D::SRender )

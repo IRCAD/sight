@@ -32,30 +32,36 @@ namespace TutoSceneQt3DCpp
 {
 
 /**
- * @brief   This class is started when the bundles is loaded.
+ * @brief This class starts the software when the bundles is loaded.
  */
 class TUTOSCENEQT3DCPP_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
+
 public:
-    /// Constructor.
+
+    /// Creates the plugin.
     TUTOSCENEQT3DCPP_API Plugin() noexcept;
 
-    /// Destructor. Do nothing.
-    TUTOSCENEQT3DCPP_API ~Plugin() noexcept;
-
-    /// Overrides start method. .
-    TUTOSCENEQT3DCPP_API void start();
-
-    /// Overrides stop method. Do nothing
-    TUTOSCENEQT3DCPP_API void stop() noexcept;
-
-    TUTOSCENEQT3DCPP_API void initialize();
-
-    TUTOSCENEQT3DCPP_API void uninitialize() noexcept;
+    /// Destroy the plugin.
+    TUTOSCENEQT3DCPP_API ~Plugin() noexcept override;
 
 private:
 
+    /// Does nothing.
+    void start() override;
+
+    /// Does nothing.
+    void stop() noexcept override;
+
+    /// Creates a window with a Qt3D rendering scene.
+    void initialize() override;
+
+    /// Destroys and reset the AppManager.
+    void uninitialize() noexcept override;
+
+    /// Contains the AppManager used to instantiate services.
     std::unique_ptr< ::fwServices::AppManager > m_appManager;
+
 };
 
-} // namespace TutoSceneQt3DCpp
+} // namespace TutoSceneQt3DCpp.

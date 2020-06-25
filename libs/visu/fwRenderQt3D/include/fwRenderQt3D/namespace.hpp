@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace fwRenderQt3D contains classes for Qt3D rendering. *
+ * @brief The namespace fwRenderQt3D contains classes for Qt3D rendering.
  */
 #pragma once
 

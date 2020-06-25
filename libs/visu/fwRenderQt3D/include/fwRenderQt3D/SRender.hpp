@@ -24,6 +24,8 @@
 
 #include "fwRenderQt3D/config.hpp"
 
+#include <fwGuiQt/container/QtContainer.hpp>
+
 #include <fwRender/IRender.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -34,13 +36,16 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <QColor>
+#include <QPointer>
 
 namespace fwGuiQt
 {
+
 namespace container
 {
 class QtContainer;
 }
+
 }
 
 namespace Qt3DExtras
@@ -51,13 +56,15 @@ class Qt3DWindow;
 namespace fwRenderQt3D
 {
 
+namespace core
+{
 class GenericScene;
+}
 
 /**
  * @brief Renders a generic scene with Qt3D API
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
      <service type="::fwRenderQt3D::SRender">
         <scene>
@@ -65,45 +72,72 @@ class GenericScene;
         </scene>
      </service>
    @endcode
-
-   @subsection Configuration Configuration
- *  - \b scene
+ *
+ * @subsection Configuration Configuration
+ *  - \b scene (mandatory)
  *    - \b background (optionnal)
- *      - \b color : Background color. Must be defined in hexadecimal format or with a color name accepted by QColor
+ *      - \b color (optional, string, default=#000000): background color. Must be defined in hexadecimal format or with
+ * a string name accepted by QColor
+ *    - \b adaptor (optional)
+ *      - \b uid (mandatory): the identifier of the adaptor
  */
-
-class FWRENDERQT3D_CLASS_API SRender : public ::fwRender::IRender
+class FWRENDERQT3D_CLASS_API SRender final : public ::fwRender::IRender
 {
 
 public:
+
     fwCoreServiceMacro(SRender, ::fwRender::IRender)
 
-    FWRENDERQT3D_API SRender() noexcept;
-    FWRENDERQT3D_API virtual ~SRender() noexcept;
+    /// Creates the service.
+    FWRENDERQT3D_API SRender();
 
-    FWRENDERQT3D_API void setQtContainer(SPTR(::fwGuiQt::container::QtContainer) _qtContainer);
-    FWRENDERQT3D_API void set3DView(Qt3DExtras::Qt3DWindow* _3dView);
-    FWRENDERQT3D_API void setScene(::fwRenderQt3D::GenericScene* _scene);
+    /// Destroys the service.
+    FWRENDERQT3D_API ~SRender() override;
 
+    /// @returns Qt container.
     FWRENDERQT3D_API SPTR(::fwGuiQt::container::QtContainer) getQtContainer();
+
+    /// @returns 3D view in which the generic scene is declared.
     FWRENDERQT3D_API Qt3DExtras::Qt3DWindow* get3DView();
-    FWRENDERQT3D_API ::fwRenderQt3D::GenericScene* getScene();
 
-protected:
-    FWRENDERQT3D_API void configuring() override;
+    /// @returns the scene instantiated by this service.
+    FWRENDERQT3D_API ::fwRenderQt3D::core::GenericScene* getScene();
 
-    FWRENDERQT3D_API void starting() override;
+    /// Updates Qt container.
+    FWRENDERQT3D_API void setQtContainer(::fwGuiQt::container::QtContainer::sptr _qtContainer);
 
-    FWRENDERQT3D_API void updating() override;
+    /// Updates 3D view in which the generic scene is declared.
+    FWRENDERQT3D_API void set3DView(Qt3DExtras::Qt3DWindow* _3dView);
 
-    FWRENDERQT3D_API void stopping() override;
+    /// Updates the scene instantiated by this service.
+    FWRENDERQT3D_API void setScene(::fwRenderQt3D::core::GenericScene* _scene);
 
 private:
-    SPTR(::fwGuiQt::container::QtContainer) m_qtContainer;
-    Qt3DExtras::Qt3DWindow* m_3dView;
-    ::fwRenderQt3D::GenericScene* m_scene;
 
+    /// Configures the render service.
+    void configuring() override;
+
+    /// Creates a rendering context and instantiates a Qt3D generic scene.
+    void starting() override;
+
+    /// Does nothing.
+    void updating() override;
+
+    /// Destroys the service.
+    void stopping() override;
+
+    /// Contains the Qt container.
+    ::fwGuiQt::container::QtContainer::sptr m_qtContainer;
+
+    /// Contains the 3D view.
+    QPointer< Qt3DExtras::Qt3DWindow > m_3dView { };
+
+    /// Contains the generic scene associated to this service.
+    QPointer< ::fwRenderQt3D::core::GenericScene > m_scene { };
+
+    /// Specifies the background color.
     QColor m_backgroundColor;
+
 };
 
 } //namespace fwRenderQt3D

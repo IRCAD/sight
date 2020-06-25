@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,27 +20,33 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "visuQt3DAdaptor/Plugin.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace visuQt3D
+namespace visuQt3DAdaptor
 {
 
-struct Plugin : public ::fwRuntime::Plugin
+//-----------------------------------------------------------------------------
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuQt3DAdaptor::Plugin");
+
+//-----------------------------------------------------------------------------
+
+Plugin::~Plugin() noexcept
 {
+}
 
-    /**
-     * @brief   destructor
-     */
-    ~Plugin() noexcept;
+//-----------------------------------------------------------------------------
 
-    // Overrides
-    void start();
+void Plugin::start()
+{
+}
 
-    // Overrides
-    void stop() noexcept;
+//-----------------------------------------------------------------------------
 
-};
+void Plugin::stop() noexcept
+{
+}
 
-} // namespace visuQt3D
+} // namespace visuQt3DAdaptor.

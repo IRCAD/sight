@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,35 +20,24 @@
  *
  ***********************************************************************/
 
-#include "visuQt3D/Plugin.hpp"
+#include "fwRenderQt3D/registry/Adaptor.hpp"
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-namespace visuQt3D
+namespace fwRenderQt3D
 {
 
-//-----------------------------------------------------------------------------
+class IAdaptor;
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuQt3D::Plugin");
-
-//-----------------------------------------------------------------------------
-
-Plugin::~Plugin() noexcept
+namespace registry
 {
+
+static AdaptorRegistryType s_REGISTRY;
+
+//------------------------------------------------------------------------------
+
+AdaptorRegistryType& getAdaptorRegistry()
+{
+    return s_REGISTRY;
 }
 
-//-----------------------------------------------------------------------------
-
-void Plugin::start()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::stop() noexcept
-{
-}
-
-//-----------------------------------------------------------------------------
-
-} // namespace visuQt3D
+} // namespace registry.
+} // namespace fwRenderQt3D.
