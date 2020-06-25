@@ -29,11 +29,7 @@
 
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
-
-#include <QVector3D>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(::fwRenderQt3DTest::ut::MeshTest);
@@ -215,6 +211,7 @@ void MeshTest::centerCameraOnCube()
     CPPUNIT_ASSERT_EQUAL(expectedCamera->position().y(), qt3dMesh->getScene()->getCamera()->position().y());
     CPPUNIT_ASSERT_EQUAL(expectedCamera->position().z(), qt3dMesh->getScene()->getCamera()->position().z());
 
+    delete camera;
     delete expectedCamera;
     delete qt3dMesh;
     delete scene;
