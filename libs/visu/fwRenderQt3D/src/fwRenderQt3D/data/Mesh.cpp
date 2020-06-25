@@ -56,8 +56,13 @@ Mesh::Mesh(Qt3DCore::QNode* _parent) :
     m_geomRenderer = new Qt3DRender::QGeometryRenderer(m_scene);
     m_geometry     = new Qt3DRender::QGeometry(m_geomRenderer);
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    this->setMesh(mesh);
+    m_posBuffer    = new Qt3DRender::QBuffer(m_geometry);
+    m_normalBuffer = new Qt3DRender::QBuffer(m_geometry);
+    m_indexBuffer  = new Qt3DRender::QBuffer(m_geometry);
+
+    m_posAttrib    = new Qt3DRender::QAttribute(m_geometry);
+    m_normalAttrib = new Qt3DRender::QAttribute(m_geometry);
+    m_indexAttrib  = new Qt3DRender::QAttribute(m_geometry);
 
     this->addComponent(m_geomRenderer);
     this->addComponent(m_material);
@@ -78,6 +83,14 @@ Mesh::Mesh(::fwData::Mesh::sptr _mesh, Qt3DCore::QNode* _parent) :
 
     m_geomRenderer = new Qt3DRender::QGeometryRenderer(m_scene);
     m_geometry     = new Qt3DRender::QGeometry(m_geomRenderer);
+
+    m_posBuffer    = new Qt3DRender::QBuffer(m_geometry);
+    m_normalBuffer = new Qt3DRender::QBuffer(m_geometry);
+    m_indexBuffer  = new Qt3DRender::QBuffer(m_geometry);
+
+    m_posAttrib    = new Qt3DRender::QAttribute(m_geometry);
+    m_normalAttrib = new Qt3DRender::QAttribute(m_geometry);
+    m_indexAttrib  = new Qt3DRender::QAttribute(m_geometry);
 
     this->setMesh(_mesh);
 
@@ -130,21 +143,12 @@ void Mesh::setMesh(::fwData::Mesh::sptr _mesh)
     // Sets the number of points (for a mesh of triangles).
     m_numberOfPoints = static_cast<int>(_mesh->getNumberOfPoints());
 
-    // Declares buffers and attributes after removing them if necessary.
-    m_posBuffer    = new Qt3DRender::QBuffer(m_geometry);
-    m_normalBuffer = new Qt3DRender::QBuffer(m_geometry);
-    m_indexBuffer  = new Qt3DRender::QBuffer(m_geometry);
-
-    if(m_posAttrib && m_normalAttrib && m_indexAttrib)
+    if(m_geometry->attributes().size() != 0)
     {
         m_geometry->removeAttribute(m_posAttrib);
         m_geometry->removeAttribute(m_normalAttrib);
         m_geometry->removeAttribute(m_indexAttrib);
     }
-
-    m_posAttrib    = new Qt3DRender::QAttribute(m_geometry);
-    m_normalAttrib = new Qt3DRender::QAttribute(m_geometry);
-    m_indexAttrib  = new Qt3DRender::QAttribute(m_geometry);
 
     // Configures rendering attributes.
     m_posAttrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
