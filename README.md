@@ -34,16 +34,21 @@ Lots of **tutorials** and **examples** can also be found in the `Samples` direct
 
 **Sight** comes with **VRRender**, a medical image and segmentation viewer. It supports many import formats including DICOM and VTK.
 
-![VRRender main page](https://sight.pages.ircad.fr/sight-doc/_images/SDB.png)
-![MPR](https://sight.pages.ircad.fr/sight-doc/_images/MPR.png)
-![3D](https://sight.pages.ircad.fr/sight-doc/_images/3D.png)
+<div align="center">
+    <img width="640" src="https://git.ircad.fr/sight/sight-doc/-/raw/update-apps-screenshots/Introduction/media/SDB.png">
+    <img width="640"  src="https://git.ircad.fr/sight/sight-doc/-/raw/update-apps-screenshots/Introduction/media/Viewer.png">
+    <img width="640" src="https://git.ircad.fr/sight/sight-doc/-/raw/update-apps-screenshots/Introduction/media/DICOM_nav_animated.gif">
+    <img width="640" src="https://git.ircad.fr/sight/sight-doc/-/raw/update-apps-screenshots/Introduction/media/VR_animated.gif">
+</div>
 
 ### ARCalibration
 
 **ARCalibration** is a user-friendly application to calibrate mono and stereo cameras. This software is a must-have since camera calibration is a mandatory step in any AR application.
 
-![ARCalibration](https://sight.pages.ircad.fr/sight-doc/_images/calibration.png)
-![ARCalibration](https://sight.pages.ircad.fr/sight-doc/_images/calibrationExt.png)
+<div align="center">
+    <img width="640" src="https://git.ircad.fr/sight/sight-doc/-/raw/update-apps-screenshots/Introduction/media/calibration.png">
+    <img width="640" src="https://git.ircad.fr/sight/sight-doc/-/raw/update-apps-screenshots/Introduction/media/reproj_animated.gif">
+</div>
 
 ## Install
 
