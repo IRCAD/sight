@@ -76,8 +76,11 @@ const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT = "resetCamera";
 
 //-----------------------------------------------------------------------------
 
-const std::string Layer::DEFAULT_CAMERA_NAME        = "DefaultCam";
-const std::string Layer::DEFAULT_LIGHT_NAME         = "DefaultLight";
+const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
+const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
+
+const std::string Layer::s_DEFAULT_CAMERA_NAME      = "DefaultCam";
+const std::string Layer::s_DEFAULT_LIGHT_NAME       = "DefaultLight";
 const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 //-----------------------------------------------------------------------------
@@ -250,16 +253,16 @@ void Layer::createScene()
     }
 
     // Create the camera
-    m_camera = m_sceneManager->createCamera(Layer::DEFAULT_CAMERA_NAME);
+    m_camera = m_sceneManager->createCamera(Layer::s_DEFAULT_CAMERA_NAME);
     m_camera->setNearClipDistance(1);
 
     const auto&[left, top, width, height] = m_viewportCfg;
-    m_viewport                            = m_renderTarget->addViewport(m_camera, m_depth, left, top, width, height);
+    m_viewport                            = m_renderTarget->addViewport(m_camera, m_order, left, top, width, height);
     m_viewport->setOverlaysEnabled(m_enabledOverlays.size() > 0);
 
     m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
-    if (m_depth != 0)
+    if (m_order != 0)
     {
         m_viewport->setClearEveryFrame(true, ::Ogre::FBT_DEPTH);
     } // Set the background material
@@ -329,7 +332,7 @@ void Layer::createScene()
 
         m_lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(m_defaultLightDiffuseColor,
                                                                     m_defaultLightSpecularColor);
-        m_lightAdaptor->setName(Layer::DEFAULT_LIGHT_NAME);
+        m_lightAdaptor->setName(Layer::s_DEFAULT_LIGHT_NAME);
         m_lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         m_lightAdaptor->setTransformId(cameraNode->getName());
         m_lightAdaptor->setLayerID(this->getLayerID());
@@ -549,14 +552,34 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
 int Layer::getDepth() const
 {
-    return m_depth;
+    FW_DEPRECATED_MSG(
+        "::fwRenderOgre::Layer::getDepth() is deprecated, please used ::fwRenderOgre::Layer::getOrder() instead",
+        "21.0")
+    return m_order;
 }
 
 // ----------------------------------------------------------------------------
 
-void Layer::setDepth(int depth)
+void Layer::setDepth(int _order)
 {
-    m_depth = depth;
+    FW_DEPRECATED_MSG(
+        "::fwRenderOgre::Layer::setDepth(int) is deprecated, please used ::fwRenderOgre::Layer::setOrder(int) instead",
+        "21.0")
+    m_order = _order;
+}
+
+// ----------------------------------------------------------------------------
+
+int Layer::getOrder() const
+{
+    return m_order;
+}
+
+// ----------------------------------------------------------------------------
+
+void Layer::setOrder(int _order)
+{
+    m_order = _order;
 }
 
 // ----------------------------------------------------------------------------

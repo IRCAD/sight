@@ -75,10 +75,10 @@ class Layer;
         <scene renderMode="auto">
             <background topColor="#000000" bottomColor="#FFFFFF" topScale="0.7" bottomScale="1.0"/>
 
-            <layer id="..." depth="1">
+            <layer id="..." order="1">
                 <viewport hOffset="0.03" vOffset="0.03" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
             </layer>
-            <layer id="..." depth="2" compositors="Invert;Laplace;Posterize" defaultLight="no" overlays="..."/>
+            <layer id="..." order="2" compositors="Invert;Laplace;Posterize" defaultLight="no" overlays="..."/>
 
             <adaptor uid="..."/>
             <adaptor uid="..."/>
@@ -110,7 +110,8 @@ class Layer;
  *          - \b width (optional, float, default=1.f): viewport width relatively to the window.
  *          - \b height (optional, float, default=1.f): viewport height relatively to the window.
  *    - \b id (mandatory, string): the identifier of the layer
- *    - \b depth (mandatory, int): the depth of the layer, starting from 1.
+ *    - @deprecated- \b depth (mandatory, int): deprecated, please use order instead.
+ *    - \b order (mandatory, int): layer order to stack, starting from 1.
  *    - \b transparency (optional, DepthPeeling/DualDepthPeeling/WeightedBlended/HybridTransparency/
  *         CelShadingDepthPeeling, default=""): the transparency technique to use.
  *    - \b numPeels (optional, string, default=""): number of peels for the selected transparency technique.

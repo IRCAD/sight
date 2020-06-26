@@ -214,7 +214,7 @@ void SRender::starting()
         ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
         ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
         ogreLayer->setID("backgroundLayer");
-        ogreLayer->setDepth(0);
+        ogreLayer->setOrder(0);
         ogreLayer->setWorker(m_associatedWorker);
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
@@ -321,8 +321,18 @@ void SRender::configureLayer(const ConfigType& _cfg )
                 stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8" ||
                 stereoMode == "Stereo");
 
-    const int layerDepth = attributes.get<int>("depth");
-    SLM_ASSERT("Attribute 'depth' must be greater than 0", layerDepth > 0);
+    int layerOrder        = 0;
+    const auto layerDepth = attributes.get_optional<int>("depth");
+    if(layerDepth)
+    {
+        FW_DEPRECATED_MSG("Attribute 'depth' is deprecated, please used 'order' instead", "21.0")
+        layerOrder = layerDepth.get();
+    }
+    else
+    {
+        layerOrder = attributes.get<int>("order");
+    }
+    SLM_ASSERT("Attribute 'order' must be greater than 0", layerOrder > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
     compositor::Core::StereoModeType layerStereoMode =
@@ -333,7 +343,7 @@ void SRender::configureLayer(const ConfigType& _cfg )
 
     ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
-    ogreLayer->setDepth(layerDepth);
+    ogreLayer->setOrder(layerOrder);
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
@@ -359,7 +369,7 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
     ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(s_OGREBACKGROUNDID);
-    ogreLayer->setDepth(0);
+    ogreLayer->setOrder(0);
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setHasDefaultLight(false);
 

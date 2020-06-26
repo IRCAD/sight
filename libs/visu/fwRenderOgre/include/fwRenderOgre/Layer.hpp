@@ -118,11 +118,19 @@ public:
     /// ontains the slot name taht request the reset of camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
-    /// Defines the default camera name.
+    /// @deprecated please used s_DEFAULT_CAMERA_NAME.
+    [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
 
-    /// Defines the default light name.
+    /// @deprecated please used s_DEFAULT_LIGHT_NAME
+    [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;
+
+    /// Defines the default camera name.
+    FWRENDEROGRE_API static const std::string s_DEFAULT_CAMERA_NAME;
+
+    /// Defines the default light name.
+    FWRENDEROGRE_API static const std::string s_DEFAULT_LIGHT_NAME;
 
     /// Defines the default camera node name.
     FWRENDEROGRE_API static const std::string s_DEFAULT_CAMERA_NODE_NAME;
@@ -210,11 +218,25 @@ public:
     [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IPickerInteractor::sptr getSelectInteractor();
 
-    /// @return the depth of the layer.
+    /**
+     * @return the depth of the layer.
+     * @deprecated Will be removed in sight 21.0
+     */
+    [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API int getDepth() const;
 
-    /// Sets the depth of the layer.
-    FWRENDEROGRE_API void setDepth(int depth);
+    /// @return the order of the layer.
+    FWRENDEROGRE_API int getOrder() const;
+
+    /**
+     * @return Sets the depth of the layer.
+     * @deprecated Will be removed in sight 21.0
+     */
+    [[deprecated("Removed in sight 21.0.")]]
+    FWRENDEROGRE_API void setDepth(int _order);
+
+    /// Sets the order of the layer.
+    FWRENDEROGRE_API void setOrder(int _order);
 
     /// Sets the worker used by slots.
     FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
@@ -369,8 +391,8 @@ private:
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not.
     ::fwRenderOgre::compositor::ChainManager::uptr m_compositorChainManager;
 
-    /// Defines the Z Depth of this viewport.
-    int m_depth { 1 };
+    /// Defines the Z order of this viewport.
+    int m_order { 1 };
 
     /// Defines the top background color : specific to background Layer.
     std::string m_topColor { "#333333" };
