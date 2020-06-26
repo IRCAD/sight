@@ -218,8 +218,8 @@
             <service uid="genericScene" type="::fwRenderOgre::SRender" >
                 <scene renderMode="sync">
                     <background topColor="#46455A" bottomColor="#46455A" />
-                    <layer id="video" depth="1" />
-                    <layer id="default" depth="2" compositors="Remap;AlphaModulator" />
+                    <layer id="video" order="1" />
+                    <layer id="default" order="2" compositors="Remap;AlphaModulator" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
@@ -270,7 +270,7 @@
             <service uid="debugScene" type="::fwRenderOgre::SRender" >
                 <scene>
                     <background topColor="#46455A" bottomColor="#46455A" />
-                    <layer id="default" depth="1" />
+                    <layer id="default" order="1" />
                     <adaptor uid="axis2" />
                     <adaptor uid="trfAdpt" />
                     <adaptor uid="meshAdpt2" />

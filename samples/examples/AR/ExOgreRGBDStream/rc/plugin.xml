@@ -109,7 +109,7 @@
 
             <service uid="distanceMapRender" type="::fwRenderOgre::SRender">
                 <scene>
-                    <layer id="default" depth="1" background="0.0" />
+                    <layer id="default" order="1" background="0.0" />
                     <adaptor uid="depthAdaptor" />
                 </scene>
             </service>
@@ -126,7 +126,7 @@
 
             <service uid="videoViewRender" type="::fwRenderOgre::SRender" >
                 <scene>
-                    <layer id="default" depth="1" background="0.0" />
+                    <layer id="default" order="1" background="0.0" />
                     <adaptor uid="videoAdaptor" />
                 </scene>
             </service>
