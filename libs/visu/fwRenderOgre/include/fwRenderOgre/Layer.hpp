@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -71,100 +71,108 @@ namespace fwRenderOgre
 {
 
 /**
- * @brief   Allows to render multiple scenes in the same render window with viewports
+ * @brief Allows to render multiple scenes in the same render window with viewports.
  */
-class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
-                                     public ::fwCom::HasSignals,
-                                     public ::fwCom::HasSlots
+class FWRENDEROGRE_CLASS_API Layer :
+    public ::fwCore::BaseObject,
+    public ::fwCom::HasSignals,
+    public ::fwCom::HasSlots
 
 {
+
 public:
 
+    /// Generates default methods.
     fwCoreClassMacro(Layer, ::fwRenderOgre::Layer, new Layer)
+
     fwCoreAllowSharedFromThis()
 
-    /// Extrinsic x Intrinsic camera calibrations.
+    /// Defines the extrinsic x Intrinsic camera calibrations.
     using CameraCalibrationsType = std::vector< ::Ogre::Matrix4 >;
 
-    /// Set of overlays enabled on a layer.
+    /// Defines the set of overlays enabled on a layer.
     using OverlaySetType = std::vector< ::Ogre::Overlay* >;
 
-    /// Viewport parameters relatively to the screen: left, top, width ,height.
+    /// Definest the viewport parameters relatively to the screen: left, top, width ,height.
     using ViewportConfigType = std::tuple<float, float, float, float>;
 
-    /**
-     * @name Signals API
-     * @{
-     */
+    /// Contains the signal sent when the layer is initialized.
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
     typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
 
+    /// Contains the signal sent when the layer is resized.
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
     typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
 
+    /// Contains signals sent when the camera is modified.
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
     typedef ::fwCom::Signal<void ()> CameraUpdatedSignalType;
-    /** @} */
 
-    /**
-     * @name Slots API
-     * @{
-     */
     typedef ::fwCom::Slot< void (::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo) > InteractionSlotType;
     typedef ::fwCom::Slot< void () > DestroySlotType;
 
-    /// Slot: Request the picker to do a ray cast according to the passed position
+    /// ontains the slot name that rquest the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_INTERACTION_SLOT;
 
-    /// Slot: Request the reset of camera
+    /// ontains the slot name taht request the reset of camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_USE_CELSHADING_SLOT;
-    /** @} */
+    /// Defines the default camera name.
+    FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
 
+    /// Defines the default light name.
+    FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;
+
+    /// Defines the default camera node name.
+    FWRENDEROGRE_API static const std::string s_DEFAULT_CAMERA_NODE_NAME;
+
+    /// Initializes signals and slots.
     FWRENDEROGRE_API Layer();
+
+    /// Destoyres Ogre resources.
     FWRENDEROGRE_API virtual ~Layer();
 
-    /**
-     * @brief setRenderWindow
-     * Set the render window containing this layer
-     */
+    /// Sets the render window containing this layer.
     FWRENDEROGRE_API void setRenderTarget(::Ogre::RenderTarget* _renderTarget);
-    /**
-     * @brief setID
-     * Set the associated scene manager ID of this viewport
-     */
+
+    /// Set the associated scene manager ID of this viewport
     FWRENDEROGRE_API void setID(const std::string& id);
+
+    /// @returns the name of this layer.
     FWRENDEROGRE_API const std::string getName() const;
+
+    /// @returns the ID of this layer.
     FWRENDEROGRE_API const std::string& getLayerID() const;
 
-    /// Get the scene manager associated to this viewport.
+    /// @returns the scene manager associated to this viewport.
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager() const;
 
-    /// Create the scene.
+    /// Creates the scene.
     FWRENDEROGRE_API void createScene();
-    /// Destroy the scene.
+
+    /// Destroys the scene.
     FWRENDEROGRE_API void destroyScene();
-    /// True if the scene is created
+
+    /// @returns true if the scene is created.
     FWRENDEROGRE_API bool isSceneCreated() const;
 
-    /// Add a disabled compositor name to the ChainManager.
+    /// Adds a disabled compositor name to the ChainManager.
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
 
     /// Enables/Disables a compositor according to the isEnabled flag.
     FWRENDEROGRE_API void updateCompositorState(std::string compositorName, bool isEnabled);
 
-    /// Place and align camera's focal with the world boundingBox.
+    /// Places and align camera's focal with the world boundingBox.
     FWRENDEROGRE_API void resetCameraCoordinates();
 
-    /// Compute camera's focal with the world boundingBox.
+    /// Computes camera's focal with the world boundingBox.
     FWRENDEROGRE_API void computeCameraParameters();
 
-    /// Reset the camera clipping range (near and far).
+    /// Resets the camera clipping range (near and far).
     FWRENDEROGRE_API void resetCameraClippingRange() const;
 
-    /// Reset the camera clipping range (near and far).
+    /// Resets the camera clipping range (near and far).
     FWRENDEROGRE_API void resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
 
     /**
@@ -202,21 +210,20 @@ public:
     [[deprecated("Removed in sight 21.0.")]]
     FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IPickerInteractor::sptr getSelectInteractor();
 
-    /// Returns m_depth.
+    /// @return the depth of the layer.
     FWRENDEROGRE_API int getDepth() const;
-    /// Sets m_depth.
+
+    /// Sets the depth of the layer.
     FWRENDEROGRE_API void setDepth(int depth);
 
-    /// Sets the worker for slots.
+    /// Sets the worker used by slots.
     FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
 
-    /// Gets the render service.
+    /// @returns the render service.
     FWRENDEROGRE_API SPTR(::fwRenderOgre::SRender) getRenderService() const;
 
     /// Sets the render service.
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
-
-    FWRENDEROGRE_API ::fwRenderOgre::interactor::IInteractor& getInteractor(std::string type);
 
     /// Requests render.
     FWRENDEROGRE_API void requestRender();
@@ -242,88 +249,84 @@ public:
     /// Sets the viewport parameters for this layer: left, top, width, height.
     FWRENDEROGRE_API void setViewportConfig(const ViewportConfigType& _vpCfg);
 
-    /// Gets if this layer needs a layer's 3D scene.
+    /// @returns true if this layer needs a layer's 3D scene.
     FWRENDEROGRE_API bool isCoreCompositorEnabled();
 
-    /// Gets if there is an XML configured compositor chain.
+    /// @returns true if there is an XML configured compositor chain.
     FWRENDEROGRE_API bool isCompositorChainEnabled();
 
-    /// Checks if stereoscopic rendering is enabled.
+    /// @returns true if stereoscopic rendering is enabled.
     FWRENDEROGRE_API bool is3D() const;
 
-    /// Gets stereoscopic mode
+    /// @returns the stereoscopic mode.
     FWRENDEROGRE_API compositor::Core::StereoModeType getStereoMode() const;
 
+    /// @returns the compositor chain.
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
-    /// Returns the list of adaptors in the chain manager.
+    /// @returns the list of adaptors in the chain manager.
     FWRENDEROGRE_API ::fwServices::IHasServices::ServiceVector getRegisteredAdaptors() const;
 
+    /// @returns the viewport.
     FWRENDEROGRE_API ::Ogre::Viewport* getViewport() const;
 
+    /// @returns the default camera.
     FWRENDEROGRE_API ::Ogre::Camera* getDefaultCamera() const;
 
-    /// Get the projection matrix used to define nth viewpoint. The index must be lower than the number of viewpoints.
+    /// Gets the projection matrix used to define nth viewpoint. The index must be lower than the number of viewpoints.
     FWRENDEROGRE_API ::Ogre::Matrix4 getCameraProjMat(const std::uint8_t cameraIdx) const;
 
-    /// Return the number of cameras (viewpoints) used by this layer. Defined by the stereo mode.
+    /// @returns the number of cameras (viewpoints) used by this layer. Defined by the stereo mode.
     FWRENDEROGRE_API std::uint8_t getNumberOfCameras() const;
 
-    /// Default light flag setter.
+    /// Sets default light flag.
     FWRENDEROGRE_API void setHasDefaultLight(bool hasDefaultLight);
 
-    /// Returns the number of lights adaptors used in this layer.
+    /// @returns the number of lights adaptors used in this layer.
     FWRENDEROGRE_API int getLightsNumber() const;
 
-    /// Returns the light adaptors used in this layer.
+    /// @returns the light adaptors used in this layer.
     FWRENDEROGRE_API std::vector<SPTR(::fwRenderOgre::ILight)> getLightAdaptors() const;
 
-    /// Compute bounding box of the scene.
+    /// @returns the computed bounding box of the scene.
     FWRENDEROGRE_API ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
 
-    FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
-
-    FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;
-
-    FWRENDEROGRE_API static const std::string s_DEFAULT_CAMERA_NODE_NAME;
-
-    /// Return the OIT selected
+    /// @returns the OIT selected.
     FWRENDEROGRE_API compositor::transparencyTechnique getTransparencyTechnique();
 
-    /// Return the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
+    /// @returns the number of peels computed by Depth Peeling or x2 Dual Depth Peeling.
     FWRENDEROGRE_API int getTransparencyDepth();
 
-    /// Set the OIT desired
-    /// Deactivate OIT compositor
+    /// Sets the OIT desired. Deactivate OIT compositor.
     FWRENDEROGRE_API bool setTransparencyTechnique(compositor::transparencyTechnique technique);
 
-    /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
-    /// Deactivate OIT compositor
+    /// Sets the number of peels computed by Depth Peeling or x2 Dual Depth Peeling. Deactivate OIT compositor.
     FWRENDEROGRE_API void setTransparencyDepth(int depth);
 
     /// Sets the camera calibrations for stereo rendering.
     FWRENDEROGRE_API void setCameraCalibrations(const CameraCalibrationsType& calibrations);
 
-    /// Check if a specified light is the default light in the layer.
+    /// @returns true if a specified light is the default light in the layer.
     FWRENDEROGRE_API bool isDefaultLight(const CSPTR(::fwRenderOgre::ILight)&) const;
 
-    /// Remove the default light in the layer.
+    /// Removes the default light in the layer.
     FWRENDEROGRE_API void removeDefaultLight();
 
-    /// Creates or retrieves the overlay panel in which adaptors can render 2D text.
+    /// @returns or create the overlay panel in which adaptors can render 2D text.
     FWRENDEROGRE_API ::Ogre::OverlayContainer* getOverlayTextPanel();
 
     /// Defines the overlay scripts to enable on this layer's viewport.
     FWRENDEROGRE_API void setEnabledOverlays(const std::vector<std::string>& _overlayScripts);
 
-    /// Retrieves the overlays enabled on this layer's viewport.
+    /// @returns the overlays enabled on this layer's viewport.
     FWRENDEROGRE_API const OverlaySetType& getEnabledOverlays() const;
 
     /// Cancels interaction for all interactors with a lower priority than the one calling this.
     FWRENDEROGRE_API void cancelFurtherInteraction();
 
 private:
-    /// Slot: Interact with the scene.
+
+    /// Slot: interacts with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
 
     /// Setups default compositor for a layer's 3D scene.
@@ -335,112 +338,117 @@ private:
     /// Calls a function on all interactors and deletes the ones that expired.
     void forAllInteractors(const std::function< void(const interactor::IInteractor::sptr&)>&& _f);
 
-    /// Ogre scene manager of this viewport.
-    ::Ogre::SceneManager* m_sceneManager;
+    /// Contains the Ogre scene manager of this viewport.
+    ::Ogre::SceneManager* m_sceneManager { nullptr };
 
-    /// Ogre render window containing this viewport.
-    ::Ogre::RenderTarget* m_renderTarget;
+    /// Contains the Ogre render window containing this viewport.
+    ::Ogre::RenderTarget* m_renderTarget { nullptr };
 
-    /// Ogre viewport representing this layer.
-    ::Ogre::Viewport* m_viewport;
+    /// Contains the Ogre viewport representing this layer.
+    ::Ogre::Viewport* m_viewport { nullptr };
 
-    /// Overlay panel to which all the UI's text is attached.
+    /// Contains the overlay panel to which all the UI's text is attached.
     ::Ogre::OverlayContainer* m_overlayTextPanel { nullptr };
 
-    /// Boolean used to set stereoscopic rendering.
-    compositor::Core::StereoModeType m_stereoMode;
+    /// Defines stereoscopic rendering mode.
+    compositor::Core::StereoModeType m_stereoMode { compositor::Core::StereoModeType::NONE };
 
-    /// If there is a configured compositor chain, this attribute stores its raw string.
-    std::string m_rawCompositorChain;
+    /// Stores configured compositor chain raw string if there is a one.
+    std::string m_rawCompositorChain { "" };
 
-    /// Ogre default compositor for this layer.
-    SPTR(::fwRenderOgre::compositor::Core) m_coreCompositor;
+    /// Contains the Ogre default compositor for this layer.
+    SPTR(::fwRenderOgre::compositor::Core) m_coreCompositor { nullptr };
 
-    /// Ogre default compositor default transparency technique.
-    ::fwRenderOgre::compositor::transparencyTechnique m_transparencyTechnique;
+    /// Contains the Ogre default compositor default transparency technique.
+    ::fwRenderOgre::compositor::transparencyTechnique m_transparencyTechnique { ::fwRenderOgre::compositor::DEFAULT };
 
-    int m_numPeels;
+    /// Defines the number of peels used by OIT.
+    int m_numPeels { 8 };
 
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not.
     ::fwRenderOgre::compositor::ChainManager::uptr m_compositorChainManager;
 
-    /// Z Depth of this viewport.
-    int m_depth;
+    /// Defines the Z Depth of this viewport.
+    int m_depth { 1 };
 
-    /// Top background color : specific to background Layer.
-    std::string m_topColor;
-    /// Bottom background color : specific to background Layer.
-    std::string m_bottomColor;
+    /// Defines the top background color : specific to background Layer.
+    std::string m_topColor { "#333333" };
 
-    /// Top background scale : specific to background Layer.
-    float m_topScale;
-    /// Bottom background scale : specific to background Layer.
-    float m_bottomScale;
+    /// Defines the bottom background color : specific to background Layer.
+    std::string m_bottomColor { "#333333" };
 
-    /// Camera
-    ::Ogre::Camera* m_camera;
+    /// Defines the top background scale : specific to background Layer.
+    float m_topScale { 0.f };
 
-    /// Ogre movement interactor
-    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor;
+    /// Defines the bottom background scale : specific to background Layer.
+    float m_bottomScale { 1.f };
 
-    /// List of interactors, sorted by priority.
+    /// Contains the Ogre camera.
+    ::Ogre::Camera* m_camera { nullptr };
+
+    /// Contains the Ogre movement interactor.
+    [[deprecated("will be removed in sight 21.0")]]
+    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor { nullptr };
+
+    /// Stores the list of interactors, sorted by priority.
     std::multimap< int, ::fwRenderOgre::interactor::IInteractor::wptr, std::greater<int> > m_interactors;
 
-    /// Flag cancelling all further interaction when enabled.
+    /// Handles flag cancelling all further interaction when enabled.
     bool m_cancelFurtherInteraction { false };
 
-    ///Connection service, needed for slot/signal association.
+    /// Handles all connections.
     ::fwCom::helper::SigSlotConnection m_connections;
 
-    /// Render service which this layer is attached.
+    /// Contains the render service which this layer is attached.
     WPTR(::fwRenderOgre::SRender) m_renderService;
 
-    /// Layer identifier as referenced in SRender.
-    std::string m_id;
+    /// Defines the layer identifier as referenced in SRender.
+    std::string m_id { "" };
 
-    /// This boolean enables default compositor's widgets (gui displays before scene creation).
-    bool m_hasCoreCompositor;
+    /// Enables default compositor's widgets (gui displays before scene creation).
+    bool m_hasCoreCompositor { false };
 
     /// Indicates if a compositor chain is attached to the layer.
-    bool m_hasCompositorChain;
+    bool m_hasCompositorChain { false };
 
     /// Indicates if the scene has been created.
-    bool m_sceneCreated;
+    bool m_sceneCreated { false };
 
     /// Indicates if the scene has a default light.
-    bool m_hasDefaultLight;
+    bool m_hasDefaultLight { true };
 
-    /// Abstract light used to set the default light.
-    SPTR(::fwRenderOgre::ILight) m_lightAdaptor;
+    /// Contains the abstract light used to set the default light.
+    SPTR(::fwRenderOgre::ILight) m_lightAdaptor { nullptr };
 
-    /// Diffuse color of the default light.
-    SPTR(::fwData::Color) m_defaultLightDiffuseColor;
+    /// Contains the diffuse color of the default light.
+    SPTR(::fwData::Color) m_defaultLightDiffuseColor { nullptr };
 
-    /// Specular color of the specular light.
-    SPTR(::fwData::Color) m_defaultLightSpecularColor;
+    /// Contains the specular color of the specular light.
+    SPTR(::fwData::Color) m_defaultLightSpecularColor { nullptr };
 
-    /// Camera listener class used to pass the projection matrix for autostereo shaders.
+    /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct LayerCameraListener;
-    LayerCameraListener* m_cameraListener;
+    LayerCameraListener* m_cameraListener { nullptr };
 
-    /// Autostereo listener
-    compositor::listener::AutoStereoCompositorListener* m_autostereoListener {nullptr};
+    /// Contains the autostereo listener.
+    compositor::listener::AutoStereoCompositorListener* m_autostereoListener { nullptr };
 
     /// Holds pairs of intrinsic/extrinsic calibrations for stereo cameras.
     CameraCalibrationsType m_stereoCameraCalibration;
 
-    /// Names of the enabled overlay scripts.
+    /// Stores names of the enabled overlay scripts.
     std::vector<std::string> m_overlayScripts;
 
     /// Overlays enabled on this layer's viewport.
     OverlaySetType m_enabledOverlays;
 
-    /// Viewport parameters: left, top, width, height.
+    /// Defines viewport parameters: left, top, width, height.
     ViewportConfigType m_viewportCfg { 0.f, 0.f, 1.f, 1.f};
 
+    /// Defines the dpi number of the rendering screen.
     float m_dpi { 96.f };
 
 };
 
-} // namespace fwRenderOgre
+} // namespace fwRenderOgre.

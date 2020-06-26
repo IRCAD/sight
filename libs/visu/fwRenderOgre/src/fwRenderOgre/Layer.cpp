@@ -71,9 +71,8 @@ const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layer
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
-const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
-const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT   = "resetCamera";
-const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading";
+const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT  = "interaction";
+const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT = "resetCamera";
 
 //-----------------------------------------------------------------------------
 
@@ -145,26 +144,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
     //------------------------------------------------------------------------------
 };
 
-Layer::Layer() :
-    m_sceneManager(nullptr),
-    m_renderTarget(nullptr),
-    m_viewport(nullptr),
-    m_stereoMode(compositor::Core::StereoModeType::NONE),
-    m_rawCompositorChain(""),
-    m_coreCompositor(nullptr),
-    m_transparencyTechnique(::fwRenderOgre::compositor::DEFAULT),
-    m_numPeels(8),
-    m_depth(1),
-    m_topColor("#333333"),
-    m_bottomColor("#333333"),
-    m_topScale(0.f),
-    m_bottomScale(1.f),
-    m_camera(nullptr),
-    m_hasCoreCompositor(false),
-    m_hasCompositorChain(false),
-    m_sceneCreated(false),
-    m_hasDefaultLight(true),
-    m_cameraListener(nullptr)
+Layer::Layer()
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
@@ -1384,4 +1364,4 @@ void Layer::cancelFurtherInteraction()
 
 //-----------------------------------------------------------------------------
 
-} // namespace fwRenderOgre
+} // namespace fwRenderOgre.
