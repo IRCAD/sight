@@ -325,6 +325,7 @@ void SMatricesReader::startReading()
             m_timer = m_worker->createTimer();
             m_timer->setOneShot(true);
             m_timer->setFunction(std::bind(&SMatricesReader::readMatrices, this));
+            m_timer->setDuration(std::chrono::milliseconds(0));
             m_timer->start();
         }
         else

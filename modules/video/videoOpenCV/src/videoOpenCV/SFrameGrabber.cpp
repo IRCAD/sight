@@ -510,6 +510,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             m_timer = m_worker->createTimer();
             m_timer->setOneShot(true);
             m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
+            m_timer->setDuration(std::chrono::milliseconds(0));
             m_timer->start();
         }
         else
