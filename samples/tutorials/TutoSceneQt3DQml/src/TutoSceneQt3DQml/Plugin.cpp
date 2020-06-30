@@ -66,6 +66,7 @@ void Plugin::start()
     // Adds services to the app manager. Those services are only used to register QML types.
     appManager->addService("::fwRenderQt3D::SRender", "genericScene", true, false);
     appManager->addService("::visuQt3DAdaptor::SMesh", "meshAdaptor", true, false);
+    appManager->addService("::visuQt3DAdaptor::SMaterial", "materialAdaptor", true, false);
 }
 
 //------------------------------------------------------------------------------

@@ -86,6 +86,12 @@ public:
     /// @returns the scene instantiated by this service.
     FWRENDERQT3D_API ::fwRenderQt3D::core::GenericScene* getScene();
 
+    /// Updates Qt container.
+    FWRENDERQT3D_API void setQtContainer(::fwGuiQt::container::QtContainer::sptr _qtContainer);
+
+    template<class T>
+    std::vector<SPTR(T)> getAdaptors() const;
+
 private:
 
     /// Configures the render service.
@@ -110,5 +116,28 @@ private:
     QColor m_backgroundColor;
 
 };
+
+//------------------------------------------------------------------------------
+
+template<class T>
+std::vector<SPTR(T)> SRender::getAdaptors() const
+{
+    auto servicesVector = ::fwServices::OSR::getServices("::fwRenderQt3D::IAdaptor");
+    std::vector<SPTR(T)> resultVector;
+
+    for(auto& sceneAdaptor : servicesVector)
+    {
+        SPTR(T) adaptor = T::dynamicCast(sceneAdaptor);
+        if(adaptor)
+        {
+            if(adaptor->getRenderService() == this->getConstSptr())
+            {
+                resultVector.push_back(adaptor);
+            }
+        }
+    }
+
+    return resultVector;
+}
 
 } //namespace fwRenderQt3D

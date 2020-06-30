@@ -23,14 +23,13 @@
 #pragma once
 
 #include "fwRenderQt3D/config.hpp"
+#include "fwRenderQt3D/data/Material.hpp"
 
 #include <fwData/Mesh.hpp>
 
 #include <QPointer>
 
 #include <Qt3DCore/QEntity>
-
-#include <Qt3DRender/QMaterial>
 
 #include <QVector3D>
 
@@ -63,7 +62,7 @@ Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
 Q_PROPERTY(
-    Qt3DRender::QMaterial* material
+    Material* material
     READ getMaterial WRITE setMaterial NOTIFY materialChanged)
 
 public:
@@ -71,20 +70,17 @@ public:
     /// Constructs an empty mesh.
     FWRENDERQT3D_QT_API Mesh(Qt3DCore::QNode* _parent = nullptr);
 
-    /// Constructs a mesh from _mesh.
-    FWRENDERQT3D_QT_API Mesh(::fwData::Mesh::sptr _mesh, Qt3DCore::QNode* _parent = nullptr);
-
     /// Destroys the mesh.
     FWRENDERQT3D_QT_API ~Mesh() override;
 
     /// @returns mesh material.
-    FWRENDERQT3D_QT_API Qt3DRender::QMaterial* const getMaterial() const;
+    FWRENDERQT3D_QT_API ::fwRenderQt3D::data::Material* const getMaterial() const;
 
     /// @returns the scene associated with the mesh.
     FWRENDERQT3D_QT_API ::fwRenderQt3D::core::GenericScene* const getScene() const;
 
     /// Updates mesh material.
-    FWRENDERQT3D_QT_API void setMaterial(Qt3DRender::QMaterial* _material);
+    FWRENDERQT3D_QT_API void setMaterial(::fwRenderQt3D::data::Material* _material);
 
     /// Updates the scene associated with the mesh.
     FWRENDERQT3D_QT_API void setScene(::fwRenderQt3D::core::GenericScene* _scene);
@@ -115,7 +111,7 @@ private:
     QPointer< Qt3DRender::QGeometry > m_geometry;
 
     /// Contains mesh material.
-    QPointer< Qt3DRender::QMaterial > m_material;
+    QPointer< ::fwRenderQt3D::data::Material > m_material;
 
     /// Contains mesh position attribute.
     QPointer< Qt3DRender::QAttribute > m_posAttrib;

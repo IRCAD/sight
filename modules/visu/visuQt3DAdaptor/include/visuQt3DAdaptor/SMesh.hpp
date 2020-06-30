@@ -44,7 +44,7 @@ namespace visuQt3DAdaptor
  * @code{.xml}
     <service uid="..." type="::visuQt3DAdaptor::SMesh" >
         <in key="mesh" uid="..." />
-        <config autoresetcamera="yes" visible="yes" />
+        <config autoresetcamera="true" visible="true" materialName="..." />
     </service>
    @endcode
  *
@@ -54,6 +54,9 @@ namespace visuQt3DAdaptor
  * @subsection Configuration Configuration:
  *  - \b autoresetcamera (optional, bool, default=false): reset the camera when this mesh is modified.
  *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
+ *  - \b materialName (optional): need to be used when a material adaptor is defined in XML file.
+ *        Must be set according to ::visuQt3D::SMaterial materialName property
+ *        to retrieve the material managed by the adaptor.
  */
 class VISUQT3DADAPTOR_CLASS_API SMesh : public ::fwRenderQt3D::IAdaptor
 {
@@ -103,6 +106,8 @@ private:
 
     /// Contains a Qt3D mesh.
     QPointer< ::fwRenderQt3D::data::Mesh > m_mesh;
+
+    std::string m_materialName;
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera { false };

@@ -65,6 +65,16 @@ ApplicationWindow {
 
             Sight.Mesh{
                 id: _mesh
+
+                material: Sight.Material {
+                    id: _material
+
+                    ambient: "darkGray"
+
+                    Component.onCompleted: {
+                        updatePolygonMode(4);
+                    }
+                }
             }
         }
     }
