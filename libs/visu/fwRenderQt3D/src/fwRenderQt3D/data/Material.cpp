@@ -41,7 +41,7 @@ Material::Material(Qt3DCore::QNode* _parent) :
     Qt3DRender::QEffect* const effect = new Qt3DRender::QEffect;
     this->setEffect(effect);
 
-    m_ambientColor = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QColor("black"));
+    m_ambientColor = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05f, 0.05f, 0.05f));
     this->addParameter(m_ambientColor);
 
     m_diffuseColor = new Qt3DRender::QParameter(QStringLiteral("u_f3DiffuseCol"), QColor("white"));

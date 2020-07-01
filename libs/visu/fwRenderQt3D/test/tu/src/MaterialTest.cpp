@@ -1,0 +1,126 @@
+/************************************************************************
+ *
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "MaterialTest.hpp"
+
+#include "fwRenderQt3D/data/Material.hpp"
+
+#include <fwData/Material.hpp>
+
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QRasterMode>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QTechnique>
+
+// Registers the fixture into the 'registry'
+CPPUNIT_TEST_SUITE_REGISTRATION(::fwRenderQt3DTest::ut::MaterialTest);
+
+namespace fwRenderQt3DTest
+{
+
+namespace ut
+{
+
+//------------------------------------------------------------------------------
+
+MaterialTest::MaterialTest()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+MaterialTest::~MaterialTest()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MaterialTest::setUp()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MaterialTest::tearDown()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MaterialTest::initializeMaterial()
+{
+    auto sightMaterial = ::fwData::Material::New();
+    auto qt3dMaterial = new ::fwRenderQt3D::data::Material();
+
+    // Initializes qt3dMaterial according to sightMaterial.
+    qt3dMaterial->updatePolygonMode(sightMaterial->getRepresentationMode());
+    qt3dMaterial->updateOptionsMode(sightMaterial->getOptionsMode());
+    qt3dMaterial->updateShadingMode(sightMaterial->getShadingMode());
+    qt3dMaterial->updateRGBAMode(sightMaterial);
+
+    // Asserts qt3dMaterial RBG is equal to sightMaterial RGB (Approximately equal due to float comparaison).
+    CPPUNIT_ASSERT(static_cast< float >(sightMaterial->ambient()->red()) - qt3dMaterial->getAmbient().redF() <
+                   std::abs(0.01f));
+    CPPUNIT_ASSERT(
+        static_cast< float >(sightMaterial->ambient()->green()) - qt3dMaterial->getAmbient().greenF() <
+        std::abs(0.01f));
+    CPPUNIT_ASSERT(
+        static_cast< float >(sightMaterial->ambient()->blue()) - qt3dMaterial->getAmbient().blueF() <
+        std::abs(0.01f));
+
+    CPPUNIT_ASSERT(static_cast< float >(sightMaterial->diffuse()->red()) - qt3dMaterial->getDiffuse().redF() <
+                   std::abs(0.01f));
+    CPPUNIT_ASSERT(
+        static_cast< float >(sightMaterial->diffuse()->green()) - qt3dMaterial->getDiffuse().greenF() <
+        std::abs(0.01f));
+    CPPUNIT_ASSERT(
+        static_cast< float >(sightMaterial->diffuse()->blue()) - qt3dMaterial->getDiffuse().blueF() <
+        std::abs(0.01f));
+
+    CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().x());
+    CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().y());
+    CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().z());
+
+    CPPUNIT_ASSERT_EQUAL(25.0f, qt3dMaterial->getShininess());
+
+    // Asserts qt3dMaterial and sightMaterial rendering options are equals.
+    auto tech       = qt3dMaterial->effect()->techniques()[0];
+    auto renderPass = tech->renderPasses()[0];
+    auto normalPass = tech->renderPasses()[1];
+
+    // Default polygonMode must be set to SURFACE.
+    CPPUNIT_ASSERT_EQUAL(Qt3DRender::QRasterMode::Fill,
+                         qobject_cast< Qt3DRender::QRasterMode* >(renderPass->renderStates()[0])->rasterMode());
+
+    // Default optionMode must be set to STANDARD.
+    CPPUNIT_ASSERT_EQUAL(false, normalPass->isEnabled());
+
+    // TODO: test shadingMode when it is implemented.
+
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace ut.
+
+} // namespace fwRenderQt3DTest.
