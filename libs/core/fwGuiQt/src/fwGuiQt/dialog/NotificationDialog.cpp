@@ -216,8 +216,15 @@ void NotificationDialog::show()
     container->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
     container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
+    // Get the activeWindow, if null print a message & ignore this notification.
+    const auto activeWin = qApp->activeWindow();
+    if(!activeWin)
+    {
+        SLM_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
+        return;
+    }
     // Moves the container when the main window is moved or is resized.
-    qApp->activeWindow()->installEventFilter(container);
+    activeWin->installEventFilter(container);
 
     // Gives it a layout with the clickable label.
     QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
