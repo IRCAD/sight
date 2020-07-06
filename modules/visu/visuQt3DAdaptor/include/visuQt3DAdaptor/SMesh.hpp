@@ -107,6 +107,7 @@ private:
     /// Contains a Qt3D mesh.
     QPointer< ::fwRenderQt3D::data::Mesh > m_mesh;
 
+    /// Specifies the material adaptor used to configure mesh material.
     std::string m_materialName;
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.

@@ -28,6 +28,7 @@
 
 #include <QColor>
 #include <QMaterial>
+#include <QPointer>
 #include <QVector3D>
 
 namespace Qt3DRender
@@ -42,70 +43,103 @@ namespace fwRenderQt3D
 namespace data
 {
 
+/**
+ * @brief Manages a qt3d material.
+ */
 class FWRENDERQT3D_CLASS_QT_API Material : public Qt3DRender::QMaterial
 {
 
 Q_OBJECT
 
+/// Q_PROPERTY macros associate scene objects with QML properties.
 Q_PROPERTY(QColor ambient READ getAmbient WRITE setAmbient NOTIFY ambientChanged)
 Q_PROPERTY(QColor diffuse READ getDiffuse WRITE setDiffuse NOTIFY diffuseChanged)
 Q_PROPERTY(QVector3D specular READ getSpecular WRITE setSpecular NOTIFY specularChanged)
 Q_PROPERTY(float shininess READ getShininess WRITE setShininess NOTIFY shininessChanged)
 
 public:
-    // Constructor / Destructor
+
+    /// Constructs a Qt3D Material.
     FWRENDERQT3D_QT_API Material(Qt3DCore::QNode* _parent = 0);
+
+    /// Destroys the material.
     FWRENDERQT3D_QT_API virtual ~Material();
 
+    /// @returns ambient color.
     FWRENDERQT3D_QT_API QColor getAmbient();
+
+    /// @returns diffuse color.
     FWRENDERQT3D_QT_API QColor getDiffuse();
+
+    /// @returns specular color.
     FWRENDERQT3D_QT_API QVector3D getSpecular();
+
+    /// @returns shininess.
     FWRENDERQT3D_QT_API float getShininess();
 
+    /// Updates ambient color.
     FWRENDERQT3D_QT_API void setAmbient(QColor _ambient);
+
+    /// Updates diffuse color.
     FWRENDERQT3D_QT_API void setDiffuse(QColor _diffuse);
+
+    /// Updates specular color.
     FWRENDERQT3D_QT_API void setSpecular(QVector3D _specular);
+
+    /// Updates shininess.
     FWRENDERQT3D_QT_API void setShininess(float _shininess);
 
+    /// Adds a new technique to the material.
     FWRENDERQT3D_QT_API void addTechnique(Qt3DRender::QTechnique* _technique);
+
+    /// Removes a technique from the material.
     FWRENDERQT3D_QT_API void removeTechnique(Qt3DRender::QTechnique* _technique);
 
+    /// Adds a new parameter to the material.
     FWRENDERQT3D_QT_API void addParameter(Qt3DRender::QParameter* _parameter);
+
+    /// Removes a parameter from the material.
     FWRENDERQT3D_QT_API void removeParameter(Qt3DRender::QParameter* _parameter);
 
-    /// Updates material options mode (standard or point normals)
-    /// TODO: add "cells normals" option
+    /// Updates material options mode (standard or point normals).
     FWRENDERQT3D_QT_API Q_INVOKABLE void updateOptionsMode(int _optionsMode);
 
-    /// Updates material polygon mode (surface, point or wireframe)
-    /// TODO: add "edge" mode (surface + wireframe)
+    /// Updates material polygon mode (surface, point, wireframe or edge).
     FWRENDERQT3D_QT_API Q_INVOKABLE void updatePolygonMode(int _polygonMode);
 
-    /// TODO: Update material shading mode (flat/gouraud/phong). Only phong lighting supported for now.
+    /// TODO: Updates material shading mode (flat/gouraud/phong). Only phong lighting supported for now.
     FWRENDERQT3D_QT_API Q_INVOKABLE void updateShadingMode(int _shadingMode);
 
-    /// TODO: Update material color
+    /// Updates material color.
     FWRENDERQT3D_QT_API Q_INVOKABLE void updateRGBAMode(::fwData::Material::sptr _sightMaterial);
 
 Q_SIGNALS:
 
+    /// Signal emitted when ambient color is modified.
     void ambientChanged();
 
+    /// Signal emitted when diffuse color is modified.
     void diffuseChanged();
 
+    /// Signal emitted when specular color is modified.
     void specularChanged();
 
+    /// Signal emitted when shininess is modified.
     void shininessChanged();
 
 private:
 
-    Qt3DRender::QParameter* m_ambientColor;
+    /// Contains material ambient color.
+    QPointer< Qt3DRender::QParameter > m_ambientColor;
 
-    Qt3DRender::QParameter* m_diffuseColor;
+    /// Contains material diffuse color.
+    QPointer< Qt3DRender::QParameter > m_diffuseColor;
 
-    Qt3DRender::QParameter* m_specularColor;
+    /// Contains material specular color.
+    QPointer< Qt3DRender::QParameter > m_specularColor;
 
-    Qt3DRender::QParameter* m_shininess;
+    /// Contains material shininess.
+    QPointer< Qt3DRender::QParameter > m_shininess;
 
 };
 

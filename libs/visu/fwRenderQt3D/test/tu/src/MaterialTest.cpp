@@ -103,19 +103,33 @@ void MaterialTest::initializeMaterial()
 
     CPPUNIT_ASSERT_EQUAL(25.0f, qt3dMaterial->getShininess());
 
+    CPPUNIT_ASSERT_EQUAL(1, qt3dMaterial->effect()->techniques().size());
+    auto tech = qt3dMaterial->effect()->techniques()[0];
+
+    CPPUNIT_ASSERT_EQUAL(4, tech->renderPasses().size());
+
     // Asserts qt3dMaterial and sightMaterial rendering options are equals.
-    auto tech       = qt3dMaterial->effect()->techniques()[0];
-    auto renderPass = tech->renderPasses()[0];
-    auto normalPass = tech->renderPasses()[1];
+    auto normalPass     = tech->renderPasses()[0];
+    auto cellNormalPass = tech->renderPasses()[1];
+    auto renderPass     = tech->renderPasses()[2];
+    auto edgeRenderPass = tech->renderPasses()[3];
 
     // Default polygonMode must be set to SURFACE.
     CPPUNIT_ASSERT_EQUAL(Qt3DRender::QRasterMode::Fill,
                          qobject_cast< Qt3DRender::QRasterMode* >(renderPass->renderStates()[0])->rasterMode());
+    CPPUNIT_ASSERT_EQUAL(false, edgeRenderPass->isEnabled());
 
     // Default optionMode must be set to STANDARD.
     CPPUNIT_ASSERT_EQUAL(false, normalPass->isEnabled());
+    CPPUNIT_ASSERT_EQUAL(false, cellNormalPass->isEnabled());
 
-    // TODO: test shadingMode when it is implemented.
+    delete edgeRenderPass;
+    delete renderPass;
+    delete cellNormalPass;
+    delete normalPass;
+    delete tech;
+
+    delete qt3dMaterial;
 
 }
 

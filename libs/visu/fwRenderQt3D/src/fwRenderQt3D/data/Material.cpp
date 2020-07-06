@@ -41,18 +41,20 @@ Material::Material(Qt3DCore::QNode* _parent) :
     Qt3DRender::QEffect* const effect = new Qt3DRender::QEffect;
     this->setEffect(effect);
 
+    /// Initializes parameters with default values.
     m_ambientColor = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05f, 0.05f, 0.05f));
-    this->addParameter(m_ambientColor);
+    this->effect()->addParameter(m_ambientColor);
 
     m_diffuseColor = new Qt3DRender::QParameter(QStringLiteral("u_f3DiffuseCol"), QColor("white"));
-    this->addParameter(m_diffuseColor);
+    this->effect()->addParameter(m_diffuseColor);
 
     m_specularColor = new Qt3DRender::QParameter(QStringLiteral("u_f3SpecularCol"), QVector3D(0.2f, 0.2f, 0.2f));
-    this->addParameter(m_specularColor);
+    this->effect()->addParameter(m_specularColor);
 
     m_shininess = new Qt3DRender::QParameter(QStringLiteral("u_fShininess"), 25.0f);
-    this->addParameter(m_shininess);
+    this->effect()->addParameter(m_shininess);
 
+    /// Adds phong lighting technique and sets default light position/intensity.
     ::fwRenderQt3D::techniques::PhongLighting* const phongTechnique = new ::fwRenderQt3D::techniques::PhongLighting();
     phongTechnique->setLightPosition(QVector3D(-100.0f, -100.0f, -100.0f));
     phongTechnique->setLightIntensity(QVector3D(1.0f, 1.0f, 1.0f));
@@ -147,7 +149,8 @@ void Material::removeParameter(Qt3DRender::QParameter* _parameter)
     this->effect()->removeParameter(_parameter);
 }
 
-// TODO : add cells normals support
+//------------------------------------------------------------------------------
+
 void Material::updateOptionsMode(int _optionsMode)
 {
     ::fwRenderQt3D::techniques::PhongLighting* const tech =
@@ -159,14 +162,18 @@ void Material::updateOptionsMode(int _optionsMode)
     }
     else if(_optionsMode == 2)
     {
+        tech->enableCellsNormals(false);
         tech->showNormals(true);
     }
     else if(_optionsMode == 3)
     {
+        tech->enableCellsNormals(true);
+        tech->showNormals(true);
     }
 }
 
-// TODO: add "edge" mode
+//------------------------------------------------------------------------------
+
 void Material::updatePolygonMode(int _polygonMode)
 {
     ::fwRenderQt3D::techniques::PhongLighting* const tech =
@@ -174,7 +181,9 @@ void Material::updatePolygonMode(int _polygonMode)
     tech->updateRasterMode(_polygonMode);
 }
 
-// TODO
+//------------------------------------------------------------------------------
+
+// TODO.
 void Material::updateShadingMode(int)
 {
 }
@@ -183,7 +192,7 @@ void Material::updateShadingMode(int)
 
 void Material::updateRGBAMode(::fwData::Material::sptr _sightMaterial)
 {
-    //Set up Material colors
+    //Sets up Material colors.
     ::fwData::Color::csptr sightAmbient = _sightMaterial->ambient();
     ::fwData::Color::csptr sightDiffuse = _sightMaterial->diffuse();
 

@@ -47,7 +47,7 @@ static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
 
 SMaterial::SMaterial() noexcept
 {
-    // Allow using Material as QML type when using SMaterial service in QML applications
+    // Allows using Material as QML type when using SMaterial service in QML applications.
     qmlRegisterType< ::fwRenderQt3D::data::Material >("fwRenderQt3D", 1, 0, "Material");
     qRegisterMetaType< ::fwRenderQt3D::data::Material* >("::fwRenderQt3D::Material*");
 }
@@ -64,14 +64,14 @@ void SMaterial::configuring()
 {
     if(this->getConfigTree().count("config"))
     {
-        // Get scene configuration
+        // Gets scene configuration.
         const ConfigType config = this->getConfigTree().get_child("config");
 
         if(!config.empty())
         {
             const ConfigType attributes = config.get_child("<xmlattr>");
 
-            // If materialName attribute is found update m_materialName accordingly
+            // If materialName attribute is found updates m_materialName accordingly.
             if (attributes.count(s_MATERIAL_NAME_CONFIG))
             {
                 m_materialName = attributes.get<std::string>(s_MATERIAL_NAME_CONFIG);
@@ -86,7 +86,7 @@ void SMaterial::starting()
 {
     this->initialize();
 
-    // Create a Qt3D mesh from sight data
+    // Creates a Qt3D mesh from sight data.
     m_material = new ::fwRenderQt3D::data::Material();
 
     this->updating();
@@ -102,7 +102,7 @@ void SMaterial::stopping()
 
 void SMaterial::updating()
 {
-    // Read the material from the input as sight data
+    // Reads the material from the input as sight data.
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
     m_material->updatePolygonMode(material->getRepresentationMode());
