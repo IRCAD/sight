@@ -112,10 +112,10 @@ public:
     typedef ::fwCom::Slot< void (::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo) > InteractionSlotType;
     typedef ::fwCom::Slot< void () > DestroySlotType;
 
-    /// ontains the slot name that rquest the picker to do a ray cast according to the passed position.
+    /// Contains the slot name that request the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_INTERACTION_SLOT;
 
-    /// ontains the slot name taht request the reset of camera.
+    /// Contains the slot name taht request the reset of camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
     /// @deprecated please used s_DEFAULT_CAMERA_NAME.

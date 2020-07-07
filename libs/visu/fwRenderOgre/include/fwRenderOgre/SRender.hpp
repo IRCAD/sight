@@ -111,7 +111,8 @@ class Layer;
  *          - \b height (optional, float, default=1.f): viewport height relatively to the window.
  *    - \b id (mandatory, string): the identifier of the layer
  *    - @deprecated- \b depth (mandatory, int): deprecated, please use order instead.
- *    - \b order (mandatory, int): layer order to stack, starting from 1.
+ *    - \b order (mandatory, int): layer order to stack, starting from 1. The layer with the lowest order will be
+ *         rendered first, and so the layer with the highest order will be displayed on top.
  *    - \b transparency (optional, DepthPeeling/DualDepthPeeling/WeightedBlended/HybridTransparency/
  *         CelShadingDepthPeeling, default=""): the transparency technique to use.
  *    - \b numPeels (optional, string, default=""): number of peels for the selected transparency technique.
