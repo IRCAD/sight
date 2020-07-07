@@ -427,7 +427,7 @@ std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(
 
     if(picker.getSelectedObject())
     {
-        const auto* const camera = sm->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+        const auto* const camera = sm->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
         const auto* const vp     = camera->getViewport();
 
         // Screen to viewport space conversion.

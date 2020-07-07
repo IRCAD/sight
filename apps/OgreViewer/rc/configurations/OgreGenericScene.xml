@@ -159,7 +159,7 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="defaultLayer" depth="1" transparency="DepthPeeling" numPeels="4" />
+                <layer id="defaultLayer" order="1" transparency="DepthPeeling" numPeels="4" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -174,13 +174,13 @@
                 <adaptor uid="resizeViewportAdp" />
                 <adaptor uid="snapshotAdp" />
 
-                <layer id="axialBackgroundNegatoLayer" depth="2" >
+                <layer id="axialBackgroundNegatoLayer" order="2" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
                 </layer>
                 <adaptor uid="axialBackgroundAdp" />
                 <adaptor uid="axialBackgroundResizeViewportAdp" />
 
-                <layer id="axialNegatoLayer" depth="3" compositors="ViewportBorder" >
+                <layer id="axialNegatoLayer" order="3" compositors="ViewportBorder" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
                 </layer>
                 <adaptor uid="axialCompositorAdp" />
@@ -189,13 +189,13 @@
                 <adaptor uid="axialNegatoCameraAdp" />
                 <adaptor uid="axialNegatoResizeViewportAdp" />
 
-                <layer id="sagittalBackgroundNegatoLayer" depth="4" >
+                <layer id="sagittalBackgroundNegatoLayer" order="4" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
                 </layer>
                 <adaptor uid="sagittalBackgroundAdp" />
                 <adaptor uid="sagittalBackgroundResizeViewportAdp" />
 
-                <layer id="sagittalNegatoLayer" depth="5" compositors="ViewportBorder" >
+                <layer id="sagittalNegatoLayer" order="5" compositors="ViewportBorder" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="left" vAlign="bottom"/>
                 </layer>
                 <adaptor uid="sagittalCompositorAdp" />
@@ -204,13 +204,13 @@
                 <adaptor uid="sagittalNegatoCameraAdp" />
                 <adaptor uid="sagittalNegatoResizeViewportAdp" />
 
-                <layer id="frontalBackgroundNegatoLayer" depth="6" >
+                <layer id="frontalBackgroundNegatoLayer" order="6" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
                 </layer>
                 <adaptor uid="frontalBackgroundAdp" />
                 <adaptor uid="frontalBackgroundResizeViewportAdp" />
 
-                <layer id="frontalNegatoLayer" depth="7" compositors="ViewportBorder" >
+                <layer id="frontalNegatoLayer" order="7" compositors="ViewportBorder" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="bottom"/>
                 </layer>
                 <adaptor uid="frontalCompositorAdp" />

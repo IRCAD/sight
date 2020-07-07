@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ VRWidgetsInteractor::~VRWidgetsInteractor() noexcept
 
 Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 {
-    ::Ogre::Camera* camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    ::Ogre::Camera* camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
 
     const int height = camera->getViewport()->getActualHeight();
     const int width  = camera->getViewport()->getActualWidth();

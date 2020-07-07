@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -67,7 +67,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, int, int, std::uint32_t _quer
 
 bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 {
-    const auto* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    const auto* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
     const auto vpPos         = helper::Camera::convertFromWindowToViewportSpace(*camera, _x, _y);
     const ::Ogre::Ray vpRay  = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
@@ -111,7 +111,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 ::Ogre::SceneNode* IPicker::getCameraSceneNode() const
 {
     SLM_ASSERT("The associated SceneManager is not instanciated", m_sceneManager);
-    return m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getParentSceneNode();
+    return m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME)->getParentSceneNode();
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 
 ::Ogre::Vector2 IPicker::getIntersectionInViewSpace() const
 {
-    ::Ogre::Camera* cam        = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    ::Ogre::Camera* cam        = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
     ::Ogre::Matrix4 viewMatrix = cam->getViewMatrix();
     ::Ogre::Matrix4 projMatrix = cam->getProjectionMatrixWithRSDepth();
 
@@ -144,7 +144,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 {
     ::Ogre::Vector2 screenSpacePoint = getIntersectionInViewSpace();
 
-    ::Ogre::Camera* cam        = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+    ::Ogre::Camera* cam        = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
     ::Ogre::Viewport* viewport = cam->getViewport();
 
     /// We need to round the result to get the right pixel

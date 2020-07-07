@@ -280,7 +280,7 @@ void SLightEditor::onEditType(const QString& _type)
         m_currentLight->setType(::Ogre::Light::LT_POINT);
         m_thetaSlider->setEnabled(false);
         m_phiSlider->setEnabled(false);
-        if(m_currentLight->getName().find(::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME) == std::string::npos)
+        if(m_currentLight->getName().find(::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_xTranslation->setEnabled(true);
             m_yTranslation->setEnabled(true);
@@ -293,7 +293,7 @@ void SLightEditor::onEditType(const QString& _type)
     else if(_type == ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str())
     {
         m_currentLight->setType(::Ogre::Light::LT_DIRECTIONAL);
-        if(m_currentLight->getName().find(::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME) == std::string::npos)
+        if(m_currentLight->getName().find(::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_thetaSlider->setEnabled(true);
             m_phiSlider->setEnabled(true);
@@ -420,7 +420,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
         m_specularColorBtn->setEnabled(true);
         m_lightTypeBox->setEnabled(true);
 
-        if(m_currentLight->getName().find(::fwRenderOgre::Layer::DEFAULT_LIGHT_NAME) == std::string::npos)
+        if(m_currentLight->getName().find(::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_visualFeedback->setEnabled(true);
             if(m_currentLight->getType() == ::Ogre::Light::LT_DIRECTIONAL)
