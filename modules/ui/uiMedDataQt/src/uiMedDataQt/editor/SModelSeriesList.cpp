@@ -365,8 +365,10 @@ void SModelSeriesList::updateReconstructions()
     {
         if(m_showCheckBox)
         {
+            m_showCheckBox->blockSignals(true);
             const bool showAllRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
             m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
+            m_showCheckBox->blockSignals(false);
         }
     }
 }

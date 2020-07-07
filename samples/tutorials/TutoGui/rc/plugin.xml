@@ -16,7 +16,8 @@
             </value>
         </object>
 
-        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <!-- ****************************************  layouts declaration ***************************************** -->
+
         <service uid="myFrame" type="::gui::frame::SDefaultFrame" >
             <gui>
                 <frame>
@@ -233,12 +234,14 @@
                     <orientation value="horizontal" />
                     <view toolTip="This is a nice tooltip"  />
                     <view toolTip="You can put some useful information here"  />
+                    <view toolTip="This button is check/unchecked by clicking on 'Click' or 'Me'"  />
                 </layout>
                 <toolBar />
             </gui>
             <registry>
                 <view sid="ButtonClick" start="yes" />
                 <view sid="ButtonMe" start="yes" />
+                <view sid="ButtonCheckable" start="yes" />
                 <toolBar sid="toolbar2" start="yes" />
             </registry>
         </service>
@@ -252,6 +255,15 @@
         <service uid="ButtonMe" type="::guiQt::editor::SSignalButton">
             <config>
                 <text>Me</text>
+            </config>
+        </service>
+
+        <service uid="ButtonCheckable" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>true</checkable>
+                <icon>TutoGui-0.1/icons/start.svg</icon>
+                <icon2>TutoGui-0.1/icons/stop.svg</icon2>
+                <text>Check</text>
             </config>
         </service>
 
@@ -273,9 +285,8 @@
             </registry>
         </service>
 
-        <!-- ***************************************** End layouts declaration ***************************************** -->
 
-        <!-- ***************************************** Begin services declarations  ************************************ -->
+        <!-- ******************************************* action declarations  ************************************** -->
 
         <service uid="item1" type="::gui::action::SDefault" >
             <state active="true" />
@@ -359,7 +370,22 @@
          </service>
 
         <service uid="actionQuit" type="::gui::action::SQuit" />
-        <!-- ***************************************** End services declarations  ************************************************ -->
+
+        <!-- *************************************** connection  *************************************************** -->
+
+        <!-- check button "Check" when button "Click" is clicked  -->
+        <connect>
+            <signal>ButtonClick/clicked</signal>
+            <slot>ButtonCheckable/check</slot>
+        </connect>
+
+        <!-- uncheck button "Check" when button "Me" is clicked  -->
+        <connect>
+            <signal>ButtonMe/clicked</signal>
+            <slot>ButtonCheckable/uncheck</slot>
+        </connect>
+
+        <!-- ***************************************** starts  ***************************************************** -->
 
         <start uid="myFrame" />
         <start uid="subView1" />

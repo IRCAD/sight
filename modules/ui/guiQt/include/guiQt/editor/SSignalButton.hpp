@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2019 IRCAD France
- * Copyright (C) 2015-2019 IHU Strasbourg
+ * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,9 +28,10 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <filesystem>
 #include <QPointer>
 #include <QPushButton>
+
+#include <filesystem>
 
 namespace guiQt
 {
@@ -43,11 +44,18 @@ namespace editor
  *
  * If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" state.
  *
- * @note This service doesn't modify its associated object, so it can work on any type of object.
+ * @section Signals Signals
+ * - \b clicked(): This signal is emitted when the button is clicked
+ * - \b toggled(bool):  This signal is emitted when the button is checked
+ *
+ * @section Slot Slot
+ * - \b setChecked(bool): This slot allows to check/uncheck the button
+ * - \b check(): This slot allows to check the button
+ * - \b uncheck(): This slot allows to uncheck the button
  *
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." impl="::guiQt::editor::SSignalButton" >
+   <service uid="..." type="::guiQt::editor::SSignalButton" >
        <config>
           <checkable>true|false</checkable>
           <text>...</text>
@@ -68,13 +76,6 @@ namespace editor
  * - \b checked (optional, default: false): if true, the button is checked at start
  * - \b iconWidth (optional): icon width
  * - \b iconHeight (optional): icon height
- *
- * @section Signals Signals
- * - \b clicked(): This signal is emitted when the button is clicked
- * - \b toggled(bool):  This signal is emitted when the button is checked
- *
- * @section Slot Slot
- * - \b setChecked(bool): This slot allows to check/uncheck the button
  */
 class GUIQT_CLASS_API SSignalButton : public QObject,
                                       public ::fwGui::editor::IEditor
@@ -147,6 +148,12 @@ private:
      */
     /// Slot: check/uncheck the button
     void setChecked(bool checked);
+
+    /// Slot: check the button
+    void check();
+
+    /// Slot: uncheck the button
+    void uncheck();
     /**
      * @}
      */

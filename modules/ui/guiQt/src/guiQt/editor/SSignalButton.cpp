@@ -54,6 +54,8 @@ static const ::fwCom::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
 static const ::fwCom::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 
 static const ::fwCom::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
+static const ::fwCom::Slots::SlotKeyType s_CHECK_SLOT       = "check";
+static const ::fwCom::Slots::SlotKeyType s_UNCHECK_SLOT     = "uncheck";
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSignalButton )
 
@@ -69,6 +71,8 @@ SSignalButton::SSignalButton() noexcept :
     m_sigToggled = newSignal< ToggledSignalType >(s_TOGGLED_SIG);
 
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
+    newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
+    newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -236,6 +240,25 @@ void SSignalButton::setChecked(bool checked)
             m_button->setIcon(QIcon(QString::fromStdString(m_icon.string())));
         }
     }
+
+    // properly check/uncheck the button when this method is called from the sight slot.
+    this->blockSignals(true);
+    m_button->setChecked(checked);
+    this->blockSignals(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void SSignalButton::check()
+{
+    this->setChecked(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void SSignalButton::uncheck()
+{
+    this->setChecked(false);
 }
 
 //-----------------------------------------------------------------------------
