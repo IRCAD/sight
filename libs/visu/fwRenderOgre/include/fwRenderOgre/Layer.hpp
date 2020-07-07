@@ -119,11 +119,11 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
     /// @deprecated please used s_DEFAULT_CAMERA_NAME.
-    [[deprecated("Removed in sight 21.0.")]]
+    [[deprecated("Removed in sight 22.0.")]]
     FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
 
     /// @deprecated please used s_DEFAULT_LIGHT_NAME
-    [[deprecated("Removed in sight 21.0.")]]
+    [[deprecated("Removed in sight 22.0.")]]
     FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;
 
     /// Defines the default camera name.
@@ -222,7 +222,7 @@ public:
      * @return the depth of the layer.
      * @deprecated Will be removed in sight 21.0
      */
-    [[deprecated("Removed in sight 21.0.")]]
+    [[deprecated("Removed in sight 22.0.")]]
     FWRENDEROGRE_API int getDepth() const;
 
     /// @return the order of the layer.

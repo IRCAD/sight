@@ -552,9 +552,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
 int Layer::getDepth() const
 {
-    FW_DEPRECATED_MSG(
-        "::fwRenderOgre::Layer::getDepth() is deprecated, please used ::fwRenderOgre::Layer::getOrder() instead",
-        "21.0")
     return m_order;
 }
 
@@ -562,9 +559,6 @@ int Layer::getDepth() const
 
 void Layer::setDepth(int _order)
 {
-    FW_DEPRECATED_MSG(
-        "::fwRenderOgre::Layer::setDepth(int) is deprecated, please used ::fwRenderOgre::Layer::setOrder(int) instead",
-        "21.0")
     m_order = _order;
 }
 

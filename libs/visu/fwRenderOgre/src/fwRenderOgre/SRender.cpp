@@ -325,7 +325,7 @@ void SRender::configureLayer(const ConfigType& _cfg )
     const auto layerDepth = attributes.get_optional<int>("depth");
     if(layerDepth)
     {
-        FW_DEPRECATED_MSG("Attribute 'depth' is deprecated, please used 'order' instead", "21.0")
+        FW_DEPRECATED_MSG("Attribute 'depth' is deprecated, please used 'order' instead", "22.0")
         layerOrder = layerDepth.get();
     }
     else
