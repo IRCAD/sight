@@ -48,10 +48,11 @@ namespace fwRenderOgre
 {
 
 /**
- * @brief Manages a plane mesh on which a slice texture will be applied
+ * @brief Manages a plane mesh on which a slice texture will be applied.
  */
 class FWRENDEROGRE_CLASS_API Plane
 {
+
 public:
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
@@ -265,6 +266,7 @@ private:
 
     /// Defines if the border is displayed.
     bool m_displayBorder { true };
+
 };
 
 //------------------------------------------------------------------------------
@@ -304,4 +306,4 @@ inline ::Ogre::Real Plane::getHeight() const
 
 //------------------------------------------------------------------------------
 
-} // Namespace fwRenderOgre
+} // Namespace fwRenderOgre.
