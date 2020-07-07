@@ -35,6 +35,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwIO/IReader.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
@@ -54,6 +55,8 @@ static const std::string s_NEW_ICON_CONFIG          = "newIcon";
 static const std::string s_COPY_ICON_CONFIG         = "copyIcon";
 static const std::string s_REINITIALIZE_ICON_CONFIG = "reinitializeIcon";
 static const std::string s_RENAME_ICON_CONFIG       = "renameIcon";
+static const std::string s_IMPORT_ICON_CONFIG       = "importIcon";
+static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
@@ -62,6 +65,9 @@ static const ::fwServices::IService::KeyType s_CURRENT_TF_POOL_INPUT = "currentT
 static const ::fwServices::IService::KeyType s_TF_POOLS_INOUT = "tfPools";
 
 static const ::fwServices::IService::KeyType s_TF_POOL_OUTPUT = "tfPool";
+
+static const std::string s_CONTEXT_TF = "TF_POOL";
+static const std::string s_VERSION_TF = "V1";
 
 //------------------------------------------------------------------------------
 
@@ -74,6 +80,8 @@ SMultipleTF::SMultipleTF()
     m_copyIcon         = modulePath / "new.png";
     m_renameIcon       = modulePath / "rename.png";
     m_reinitializeIcon = modulePath / "reinitialize.png";
+    m_importIcon       = modulePath / "import.png";
+    m_exportIcon       = modulePath / "export.png";
 }
 
 //------------------------------------------------------------------------------
@@ -108,14 +116,41 @@ void SMultipleTF::configuring()
             useDefaultPath = configAttr->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
             m_tfPerPath    = configAttr->get<bool>(s_TF_PER_PATH_CONFIG, m_tfPerPath);
 
-            m_deleteIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
-            m_newIcon  = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_NEW_ICON_CONFIG, m_newIcon));
-            m_copyIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_COPY_ICON_CONFIG, m_copyIcon));
-            m_reinitializeIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
-            m_renameIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
+            const auto deleteIconCfg = configAttr->get_optional<std::string>(s_DELETE_ICON_CONFIG);
+            if(deleteIconCfg)
+            {
+                m_deleteIcon = ::fwRuntime::getModuleResourceFilePath(deleteIconCfg.value());
+            }
+            const auto newIconCfg = configAttr->get_optional<std::string>(s_NEW_ICON_CONFIG);
+            if(newIconCfg)
+            {
+                m_newIcon = ::fwRuntime::getModuleResourceFilePath(newIconCfg.value());
+            }
+            const auto copyIconCfg = configAttr->get_optional<std::string>(s_COPY_ICON_CONFIG);
+            if(copyIconCfg)
+            {
+                m_copyIcon = ::fwRuntime::getModuleResourceFilePath(copyIconCfg.value());
+            }
+            const auto reinitializeIconCfg = configAttr->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
+            if(reinitializeIconCfg)
+            {
+                m_reinitializeIcon = ::fwRuntime::getModuleResourceFilePath(reinitializeIconCfg.value());
+            }
+            const auto renameIconCfg = configAttr->get_optional<std::string>(s_RENAME_ICON_CONFIG);
+            if(renameIconCfg)
+            {
+                m_renameIcon = ::fwRuntime::getModuleResourceFilePath(renameIconCfg.value());
+            }
+            const auto importIconCfg = configAttr->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
+            if(importIconCfg)
+            {
+                m_importIcon = ::fwRuntime::getModuleResourceFilePath(importIconCfg.value());
+            }
+            const auto exportIconCfg = configAttr->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
+            if(exportIconCfg)
+            {
+                m_exportIcon = ::fwRuntime::getModuleResourceFilePath(exportIconCfg.value());
+            }
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
             m_iconHeight = configAttr->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
@@ -157,6 +192,12 @@ void SMultipleTF::starting()
     m_renameButton = new QPushButton(QIcon(m_renameIcon.string().c_str()), "");
     m_renameButton->setToolTip(QString("Rename"));
 
+    m_importButton = new QPushButton(QIcon(m_importIcon.string().c_str()), "");
+    m_importButton->setToolTip(QString("Import"));
+
+    m_exportButton = new QPushButton(QIcon(m_exportIcon.string().c_str()), "");
+    m_exportButton->setToolTip(QString("Export"));
+
     if(m_iconWidth > 0 && m_iconHeight > 0)
     {
         m_deleteButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
@@ -164,6 +205,8 @@ void SMultipleTF::starting()
         m_copyButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_reinitializeButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
         m_renameButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_importButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_exportButton->setIconSize(QSize(m_iconWidth, m_iconHeight));
     }
 
     // Layout management
@@ -175,6 +218,8 @@ void SMultipleTF::starting()
     layout->addWidget(m_copyButton);
     layout->addWidget(m_reinitializeButton);
     layout->addWidget(m_renameButton);
+    layout->addWidget(m_importButton);
+    layout->addWidget(m_exportButton);
 
     qtContainer->setLayout(layout);
 
@@ -185,6 +230,8 @@ void SMultipleTF::starting()
     QObject::connect(m_copyButton, &QPushButton::clicked, this, &SMultipleTF::copyPool);
     QObject::connect(m_reinitializeButton, &QPushButton::clicked, this, &SMultipleTF::reinitializePools);
     QObject::connect(m_renameButton, &QPushButton::clicked, this, &SMultipleTF::renamePool);
+    QObject::connect(m_importButton, &QPushButton::clicked, this, &SMultipleTF::importPool);
+    QObject::connect(m_exportButton, &QPushButton::clicked, this, &SMultipleTF::exportPool);
 
     // Initializes the TF pool from paths.
     this->initializePools();
@@ -213,11 +260,17 @@ void SMultipleTF::updating()
 void SMultipleTF::swapping(const KeyType& _key)
 {
     // Avoid swapping if it's the same TF.
-    if(_key == s_CURRENT_TF_POOL_INPUT
-       && this->getInput< ::fwData::Composite >(_key)
-       && this->getInput< ::fwData::Composite >(_key) != m_currentTFPool)
+    if(_key == s_CURRENT_TF_POOL_INPUT)
     {
-        this->updatePoolsPreset();
+        const ::fwData::mt::weak_ptr< const ::fwData::Composite > tfPool
+            = this->getWeakInput< const ::fwData::Composite >(_key);
+
+        const ::fwData::mt::locked_ptr< const ::fwData::Composite > tfPoolLock = tfPool.lock();
+
+        if(tfPoolLock && tfPoolLock.get_shared() != m_currentTFPool)
+        {
+            this->updatePoolsPreset();
+        }
     }
 }
 
@@ -230,27 +283,24 @@ void SMultipleTF::stopping()
 
 //------------------------------------------------------------------------------
 
-bool SMultipleTF::hasPoolName(const std::string& _name) const
+bool SMultipleTF::hasPoolName(const std::string& _name, ::fwData::Composite::csptr _tfPools) const
 {
-    const ::fwData::Composite::csptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
-    const ::fwData::mt::ObjectReadLock tfPoolsLock(tfPools);
-    return tfPools->find(_name) != tfPools->end();
+    return _tfPools->find(_name) != _tfPools->end();
 }
 
 //------------------------------------------------------------------------------
 
-std::string SMultipleTF::createPoolName(const std::string& _basename) const
+std::string SMultipleTF::createPoolName(const std::string& _basename, ::fwData::Composite::csptr _tfPools) const
 {
-    bool bHasTransferFunctionName = true;
-    std::string newName           = _basename;
-    int cpt                       = 1;
-    while(bHasTransferFunctionName)
+    bool hasTransferFunctionName = true;
+    std::string newName          = _basename;
+    int cpt                      = 1;
+    while(hasTransferFunctionName)
     {
         std::stringstream tmpStr;
         tmpStr <<  _basename <<  "_" <<  cpt;
-        newName                  = tmpStr.str();
-        bHasTransferFunctionName = this->hasPoolName(newName);
+        newName                 = tmpStr.str();
+        hasTransferFunctionName = this->hasPoolName(newName, _tfPools);
         cpt++;
     }
 
@@ -261,115 +311,102 @@ std::string SMultipleTF::createPoolName(const std::string& _basename) const
 
 void SMultipleTF::initializePools()
 {
-    // Gets TF pools.
-    const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
-
-    ::fwDataTools::helper::Composite compositeHelper(tfPools);
-
-    // Add the default TF if it not exists.
-    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
-    if(!this->hasPoolName(defaultTFName))
     {
-        const ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
-        const ::fwData::Composite::sptr defaultComposite = ::fwData::Composite::New();
-        defaultComposite->getContainer()[defaultTFName] = defaultTf;
-        const ::fwData::mt::ObjectWriteLock tfPoolsLock(tfPools);
-        compositeHelper.add(defaultTFName, defaultComposite);
-    }
+        // Gets TF pools.
+        const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+            = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
 
-    // Test if transfer function composite has few TF
-    ::fwData::mt::ObjectReadToWriteLock tfPoolsLock(tfPools);
-    if(tfPools->size() <= 1)
-    {
-        tfPoolsLock.unlock();
+        const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+        ::fwDataTools::helper::Composite compositeHelper(sTFPools);
 
-        // Creates the TF atoms reader.
-        const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-        const ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
-        reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
-
-        const ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
-        const ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
-        srvCfg->addConfigurationElement(fileCfg);
-
-        // Parse all path contained in m_path.
-        for(std::filesystem::path dirPath : m_paths)
+        // Add the default TF if it not exists.
+        const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+        if(!this->hasPoolName(defaultTFName, sTFPools))
         {
-            ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+            const ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
+            const ::fwData::Composite::sptr defaultComposite = ::fwData::Composite::New();
+            defaultComposite->getContainer()[defaultTFName] = defaultTf;
+            compositeHelper.add(defaultTFName, defaultComposite);
+        }
 
-            SLM_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
-            for(std::filesystem::directory_iterator it(dirPath);
-                it != std::filesystem::directory_iterator();
-                ++it )
+        // Test if transfer function composite has few TF
+        if(tfPools->size() <= 1)
+        {
+            // Creates the TF atoms reader.
+            const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
+            const ::fwIO::IReader::sptr reader        = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+            reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
+
+            const ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
+            const ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+            srvCfg->addConfigurationElement(fileCfg);
+
+            // Parse all path contained in m_path.
+            for(std::filesystem::path dirPath : m_paths)
             {
+                ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
-                if(!std::filesystem::is_directory(*it) &&
-                   it->path().extension().string() == ".json")
+                SLM_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
+                for(std::filesystem::directory_iterator it(dirPath);
+                    it != std::filesystem::directory_iterator();
+                    ++it )
                 {
-                    const std::filesystem::path file = *it;
 
-                    // Add a new composite for each TF path.
-                    fileCfg->setValue(file.string());
-                    reader->setConfiguration(srvCfg);
-                    reader->configure();
-                    reader->start();
-                    reader->update();
-                    reader->stop();
-
-                    if(!tf->getName().empty())
+                    if(!std::filesystem::is_directory(*it) &&
+                       it->path().extension().string() == ".json")
                     {
-                        const ::fwData::TransferFunction::sptr newTF
-                            = ::fwData::Object::copy< ::fwData::TransferFunction >(tf);
-                        if(this->hasPoolName(newTF->getName()))
-                        {
-                            newTF->setName(this->createPoolName(newTF->getName()));
-                        }
+                        const std::filesystem::path file = *it;
 
-                        composite->getContainer()[newTF->getName()] = newTF;
+                        // Add a new composite for each TF path.
+                        fileCfg->setValue(file.string());
+                        reader->setConfiguration(srvCfg);
+                        reader->configure();
+                        reader->start();
+                        reader->update();
+                        reader->stop();
 
-                        // If it's requested to have one TF per file, add the composite and create a new one.
-                        if(!m_tfPerPath)
+                        if(!tf->getName().empty())
                         {
-                            if(composite->size() > 0)
+                            const ::fwData::TransferFunction::sptr newTF
+                                = ::fwData::Object::copy< ::fwData::TransferFunction >(tf);
+                            if(this->hasPoolName(newTF->getName(), sTFPools))
                             {
-                                tfPoolsLock.lock();
-                                tfPoolsLock.upgrade();
-                                compositeHelper.add(newTF->getName(), composite);
-                                tfPoolsLock.downgrade();
-                                tfPoolsLock.unlock();
-                                composite = ::fwData::Composite::New();
+                                newTF->setName(this->createPoolName(newTF->getName(), sTFPools));
+                            }
+
+                            composite->getContainer()[newTF->getName()] = newTF;
+
+                            // If it's requested to have one TF per file, add the composite and create a new one.
+                            if(!m_tfPerPath)
+                            {
+                                if(composite->size() > 0)
+                                {
+                                    compositeHelper.add(newTF->getName(), composite);
+                                    composite = ::fwData::Composite::New();
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // If it's requested to have one TF per path, add the composite and create a new one.
-            if(m_tfPerPath)
-            {
-                if(composite->size() > 0)
+                // If it's requested to have one TF per path, add the composite and create a new one.
+                if(m_tfPerPath)
                 {
-                    tfPoolsLock.lock();
-                    tfPoolsLock.upgrade();
-                    compositeHelper.add(dirPath.filename().u8string(), composite);
-                    tfPoolsLock.downgrade();
-                    tfPoolsLock.unlock();
-                    composite = ::fwData::Composite::New();
+                    if(composite->size() > 0)
+                    {
+                        compositeHelper.add(dirPath.filename().u8string(), composite);
+                        composite = ::fwData::Composite::New();
+                    }
                 }
             }
+
+            // Delete the reader.
+            ::fwServices::OSR::unregisterService(reader);
         }
 
-        // Delete the reader.
-        ::fwServices::OSR::unregisterService(reader);
+        // Sends signals.
+        compositeHelper.notify();
     }
-    else
-    {
-        tfPoolsLock.unlock();
-    }
-
-    // Sends signals.
-    compositeHelper.notify();
 
     // Update all presets in the editor.
     this->updatePoolsPreset();
@@ -379,35 +416,36 @@ void SMultipleTF::initializePools()
 
 void SMultipleTF::updatePoolsPreset()
 {
-    // Gets TF pools.
-    const ::fwData::Composite::csptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
-
-    // Iterate over each composite to add them to the presets selector.
-    ::fwData::mt::ObjectReadLock tfPoolsLock(tfPools);
-    for(::fwData::Composite::value_type elt : *tfPools)
-    {
-        m_tfPoolsPreset->addItem(elt.first.c_str());
-    }
-    tfPoolsLock.unlock();
-
-    // Find the current composite.
+    // Store the current composite.
     std::string currentPoolName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
 
-    // If the current TF pool exists, find it.
-    const ::fwData::Composite::csptr tfPool = this->getInput< ::fwData::Composite >(s_CURRENT_TF_POOL_INPUT);
-    if(tfPool)
     {
-        tfPoolsLock.lock();
+        // Gets TF pools.
+        const ::fwData::mt::locked_ptr< const ::fwData::Composite > tfPools
+            = this->getLockedInOut< const ::fwData::Composite >(s_TF_POOLS_INOUT);
+
+        // Iterate over each composite to add them to the presets selector.
         for(::fwData::Composite::value_type elt : *tfPools)
         {
-            if(elt.second == tfPool)
+            m_tfPoolsPreset->addItem(elt.first.c_str());
+        }
+
+        // If the current TF pool exists, find it.
+        const ::fwData::mt::weak_ptr< const ::fwData::Composite > tfPool
+            = this->getWeakInput< const ::fwData::Composite >(s_CURRENT_TF_POOL_INPUT);
+        const ::fwData::mt::locked_ptr< const ::fwData::Composite > tfPoolLock = tfPool.lock();
+
+        if(tfPoolLock)
+        {
+            for(::fwData::Composite::value_type elt : *tfPools)
             {
-                currentPoolName = elt.first;
-                break;
+                if(elt.second == tfPoolLock.get_shared())
+                {
+                    currentPoolName = elt.first;
+                    break;
+                }
             }
         }
-        tfPoolsLock.unlock();
     }
 
     const int index = m_tfPoolsPreset->findText(QString::fromStdString(currentPoolName));
@@ -437,9 +475,8 @@ void SMultipleTF::setCurrentPool()
 {
     const std::string newSelectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
 
-    const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
-    ::fwData::mt::ObjectReadLock tfPoolsLock(tfPools);
+    const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+        = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
 
     const ::fwData::Object::sptr newSelectedObject    = (*tfPools)[newSelectedTFPoolKey];
     const ::fwData::Composite::sptr newSelectedTFPool = ::fwData::Composite::dynamicCast(newSelectedObject);
@@ -466,23 +503,22 @@ void SMultipleTF::deletePool()
 
     if(answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-        SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
-        ::fwData::mt::ObjectReadToWriteLock tfPoolsLock(tfPools);
+        {
+            // Gets TF pools.
+            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
 
-        // Remove the current TF pool from the Composite.
-        const std::string selectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
-        ::fwDataTools::helper::Composite compositeHelper(tfPools);
+            // Remove the current TF pool from the Composite.
+            const std::string selectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
+            ::fwDataTools::helper::Composite compositeHelper(tfPools.get_shared());
 
-        tfPoolsLock.upgrade();
-        compositeHelper.remove(selectedTFPoolKey);
-        tfPoolsLock.downgrade();
-        tfPoolsLock.unlock();
+            compositeHelper.remove(selectedTFPoolKey);
 
-        // Sends signals.
-        compositeHelper.notify();
+            // Sends signals.
+            compositeHelper.notify();
 
-        m_tfPoolsPreset->removeItem(m_tfPoolsPreset->findText(QString::fromStdString(selectedTFPoolKey)));
+            m_tfPoolsPreset->removeItem(m_tfPoolsPreset->findText(QString::fromStdString(selectedTFPoolKey)));
+        }
 
         // Find the new current composite.
         const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
@@ -508,47 +544,46 @@ void SMultipleTF::newPool()
 
     if(!newName.empty())
     {
-        if(!this->hasPoolName(newName))
         {
-            // Get the composite.
-            const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-            SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
+            // Gets TF pools.
+            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
 
-            // Create the new composite.
-            const ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
-            const ::fwData::Composite::sptr defaultComposite = ::fwData::Composite::New();
-            defaultComposite->getContainer()[newName] = defaultTf;
-
-            // Add a new composite.
-            ::fwDataTools::helper::Composite compositeHelper(tfPools);
+            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            if(!this->hasPoolName(newName, sTFPools))
             {
-                const ::fwData::mt::ObjectWriteLock tfPoolsLock(tfPools);
-                compositeHelper.add(newName, defaultComposite);
-            }
-            compositeHelper.notify();
+                // Create the new composite.
+                const ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
+                const ::fwData::Composite::sptr defaultComposite = ::fwData::Composite::New();
+                defaultComposite->getContainer()[newName] = defaultTf;
 
-            // Creates presets.
-            m_tfPoolsPreset->clear();
-            {
-                const ::fwData::mt::ObjectReadLock tfPoolsLock(tfPools);
+                // Add a new composite.
+                ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+                {
+                    compositeHelper.add(newName, defaultComposite);
+                }
+                compositeHelper.notify();
+
+                // Creates presets.
+                m_tfPoolsPreset->clear();
                 for(::fwData::Composite::value_type elt : *tfPools)
                 {
                     m_tfPoolsPreset->addItem(elt.first.c_str());
                 }
             }
+        }
 
-            // Set the current composite.
-            this->presetChoice(m_tfPoolsPreset->findText(QString::fromStdString(newName.c_str())));
-        }
-        else
-        {
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
-        }
+        // Set the current composite.
+        this->presetChoice(m_tfPoolsPreset->findText(QString::fromStdString(newName.c_str())));
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 
@@ -567,46 +602,45 @@ void SMultipleTF::copyPool()
 
     if(!newName.empty())
     {
-        if(!this->hasPoolName(newName))
         {
-            // Get the composite.
-            const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-            SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
+            // Gets TF pools.
+            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
 
-            ::fwData::Object::sptr object = (*tfPools)[str];
-            const ::fwData::Composite::sptr currentTFPool = ::fwData::Composite::dynamicCast(object);
-            SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", currentTFPool);
-
-            // Copy the composite.
-            ::fwDataTools::helper::Composite compositeHelper(tfPools);
+            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            if(!this->hasPoolName(newName, sTFPools))
             {
-                const ::fwData::mt::ObjectWriteLock tfPoolsLock(tfPools);
-                compositeHelper.add(newName, ::fwData::Object::copy(currentTFPool));
-            }
-            compositeHelper.notify();
+                ::fwData::Object::sptr object = (*tfPools)[str];
+                const ::fwData::Composite::sptr currentTFPool = ::fwData::Composite::dynamicCast(object);
+                SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", currentTFPool);
 
-            // Creates presets.
-            m_tfPoolsPreset->clear();
-            {
-                const ::fwData::mt::ObjectReadLock tfPoolsLock(tfPools);
+                // Copy the composite.
+                ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+                {
+                    compositeHelper.add(newName, ::fwData::Object::copy(currentTFPool));
+                }
+                compositeHelper.notify();
+
+                // Creates presets.
+                m_tfPoolsPreset->clear();
                 for(::fwData::Composite::value_type elt : *tfPools)
                 {
                     m_tfPoolsPreset->addItem(elt.first.c_str());
                 }
             }
+        }
 
-            // Set the current composite.
-            this->presetChoice(m_tfPoolsPreset->findText(QString::fromStdString(newName.c_str())));
-        }
-        else
-        {
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
-        }
+        // Set the current composite.
+        this->presetChoice(m_tfPoolsPreset->findText(QString::fromStdString(newName.c_str())));
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Warning");
+        messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.show();
     }
 }
 
@@ -617,20 +651,19 @@ void SMultipleTF::reinitializePools()
     // Clears previous settings.
     m_tfPoolsPreset->clear();
 
-    // Get the composite.
-    const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
-
-    ::fwDataTools::helper::Composite compositeHelper(tfPools);
-
-    // Clear it.
     {
-        const ::fwData::mt::ObjectWriteLock tfPoolsLock(tfPools);
-        compositeHelper.clear();
-    }
+        // Get the composite.
+        const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+            = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
 
-    // Sends signals.
-    compositeHelper.notify();
+        ::fwDataTools::helper::Composite compositeHelper(tfPools.get_shared());
+
+        // Clear it.
+        compositeHelper.clear();
+
+        // Sends signals.
+        compositeHelper.notify();
+    }
 
     // Initialize pools.
     this->initializePools();
@@ -651,46 +684,117 @@ void SMultipleTF::renamePool()
 
     if(!newName.empty() && newName != str)
     {
-        if(!this->hasPoolName(newName))
         {
-            // Get the composite.
-            const ::fwData::Composite::sptr tfPools = this->getInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
-            SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' does not exist.", tfPools);
+            // Gets TF pools.
+            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
 
-            ::fwData::Object::sptr object = (*tfPools)[str];
-
-            // Rename the composite.
-            ::fwDataTools::helper::Composite compositeHelper(tfPools);
+            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            if(!this->hasPoolName(newName, sTFPools))
             {
-                const ::fwData::mt::ObjectWriteLock tfPoolsLock(tfPools);
+                ::fwData::Object::sptr object = (*tfPools)[str];
+
+                // Rename the composite.
+                ::fwDataTools::helper::Composite compositeHelper(sTFPools);
                 compositeHelper.remove(str);
                 compositeHelper.add(newName, object);
-            }
-            compositeHelper.notify();
+                compositeHelper.notify();
 
-            // Creates presets.
-            m_tfPoolsPreset->clear();
-            {
-                const ::fwData::mt::ObjectReadLock tfPoolsLock(tfPools);
+                // Creates presets.
+                m_tfPoolsPreset->clear();
                 for(::fwData::Composite::value_type elt : *tfPools)
                 {
                     m_tfPoolsPreset->addItem(elt.first.c_str());
                 }
             }
+            else
+            {
+                ::fwGui::dialog::MessageDialog messageBox;
+                messageBox.setTitle("Warning");
+                messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
+                messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+                messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+                messageBox.show();
+                return;
+            }
+        }
 
-            // Set the current composite.
-            this->presetChoice(m_tfPoolsPreset->findText(QString::fromStdString(newName.c_str())));
-        }
-        else
-        {
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Warning");
-            messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
-        }
+        // Set the current composite.
+        this->presetChoice(m_tfPoolsPreset->findText(QString::fromStdString(newName.c_str())));
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SMultipleTF::importPool()
+{
+    const ::fwData::Composite::sptr tfPool = ::fwData::Composite::New();
+
+    const ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >("::ioAtoms::SReader");
+
+    reader->registerInOut(tfPool, ::fwIO::s_DATA_KEY);
+
+    ::fwServices::IService::ConfigType config;
+    config.add("archive.<xmlattr>.backend", "json");
+    config.add("archive.extension", ".tfp");
+    config.add("extensions.extension", ".tfp");
+
+    reader->configure(config);
+    reader->start();
+    reader->configureWithIHM();
+    reader->update().wait();
+    reader->stop().wait();
+    ::fwServices::OSR::unregisterService(reader);
+
+    // Check the loaded composite.
+    if(tfPool->size() >= 1)
+    {
+        int index = 0;
+        {
+            std::string poolName(reader->getFile().filename().stem().string());
+
+            // Get the composite.
+            const ::fwData::mt::locked_ptr< ::fwData::Composite > tfPools
+                = this->getLockedInOut< ::fwData::Composite >(s_TF_POOLS_INOUT);
+
+            const ::fwData::Composite::sptr sTFPools = tfPools.get_shared();
+            if(this->hasPoolName(poolName, sTFPools))
+            {
+                poolName = this->createPoolName(poolName, sTFPools);
+            }
+
+            ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+            compositeHelper.add(poolName, tfPool);
+            compositeHelper.notify();
+
+            m_tfPoolsPreset->addItem(QString(poolName.c_str()));
+            index = static_cast<int>((*tfPools).size()-1);
+        }
+
+        this->presetChoice(index);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMultipleTF::exportPool()
+{
+    const ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
+    writer->registerInput(m_currentTFPool, ::fwIO::s_DATA_KEY);
+
+    ::fwServices::IService::ConfigType config;
+    config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
+    config.add("patcher.<xmlattr>.version", s_VERSION_TF);
+    config.add("archive.<xmlattr>.backend", "json");
+    config.add("archive.extension", ".tfp");
+    config.add("extensions.extension", ".tfp");
+
+    writer->configure(config);
+    writer->start();
+    writer->configureWithIHM();
+    writer->update().wait();
+    writer->stop().wait();
+    ::fwServices::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------

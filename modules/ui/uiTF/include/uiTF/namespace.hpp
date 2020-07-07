@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __UITF_NAMESPACE_HPP__
-#define __UITF_NAMESPACE_HPP__
+#pragma once
 
-/**
- * @brief Transfert functions editor
- **/
+/// Transfert functions editors.
 namespace uiTF
 {
-} //namespace uiTF
-
-
-#endif //__UITF_NAMESPACE_HPP__
+}
