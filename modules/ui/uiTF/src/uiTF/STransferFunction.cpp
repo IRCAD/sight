@@ -76,6 +76,9 @@ static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
 
 static const ::fwServices::IService::KeyType s_TF_OUTPUT = "tf";
 
+static const std::string s_CONTEXT_TF = "TF";
+static const std::string s_VERSION_TF = "V1";
+
 //------------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::STransferFunction)
@@ -125,14 +128,36 @@ void STransferFunction::configuring()
         {
             useDefaultPath = configAttr->get<bool>(s_USE_DEFAULT_PATH_CONFIG, useDefaultPath);
 
-            m_deleteIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_DELETE_ICON_CONFIG, m_deleteIcon));
-            m_newIcon          = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_NEW_ICON_CONFIG, m_newIcon));
-            m_reinitializeIcon =
-                ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_REINITIALIZE_ICON_CONFIG, m_reinitializeIcon));
-            m_renameIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_RENAME_ICON_CONFIG, m_renameIcon));
-            m_importIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_IMPORT_ICON_CONFIG, m_importIcon));
-            m_exportIcon = ::fwRuntime::getModuleResourceFilePath(configAttr->get(s_EXPORT_ICON_CONFIG, m_exportIcon));
+            const auto deleteIconCfg = configAttr->get_optional<std::string>(s_DELETE_ICON_CONFIG);
+            if(deleteIconCfg)
+            {
+                m_deleteIcon = ::fwRuntime::getModuleResourceFilePath(deleteIconCfg.value());
+            }
+            const auto newIconCfg = configAttr->get_optional<std::string>(s_NEW_ICON_CONFIG);
+            if(newIconCfg)
+            {
+                m_newIcon = ::fwRuntime::getModuleResourceFilePath(newIconCfg.value());
+            }
+            const auto reinitializeIconCfg = configAttr->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
+            if(reinitializeIconCfg)
+            {
+                m_reinitializeIcon = ::fwRuntime::getModuleResourceFilePath(reinitializeIconCfg.value());
+            }
+            const auto renameIconCfg = configAttr->get_optional<std::string>(s_RENAME_ICON_CONFIG);
+            if(renameIconCfg)
+            {
+                m_renameIcon = ::fwRuntime::getModuleResourceFilePath(renameIconCfg.value());
+            }
+            const auto importIconCfg = configAttr->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
+            if(importIconCfg)
+            {
+                m_importIcon = ::fwRuntime::getModuleResourceFilePath(importIconCfg.value());
+            }
+            const auto exportIconCfg = configAttr->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
+            if(exportIconCfg)
+            {
+                m_exportIcon = ::fwRuntime::getModuleResourceFilePath(exportIconCfg.value());
+            }
 
             m_iconWidth  = configAttr->get< unsigned int >(s_ICON_WIDTH_CONFIG, m_iconWidth);
             m_iconHeight = configAttr->get< unsigned int >(s_ICON_HEIGHT_CONFIG, m_iconHeight);
@@ -157,7 +182,7 @@ void STransferFunction::starting()
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
-    m_pTransferFunctionPreset = new QComboBox();
+    m_transferFunctionPreset = new QComboBox();
 
     m_deleteButton = new QPushButton(QIcon(m_deleteIcon.string().c_str()), "");
     m_deleteButton->setToolTip(QString("Delete"));
@@ -190,7 +215,7 @@ void STransferFunction::starting()
     // Layout management
     QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
 
-    layout->addWidget(m_pTransferFunctionPreset);
+    layout->addWidget(m_transferFunctionPreset);
     layout->addWidget(m_deleteButton);
     layout->addWidget(m_newButton);
     layout->addWidget(m_reinitializeButton);
@@ -201,16 +226,29 @@ void STransferFunction::starting()
     qtContainer->setLayout(layout);
 
     // Qt signals management ( connection to buttons )
-    QObject::connect(m_pTransferFunctionPreset, SIGNAL(activated(int)), this, SLOT(presetChoice(int)));
-    QObject::connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(deleteTF()));
-    QObject::connect(m_newButton, SIGNAL(clicked()), this, SLOT(newTF()));
-    QObject::connect(m_reinitializeButton, SIGNAL(clicked()), this, SLOT(reinitializeTFPool()));
-    QObject::connect(m_renameButton, SIGNAL(clicked()), this, SLOT(renameTF()));
-    QObject::connect(m_importButton, SIGNAL(clicked()), this, SLOT(importTF()));
-    QObject::connect(m_exportButton, SIGNAL(clicked()), this, SLOT(exportTF()));
+    QObject::connect(m_transferFunctionPreset, qOverload<int>(&QComboBox::activated),
+                     this, &STransferFunction::presetChoice);
+    QObject::connect(m_deleteButton, &QPushButton::clicked, this, &STransferFunction::deleteTF);
+    QObject::connect(m_newButton, &QPushButton::clicked, this, &STransferFunction::newTF);
+    QObject::connect(m_reinitializeButton, &QPushButton::clicked, this, &STransferFunction::reinitializeTFPool);
+    QObject::connect(m_renameButton, &QPushButton::clicked, this, &STransferFunction::renameTF);
+    QObject::connect(m_importButton, &QPushButton::clicked, this, &STransferFunction::importTF);
+    QObject::connect(m_exportButton, &QPushButton::clicked, this, &STransferFunction::exportTF);
 
     // preset initialization
     this->initTransferFunctions();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -237,15 +275,6 @@ void STransferFunction::swapping(const KeyType& _key)
 
 void STransferFunction::stopping()
 {
-    // Qt signals management ( disconnection )
-    QObject::disconnect(m_pTransferFunctionPreset, SIGNAL(activated(int)), this, SLOT(presetChoice(int)));
-    QObject::disconnect(m_deleteButton, SIGNAL(clicked()), this, SLOT(deleteTF()));
-    QObject::disconnect(m_newButton, SIGNAL(clicked()), this, SLOT(newTF()));
-    QObject::disconnect(m_reinitializeButton, SIGNAL(clicked()), this, SLOT(reinitializeTFPool()));
-    QObject::disconnect(m_renameButton, SIGNAL(clicked()), this, SLOT(renameTF()));
-    QObject::disconnect(m_importButton, SIGNAL(clicked()), this, SLOT(importTF()));
-    QObject::disconnect(m_exportButton, SIGNAL(clicked()), this, SLOT(exportTF()));
-
     this->destroy();
 }
 
@@ -253,10 +282,10 @@ void STransferFunction::stopping()
 
 void STransferFunction::presetChoice(int index)
 {
-    m_pTransferFunctionPreset->setCurrentIndex(index);
+    m_transferFunctionPreset->setCurrentIndex(index);
     this->updateTransferFunction();
 
-    const std::string tfName = m_pTransferFunctionPreset->currentText().toStdString();
+    const std::string tfName = m_transferFunctionPreset->currentText().toStdString();
     const bool isEnabled     = (tfName != ::fwData::TransferFunction::s_DEFAULT_TF_NAME);
 
     m_renameButton->setEnabled(isEnabled);
@@ -283,8 +312,8 @@ void STransferFunction::deleteTF()
 
         if( poolTF->size() > 1 )
         {
-            const int indexSelectedTF       = m_pTransferFunctionPreset->currentIndex();
-            const std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
+            const int indexSelectedTF       = m_transferFunctionPreset->currentIndex();
+            const std::string selectedTFKey = m_transferFunctionPreset->currentText().toStdString();
 
             ::fwDataTools::helper::Composite compositeHelper(poolTF);
             SLM_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
@@ -302,10 +331,10 @@ void STransferFunction::deleteTF()
                 compositeHelper.notify();
             }
 
-            m_pTransferFunctionPreset->removeItem(indexSelectedTF);
+            m_transferFunctionPreset->removeItem(indexSelectedTF);
             const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
 
-            int index = m_pTransferFunctionPreset->findText(QString::fromStdString(defaultTFName));
+            int index = m_transferFunctionPreset->findText(QString::fromStdString(defaultTFName));
             index = std::max(index, 0);
             this->presetChoice(index);
         }
@@ -354,8 +383,8 @@ void STransferFunction::newTF()
                 compositeHelper.add(newName, pNewTransferFunction);
             }
 
-            m_pTransferFunctionPreset->addItem(QString(newName.c_str()));
-            m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->count()-1);
+            m_transferFunctionPreset->addItem(QString(newName.c_str()));
+            m_transferFunctionPreset->setCurrentIndex(m_transferFunctionPreset->count()-1);
             this->updateTransferFunction();
 
             compositeHelper.notify();
@@ -404,7 +433,7 @@ void STransferFunction::reinitializeTFPool()
 
 void STransferFunction::renameTF()
 {
-    const std::string str = m_pTransferFunctionPreset->currentText().toStdString();
+    const std::string str = m_transferFunctionPreset->currentText().toStdString();
     std::string newName(str);
 
     fwGui::dialog::InputDialog inputDialog;
@@ -433,8 +462,8 @@ void STransferFunction::renameTF()
             poolTFLock.unlock();
             compositeHelper.notify();
 
-            m_pTransferFunctionPreset->setItemText(m_pTransferFunctionPreset->currentIndex(), QString(newName.c_str()));
-            m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->findText(QString(newName.c_str())));
+            m_transferFunctionPreset->setItemText(m_transferFunctionPreset->currentIndex(), QString(newName.c_str()));
+            m_transferFunctionPreset->setCurrentIndex(m_transferFunctionPreset->findText(QString(newName.c_str())));
 
             this->updateTransferFunction();
         }
@@ -464,6 +493,11 @@ void STransferFunction::importTF()
 
     reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
 
+    ::fwServices::IService::ConfigType config;
+    config.add("archive.<xmlattr>.backend", "json");
+    config.add("archive.extension", ".tf");
+
+    reader->configure(config);
     reader->start();
     reader->configureWithIHM();
     reader->update().wait();
@@ -482,7 +516,7 @@ void STransferFunction::importTF()
             compositeHelper.add(tf->getName(), tf);
         }
 
-        m_pTransferFunctionPreset->addItem(QString(tf->getName().c_str()));
+        m_transferFunctionPreset->addItem(QString(tf->getName().c_str()));
         this->presetChoice(static_cast<int>((*poolTF).size()-1));
 
         compositeHelper.notify();
@@ -497,6 +531,14 @@ void STransferFunction::exportTF()
 
     writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
 
+    ::fwServices::IService::ConfigType config;
+    config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
+    config.add("patcher.<xmlattr>.version", s_VERSION_TF);
+    config.add("archive.<xmlattr>.backend", "json");
+    config.add("archive.extension", ".tf");
+    config.add("extensions.extension", ".tf");
+
+    writer->configure(config);
     writer->start();
     writer->configureWithIHM();
     writer->update().wait();
@@ -598,11 +640,11 @@ void STransferFunction::updateTransferFunctionPreset()
 
     const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
     // Manage TF preset
-    m_pTransferFunctionPreset->clear();
+    m_transferFunctionPreset->clear();
     ::fwData::mt::ObjectReadLock poolTFLock(poolTF);
     for(::fwData::Composite::value_type elt :  *poolTF)
     {
-        m_pTransferFunctionPreset->addItem( elt.first.c_str() );
+        m_transferFunctionPreset->addItem( elt.first.c_str() );
     }
     poolTFLock.unlock();
 
@@ -618,7 +660,7 @@ void STransferFunction::updateTransferFunctionPreset()
         currentTFName = m_selectedTF->getName();
     }
 
-    int index = m_pTransferFunctionPreset->findText( QString::fromStdString(currentTFName) );
+    int index = m_transferFunctionPreset->findText( QString::fromStdString(currentTFName) );
     index = std::max(index, 0);
 
     this->presetChoice(index);
@@ -638,15 +680,15 @@ bool STransferFunction::hasTransferFunctionName(const std::string& _name) const
 
 std::string STransferFunction::createTransferFunctionName(const std::string& _basename) const
 {
-    bool bHasTransferFunctionName = true;
-    std::string newName           = _basename;
-    int cpt                       = 1;
-    while(bHasTransferFunctionName)
+    bool hasTransferFunctionName = true;
+    std::string newName          = _basename;
+    int cpt                      = 1;
+    while(hasTransferFunctionName)
     {
         std::stringstream tmpStr;
         tmpStr <<  _basename <<  "_" <<  cpt;
-        newName                  = tmpStr.str();
-        bHasTransferFunctionName = this->hasTransferFunctionName(newName);
+        newName                 = tmpStr.str();
+        hasTransferFunctionName = this->hasTransferFunctionName(newName);
         cpt++;
     }
 
@@ -660,7 +702,7 @@ void STransferFunction::updateTransferFunction()
     ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", poolTF);
 
-    const std::string newSelectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
+    const std::string newSelectedTFKey = m_transferFunctionPreset->currentText().toStdString();
     SLM_DEBUG("Transfer function selected : " +  newSelectedTFKey);
 
     SLM_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
@@ -677,16 +719,4 @@ void STransferFunction::updateTransferFunction()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-} // end namespace
+} // namespace uiTF.

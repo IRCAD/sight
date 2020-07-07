@@ -231,7 +231,9 @@
             newIcon="flatIcon-0.1/icons/GreenNewFile.svg"
             copyIcon="flatIcon-0.1/icons/GreenCopyFile.svg"
             reinitializeIcon="flatIcon-0.1/icons/RedResetFile.svg"
-            renameIcon="flatIcon-0.1/icons/YellowRenameFile.svg" />
+            renameIcon="flatIcon-0.1/icons/YellowRenameFile.svg"
+            importIcon="flatIcon-0.1/icons/BlueLoad.svg"
+            exportIcon="flatIcon-0.1/icons/BlueSave.svg"/>
         </service>
 
         <service uid="tfMergerSvr" type="::ctrlTF::SMergeTF" autoConnect="yes" >

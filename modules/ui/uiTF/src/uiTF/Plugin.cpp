@@ -53,4 +53,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace uiTF
+} // namespace uiTF.
