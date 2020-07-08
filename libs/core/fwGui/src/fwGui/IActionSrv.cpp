@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -105,7 +105,7 @@ void IActionSrv::initialize()
             if( stateCfg->hasAttribute("inverse") )
             {
                 std::string invertState = stateCfg->getExistingAttributeValue("inverse");
-                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
+                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'inverse': must be 'true' or 'false'",
                            (invertState == "true") || (invertState == "false"));
                 m_isInverted = (invertState == "true");
             }
@@ -113,7 +113,7 @@ void IActionSrv::initialize()
             if( stateCfg->hasAttribute("active") )
             {
                 std::string isActive = stateCfg->getExistingAttributeValue("active");
-                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
+                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'active': must be 'true' or 'false'",
                            (isActive == "true") || (isActive == "false"));
                 m_isActive = (isActive == "true");
             }
@@ -121,7 +121,7 @@ void IActionSrv::initialize()
             if( stateCfg->hasAttribute("executable") )
             {
                 std::string isExecutable = stateCfg->getExistingAttributeValue("executable");
-                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
+                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'executable': must be 'true' or 'false'",
                            (isExecutable == "true") || (isExecutable == "false"));
                 m_isExecutable = (isExecutable == "true");
             }
@@ -129,7 +129,7 @@ void IActionSrv::initialize()
             if( stateCfg->hasAttribute("visible") )
             {
                 std::string isVisible = stateCfg->getExistingAttributeValue("visible");
-                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
+                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'visible': must be 'true' or 'false'",
                            (isVisible == "true") || (isVisible == "false"));
                 m_isVisible = (isVisible == "true");
             }
@@ -139,9 +139,9 @@ void IActionSrv::initialize()
         {
             ConfigurationType cfg = *iter;
 
-            SLM_ASSERT("Missing attribute 'value'", cfg->hasAttribute("value"));
+            SLM_ASSERT("["+this->getID()+"'] Missing attribute 'value' for 'confirmation'", cfg->hasAttribute("value"));
             std::string confirm = cfg->getExistingAttributeValue("value");
-            SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
+            SLM_ASSERT("["+this->getID()+"'] Wrong attribute value  for 'confirmation': must be 'true' or 'false'",
                        (confirm == "true") || (confirm == "false"));
             m_confirmAction = (confirm == "true");
 
