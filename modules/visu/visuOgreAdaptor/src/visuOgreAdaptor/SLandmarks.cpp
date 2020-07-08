@@ -40,6 +40,7 @@ static const std::string s_LANDMARKS_INPUT = "landmarks";
 
 static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
 static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
+static const std::string s_LABEL_CONFIG       = "label";
 
 //-----------------------------------------------------------------------------
 
@@ -65,8 +66,9 @@ void SLandmarks::configuring()
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_TRANSFORM_CONFIG,
                                                   this->getID() + "_transform"));
 
-    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
+    m_fontSize     = config.get< size_t >(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_enableLabels = config.get< bool >(s_LABEL_CONFIG, m_enableLabels);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,6 +145,10 @@ void SLandmarks::updating()
         {
             const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
             const size_t ptNumber                            = landmarks->getNumberOfPoints(groupName);
+
+            const ::Ogre::ColourValue color
+                = ::Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
+
             for(size_t index = 0; index < ptNumber; ++index)
             {
                 const std::string baseName = this->getID() + "_" + groupName + "_" + std::to_string(index);
@@ -150,18 +156,6 @@ void SLandmarks::updating()
                 const std::string objectName = baseName + "_object";
                 ::Ogre::ManualObject* object = sceneMgr->createManualObject(objectName);
                 m_manualObjects.push_back(object);
-
-                const std::string textName = baseName + "_text";
-                ::fwRenderOgre::Text* text
-                    = fwRenderOgre::Text::New(textName, sceneMgr, m_text, m_fontSource, m_fontSize, dpi, cam);
-                m_labels.push_back(text);
-
-                const ::Ogre::ColourValue color
-                    = ::Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
-
-                text->setText(groupName + "_" + std::to_string(index));
-                text->setTextColor(color);
-                text->setVisible(group.m_visibility);
 
                 switch(group.m_shape)
                 {
@@ -181,11 +175,24 @@ void SLandmarks::updating()
                 m_nodes.push_back(node);
 
                 node->attachObject(object);
-                node->attachObject(text);
                 node->setVisible(group.m_visibility);
 
                 const ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, index);
                 node->setPosition(::Ogre::Real(point[0]), ::Ogre::Real(point[1]), ::Ogre::Real(point[2]));
+
+                if(m_enableLabels)
+                {
+                    const std::string textName = baseName + "_text";
+                    ::fwRenderOgre::Text* text
+                        = fwRenderOgre::Text::New(textName, sceneMgr, m_text, m_fontSource, m_fontSize, dpi, cam);
+                    m_labels.push_back(text);
+
+                    text->setText(groupName + "_" + std::to_string(index));
+                    text->setTextColor(color);
+                    text->setVisible(group.m_visibility);
+
+                    node->attachObject(text);
+                }
             }
         }
     }

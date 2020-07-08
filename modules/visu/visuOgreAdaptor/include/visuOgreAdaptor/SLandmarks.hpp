@@ -54,7 +54,7 @@ namespace visuOgreAdaptor
  *      was specified
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
- *
+ * - \b label (optional, bool, default=true): display label.
  */
 class VISUOGREADAPTOR_CLASS_API SLandmarks final :
     public ::fwRenderOgre::IAdaptor,
@@ -122,6 +122,9 @@ private:
 
     /// Stores label of each landmark.
     std::vector< ::fwRenderOgre::Text* > m_labels;
+
+    /// Enables labels.
+    bool m_enableLabels { true };
 
     /// Stores landmark`s nodes.
     std::vector< ::Ogre::SceneNode* > m_nodes;
