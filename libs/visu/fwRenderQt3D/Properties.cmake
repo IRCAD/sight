@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwRender
     fwRuntime
     fwServices
-    ioVTK
 )
 set( REQUIREMENTS )
 
