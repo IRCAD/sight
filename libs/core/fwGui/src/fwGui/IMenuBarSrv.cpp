@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -54,7 +54,7 @@ void IMenuBarSrv::initialize()
     m_registrar = ::fwGui::registrar::MenuBarRegistrar::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-    SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );
+    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );
 
     if(!vectRegistrar.empty())
     {
@@ -64,13 +64,13 @@ void IMenuBarSrv::initialize()
 
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-    SLM_ASSERT("Gui section is mandatory.", !vectGui.empty() );
+    SLM_ASSERT("["+this->getID()+"'] <gui> section is mandatory.", !vectGui.empty() );
 
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-        SLM_ASSERT("layout section is mandatory.", !vectLayoutMng.empty() );
+        SLM_ASSERT("["+this->getID()+"'] <layout> section is mandatory.", !vectLayoutMng.empty() );
         if(!vectLayoutMng.empty())
         {
             m_layoutConfig = vectLayoutMng.at(0);
@@ -122,7 +122,8 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
     else
     {
         ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >(
-                                                                                      [&] {
+                                                                                      [&]
+            {
                 m_layoutManager->menuIsEnabled(menu, false);
             })).wait();
     }

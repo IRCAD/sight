@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,7 +86,7 @@ void IFrameSrv::initialize()
     {
         // find LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("frame");
-        SLM_ASSERT("<frame> xml element must exist", !vectLayoutMng.empty());
+        SLM_ASSERT("["+this->getID()+"' ] <frame> element must exist", !vectLayoutMng.empty());
         m_frameConfig = vectLayoutMng.at(0);
         this->initializeLayoutManager(m_frameConfig);
 
@@ -119,7 +119,8 @@ void IFrameSrv::initialize()
         {
             m_closePolicy = onclose;
         }
-        SLM_ASSERT("Invalid onclose value : " << m_closePolicy << ". Should be 'exit', 'notify' or 'message'",
+        SLM_ASSERT("["+this->getID()+"' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
+                   +CLOSE_POLICY_NOTIFY+"', '" +CLOSE_POLICY_EXIT+"' or '"+CLOSE_POLICY_MESSAGE+"'",
                    m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
                    || m_closePolicy == CLOSE_POLICY_MESSAGE);
     }
@@ -138,7 +139,8 @@ void IFrameSrv::initialize()
 
 void IFrameSrv::create()
 {
-    SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
+    SLM_ASSERT("["+this->getID()+"' ] FrameLayoutManager must be initialized, don't forget to call 'initialize()' in "
+               "'configuring()' method.", m_frameLayoutManager);
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
@@ -237,8 +239,9 @@ void IFrameSrv::destroy()
 
 void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<frameConfig->getName()<< ", must be frame",
-                frameConfig->getName() == "frame");
+    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'frame', actual: '"
+               +frameConfig->getName()+ "'",
+               frameConfig->getName() == "frame");
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
         ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY);
     m_frameLayoutManager = ::fwGui::layoutManager::IFrameLayoutManager::dynamicCast(guiObj);
@@ -252,8 +255,9 @@ void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
 
 void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<menuBarConfig->getName()<< ", must be menuBar",
-                menuBarConfig->getName() == "menuBar");
+    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'menuBar', actual: '"
+               +menuBarConfig->getName()+ "'",
+               menuBarConfig->getName() == "menuBar");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY);
     m_menuBarBuilder                    = ::fwGui::builder::IMenuBarBuilder::dynamicCast(guiObj);
@@ -267,8 +271,9 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 
 void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<toolBarConfig->getName()<< ", must be toolBar",
-                toolBarConfig->getName() == "toolBar");
+    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
+               +toolBarConfig->getName()+ "'",
+               toolBarConfig->getName() == "toolBar");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder                    = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
