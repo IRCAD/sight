@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -75,7 +75,7 @@ IGuiContainerSrv::~IGuiContainerSrv()
 
 void IGuiContainerSrv::initialize()
 {
-    SLM_ASSERT("Service hasn't configuration", m_configuration);
+    SLM_ASSERT("The service '" + this->getID() + "' does not contain a configuration", m_configuration);
 
     // Create view registrar
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::New( this->getID() );
@@ -92,7 +92,8 @@ void IGuiContainerSrv::initialize()
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
     if( !vectGui.empty() )
     {
-        SLM_ASSERT("No <registry> tag is allowed in the <gui> section", vectGui.at(0)->find("registry").empty());
+        SLM_ASSERT("["+this->getID()+"' ] No <registry> tag is allowed in the <gui> section",
+                   vectGui.at(0)->find("registry").empty());
 
         // find view LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
@@ -126,7 +127,8 @@ void IGuiContainerSrv::initialize()
 
 void IGuiContainerSrv::create()
 {
-    SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
+    SLM_ASSERT("["+this->getID()+"'] ViewRegistrar must be initialized, don't forget to call 'initialize()' in "
+               "'configuring()' method.", m_viewRegistrar);
     ::fwGui::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", parent);
 
@@ -138,7 +140,8 @@ void IGuiContainerSrv::create()
                 ::fwGui::factory::New(::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
             m_containerBuilder = ::fwGui::builder::IContainerBuilder::dynamicCast(guiObj);
 
-            SLM_ASSERT("ClassFactoryRegistry failed for class "+ ::fwGui::builder::IContainerBuilder::REGISTRY_KEY,
+            SLM_ASSERT("Cannot create main container: factory failed for '"
+                       + ::fwGui::builder::IContainerBuilder::REGISTRY_KEY + "'",
                        m_containerBuilder);
             m_containerBuilder->createContainer(parent);
 
@@ -222,7 +225,8 @@ void IGuiContainerSrv::destroy()
 
 void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    SLM_ASSERT("Bad configuration name "+layoutConfig->getName()+ ", must be layout",
+    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'layout', actual: '"
+               +layoutConfig->getName()+ "'",
                layoutConfig->getName() == "layout");
     SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
     const std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
@@ -238,7 +242,8 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 
 void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
-    SLM_ASSERT("Bad configuration name "+toolBarConfig->getName()+ ", must be toolBar",
+    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
+               +toolBarConfig->getName()+ "'",
                toolBarConfig->getName() == "toolBar");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
@@ -253,7 +258,8 @@ void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 void IGuiContainerSrv::initializeSlideViewBuilder(ConfigurationType slideViewConfig)
 {
-    SLM_ASSERT("Bad configuration name " + slideViewConfig->getName() + ", must be layout",
+    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'slideView', actual: '"
+               +slideViewConfig->getName()+ "'",
                slideViewConfig->getName() == "slideView");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
