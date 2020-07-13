@@ -126,9 +126,9 @@ void MeshTest::setCubeMesh()
     unsigned int count   = 0;
     for(; itrPt != endItrPt; ++itrPt)
     {
-        CPPUNIT_ASSERT_EQUAL(static_cast< float >(itrPt->point->x), posBufferData[count]);
-        CPPUNIT_ASSERT_EQUAL(static_cast< float >(itrPt->point->y), posBufferData[count+1]);
-        CPPUNIT_ASSERT_EQUAL(static_cast< float >(itrPt->point->z), posBufferData[count+2]);
+        CPPUNIT_ASSERT(static_cast< float >(itrPt->point->x) - posBufferData[count] < 0.01f);
+        CPPUNIT_ASSERT(static_cast< float >(itrPt->point->y) - posBufferData[count+1] < 0.01f);
+        CPPUNIT_ASSERT(static_cast< float >(itrPt->point->z) - posBufferData[count+2] < 0.01f);
         count += 3;
     }
 
@@ -202,14 +202,14 @@ void MeshTest::centerCameraOnCube()
     qt3dMesh->centerCameraOnMesh();
 
     // Asserts actual camera's view center is equal to expected camera's one.
-    CPPUNIT_ASSERT_EQUAL(expectedCamera->viewCenter().x(), qt3dMesh->getScene()->getCamera()->viewCenter().x());
-    CPPUNIT_ASSERT_EQUAL(expectedCamera->viewCenter().y(), qt3dMesh->getScene()->getCamera()->viewCenter().y());
-    CPPUNIT_ASSERT_EQUAL(expectedCamera->viewCenter().z(), qt3dMesh->getScene()->getCamera()->viewCenter().z());
+    CPPUNIT_ASSERT(expectedCamera->viewCenter().x() - qt3dMesh->getScene()->getCamera()->viewCenter().x() < 0.01f);
+    CPPUNIT_ASSERT(expectedCamera->viewCenter().y() - qt3dMesh->getScene()->getCamera()->viewCenter().y() < 0.01f);
+    CPPUNIT_ASSERT(expectedCamera->viewCenter().z() - qt3dMesh->getScene()->getCamera()->viewCenter().z() < 0.01f);
 
     // Asserts actual camera's position is equal to expected camera's one.
-    CPPUNIT_ASSERT_EQUAL(expectedCamera->position().x(), qt3dMesh->getScene()->getCamera()->position().x());
-    CPPUNIT_ASSERT_EQUAL(expectedCamera->position().y(), qt3dMesh->getScene()->getCamera()->position().y());
-    CPPUNIT_ASSERT_EQUAL(expectedCamera->position().z(), qt3dMesh->getScene()->getCamera()->position().z());
+    CPPUNIT_ASSERT(expectedCamera->position().x() - qt3dMesh->getScene()->getCamera()->position().x() < 0.01f);
+    CPPUNIT_ASSERT(expectedCamera->position().y() - qt3dMesh->getScene()->getCamera()->position().y() < 0.01f);
+    CPPUNIT_ASSERT(expectedCamera->position().z() - qt3dMesh->getScene()->getCamera()->position().z() < 0.01f);
 
     delete camera;
     delete expectedCamera;
