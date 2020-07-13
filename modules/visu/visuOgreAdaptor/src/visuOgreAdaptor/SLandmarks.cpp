@@ -45,6 +45,8 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup"
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
 static const ::fwCom::Slots::SlotKeyType s_INSERT_POINT_SLOT     = "insertPoint";
+static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
+static const ::fwCom::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
 static const ::fwCom::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT = "initializeImage";
 static const ::fwCom::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType";
 static const ::fwCom::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
@@ -63,6 +65,8 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     newSlot(s_REMOVE_POINT_SLOT, &SLandmarks::removePoint, this);
     newSlot(s_INSERT_POINT_SLOT, &SLandmarks::insertPoint, this);
+    newSlot(s_SELECT_POINT_SLOT, &SLandmarks::selectPoint, this);
+    newSlot(s_DESELECT_POINT_SLOT, &SLandmarks::deselectPoint, this);
     newSlot(s_INITIALIZE_IMAGE_SLOT, &SLandmarks::initializeImage, this);
     newSlot(s_SLICE_TYPE_SLOT, &SLandmarks::changeSliceType, this);
     newSlot(s_SLICE_INDEX_SLOT, &SLandmarks::changeSliceIndex, this);
@@ -153,6 +157,8 @@ void SLandmarks::starting()
     connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
     connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
     connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_INSERTED_SIG, s_INSERT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INPUT, ::fwData::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT);
     connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_INITIALIZE_IMAGE_SLOT);
     connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICE_TYPE_SLOT);
     connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICE_INDEX_SLOT);
@@ -189,6 +195,12 @@ void SLandmarks::updating()
 
 void SLandmarks::stopping()
 {
+    // Stop all threads.
+    for(auto landmarkIt = m_selectedLandmarks.begin(); landmarkIt != m_selectedLandmarks.end(); ++landmarkIt)
+    {
+        (*landmarkIt)->m_timer->stop();
+    }
+
     // Get landmarks.
     const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
     const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
@@ -215,14 +227,17 @@ void SLandmarks::removeGroup(std::string _groupName)
     // Find object where name match _groupName and delete Ogre's resources.
     for(auto objectIt = m_manualObjects.begin(); objectIt != m_manualObjects.end();)
     {
-        const std::string& name = objectIt->m_groupName;
+        const std::string& name = (*objectIt)->m_groupName;
         if(name.find(_groupName) != std::string::npos)
         {
-            m_transNode->removeAndDestroyChild(objectIt->m_node);
-            sceneMgr->destroyManualObject(objectIt->m_object);
+            // Stop the thread if it already run since we are deleting data.
+            this->deselectPoint(_groupName, (*objectIt)->m_index);
+
+            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
+            sceneMgr->destroyManualObject((*objectIt)->m_object);
             if(m_enableLabels)
             {
-                sceneMgr->destroyMovableObject(objectIt->m_label);
+                sceneMgr->destroyMovableObject((*objectIt)->m_label);
             }
             objectIt = m_manualObjects.erase(objectIt);
         }
@@ -240,6 +255,13 @@ void SLandmarks::removeGroup(std::string _groupName)
 
 void SLandmarks::modifyGroup(std::string _groupName)
 {
+    // Get all selected point.
+    std::vector< size_t > indexes;
+    for(const std::shared_ptr<SelectedLandmark>& landmark : m_selectedLandmarks)
+    {
+        indexes.push_back(landmark->m_landmark->m_index);
+    }
+
     // Remove the group.
     this->removeGroup(_groupName);
 
@@ -254,6 +276,12 @@ void SLandmarks::modifyGroup(std::string _groupName)
     for(size_t index = 0; index < group.m_points.size(); ++index)
     {
         this->insertPoint(_groupName, index);
+    }
+
+    // Re-run selected landmark threads
+    for(size_t index : indexes)
+    {
+        this->selectPoint(_groupName, index);
     }
 }
 
@@ -292,14 +320,17 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
     // Find object where name match _groupName and the index, and delete Ogre's resources.
     for(auto objectIt = m_manualObjects.begin(); objectIt != m_manualObjects.end(); ++objectIt)
     {
-        const std::string& name = objectIt->m_groupName;
-        if(name.find(_groupName) != std::string::npos && objectIt->m_index == _index)
+        const std::string& name = (*objectIt)->m_groupName;
+        if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index == _index)
         {
-            m_transNode->removeAndDestroyChild(objectIt->m_node);
-            sceneMgr->destroyManualObject(objectIt->m_object);
+            // Stop the thread if it already run since we are deleting data.
+            this->deselectPoint(_groupName, _index);
+
+            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
+            sceneMgr->destroyManualObject((*objectIt)->m_object);
             if(m_enableLabels)
             {
-                sceneMgr->destroyMovableObject(objectIt->m_label);
+                sceneMgr->destroyMovableObject((*objectIt)->m_label);
             }
             objectIt = m_manualObjects.erase(objectIt);
             break;
@@ -309,13 +340,13 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
     // Re-compute index of landmarks in the same group.
     for(auto objectIt = m_manualObjects.begin(); objectIt != m_manualObjects.end(); ++objectIt)
     {
-        const std::string& name = objectIt->m_groupName;
-        if(name.find(_groupName) != std::string::npos && objectIt->m_index > _index)
+        const std::string& name = (*objectIt)->m_groupName;
+        if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index > _index)
         {
-            objectIt->m_index -= 1;
+            (*objectIt)->m_index -= 1;
             if(m_enableLabels)
             {
-                objectIt->m_label->setText(_groupName + "_" + std::to_string(objectIt->m_index));
+                (*objectIt)->m_label->setText(_groupName + "_" + std::to_string((*objectIt)->m_index));
             }
         }
     }
@@ -369,7 +400,6 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
 
     // Attach data.
     node->attachObject(object);
-    node->setVisible(group.m_visibility);
 
     // Create the label.
     ::fwRenderOgre::Text* text = nullptr;
@@ -392,10 +422,88 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
     }
 
     // Store the created data.
-    m_manualObjects.push_back(Landmark{ node, object, _groupName, _index, text});
+    m_manualObjects.push_back(std::make_shared< Landmark >(node, object, _groupName, _index, text));
 
     // Hide landmarks if an image is given to the service.
     this->hideLandmark(m_manualObjects.back());
+
+    // Request the rendering.
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::selectPoint(std::string _groupName, size_t _index)
+{
+    for(auto objectIt = m_manualObjects.begin(); objectIt != m_manualObjects.end(); ++objectIt)
+    {
+        const std::string& name = (*objectIt)->m_groupName;
+        if(name.find(_groupName) != std::string::npos && (*objectIt)->m_index == _index)
+        {
+            // This methode must be synchronized with deselectPoint(std::string, size_t).
+            std::lock_guard<std::mutex> guard(m_selectedMutex);
+
+            // Create thread data.
+            std::shared_ptr< SelectedLandmark > selectedLandmark
+                = std::make_shared< SelectedLandmark >(m_associatedWorker->createTimer(), *objectIt);
+            m_selectedLandmarks.push_back(selectedLandmark);
+
+            // Run a thread that change the selected point.
+            ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
+            selectedLandmark->m_timer->setFunction(std::bind(&SLandmarks::hightlight, this, selectedLandmark));
+            selectedLandmark->m_timer->setDuration(duration);
+            selectedLandmark->m_timer->start();
+
+            break;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::deselectPoint(std::string _groupName, size_t _index)
+{
+    // This methode must be synchronized with selectPoint(std::string, size_t).
+    std::lock_guard<std::mutex> guard(m_selectedMutex);
+
+    // Find the thread and stop it.
+    for(auto landmarkIt = m_selectedLandmarks.begin(); landmarkIt != m_selectedLandmarks.end(); ++landmarkIt)
+    {
+        if((*landmarkIt)->m_landmark->m_groupName == _groupName && (*landmarkIt)->m_landmark->m_index == _index)
+        {
+            // Stop the timer.
+            (*landmarkIt)->m_timer->stop();
+            (*landmarkIt)->m_landmark->m_object->setVisible(true);
+            this->hideLandmark((*landmarkIt)->m_landmark);
+
+            // Request the rendering.
+            this->requestRender();
+
+            m_selectedLandmarks.erase(landmarkIt);
+            break;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::hightlight(std::shared_ptr< SelectedLandmark > _selectedLandmark)
+{
+    // Hightlight the selected landmark.
+    this->hideLandmark(_selectedLandmark->m_landmark);
+    if(_selectedLandmark->m_landmark->m_object->isVisible())
+    {
+        if(_selectedLandmark->m_show)
+        {
+            _selectedLandmark->m_landmark->m_object->setVisible(true);
+        }
+        else
+        {
+            _selectedLandmark->m_landmark->m_object->setVisible(false);
+        }
+        this->requestRender();
+    }
+    _selectedLandmark->m_show = !_selectedLandmark->m_show;
 
     // Request the rendering.
     this->requestRender();
@@ -468,7 +576,7 @@ void SLandmarks::hideLandmarks()
     // Hide landmarks only if there is an image.
     if(imageLock)
     {
-        for(Landmark& landmark : m_manualObjects)
+        for(std::shared_ptr<Landmark> landmark : m_manualObjects)
         {
             this->hideLandmark(landmark);
         }
@@ -477,50 +585,48 @@ void SLandmarks::hideLandmarks()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideLandmark(Landmark& _landmark)
+void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
 {
+    // Get image.
     const ::fwData::mt::weak_ptr< const ::fwData::Image > image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
 
     const ::fwData::mt::locked_ptr< const ::fwData::Image > imageLock = image.lock();
 
+    // Get landmarks.
+    const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
+
+    // Retreive group.
+    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark->m_groupName);
+
     // Hide landmarks only if there is an image.
+    bool show = true;
     if(imageLock)
     {
-        // Get image spacing.
-        const auto& imgSpac = imageLock->getSpacing2();
-
         // Show the landmark only if the slice is inside it.
-        ::Ogre::SceneNode* node = _landmark.m_node;
-        bool show = false;
+        ::Ogre::SceneNode* node = _landmark->m_node;
         switch(m_orientation)
         {
             case OrientationMode::X_AXIS:
-                show = node->getPosition()[0] >= m_currentSlicePos[0]-imgSpac[0] &&
-                       node->getPosition()[0] <= m_currentSlicePos[0]+imgSpac[0];
+                show = node->getPosition()[0] >= m_currentSlicePos[0]-group.m_size*0.5 &&
+                       node->getPosition()[0] <= m_currentSlicePos[0]+group.m_size*0.5;
                 break;
             case OrientationMode::Y_AXIS:
-                show = node->getPosition()[1] >= m_currentSlicePos[1]-imgSpac[1] &&
-                       node->getPosition()[1] <= m_currentSlicePos[1]+imgSpac[1];
+                show = node->getPosition()[1] >= m_currentSlicePos[1]-group.m_size*0.5 &&
+                       node->getPosition()[1] <= m_currentSlicePos[1]+group.m_size*0.5;
                 break;
             case OrientationMode::Z_AXIS:
-                show = node->getPosition()[2] >= m_currentSlicePos[2]-imgSpac[2] &&
-                       node->getPosition()[2] <= m_currentSlicePos[2]+imgSpac[2];
+                show = node->getPosition()[2] >= m_currentSlicePos[2]-group.m_size*0.5 &&
+                       node->getPosition()[2] <= m_currentSlicePos[2]+group.m_size*0.5;
                 break;
             default:
                 SLM_ERROR("Unhandle orientation mode");
                 break;
         }
-
-        // Get landmarks.
-        const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-        const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
-
-        // Retreive group.
-        const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark.m_groupName);
-
-        // Show or hide the landmark.
-        _landmark.m_object->setVisible(show && group.m_visibility);
     }
+
+    // Show or hide the landmark.
+    _landmark->m_object->setVisible(show && group.m_visibility);
 }
 
 } // namespace visuOgreAdaptor.

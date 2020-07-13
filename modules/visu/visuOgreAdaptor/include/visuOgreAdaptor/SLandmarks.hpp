@@ -33,6 +33,8 @@
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/Text.hpp>
 
+#include <fwThread/Timer.hpp>
+
 namespace visuOgreAdaptor
 {
 
@@ -96,6 +98,8 @@ protected:
      * Connect ::fwData::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INPUT to s_ADD_POINT_SLOT
      * Connect ::fwData::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INPUT to s_REMOVE_GROUP_SLOT
      * Connect ::fwData::Landmarks::s_POINT_INSERTED_SIG of s_LANDMARKS_INPUT to s_INSERT_POINT_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INPUT to s_SELECT_POINT_SLOT
+     * Connect ::fwData::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INPUT to s_DESELECT_POINT_SLOT
      * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICE_TYPE_SLOT
      * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICE_INDEX_SLOT
      */
@@ -112,11 +116,38 @@ private:
     /// Stores data used to display one landmark.
     struct Landmark
     {
+        Landmark(::Ogre::SceneNode* _node,
+                 ::Ogre::ManualObject* _object,
+                 std::string _groupName,
+                 size_t _index,
+                 ::fwRenderOgre::Text* _label) :
+            m_node(_node),
+            m_object(_object),
+            m_groupName(_groupName),
+            m_index(_index),
+            m_label(_label)
+        {
+        }
+
         ::Ogre::SceneNode* m_node { nullptr };      /*!< Contains the node of the landmark */
         ::Ogre::ManualObject* m_object { nullptr }; /*!< Contains the manual object that represent the landmark */
         std::string m_groupName { "" };             /*!< Defines the group name of the landmark */
         size_t m_index { 0 };                       /*!< Defines the index of the landmark */
         ::fwRenderOgre::Text* m_label { nullptr };  /*!< Defines the text label of the landmark (can be nullptr) */
+    };
+
+    /// Stores data used to hightlight the selected landmark.
+    struct SelectedLandmark
+    {
+        SelectedLandmark(::fwThread::Timer::sptr _timer, std::shared_ptr< Landmark > _landmark) :
+            m_timer(_timer),
+            m_landmark(_landmark)
+        {
+        }
+
+        ::fwThread::Timer::sptr m_timer;
+        std::shared_ptr< Landmark > m_landmark;
+        bool m_show { false };
     };
 
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
@@ -153,6 +184,26 @@ private:
      */
     void insertPoint(std::string _groupName, size_t _index);
 
+    /**
+     * @brief SLOT: hightlights the selected landmark.
+     * @param _groupName group name of the landmark.
+     * @param _index index of the point relative to the group.
+     */
+    void selectPoint(std::string _groupName, size_t _index);
+
+    /**
+     * @brief SLOT: resets the hightlights the selected landmark.
+     * @param _groupName group name of the landmark.
+     * @param _index index of the point relative to the group.
+     */
+    void deselectPoint(std::string _groupName, size_t _index);
+
+    /**
+     * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
+     * @param _selectedLandmark which landmarks to manage.
+     */
+    void hightlight(std::shared_ptr<SelectedLandmark> _selectedLandmark);
+
     /// SLOT: initializes image slices index if there is one.
     void initializeImage();
 
@@ -181,7 +232,7 @@ private:
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark to hide.
      */
-    void hideLandmark(Landmark& _landmark);
+    void hideLandmark(std::shared_ptr< Landmark > _landmark);
 
     /// Contains the root scene node.
     ::Ogre::SceneNode* m_transNode { nullptr };
@@ -193,7 +244,7 @@ private:
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Stores each landmarks points.
-    std::vector< Landmark > m_manualObjects;
+    std::vector< std::shared_ptr< Landmark > > m_manualObjects;
 
     /// Enables labels.
     bool m_enableLabels { true };
@@ -203,6 +254,12 @@ private:
 
     /// Defines the TrueType font source file.
     std::string m_fontSource { "DejaVuSans.ttf" };
+
+    /// Stores informations about the selected landmark.
+    std::list< std::shared_ptr< SelectedLandmark > > m_selectedLandmarks;
+
+    /// Define a mutex to synchronized methods working with selected landmark.
+    std::mutex m_selectedMutex;
 
     /// Defines the image orientation.
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
