@@ -1,0 +1,169 @@
+overlay IrcadIHU_Left_Top
+{
+    overlay_element IrcadIHU_Top_Left/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Top_Left/IrcadIHUPanel Panel
+        {
+            horz_align left
+            vert_align top
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
+
+overlay IrcadIHU_Left_Center
+{
+    overlay_element IrcadIHU_Left_Center/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Left_Center/IrcadIHUPanel Panel
+        {
+            horz_align left
+            vert_align center
+            top -0.05
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
+
+overlay IrcadIHU_Left_Bottom
+{
+    overlay_element IrcadIHU_Bottom_Left/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Bottom_Left/IrcadIHUPanel Panel
+        {
+            horz_align left
+            vert_align bottom
+            top -0.10
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
+
+overlay IrcadIHU_Center_Top
+{
+    overlay_element IrcadIHU_Top_Center/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Top_Center/IrcadIHUPanel Panel
+        {
+            horz_align center
+            vert_align top
+            left -0.075
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
+
+overlay IrcadIHU_Center_Bottom
+{
+    overlay_element IrcadIHU_Bottom_Center/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Bottom_Center/IrcadIHUPanel Panel
+        {
+            horz_align center
+            vert_align bottom
+            left -0.075
+            top -0.10
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
+
+overlay IrcadIHU_Right_Top
+{
+    overlay_element IrcadIHU_Top_Right/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Top_Right/IrcadIHUPanel Panel
+        {
+            horz_align right
+            vert_align top
+            left -0.15
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
+
+overlay IrcadIHU_Right_Center
+{
+    overlay_element IrcadIHU_Right_Center/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Right_Center/IrcadIHUPanel Panel
+        {
+            horz_align right
+            vert_align center
+            left -0.15
+            top -0.05
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
+
+overlay IrcadIHU_Right_Bottom
+{
+    overlay_element IrcadIHU_Bottom_Right/EmptyPanel Panel
+    {
+        left 0.025
+        top 0.025
+        width 0.95
+        height 0.95
+
+        overlay_element IrcadIHU_Bottom_Right/IrcadIHUPanel Panel
+        {
+            horz_align right
+            vert_align bottom
+            left -0.15
+            top -0.10
+            width 0.15
+            height 0.10
+            material IrcadIHULogo
+        }
+    }
+}
