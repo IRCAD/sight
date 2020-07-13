@@ -171,8 +171,7 @@ void SLandmarks::starting()
 void SLandmarks::updating()
 {
     // Get landmarks.
-    const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-    const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
+    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
     // Delete all groups.
     for(const std::string& groupName : landmarks->getGroupNames())
@@ -202,8 +201,7 @@ void SLandmarks::stopping()
     }
 
     // Get landmarks.
-    const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-    const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
+    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
     // Delete all groups.
     for(const std::string& groupName : landmarks->getGroupNames())
@@ -266,8 +264,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
     this->removeGroup(_groupName);
 
     // Get landmarks.
-    const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-    const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
+    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
     // Retreive group.
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
@@ -293,8 +290,7 @@ void SLandmarks::addPoint(std::string _groupName)
     size_t index = 0;
     {
         // Get landmarks.
-        const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-        const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
+        const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
         // Retreive group.
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
@@ -363,8 +359,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
     this->getRenderService()->makeCurrent();
 
     // Get landmarks.
-    const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-    const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
+    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
     // Retreive group.
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
@@ -593,8 +588,7 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     const ::fwData::mt::locked_ptr< const ::fwData::Image > imageLock = image.lock();
 
     // Get landmarks.
-    const auto landmarksLocked                 = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
-    const ::fwData::Landmarks::csptr landmarks = landmarksLocked.get_shared();
+    const auto landmarks = this->getLockedInput< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
 
     // Retreive group.
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark->m_groupName);
