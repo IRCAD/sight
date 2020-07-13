@@ -73,7 +73,7 @@ void MeshTest::setCubeMesh()
     auto scene = new ::fwRenderQt3D::core::GenericScene(false);
     scene->setCamera(scene->getCamera());
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
     mesh->reserve(8, 12, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->lock();
@@ -122,8 +122,9 @@ void MeshTest::setCubeMesh()
     auto itrPt          = mesh->begin< ::fwData::iterator::ConstPointIterator >();
     const auto endItrPt = mesh->end< ::fwData::iterator::ConstPointIterator >();
 
-    float* posBufferData = reinterpret_cast<float*>( posAttribute->buffer()->data().data() );
-    unsigned int count   = 0;
+    const QByteArray posBufferDataByte = posAttribute->buffer()->data();
+    const float* const posBufferData   = reinterpret_cast< const float* >(posBufferDataByte.data());
+    unsigned int count                 = 0;
     for(; itrPt != endItrPt; ++itrPt)
     {
         CPPUNIT_ASSERT(static_cast< float >(itrPt->point->x) - posBufferData[count] < 0.01f);
@@ -136,7 +137,8 @@ void MeshTest::setCubeMesh()
     auto itrCell      = mesh->begin< ::fwData::iterator::ConstCellIterator >();
     const auto endItr = mesh->end< ::fwData::iterator::ConstCellIterator >();
 
-    unsigned int* indexBufferData = reinterpret_cast<unsigned int*>( indexAttribute->buffer()->data().data() );
+    const QByteArray indexBufferDataByte      = indexAttribute->buffer()->data();
+    const unsigned int* const indexBufferData = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
     count = 0;
     for(; itrCell != endItr; ++itrCell)
     {
@@ -159,7 +161,7 @@ void MeshTest::centerCameraOnCube()
     const auto scene = new ::fwRenderQt3D::core::GenericScene(false);
     const auto camera = scene->getCamera();
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
     mesh->reserve(8, 12, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->lock();
