@@ -44,8 +44,7 @@ namespace visuOgreAdaptor
 {
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT         = "changeField";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
 
 static const std::string s_MODEL_INPUT = "model";
 
@@ -60,7 +59,7 @@ static const std::string s_QUERY_CONFIG            = "queryFlags";
 SModelSeries::SModelSeries() noexcept
 {
     newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
-    newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeries::showReconstructions, this);
+    newSlot("showReconstructions", &SModelSeries::showReconstructionsDeprecatedSlot, this);
 }
 
 //------------------------------------------------------------------------------
@@ -153,7 +152,7 @@ void SModelSeries::updating()
         adaptor->setQueryFlags(m_queryFlags);
 
         adaptor->start();
-        adaptor->setForceHide(!showRec);
+        adaptor->updateVisibility(!showRec);
 
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = adaptor->getMeshAdaptor();
         meshAdaptor->setDynamic(m_isDynamic);
@@ -170,14 +169,22 @@ void SModelSeries::stopping()
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::showReconstructions(bool _show)
+void SModelSeries::setVisible(bool _visible)
 {
     auto adaptors = this->getRegisteredServices();
     for(auto adaptor : adaptors)
     {
         auto recAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(adaptor.lock());
-        recAdaptor->setForceHide(!_show);
+        recAdaptor->updateVisibility(!_visible);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeries::showReconstructionsDeprecatedSlot(bool _show)
+{
+    FW_DEPRECATED_MSG("::visuOgreAdaptor::SModelSeries::showReconstructions is no longer supported", "21.0")
+    this->setVisible(_show);
 }
 
 //------------------------------------------------------------------------------
@@ -195,10 +202,8 @@ void SModelSeries::showReconstructionsOnFieldChanged()
     for(auto adaptor : adaptors)
     {
         auto recAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(adaptor.lock());
-        recAdaptor->setForceHide(!showRec);
+        recAdaptor->updateVisibility(!showRec);
     }
 }
-
-//------------------------------------------------------------------------------
 
 } // namespace visuOgreAdaptor.

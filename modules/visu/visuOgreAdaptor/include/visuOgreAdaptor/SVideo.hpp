@@ -35,12 +35,13 @@ namespace visuOgreAdaptor
  * @brief This adaptor renders a video frame from a 2D-image.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the video is visible or not.
- * - \b toggleVisibility(): Toggle whether the video is visible or not.
+ * - \b updateVisibility(bool): sets whether the video is visible or not.
+ * - \b toggleVisibility(): toggle whether the video is visible or not.
+ * - \b show(): shows the video.
+ * - \b hide(): hides the video.
  * - \b updateTF(): Updates the displayed transfer function.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
         <in key="image" uid="..." />
@@ -52,31 +53,33 @@ namespace visuOgreAdaptor
  * @subsection Input Input:
  * - \b image [::fwData::Image]: frame displayed.
  * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
- * @subsection Configuration Configuration:
  *
+ * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the video's layer
  * - \b reverse (optional, bool, default=true): if true, the actor is rotated by 180 degrees along the z and y axis.
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VISUOGREADAPTOR_CLASS_API SVideo final : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SVideo, ::fwRenderOgre::IAdaptor)
 
     /// Creates the adaptor an initialize slots.
     VISUOGREADAPTOR_API SVideo() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SVideo() noexcept;
+    VISUOGREADAPTOR_API ~SVideo() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the Ogre texture and mapper used to show the video frame.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -88,22 +91,21 @@ private:
      * Connect ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      * Connect ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the frame from the current Image.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Removes the actor from the renderer
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
 
     /**
-     * @brief SLOT: sets whether the video is to be seen or not.
-     * @param _isVisible used true to show the video.
+     * @brief Sets the video visibility.
+     * @param _visible the visibility status of the video.
      */
-    void updateVisibility(bool _isVisible);
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
-    /// SLOT: toggles the visibility of the video.
-    void toggleVisibility();
+private:
 
     /// SLOTS: updates the displayed transfer function.
     void updateTF();

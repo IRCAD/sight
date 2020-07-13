@@ -44,7 +44,6 @@ namespace visuOgreAdaptor
  * - \b textureSwapped() : Emitted when the texture is modified.
 
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service type="::visuOgreAdaptor::STexture">
         <in key="image" uid="..." />
@@ -68,6 +67,7 @@ class VISUOGREADAPTOR_CLASS_API STexture final : public ::fwRenderOgre::IAdaptor
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(STexture, ::fwRenderOgre::IAdaptor)
 
     /// Defines the keys of the slot @ref textureSwapped().
@@ -77,7 +77,7 @@ public:
     VISUOGREADAPTOR_API STexture() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~STexture() noexcept;
+    VISUOGREADAPTOR_API ~STexture() noexcept override;
 
     /// Gets the Ogre texture.
     VISUOGREADAPTOR_API ::Ogre::TexturePtr getTexture() const;
@@ -94,13 +94,13 @@ public:
     /// Return true if a valid image is stored in this texture
     VISUOGREADAPTOR_API bool isValid() const;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the managed Ogre texture.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -109,13 +109,15 @@ private:
      * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
      * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the attached texture.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Destroys Ogre resources.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Contains the Ogre texture.
     ::Ogre::TexturePtr m_texture;

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2019 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -48,6 +48,9 @@ static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 
+const std::string SVideoWriter::s_MP4_EXTENSION = ".mp4";
+const std::string SVideoWriter::s_AVC1_CODEC    = "avc1";
+
 //------------------------------------------------------------------------------
 
 SVideoWriter::SVideoWriter() noexcept
@@ -91,17 +94,15 @@ void SVideoWriter::configureWithIHM()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("avi", "*.avi");
     dialogFile.addFilter("mp4", "*.mp4");
-    dialogFile.addFilter("m4v", "*.m4v");
-    dialogFile.addFilter("mkv", "*.mkv");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath().parent_path();
+        m_selectedExtension = dialogFile.getCurrentSelection();
+        _sDefaultPath       = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         this->setFile(result->getPath());
     }
@@ -173,7 +174,7 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
@@ -192,12 +193,43 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
                 // computes number of fps
                 const double fps = 1000 * m_timestamps.size() / (m_timestamps.back() - m_timestamps.front());
                 OSLM_TRACE("Estimated FPS: " << fps);
-                const int width                  = static_cast<int>( frameTL->getWidth() );
-                const int height                 = static_cast<int>( frameTL->getHeight() );
-                const std::filesystem::path path = this->getFile();
+                const int width                     = static_cast<int>( frameTL->getWidth() );
+                const int height                    = static_cast<int>( frameTL->getHeight() );
+                std::filesystem::path path          = this->getFile();
+                const std::string providedExtension = path.extension().string();
+                std::string extensionToUse;
+                std::string codec;
 
-                m_writer = std::make_unique< ::cv::VideoWriter >(path.string(), CV_FOURCC('M', 'J', 'P', 'G'),
-                                                                 fps, cvSize(width, height), true);
+                // Check if file has an extension.
+                if(providedExtension.empty())
+                {
+                    // No extension provided, add extension of selected filter.
+                    extensionToUse = m_selectedExtension;
+                    path          += extensionToUse;
+                }
+                else
+                {
+                    extensionToUse = providedExtension;
+                }
+
+                if (extensionToUse == s_MP4_EXTENSION)
+                {
+                    codec = s_AVC1_CODEC;
+                }
+                else
+                {
+                    ::fwGui::dialog::MessageDialog::showMessageDialog(
+                        "Video recording",
+                        "The extension "+ extensionToUse+ " is not supported. Unable to write the file: " +
+                        path.string());
+                    this->stopRecord();
+                    return;
+                }
+
+                m_writer =
+                    std::make_unique< ::cv::VideoWriter >(path.string(),
+                                                          CV_FOURCC(codec[0], codec[1], codec[2], codec[3]),
+                                                          fps, cvSize(width, height), true);
 
                 if (!m_writer->isOpened())
                 {
@@ -237,7 +269,7 @@ void SVideoWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
 
         if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {

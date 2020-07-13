@@ -64,11 +64,14 @@ namespace visuOgreAdaptor
  * primitive id.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the mesh is to be seen or not.
- * - \b update(): Called when the mesh is modified.
- * - \b modifyColors(): Called when the point colors are modified.
- * - \b modifyTexCoords(): Called when the texture coordinates are modified.
- * - \b modifyVertices(): Called when the vertices are modified.
+ * - \b updateVisibility(bool): sets whether the mesh is to be seen or not.
+ * - \b toggleVisibility(): toggle whether the mesh is shown or not.
+ * - \b show(): shows the mesh.
+ * - \b hide(): hides the mesh.
+ * - \b update(): called when the mesh is modified.
+ * - \b modifyColors(): called when the point colors are modified.
+ * - \b modifyTexCoords(): called when the texture coordinates are modified.
+ * - \b modifyVertices(): called when the vertices are modified.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -84,39 +87,39 @@ namespace visuOgreAdaptor
  * fields.
  *
  * @subsection Configuration Configuration:
- *  - \b layer (mandatory, string) : defines the mesh's layer
+ *  - \b layer (mandatory, string): defines the mesh's layer
  *  - \b autoresetcamera (optional, yes/no, default=yes): reset the camera when this mesh is modified, "yes" or "no".
- *  - \b transform (optional, string, default="") : the name of the Ogre transform node where to attach the mesh, as it
- * was specified
- * in the STransform adaptor.
+ *  - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
+ *       was specified
+ *       in the STransform adaptor.
  *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
- * Either of the following (whether a material is configured in the XML scene or not) :
- *  - \b materialName (optional, string, default="") : name of the Ogre material, as defined in the
- *::visuOgreAdaptor::SMaterial you want
- * to be bound to.
- * Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
- * template, the texture adaptor and the shading mode) :
- *  - \b materialTemplate (optional, string, default="") : the name of the base Ogre material for the internally created
- * SMaterial.
- *  - \b textureName (optional, default="") : the name of the Ogre texture that the mesh will use.
- *  - \b shadingMode (optional, none/flat/gouraud/phong/ambient, default=phong) : name of the used shading mode.
- *  - \b queryFlags (optional, uint32, default=0x40000000) : Used for picking. Picked only by pickers whose mask that
- * match the
- * flag.
+ *       Either of the following (whether a material is configured in the XML scene or not) :
+ *  - \b materialName (optional, string, default=""): name of the Ogre material, as defined in the
+ *       ::visuOgreAdaptor::SMaterial you want to be bound to.
+ *       Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
+ *       template, the texture adaptor and the shading mode) :
+ *  - \b materialTemplate (optional, string, default=""): the name of the base Ogre material for the internally created
+ *       SMaterial.
+ *  - \b textureName (optional, default=""): the name of the Ogre texture that the mesh will use.
+ *  - \b shadingMode (optional, none/flat/gouraud/phong/ambient, default=phong): name of the used shading mode.
+ *  - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
+ *       match the flag.
  */
 class VISUOGREADAPTOR_CLASS_API SMesh final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::ITransformable
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SMesh, ::fwRenderOgre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SMesh() noexcept;
 
     /// Destroys Ogre resources.
-    VISUOGREADAPTOR_API virtual ~SMesh() noexcept;
+    VISUOGREADAPTOR_API ~SMesh() noexcept override;
 
     /**
      * @brief Gets the associated material.
@@ -155,12 +158,6 @@ public:
     VISUOGREADAPTOR_API bool getVisibility() const;
 
     /**
-     * @brief Sets whether the mesh is to be seen or not.
-     * @param _isVisible use true to show the mesh.
-     */
-    VISUOGREADAPTOR_API void updateVisibility(bool _isVisible);
-
-    /**
      * @brief Sets meshes vertex buffer to dynamic state (only has effect if called before service starting/update).
      * @param _isDynamic use true to use dynamic vertex buffer.
      */
@@ -186,15 +183,21 @@ public:
     VISUOGREADAPTOR_API void setIsReconstructionManaged(bool _isReconstructionManaged);
 
     /// Flags the r2vb objects as dirty and asks the render service to update.
-    VISUOGREADAPTOR_API virtual void requestRender() override;
+    VISUOGREADAPTOR_API void requestRender() override;
 
-private:
+    /**
+     * @brief Sets the mesh visibility.
+     * @param _visible the visibility status of the mesh.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
+
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates a Mesh in the Default Ogre resource group.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -206,13 +209,15 @@ private:
      * Connect ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to s_MODIFY_POINT_TEX_COORDS_SLOT
      * Connect ::fwData::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Updates the mesh.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
+
+private:
 
     /// Updates mesh vertices.
     void modifyVertices();
@@ -250,46 +255,43 @@ private:
     void attachNode(::Ogre::MovableObject* _node);
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera {true};
+    bool m_autoResetCamera { true };
 
     /// Contains the node in the scene graph whwre the mesh is attached.
-    ::Ogre::Entity* m_entity {nullptr};
+    ::Ogre::Entity* m_entity { nullptr };
 
     /// Contains the Ogre material adaptor.
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor {nullptr};
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Defines the attached material name (when configured by XML).
-    std::string m_materialName {""};
+    std::string m_materialName;
 
     /// Contains the material data.
-    ::fwData::Material::sptr m_material {nullptr};
+    ::fwData::Material::sptr m_material { nullptr };
 
     /// Defines the attached material's name.
-    std::string m_materialTemplateName {::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_materialTemplateName { ::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME };
 
     /// Defines the attached texture adaptor name.
-    std::string m_textureName {""};
+    std::string m_textureName;
 
     /// Defines if the mesh adaptor is managed by a reconstruction adaptor.
-    bool m_isReconstructionManaged {false};
+    bool m_isReconstructionManaged { false };
 
     /// Defines if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured.
-    bool m_useNewMaterialAdaptor {false};
-
-    /// Enables the mesh visibility.
-    bool m_isVisible {true};
+    bool m_useNewMaterialAdaptor { false };
 
     /// Defines the configured shading mode.
-    std::string m_shadingMode {""};
+    std::string m_shadingMode;
 
     /// Defines if the mesh changes dynamically, defined in m_configuration.
-    bool m_isDynamic {false};
+    bool m_isDynamic { false };
 
     /// Defines if the vertices change dynamically, defined in m_configuration.
-    bool m_isDynamicVertices {false};
+    bool m_isDynamicVertices { false };
 
     /// Ogre mesh.
-    ::fwRenderOgre::Mesh::sptr m_meshGeometry {nullptr};
+    ::fwRenderOgre::Mesh::sptr m_meshGeometry { nullptr };
 
     /// Stores material adaptors attached to the r2vb objects.
     std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;

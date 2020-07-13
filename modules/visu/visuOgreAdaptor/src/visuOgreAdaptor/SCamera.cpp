@@ -221,7 +221,7 @@ void SCamera::updateTF3D()
 
     auto sig = transform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        ::fwCom::Connection::Blocker blocker(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }

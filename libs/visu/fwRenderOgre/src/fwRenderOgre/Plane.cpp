@@ -176,8 +176,8 @@ void Plane::initializeMaterial()
         m_borderMaterial = m_borderMaterial->clone(m_slicePlaneName + "_BorderMaterial");
         if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS)
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Red);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Red);
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
         }
         else if(m_orientation == ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS)
         {
@@ -186,8 +186,8 @@ void Plane::initializeMaterial()
         }
         else
         {
-            m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
-            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
+            m_borderMaterial->setAmbient(::Ogre::ColourValue::Red);
+            m_borderMaterial->setDiffuse(::Ogre::ColourValue::Red);
         }
     }
 }
@@ -612,4 +612,5 @@ void Plane::setRenderQueuerGroupAndPriority(std::uint8_t _groupId, std::uint16_t
 }
 
 //-----------------------------------------------------------------------------
-} // namespace fwRenderOgre
+
+} // namespace fwRenderOgre.

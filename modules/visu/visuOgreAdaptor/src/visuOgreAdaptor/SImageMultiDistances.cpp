@@ -51,7 +51,6 @@ static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwCom::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
 static const ::fwCom::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
 static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
-static const ::fwCom::Signals::SignalKeyType s_UPDATE_VISIBILITY_SLOT             = "updateVisibility";
 
 static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
 static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
@@ -133,7 +132,6 @@ SImageMultiDistances::SImageMultiDistances() noexcept
     newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
     newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
     newSlot(s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SImageMultiDistances::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -382,18 +380,18 @@ void SImageMultiDistances::updateVisibilityFromField()
 
     const bool visibility = image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
                                                 true))->value();
-    m_visibility = visibility;
+    m_isVisible = visibility;
 
     lock.unlock();
 
     for(const auto& distance : m_distances)
     {
         const DistanceData& data = distance.second;
-        data.m_sphere1->setVisible(m_visibility);
-        data.m_sphere2->setVisible(m_visibility);
-        data.m_line->setVisible(m_visibility);
-        data.m_dashedLine->setVisible(m_visibility);
-        data.m_label->setVisible(m_visibility);
+        data.m_sphere1->setVisible(m_isVisible);
+        data.m_sphere2->setVisible(m_isVisible);
+        data.m_line->setVisible(m_isVisible);
+        data.m_dashedLine->setVisible(m_isVisible);
+        data.m_label->setVisible(m_isVisible);
     }
 
     this->requestRender();
@@ -401,20 +399,18 @@ void SImageMultiDistances::updateVisibilityFromField()
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::updateVisibility(bool _visible)
+void SImageMultiDistances::setVisible(bool _visible)
 {
     this->getRenderService()->makeCurrent();
-
-    m_visibility = _visible;
 
     for(const auto& distance : m_distances)
     {
         const DistanceData& data = distance.second;
-        data.m_sphere1->setVisible(m_visibility);
-        data.m_sphere2->setVisible(m_visibility);
-        data.m_line->setVisible(m_visibility);
-        data.m_dashedLine->setVisible(m_visibility);
-        data.m_label->setVisible(m_visibility);
+        data.m_sphere1->setVisible(_visible);
+        data.m_sphere2->setVisible(_visible);
+        data.m_line->setVisible(_visible);
+        data.m_dashedLine->setVisible(_visible);
+        data.m_label->setVisible(_visible);
     }
 
     this->requestRender();
@@ -431,7 +427,7 @@ std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(
 
     if(picker.getSelectedObject())
     {
-        const auto* const camera = sm->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
+        const auto* const camera = sm->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);
         const auto* const vp     = camera->getViewport();
 
         // Screen to viewport space conversion.
@@ -702,11 +698,11 @@ void SImageMultiDistances::createDistance(::fwData::PointList::sptr _pl)
     labelNode->attachObject(label);
 
     // Set the visibility.
-    sphere1->setVisible(m_visibility);
-    sphere2->setVisible(m_visibility);
-    line->setVisible(m_visibility);
-    dashedLine->setVisible(m_visibility);
-    label->setVisible(m_visibility);
+    sphere1->setVisible(m_isVisible);
+    sphere2->setVisible(m_isVisible);
+    line->setVisible(m_isVisible);
+    dashedLine->setVisible(m_isVisible);
+    label->setVisible(m_isVisible);
 
     // Store data in the map.
     DistanceData data {_pl, node1, sphere1, node2, sphere2, line, dashedLine, labelNode, label};
@@ -750,7 +746,7 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
     const auto& sigModified = _data->m_pointList->signal< ::fwData::PointList::ModifiedSignalType >(
         ::fwData::PointList::s_MODIFIED_SIG);
 
-    ::fwCom::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
+    ::fwCom::Connection::Blocker blocker(sigModified->getConnection(m_slotUpdate));
     sigModified->asyncEmit();
 
     this->requestRender();

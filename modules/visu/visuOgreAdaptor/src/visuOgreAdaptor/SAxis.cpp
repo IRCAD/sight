@@ -40,10 +40,6 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-
-static const std::string s_VISIBLE_CONFIG      = "visible";
 static const std::string s_LENGTH_CONFIG       = "length";
 static const std::string s_LABEL_CONFIG        = "label";
 static const std::string s_FONT_SIZE_CONFIG    = "fontSize";
@@ -55,8 +51,6 @@ static const std::string s_ORIGIN_COLOR_CONFIG = "originColor";
 
 SAxis::SAxis() noexcept
 {
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
-    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SAxis::toggleVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -79,7 +73,6 @@ void SAxis::configuring()
 
     this->setTransformId(transformId);
 
-    m_isVisible        = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
     m_length           = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_enableLabel      = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
     m_fontSize         = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
@@ -322,31 +315,22 @@ void SAxis::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SAxis::updateVisibility(bool _isVisible)
+void SAxis::setVisible(bool _visible)
 {
-    m_isVisible = _isVisible;
-
     if(m_sceneNode)
     {
-        m_sceneNode->setVisible(m_isVisible);
+        m_sceneNode->setVisible(_visible);
         if(m_enableLabel)
         {
             for(::fwRenderOgre::Text* const label : m_axisLabels)
             {
                 SLM_ASSERT("label should not be null", label);
-                label->setVisible(_isVisible);
+                label->setVisible(_visible);
             }
         }
     }
 
     this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SAxis::toggleVisibility()
-{
-    this->updateVisibility(!m_isVisible);
 }
 
 //-----------------------------------------------------------------------------

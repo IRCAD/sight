@@ -38,9 +38,7 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT     = "updateLength";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
 
 static const std::string s_LENGTH_CONFIG     = "length";
 static const std::string s_DASHED_CONFIG     = "dashed";
@@ -51,8 +49,6 @@ static const std::string s_COLOR_CONFIG      = "color";
 
 SLine::SLine() noexcept
 {
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SLine::updateVisibility, this);
-    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SLine::toggleVisibility, this);
     newSlot(s_UPDATE_LENGTH_SLOT, &SLine::updateLength, this);
 }
 
@@ -64,17 +60,8 @@ SLine::~SLine() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SLine::updateVisibility(bool isVisible)
+void SLine::setVisible(bool)
 {
-    m_isVisible = isVisible;
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SLine::toggleVisibility()
-{
-    m_isVisible = !m_isVisible;
     this->updating();
 }
 

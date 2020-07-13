@@ -51,9 +51,9 @@ namespace visuOgreAdaptor
  * @brief This adaptor transforms a Sight camera to an Ogre camera.
  *
  * @section Slots Slots
- * - \b updateTF3D(): Called when the Ogre transform matrix has been updated and updates the transform service
+ * - \b updateTF3D(): called when the Ogre transform matrix has been updated and updates the transform service
  * accordingly.
- * - \b calibrate(): Applies calibration information to Ogre camera.
+ * - \b calibrate(): applies calibration information to Ogre camera.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -78,21 +78,22 @@ class VISUOGREADAPTOR_CLASS_API SCamera final : public ::fwRenderOgre::IAdaptor
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SCamera, ::fwRenderOgre::IAdaptor)
 
     /// Creates the adaptor and initialize slots.
     VISUOGREADAPTOR_API SCamera() noexcept;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual ~SCamera() noexcept override;
+    VISUOGREADAPTOR_API ~SCamera() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Installs layer connections and calibrates the camera if it exists.
-    void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -103,13 +104,15 @@ private:
      * Connect ::arData::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      * Connect ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Sets the camera's transform.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Removes layer connections.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
+
+private:
 
     /// Calibrates the scene's camera(s) using the input calibration(s).
     void calibrate();

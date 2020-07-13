@@ -42,11 +42,14 @@ namespace visuOgreAdaptor
  * @brief This adaptor displays a reconstruction.
  *
  * @section Slots Slots
- * - \b changeMesh(::fwData::Mesh::sptr) : called when the associated mesh changes.
- * - \b modifyVisibility() : called to show or hide the reconstruction.
-
- * @section XML XML Configuration
+ * - \b changeMesh(::fwData::Mesh::sptr): called when the associated mesh changes.
+ * - \b updateVisibility(bool): sets whether the reconstruction is to be seen or not.
+ * - \b toggleVisibility(): toggle whether the reconstruction is shown or not.
+ * - \b show(): shows the reconstruction.
+ * - \b hide(): hides the reconstruction.
+ * - \b modifyVisibility(): called to show or hide the reconstruction.
  *
+ * @section XML XML Configuration
  * @code{.xml}
     <service type="::visuOgreAdaptor::SReconstruction">
         <in key="reconstruction" uid="..." />
@@ -58,31 +61,34 @@ namespace visuOgreAdaptor
  * - \b reconstruction [::fwData::Reconstruction]: reconstruction to display.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the mesh's layer.
- * - \b transform (optional, string, default="") : the transformation matrix to associate to the adaptor.
+ * - \b layer (mandatory, string): defines the mesh's layer.
+ * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
  * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera when this mesh is modified, "yes" or "no".
- * - \b queryFlags (optional, unit32, default=0x40000000) : Used for picking. Picked only by pickers whose mask that
- * match the
- * flag.
+ * - \b queryFlags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
+ *      match the flag.
  */
 class VISUOGREADAPTOR_CLASS_API SReconstruction final :
     public ::fwRenderOgre::IAdaptor,
     public ::fwRenderOgre::ITransformable
 {
+
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SReconstruction, ::fwRenderOgre::IAdaptor)
 
     /// Initialise slots.
     VISUOGREADAPTOR_API SReconstruction() noexcept;
 
     /// Does nothing
-    VISUOGREADAPTOR_API virtual ~SReconstruction() noexcept;
+    VISUOGREADAPTOR_API ~SReconstruction() noexcept override;
 
     /**
      * @brief Forces the reconstruction to be hidden or not.
      * @param _hide use true to force the reconstruction to be hidden.
+     * @deprecated use updateVisibility(bool)
      */
+    [[deprecated("will be removed in sight 21.0")]]
     VISUOGREADAPTOR_API void setForceHide(bool _hide);
 
     /**
@@ -109,13 +115,13 @@ public:
      */
     VISUOGREADAPTOR_API ::visuOgreAdaptor::SMesh::sptr getMeshAdaptor();
 
-private:
+protected:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Creates the mesh service.
-    virtual void starting() override;
+    VISUOGREADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -124,13 +130,21 @@ private:
      * Connect ::fwData::Reconstruction::s_MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to s_CHANGE_MESH_SLOT
      * Connect ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to s_VISIBILITY_SLOT
      */
-    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Stops and unregisters created services.
-    virtual void stopping() override;
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
-    virtual void updating() override;
+    VISUOGREADAPTOR_API void updating() override;
+
+    /**
+     * @brief Sets the reconstruction visibility.
+     * @param _visible the visibility status of the reconstruction.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
+
+private:
 
     /// Changes the attached mesh.
     void changeMesh(::fwData::Mesh::sptr);

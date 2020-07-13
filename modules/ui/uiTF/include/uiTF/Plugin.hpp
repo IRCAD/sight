@@ -28,25 +28,24 @@
 
 namespace uiTF
 {
+
 /**
- *
+ * @brief This class is started when the module is loaded.
  */
 class UITF_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
 public:
 
-    /**
-     * @brief   destructor
-     */
-    UITF_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    UITF_API ~Plugin() noexcept override;
 
-    // Overrides
-    UITF_API void start();
+    /// Starts the plugin, does nothing here.
+    UITF_API void start() override;
 
-    // Overrides
-    UITF_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    UITF_API void stop() noexcept override;
 
 };
 
-} // namespace uiTF
+} // namespace uiTF.

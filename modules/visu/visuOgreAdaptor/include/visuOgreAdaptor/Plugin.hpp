@@ -29,22 +29,20 @@
 namespace visuOgreAdaptor
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
+/// This class is started when the module is loaded.
 class VISUOGREADAPTOR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
 public:
 
     /// Destroys the plugin.
-    ~Plugin() noexcept;
+    VISUOGREADAPTOR_CLASS_API ~Plugin() noexcept override;
 
     /// Starts the plugin, does nothing here.
-    VISUOGREADAPTOR_API virtual void start() override;
+    VISUOGREADAPTOR_API void start() override;
 
     /// Stops the plugin, does nothing here.
-    VISUOGREADAPTOR_API virtual void stop() noexcept override;
+    VISUOGREADAPTOR_API void stop() noexcept override;
 
 };
 

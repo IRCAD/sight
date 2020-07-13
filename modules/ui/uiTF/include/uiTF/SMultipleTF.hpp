@@ -78,6 +78,8 @@ namespace uiTF
  * - \b copyIcon (optional): path of the copy button icon.
  * - \b reinitializeIcon (optional): path of the reinitialize button icon.
  * - \b renameIcon (optional): path of the rename button icon.
+ * - \b importIcon (optional): path of the import button icon.
+ * - \b exportIcon (optional): path of the export button icon.
  * - \b iconWidth (optional, default="16"): icon width.
  * - \b iconHeight (optional, default="16"): icon height.
  */
@@ -90,33 +92,22 @@ Q_OBJECT
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(::uiTF::SMultipleTF, ::fwGui::editor::IEditor)
 
     /// Creates the editor.
     UITF_API SMultipleTF();
 
     /// Destroyes the editor.
-    UITF_API virtual ~SMultipleTF() noexcept;
+    UITF_API ~SMultipleTF() noexcept override;
 
-private:
+protected:
 
     /// Configures the editor.
-    virtual void configuring() override;
+    UITF_API void configuring() override;
 
     /// Creates container and the UI.
-    virtual void starting() override;
-
-    /// Does nothing.
-    virtual void updating() override;
-
-    /// Destroyes the UI.
-    virtual void stopping() override;
-
-    /**
-     * @brief Selects the current transfer function pool.
-     * @param _key key of the swapped data.
-     */
-    virtual void swapping(const KeyType& _key) override;
+    UITF_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -126,14 +117,29 @@ private:
      * Connect ::fwData::Composite::s_CHANGED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
      * Connect ::fwData::Composite::s_REMOVED_OBJECTS_SIG to ::uiTF::SMultipleTF::s_UPDATE_SLOT.
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    UITF_API KeyConnectionsMap getAutoConnections() const override;
+
+    /// Does nothing.
+    UITF_API void updating() override;
+
+    /**
+     * @brief Selects the current transfer function pool.
+     * @param _key key of the swapped data.
+     */
+    UITF_API void swapping(const KeyType& _key) override;
+
+    /// Destroyes the UI.
+    UITF_API void stopping() override;
+
+private:
 
     /**
      * @brief Checks if the composite contains the specified key.
      * @param _name the name used to search.
+     * @param _tfPools the inout of this service, this parameter avoid dead lock.
      * @return True if the pool named _name is found.
      */
-    bool hasPoolName(const std::string& _name) const;
+    bool hasPoolName(const std::string& _name, ::fwData::Composite::csptr _tfPools) const;
 
     /**
      * @brief Create a string that represents a TF pool name not already present in the composite.
@@ -141,9 +147,10 @@ private:
      * For example, if CT-GreyLevel is already used, it will return CT-GreyLevel_1.
      *
      * @param _basename the name of the TF pool to create.
+     * @param _tfPools the inout of this service, this parameter avoid dead lock.
      * @return The new name of the TF pool.
      */
-    std::string createPoolName(const std::string& _basename) const;
+    std::string createPoolName(const std::string& _basename, ::fwData::Composite::csptr _tfPools) const;
 
     /**
      * @brief Initializes the composite.
@@ -158,11 +165,13 @@ private:
     /// Updates the TF pool preset from the composite.
     void updatePoolsPreset();
 
-    /// Changes the current selected TF pool.
-    void presetChoice(int _index);
-
     /// Sets the current TF pool to the output of this service.
     void setCurrentPool();
+
+private Q_SLOTS:
+
+    /// Changes the current selected TF pool.
+    void presetChoice(int _index);
 
     /// Deletes the current seleted TF pool.
     void deletePool();
@@ -179,6 +188,14 @@ private:
     /// Renames the current selected TF pool.
     void renamePool();
 
+    /// Imports a TF pool.
+    void importPool();
+
+    /// Exports the current selected TF pool.
+    void exportPool();
+
+private:
+
     /// If true, all TF contains in each path will be merged in a TF pool, else, one TF pool will be create for each
     /// files.
     bool m_tfPerPath { false };
@@ -187,25 +204,31 @@ private:
     std::vector< std::filesystem::path > m_paths;
 
     /// Contains the list of all TF preset.
-    QComboBox* m_tfPoolsPreset;
+    QComboBox* m_tfPoolsPreset { nullptr };
 
     /// Contains the delete TF pool button.
-    QPushButton* m_deleteButton;
+    QPushButton* m_deleteButton { nullptr };
 
     /// Contains the new TF pool button.
-    QPushButton* m_newButton;
+    QPushButton* m_newButton { nullptr };
 
     /// Contains the copy TF pool button.
-    QPushButton* m_copyButton;
+    QPushButton* m_copyButton { nullptr };
 
     /// Contains the reset TF pool button.
-    QPushButton* m_reinitializeButton;
+    QPushButton* m_reinitializeButton { nullptr };
 
     /// Contains the rename TF pool button.
-    QPushButton* m_renameButton;
+    QPushButton* m_renameButton { nullptr };
+
+    /// Contains the import TF button.
+    QPushButton* m_importButton { nullptr };
+
+    /// Contains the export TF button.
+    QPushButton* m_exportButton { nullptr };
 
     /// Contains the current selected TF pool.
-    ::fwData::Composite::sptr m_currentTFPool;
+    ::fwData::Composite::sptr m_currentTFPool { nullptr };
 
     /// Defines the path of the delete button icon.
     std::filesystem::path m_deleteIcon;
@@ -222,11 +245,18 @@ private:
     /// Defines the path of the rename button icon.
     std::filesystem::path m_renameIcon;
 
+    /// Defines the path of the import button icon.
+    std::filesystem::path m_importIcon;
+
+    /// Defines the path of the export button icon.
+    std::filesystem::path m_exportIcon;
+
     /// Defines icons width.
     unsigned int m_iconWidth { 16 };
 
     /// Defines icons height.
     unsigned int m_iconHeight { 16 };
+
 };
 
-}
+} // namespace uiTF.
