@@ -30,7 +30,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwMath/Compare.hpp>
@@ -129,8 +128,8 @@ void SFrameMatrixSynchronizer::starting()
     m_images.reserve(numFrameTLs);
     for(size_t i = 0; i < numFrameTLs; ++i)
     {
-        m_frameTLs.push_back(this->getInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i));
-        m_images.push_back(this->getInOut< ::fwData::Image>(s_IMAGE_INOUT, i));
+        m_frameTLs.push_back(this->getWeakInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i));
+        m_images.push_back(this->getWeakInOut< ::fwData::Image>(s_IMAGE_INOUT, i));
     }
 
     const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
@@ -143,13 +142,13 @@ void SFrameMatrixSynchronizer::starting()
         // if ever the group is not found 'getKeyGroupSize' will assert.
         const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT + std::to_string(i));
 
-        m_matrixTLs.push_back(this->getInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i));
+        m_matrixTLs.push_back(this->getWeakInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i));
 
-        std::vector< ::fwData::TransformationMatrix3D::sptr> matricesVector;
+        std::vector< ::fwData::mt::weak_ptr< ::fwData::TransformationMatrix3D> > matricesVector;
         for(size_t j = 0; j < numMatrices; ++j)
         {
             matricesVector.push_back(
-                this->getInOut< ::fwData::TransformationMatrix3D >( s_MATRICES_INOUT + std::to_string(i), j));
+                this->getWeakInOut< ::fwData::TransformationMatrix3D >( s_MATRICES_INOUT + std::to_string(i), j));
         }
         m_totalOutputMatrices += numMatrices;
         m_matrices.push_back(matricesVector);
@@ -236,7 +235,8 @@ void SFrameMatrixSynchronizer::synchronize()
     // Then we get the one with the newest timestamp and the other ones are not considered.
     for(size_t i = 0; i != m_frameTLs.size(); ++i)
     {
-        const auto& tl = m_frameTLs[i];
+        const auto tl = m_frameTLs[i].lock();
+        SLM_ASSERT("Frame TL does not exist", tl);
         ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
@@ -259,7 +259,9 @@ void SFrameMatrixSynchronizer::synchronize()
                 availableFramesTL.erase(std::remove_if(availableFramesTL.begin(), availableFramesTL.end(),
                                                        [ = ](size_t const& idx)
                     {
-                        const auto ts = m_frameTLs[idx]->getNewerTimestamp();
+                        const auto frametl = m_frameTLs[idx].lock();
+                        SLM_ASSERT("Frame TL does not exist", frametl);
+                        const auto ts = frametl->getNewerTimestamp();
                         return std::abs(frameTimestamp - ts) >= m_tolerance;
                     }), availableFramesTL.end());
             }
@@ -277,7 +279,9 @@ void SFrameMatrixSynchronizer::synchronize()
     availableMatricesTL.reserve(m_matrixTLs.size());
     for(size_t i = 0; i != m_matrixTLs.size(); ++i)
     {
-        const auto& tl = m_matrixTLs[i];
+        const auto tl = m_matrixTLs[i].lock();
+        SLM_ASSERT("Matrix TL does not exist", tl);
+
         ::fwCore::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if( (tlTimestamp > 0) && (std::abs(frameTimestamp - tlTimestamp) < m_tolerance) )
         {
@@ -311,56 +315,79 @@ void SFrameMatrixSynchronizer::synchronize()
 
     for(size_t i = 0; i != m_frameTLs.size(); ++i)
     {
-        ::arData::FrameTL::csptr frameTL = m_frameTLs[i];
-        ::fwData::Image::sptr image      = m_images[i];
-
-        const ::fwData::Image::Size size = { frameTL->getWidth(), frameTL->getHeight(), 0};
-        // Check if image dimensions have changed
-        if(size != image->getSize2() || frameTL->getNumberOfComponents() != image->getNumberOfComponents())
+        const auto image = m_images[i].lock();
+        CSPTR(::arData::FrameTL::BufferType) buffer;
         {
-            m_imagesInitialized = false;
-        }
+            const auto frameTL = m_frameTLs[i].lock();
+            OSLM_ASSERT("Image with index '" << i << "' does not exist", image);
 
-        if(!m_imagesInitialized)
-        {
-            ::fwData::Image::PixelFormat format;
-            // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or RGBA
-            switch (frameTL->getNumberOfComponents())
+            const ::fwData::Image::Size size = { frameTL->getWidth(), frameTL->getHeight(), 0};
+            // Check if image dimensions have changed
+            if(size != image->getSize2() || frameTL->getNumberOfComponents() != image->getNumberOfComponents())
             {
-                case 1:
-                    format = ::fwData::Image::GRAY_SCALE;
-                    break;
-                case 3:
-                    format = ::fwData::Image::RGB;
-                    break;
-                case 4:
-                    format = ::fwData::Image::RGBA;
-                    break;
-                default:
-                    OSLM_ERROR("Number of compenent not managed")
-                    return;
+                m_imagesInitialized = false;
             }
-            ::fwData::mt::ObjectWriteLock destLock(image);
-            image->resize(size, frameTL->getType(), format);
-            const ::fwData::Image::Origin origin = {0., 0., 0.};
-            image->setOrigin2(origin);
-            const ::fwData::Image::Spacing spacing = {1., 1., 1.};
-            image->setSpacing2(spacing);
-            image->setWindowWidth(1);
-            image->setWindowCenter(0);
 
-            m_imagesInitialized = true;
+            if(!m_imagesInitialized)
+            {
+                ::fwData::Image::PixelFormat format;
+                switch (frameTL->getPixelFormat())
+                {
+                    case ::arData::FrameTL::PixelFormat::GRAY_SCALE:
+                        format = ::fwData::Image::GRAY_SCALE;
+                        break;
+                    case ::arData::FrameTL::PixelFormat::RGB:
+                        format = ::fwData::Image::RGB;
+                        break;
+                    case ::arData::FrameTL::PixelFormat::BGR:
+                        format = ::fwData::Image::BGR;
+                        break;
+                    case ::arData::FrameTL::PixelFormat::RGBA:
+                        format = ::fwData::Image::RGBA;
+                        break;
+                    case ::arData::FrameTL::PixelFormat::BGRA:
+                        format = ::fwData::Image::BGRA;
+                        break;
+                    default:
+                        format = ::fwData::Image::UNDEFINED;
+                        FW_DEPRECATED_MSG("FrameTL pixel format should be defined, we temporary assume that the format "
+                                          "is GrayScale, RGB or RGBA according to the number of components.", "22.0");
+                        // FIXME Support old FrameTL API (sight 22.0)
+                        switch (frameTL->getNumberOfComponents())
+                        {
+                            case 1:
+                                format = ::fwData::Image::GRAY_SCALE;
+                                break;
+                            case 3:
+                                format = ::fwData::Image::RGB;
+                                break;
+                            case 4:
+                                format = ::fwData::Image::RGBA;
+                                break;
+                            default:
+                                SLM_ERROR("Number of component not managed.")
+                                return;
+                        }
+                }
+                image->resize(size, frameTL->getType(), format);
+                const ::fwData::Image::Origin origin = {0., 0., 0.};
+                image->setOrigin2(origin);
+                const ::fwData::Image::Spacing spacing = {1., 1., 1.};
+                image->setSpacing2(spacing);
+                image->setWindowWidth(1);
+                image->setWindowCenter(0);
+
+                m_imagesInitialized = true;
+            }
+
+            buffer = frameTL->getClosestBuffer(matrixTimestamp - m_delay);
         }
-
-        ::fwData::mt::ObjectWriteLock destLock(image);
-        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp - m_delay);
 
         if(!buffer)
         {
             OSLM_INFO("Buffer not found for timestamp "<< matrixTimestamp << " in timeline 'frame" << i << "'.");
             continue;
         }
-        const auto dumplock           = image->lock();
         const std::uint8_t* frameBuff = &buffer->getElement(0);
         auto iter                     = image->begin<std::uint8_t>();
         std::copy( frameBuff, frameBuff+buffer->getSize(), iter);
@@ -375,8 +402,11 @@ void SFrameMatrixSynchronizer::synchronize()
     size_t syncMatricesNbr = 0;
     for(const auto& tlIdx: availableMatricesTL)
     {
-        const auto& matrixTL = m_matrixTLs[tlIdx];
-        CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
+        CSPTR(::arData::MatrixTL::BufferType) buffer;
+        {
+            const auto matrixTL = m_matrixTLs[tlIdx].lock();
+            buffer = matrixTL->getClosestBuffer(matrixTimestamp);
+        }
 
         if(buffer)
         {
@@ -384,9 +414,8 @@ void SFrameMatrixSynchronizer::synchronize()
 
             for(unsigned int k = 0; k < matrixVector.size(); ++k)
             {
-                ::fwData::TransformationMatrix3D::sptr const& matrix = matrixVector[k];
-
-                ::fwData::mt::ObjectWriteLock destLock(matrix);
+                const auto matrix = matrixVector[k].lock();
+                OSLM_ASSERT("Matrix with indices '"<< tlIdx << ", " << k << "' does not exist", matrix);
 
                 const int sendStatus = m_sendMatricesStatus[tlIdx][k];
 
