@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __ARDATA_UT_FRAMETLTEST_HPP__
-#define __ARDATA_UT_FRAMETLTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -34,7 +33,9 @@ class FrameTLTest : public CPPUNIT_NS::TestFixture
 {
 public:
     CPPUNIT_TEST_SUITE( FrameTLTest );
+    CPPUNIT_TEST( initTest );
     CPPUNIT_TEST( pushTest );
+    CPPUNIT_TEST( copyTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,9 +43,10 @@ public:
     void setUp();
     void tearDown();
 
+    void initTest();
     void pushTest();
+    void copyTest();
 };
 
 } //namespace ut
 } //namespace arData
-#endif // __ARDATA_UT_FRAMETLTEST_HPP__
