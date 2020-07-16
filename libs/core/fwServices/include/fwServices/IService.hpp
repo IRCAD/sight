@@ -579,6 +579,10 @@ public:
      * @param key name of the data or the group to register.
      * @param object pointer to the object to register.
      * @param index optional index of the key in the case of a member of a group of keys.
+     * @warning The service manages the output object lifetime: if it creates a new object, it will be the only
+     * maintainer of this object, when calling setOutput, it allows to share the object with other services. But these
+     * services will not maintain a reference to this object (only weak_ptr). When the service stops, it should remove
+     * its outputs by calling setOutput(key, nullptr). Otherwise, a service may work on an expired object.
      */
     FWSERVICES_API void setOutput(const ::fwServices::IService::KeyType& key, const ::fwData::Object::sptr& object,
                                   size_t index = 0);
