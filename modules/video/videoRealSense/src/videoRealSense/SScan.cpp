@@ -1165,7 +1165,7 @@ void SScan::setMinMaxRange()
 void SScan::onCameraImage(const uint8_t* _buffer)
 {
     // Filling timeline's buffer
-    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMicroSec() );
+    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMilliSec() );
 
     SPTR(::arData::FrameTL::BufferType) colorBuffer = m_colorTimeline->createBuffer(timestamp);
 
@@ -1186,7 +1186,7 @@ void SScan::onCameraImage(const uint8_t* _buffer)
 void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 {
     // Filling the depth image buffer in the timeline
-    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMicroSec() );
+    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMilliSec() );
 
     SPTR(::arData::FrameTL::BufferType) depthTL = m_depthTimeline->createBuffer(timestamp);
 

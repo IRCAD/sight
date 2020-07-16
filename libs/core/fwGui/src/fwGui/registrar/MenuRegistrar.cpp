@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,8 @@ MenuRegistrar::~MenuRegistrar()
 ::fwGui::container::fwMenuItem::sptr MenuRegistrar::getFwMenuItem(std::string actionSid,
                                                                   std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems)
 {
-    SLM_ASSERT("menuItem not found", m_actionSids.find(actionSid) != m_actionSids.end());
+    SLM_ASSERT("The action '" + actionSid + "' declared by the Menu '" + m_sid + "' is not found",
+               m_actionSids.find(actionSid) != m_actionSids.end());
     ::fwGui::container::fwMenuItem::sptr menuItem = menuItems.at( m_actionSids[actionSid].first );
     return menuItem;
 }
@@ -71,8 +72,9 @@ MenuRegistrar::~MenuRegistrar()
 
 void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configuration)
 {
-    OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be registry",
-                configuration->getName() == "registry");
+    SLM_ASSERT(
+        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",
+        configuration->getName() == "registry");
 
     // index represents associated menu with position in menus vector
     unsigned int index = 0;
@@ -81,26 +83,27 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
     for( ConfigurationType menuItem :  vectMenuItems)
     {
-        SLM_ASSERT("<menuItem> tag must have sid attribute", menuItem->hasAttribute("sid"));
+        SLM_ASSERT("[" + m_sid + "] <menuItem> tag must have 'sid' attribute", menuItem->hasAttribute("sid"));
         if(menuItem->hasAttribute("sid"))
         {
             bool start = false;
             if(menuItem->hasAttribute("start"))
             {
                 std::string startValue = menuItem->getAttributeValue("start");
-                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
-                           startValue == "yes" || startValue == "no");
+                SLM_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (requires 'yes' or 'no'), actual: '"
+                           + startValue +"'.", startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = menuItem->getAttributeValue("sid");
-            OSLM_ASSERT("Action " << sid << " already exists for this menu", m_actionSids.find(
-                            sid) == m_actionSids.end());
+            OSLM_ASSERT("The action '" + sid + "' already exists for '" + m_sid + "' menu.",
+                        m_actionSids.find( sid) == m_actionSids.end());
             m_actionSids[sid] = SIDMenuMapType::mapped_type(index, start);
 
             ::fwGui::ActionCallbackBase::sptr callback;
             ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ActionCallbackBase::REGISTRY_KEY);
             callback                            = ::fwGui::ActionCallbackBase::dynamicCast(guiObj);
-            OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::ActionCallbackBase::REGISTRY_KEY, callback);
+            SLM_ASSERT("Cannot create action callback, factory failed for '"
+                       + ::fwGui::ActionCallbackBase::REGISTRY_KEY + "'", callback);
 
             callback->setSID(sid);
             m_callbacks.push_back(callback);
@@ -113,21 +116,21 @@ void MenuRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     for( ConfigurationType menu :  vectMenus)
     {
-        SLM_ASSERT("<menu> tag must have sid attribute", menu->hasAttribute("sid"));
+        SLM_ASSERT("[" + m_sid + "] <menu> tag must have sid attribute", menu->hasAttribute("sid"));
         if(menu->hasAttribute("sid"))
         {
             bool start = false;
             if(menu->hasAttribute("start"))
             {
                 std::string startValue = menu->getAttributeValue("start");
-                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
-                           startValue == "yes" || startValue == "no");
+                SLM_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
+                           << startValue <<"'.", startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid                 = menu->getAttributeValue("sid");
             std::pair<int, bool> indexStart = std::make_pair( index, start);
-            OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_actionSids.find(
-                            sid) == m_actionSids.end());
+            OSLM_ASSERT("The menu '" + sid + "' already exists for this menu '" + m_sid + "'",
+                        m_actionSids.find( sid) == m_actionSids.end());
             m_menuSids[sid] = indexStart;
         }
         index++;
@@ -141,15 +144,19 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > m
     ::fwGui::container::fwMenuItem::sptr menuItem;
     for( SIDMenuMapType::value_type sid :  m_actionSids)
     {
-        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
+        OSLM_ASSERT("The menu '" << m_sid << "' contains more menuItems in <registry> than in <layout>: "
+                                 << (sid.second.first+1) << " menuItems in <registry>, but only " << menuItems.size() <<" in <layout>.",
                     sid.second.first < menuItems.size());
         menuItem = menuItems.at( sid.second.first );
         ::fwGui::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("The action '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menu, "
+                       "the service may be created later if it uses deferred objects, thus use start=\"no\" and start it at the end of the configuration ",
+                       ::fwTools::fwID::exist(sid.first ));
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
+            SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
+                       , service->isStopped() );
             service->start();
         }
         else
@@ -174,15 +181,18 @@ void MenuRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus
     ::fwGui::container::fwMenu::sptr menu;
     for( SIDMenuMapType::value_type sid :  m_menuSids)
     {
-        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
-                    sid.second.first < menus.size());
+        OSLM_ASSERT("The menu '" << m_sid << "' contains more menus in <registry> than in <layout>: "
+                                 << sid.second.first << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
+                    (sid.second.first+1) < menus.size());
         menu = menus.at( sid.second.first );
         ::fwGui::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
+            SLM_ASSERT("The menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menu.",
+                       ::fwTools::fwID::exist(sid.first ));
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
+            SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
+                       , service->isStopped() );
             service->start();
         }
     }
@@ -196,7 +206,9 @@ void MenuRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                        "It may have been destroyed by the configuration if it uses deferred objects.",
+                        ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop();
         }
@@ -206,7 +218,9 @@ void MenuRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("The menu '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                        "It may have been destroyed by the configuration if it uses deferred objects.",
+                        ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             service->stop();
         }

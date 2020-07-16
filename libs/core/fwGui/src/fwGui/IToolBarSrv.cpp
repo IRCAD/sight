@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ void IToolBarSrv::initialize()
     m_registrar = ::fwGui::registrar::ToolBarRegistrar::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-    SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );
+    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );
 
     if(!vectRegistrar.empty())
     {
@@ -65,13 +65,13 @@ void IToolBarSrv::initialize()
 
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-    SLM_ASSERT("Gui section is mandatory.", !vectGui.empty() );
+    SLM_ASSERT("["+this->getID()+"'] <gui> section is mandatory.", !vectGui.empty() );
 
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-        SLM_ASSERT("layout section is mandatory.", !vectLayoutMng.empty() );
+        SLM_ASSERT("["+this->getID()+"'] <layout> section is mandatory.", !vectLayoutMng.empty() );
 
         if(!vectLayoutMng.empty())
         {
@@ -81,7 +81,7 @@ void IToolBarSrv::initialize()
             if (m_layoutConfig->hasAttribute("hideActions"))
             {
                 std::string hideActions = m_layoutConfig->getAttributeValue("hideActions");
-                SLM_ASSERT("'hideActions' attribute value must be 'true' or 'false'",
+                SLM_ASSERT("["+this->getID()+"'] 'hideActions' attribute value must be 'true' or 'false'",
                            hideActions == "true" || hideActions == "false");
                 m_hideActions = (hideActions == "true");
             }
