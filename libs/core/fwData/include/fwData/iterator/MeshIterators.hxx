@@ -32,6 +32,168 @@ namespace fwData
 namespace iterator
 {
 
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+PointInfoBase<isConst>& PointInfoBase<isConst>::operator=(
+    const PointInfoBase<false>& other)
+{
+    static_assert(isConst == false, "Cannot affect values on a read-only struct.");
+    FW_RAISE_IF("Point is not defined", nullptr == point);
+    point->x = other.point->x;
+    point->y = other.point->y;
+    point->z = other.point->z;
+
+    if(normal && other.normal)
+    {
+        normal->nx = other.normal->nx;
+        normal->ny = other.normal->ny;
+        normal->nz = other.normal->nz;
+    }
+    if(rgb && other.rgb)
+    {
+        rgb->r = other.rgb->r;
+        rgb->g = other.rgb->g;
+        rgb->b = other.rgb->b;
+    }
+    if(rgba && other.rgba)
+    {
+        rgba->r = other.rgba->r;
+        rgba->g = other.rgba->g;
+        rgba->b = other.rgba->b;
+        rgba->a = other.rgba->a;
+    }
+    if (tex && other.tex)
+    {
+        tex->u = other.tex->u;
+        tex->v = other.tex->v;
+    }
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+PointInfoBase<isConst>& PointInfoBase<isConst>::operator=(
+    const PointInfoBase<true>& other)
+{
+    static_assert(isConst == false, "Cannot affect values on a read-only struct.");
+    FW_RAISE_IF("Point is not defined", nullptr == point);
+    point->x = other.point->x;
+    point->y = other.point->y;
+    point->z = other.point->z;
+
+    if(normal && other.normal)
+    {
+        normal->nx = other.normal->nx;
+        normal->ny = other.normal->ny;
+        normal->nz = other.normal->nz;
+    }
+    if(rgb && other.rgb)
+    {
+        rgb->r = other.rgb->r;
+        rgb->g = other.rgb->g;
+        rgb->b = other.rgb->b;
+    }
+    if(rgba && other.rgba)
+    {
+        rgba->r = other.rgba->r;
+        rgba->g = other.rgba->g;
+        rgba->b = other.rgba->b;
+        rgba->a = other.rgba->a;
+    }
+    if (tex && other.tex)
+    {
+        tex->u = other.tex->u;
+        tex->v = other.tex->v;
+    }
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
+    const CellInfoBase<false>& other)
+{
+    static_assert(isConst == false, "Cannot affect values on a read-only struct.");
+    FW_RAISE_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
+    *type       = *other.type;
+    *offset     = *other.offset;
+    nbPoints    = other.nbPoints;
+    *(offset+1) = *offset + nbPoints;
+    std::copy(other.pointIdx, other.pointIdx+nbPoints, pointIdx);
+
+    if(normal && other.normal)
+    {
+        normal->nx = other.normal->nx;
+        normal->ny = other.normal->ny;
+        normal->nz = other.normal->nz;
+    }
+    if(rgb && other.rgb)
+    {
+        rgb->r = other.rgb->r;
+        rgb->g = other.rgb->g;
+        rgb->b = other.rgb->b;
+    }
+    if(rgba && other.rgba)
+    {
+        rgba->r = other.rgba->r;
+        rgba->g = other.rgba->g;
+        rgba->b = other.rgba->b;
+        rgba->a = other.rgba->a;
+    }
+    if (tex && other.tex)
+    {
+        tex->u = other.tex->u;
+        tex->v = other.tex->v;
+    }
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
+    const CellInfoBase<true>& other)
+{
+    static_assert(isConst == false, "Cannot affect values on a read-only struct.");
+    FW_RAISE_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
+    *type       = *other.type;
+    *offset     = *other.offset;
+    nbPoints    = other.nbPoints;
+    *(offset+1) = *offset + nbPoints;
+    std::copy(other.pointIdx, other.pointIdx+nbPoints, pointIdx);
+
+    if(normal && other.normal)
+    {
+        normal->nx = other.normal->nx;
+        normal->ny = other.normal->ny;
+        normal->nz = other.normal->nz;
+    }
+    if(rgb && other.rgb)
+    {
+        rgb->r = other.rgb->r;
+        rgb->g = other.rgb->g;
+        rgb->b = other.rgb->b;
+    }
+    if(rgba && other.rgba)
+    {
+        rgba->r = other.rgba->r;
+        rgba->g = other.rgba->g;
+        rgba->b = other.rgba->b;
+        rgba->a = other.rgba->a;
+    }
+    if (tex && other.tex)
+    {
+        tex->u = other.tex->u;
+        tex->v = other.tex->v;
+    }
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
 template<bool isConst>
 PointIteratorBase<isConst>::PointIteratorBase()
 {
@@ -482,7 +644,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
     std::uint64_t offset;
     if (m_idx < m_numberOfElements)
     {
-        offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset);
+        offset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
     }
     else
     {
@@ -495,7 +657,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
     std::uint64_t nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
-        nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset+1);
+        nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
     }
     else
     {
@@ -555,7 +717,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
     std::uint64_t offset;
     if (m_idx < m_numberOfElements)
     {
-        offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset);
+        offset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
     }
     else
     {
@@ -567,7 +729,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
     std::uint64_t nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
-        nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset+1);
+        nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
     }
     else
     {
@@ -604,8 +766,9 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
     --m_cellInfo->type;
     --m_cellInfo->offset;
 
-    const cell_data_value_type offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset);
-    const difference_type newOffset   = static_cast<difference_type>(offset);
+    const typename CellInfo::cell_data_value_type offset =
+        *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
+    const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx -= m_currentOffset - newOffset;
     m_cellInfo->nbPoints  = static_cast<size_t>(m_currentOffset - newOffset);
     m_currentOffset       = newOffset;
@@ -661,15 +824,16 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator-=(difference_type
 
     m_cellInfo->type   -= index;
     m_cellInfo->offset -= index;
-    const cell_data_value_type offset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset);
-    const difference_type newOffset   = static_cast<difference_type>(offset);
+    const typename CellInfo::cell_data_value_type offset =
+        *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset);
+    const difference_type newOffset = static_cast<difference_type>(offset);
     m_cellInfo->pointIdx -= m_currentOffset - newOffset;
     m_currentOffset       = newOffset;
 
     std::uint64_t nextOffset;
     if (m_idx < m_numberOfElements-1)
     {
-        nextOffset = *reinterpret_cast<cell_data_value_type*>(m_cellInfo->offset+1);
+        nextOffset = *reinterpret_cast<typename CellInfo::cell_data_value_type*>(m_cellInfo->offset+1);
     }
     else
     {
@@ -733,7 +897,7 @@ typename CellIteratorBase<isConst>::pointer CellIteratorBase<isConst>::operator-
 //------------------------------------------------------------------------------
 
 template<bool isConst>
-typename CellIteratorBase<isConst>::cell_data_value_type& CellIteratorBase<isConst>::operator[](size_t index)
+typename CellIteratorBase<isConst>::CellInfo::cell_data_value_type& CellIteratorBase<isConst>::operator[](size_t index)
 {
     OSLM_ASSERT("Index out ou bounds, the cell contains only " << m_cellInfo->nbPoints << " points",
                 index < m_cellInfo->nbPoints);

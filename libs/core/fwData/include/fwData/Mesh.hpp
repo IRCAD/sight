@@ -28,11 +28,11 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/iterator/MeshIterators.hpp"
 
-#include <boost/multi_array.hpp>
-
 #include <fwCore/macros.hpp>
 
 #include <fwMemory/IBuffered.hpp>
+
+#include <boost/multi_array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
 
@@ -262,6 +262,21 @@ namespace fwData
         }
     }
    @endcode
+ *
+ * It is also possible to use the iterators as a standard std iterator, for example with std::copy.
+ *
+ * @code{.cpp}
+    void copyPoints(const ::fwData::Mesh::csptr& origin, const ::fwData::Mesh::sptr& dest)
+    {
+        SLM_ASSERT("Meshes must have the same number of points",
+                   origin->getNumberOfPoints() == dest->getNumberOfPoints());
+
+        auto origIt = origin->begin< ::fwData::Mesh::ConstPointIterator >();
+        auto origEnd = origin->end< ::fwData::Mesh::ConstPointIterator >();
+        auto destIt = dest->begin< ::fwData::Mesh::PointIterator >();
+        std::copy(origIt, origEnd, dest);
+    }
+   @endcode
  */
 class FWDATA_CLASS_API Mesh : public ::fwData::Object,
                               public ::fwMemory::IBuffered
@@ -313,6 +328,11 @@ public:
     typedef Id CellValueType;
     typedef Id CellDataOffsetType;
     typedef std::uint8_t CellTypes;
+
+    typedef iterator::PointIterator PointIterator;
+    typedef iterator::ConstPointIterator ConstPointIterator;
+    typedef iterator::CellIterator CellIterator;
+    typedef iterator::ConstCellIterator ConstCellIterator;
 
     typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
     /**

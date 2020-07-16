@@ -64,15 +64,9 @@ enum class CellType : std::uint8_t
     TETRA
 };
 
-/**
- * @brief Base class for mesh's point iterators
- *
- * Iterate through the point arrays and check if the index is not out of the bounds
- */
+/// Structure to store point iterator information
 template<bool isConst>
-class PointIteratorBase
-{
-public:
+struct PointInfoBase {
 
     typedef typename std::conditional<isConst, const Point, Point>::type point_value_type;
     typedef point_value_type& point_reference;
@@ -90,19 +84,66 @@ public:
     typedef typename std::conditional<isConst, const TexCoords, TexCoords>::type tex_value_type;
     typedef tex_value_type& tex_reference;
 
-    struct PointInfo {
-        point_value_type* point{nullptr};
-        normal_value_type* normal{nullptr};
-        rgba_value_type* rgba{nullptr};
-        rgb_value_type* rgb{nullptr};
-        tex_value_type* tex{nullptr};
-    };
+    PointInfoBase& operator=(const PointInfoBase<false>& other);
+    PointInfoBase& operator=(const PointInfoBase<true>& other);
+
+    point_value_type* point{nullptr};
+    normal_value_type* normal{nullptr};
+    rgba_value_type* rgba{nullptr};
+    rgb_value_type* rgb{nullptr};
+    tex_value_type* tex{nullptr};
+};
+
+/// Structure to store cell iterator information
+template<bool isConst>
+struct CellInfoBase {
+
+    typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_data_value_type;
+    typedef typename std::conditional<isConst, const CellType, CellType>::type cell_type_value_type;
+    typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_offset_value_type;
+
+    typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;
+    typedef rgba_value_type& rgba_reference;
+
+    // TMP: to support old API using RGB colors
+    typedef typename std::conditional<isConst, const RGB, RGB>::type rgb_value_type;
+    typedef rgb_value_type& rgb_reference;
+
+    typedef typename std::conditional<isConst, const Normal, Normal>::type normal_value_type;
+    typedef normal_value_type& normal_reference;
+
+    typedef typename std::conditional<isConst, const TexCoords, TexCoords>::type tex_value_type;
+    typedef tex_value_type& tex_reference;
+
+    CellInfoBase& operator=(const CellInfoBase<false>& other);
+    CellInfoBase& operator=(const CellInfoBase<true>& other);
+
+    cell_data_value_type* pointIdx{nullptr};
+    cell_type_value_type* type{nullptr};
+    cell_offset_value_type* offset{nullptr};
+    normal_value_type* normal{nullptr};
+    rgba_value_type* rgba{nullptr};
+    rgb_value_type* rgb{nullptr};
+    tex_value_type* tex{nullptr};
+    size_t nbPoints{0};
+};
+
+/**
+ * @brief Base class for mesh's point iterators
+ *
+ * Iterate through the point arrays and check if the index is not out of the bounds
+ */
+template<bool isConst>
+class PointIteratorBase
+{
+public:
 
     /**
      * @name Typedefs required by std::iterator_traits
      * @{
      */
-    typedef typename std::conditional<isConst, const PointInfo, PointInfo>::type value_type;
+    typedef PointInfoBase<isConst> PointInfo;
+    typedef PointInfo value_type;
     typedef value_type* pointer;
     typedef value_type& reference;
     typedef std::ptrdiff_t difference_type;
@@ -233,40 +274,12 @@ template<bool isConst>
 class CellIteratorBase
 {
 public:
-
-    typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_data_value_type;
-    typedef typename std::conditional<isConst, const CellType, CellType>::type cell_type_value_type;
-    typedef typename std::conditional<isConst, const std::uint64_t, std::uint64_t>::type cell_offset_value_type;
-
-    typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;
-    typedef rgba_value_type& rgba_reference;
-
-    // TMP: to support old API using RGB colors
-    typedef typename std::conditional<isConst, const RGB, RGB>::type rgb_value_type;
-    typedef rgb_value_type& rgb_reference;
-
-    typedef typename std::conditional<isConst, const Normal, Normal>::type normal_value_type;
-    typedef normal_value_type& normal_reference;
-
-    typedef typename std::conditional<isConst, const TexCoords, TexCoords>::type tex_value_type;
-    typedef tex_value_type& tex_reference;
-
-    struct CellInfo {
-        cell_data_value_type* pointIdx{nullptr};
-        cell_type_value_type* type{nullptr};
-        cell_offset_value_type* offset{nullptr};
-        normal_value_type* normal{nullptr};
-        rgba_value_type* rgba{nullptr};
-        rgb_value_type* rgb{nullptr};
-        tex_value_type* tex{nullptr};
-        size_t nbPoints{0};
-    };
-
     /**
      * @name Typedefs required by std::iterator_traits
      * @{
      */
-    typedef typename std::conditional<isConst, const CellInfo, CellInfo>::type value_type;
+    typedef CellInfoBase<isConst> CellInfo;
+    typedef CellInfo value_type;
     typedef value_type* pointer;
     typedef value_type& reference;
     typedef std::ptrdiff_t difference_type;
@@ -306,7 +319,7 @@ public:
     reference operator*() const;
     pointer operator->() const;
 
-    cell_data_value_type& operator[](size_t index);
+    typename CellInfo::cell_data_value_type& operator[](size_t index);
     size_t nbPoints() const;
 
 protected:
