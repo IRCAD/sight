@@ -87,6 +87,8 @@ struct PointInfoBase {
     PointInfoBase& operator=(const PointInfoBase<false>& other);
     PointInfoBase& operator=(const PointInfoBase<true>& other);
 
+    bool operator==(const PointInfoBase& other);
+
     point_value_type* point{nullptr};
     normal_value_type* normal{nullptr};
     rgba_value_type* rgba{nullptr};
@@ -117,6 +119,8 @@ struct CellInfoBase {
 
     CellInfoBase& operator=(const CellInfoBase<false>& other);
     CellInfoBase& operator=(const CellInfoBase<true>& other);
+
+    bool operator==(const CellInfoBase& other);
 
     cell_data_value_type* pointIdx{nullptr};
     cell_type_value_type* type{nullptr};

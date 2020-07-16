@@ -113,6 +113,48 @@ PointInfoBase<isConst>& PointInfoBase<isConst>::operator=(
 //------------------------------------------------------------------------------
 
 template<bool isConst>
+bool PointInfoBase<isConst>::operator==(const PointInfoBase& other)
+{
+    bool isEqual = true;
+    isEqual &= point->x == other.point->x;
+    isEqual &= point->y == other.point->y;
+    isEqual &= point->z == other.point->z;
+
+    isEqual &= (normal == nullptr && other.normal == nullptr) ||  (normal != nullptr && other.normal != nullptr);
+    if(normal && other.normal)
+    {
+        isEqual &= normal->nx == other.normal->nx;
+        isEqual &= normal->ny == other.normal->ny;
+        isEqual &= normal->nz == other.normal->nz;
+    }
+
+    isEqual &= (rgb == nullptr && other.rgb == nullptr) ||  (rgb != nullptr && other.rgb != nullptr);
+    if(rgb && other.rgb)
+    {
+        isEqual &= rgb->r == other.rgb->r;
+        isEqual &= rgb->g == other.rgb->g;
+        isEqual &= rgb->b == other.rgb->b;
+    }
+    isEqual &= (rgba == nullptr && other.rgba == nullptr) ||  (rgba != nullptr && other.rgba != nullptr);
+    if(rgba && other.rgba)
+    {
+        isEqual &= rgba->r == other.rgba->r;
+        isEqual &= rgba->g == other.rgba->g;
+        isEqual &= rgba->b == other.rgba->b;
+        isEqual &= rgba->a == other.rgba->a;
+    }
+    isEqual &= (tex == nullptr && other.tex == nullptr) ||  (tex != nullptr && other.tex != nullptr);
+    if (tex && other.tex)
+    {
+        isEqual &= tex->u == other.tex->u;
+        isEqual &= tex->v == other.tex->v;
+    }
+    return isEqual;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
 CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
     const CellInfoBase<false>& other)
 {
@@ -190,6 +232,50 @@ CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
         tex->v = other.tex->v;
     }
     return *this;
+}
+
+//------------------------------------------------------------------------------
+
+template<bool isConst>
+bool CellInfoBase<isConst>::operator==(const CellInfoBase& other)
+{
+    bool isEqual = true;
+    isEqual &= *type == *other.type;
+    isEqual &= *offset == *other.offset;
+    isEqual &= nbPoints == other.nbPoints;
+
+    isEqual &= std::equal(other.pointIdx, other.pointIdx+nbPoints, pointIdx);
+
+    isEqual &= (normal == nullptr && other.normal == nullptr) ||  (normal != nullptr && other.normal != nullptr);
+    if(normal && other.normal)
+    {
+        isEqual &= normal->nx == other.normal->nx;
+        isEqual &= normal->ny == other.normal->ny;
+        isEqual &= normal->nz == other.normal->nz;
+    }
+
+    isEqual &= (rgb == nullptr && other.rgb == nullptr) ||  (rgb != nullptr && other.rgb != nullptr);
+    if(rgb && other.rgb)
+    {
+        isEqual &= rgb->r == other.rgb->r;
+        isEqual &= rgb->g == other.rgb->g;
+        isEqual &= rgb->b == other.rgb->b;
+    }
+    isEqual &= (rgba == nullptr && other.rgba == nullptr) ||  (rgba != nullptr && other.rgba != nullptr);
+    if(rgba && other.rgba)
+    {
+        isEqual &= rgba->r == other.rgba->r;
+        isEqual &= rgba->g == other.rgba->g;
+        isEqual &= rgba->b == other.rgba->b;
+        isEqual &= rgba->a == other.rgba->a;
+    }
+    isEqual &= (tex == nullptr && other.tex == nullptr) ||  (tex != nullptr && other.tex != nullptr);
+    if (tex && other.tex)
+    {
+        isEqual &= tex->u == other.tex->u;
+        isEqual &= tex->v == other.tex->v;
+    }
+    return isEqual;
 }
 
 //------------------------------------------------------------------------------

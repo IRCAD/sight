@@ -1187,9 +1187,13 @@ void MeshTest::iteratorCopyTest()
         const auto end = mesh->end< ::fwData::iterator::ConstPointIterator >();
         auto copiedIt  = copiedMesh->begin< ::fwData::iterator::ConstPointIterator >();
 
+        CPPUNIT_ASSERT(std::equal(it, end, copiedIt));
+
         auto itCell        = mesh->begin< ::fwData::iterator::ConstCellIterator >();
         const auto endCell = mesh->end< ::fwData::iterator::ConstCellIterator >();
-        auto copiedItCell  = copiedMesh->begin< ::fwData::iterator::CellIterator >();
+        auto copiedItCell  = copiedMesh->begin< ::fwData::iterator::ConstCellIterator >();
+
+        CPPUNIT_ASSERT(std::equal(itCell, endCell, copiedItCell));
 
         size_t count = 0;
         for (; it != end; ++it, ++copiedIt, ++itCell, ++copiedItCell, ++count)
@@ -1308,7 +1312,16 @@ void MeshTest::iteratorCopyTest()
 
         auto copiedIt        = copiedMesh->begin< ::fwData::Mesh::ConstPointIterator >();
         const auto copiedEnd = copiedMesh->end< ::fwData::Mesh::ConstPointIterator >();
-        auto copiedItCell    = copiedMesh->begin< ::fwData::Mesh::CellIterator >();
+        auto copiedItCell    = copiedMesh->begin< ::fwData::Mesh::ConstCellIterator >();
+
+        auto it2        = mesh->begin< ::fwData::Mesh::ConstPointIterator >();
+        const auto end2 = mesh->end< ::fwData::Mesh::ConstPointIterator >();
+
+        CPPUNIT_ASSERT(!std::equal(it2, end2, copiedIt));
+        auto itCell2    = mesh->begin< ::fwData::Mesh::ConstCellIterator >();
+        auto itCell2End = mesh->end< ::fwData::Mesh::ConstCellIterator >();
+        CPPUNIT_ASSERT(!std::equal(itCell2, itCell2End, copiedItCell));
+
         count = 0;
         for (; copiedIt != copiedEnd; ++copiedIt, ++copiedItCell)
         {
