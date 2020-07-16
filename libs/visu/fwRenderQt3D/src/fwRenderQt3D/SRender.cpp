@@ -43,9 +43,6 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
-#include <QVBoxLayout>
-#include <QWidget>
-
 namespace fwRenderQt3D
 {
 
@@ -106,7 +103,10 @@ void SRender::starting()
 {
     this->create();
 
-    m_qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    // Instantiates render window manager.
+    auto m_interactorManager = ::fwRenderQt3D::IRenderWindowInteractorManager::createManager();
+    m_interactorManager->setRenderService(this->getSptr());
+    m_interactorManager->createContainer(this->getContainer());
 
     // Renders a Qt3DWindow which is then displayed as a QWidget.
     m_3dView = new Qt3DExtras::Qt3DWindow();
@@ -133,11 +133,7 @@ void SRender::starting()
     m_3dView->renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::Always);
 
     // Converts Qt3D window to QWidget and places it in render service qt container.
-    QPointer< QWidget > viewWidget = QWidget::createWindowContainer(m_3dView);
-    QPointer< QVBoxLayout > layout = new QVBoxLayout;
-    layout->addWidget(viewWidget);
-    layout->setContentsMargins(0, 0, 0, 0);
-    m_qtContainer->setLayout(layout);
+    m_interactorManager->set3DView(m_3dView);
 }
 
 //------------------------------------------------------------------------------
@@ -155,44 +151,9 @@ void SRender::stopping()
 
 //------------------------------------------------------------------------------
 
-SPTR(::fwGuiQt::container::QtContainer) SRender::getQtContainer()
-{
-    return m_qtContainer;
-}
-
-//------------------------------------------------------------------------------
-
-Qt3DExtras::Qt3DWindow* SRender::get3DView()
-{
-    return m_3dView;
-}
-
-//------------------------------------------------------------------------------
-
 ::fwRenderQt3D::core::GenericScene* SRender::getScene()
 {
     return m_scene;
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::setQtContainer(::fwGuiQt::container::QtContainer::sptr _qtContainer)
-{
-    m_qtContainer = _qtContainer;
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::set3DView(Qt3DExtras::Qt3DWindow* _3dView)
-{
-    m_3dView = _3dView;
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::setScene(::fwRenderQt3D::core::GenericScene* _scene)
-{
-    m_scene = _scene;
 }
 
 } // namespace fwRenderQt3D

@@ -18,4 +18,5 @@ set( REQUIREMENTS
     ioData
     fwlauncher
     visuQt3DAdaptor
+    visuQt3DQt
 )

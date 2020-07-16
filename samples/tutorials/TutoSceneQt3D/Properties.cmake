@@ -24,6 +24,7 @@ set( REQUIREMENTS
 
     # Generic Scene
     visuQt3DAdaptor
+    visuQt3DQt
 )
 
 moduleParam(guiQt

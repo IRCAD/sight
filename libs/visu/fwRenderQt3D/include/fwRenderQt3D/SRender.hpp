@@ -23,8 +23,7 @@
 #pragma once
 
 #include "fwRenderQt3D/config.hpp"
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include "fwRenderQt3D/IRenderWindowInteractorManager.hpp"
 
 #include <fwRender/IRender.hpp>
 
@@ -37,16 +36,6 @@
 
 #include <QColor>
 #include <QPointer>
-
-namespace fwGuiQt
-{
-
-namespace container
-{
-class QtContainer;
-}
-
-}
 
 namespace Qt3DExtras
 {
@@ -94,23 +83,8 @@ public:
     /// Destroys the service.
     FWRENDERQT3D_API ~SRender() override;
 
-    /// @returns Qt container.
-    FWRENDERQT3D_API SPTR(::fwGuiQt::container::QtContainer) getQtContainer();
-
-    /// @returns 3D view in which the generic scene is declared.
-    FWRENDERQT3D_API Qt3DExtras::Qt3DWindow* get3DView();
-
     /// @returns the scene instantiated by this service.
     FWRENDERQT3D_API ::fwRenderQt3D::core::GenericScene* getScene();
-
-    /// Updates Qt container.
-    FWRENDERQT3D_API void setQtContainer(::fwGuiQt::container::QtContainer::sptr _qtContainer);
-
-    /// Updates 3D view in which the generic scene is declared.
-    FWRENDERQT3D_API void set3DView(Qt3DExtras::Qt3DWindow* _3dView);
-
-    /// Updates the scene instantiated by this service.
-    FWRENDERQT3D_API void setScene(::fwRenderQt3D::core::GenericScene* _scene);
 
 private:
 
@@ -125,9 +99,6 @@ private:
 
     /// Destroys the service.
     void stopping() override;
-
-    /// Contains the Qt container.
-    ::fwGuiQt::container::QtContainer::sptr m_qtContainer;
 
     /// Contains the 3D view.
     QPointer< Qt3DExtras::Qt3DWindow > m_3dView { };
