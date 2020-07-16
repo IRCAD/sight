@@ -32,6 +32,13 @@ namespace iterator
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
+inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase()
+{
+}
+
+//------------------------------------------------------------------------------
+
+template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(ImageType image) :
     m_lock(image->lock()),
     m_pointer(static_cast<pointer>(image->getBuffer())),
@@ -91,6 +98,7 @@ ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator
 template <class FORMAT, bool isConst>
 inline bool ImageIteratorBase<FORMAT, isConst>::operator==(const ImageIteratorBase& other) const
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     return m_pointer == other.m_pointer;
 }
 
@@ -99,6 +107,7 @@ inline bool ImageIteratorBase<FORMAT, isConst>::operator==(const ImageIteratorBa
 template <class FORMAT, bool isConst>
 inline bool ImageIteratorBase<FORMAT, isConst>::operator!=(const ImageIteratorBase& other) const
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     return m_pointer != other.m_pointer;
 }
 
@@ -107,6 +116,7 @@ inline bool ImageIteratorBase<FORMAT, isConst>::operator!=(const ImageIteratorBa
 template <class FORMAT, bool isConst>
 inline typename ImageIteratorBase<FORMAT, isConst>::reference ImageIteratorBase<FORMAT, isConst>::operator*() const
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     return *(reinterpret_cast<ImageIteratorBase<FORMAT, isConst>::value_type*>(m_pointer));
 }
 
@@ -115,6 +125,7 @@ inline typename ImageIteratorBase<FORMAT, isConst>::reference ImageIteratorBase<
 template <class FORMAT, bool isConst>
 inline typename ImageIteratorBase<FORMAT, isConst>::value_type* ImageIteratorBase<FORMAT, isConst>::operator->() const
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     return reinterpret_cast<ImageIteratorBase<FORMAT, isConst>::value_type*>(m_pointer);
 }
 
@@ -123,6 +134,7 @@ inline typename ImageIteratorBase<FORMAT, isConst>::value_type* ImageIteratorBas
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator++()
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     ++m_idx;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
@@ -135,6 +147,7 @@ inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::o
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator++(int)
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     ImageIteratorBase tmp(*this);
     ++m_idx;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
@@ -158,6 +171,7 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator+=(difference_type index)
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     m_idx += index;
     SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
                m_idx <= m_numberOfElements );
@@ -170,6 +184,7 @@ inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::o
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator--()
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
     --m_pointer;
@@ -181,6 +196,7 @@ inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::o
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator--(int)
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     ImageIteratorBase tmp(*this);
     --m_idx;
@@ -203,6 +219,7 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator-=(difference_type index)
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
                                              << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
     m_idx     -= index;

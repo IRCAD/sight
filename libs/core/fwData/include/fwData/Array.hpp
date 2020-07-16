@@ -371,6 +371,7 @@ public:
         /// @}
 
         /// Constructor
+        IteratorBase();
         IteratorBase(ArrayType array);
         /// Copy constructor
         IteratorBase(const IteratorBase<TYPE, false>& other);
@@ -842,6 +843,12 @@ inline const T& Array::at(const size_t& offset) const
                                               + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
                           offset >= this->getSizeInBytes()/sizeof(T));
     return *(reinterpret_cast<const T*>(this->getBuffer()) + offset);
+}
+
+template <class TYPE, bool isConst>
+inline Array::IteratorBase<TYPE, isConst>::IteratorBase()
+{
+
 }
 
 //------------------------------------------------------------------------------

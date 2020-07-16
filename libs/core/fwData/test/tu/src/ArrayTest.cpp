@@ -567,5 +567,21 @@ void ArrayTest::constArrayTest()
 
 //-----------------------------------------------------------------------------
 
+void ArrayTest::emptyArrayTest()
+{
+    ::fwData::Array::sptr array = ::fwData::Array::New();
+
+    ::fwData::Array::SizeType size = {10, 100};
+
+    auto lock = array->lock();
+
+    ::fwData::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
+
+    CPPUNIT_ASSERT_NO_THROW(++iter);
+
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwData

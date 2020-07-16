@@ -689,11 +689,13 @@ void MeshTest::iteratorTest()
     {
         auto it          = mesh->begin< ::fwData::iterator::PointIterator >();
         const auto itEnd = mesh->end< ::fwData::iterator::PointIterator >();
+        ::fwData::iterator::PointIterator pointIt;
 
         size_t count = 0;
         for (; it != itEnd; ++it)
         {
             ::fwData::iterator::Point p = *it->point;
+            pointIt                     = it;
             const float fValue = static_cast<float>(3*count);
             CPPUNIT_ASSERT_EQUAL(fValue, p.x);
             CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
@@ -757,10 +759,12 @@ void MeshTest::iteratorTest()
     {
         auto it          = mesh->begin< ::fwData::iterator::CellIterator >();
         const auto itEnd = mesh->end< ::fwData::iterator::CellIterator >();
+        ::fwData::iterator::CellIterator cellIt;
 
         size_t count = 0;
         for (; it != itEnd; ++it)
         {
+            cellIt = it;
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), static_cast<size_t>(3), it.nbPoints());
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
                                              count), static_cast<std::uint64_t>(count), it[0]);

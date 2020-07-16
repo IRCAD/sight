@@ -126,6 +126,8 @@ public:
     typedef std::random_access_iterator_tag iterator_category;
     /// @}
 
+    /// empty Constructor
+    ImageIteratorBase();
     /// Constructor
     ImageIteratorBase(ImageType image);
     /// Copy constructor
