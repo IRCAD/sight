@@ -248,8 +248,8 @@ void RenderWindowInteractorManager::setFullscreen(bool _fullscreen, int _screenN
         QRect screenres = desktop->screenGeometry(_screenNumber);
 
         m_windowContainer->setParent(nullptr);
-        m_windowContainer->setGeometry(screenres);
         m_windowContainer->showFullScreen();
+        m_windowContainer->setGeometry(screenres);
     }
     else if(container->layout()->isEmpty())
     {
