@@ -4,8 +4,6 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
-    fwData
-    fwMedData
     fwQml
     fwServices
     fwRenderQt3D
@@ -14,7 +12,6 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     guiQml
     dataReg
-    ioData
     ioVTK
     uiIO
     servicesReg

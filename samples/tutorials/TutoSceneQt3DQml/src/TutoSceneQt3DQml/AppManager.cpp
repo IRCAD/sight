@@ -23,9 +23,6 @@
 #include "TutoSceneQt3DQml/AppManager.hpp"
 
 #include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -33,7 +30,7 @@
 namespace TutoSceneQt3DQml
 {
 
-static const std::string s_MODELSERIES_ID = "modelSeries";
+static const std::string s_MESH_ID = "mesh";
 
 //------------------------------------------------------------------------------
 
@@ -59,6 +56,7 @@ void AppManager::initialize()
 void AppManager::uninitialize()
 {
     this->stopAndUnregisterServices();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -94,27 +92,27 @@ void AppManager::setScene(::fwRenderQt3D::core::GenericScene* _scene)
 void AppManager::onOpenModel()
 {
     // Reads a mesh.
-    const auto modelSeriesReader = ::fwServices::add("::uiIO::editor::SIOSelector");
-    ::fwServices::IService::ConfigType modelSeriesReaderConfig;
-    modelSeriesReaderConfig.put("type.<xmlattr>.mode", "reader");
-    modelSeriesReaderConfig.put("type.<xmlattr>.class", "::fwMedData::ModelSeries");
-    modelSeriesReader->setConfiguration(modelSeriesReaderConfig);
-    modelSeriesReader->configure();
-    modelSeriesReader->start();
-    modelSeriesReader->update();
-    auto modelSeries = modelSeriesReader->getOutput< ::fwMedData::ModelSeries >("data");
-    this->addObject(modelSeries, s_MODELSERIES_ID);
+    const auto meshReader = ::fwServices::add("::uiIO::editor::SIOSelector");
+    ::fwServices::IService::ConfigType meshReaderConfig;
+    meshReaderConfig.put("type.<xmlattr>.mode", "reader");
+    meshReaderConfig.put("type.<xmlattr>.class", "::fwData::Mesh");
+    meshReader->setConfiguration(meshReaderConfig);
+    meshReader->configure();
+    meshReader->start();
+    meshReader->update();
+    auto mesh = meshReader->getLockedOutput< ::fwData::Mesh >("data").get_shared();
+    this->addObject(mesh, s_MESH_ID);
 
     // Associates the mesh with the one declared in 'ui.qml'.
-    if(modelSeries->getReconstructionDB().size() != 0)
+    if(mesh)
     {
         m_mesh->setScene(m_scene);
-        m_mesh->setMesh(modelSeries->getReconstructionDB()[0]->getMesh());
+        m_mesh->setMesh(mesh);
         m_mesh->centerCameraOnMesh();
     }
 
-    modelSeriesReader->stop();
-    ::fwServices::OSR::unregisterService(modelSeriesReader);
+    meshReader->stop();
+    ::fwServices::OSR::unregisterService(meshReader);
 }
 
 //------------------------------------------------------------------------------
