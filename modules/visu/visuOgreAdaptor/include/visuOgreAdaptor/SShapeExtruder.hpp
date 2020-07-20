@@ -62,7 +62,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SShapeExtruder">
         <inout key="extrudedMeshes" uid="..." />
-        <config layer="..." />
+        <config layer="..." priority="2" extrude="true" />
     </service>
    @endcode
  *
@@ -72,6 +72,7 @@ namespace visuOgreAdaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string) : defines the layer.
  * - \b extrude (optional, bool, true) : sets if the extrusion is done or not (3D or 2D shape).
+ * - \b priority (optional, int, default=2): interaction priority, higher priority interactions are performed first.
  */
 class VISUOGREADAPTOR_CLASS_API SShapeExtruder final :
     public ::fwRenderOgre::IAdaptor,
