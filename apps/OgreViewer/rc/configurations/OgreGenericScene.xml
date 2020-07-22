@@ -14,13 +14,13 @@
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
-        <param name="POINTLIST_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="POINTLIST_RESET_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
+        <param name="PICKER_SENDER_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
         <param name="extrudedModelSeries" />
+        <param name="landmarks" />
     </parameters>
     <config>
 
@@ -30,11 +30,11 @@
         <object uid="${image}" type="::fwData::Image" src="ref" />
         <object uid="${volumeTF}" type="::fwData::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
 
         <object uid="extrudedImage" type="::fwData::Image" />
         <object uid="clippingMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="pointList" type="::fwData::PointList" />
         <object uid="background" type="::fwData::Image" />
         <object uid="border" type="::fwData::Color" >
             <value>#2E3034</value>
@@ -166,7 +166,7 @@
                 <adaptor uid="extrudedMeshesAdp" />
                 <adaptor uid="3DNegatoAdp" />
                 <adaptor uid="volumeAdp" />
-                <adaptor uid="pointListAdp" />
+                <adaptor uid="landmarksAdp" />
                 <adaptor uid="multiDistancesAdp" />
                 <adaptor uid="axisAdp" />
                 <adaptor uid="pickedVoxelTextAdp" />
@@ -188,6 +188,8 @@
                 <adaptor uid="axialNegatoMultiDistancesAdp" />
                 <adaptor uid="axialNegatoCameraAdp" />
                 <adaptor uid="axialNegatoResizeViewportAdp" />
+                <adaptor uid="axialPickerInteractorAdp" />
+                <adaptor uid="axialLandmarksAdp" />
 
                 <layer id="sagittalBackgroundNegatoLayer" order="4" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
@@ -203,6 +205,8 @@
                 <adaptor uid="sagittalNegatoMultiDistancesAdp" />
                 <adaptor uid="sagittalNegatoCameraAdp" />
                 <adaptor uid="sagittalNegatoResizeViewportAdp" />
+                <adaptor uid="sagittalPickerInteractorAdp" />
+                <adaptor uid="sagittalLandmarksAdp" />
 
                 <layer id="frontalBackgroundNegatoLayer" order="6" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
@@ -218,6 +222,8 @@
                 <adaptor uid="frontalNegatoMultiDistancesAdp" />
                 <adaptor uid="frontalNegatoCameraAdp" />
                 <adaptor uid="frontalNegatoResizeViewportAdp" />
+                <adaptor uid="frontalPickerInteractorAdp" />
+                <adaptor uid="frontalLandmarksAdp" />
             </scene>
         </service>
 
@@ -231,12 +237,12 @@
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="${modelSeries}" />
-            <config layer="defaultLayer" queryFlags="0x44000000" autoresetcamera="no" />
+            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
         <service uid="extrudedMeshesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="${extrudedModelSeries}" />
-            <config layer="defaultLayer" queryFlags="0x44000000" autoresetcamera="no" />
+            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
         <service uid="volumeAdp" type="::visuOgreAdaptor::SVolumeRender" >
@@ -249,17 +255,17 @@
         <service uid="3DNegatoAdp" type="::visuOgreAdaptor::SNegato3D" >
             <inout key="image" uid="${image}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
-            <config layer="defaultLayer" queryFlags="0x04000000" interactive="true" />
+            <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" />
         </service>
 
-        <service uid="pointListAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
-            <in key="pointList" uid="pointList" />
-            <config layer="defaultLayer" autoresetcamera="no" color="#D35151" textureName="sphere.dds" radius="4.0" queryFlags="0x00000000" />
+        <service uid="landmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+            <in key="landmarks" uid="${landmarks}" />
+            <config layer="defaultLayer" />
         </service>
 
         <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
-            <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x04000000" />
+            <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" />
         </service>
 
         <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >
@@ -309,7 +315,7 @@
 
         <service uid="axialNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
-            <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x04000000" />
+            <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
         <service uid="axialNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
@@ -320,6 +326,16 @@
 
         <service uid="axialNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
             <config layer="axialNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
+        </service>
+
+        <service uid="axialPickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
+            <config layer="axialNegatoLayer" queryMask="0x40000000" />
+        </service>
+
+        <service uid="axialLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+            <in key="landmarks" uid="${landmarks}" />
+            <in key="image" uid="${image}" />
+            <config layer="axialNegatoLayer" label="false" orientation="axial" />
         </service>
 
         <!-- Sagittal -->
@@ -346,7 +362,7 @@
 
         <service uid="sagittalNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
-            <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x04000000" />
+            <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
         <service uid="sagittalNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
@@ -357,6 +373,16 @@
 
         <service uid="sagittalNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
             <config layer="sagittalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom"/>
+        </service>
+
+        <service uid="sagittalPickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
+            <config layer="sagittalNegatoLayer" queryMask="0x40000000" />
+        </service>
+
+        <service uid="sagittalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+            <in key="landmarks" uid="${landmarks}" />
+            <in key="image" uid="${image}" />
+            <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" />
         </service>
 
         <!-- Frontal -->
@@ -383,7 +409,7 @@
 
         <service uid="frontalNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
-            <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x04000000" />
+            <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
         <service uid="frontalNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
@@ -394,6 +420,16 @@
 
         <service uid="frontalNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
             <config layer="frontalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
+        </service>
+
+        <service uid="frontalPickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
+            <config layer="frontalNegatoLayer" queryMask="0x40000000" />
+        </service>
+
+        <service uid="frontalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+            <in key="landmarks" uid="${landmarks}" />
+            <in key="image" uid="${image}" />
+            <config layer="frontalNegatoLayer" label="false" orientation="frontal" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -417,11 +453,6 @@
         <service uid="clippingBoxResetSrv" type="::ctrlCamp::SCopy" >
             <in key="source" uid="identityMatrix" />
             <inout key="target" uid="clippingMatrix" />
-        </service>
-
-        <!-- Add a point in the point list from picking informations -->
-        <service uid="managePointsSrv" type="::ctrlPicking::SManagePointList">
-            <inout key="pointList" uid="pointList" />
         </service>
 
         <!-- Load the background image -->
@@ -536,23 +567,15 @@
             <signal>shapeExtruderAdp/toolDisabled</signal>
         </connect>
 
-        <connect channel="${POINTLIST_VISIBILITY_RECEIVER_CHANNEL}" >
-            <slot>pointListAdp/updateVisibility</slot>
-            <slot>pointListAdp/update</slot>
-        </connect>
-
         <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}" >
             <slot>axisAdp/updateVisibility</slot>
         </connect>
 
-        <!-- Manage point list -->
-        <connect channel="${POINTLIST_RESET_RECEIVER_CHANNEL}" >
-            <slot>managePointsSrv/clearPoints</slot>
-        </connect>
-
-        <connect>
+        <connect channel="${PICKER_SENDER_CHANNEL}" >
             <signal>pickerInteractorAdp/picked</signal>
-            <slot>managePointsSrv/pick</slot>
+            <signal>axialPickerInteractorAdp/picked</signal>
+            <signal>sagittalPickerInteractorAdp/picked</signal>
+            <signal>frontalPickerInteractorAdp/picked</signal>
         </connect>
 
         <!-- Slide view -->
@@ -589,7 +612,6 @@
 
         <start uid="mainView" />
         <start uid="clippingBoxResetSrv" />
-        <start uid="managePointsSrv" />
         <start uid="backgroundReaderSrv" />
         <start uid="imageWriterSrv" />
         <start uid="imageExtruderSrv" />
@@ -600,7 +622,7 @@
         <start uid="extrudedMeshesAdp" />
         <start uid="volumeAdp" />
         <start uid="3DNegatoAdp" />
-        <start uid="pointListAdp" />
+        <start uid="landmarksAdp" />
         <start uid="multiDistancesAdp" />
         <start uid="axisAdp" />
         <start uid="pickedVoxelTextAdp" />
@@ -614,6 +636,8 @@
         <start uid="axialNegatoMultiDistancesAdp" />
         <start uid="axialNegatoCameraAdp" />
         <start uid="axialNegatoResizeViewportAdp" />
+        <start uid="axialPickerInteractorAdp" />
+        <start uid="axialLandmarksAdp" />
         <start uid="sagittalBackgroundAdp" />
         <start uid="sagittalBackgroundResizeViewportAdp" />
         <start uid="sagittalCompositorAdp" />
@@ -621,6 +645,8 @@
         <start uid="sagittalNegatoMultiDistancesAdp" />
         <start uid="sagittalNegatoCameraAdp" />
         <start uid="sagittalNegatoResizeViewportAdp" />
+        <start uid="sagittalPickerInteractorAdp" />
+        <start uid="sagittalLandmarksAdp" />
         <start uid="frontalBackgroundAdp" />
         <start uid="frontalBackgroundResizeViewportAdp" />
         <start uid="frontalCompositorAdp" />
@@ -628,6 +654,8 @@
         <start uid="frontalNegatoMultiDistancesAdp" />
         <start uid="frontalNegatoCameraAdp" />
         <start uid="frontalNegatoResizeViewportAdp" />
+        <start uid="frontalPickerInteractorAdp" />
+        <start uid="frontalLandmarksAdp" />
 
         <update uid="backgroundReaderSrv" />
         <update uid="shapeExtruderAdp" />

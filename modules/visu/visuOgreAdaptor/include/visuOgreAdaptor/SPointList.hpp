@@ -69,7 +69,7 @@ namespace visuOgreAdaptor
     </service>
    @endcode
  *
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b pointList [::fwData::PointList] (optional): point list to display.
  * - \b mesh [::fwData::Mesh] (optional): point based mesh to display. If the mesh contains any topology, it will be
  *      ignored and only raw vertices will be displayed. or add some fields.
@@ -93,11 +93,10 @@ namespace visuOgreAdaptor
  * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
  * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
  * - \b queryFlags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
- * matching mask.
- * - \b visible (optional, bool, default=true): If pointlist should be visible or not at start.
+ *      matching mask.
+ * - \b visible (optional, bool, default=true): the pointlist visibility at start.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VISUOGREADAPTOR_CLASS_API SPointList final :
     public ::fwRenderOgre::IAdaptor,
