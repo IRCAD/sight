@@ -215,6 +215,9 @@ void SNegato3D::starting()
         m_pickingCross->setRenderQueueGroupAndPriority(s_NEGATO_WIDGET_RQ_GROUP_ID, 1);
         m_negatoSceneNode->attachObject(m_pickingCross);
     }
+
+    // Set the visibility of the 3D Negato
+    this->setVisible(m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
