@@ -86,6 +86,7 @@ namespace visuOgreAdaptor
  *      was specified in the STransform adaptor.
  * - \b queryFlags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
  * - \b border (optional, bool, default=true): allows to display plane borders.
+ * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D final :
     public ::fwRenderOgre::IAdaptor,
