@@ -718,6 +718,7 @@ void MeshTest::iteratorTest()
 
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
     }
 
     {
@@ -729,9 +730,9 @@ void MeshTest::iteratorTest()
         {
             ::fwData::iterator::Point p = *it->point;
             const float fValue = static_cast<float>(3*count);
-            CPPUNIT_ASSERT_EQUAL(fValue, p.x);
-            CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
-            CPPUNIT_ASSERT_EQUAL(fValue+2, p.z);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue, p.x);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue+1, p.y);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue+2, p.z);
 
             ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);
@@ -752,6 +753,7 @@ void MeshTest::iteratorTest()
 
             --count;
         }
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), count);
     }
 
     {
@@ -791,6 +793,7 @@ void MeshTest::iteratorTest()
 
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
     }
 
     {
@@ -830,6 +833,7 @@ void MeshTest::iteratorTest()
 
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells()-1, count);
     }
 
     ::fwData::Mesh::csptr mesh2 = ::fwData::Mesh::copy(mesh);
@@ -883,6 +887,7 @@ void MeshTest::iteratorTest()
 
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells()-1, count);
     }
 
     ::fwData::Mesh::sptr mesh3 = ::fwData::Mesh::New();
@@ -916,6 +921,7 @@ void MeshTest::iteratorTest()
             uv->v                             = static_cast<float>(2*count+1);
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
     }
 
     {
@@ -953,6 +959,7 @@ void MeshTest::iteratorTest()
             uv.v                              = static_cast<float>(2*count+1);
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
     }
 
     {
@@ -988,6 +995,7 @@ void MeshTest::iteratorTest()
 
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
     }
 
     {
@@ -1029,12 +1037,379 @@ void MeshTest::iteratorTest()
 
             ++count;
         }
+        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::iteratorCopyTest()
+{
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    mesh->resize(10, 10, ::fwData::Mesh::CellType::POINT,
+                 ::fwData::Mesh::Attributes::POINT_NORMALS |
+                 ::fwData::Mesh::Attributes::POINT_COLORS |
+                 ::fwData::Mesh::Attributes::POINT_TEX_COORDS |
+                 ::fwData::Mesh::Attributes::CELL_NORMALS |
+                 ::fwData::Mesh::Attributes::CELL_COLORS |
+                 ::fwData::Mesh::Attributes::CELL_TEX_COORDS);
+
+    ::fwData::Mesh::sptr copiedMesh = ::fwData::Mesh::New();
+    copiedMesh->resize(10, 10, ::fwData::Mesh::CellType::POINT,
+                       ::fwData::Mesh::Attributes::POINT_NORMALS |
+                       ::fwData::Mesh::Attributes::POINT_COLORS |
+                       ::fwData::Mesh::Attributes::POINT_TEX_COORDS |
+                       ::fwData::Mesh::Attributes::CELL_NORMALS |
+                       ::fwData::Mesh::Attributes::CELL_COLORS |
+                       ::fwData::Mesh::Attributes::CELL_TEX_COORDS);
+
+    {
+        //fill the mesh
+        auto it        = mesh->begin< ::fwData::Mesh::PointIterator >();
+        const auto end = mesh->end< ::fwData::Mesh::PointIterator >();
+
+        auto itCell = mesh->begin< ::fwData::Mesh::CellIterator >();
+
+        size_t count = 0;
+        for (; it != end; ++it, ++itCell)
+        {
+            // point
+            it->point->x = static_cast<float>(count);
+            it->point->y = static_cast<float>(count) + 0.6f;
+            it->point->z = static_cast<float>(count) + 0.8f;
+
+            it->normal->nx = static_cast<float>(count) + 0.1f;
+            it->normal->ny = static_cast<float>(count) + 0.2f;
+            it->normal->nz = static_cast<float>(count) + 0.3f;
+
+            it->rgba->r = static_cast<std::uint8_t>(4*count);
+            it->rgba->g = static_cast<std::uint8_t>(4*count+1);
+            it->rgba->b = static_cast<std::uint8_t>(4*count+2);
+            it->rgba->a = static_cast<std::uint8_t>(4*count+3);
+
+            it->tex->u = static_cast<float>(count) + 0.7f;
+            it->tex->v = static_cast<float>(count) + 0.9f;
+
+            // cell
+            *itCell->type     = ::fwData::Mesh::CellType::POINT;
+            *itCell->offset   = count;
+            *itCell->pointIdx = count;
+
+            itCell->normal->nx = static_cast<float>(count) + 0.11f;
+            itCell->normal->ny = static_cast<float>(count) + 0.22f;
+            itCell->normal->nz = static_cast<float>(count) + 0.33f;
+
+            itCell->rgba->r = static_cast<std::uint8_t>(4*count+1);
+            itCell->rgba->g = static_cast<std::uint8_t>(4*count+2);
+            itCell->rgba->b = static_cast<std::uint8_t>(4*count+3);
+            itCell->rgba->a = static_cast<std::uint8_t>(4*count+4);
+
+            itCell->tex->u = static_cast<float>(count) + 0.77f;
+            itCell->tex->v = static_cast<float>(count) + 0.99f;
+
+            if (it+1 != end)
+            {
+                *(itCell+1)->offset = count+1;
+            }
+
+            ++count;
+        }
+        CPPUNIT_ASSERT_EQUAL( mesh->getNumberOfPoints(), count);
     }
 
     {
+        // check the mesh points
+        auto it        = mesh->begin< ::fwData::Mesh::ConstPointIterator >();
+        const auto end = mesh->end< ::fwData::Mesh::ConstPointIterator >();
+        auto itCell    = mesh->begin< ::fwData::Mesh::ConstCellIterator >();
 
+        size_t count = 0;
+        for (; it != end; ++it, ++itCell)
+        {
+            // point
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count), it->point->x, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.6f, it->point->y, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.8f, it->point->z, 0.00001);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.1f, it->normal->nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.2f, it->normal->ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.3f, it->normal->nz, 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count), it->rgba->r);
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count+1), it->rgba->g);
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count+2), it->rgba->b);
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count+3), it->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.7, it->tex->u, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.9, it->tex->v, 0.00001);
+
+            // cell
+            CPPUNIT_ASSERT_EQUAL(::fwData::Mesh::CellType::POINT, *itCell->type);
+            CPPUNIT_ASSERT_EQUAL(count, *itCell->offset);
+            CPPUNIT_ASSERT_EQUAL(count, *itCell->pointIdx);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.11f, itCell->normal->nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.22f, itCell->normal->ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.33f, itCell->normal->nz, 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count+1), itCell->rgba->r);
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count+2), itCell->rgba->g);
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count+3), itCell->rgba->b);
+            CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4*count+4), itCell->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.77, itCell->tex->u, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.99, itCell->tex->v, 0.00001);
+
+            ++count;
+        }
+        CPPUNIT_ASSERT_EQUAL( mesh->getNumberOfPoints(), count);
     }
 
+    {
+        // copy the mesh points with the iterator
+        auto it        = mesh->begin< ::fwData::Mesh::ConstPointIterator >();
+        const auto end = mesh->end< ::fwData::Mesh::ConstPointIterator >();
+        auto copiedIt  = copiedMesh->begin< ::fwData::Mesh::PointIterator >();
+
+        std::copy(it, end, copiedIt);
+
+        // copy the mesh cells with the iterator
+        auto itCell        = mesh->begin< ::fwData::Mesh::ConstCellIterator >();
+        const auto endCell = mesh->end< ::fwData::Mesh::ConstCellIterator >();
+        auto copiedItCell  = copiedMesh->begin< ::fwData::Mesh::CellIterator >();
+
+        std::copy(itCell, endCell, copiedItCell);
+    }
+
+    {
+        // check the copied mesh
+        auto it        = mesh->begin< ::fwData::iterator::ConstPointIterator >();
+        const auto end = mesh->end< ::fwData::iterator::ConstPointIterator >();
+        auto copiedIt  = copiedMesh->begin< ::fwData::iterator::ConstPointIterator >();
+
+        CPPUNIT_ASSERT(std::equal(it, end, copiedIt));
+
+        auto itCell        = mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto endCell = mesh->end< ::fwData::iterator::ConstCellIterator >();
+        auto copiedItCell  = copiedMesh->begin< ::fwData::iterator::ConstCellIterator >();
+
+        CPPUNIT_ASSERT(std::equal(itCell, endCell, copiedItCell));
+
+        size_t count = 0;
+        for (; it != end; ++it, ++copiedIt, ++itCell, ++copiedItCell, ++count)
+        {
+            // point
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->point->x, copiedIt->point->x, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->point->y, copiedIt->point->y, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->point->z, copiedIt->point->z, 0.00001);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->normal->nx, copiedIt->normal->nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->normal->ny, copiedIt->normal->ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->normal->nz, copiedIt->normal->nz, 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), it->rgba->r, copiedIt->rgba->r);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), it->rgba->g, copiedIt->rgba->g);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), it->rgba->b, copiedIt->rgba->b);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), it->rgba->a, copiedIt->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->tex->u, copiedIt->tex->u, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), it->tex->v, copiedIt->tex->v, 0.00001);
+
+            // cell
+            CPPUNIT_ASSERT_EQUAL(*itCell->type, *copiedItCell->type);
+            CPPUNIT_ASSERT_EQUAL(*itCell->offset, *copiedItCell->offset);
+            CPPUNIT_ASSERT_EQUAL(*itCell->pointIdx, *copiedItCell->pointIdx);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(itCell->normal->nx, copiedItCell->normal->nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(itCell->normal->ny, copiedItCell->normal->ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(itCell->normal->nz, copiedItCell->normal->nz, 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL(itCell->rgba->r, copiedItCell->rgba->r);
+            CPPUNIT_ASSERT_EQUAL(itCell->rgba->g, copiedItCell->rgba->g);
+            CPPUNIT_ASSERT_EQUAL(itCell->rgba->b, copiedItCell->rgba->b);
+            CPPUNIT_ASSERT_EQUAL(itCell->rgba->a, copiedItCell->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(itCell->tex->u, copiedItCell->tex->u, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(itCell->tex->v, copiedItCell->tex->v, 0.00001);
+        }
+        CPPUNIT_ASSERT_EQUAL( mesh->getNumberOfPoints(), count);
+    }
+
+    {
+        // check the mesh points are deep copied and not shallow copied
+
+        auto it        = mesh->begin< ::fwData::Mesh::PointIterator >();
+        const auto end = mesh->end< ::fwData::Mesh::PointIterator >();
+
+        auto itCell    = mesh->begin< ::fwData::Mesh::CellIterator >();
+        auto itCellEnd = mesh->end< ::fwData::Mesh::CellIterator >();
+
+        ::fwData::iterator::PointIterator::PointInfo pointInfo;
+        pointInfo.point  = new ::fwData::iterator::Point({1.0f, 1.1f, 1.2f});
+        pointInfo.normal = new ::fwData::iterator::Normal({1.f, 0.f, 0.f});
+        pointInfo.rgba   = new ::fwData::iterator::RGBA({25, 15, 18, 32});
+        pointInfo.tex    = new ::fwData::iterator::TexCoords({0.5f, 1.f});
+        std::fill(it, end, pointInfo);
+
+        ::fwData::iterator::CellIterator::CellInfo cellInfo;
+        cellInfo.type     = new ::fwData::Mesh::CellType{::fwData::Mesh::CellType::NO_CELL};
+        cellInfo.offset   = new ::fwData::Mesh::CellDataOffsetType{0};
+        cellInfo.pointIdx = new ::fwData::Mesh::CellValueType{0};
+        cellInfo.normal   = new ::fwData::iterator::Normal({0.f, 1.f, 0.f});
+        cellInfo.rgba     = new ::fwData::iterator::RGBA({20, 13, 10, 37});
+        cellInfo.tex      = new ::fwData::iterator::TexCoords({0.2f, 0.8f});
+        std::fill(itCell, itCellEnd, cellInfo);
+
+        // check the mesh points are filled
+        size_t count = 0;
+        for (; it != end; ++it, ++itCell)
+        {
+            // point
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.point->x, it->point->x, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.point->y, it->point->y, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.point->z, it->point->z, 0.00001);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.normal->nx, it->normal->nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.normal->ny, it->normal->ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.normal->nz, it->normal->nz, 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL(pointInfo.rgba->r, it->rgba->r);
+            CPPUNIT_ASSERT_EQUAL(pointInfo.rgba->g, it->rgba->g);
+            CPPUNIT_ASSERT_EQUAL(pointInfo.rgba->b, it->rgba->b);
+            CPPUNIT_ASSERT_EQUAL(pointInfo.rgba->a, it->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.tex->u, it->tex->u, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointInfo.tex->v, it->tex->v, 0.00001);
+
+            // cell
+            CPPUNIT_ASSERT_EQUAL(*cellInfo.type, *itCell->type);
+            CPPUNIT_ASSERT_EQUAL(*cellInfo.offset, *itCell->offset);
+            CPPUNIT_ASSERT_EQUAL(*cellInfo.pointIdx, *itCell->pointIdx);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellInfo.normal->nx, itCell->normal->nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellInfo.normal->ny, itCell->normal->ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellInfo.normal->nz, itCell->normal->nz, 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL(cellInfo.rgba->r, itCell->rgba->r);
+            CPPUNIT_ASSERT_EQUAL(cellInfo.rgba->g, itCell->rgba->g);
+            CPPUNIT_ASSERT_EQUAL(cellInfo.rgba->b, itCell->rgba->b);
+            CPPUNIT_ASSERT_EQUAL(cellInfo.rgba->a, itCell->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellInfo.tex->u, itCell->tex->u, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(cellInfo.tex->v, itCell->tex->v, 0.00001);
+
+            ++count;
+        }
+        CPPUNIT_ASSERT_EQUAL( mesh->getNumberOfPoints(), count);
+
+        auto copiedIt        = copiedMesh->begin< ::fwData::Mesh::ConstPointIterator >();
+        const auto copiedEnd = copiedMesh->end< ::fwData::Mesh::ConstPointIterator >();
+        auto copiedItCell    = copiedMesh->begin< ::fwData::Mesh::ConstCellIterator >();
+
+        auto it2        = mesh->begin< ::fwData::Mesh::ConstPointIterator >();
+        const auto end2 = mesh->end< ::fwData::Mesh::ConstPointIterator >();
+
+        CPPUNIT_ASSERT(!std::equal(it2, end2, copiedIt));
+        auto itCell2    = mesh->begin< ::fwData::Mesh::ConstCellIterator >();
+        auto itCell2End = mesh->end< ::fwData::Mesh::ConstCellIterator >();
+        CPPUNIT_ASSERT(!std::equal(itCell2, itCell2End, copiedItCell));
+
+        count = 0;
+        for (; copiedIt != copiedEnd; ++copiedIt, ++copiedItCell)
+        {
+            // point
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count), copiedIt->point->x, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.6f, copiedIt->point->y,
+                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.8f, copiedIt->point->z,
+                                                 0.00001);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.1f, copiedIt->normal->nx,
+                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.2f, copiedIt->normal->ny,
+                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.3f, copiedIt->normal->nz,
+                                                 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count), copiedIt->rgba->r);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count+1), copiedIt->rgba->g);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count+2), copiedIt->rgba->b);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count+3), copiedIt->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.7, copiedIt->tex->u,
+                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.9, copiedIt->tex->v,
+                                                 0.00001);
+
+            // cell
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), ::fwData::Mesh::CellType::POINT, *copiedItCell->type);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), count, *copiedItCell->offset);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), count, *copiedItCell->pointIdx);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.11f, copiedItCell->normal->nx,
+                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.22f, copiedItCell->normal->ny,
+                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.33f, copiedItCell->normal->nz,
+                                                 0.00001);
+
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count+1), copiedItCell->rgba->r);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count+2), copiedItCell->rgba->g);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count+3), copiedItCell->rgba->b);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                             count), static_cast<std::uint8_t>(4*count+4), copiedItCell->rgba->a);
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.77, copiedItCell->tex->u,
+                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(
+                                                     count), static_cast<float>(count) + 0.99, copiedItCell->tex->v,
+                                                 0.00001);
+
+            ++count;
+        }
+        CPPUNIT_ASSERT_EQUAL( mesh->getNumberOfPoints(), count);
+
+        delete pointInfo.point;
+        delete pointInfo.normal;
+        delete pointInfo.rgba;
+        delete pointInfo.tex;
+
+        delete cellInfo.type;
+        delete cellInfo.offset;
+        delete cellInfo.pointIdx;
+        delete cellInfo.normal;
+        delete cellInfo.rgba;
+        delete cellInfo.tex;
+    }
 }
+
 } //namespace ut
 } //namespace fwData
