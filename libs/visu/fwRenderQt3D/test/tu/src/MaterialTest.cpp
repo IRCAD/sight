@@ -27,6 +27,7 @@
 #include <fwData/Material.hpp>
 
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRasterMode>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
@@ -107,6 +108,7 @@ void MaterialTest::initializeMaterial()
     auto tech = qt3dMaterial->effect()->techniques()[0];
 
     CPPUNIT_ASSERT_EQUAL(4, tech->renderPasses().size());
+    CPPUNIT_ASSERT_EQUAL(3, tech->parameters().size());
 
     // Asserts qt3dMaterial and sightMaterial rendering options are equals.
     auto normalPass     = tech->renderPasses()[0];
@@ -122,6 +124,10 @@ void MaterialTest::initializeMaterial()
     // Default optionMode must be set to STANDARD.
     CPPUNIT_ASSERT_EQUAL(false, normalPass->isEnabled());
     CPPUNIT_ASSERT_EQUAL(false, cellNormalPass->isEnabled());
+
+    //Default lightingMode must be set to PHONG.
+    CPPUNIT_ASSERT_EQUAL(static_cast< int >(sightMaterial->getShadingMode()),
+                         qvariant_cast< int >(tech->parameters()[2]->value()));
 
     delete edgeRenderPass;
     delete renderPass;

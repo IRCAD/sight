@@ -22,7 +22,7 @@
 
 #include "fwRenderQt3D/data/Material.hpp"
 
-#include "fwRenderQt3D/techniques/PhongLighting.hpp"
+#include "fwRenderQt3D/techniques/Lighting.hpp"
 
 #include <fwData/Color.hpp>
 
@@ -54,8 +54,8 @@ Material::Material(Qt3DCore::QNode* _parent) :
     m_shininess = new Qt3DRender::QParameter(QStringLiteral("u_fShininess"), 25.0f);
     this->effect()->addParameter(m_shininess);
 
-    /// Adds phong lighting technique and sets default light position/intensity.
-    ::fwRenderQt3D::techniques::PhongLighting* const phongTechnique = new ::fwRenderQt3D::techniques::PhongLighting();
+    /// Adds lighting technique and sets default light position/intensity. Default shading mode is phong.
+    ::fwRenderQt3D::techniques::Lighting* const phongTechnique = new ::fwRenderQt3D::techniques::Lighting();
     phongTechnique->setLightPosition(QVector3D(-100.0f, -100.0f, -100.0f));
     phongTechnique->setLightIntensity(QVector3D(1.0f, 1.0f, 1.0f));
     this->addTechnique(phongTechnique);
@@ -153,8 +153,8 @@ void Material::removeParameter(Qt3DRender::QParameter* _parameter)
 
 void Material::updateOptionsMode(int _optionsMode)
 {
-    ::fwRenderQt3D::techniques::PhongLighting* const tech =
-        (::fwRenderQt3D::techniques::PhongLighting*)this->effect()->techniques()[0];
+    ::fwRenderQt3D::techniques::Lighting* const tech =
+        (::fwRenderQt3D::techniques::Lighting*)this->effect()->techniques()[0];
 
     if(_optionsMode == 1)
     {
@@ -176,16 +176,18 @@ void Material::updateOptionsMode(int _optionsMode)
 
 void Material::updatePolygonMode(int _polygonMode)
 {
-    ::fwRenderQt3D::techniques::PhongLighting* const tech =
-        (::fwRenderQt3D::techniques::PhongLighting*)this->effect()->techniques()[0];
+    ::fwRenderQt3D::techniques::Lighting* const tech =
+        (::fwRenderQt3D::techniques::Lighting*)this->effect()->techniques()[0];
     tech->updateRasterMode(_polygonMode);
 }
 
 //------------------------------------------------------------------------------
 
-// TODO.
-void Material::updateShadingMode(int)
+void Material::updateShadingMode(int _shadingMode)
 {
+    ::fwRenderQt3D::techniques::Lighting* const tech =
+        (::fwRenderQt3D::techniques::Lighting*)this->effect()->techniques()[0];
+    tech->setLightingMode(static_cast< ::fwRenderQt3D::techniques::Lighting::LightingMode >(_shadingMode));
 }
 
 //------------------------------------------------------------------------------

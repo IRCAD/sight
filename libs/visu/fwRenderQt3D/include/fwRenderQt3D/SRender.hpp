@@ -86,9 +86,6 @@ public:
     /// @returns the scene instantiated by this service.
     FWRENDERQT3D_API ::fwRenderQt3D::core::GenericScene* getScene();
 
-    /// Updates Qt container.
-    FWRENDERQT3D_API void setQtContainer(::fwGuiQt::container::QtContainer::sptr _qtContainer);
-
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
 

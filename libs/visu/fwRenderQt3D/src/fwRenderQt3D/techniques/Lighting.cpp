@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "fwRenderQt3D/techniques/PhongLighting.hpp"
+#include "fwRenderQt3D/techniques/Lighting.hpp"
 
 #include <fwRuntime/operations.hpp>
 
@@ -41,7 +41,7 @@ namespace fwRenderQt3D
 namespace techniques
 {
 
-PhongLighting::PhongLighting()
+Lighting::Lighting()
 {
     // Specifies graphics API to use with this technique.
     this->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
@@ -55,6 +55,10 @@ PhongLighting::PhongLighting()
 
     m_lightIntensity = new Qt3DRender::QParameter(QStringLiteral("u_f3LightIntensity"), QVector3D(0.0f, 0.0f, 0.0f));
     this->addParameter(m_lightIntensity);
+
+    // Lighting mode parameter.
+    m_lightingMode = new Qt3DRender::QParameter(QStringLiteral("u_iLightingMode"), LightingMode::PHONG);
+    this->addParameter(m_lightingMode);
 
     // Point normals visualisation shader program & render pass : render normals if specified.
     const auto vertexShaderNormalPath = ::fwRuntime::getLibraryResourceFilePath(
@@ -108,12 +112,12 @@ PhongLighting::PhongLighting()
     m_cellNormalPass->setShaderProgram(cellNormalShaderProgram);
     this->addRenderPass(m_cellNormalPass);
 
-    // Phong shader program & render pass : renders the mesh using phong illumination.
+    // Lighting shader program & render pass : renders the mesh using selected illumination algorithm.
     this->fixShaderSyntaxe();
     const auto vertexShaderPath = ::fwRuntime::getLibraryResourceFilePath(
-        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/phong_VP.glsl");
+        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_VP.glsl");
     const auto fragmentShaderPath = ::fwRuntime::getLibraryResourceFilePath(
-        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/phong_FP.glsl");
+        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_FP.glsl");
     Qt3DRender::QShaderProgram* const renderShaderProgram = new Qt3DRender::QShaderProgram();
     renderShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
                                                                                                         fromStdString(
@@ -130,9 +134,9 @@ PhongLighting::PhongLighting()
 
     // Adds a render pass needed with "EDGE" polygon mode.
     const auto edgeVertexShaderPath = ::fwRuntime::getLibraryResourceFilePath(
-        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/phong_VP.glsl");
+        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_VP.glsl");
     const auto edgeFragmentShaderPath = ::fwRuntime::getLibraryResourceFilePath(
-        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/edge_FP.glsl");
+        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/edgeRender_FP.glsl");
     Qt3DRender::QShaderProgram* const edgeShaderProgram = new Qt3DRender::QShaderProgram();
     edgeShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
                                                                                                       fromStdString(
@@ -156,7 +160,7 @@ PhongLighting::PhongLighting()
     m_rasterModeRenderState->setRasterMode(Qt3DRender::QRasterMode::Fill);
     m_renderPass->addRenderState(m_rasterModeRenderState);
 
-    // By default, sets normal visualisation to false
+    // By default, sets normal visualisation to false.
     m_normalPass->setEnabled(false);
     m_cellNormalPass->setEnabled(false);
 
@@ -164,48 +168,63 @@ PhongLighting::PhongLighting()
     m_edgeRenderPass->setEnabled(false);
 }
 
-PhongLighting::~PhongLighting()
+Lighting::~Lighting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-QVector3D PhongLighting::getLightPosition()
+QVector3D Lighting::getLightPosition()
 {
     return qvariant_cast<QVector3D>(m_lightPosition->value());
 }
 
 //------------------------------------------------------------------------------
 
-QVector3D PhongLighting::getLightIntensity()
+QVector3D Lighting::getLightIntensity()
 {
     return qvariant_cast<QVector3D>(m_lightIntensity->value());
 }
 
 //------------------------------------------------------------------------------
 
-void PhongLighting::setLightPosition(QVector3D _lightPosition)
+Lighting::LightingMode Lighting::getLightingMode()
+{
+    int lightingMode = qvariant_cast<int>(m_lightingMode->value());
+    return static_cast< Lighting::LightingMode >(lightingMode);
+}
+
+//------------------------------------------------------------------------------
+
+void Lighting::setLightPosition(QVector3D _lightPosition)
 {
     m_lightPosition->setValue(_lightPosition);
 }
 
 //------------------------------------------------------------------------------
 
-void PhongLighting::setLightIntensity(QVector3D _lightIntensity)
+void Lighting::setLightIntensity(QVector3D _lightIntensity)
 {
     m_lightIntensity->setValue(_lightIntensity);
 }
 
 //------------------------------------------------------------------------------
 
-void PhongLighting::enableCellsNormals(bool _isEnabled)
+void Lighting::setLightingMode(Lighting::LightingMode _lightingMode)
+{
+    m_lightingMode->setValue(_lightingMode);
+}
+
+//------------------------------------------------------------------------------
+
+void Lighting::enableCellsNormals(bool _isEnabled)
 {
     m_isCellsNormalsEnabled = _isEnabled;
 }
 
 //------------------------------------------------------------------------------
 
-void PhongLighting::showNormals(bool _isEnabled)
+void Lighting::showNormals(bool _isEnabled)
 {
     if(m_isCellsNormalsEnabled)
     {
@@ -229,7 +248,7 @@ void PhongLighting::showNormals(bool _isEnabled)
 
 //------------------------------------------------------------------------------
 
-void PhongLighting::updateRasterMode(int _rasterMode)
+void Lighting::updateRasterMode(int _rasterMode)
 {
     if(m_edgeRenderPass->isEnabled() && _rasterMode != 5)
     {
@@ -260,10 +279,10 @@ void PhongLighting::updateRasterMode(int _rasterMode)
 
 //------------------------------------------------------------------------------
 
-void PhongLighting::fixShaderSyntaxe()
+void Lighting::fixShaderSyntaxe()
 {
     const auto path = ::fwRuntime::getLibraryResourceFilePath(
-        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/lighting.glsl");
+        "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/lighting.inc.glsl");
 
     const auto outPath = path.u8string().append(".tmp");
 

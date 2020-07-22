@@ -107,7 +107,7 @@ public:
     /// Updates material polygon mode (surface, point, wireframe or edge).
     FWRENDERQT3D_QT_API Q_INVOKABLE void updatePolygonMode(int _polygonMode);
 
-    /// TODO: Updates material shading mode (flat/gouraud/phong). Only phong lighting supported for now.
+    /// Updates material shading mode (ambient/flat/gouraud/phong).
     FWRENDERQT3D_QT_API Q_INVOKABLE void updateShadingMode(int _shadingMode);
 
     /// Updates material color.

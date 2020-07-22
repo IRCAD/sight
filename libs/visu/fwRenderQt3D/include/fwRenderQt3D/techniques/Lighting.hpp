@@ -41,9 +41,9 @@ namespace techniques
 {
 
 /**
- * @brief Manages a phong lighting technique.
+ * @brief Manages a lighting technique.
  */
-class FWRENDERQT3D_CLASS_API PhongLighting : public Qt3DRender::QTechnique
+class FWRENDERQT3D_CLASS_API Lighting : public Qt3DRender::QTechnique
 {
 
 Q_OBJECT
@@ -54,11 +54,22 @@ Q_PROPERTY(QVector3D lightIntensity READ getLightIntensity WRITE setLightIntensi
 
 public:
 
+    /**
+     * @brief Lighting mode
+     */
+    typedef enum
+    {
+        AMBIENT = 0,
+        FLAT    = 1,
+        GOURAUD = 2,
+        PHONG   = 4,
+    } LightingMode;
+
     /// Constructs a lighting rendering technique.
-    FWRENDERQT3D_API PhongLighting();
+    FWRENDERQT3D_API Lighting();
 
     /// Destroys the technique.
-    FWRENDERQT3D_API virtual ~PhongLighting();
+    FWRENDERQT3D_API virtual ~Lighting();
 
     /// @returns light position value.
     FWRENDERQT3D_API QVector3D getLightPosition();
@@ -66,11 +77,17 @@ public:
     /// @returns light intensity value.
     FWRENDERQT3D_API QVector3D getLightIntensity();
 
+    /// @returns light mode.
+    FWRENDERQT3D_API LightingMode getLightingMode();
+
     /// Updates light position.
     FWRENDERQT3D_API void setLightPosition(QVector3D _lightPosition);
 
     /// Updates light intensity.
     FWRENDERQT3D_API void setLightIntensity(QVector3D _lightIntensity);
+
+    /// Updates light intensity.
+    FWRENDERQT3D_API void setLightingMode(LightingMode _lightingMode);
 
     /// Enables/Disables cells normals visualization.
     FWRENDERQT3D_API Q_INVOKABLE void enableCellsNormals(bool _isEnable);
@@ -91,11 +108,14 @@ Q_SIGNALS:
 
 private:
 
-    /// Contains light position value.
+    /// Contains light position parameter.
     QPointer< Qt3DRender::QParameter > m_lightPosition;
 
-    /// Contains light intensity value.
+    /// Contains light intensity parameter.
     QPointer< Qt3DRender::QParameter > m_lightIntensity;
+
+    /// Contains light mode parameter.
+    QPointer< Qt3DRender::QParameter > m_lightingMode;
 
     /// Contains default render pass.
     QPointer< Qt3DRender::QRenderPass > m_renderPass;
