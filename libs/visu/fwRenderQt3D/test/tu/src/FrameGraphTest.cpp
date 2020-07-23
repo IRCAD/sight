@@ -116,13 +116,6 @@ void FrameGraphTest::initializeFrameGraph()
     CPPUNIT_ASSERT(depthTest != nullptr);
     CPPUNIT_ASSERT_EQUAL(depthTest->depthFunction(), Qt3DRender::QDepthTest::Less);
 
-    delete depthTest;
-    delete culling;
-    delete renderStateSet;
-    delete clearBuffers;
-    delete cameraSelector;
-    delete viewport;
-    delete renderSurfaceSelector;
     delete frameGraph;
 
 }

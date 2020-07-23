@@ -101,10 +101,10 @@ private:
     void stopping() override;
 
     /// Contains the 3D view.
-    QPointer< Qt3DExtras::Qt3DWindow > m_3dView { };
+    QPointer< Qt3DExtras::Qt3DWindow > m_3dView;
 
     /// Contains the generic scene associated to this service.
-    QPointer< ::fwRenderQt3D::core::GenericScene > m_scene { };
+    QPointer< ::fwRenderQt3D::core::GenericScene > m_scene;
 
     /// Specifies the background color.
     QColor m_backgroundColor;

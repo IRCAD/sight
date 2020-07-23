@@ -213,7 +213,6 @@ void MeshTest::centerCameraOnCube()
     CPPUNIT_ASSERT(expectedCamera->position().y() - qt3dMesh->getScene()->getCamera()->position().y() < 0.01f);
     CPPUNIT_ASSERT(expectedCamera->position().z() - qt3dMesh->getScene()->getCamera()->position().z() < 0.01f);
 
-    delete camera;
     delete expectedCamera;
     delete qt3dMesh;
     delete scene;

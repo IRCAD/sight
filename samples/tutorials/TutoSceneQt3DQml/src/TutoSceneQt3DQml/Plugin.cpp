@@ -59,7 +59,7 @@ void Plugin::start()
     qmlRegisterType< AppManager >("tutosceneqt3d", 1, 0, "AppManager");
 
     // Declares an app manager used only to allow fwRenderQt3D features as QML types.
-    std::unique_ptr< ::fwServices::AppManager > appManager = std::unique_ptr< ::fwServices::AppManager >(
+    auto appManager = std::unique_ptr< ::fwServices::AppManager >(
         new ::fwServices::AppManager );
     appManager->create();
 
