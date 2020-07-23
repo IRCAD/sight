@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,8 +42,19 @@ class ARDATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:
-    fwCoreClassMacro(FrameTL, ::arData::TimeLine, ::fwData::factory::New< FrameTL >);
+    fwCoreClassMacro(FrameTL, ::arData::TimeLine, ::fwData::factory::New< FrameTL >)
     fwCampMakeFriendDataMacro((arData)(FrameTL))
+
+    /// Frame format
+    enum class PixelFormat
+    {
+        UNDEFINED = 0, ///< Undefined pixel format
+        RGB,           ///< Frame with 3 component RGB.
+        RGBA,          ///< Frame with 4 component RGBA.
+        BGR,           ///< Frame with 3 component BGR.
+        BGRA,          ///< Frame with 4 component BGRA.
+        GRAY_SCALE     ///< Frame with 1 component.
+    };
 
     /**
      * @brief Constructor
@@ -57,9 +68,18 @@ public:
     /// Defines deep copy
     ARDATA_API virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
-    /// Initializes the size of the pool buffer.
+    /**
+     * @brief Initializes the size of the pool buffer.
+     * @deprecated Use initPoolSize(size_t width, size_t height, const ::fwTools::Type& type, const PixelFormat format,
+     * unsigned int maxElementNum = 1) instead, it will be removed in sight 22.0
+     */
+    [[deprecated("Initialize FrameTL with pixel format instead, it will be removed in sight 22.0")]]
     ARDATA_API void initPoolSize(size_t width, size_t height,
                                  const ::fwTools::Type& type, size_t numberOfComponents = 1,
+                                 unsigned int maxElementNum = 1);
+
+    /// Initializes the size of the pool buffer.
+    ARDATA_API void initPoolSize(size_t width, size_t height, const ::fwTools::Type& type, const PixelFormat format,
                                  unsigned int maxElementNum = 1);
 
     /// Returns the width of an image in the timeline
@@ -86,6 +106,12 @@ public:
         return m_type;
     }
 
+    /// Returns the frame pixel format
+    PixelFormat getPixelFormat() const;
+
+    /// Set the frame pixel format
+    void setPixelFormat(PixelFormat format);
+
 private:
 
     /// Forbid the use of this inherited method.
@@ -103,6 +129,23 @@ private:
     /// type of frame pixel
     ::fwTools::Type m_type;
 
+    /// Frame format
+    PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
+
 }; // class FrameTL
+
+//-----------------------------------------------------------------------------
+
+inline void FrameTL::setPixelFormat(PixelFormat format)
+{
+    m_pixelFormat = format;
+}
+
+//-----------------------------------------------------------------------------
+
+inline FrameTL::PixelFormat FrameTL::getPixelFormat() const
+{
+    return m_pixelFormat;
+}
 
 } // namespace arData
