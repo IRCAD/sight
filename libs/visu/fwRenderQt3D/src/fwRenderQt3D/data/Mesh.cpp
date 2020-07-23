@@ -141,7 +141,7 @@ void Mesh::setMesh(::fwData::Mesh::sptr _mesh)
     SLM_ASSERT("::fwData::Mesh pointer does not exist.", _mesh);
 
     // Sets the number of points (for a mesh of triangles).
-    m_numberOfPoints = static_cast<int>(_mesh->getNumberOfPoints());
+    m_numberOfPoints = static_cast<unsigned int>(_mesh->getNumberOfPoints());
 
     if(m_geometry->attributes().size() != 0)
     {
@@ -176,7 +176,7 @@ void Mesh::setMesh(::fwData::Mesh::sptr _mesh)
     m_indexAttrib->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
     m_indexAttrib->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
     m_indexAttrib->setBuffer(m_indexBuffer);
-    m_indexAttrib->setCount(3 * static_cast<int>(_mesh->getNumberOfCells()));
+    m_indexAttrib->setCount(3 * static_cast<unsigned int>(_mesh->getNumberOfCells()));
     m_indexAttrib->setName("indexAttribute");
 
     m_geometry->addAttribute(m_indexAttrib);
@@ -208,11 +208,11 @@ void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
 
     // Declares data arrays which are associated with QBuffers.
     QByteArray posBufferData;
-    posBufferData.resize(m_numberOfPoints * m_vertexSize * static_cast<int>(sizeof(float)));
+    posBufferData.resize(static_cast<int>(m_numberOfPoints * m_vertexSize * sizeof(float)));
     float* rawPosBufferData = reinterpret_cast<float*>( posBufferData.data() );
 
     QByteArray normalBufferData;
-    normalBufferData.resize(m_numberOfPoints * m_vertexSize * static_cast<int>(sizeof(float)));
+    normalBufferData.resize(static_cast<int>(m_numberOfPoints * m_vertexSize * sizeof(float)));
     float* rawNormalBufferData = reinterpret_cast<float*>( normalBufferData.data() );
 
     QByteArray indexBufferData;

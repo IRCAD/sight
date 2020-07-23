@@ -136,10 +136,10 @@ private:
     QPointer< Qt3DRender::QBuffer > m_indexBuffer;
 
     /// Specifies number of points in the mesh.
-    int m_numberOfPoints { 0 };
+    unsigned int m_numberOfPoints { 0 };
 
     /// Specifies the number of components of a vertex (3 for a 3D vertex).
-    int m_vertexSize { 3 };
+    unsigned int m_vertexSize { 3 };
 
     /// Specifies the mesh center. Needed to center camera.
     QVector3D m_meshCenter;
