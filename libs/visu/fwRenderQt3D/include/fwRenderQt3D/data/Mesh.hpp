@@ -89,14 +89,14 @@ public:
     /// Updates the scene associated with the mesh.
     FWRENDERQT3D_QT_API void setScene(::fwRenderQt3D::core::GenericScene* _scene);
 
+    /// Constructs postion and normal buffers according to _mesh.
+    FWRENDERQT3D_QT_API void buildBuffers(::fwData::Mesh::sptr _mesh);
+
     /// Updates the mesh according to _mesh.
     FWRENDERQT3D_QT_API Q_INVOKABLE void setMesh(::fwData::Mesh::sptr _mesh);
 
     /// Centers camera on mesh.
     FWRENDERQT3D_QT_API Q_INVOKABLE void centerCameraOnMesh();
-
-    /// Constructs postion and normal buffers according to _mesh.
-    FWRENDERQT3D_QT_API Q_INVOKABLE void buildBuffers(::fwData::Mesh::sptr _mesh);
 
 Q_SIGNALS:
 

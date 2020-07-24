@@ -71,31 +71,9 @@ Mesh::Mesh(Qt3DCore::QNode* _parent) :
 //------------------------------------------------------------------------------
 
 Mesh::Mesh(::fwData::Mesh::sptr _mesh, Qt3DCore::QNode* _parent) :
-    QEntity(_parent)
+    Mesh(_parent)
 {
-    // Specifies a default material for the mesh.
-    QPointer< Qt3DExtras::QPhongMaterial > const defaultMaterial = new Qt3DExtras::QPhongMaterial;
-    defaultMaterial->setAmbient("darkGray");
-    defaultMaterial->setDiffuse("white");
-
-    m_material = defaultMaterial;
-    m_scene    = qobject_cast< ::fwRenderQt3D::core::GenericScene* >(_parent);
-
-    m_geomRenderer = new Qt3DRender::QGeometryRenderer(m_scene);
-    m_geometry     = new Qt3DRender::QGeometry(m_geomRenderer);
-
-    m_posBuffer    = new Qt3DRender::QBuffer(m_geometry);
-    m_normalBuffer = new Qt3DRender::QBuffer(m_geometry);
-    m_indexBuffer  = new Qt3DRender::QBuffer(m_geometry);
-
-    m_posAttrib    = new Qt3DRender::QAttribute(m_geometry);
-    m_normalAttrib = new Qt3DRender::QAttribute(m_geometry);
-    m_indexAttrib  = new Qt3DRender::QAttribute(m_geometry);
-
     this->setMesh(_mesh);
-
-    this->addComponent(m_geomRenderer);
-    this->addComponent(m_material);
 }
 
 //------------------------------------------------------------------------------
@@ -206,6 +184,12 @@ void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
 {
     SLM_ASSERT("::fwData::Mesh pointer does not exist.", _mesh);
 
+    // Returns if _mesh is empty.
+    if(static_cast<int>(_mesh->getNumberOfCells()) == 0 || static_cast<int>(_mesh->getNumberOfPoints()) == 0)
+    {
+        return;
+    }
+
     // Declares data arrays which are associated with QBuffers.
     QByteArray posBufferData;
     posBufferData.resize(static_cast<int>(m_numberOfPoints * m_vertexSize * sizeof(float)));
@@ -218,12 +202,6 @@ void Mesh::buildBuffers(::fwData::Mesh::sptr _mesh)
     QByteArray indexBufferData;
     indexBufferData.resize(3 * static_cast<int>(_mesh->getNumberOfCells()) * static_cast<int>(sizeof(unsigned int)));
     unsigned int* rawIndexBufferData = reinterpret_cast<unsigned int*>( indexBufferData.data() );
-
-    // Returns if _mesh is empty.
-    if(static_cast<int>(_mesh->getNumberOfCells()) == 0 || static_cast<int>(_mesh->getNumberOfPoints()) == 0)
-    {
-        return;
-    }
 
     // Checks if the mesh has normals. If not, generates them.
     if(!_mesh->hasPointNormals())

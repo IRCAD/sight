@@ -64,16 +64,16 @@ public:
     VISUQT3DQT_API RenderWindowInteractorManager(::fwRenderQt3D::IRenderWindowInteractorManager::Key);
 
     /// Destroys the window container.
-    VISUQT3DQT_API virtual ~RenderWindowInteractorManager() final;
+    VISUQT3DQT_API ~RenderWindowInteractorManager() final;
     /**
      * @brief Creates the container that holds the QtWidget.
      * @param _parent the parent container of the widget.
      * @param _renderOnDemand if true, the rendering will be done only when it's requested.
      * @param _fullscreen enable the fullscreen.
      */
-    VISUQT3DQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent) final;
+    VISUQT3DQT_API void createContainer(::fwGui::container::fwContainer::sptr _parent) final;
 
-    VISUQT3DQT_API virtual void set3DView(Qt3DExtras::Qt3DWindow* _3dView) final;
+    VISUQT3DQT_API void set3DView(Qt3DExtras::Qt3DWindow* _3dView) final;
 
 private:
 
