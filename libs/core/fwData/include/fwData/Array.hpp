@@ -411,7 +411,7 @@ public:
         ::fwMemory::BufferObject::Lock m_lock;
         pointer m_pointer{nullptr};
         difference_type m_idx{0};
-        difference_type m_numberOfElements;
+        difference_type m_numberOfElements{0};
     };
 
     template <typename TYPE>
@@ -914,6 +914,7 @@ inline bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& o
 template <typename TYPE, bool isConst>
 inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*() const
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     return *m_pointer;
 }
 

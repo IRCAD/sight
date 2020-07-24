@@ -961,17 +961,19 @@ void ImageTest::emptyIteratorTest()
     auto iter      = image->begin< std::int16_t>();
     const auto end = image->end< std::int16_t>();
 
-    ::fwData::iterator::ImageIteratorBase<std::int16_t> minIter;
+    ::fwData::iterator::ImageIteratorBase<std::int16_t> maxIter;
 
-    std::int16_t minValue = *iter;
+    std::int16_t maxValue = *iter;
 
     for (; iter != end; ++iter)
     {
-        if (*iter < minValue)
+        if (*iter > maxValue)
         {
-            minIter = iter;
+            maxIter  = iter;
+            maxValue = *iter;
         }
     }
+    CPPUNIT_ASSERT_EQUAL(*maxIter, maxValue);
 }
 
 } //namespace ut

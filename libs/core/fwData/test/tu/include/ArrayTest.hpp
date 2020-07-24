@@ -40,7 +40,7 @@ private:
     CPPUNIT_TEST( dumpLockTest );
     CPPUNIT_TEST( bufferAccessTest );
     CPPUNIT_TEST( constArrayTest );
-    CPPUNIT_TEST( emptyArrayTest );
+    CPPUNIT_TEST( emptyIteratorTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,7 +55,7 @@ public:
     void dumpLockTest();
     void bufferAccessTest();
     void constArrayTest();
-    void emptyArrayTest();
+    void emptyIteratorTest();
 };
 } //namespace ut
 } //namespace fwData
