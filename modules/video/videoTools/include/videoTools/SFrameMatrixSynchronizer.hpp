@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -126,7 +126,7 @@ class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISync
 {
 public:
 
-    fwCoreServiceMacro(SFrameMatrixSynchronizer, fwServices::IController);
+    fwCoreServiceMacro(SFrameMatrixSynchronizer, fwServices::IController)
 
     /**
      * @name Signal API
@@ -215,13 +215,13 @@ private:
     bool m_imagesInitialized;
 
     /// Contains the input video timelines.
-    std::vector<CSPTR(::arData::FrameTL)> m_frameTLs;
+    std::vector< ::fwData::mt::weak_ptr<const ::arData::FrameTL> > m_frameTLs;
     /// Contains the input matrix timelines.
-    std::vector<CSPTR(::arData::MatrixTL)> m_matrixTLs;
+    std::vector< ::fwData::mt::weak_ptr<const ::arData::MatrixTL> > m_matrixTLs;
     /// Contains the output images.
-    std::vector<SPTR(::fwData::Image)> m_images;
+    std::vector< ::fwData::mt::weak_ptr< ::fwData::Image > > m_images;
     /// registers matrices with associated timeline key
-    std::vector<std::vector<SPTR(::fwData::TransformationMatrix3D)> > m_matrices;
+    std::vector<std::vector< ::fwData::mt::weak_ptr< ::fwData::TransformationMatrix3D> > > m_matrices;
     /// registers index of matrices that need to send their status through signals
     std::vector<std::vector<int> > m_sendMatricesStatus;
 

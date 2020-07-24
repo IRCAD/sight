@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,16 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
     this->fieldDeepCopy( _source );
 
     this->clearTimeline();
-    this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_numberOfComponents);
+
+    // FIXME: tmp to support old API (sight 22.0)
+    if (other->m_pixelFormat == ::arData::FrameTL::PixelFormat::UNDEFINED)
+    {
+        this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_numberOfComponents);
+    }
+    else
+    {
+        this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
+    }
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
     ::fwCore::mt::WriteLock readLock(other->m_tlMutex);
 
@@ -86,7 +95,57 @@ void FrameTL::initPoolSize(size_t width, size_t height, const ::fwTools::Type& t
     m_numberOfComponents = numberOfComponents;
     m_type               = type;
 
+    // We assume that image with 3 components are RGB and image with 4 components are RGBA
+    switch (numberOfComponents)
+    {
+        case 1:
+            m_pixelFormat = ::arData::FrameTL::PixelFormat::GRAY_SCALE;
+            break;
+        case 3:
+            m_pixelFormat = ::arData::FrameTL::PixelFormat::RGB;
+            break;
+        case 4:
+            m_pixelFormat = ::arData::FrameTL::PixelFormat::RGBA;
+            break;
+        default:
+            m_pixelFormat = ::arData::FrameTL::PixelFormat::UNDEFINED;
+    }
+
     std::size_t size = width * height * numberOfComponents * type.sizeOf();
+
+    SLM_ASSERT("width or height or numberOfComponents is null", size != 0);
+
+    m_maxElementNum = maxElementNum;
+    this->allocPoolSize(size * m_maxElementNum);
+}
+
+//------------------------------------------------------------------------------
+
+void FrameTL::initPoolSize(size_t width, size_t height, const ::fwTools::Type& type, const PixelFormat format,
+                           unsigned int maxElementNum)
+{
+    m_width       = width;
+    m_height      = height;
+    m_type        = type;
+    m_pixelFormat = format;
+    switch (format)
+    {
+        case ::arData::FrameTL::PixelFormat::GRAY_SCALE:
+            m_numberOfComponents = 1;
+            break;
+        case ::arData::FrameTL::PixelFormat::BGR:
+        case ::arData::FrameTL::PixelFormat::RGB:
+            m_numberOfComponents = 3;
+            break;
+        case ::arData::FrameTL::PixelFormat::BGRA:
+        case ::arData::FrameTL::PixelFormat::RGBA:
+            m_numberOfComponents = 4;
+            break;
+        default:
+            m_numberOfComponents = 1;
+    }
+
+    std::size_t size = width * height * m_numberOfComponents * type.sizeOf();
 
     SLM_ASSERT("width or height or numberOfComponents is null", size != 0);
 
