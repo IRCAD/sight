@@ -11,7 +11,9 @@
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
+
         <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="Frame1" type="::fwData::Image" />
         <object uid="Frame2" type="::fwData::Image" />
         <object uid="Frame1TL" type="::arData::FrameTL" />
@@ -21,7 +23,9 @@
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
         <object uid="${camera1}" type="::arData::Camera" src="ref" />
         <object uid="${camera2}" type="::arData::Camera" src="ref" />
+
         <!-- ******************************* UI declaration *********************************** -->
+
         <service uid="extrinsicView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -106,8 +110,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="camera1" start="yes" />
-                <view sid="camera2" start="yes" />
+                <view sid="genericScene1Srv" start="yes" />
+                <view sid="genericScene2Srv" start="yes" />
             </registry>
         </service>
 
@@ -150,7 +154,8 @@
             </registry>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
+        <!-- ************************************* Action ************************************ -->
+
         <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CharucoBoardDetector/detectPoints</slot>
@@ -210,8 +215,42 @@
             </slots>
         </service>
 
-        <!-- ******************************* Services ***************************************** -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="genericScene1Srv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="video1Adp" />
+            </scene>
+        </service>
+
+        <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="Frame1" />
+            <config layer="default" reversed="true" />
+        </service>
+
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="genericScene2Srv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="video2Adp" />
+            </scene>
+        </service>
+
+        <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="Frame2" />
+            <config layer="default" reversed="true" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
         <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
+
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="Frame1TL" />
@@ -223,48 +262,6 @@
             </inout>
             <framerate>30</framerate>
         </service>
-
-        <!-- *************************** Begin camera 1 scene *************************** -->
-
-        <service uid="camera1" type="::fwRenderVTK::SRender">
-            <scene renderMode="timer">
-                <renderer id="default" background="0.0" />
-                <adaptor uid="videoAdapter1" />
-                <adaptor uid="interactorStyle1" />
-            </scene>
-        </service>
-
-        <service uid="videoAdapter1" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="Frame1" />
-            <config renderer="default" />
-        </service>
-
-        <service uid="interactorStyle1" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <!-- *************************** End camera 1 scene *************************** -->
-
-        <!-- *************************** Begin camera 2 scene *************************** -->
-
-        <service uid="camera2" type="::fwRenderVTK::SRender" >
-            <scene renderMode="timer">
-                <renderer id="default" background="0.0" />
-                <adaptor uid="videoAdapter2" />
-                <adaptor uid="interactorStyle2" />
-            </scene>
-        </service>
-
-        <service uid="videoAdapter2" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="Frame2" />
-            <config renderer="default" />
-        </service>
-
-        <service uid="interactorStyle2" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <!-- *************************** End camera 2 scene *************************** -->
 
         <service uid="ExtrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
@@ -335,7 +332,8 @@
             <in key="camera" uid="${camera2}" />
         </service>
 
-        <!-- ******************************* Connections ************************************** -->
+        <!-- ******************************* Connections ***************************************** -->
+
         <connect>
             <signal>Frame1TL/objectPushed</signal>
             <slot>CharucoBoardDetector/checkPoints</slot>
@@ -395,6 +393,8 @@
             <slot>CharucoBoardDetector/updateCharucoBoardSize</slot>
         </connect>
 
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
         <start uid="extrinsicView" />
         <start uid="openCVExtrinsicCal" />
         <start uid="CharucoBoardDetector" />
@@ -402,11 +402,8 @@
         <start uid="synchronizer" />
         <start uid="VideoGrabber1" />
         <start uid="VideoGrabber2" />
-        <!-- VTK scene 'camera1' -->
-        <start uid="videoAdapter1" />
-        <start uid="interactorStyle1" />
-        <!-- VTK scene 'camera2' -->
-        <start uid="videoAdapter2" />
-        <start uid="interactorStyle2" />
+        <start uid="video1Adp" />
+        <start uid="video2Adp" />
+
     </config>
 </extension>

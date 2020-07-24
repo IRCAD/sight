@@ -11,11 +11,15 @@
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
+
         <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
         <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
+
         <!-- ******************************* UI declaration *********************************** -->
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -54,7 +58,8 @@
             </registry>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
+        <!-- ************************************* Action ************************************ -->
+
         <service uid="ActionWriteCalib" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CalibrationWriter/update</slot>
@@ -125,13 +130,13 @@
             <in key="data" uid="${cameraSeries}" />
         </service>
 
-        <!-- ******************************* Connections ************************************** -->
+        <!-- ******************************* Connections ***************************************** -->
+
         <connect channel="preferencesModifiedProxy">
             <signal>action_chessBoardSize/parametersModified</signal>
         </connect>
 
-        <!-- Connection to enable "previous" action. It should be connected to a SActivitySequencer in the application
-                         configuration.-->
+        <!-- Connection to enable "previous" action. It should be connected to a SActivitySequencer in the application configuration.-->
         <connect channel="${enabledPreviousChannel}">
             <slot>ActionExport/hide</slot>
             <slot>ActionPrevious/show</slot>
@@ -143,8 +148,7 @@
             <signal>ActionPrevious/triggered</signal>
         </connect>
 
-        <!-- Connection to enable "next" action. It should be connected to a SActivitySequencer in the application
-                         configuration.-->
+        <!-- Connection to enable "next" action. It should be connected to a SActivitySequencer in the application configuration.-->
         <connect channel="${enabledNextChannel}">
             <slot>ActionExport/hide</slot>
             <slot>ActionNext/show</slot>
@@ -156,9 +160,11 @@
             <signal>ActionNext/triggered</signal>
         </connect>
 
-        <!-- START AND STOP SERVICES -->
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
         <start uid="mainView" />
         <start uid="cameraLauncher" />  <!-- Must be started after mainView -->
         <start uid="CalibrationWriter" />
+
     </config>
 </extension>

@@ -7,11 +7,15 @@
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
+
         <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="FrameTL" type="::arData::FrameTL" />
+
         <!-- ******************************* UI declaration *********************************** -->
+
         <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -80,6 +84,7 @@
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
+
         <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CharucoBoardDetector/detectPoints</slot>
@@ -117,7 +122,8 @@
             </slots>
         </service>
 
-        <!-- ******************************* Services ***************************************** -->
+        <!-- ************************************* Services ************************************ -->
+
         <service uid="cameraLauncher" type="::fwServices::SConfigController">
             <appConfig id="calCameraCharucoView" />
             <inout key="camera" uid="${camera}" />
@@ -204,6 +210,8 @@
             <slot>OpenCVIntrinsicCal/updateCharucoBoardSize</slot>
             <slot>CharucoBoardDetector/updateCharucoBoardSize</slot>
         </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="intrinsicCameraView" />
         <start uid="OpenCVIntrinsicCal" />

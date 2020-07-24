@@ -6,11 +6,15 @@
         <param name="timeLine" />
     </parameters>
     <config>
+
         <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${timeLine}" type="::arData::FrameTL" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="frame" type="::fwData::Image" />
+
         <!-- ******************************* UI declaration *********************************** -->
+
         <service uid="cameraView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -23,7 +27,7 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <toolBar sid="toolBar" start="yes" />
-                <view sid="camera" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
                 <view sid="VideoSlider" start="yes" />
             </registry>
         </service>
@@ -47,7 +51,8 @@
             </registry>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
+        <!-- ************************************* Action ************************************ -->
+
         <service uid="ActionStartCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber/startCamera</slot>
@@ -73,27 +78,24 @@
         </service>
 
         <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
-        <!-- ******************************* Services ***************************************** -->
-        <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="camera" type="::fwRenderVTK::SRender">
-            <scene renderMode="timer">
-                <renderer id="default" background="0.0" />
-                <adaptor uid="videoAdapter" />
-                <adaptor uid="interactorStyle" />
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
             </scene>
         </service>
 
-        <service uid="videoAdapter" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="frame" />
-            <config renderer="default" />
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="frame" />
+            <config layer="default" reversed="true" />
         </service>
 
-        <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="VideoGrabber" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
@@ -110,7 +112,8 @@
             <videoSupport>yes</videoSupport>
         </service>
 
-        <!-- ******************************* Connections ************************************** -->
+        <!-- ******************************* Connections ***************************************** -->
+
         <connect>
             <signal>${camera}/idModified</signal>
             <slot>VideoGrabber/stopCamera</slot>
@@ -136,11 +139,12 @@
             <slot>VideoGrabber/reconfigure</slot>
         </connect>
 
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
         <start uid="cameraView" />
         <start uid="VideoGrabber" />
         <start uid="FrameUpdater" />
-        <!-- VTK scene 'camera' -->
-        <start uid="videoAdapter" />
-        <start uid="interactorStyle" />
+        <start uid="videoAdp" />
+
     </config>
 </extension>

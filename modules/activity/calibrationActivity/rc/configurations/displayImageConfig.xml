@@ -7,9 +7,15 @@
         <param name="pointListId1" />
     </parameters>
     <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${imageId1}" src="ref" type="::fwData::Image" />
         <object uid="${pointListId1}" src="ref" type="::fwData::PointList" />
-        <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame">
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -18,45 +24,48 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="viewImage" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
             </registry>
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="viewImage" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
             <scene>
-                <renderer id="default" background="0.0" />
-                <adaptor uid="interactor2D" />
-                <adaptor uid="image" />
-                <adaptor uid="points" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="video" order="1" />
+                <adaptor uid="videoAdp" />
+
+                <layer id="default" order="2" />
+                <adaptor uid="pointListAdp" />
             </scene>
         </service>
 
-        <service uid="interactor2D" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="${imageId1}" />
+            <config layer="video" reversed="true" />
         </service>
 
-        <service uid="image" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="${imageId1}" />
-            <config renderer="default" />
+        <service uid="pointListAdp" type="::visuOgreAdaptor::SPointList" >
+            <in key="pointList" uid="${pointListId1}" />
+            <config layer="default" radius="1.0" labelColor="#D25252" fixedSize="true" textureName="circle.dds" />
         </service>
 
-        <service uid="points" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
-            <in key="pointlist" uid="${pointListId1}" />
-            <config renderer="default" color="#00FF00" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
+        <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
-            <signal>BasicViewerFrame/closed</signal>
+            <signal>mainFrame/closed</signal>
         </connect>
 
-        <start uid="BasicViewerFrame" />
-        <!-- VTK scene 'viewImage' -->
-        <start uid="interactor2D" />
-        <start uid="image" />
-        <start uid="points" />
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainFrame" />
+        <start uid="videoAdp" />
+        <start uid="pointListAdp" />
+
+        <update uid="videoAdp" />
+
+
     </config>
 </extension>

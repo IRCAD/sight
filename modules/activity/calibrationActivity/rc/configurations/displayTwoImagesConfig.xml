@@ -9,11 +9,17 @@
         <param name="pointListId2" />
     </parameters>
     <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${imageId1}" src="ref" type="::fwData::Image" />
         <object uid="${imageId2}" src="ref" type="::fwData::Image" />
         <object uid="${pointListId1}" src="ref" type="::fwData::PointList" />
         <object uid="${pointListId2}" src="ref" type="::fwData::PointList" />
-        <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame">
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -35,77 +41,75 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="viewImage1" start="yes" />
-                <view sid="viewImage2" start="yes" />
+                <view sid="genericScene1Srv" start="yes" />
+                <view sid="genericScene2Srv" start="yes" />
             </registry>
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="viewImage1" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericScene1Srv" type="::fwRenderOgre::SRender" >
             <scene>
-                <renderer id="default" background="0.0" />
-                <adaptor uid="interactor2D1" />
-                <adaptor uid="video1" />
-                <adaptor uid="points1" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="video" order="1" />
+                <adaptor uid="video1Adp" />
+
+                <layer id="default" order="2" />
+                <adaptor uid="pointList1Adp" />
             </scene>
         </service>
 
-        <service uid="interactor2D1" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
+        <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="${imageId1}" />
+            <config layer="video" reversed="true" />
         </service>
 
-        <service uid="video1" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="${imageId1}" />
-            <config renderer="default" />
+        <service uid="pointList1Adp" type="::visuOgreAdaptor::SPointList" >
+            <in key="pointList" uid="${pointListId1}" />
+            <config layer="default" radius="1.0" labelColor="#D25252" fixedSize="true" textureName="circle.dds" />
         </service>
 
-        <service uid="points1" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
-            <in key="pointlist" uid="${pointListId1}" />
-            <config renderer="default" color="#00FF00" />
-        </service>
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="viewImage2" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="genericScene2Srv" type="::fwRenderOgre::SRender" >
             <scene>
-                <renderer id="default" background="0.0" />
-                <adaptor uid="interactor2D2" />
-                <adaptor uid="video2" />
-                <adaptor uid="points2" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="video" order="1" />
+                <adaptor uid="video2Adp" />
+
+                <layer id="default" order="2" />
+                <adaptor uid="pointList2Adp" />
             </scene>
         </service>
 
-        <service uid="interactor2D2" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
+        <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="${imageId2}" />
+            <config layer="video" reversed="true" />
         </service>
 
-        <service uid="video2" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-            <in key="frame" uid="${imageId2}" />
-            <config renderer="default" />
+        <service uid="pointList2Adp" type="::visuOgreAdaptor::SPointList" >
+            <in key="pointList" uid="${pointListId2}" />
+            <config layer="default" radius="1.0" labelColor="#D25252" fixedSize="true" textureName="circle.dds" />
         </service>
 
-        <service uid="points2" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
-            <in key="pointlist" uid="${pointListId2}" />
-            <config renderer="default" color="#00FF00" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
+        <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
-            <signal>BasicViewerFrame/closed</signal>
+            <signal>mainFrame/closed</signal>
         </connect>
 
-        <start uid="BasicViewerFrame" />
-        <!-- VTK scene 'viewImage1' -->
-        <start uid="interactor2D1" />
-        <start uid="video1" />
-        <start uid="points1" />
-        <!-- VTK scene 'viewImage2' -->
-        <start uid="interactor2D2" />
-        <start uid="video2" />
-        <start uid="points2" />
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainFrame" />
+        <start uid="video1Adp" />
+        <start uid="pointList1Adp" />
+        <start uid="video2Adp" />
+        <start uid="pointList2Adp" />
+
+        <update uid="video1Adp" />
+        <update uid="video2Adp" />
+
     </config>
 </extension>

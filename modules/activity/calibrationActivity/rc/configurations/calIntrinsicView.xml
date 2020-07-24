@@ -7,7 +7,9 @@
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
+
         <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="frameTL" type="::arData::FrameTL" />
@@ -19,6 +21,7 @@
         <object uid="cameraPoseMx" type="::fwData::TransformationMatrix3D" />
 
         <!-- ******************************* UI declaration *********************************** -->
+
         <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -57,7 +60,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="cameraScene" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
                 <view sid="videoSlider" start="yes" />
             </registry>
         </service>
@@ -143,7 +146,8 @@
             </registry>
         </service>
 
-        <!-- ******************************* actions ****************************************** -->
+        <!-- ************************************* Action ************************************ -->
+
         <service uid="actionStartCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber/startCamera</slot>
@@ -237,7 +241,8 @@
 
         <service uid="videoSlider" type="::videoQt::editor::SSlider" />
 
-        <!-- ******************************* Services ***************************************** -->
+        <!-- ************************************* Services ************************************ -->
+
         <service uid="detectionStatus" type="::uiTools::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
@@ -339,29 +344,24 @@
             <videoSupport>yes</videoSupport>
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="cameraScene" type="::fwRenderVTK::SRender">
-            <scene renderMode="sync">
-                <renderer id="default" background="0.0" />
-                <adaptor uid="videoAdaptor" />
-                <adaptor uid="interactorStyle" />
+        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
             </scene>
         </service>
 
-        <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo">
-            <in key="frame" uid="videoFrame" />
-            <config renderer="default" />
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="videoFrame" />
+            <config layer="default" reversed="true" />
         </service>
 
-        <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
+        <!-- ******************************* Connections ***************************************** -->
 
-        <!-- *************************** End generic scene *************************** -->
-
-
-        <!-- ******************************* Connections ************************************** -->
         <connect>
             <signal>${camera}/idModified</signal>
             <slot>videoGrabber/stopCamera</slot>
@@ -431,8 +431,7 @@
 
         <connect>
             <signal>chessboardReprojection/updated</signal>
-            <slot>videoAdaptor/updateImage</slot>
-            <slot>cameraScene/requestRender</slot>
+            <slot>genericSceneSrv/requestRender</slot>
             <slot>detectionFrameUpdater/synchronize</slot>
         </connect>
 
@@ -448,6 +447,8 @@
             <slot>detectionFrameUpdater/synchronize</slot>
         </connect>
 
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
         <start uid="intrinsicCameraView" />
         <start uid="intrinsicCalibration" />
         <start uid="chessboardDetector" />
@@ -459,10 +460,7 @@
         <start uid="videoGrabber" />
         <start uid="detectionFrameUpdater" />
         <start uid="distorter" />
-        <!-- VTK scene 'camera' -->
-        <start uid="videoAdaptor" />
-        <start uid="interactorStyle" />
-
+        <start uid="videoAdp" />
         <start uid="computeCameraPose" />
 
     </config>

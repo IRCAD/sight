@@ -1,7 +1,14 @@
 <plugin id="calibrationActivity" class="::calibrationActivity::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="calibrationActivity" />
-    <requirement id="visuVTKQt" />
+    <requirement id="servicesReg" />
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="validators" />
+    <requirement id="preferences" />
+    <requirement id="visuOgre" />
+    <requirement id="material" />
+    <requirement id="activities" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
