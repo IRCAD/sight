@@ -94,11 +94,11 @@ void MaterialTest::initializeMaterial()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast< float >(sightMaterial->diffuse()->blue()), qt3dMaterial->getDiffuse().blueF(), 0.01f);
 
-    CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().x());
-    CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().y());
-    CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().z());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().x(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().y(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().z(), 0.00001);
 
-    CPPUNIT_ASSERT_EQUAL(25.0f, qt3dMaterial->getShininess());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(25.0f, qt3dMaterial->getShininess(), 0.00001);
 
     CPPUNIT_ASSERT_EQUAL(1, qt3dMaterial->effect()->techniques().size());
     auto tech = qt3dMaterial->effect()->techniques()[0];
