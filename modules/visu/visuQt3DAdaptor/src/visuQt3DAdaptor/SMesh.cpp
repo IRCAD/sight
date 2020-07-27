@@ -73,18 +73,14 @@ SMesh::~SMesh() noexcept
 
 void SMesh::configuring()
 {
-    if(this->getConfigTree().count("config"))
-    {
-        // Get scene configuration.
-        const ConfigType configType = this->getConfigTree();
-        const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType configTree = this->getConfigTree();
+    const auto config           = configTree.get_child_optional("config.<xmlattr>");
 
-        if(!config.empty())
-        {
-            m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, m_autoResetCamera);
-            m_isVisible       = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
-            m_materialName    = config.get<std::string>(s_MATERIAL_NAME_CONFIG, m_materialName);
-        }
+    if(config)
+    {
+        m_autoResetCamera = config->get<bool>(s_AUTORESET_CAMERA_CONFIG, m_autoResetCamera);
+        m_isVisible       = config->get<bool>(s_VISIBLE_CONFIG, m_isVisible);
+        m_materialName    = config->get<std::string>(s_MATERIAL_NAME_CONFIG, m_materialName);
     }
 }
 
@@ -105,7 +101,7 @@ void SMesh::starting()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = this->getRenderService()->getAdaptors< ::visuQt3DAdaptor::SMaterial >();
+        auto mtlAdaptors = ::fwServices::OSR::getServices< ::visuQt3DAdaptor::SMaterial >();
 
         auto result =
             std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(), [this](const ::visuQt3DAdaptor::SMaterial::sptr srv)
@@ -162,7 +158,7 @@ void SMesh::updating()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = this->getRenderService()->getAdaptors< ::visuQt3DAdaptor::SMaterial>();
+        auto mtlAdaptors = ::fwServices::OSR::getServices< ::visuQt3DAdaptor::SMaterial >();
 
         auto result =
             std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(), [this](const ::visuQt3DAdaptor::SMaterial::sptr& srv)

@@ -62,21 +62,12 @@ SMaterial::~SMaterial() noexcept
 
 void SMaterial::configuring()
 {
-    if(this->getConfigTree().count("config"))
+    const ConfigType configTree = this->getConfigTree();
+    const auto config           = configTree.get_child_optional("config.<xmlattr>");
+
+    if(config)
     {
-        // Gets scene configuration.
-        const ConfigType config = this->getConfigTree().get_child("config");
-
-        if(!config.empty())
-        {
-            const ConfigType attributes = config.get_child("<xmlattr>");
-
-            // If materialName attribute is found updates m_materialName accordingly.
-            if (attributes.count(s_MATERIAL_NAME_CONFIG))
-            {
-                m_materialName = attributes.get<std::string>(s_MATERIAL_NAME_CONFIG);
-            }
-        }
+        m_materialName = config->get<std::string>(s_MATERIAL_NAME_CONFIG, m_materialName);
     }
 }
 
@@ -92,10 +83,13 @@ void SMaterial::starting()
     this->updating();
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SMaterial::stopping()
+::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 //-----------------------------------------------------------------------------
@@ -113,16 +107,15 @@ void SMaterial::updating()
 
 //-----------------------------------------------------------------------------
 
+void SMaterial::stopping()
+{
+}
+
+//-----------------------------------------------------------------------------
+
 void SMaterial::setMaterial(::fwRenderQt3D::data::Material* _material)
 {
     m_material = _material;
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setMaterialName(std::string _materialName)
-{
-    m_materialName = _materialName;
 }
 
 //------------------------------------------------------------------------------
@@ -137,15 +130,6 @@ void SMaterial::setMaterialName(std::string _materialName)
 std::string SMaterial::getMaterialName()
 {
     return m_materialName;
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    return connections;
 }
 
 } // namespace visuQt3DAdaptor.

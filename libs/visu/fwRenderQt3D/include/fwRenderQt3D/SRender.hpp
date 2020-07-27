@@ -86,22 +86,21 @@ public:
     /// @returns the scene instantiated by this service.
     FWRENDERQT3D_API ::fwRenderQt3D::core::GenericScene* getScene();
 
-    template<class T>
-    std::vector<SPTR(T)> getAdaptors() const;
-
-private:
+protected:
 
     /// Configures the render service.
-    void configuring() override;
+    FWRENDERQT3D_API void configuring() override;
 
     /// Creates a rendering context and instantiates a Qt3D generic scene.
-    void starting() override;
+    FWRENDERQT3D_API void starting() override;
 
     /// Does nothing.
-    void updating() override;
+    FWRENDERQT3D_API void updating() override;
 
     /// Destroys the service.
-    void stopping() override;
+    FWRENDERQT3D_API void stopping() override;
+
+private:
 
     /// Contains the 3D view.
     QPointer< Qt3DExtras::Qt3DWindow > m_3dView;
@@ -114,27 +113,4 @@ private:
 
 };
 
-//------------------------------------------------------------------------------
-
-template<class T>
-std::vector<SPTR(T)> SRender::getAdaptors() const
-{
-    auto servicesVector = ::fwServices::OSR::getServices("::fwRenderQt3D::IAdaptor");
-    std::vector<SPTR(T)> resultVector;
-
-    for(auto& sceneAdaptor : servicesVector)
-    {
-        SPTR(T) adaptor = T::dynamicCast(sceneAdaptor);
-        if(adaptor)
-        {
-            if(adaptor->getRenderService() == this->getConstSptr())
-            {
-                resultVector.push_back(adaptor);
-            }
-        }
-    }
-
-    return resultVector;
-}
-
-} //namespace fwRenderQt3D
+} // namespace fwRenderQt3D.

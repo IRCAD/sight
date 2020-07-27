@@ -72,13 +72,13 @@ public:
     /// Destroys the adaptor.
     VISUQT3DADAPTOR_API ~SMesh() noexcept override;
 
-private:
+protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    VISUQT3DADAPTOR_API void configuring() override;
 
-    ///
-    void starting() override;
+    /// Starts the adaptor.
+    VISUQT3DADAPTOR_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -87,13 +87,15 @@ private:
      * Connect ::fwData::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
      * Connect ::fwData::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
      */
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUQT3DADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the mesh.
-    void updating() override;
+    VISUQT3DADAPTOR_API void updating() override;
 
     /// Does nothing.
-    void stopping() override;
+    VISUQT3DADAPTOR_API void stopping() override;
+
+private:
 
     /**
      * @brief Sets whether the mesh is to be seen or not.

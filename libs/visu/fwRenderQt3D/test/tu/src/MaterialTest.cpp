@@ -80,23 +80,19 @@ void MaterialTest::initializeMaterial()
     qt3dMaterial->updateRGBAMode(sightMaterial);
 
     // Asserts qt3dMaterial RBG is equal to sightMaterial RGB (Approximately equal due to float comparaison).
-    CPPUNIT_ASSERT(static_cast< float >(sightMaterial->ambient()->red()) - qt3dMaterial->getAmbient().redF() <
-                   std::abs(0.01f));
-    CPPUNIT_ASSERT(
-        static_cast< float >(sightMaterial->ambient()->green()) - qt3dMaterial->getAmbient().greenF() <
-        std::abs(0.01f));
-    CPPUNIT_ASSERT(
-        static_cast< float >(sightMaterial->ambient()->blue()) - qt3dMaterial->getAmbient().blueF() <
-        std::abs(0.01f));
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast< float >(sightMaterial->ambient()->red()),
+                                 qt3dMaterial->getAmbient().redF(), 0.01f);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        static_cast< float >(sightMaterial->ambient()->green()), qt3dMaterial->getAmbient().greenF(), 0.01f);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        static_cast< float >(sightMaterial->ambient()->blue()), qt3dMaterial->getAmbient().blueF(), 0.01f);
 
-    CPPUNIT_ASSERT(static_cast< float >(sightMaterial->diffuse()->red()) - qt3dMaterial->getDiffuse().redF() <
-                   std::abs(0.01f));
-    CPPUNIT_ASSERT(
-        static_cast< float >(sightMaterial->diffuse()->green()) - qt3dMaterial->getDiffuse().greenF() <
-        std::abs(0.01f));
-    CPPUNIT_ASSERT(
-        static_cast< float >(sightMaterial->diffuse()->blue()) - qt3dMaterial->getDiffuse().blueF() <
-        std::abs(0.01f));
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast< float >(sightMaterial->diffuse()->red()),
+                                 qt3dMaterial->getDiffuse().redF(), 0.01f);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        static_cast< float >(sightMaterial->diffuse()->green()), qt3dMaterial->getDiffuse().greenF(), 0.01f);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        static_cast< float >(sightMaterial->diffuse()->blue()), qt3dMaterial->getDiffuse().blueF(), 0.01f);
 
     CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().x());
     CPPUNIT_ASSERT_EQUAL(0.2f, qt3dMaterial->getSpecular().y());

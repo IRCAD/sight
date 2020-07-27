@@ -61,6 +61,8 @@ Material::Material(Qt3DCore::QNode* _parent) :
     this->addTechnique(phongTechnique);
 }
 
+//------------------------------------------------------------------------------
+
 Material::~Material()
 {
 }

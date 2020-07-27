@@ -70,34 +70,36 @@ public:
     /// Updates associated material.
     VISUQT3DADAPTOR_API void setMaterial(::fwRenderQt3D::data::Material* _material);
 
-    /// Updates material name.
-    VISUQT3DADAPTOR_API void setMaterialName(std::string _materialName);
-
     /// @returns associated material.
     VISUQT3DADAPTOR_API ::fwRenderQt3D::data::Material* getMaterial();
 
     /// @returns material name.
     VISUQT3DADAPTOR_API std::string getMaterialName();
 
-private:
+protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    VISUQT3DADAPTOR_API void configuring() override;
 
-    ///
-    void starting() override;
+    /// Starts the adaptor.
+    VISUQT3DADAPTOR_API void starting() override;
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals.
-     * @return The connection map proposals.
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwData::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
+     * Connect ::fwData::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
      */
     VISUQT3DADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the material.
-    void updating() override;
+    VISUQT3DADAPTOR_API void updating() override;
 
     /// Does nothing.
-    void stopping() override;
+    VISUQT3DADAPTOR_API void stopping() override;
+
+private:
 
     /// Contains a Qt3D Material.
     QPointer< ::fwRenderQt3D::data::Material > m_material;
