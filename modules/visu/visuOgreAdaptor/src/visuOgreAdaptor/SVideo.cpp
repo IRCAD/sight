@@ -54,9 +54,9 @@ static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
 
 static const std::string s_REVERSE_CONFIG = "reverse";
 
-static const std::string VIDEO_MATERIAL_NAME            = "Video";
-static const std::string VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
-static const std::string VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
+static const std::string s_VIDEO_MATERIAL_NAME            = "Video";
+static const std::string s_VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
+static const std::string s_VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 //------------------------------------------------------------------------------
 
@@ -143,16 +143,16 @@ void SVideo::updating()
             {
                 if(type == ::fwTools::Type::s_FLOAT || type == ::fwTools::Type::s_DOUBLE)
                 {
-                    defaultMat = mtlMgr.getByName(VIDEO_WITHTF_MATERIAL_NAME);
+                    defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_MATERIAL_NAME);
                 }
                 else
                 {
-                    defaultMat = mtlMgr.getByName(VIDEO_WITHTF_INT_MATERIAL_NAME);
+                    defaultMat = mtlMgr.getByName(s_VIDEO_WITHTF_INT_MATERIAL_NAME);
                 }
             }
             else
             {
-                defaultMat = mtlMgr.getByName(VIDEO_MATERIAL_NAME);
+                defaultMat = mtlMgr.getByName(s_VIDEO_MATERIAL_NAME);
             }
 
             // Duplicate the template material to create our own material
@@ -280,6 +280,7 @@ void SVideo::clearEntity()
     {
         m_entity->detachFromParent();
         this->getSceneManager()->destroyEntity(m_entity);
+        m_entity = nullptr;
     }
     if(m_sceneNode)
     {
