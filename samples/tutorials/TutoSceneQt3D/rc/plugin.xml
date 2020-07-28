@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin id="TutoSceneQt3D" version="@PROJECT_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="guiQt" />
+    <requirement id="visuQt3DQt" />
+
+    <extension implements="::fwServices::registry::ServiceConfig" >
+        <id>TutoSceneQt3D_jsonReader_SrvCfg</id>
+        <desc>JSON</desc>
+        <config>
+            <patcher />
+            <windowTitle>Open JSON file</windowTitle>
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig" >
+        <id>TutoSceneQt3D_vtk_SrvCfg</id>
+        <desc>VTK</desc>
+        <config>
+            <windowTitle>Open VTK file</windowTitle>
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>TutoSceneQt3D_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="mesh" type="::fwData::Mesh" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainView" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>TutoSceneQt3D</name>
+                        <icon>TutoSceneQt3D-0.1/tuto.ico</icon>
+                        <minSize width="1080" height="720" />
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="genericSceneSrv" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Open mesh" shortcut="Ctrl+O" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="meshReaderAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="::fwRenderQt3D::SRender">
+                <scene>
+                    <background color="#2d2d2d" />
+
+                    <adaptor uid="meshAdp" />
+                </scene>
+            </service>
+
+            <service uid="meshAdp" type="::visuQt3DAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="mesh" />
+                <config autoresetcamera="true" visible="true" />
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="meshReaderAct" type="::uiIO::editor::SIOSelector">
+                <inout key="data" uid="mesh" />
+                <type mode="reader" />
+                <config id="TutoSceneQt3D_jsonReader_SrvCfg" service="::ioAtoms::SReader" />
+                <config id="TutoSceneQt3D_vtk_SrvCfg" service="::ioVTK::SMeshReader" />
+            </service>
+
+            <service uid="quitAct" type="::gui::action::SQuit" />
+
+            <!-- ******************************* Start/Stop services ***************************************** -->
+
+            <start uid="mainView" />
+            <start uid="meshAdp" />
+
+        </config>
+    </extension>
+</plugin>

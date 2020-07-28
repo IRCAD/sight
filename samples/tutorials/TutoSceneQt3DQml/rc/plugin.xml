@@ -1,0 +1,7 @@
+<plugin id="TutoSceneQt3DQml" class="::TutoSceneQt3DQml::Plugin"  version="@PROJECT_VERSION@" >
+
+    <requirement id="servicesReg" />
+
+    <library name="TutoSceneQt3DQml" />
+
+</plugin>

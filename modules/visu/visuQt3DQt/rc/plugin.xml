@@ -1,0 +1,5 @@
+<plugin id="visuQt3DQt" class="::visuQt3DQt::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="visuQt3DQt" />
+
+</plugin>
