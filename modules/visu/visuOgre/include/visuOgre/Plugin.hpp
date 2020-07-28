@@ -35,7 +35,7 @@ namespace visuOgre
  * @brief Allows to redirect Ogre logs on Sight logs
  * We need this class to be declared outside to export DLL symbols on Windows.
  */
-class VISUOGRE_CLASS_API SightOgreListener : public ::Ogre::LogListener
+class VISUOGRE_CLASS_API SightOgreListener final : public ::Ogre::LogListener
 {
 
 public:
@@ -48,26 +48,26 @@ public:
     /**
      * @brief Set Ogre log on Sight log depending on it's LogLevel.
      */
-    VISUOGRE_API virtual void messageLogged(const ::Ogre::String& _message,
-                                            ::Ogre::LogMessageLevel _lml,
-                                            bool,
-                                            const ::Ogre::String&,
-                                            bool& _skipThisMessage);
+    VISUOGRE_API void messageLogged(const ::Ogre::String& _message,
+                                    ::Ogre::LogMessageLevel _lml,
+                                    bool,
+                                    const ::Ogre::String&,
+                                    bool& _skipThisMessage) override;
 };
 
 /// This class is started when the module is loaded.
-class VISUOGRE_CLASS_API Plugin : public ::fwRuntime::Plugin
+class VISUOGRE_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
 public:
 
     /// Destroys the plugin.
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
     /// Creates the Ogre log manager.
-    VISUOGRE_API virtual void start() override;
+    VISUOGRE_API void start() override;
 
-    /// Stops the plugin, does nothing here.
-    VISUOGRE_API virtual void stop() noexcept override;
+    /// Stops the plugin, destroys Ogre resources.
+    VISUOGRE_API void stop() noexcept override;
 
 private:
 

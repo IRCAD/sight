@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,35 +34,45 @@ namespace fwRenderOgre
 
 /**
  * @brief This singleton stores all Ogre render windows and manage their deletion.
- *        The problem is that the OpenGLRendeSystem we use, somehow, needs the
- *        first window created to be deleted last.
- *        This class allows to differ the deletion of the first created window.
+ *
+ * The problem is that the OpenGLRenderSystem we use, somehow, needs the first window created to be deleted last.
+ * This class allows to differ the deletion of the first created window.
  */
 class FWRENDEROGRE_CLASS_API WindowManager : public ::fwCore::BaseObject
 {
+
 public:
-    fwCoreClassMacro(WindowManager, ::fwRenderOgre::WindowManager, new WindowManager);
+
+    fwCoreClassMacro(WindowManager, ::fwRenderOgre::WindowManager, new WindowManager)
+
     fwCoreAllowSharedFromThis()
 
-    /// register an ogre window
+    /// Registers an Ogre window.
     FWRENDEROGRE_API void registerWindow(::Ogre::RenderWindow* _window);
 
-    /// Unregister an ogre window
+    /// Unregisters an Ogre window.
     FWRENDEROGRE_API void unregisterWindow(::Ogre::RenderWindow* _window);
 
-    /// Return the singleton instance
+    /**
+     * @brief Gets the unique instance of this class.
+     * @return the singleton instance.
+     */
     FWRENDEROGRE_API static ::fwRenderOgre::WindowManager::sptr get();
 
-    /// returns true if at least one window is registered
+    /**
+     * @brief Returns true if there is at least one window.
+     * @@return true if at least one window is registered.
+     */
     FWRENDEROGRE_API bool hasWindow();
 
 private:
 
-    /// Pointer on the first window
+    /// Contains the first window.
     ::Ogre::RenderWindow* m_firstWindow;
-    /// Tree containing all the ogre windows
+
+    /// Stores all Ogre windows.
     std::set< ::Ogre::RenderWindow* > m_windows;
 
 };
 
-} // namespace fwRenderOgre
+} // namespace fwRenderOgre.
