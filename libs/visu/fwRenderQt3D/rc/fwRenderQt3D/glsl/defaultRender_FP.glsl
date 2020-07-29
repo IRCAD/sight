@@ -5,7 +5,7 @@ in vec3 v_out_f3Normal;
 in vec3 v_out_f3Color;
 
 // Used for flat lighting.
-flat in vec3 v_out_f3FlatNormal;
+flat in vec3 v_out_f3FlatColor;
 
 out vec4 f_out_f4FragColor;
 
@@ -24,8 +24,7 @@ void main()
     }
     else if(u_iLightingMode == 1) //Flat lighting.
     {
-        vec3 f3ResultCol = lighting(v_out_f3Position, normalize(v_out_f3FlatNormal));
-        f_out_f4FragColor = vec4(f3ResultCol, 1.0);
+        f_out_f4FragColor = vec4(v_out_f3FlatColor, 1.0);
     }
     else if(u_iLightingMode == 2) //Gouraud lighting.
     {
