@@ -1,14 +1,15 @@
 #version 330 core
 
-in vec3 f3_in_position;
-in vec3 f3_in_normal;
-in vec3 f3_in_color;
+in vec3 v_out_f3Position;
+in vec3 v_out_f3Normal;
+in vec3 v_out_f3Color;
 
 // Used for flat lighting.
-flat in vec3 f3_in_flatNormal;
+flat in vec3 v_out_f3FlatNormal;
 
-out vec4 f4_out_fragColor;
+out vec4 f_out_f4FragColor;
 
+uniform vec3 u_f3AmbientColCopy;
 uniform int u_iLightingMode; //0=ambient, 1=flat, 2=gouraud, 4=phong.
 
 // Include functions from another shader called 'lighting.inc.glsl'.
@@ -19,20 +20,20 @@ void main()
 {
     if(u_iLightingMode == 0) //Ambient lighting.
     {
-        f4_out_fragColor = vec4(u_f3AmbientCol, 1.0);
+        f_out_f4FragColor = vec4(u_f3AmbientColCopy, 1.0);
     }
     else if(u_iLightingMode == 1) //Flat lighting.
     {
-        vec3 result = lighting(f3_in_position, normalize(f3_in_flatNormal));
-        f4_out_fragColor = vec4(result, 1.0);
+        vec3 f3ResultCol = lighting(v_out_f3Position, normalize(v_out_f3FlatNormal));
+        f_out_f4FragColor = vec4(f3ResultCol, 1.0);
     }
     else if(u_iLightingMode == 2) //Gouraud lighting.
     {
-        f4_out_fragColor = vec4(f3_in_color, 1.0);
+        f_out_f4FragColor = vec4(v_out_f3Color, 1.0);
     }
     else //Phong lighting.
     {
-        vec3 result = lighting(f3_in_position, normalize(f3_in_normal));
-        f4_out_fragColor = vec4(result, 1.0);
+        vec3 f3ResultCol = lighting(v_out_f3Position, normalize(v_out_f3Normal));
+        f_out_f4FragColor = vec4(f3ResultCol, 1.0);
     }
 }

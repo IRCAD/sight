@@ -132,6 +132,10 @@ private:
     /// Contains material ambient color.
     QPointer< Qt3DRender::QParameter > m_ambientColor;
 
+    /// Contains material ambient color. Used in default fragment shader. Uses of another copy
+    /// of the ambient color is needed due to incompatibilities between sheldon and qt3d rules.
+    QPointer< Qt3DRender::QParameter > m_ambientColorCopy;
+
     /// Contains material diffuse color.
     QPointer< Qt3DRender::QParameter > m_diffuseColor;
 

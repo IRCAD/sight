@@ -6,7 +6,7 @@ in vec3 vertexNormal;
 
 // Out block to send, for each vertex, its normal to the geometry shader
 out VS_OUT {
-    vec3 f3_normal;
+    vec3 f3Normal;
 } vs_out;
 
 uniform mat4 projectionMatrix;
@@ -19,6 +19,6 @@ void main()
     gl_Position = mvp * vec4(vertexPosition, 1.0);
 
     // compute vertex' normal position
-    mat3 normalMatrix = mat3(transpose(inverse(modelView)));
-    vs_out.f3_normal = normalize(vec3(projectionMatrix * vec4(normalMatrix * vertexNormal, 0.0)));
+    mat3 m3NormalMatrix = mat3(transpose(inverse(modelView)));
+    vs_out.f3Normal = normalize(vec3(projectionMatrix * vec4(m3NormalMatrix * vertexNormal, 0.0)));
 }

@@ -10,27 +10,27 @@ const float MAGNITUDE = 2.0;
 
 void main()
 {
-    vec4 P0 = gl_in[0].gl_Position;
-    vec4 P1 = gl_in[1].gl_Position;
-    vec4 P2 = gl_in[2].gl_Position;
+    vec4 f4vertex0Pos = gl_in[0].gl_Position;
+    vec4 f4vertex1Pos = gl_in[1].gl_Position;
+    vec4 f4vertex2Pos = gl_in[2].gl_Position;
 
-    vec4 V0 = P0 - P1; // P1->P0
-    vec4 V1 = P2 - P1; // P1->P2
+    vec4 f4v1Tov0Dir = f4vertex0Pos - f4vertex1Pos; // f4vertex1Pos->f4vertex0Pos
+    vec4 f4v1Tov2Dir = f4vertex2Pos - f4vertex1Pos; // f4vertex1Pos->f4vertex2Pos
 
-    // Face normal, which is the cross product of V0 and V1.
-    vec3 N = cross(V1.xyz, V0.xyz);
-    N = normalize(N);
+    // Face normal, which is the cross product of f4v1Tov0Dir and f4v1Tov2Dir.
+    vec3 f3TriangleNormalN = cross(f4v1Tov2Dir.xyz, f4v1Tov0Dir.xyz);
+    f3TriangleNormalN = normalize(f3TriangleNormalN);
 
     // Center of the triangle.
-    vec4 P = (P0 + P1 + P2) / 3.0;
+    vec4 f4TriangleCenter = (f4vertex0Pos + f4vertex1Pos + f4vertex2Pos) / 3.0;
 
     // Cell normal origin.
-    gl_Position = P;
+    gl_Position = f4TriangleCenter;
 
     EmitVertex();
 
     // Cell normal summit.
-    gl_Position = (P + vec4(N, 0.) * MAGNITUDE);
+    gl_Position = (f4TriangleCenter + vec4(f3TriangleNormalN, 0.) * MAGNITUDE);
 
     EmitVertex();
     EndPrimitive();

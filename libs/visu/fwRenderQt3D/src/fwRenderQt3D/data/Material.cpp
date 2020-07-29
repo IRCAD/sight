@@ -44,6 +44,8 @@ Material::Material(Qt3DCore::QNode* _parent) :
     /// Initializes parameters with default values.
     m_ambientColor = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05f, 0.05f, 0.05f));
     this->effect()->addParameter(m_ambientColor);
+    m_ambientColorCopy = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05f, 0.05f, 0.05f));
+    this->effect()->addParameter(m_ambientColorCopy);
 
     m_diffuseColor = new Qt3DRender::QParameter(QStringLiteral("u_f3DiffuseCol"), QColor("white"));
     this->effect()->addParameter(m_diffuseColor);
@@ -100,6 +102,7 @@ float Material::getShininess()
 void Material::setAmbient(QColor _ambient)
 {
     m_ambientColor->setValue(_ambient);
+    m_ambientColorCopy->setValue(_ambient);
 }
 
 //------------------------------------------------------------------------------

@@ -113,7 +113,7 @@ Lighting::Lighting()
     this->addRenderPass(m_cellNormalPass);
 
     // Lighting shader program & render pass : renders the mesh using selected illumination algorithm.
-    this->fixShaderSyntaxe();
+    this->fixShaderSyntax();
     const auto vertexShaderPath = ::fwRuntime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/defaultRender_VP.glsl");
     const auto fragmentShaderPath = ::fwRuntime::getLibraryResourceFilePath(
@@ -279,7 +279,7 @@ void Lighting::updateRasterMode(int _rasterMode)
 
 //------------------------------------------------------------------------------
 
-void Lighting::fixShaderSyntaxe()
+void Lighting::fixShaderSyntax()
 {
     const auto path = ::fwRuntime::getLibraryResourceFilePath(
         "fwRenderQt3D-" FWRENDERQT3D_VER "/fwRenderQt3D/glsl/lighting.inc.glsl");

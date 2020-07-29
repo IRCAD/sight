@@ -1,11 +1,11 @@
 #version 330 core
 
-in vec3 f3_in_position;
-in vec3 f3_in_normal;
+in vec3 v_out_f3Position;
+in vec3 v_out_f3Normal;
 
-out vec4 f4_out_fragColor;
+out vec4 f_out_f4FragColor;
 
 void main()
 {
-    f4_out_fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    f_out_f4FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

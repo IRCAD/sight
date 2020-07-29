@@ -125,12 +125,6 @@ void MaterialTest::initializeMaterial()
     CPPUNIT_ASSERT_EQUAL(static_cast< int >(sightMaterial->getShadingMode()),
                          qvariant_cast< int >(tech->parameters()[2]->value()));
 
-    delete edgeRenderPass;
-    delete renderPass;
-    delete cellNormalPass;
-    delete normalPass;
-    delete tech;
-
     delete qt3dMaterial;
 
 }
