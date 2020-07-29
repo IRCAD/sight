@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,6 +40,7 @@ private:
     CPPUNIT_TEST( dumpLockTest );
     CPPUNIT_TEST( bufferAccessTest );
     CPPUNIT_TEST( constArrayTest );
+    CPPUNIT_TEST( emptyIteratorTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,6 +55,7 @@ public:
     void dumpLockTest();
     void bufferAccessTest();
     void constArrayTest();
+    void emptyIteratorTest();
 };
 } //namespace ut
 } //namespace fwData

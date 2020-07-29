@@ -222,9 +222,9 @@ void MeshTest::copy()
 
         for (; pointItr != pointEnd; ++pointItr, ++pointItrCopyMesh)
         {
-            CPPUNIT_ASSERT_EQUAL(pointItr->point->x, pointItrCopyMesh->point->x);
-            CPPUNIT_ASSERT_EQUAL(pointItr->point->y, pointItrCopyMesh->point->y);
-            CPPUNIT_ASSERT_EQUAL(pointItr->point->z, pointItrCopyMesh->point->z);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->point->x, pointItrCopyMesh->point->x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->point->y, pointItrCopyMesh->point->y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->point->z, pointItrCopyMesh->point->z, EPSILON);
         }
 
         auto cellItr         = mesh->begin< ::fwData::iterator::ConstCellIterator >();
@@ -436,31 +436,31 @@ void MeshTest::insertion()
         CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Mesh::Id>(6), mesh->getNumberOfCells());
 
         auto it = mesh->begin< ::fwData::iterator::PointIterator >();
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), (*it).point->x);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), (*it).point->y);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(30), (*it).point->z);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(10), (*it).point->x, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(20), (*it).point->y, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(30), (*it).point->z, EPSILON);
         CPPUNIT_ASSERT( nullptr == it->rgba);
         CPPUNIT_ASSERT( nullptr == it->normal);
         CPPUNIT_ASSERT( nullptr == it->tex);
         it += 2;
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->x);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(21), it->point->y);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(10), it->point->z);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(20), it->point->x, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(21), it->point->y, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(10), it->point->z, EPSILON);
         CPPUNIT_ASSERT( nullptr == it->rgba);
         CPPUNIT_ASSERT( nullptr == it->normal);
         CPPUNIT_ASSERT( nullptr == it->tex);
         it += 5;
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(27), it->point->x);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(83), it->point->y);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(52), it->point->z);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(27), it->point->x, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(83), it->point->y, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(52), it->point->z, EPSILON);
         --it;
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->x);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(63), it->point->y);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(17), it->point->z);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(20), it->point->x, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(63), it->point->y, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(17), it->point->z, EPSILON);
         it -= 2;
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(15), it->point->x);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(20), it->point->y);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(35), it->point->z);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(15), it->point->x, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(20), it->point->y, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(35), it->point->z, EPSILON);
 
         auto cellit = mesh->begin< ::fwData::iterator::CellIterator >();
         CPPUNIT_ASSERT_EQUAL( static_cast<std::uint64_t>(0), *cellit->offset);
@@ -573,9 +573,9 @@ void MeshTest::insertion()
         mesh->setPoint(4, 45, 59, 48);
         auto itPt = mesh->begin< ::fwData::iterator::PointIterator >();
         itPt += 4;
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), itPt->point->x);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(59), itPt->point->y);
-        CPPUNIT_ASSERT_EQUAL(static_cast<float>(48), itPt->point->z);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(45), itPt->point->x, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(59), itPt->point->y, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(48), itPt->point->z, EPSILON);
     }
 
     {
@@ -689,15 +689,17 @@ void MeshTest::iteratorTest()
     {
         auto it          = mesh->begin< ::fwData::iterator::PointIterator >();
         const auto itEnd = mesh->end< ::fwData::iterator::PointIterator >();
+        ::fwData::iterator::PointIterator pointIt;
 
         size_t count = 0;
         for (; it != itEnd; ++it)
         {
             ::fwData::iterator::Point p = *it->point;
+            pointIt                     = it;
             const float fValue = static_cast<float>(3*count);
-            CPPUNIT_ASSERT_EQUAL(fValue, p.x);
-            CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
-            CPPUNIT_ASSERT_EQUAL(fValue+2, p.z);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue+1, p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue+2, p.z, EPSILON);
 
             ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);
@@ -708,17 +710,23 @@ void MeshTest::iteratorTest()
 
             ::fwData::iterator::Normal n = *it->normal;
             const ::fwData::Mesh::NormalValueType fVal = static_cast< ::fwData::Mesh::NormalValueType >(count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz, EPSILON);
 
             ::fwData::iterator::TexCoords uv = *it->tex;
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v, EPSILON);
 
             ++count;
         }
         CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+
+        ::fwData::iterator::Point p = *pointIt->point;
+        const float fValue = static_cast<float>( 3*(count-1));
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue+1, p.y, EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue+2, p.z, EPSILON);
     }
 
     {
@@ -730,9 +738,9 @@ void MeshTest::iteratorTest()
         {
             ::fwData::iterator::Point p = *it->point;
             const float fValue = static_cast<float>(3*count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue, p.x);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue+1, p.y);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue+2, p.z);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue, p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue+1, p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fValue+2, p.z, EPSILON);
 
             ::fwData::iterator::RGBA c = *it->rgba;
             const ::fwData::Mesh::ColorValueType cVal = static_cast< ::fwData::Mesh::ColorValueType >(count);
@@ -743,13 +751,13 @@ void MeshTest::iteratorTest()
 
             ::fwData::iterator::Normal n = *it->normal;
             const ::fwData::Mesh::NormalValueType fVal = static_cast< ::fwData::Mesh::NormalValueType >(count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz, EPSILON);
 
             ::fwData::iterator::TexCoords uv = *it->tex;
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v, EPSILON);
 
             --count;
         }
@@ -759,10 +767,12 @@ void MeshTest::iteratorTest()
     {
         auto it          = mesh->begin< ::fwData::iterator::CellIterator >();
         const auto itEnd = mesh->end< ::fwData::iterator::CellIterator >();
+        ::fwData::iterator::CellIterator cellIt;
 
         size_t count = 0;
         for (; it != itEnd; ++it)
         {
+            cellIt = it;
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), static_cast<size_t>(3), it.nbPoints());
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(
                                              count), static_cast<std::uint64_t>(count), it[0]);
@@ -781,19 +791,23 @@ void MeshTest::iteratorTest()
             ::fwData::iterator::Normal n = *it->normal;
             const ::fwData::Mesh::NormalValueType fVal =
                 static_cast< ::fwData::Mesh::NormalValueType >(count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz, EPSILON);
 
             ::fwData::iterator::TexCoords uv = *it->tex;
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v, EPSILON);
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), static_cast<size_t>(3), it->nbPoints);
 
             ++count;
         }
         CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
+
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint64_t>(count-1), cellIt[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint64_t>(count), cellIt->pointIdx[1]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint64_t>(count+1), cellIt->pointIdx[2]);
     }
 
     {
@@ -821,13 +835,13 @@ void MeshTest::iteratorTest()
             ::fwData::iterator::Normal n = *it->normal;
             const ::fwData::Mesh::NormalValueType fVal =
                 static_cast< ::fwData::Mesh::NormalValueType >(NB_CELLS-1-count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz, EPSILON);
 
             ::fwData::iterator::TexCoords uv = *it->tex;
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v, EPSILON);
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), static_cast<size_t>(3), it->nbPoints);
 
@@ -844,9 +858,9 @@ void MeshTest::iteratorTest()
         float count = 0;
         for (; it != itEnd; ++it)
         {
-            CPPUNIT_ASSERT_EQUAL(count++, it->point->x);
-            CPPUNIT_ASSERT_EQUAL(count++, it->point->y);
-            CPPUNIT_ASSERT_EQUAL(count++, it->point->z);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(count++, it->point->x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(count++, it->point->y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(count++, it->point->z, EPSILON);
         }
     }
 
@@ -875,13 +889,13 @@ void MeshTest::iteratorTest()
             ::fwData::iterator::Normal n = *it->normal;
             const ::fwData::Mesh::NormalValueType fVal =
                 static_cast< ::fwData::Mesh::NormalValueType >(NB_CELLS-1-count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, n.nz, EPSILON);
 
             ::fwData::iterator::TexCoords uv = *it->tex;
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), fVal, uv.v, EPSILON);
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), static_cast<size_t>(3), it->nbPoints);
 
@@ -971,9 +985,9 @@ void MeshTest::iteratorTest()
         {
             ::fwData::iterator::Point p = *it->point;
             const float fValue = static_cast<float>(3*count);
-            CPPUNIT_ASSERT_EQUAL(fValue, p.x);
-            CPPUNIT_ASSERT_EQUAL(fValue+1, p.y);
-            CPPUNIT_ASSERT_EQUAL(fValue+2, p.z);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue+1, p.y, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue+2, p.z, EPSILON);
 
             ::fwData::iterator::RGBA c = *it->rgba;
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), 4*count, static_cast<size_t>(c.r));
@@ -983,15 +997,15 @@ void MeshTest::iteratorTest()
 
             ::fwData::iterator::Normal n = *it->normal;
             const ::fwData::Mesh::NormalValueType nVal = static_cast< ::fwData::Mesh::NormalValueType >(3*count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+1, n.nx);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+2, n.ny);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+3, n.nz);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+1, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+2, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+3, n.nz, EPSILON);
 
             ::fwData::iterator::TexCoords uv = *it->tex;
             const ::fwData::Mesh::NormalValueType uvVal = static_cast< ::fwData::Mesh::NormalValueType >(2*count);
 
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal, uv.u);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal+1, uv.v);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal+1, uv.v, EPSILON);
 
             ++count;
         }
@@ -1023,15 +1037,15 @@ void MeshTest::iteratorTest()
             ::fwData::iterator::Normal n = *it->normal;
             const ::fwData::Mesh::NormalValueType nVal =
                 static_cast< ::fwData::Mesh::NormalValueType >(3*count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+1, n.nx);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+2, n.ny);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+3, n.nz);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+1, n.nx, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+2, n.ny, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), nVal+3, n.nz, EPSILON);
 
             ::fwData::iterator::TexCoords uv = *it->tex;
             const ::fwData::Mesh::NormalValueType uvVal =
                 static_cast< ::fwData::Mesh::NormalValueType >(2*count);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal, uv.u);
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal+1, uv.v);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal, uv.u, EPSILON);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("iteration: " + std::to_string(count), uvVal+1, uv.v, EPSILON);
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE("iteration: " + std::to_string(count), static_cast<size_t>(4), it->nbPoints);
 

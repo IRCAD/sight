@@ -224,6 +224,7 @@ class FWDATA_CLASS_API PointIterator : public PointIteratorBase<false>
 public:
 
     /// Constructor
+    FWDATA_API PointIterator();
     FWDATA_API PointIterator(Mesh* mesh);
     FWDATA_API PointIterator(const PointIterator& other) = default;
     FWDATA_API PointIterator(const PointIteratorBase& other);
@@ -260,6 +261,7 @@ class FWDATA_CLASS_API ConstPointIterator : public PointIteratorBase<true>
 {
 public:
     /// Constructor
+    FWDATA_API ConstPointIterator();
     FWDATA_API ConstPointIterator(const Mesh* mesh);
     FWDATA_API ConstPointIterator(const ConstPointIterator& other) = default;
     FWDATA_API ConstPointIterator(const PointIteratorBase& other);
@@ -370,6 +372,7 @@ public:
     friend class ConstCellIterator;
 
     /// Constructor
+    FWDATA_API CellIterator();
     FWDATA_API CellIterator(::fwData::Mesh* mesh);
     FWDATA_API CellIterator(const CellIterator& other) = default;
     FWDATA_API ~CellIterator() override;
@@ -406,6 +409,7 @@ class FWDATA_CLASS_API ConstCellIterator : public CellIteratorBase<true>
 public:
 
     /// Constructor
+    FWDATA_API ConstCellIterator();
     FWDATA_API ConstCellIterator(const ::fwData::Mesh* mesh);
     FWDATA_API ConstCellIterator(const ConstCellIterator& other) = default;
     FWDATA_API ConstCellIterator(const CellIterator& other);

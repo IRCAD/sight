@@ -32,6 +32,13 @@ namespace iterator
 //------------------------------------------------------------------------------
 
 template <class FORMAT, bool isConst>
+inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase()
+{
+}
+
+//------------------------------------------------------------------------------
+
+template <class FORMAT, bool isConst>
 inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(ImageType image) :
     m_lock(image->lock()),
     m_pointer(static_cast<pointer>(image->getBuffer())),
@@ -107,6 +114,7 @@ inline bool ImageIteratorBase<FORMAT, isConst>::operator!=(const ImageIteratorBa
 template <class FORMAT, bool isConst>
 inline typename ImageIteratorBase<FORMAT, isConst>::reference ImageIteratorBase<FORMAT, isConst>::operator*() const
 {
+    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
     return *(reinterpret_cast<ImageIteratorBase<FORMAT, isConst>::value_type*>(m_pointer));
 }
 

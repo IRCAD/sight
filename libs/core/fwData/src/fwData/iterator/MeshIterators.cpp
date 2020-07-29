@@ -32,6 +32,13 @@ namespace iterator
 
 //------------------------------------------------------------------------------
 
+PointIterator::PointIterator()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
 PointIterator::PointIterator(::fwData::Mesh* mesh)
 {
     m_locks.push_back(mesh->m_points->lock());
@@ -91,6 +98,13 @@ PointIterator& PointIterator::operator=(const PointIteratorBase& other)
         m_numberOfElements  = other.m_numberOfElements;
     }
     return *this;
+}
+
+//------------------------------------------------------------------------------
+
+ConstPointIterator::ConstPointIterator()
+{
+
 }
 
 //------------------------------------------------------------------------------
@@ -158,6 +172,12 @@ ConstPointIterator& ConstPointIterator::operator=(const PointIteratorBase& other
 
 //------------------------------------------------------------------------------
 
+CellIterator::CellIterator()
+{
+}
+
+//------------------------------------------------------------------------------
+
 CellIterator::CellIterator(::fwData::Mesh* mesh)
 {
     m_locks.push_back(mesh->m_cellData->lock());
@@ -220,6 +240,11 @@ CellIterator& CellIterator::operator=(const CellIteratorBase& other)
         m_cellInfo->nbPoints = other.m_cellInfo->nbPoints;
     }
     return *this;
+}
+//------------------------------------------------------------------------------
+
+ConstCellIterator::ConstCellIterator()
+{
 }
 
 //------------------------------------------------------------------------------

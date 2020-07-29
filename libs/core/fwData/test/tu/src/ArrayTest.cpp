@@ -567,5 +567,39 @@ void ArrayTest::constArrayTest()
 
 //-----------------------------------------------------------------------------
 
+void ArrayTest::emptyIteratorTest()
+{
+    ::fwData::Array::sptr array = ::fwData::Array::New();
+    array->resize({10, 100}, ::fwTools::Type::s_UINT32);
+    auto lock = array->lock();
+
+    std::uint32_t count                                     = 0;
+    ::fwData::Array::Iterator<std::uint32_t> iterForFilling = array->begin<std::uint32_t>();
+    const auto end                                          = array->end<std::uint32_t>();
+
+    for (; iterForFilling != end; ++iterForFilling)
+    {
+        *iterForFilling = count++;
+    }
+
+    auto iter = array->begin<std::uint32_t>();
+
+    ::fwData::Array::Iterator<std::uint32_t> maxIter;
+
+    std::uint32_t maxValue = *iter;
+    for (; iter != end; ++iter)
+    {
+        if (*iter > maxValue)
+        {
+            maxIter  = iter;
+            maxValue = *iter;
+        }
+    }
+    CPPUNIT_ASSERT_EQUAL(*maxIter, count-1);
+
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwData
