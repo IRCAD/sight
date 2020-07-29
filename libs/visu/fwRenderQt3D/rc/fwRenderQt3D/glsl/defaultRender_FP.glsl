@@ -13,6 +13,7 @@ uniform int u_iLightingMode; //0=ambient, 1=flat, 2=gouraud, 4=phong.
 
 // Include functions from another shader called 'lighting.inc.glsl'.
 #pragma include lighting.inc.glsl
+vec3 lighting(const in vec3 pos, const in vec3 n);
 
 void main()
 {
