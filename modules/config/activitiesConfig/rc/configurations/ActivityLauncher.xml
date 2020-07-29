@@ -168,6 +168,7 @@
                 <parameter replace="previousActivityChannel" by="previousActivityChannel" />
                 <parameter replace="nextActivityChannel" by="nextActivityChannel" />
                 <parameter replace="validationChannel" by="validationChannel" />
+                <parameter replace="goToChannel" by="goToChannel" />
             </parameters>
         </service>
 
@@ -245,6 +246,11 @@
         <!-- The activity sequencer should receive the call from the "previous" action. -->
         <connect channel="validationChannel">
             <slot>activitySequencer/checkNext</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "goTo" action. -->
+        <connect channel="goToChannel">
+            <slot>activitySequencer/goTo</slot>
         </connect>
 
 
