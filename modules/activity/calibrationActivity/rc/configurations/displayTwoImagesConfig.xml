@@ -67,7 +67,7 @@
 
         <service uid="pointList1Adp" type="::visuOgreAdaptor::SPointList" >
             <in key="pointList" uid="${pointListId1}" />
-            <config layer="default" radius="1.0" labelColor="#D25252" fixedSize="true" textureName="circle.dds" />
+            <config layer="default" radius="1.0" color="#D25252" fixedSize="true" textureName="circle.dds" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->

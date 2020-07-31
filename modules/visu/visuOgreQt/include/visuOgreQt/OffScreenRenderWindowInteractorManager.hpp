@@ -52,6 +52,7 @@ public:
         ::fwRenderOgre::IRenderWindowInteractorManager::OffscreenMgrKey,
         unsigned int _width,
         unsigned int _height);
+
     /// Destroys the render window.
     VISUOGREQT_API virtual ~OffScreenRenderWindowInteractorManager() final;
 
