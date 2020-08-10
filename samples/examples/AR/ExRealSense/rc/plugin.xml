@@ -3,6 +3,10 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="guiQt" />
+    <requirement id="visuOgre" />
+    
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExRealSense</id>
         <config>
