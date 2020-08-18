@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -44,10 +44,7 @@ namespace fwPacsIO
 const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
 
 SeriesEnquirer::SeriesEnquirer() :
-    m_moveApplicationTitle(""),
-    m_path(""),
-    m_progressCallback(ProgressCallbackSlotType::sptr()),
-    m_instanceIndex(0)
+    m_progressCallback(ProgressCallbackSlotType::sptr())
 {
 
 }
@@ -60,51 +57,36 @@ SeriesEnquirer::~SeriesEnquirer()
 
 // ----------------------------------------------------------------------------
 
-Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
+void SeriesEnquirer::initialize(const std::string& _applicationTitle,
+                                const std::string& _peerHostName,
+                                unsigned short _peerPort,
+                                const std::string& _peerApplicationTitle,
+                                const std::string& _moveApplicationTitle,
+                                ProgressCallbackSlotType::sptr _progressCallback)
 {
-    Uint8 pc;
-    pc = this->findPresentationContextID(sopClass, UID_LittleEndianExplicitTransferSyntax);
-    if (pc == 0)
-    {
-        pc = this->findPresentationContextID(sopClass, UID_BigEndianExplicitTransferSyntax);
-    }
-    if (pc == 0)
-    {
-        pc = this->findPresentationContextID(sopClass, UID_LittleEndianImplicitTransferSyntax);
-    }
-    return pc;
-}
+    // Save move application title for move requests.
+    m_moveApplicationTitle = _moveApplicationTitle;
 
-// ----------------------------------------------------------------------------
+    // Store Callback.
+    m_progressCallback = _progressCallback;
 
-void SeriesEnquirer::initialize(const std::string& applicationTitle, const std::string& peerHostName,
-                                unsigned short peerPort, const std::string& peerApplicationTitle,
-                                const std::string& moveApplicationTitle,
-                                ProgressCallbackSlotType::sptr progressCallback)
-{
-    //Save move application title for move requests
-    m_moveApplicationTitle = moveApplicationTitle;
-
-    //Store Callback
-    m_progressCallback = progressCallback;
-
-    //Creating folder
+    // Creating folder.
     m_path = ::fwTools::System::getTemporaryFolder() / "dicom/";
     if (!m_path.empty() && !std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);
     }
 
-    //Configure network connection
-    this->setAETitle(applicationTitle.c_str());
-    this->setPeerHostName(peerHostName.c_str());
-    this->setPeerPort(peerPort);
-    this->setPeerAETitle(peerApplicationTitle.c_str());
+    // Configure network connection.
+    this->setAETitle(_applicationTitle.c_str());
+    this->setPeerHostName(_peerHostName.c_str());
+    this->setPeerPort(_peerPort);
+    this->setPeerAETitle(_peerApplicationTitle.c_str());
 
-    // Clear presentation context
+    // Clear presentation context.
     this->clearPresentationContexts();
 
-    // Use presentation context for FIND/MOVE in study root, propose all uncompressed transfer syntaxes
+    // Use presentation context for C-FIND/C-MOVE in study root, propose all uncompressed transfer syntaxes.
     OFList < OFString > transferSyntaxes;
     transferSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
     transferSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
@@ -142,15 +124,15 @@ void SeriesEnquirer::initialize(const std::string& applicationTitle, const std::
     transferSyntaxes.push_back(UID_RFC2557MIMEEncapsulationTransferSyntax);
     transferSyntaxes.push_back(UID_XMLEncodingTransferSyntax);
 
-    // Add Verification SOP Class presentation context
+    // Add Verification SOP Class presentation context.
     this->addPresentationContext(UID_VerificationSOPClass, transferSyntaxes);
 
-    // Add study presentation context
+    // Add study presentation context.
     this->addPresentationContext(UID_FINDStudyRootQueryRetrieveInformationModel, transferSyntaxes);
     this->addPresentationContext(UID_MOVEStudyRootQueryRetrieveInformationModel, transferSyntaxes);
     this->addPresentationContext(UID_GETStudyRootQueryRetrieveInformationModel, transferSyntaxes);
 
-    // Add presentation context for C-GET store requests
+    // Add presentation context for C-GET store requests.
     for (Uint16 j = 0; j < numberOfDcmLongSCUStorageSOPClassUIDs; j++)
     {
         this->addPresentationContext(dcmLongSCUStorageSOPClassUIDs[j], transferSyntaxes, ASC_SC_ROLE_SCP);
@@ -162,7 +144,7 @@ void SeriesEnquirer::initialize(const std::string& applicationTitle, const std::
 
 bool SeriesEnquirer::connect()
 {
-    // Initialize network
+    // Initialize network.
     OFCondition result = this->initNetwork();
     if (result.bad())
     {
@@ -170,7 +152,7 @@ bool SeriesEnquirer::connect()
         throw ::fwPacsIO::exceptions::NetworkInitializationFailure(msg);
     }
 
-    // Negotiate Association
+    // Negotiate association.
     result = this->negotiateAssociation();
     if (result.bad())
     {
@@ -180,13 +162,6 @@ bool SeriesEnquirer::connect()
 
     return true;
 
-}
-
-// ----------------------------------------------------------------------------
-
-void SeriesEnquirer::disconnect()
-{
-    this->closeAssociation(DCMSCU_RELEASE_ASSOCIATION);
 }
 
 // ----------------------------------------------------------------------------
@@ -205,11 +180,18 @@ bool SeriesEnquirer::pingPacs()
 
 // ----------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset dataset)
+void SeriesEnquirer::disconnect()
+{
+    this->releaseAssociation();
+}
+
+// ----------------------------------------------------------------------------
+
+OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
 {
     OFList< QRResponse* > findResponses;
 
-    // Try to find a presentation context
+    // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_FINDStudyRootQueryRetrieveInformationModel);
     if (presID == 0)
     {
@@ -218,37 +200,36 @@ OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset dataset)
     }
 
     // Send the request
-    OFCondition result = this->sendFINDRequest(presID, &dataset, &findResponses);
+    this->sendFINDRequest(presID, &_dataset, &findResponses);
 
     return findResponses;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset dataset)
+OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
 {
-    // Be sure that the needed informations are set
+    // Be sure that the needed informations are set.
     SLM_ASSERT("The path where to store the series is not set.", !m_path.empty());
     SLM_ASSERT("The move application title is not set.", !m_moveApplicationTitle.empty());
 
-    // Try to find a presentation context
+    // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
     SLM_WARN_IF("There is no uncompressed presentation context for Study Root MOVE", presID == 0);
 
-    // Fetches all images of this particular study
-    OFCondition result;
+    // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
-    return this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &dataset, &dataResponse);
+    return this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &_dataset, &dataResponse);
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::sendGetRequest(DcmDataset dataset)
+OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
 {
-    // Be sure that the needed informations are set
+    // Be sure that the needed informations are set.
     SLM_ASSERT("The path where to store the series is not set.", !m_path.empty());
 
-    // Try to find a presentation context
+    // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_GETStudyRootQueryRetrieveInformationModel);
 
     if (presID == 0)
@@ -256,17 +237,16 @@ OFCondition SeriesEnquirer::sendGetRequest(DcmDataset dataset)
         SLM_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
-    // Fetches all images of this particular study
-    OFCondition result;
+    // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
-    return this->sendCGETRequest(presID, &dataset, &dataResponse);
+    return this->sendCGETRequest(presID, &_dataset, &dataResponse);
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& path)
+OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
 {
-    // Try to find a presentation context
+    // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
 
     if (presID == 0)
@@ -275,16 +255,16 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& path)
     }
 
     Uint16 rspStatusCode;
-    OFCondition result = this->sendSTORERequest(presID, OFString(path.string().c_str()), 0, rspStatusCode);
+    OFCondition result = this->sendSTORERequest(presID, OFString(_path.string().c_str()), 0, rspStatusCode);
     OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
     return result;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& dataset)
+OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
 {
-    // Try to find a presentation context
+    // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
 
     if (presID == 0)
@@ -294,7 +274,7 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& dataset)
 
     Uint16 rspStatusCode;
     // const_cast required to use bad DCMTK sendSTORERequest API
-    DcmDataset* datasetPtr = const_cast<DcmDataset*>(dataset.get());
+    DcmDataset* datasetPtr = const_cast<DcmDataset*>(_dataset.get());
     OFCondition result     = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
     OSLM_WARN("PACS RESPONSE :" << rspStatusCode);
     return result;
@@ -302,108 +282,59 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& dataset)
 
 // ----------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string& name)
+OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string& _name)
 {
-    // Dataset used to store query informations
+    // Dataset used to store query informations.
     DcmDataset dataset;
     dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
-    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
 
-    // Search by patient name
-    std::string searchString = "*" + name + "*";
+    // Search by series UID.
+    const std::string searchString = "*" + _name + "*";
     dataset.putAndInsertOFStringArray(DCM_PatientName, searchString.c_str());
 
-    // Fields needed by DICOMSeries
-    //dataset.putAndInsertOFStringArray(DCM_PatientName, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
-    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
-    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+    // Fields needed by Series.
     dataset.putAndInsertOFStringArray(DCM_Modality, "");
-    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
-    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
-    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
-    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
-
-    // Number of instances
-    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
-
-    return this->sendFindRequest(dataset);
-}
-
-// ----------------------------------------------------------------------------
-
-OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& fromDate, const std::string& toDate)
-{
-    // Dataset used to store query informations
-    DcmDataset dataset;
-    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
     dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
-
-    // Search by date
-    std::string searchString = fromDate + "-" + toDate;
-    dataset.putAndInsertOFStringArray(DCM_StudyDate, searchString.c_str());
-
-    // Fields needed by DICOMSeries
-    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
-    //dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
-    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
-    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
-    dataset.putAndInsertOFStringArray(DCM_Modality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
     dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
     dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
-    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
     dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
 
-    // Number of instances
-    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
-
-    return this->sendFindRequest(dataset);
-}
-
-// ----------------------------------------------------------------------------
-
-OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& uid)
-{
-    // Dataset used to store query informations
-    DcmDataset dataset;
-    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
-
-    // Search by series UID
-    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, uid.c_str());
-
-    // Fields needed by DICOMSeries
-    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
-    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+    // Fields needed by Study.
     dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
     dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
     dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
     dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
     dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
     dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
-    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
-    dataset.putAndInsertOFStringArray(DCM_Modality, "");
-    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
-    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
-    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
-    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
 
-    // Number of instances
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
     dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
 
     return this->sendFindRequest(dataset);
@@ -411,15 +342,314 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& uid)
 
 // ----------------------------------------------------------------------------
 
-std::string SeriesEnquirer::findSOPInstanceUID(const std::string& seriesInstanceUID, unsigned int instanceNumber)
+OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientUID(const std::string& _uid)
 {
-    // Dataset used to store query informations
+    // Dataset used to store query informations.
+    DcmDataset dataset;
+    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+    // Search by series UID.
+    const std::string searchString = "*" + _uid + "*";
+    dataset.putAndInsertOFStringArray(DCM_PatientID, searchString.c_str());
+
+    // Fields needed by Series.
+    dataset.putAndInsertOFStringArray(DCM_Modality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
+
+    // Fields needed by Study.
+    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
+    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
+
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
+    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
+
+    return this->sendFindRequest(dataset);
+}
+// ----------------------------------------------------------------------------
+
+OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromDate, const std::string& _toDate)
+{
+    // Dataset used to store query informations.
+    DcmDataset dataset;
+    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+    // Search by series UID.
+    const std::string searchString = _fromDate +"-" + _toDate;
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, searchString.c_str());
+
+    // Fields needed by Series.
+    dataset.putAndInsertOFStringArray(DCM_Modality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
+
+    // Fields needed by Study.
+    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
+    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
+
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
+    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
+
+    return this->sendFindRequest(dataset);
+}
+
+// ----------------------------------------------------------------------------
+
+OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& _uid)
+{
+    // Dataset used to store query informations.
+    DcmDataset dataset;
+    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+    // Search by series UID.
+    const std::string searchString = "*" + _uid + "*";
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, searchString.c_str());
+
+    // Fields needed by Series.
+    dataset.putAndInsertOFStringArray(DCM_Modality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
+
+    // Fields needed by Study.
+    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
+    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
+
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
+    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
+
+    return this->sendFindRequest(dataset);
+}
+
+// ----------------------------------------------------------------------------
+
+OFList< QRResponse* > SeriesEnquirer::findSeriesByModality(const std::string& _modality)
+{
+    // Dataset used to store query informations.
+    DcmDataset dataset;
+    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+    // Search by series UID.
+    const std::string searchString = "*" + _modality + "*";
+    dataset.putAndInsertOFStringArray(DCM_Modality, searchString.c_str());
+
+    // Fields needed by Series.
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
+
+    // Fields needed by Study.
+    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
+    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
+
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
+    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
+
+    return this->sendFindRequest(dataset);
+}
+
+// ----------------------------------------------------------------------------
+
+OFList< QRResponse* > SeriesEnquirer::findSeriesByDescription(const std::string& _description)
+{
+    // Dataset used to store query informations.
+    DcmDataset dataset;
+    dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
+
+    // Search by series UID.
+    const std::string searchString = "*" + _description + "*";
+    dataset.putAndInsertOFStringArray(DCM_SeriesDescription, searchString.c_str());
+
+    // Fields needed by Series.
+    dataset.putAndInsertOFStringArray(DCM_Modality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesNumber, "");
+    dataset.putAndInsertOFStringArray(DCM_Laterality, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ProtocolName, "");
+    dataset.putAndInsertOFStringArray(DCM_BodyPartExamined, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientPosition, "");
+    dataset.putAndInsertOFStringArray(DCM_AnatomicalOrientationType, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepID, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepStartTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepEndTime, "");
+    dataset.putAndInsertOFStringArray(DCM_PerformedProcedureStepDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_CommentsOnThePerformedProcedureStep, "");
+
+    // Fields needed by Study.
+    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyID, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
+    dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");
+    dataset.putAndInsertOFStringArray(DCM_StudyDescription, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientAge, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSize, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientWeight, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBodyMassIndex, "");
+
+    // Fields needed by Patient.
+    dataset.putAndInsertOFStringArray(DCM_PatientName, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientID, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientBirthDate, "");
+    dataset.putAndInsertOFStringArray(DCM_PatientSex, "");
+
+    // Fields needed by Equipment.
+    dataset.putAndInsertOFStringArray(DCM_InstitutionName, "");
+
+    // Number of instances.
+    dataset.putAndInsertOFStringArray(DCM_NumberOfSeriesRelatedInstances, "");
+
+    return this->sendFindRequest(dataset);
+}
+
+// ----------------------------------------------------------------------------
+
+std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanceUID, unsigned int _instanceNumber)
+{
+    // Dataset used to store query informations.
     DcmDataset dataset;
     dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "IMAGE");
-    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, _seriesInstanceUID.c_str());
     dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, "");
     std::stringstream ss;
-    ss << instanceNumber;
+    ss << _instanceNumber;
     dataset.putAndInsertOFStringArray(DCM_InstanceNumber, ss.str().c_str());
 
     OFList< QRResponse* > responses = this->sendFindRequest(dataset);
@@ -432,7 +662,7 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& seriesInstance
         sopInstanceUID = sop.c_str();
     }
 
-    //Release responses
+    //Release responses.
     while (!responses.empty())
     {
         delete responses.front();
@@ -445,20 +675,20 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& seriesInstance
 
 // ----------------------------------------------------------------------------
 
-void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer instanceUIDContainer)
+void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _instanceUIDContainer)
 {
-    // Reset instance count
+    // Reset instance count.
     m_instanceIndex = 0;
 
     DcmDataset dataset;
     OFCondition result;
 
-    for( std::string seriesInstanceUID: instanceUIDContainer )
+    for( std::string seriesInstanceUID: _instanceUIDContainer )
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
 
-        // Fetches all images of this particular study
+        // Fetches all images of this particular study.
         result = this->sendMoveRequest(dataset);
 
         if (result.good())
@@ -478,20 +708,20 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer inst
 
 // ----------------------------------------------------------------------------
 
-void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer instanceUIDContainer)
+void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _instanceUIDContainer)
 {
-    // Reset instance count
+    // Reset instance count.
     m_instanceIndex = 0;
 
     DcmDataset dataset;
     OFCondition result;
 
-    for( std::string seriesInstanceUID: instanceUIDContainer )
+    for( std::string seriesInstanceUID: _instanceUIDContainer )
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
 
-        // Fetches all images of this particular study
+        // Fetches all images of this particular study.
         result = this->sendGetRequest(dataset);
 
         if (result.good())
@@ -510,31 +740,31 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer insta
 
 // ----------------------------------------------------------------------------
 
-void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& seriesInstanceUID,
-                                                         const std::string& sopInstanceUID)
+void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _seriesInstanceUID,
+                                                         const std::string& _sopInstanceUID)
 {
-    // Reset instance count
+    // Reset instance count.
     m_instanceIndex = 0;
 
     DcmDataset dataset;
     OFCondition result;
     dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "IMAGE");
-    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, _seriesInstanceUID.c_str());
 
-    dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, sopInstanceUID.c_str());
+    dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, _sopInstanceUID.c_str());
     dataset.putAndInsertOFStringArray(DCM_InstanceNumber, "");
 
-    // Fetches all images of this particular study
+    // Fetches all images of this particular study.
     result = this->sendMoveRequest(dataset);
 
     if (result.good())
     {
-        SLM_TRACE("Received instance " + seriesInstanceUID + " - " + sopInstanceUID);
+        SLM_TRACE("Received instance " + _seriesInstanceUID + " - " + _sopInstanceUID);
     }
     else
     {
         const std::string msg = "Unable to send a C-MOVE request to the server. "
-                                "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) +") : "
                                 + std::string(result.text());
         throw ::fwPacsIO::exceptions::RequestFailure(msg);
     }
@@ -542,31 +772,31 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& seri
 
 // ----------------------------------------------------------------------------
 
-void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& seriesInstanceUID,
-                                                        const std::string& sopInstanceUID)
+void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seriesInstanceUID,
+                                                        const std::string& _sopInstanceUID)
 {
-    // Reset instance count
+    // Reset instance count.
     m_instanceIndex = 0;
 
     DcmDataset dataset;
     OFCondition result;
     dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "IMAGE");
-    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
+    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, _seriesInstanceUID.c_str());
 
-    dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, sopInstanceUID.c_str());
+    dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, _sopInstanceUID.c_str());
     dataset.putAndInsertOFStringArray(DCM_InstanceNumber, "");
 
-    // Fetches all images of this particular study
+    // Fetches all images of this particular study.
     result = this->sendGetRequest(dataset);
 
     if (result.good())
     {
-        SLM_TRACE("Received instance " + seriesInstanceUID + " - " + sopInstanceUID);
+        SLM_TRACE("Received instance " + _seriesInstanceUID + " - " + _sopInstanceUID);
     }
     else
     {
         const std::string msg = "Unable to send a C-GET request to the server. "
-                                "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) +") : "
                                 + std::string(result.text());
         throw ::fwPacsIO::exceptions::RequestFailure(msg);
     }
@@ -574,15 +804,15 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& serie
 
 // ----------------------------------------------------------------------------
 
-void SeriesEnquirer::pushSeries(const InstancePathContainer& pathContainer)
+void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
 {
-    // Reset instance count
+    // Reset instance count.
     m_instanceIndex = 0;
 
     OFCondition result;
 
-    // Send images to pacs
-    for(const std::filesystem::path& path: pathContainer)
+    // Send images to pacs.
+    for(const std::filesystem::path& path: _pathContainer)
     {
         result = this->sendStoreRequest(path);
 
@@ -596,7 +826,7 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& pathContainer)
             throw ::fwPacsIO::exceptions::RequestFailure(msg);
         }
 
-        // Notify callback
+        // Notify callback.
         if(m_progressCallback)
         {
             m_progressCallback->asyncRun("", ++m_instanceIndex, path.string());
@@ -607,13 +837,13 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& pathContainer)
 
 // ----------------------------------------------------------------------------
 
-void SeriesEnquirer::pushSeries(const DatasetContainer& datasetContainer)
+void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
 {
-    // Reset instance count
+    // Reset instance count.
     m_instanceIndex = 0;
     OFCondition result;
-    // Send images to pacs
-    for(const auto& dataset : datasetContainer)
+    // Send images to pacs.
+    for(const auto& dataset : _datasetContainer)
     {
         result = this->sendStoreRequest(dataset);
 
@@ -627,7 +857,7 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& datasetContainer)
             throw ::fwPacsIO::exceptions::RequestFailure(msg);
         }
 
-        // Notify callback
+        // Notify callback.
         if(m_progressCallback)
         {
             m_progressCallback->asyncRun("", ++m_instanceIndex, "");
@@ -637,15 +867,16 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& datasetContainer)
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::handleMOVEResponse(
-    const T_ASC_PresentationContextID presID, RetrieveResponse* response, OFBool& waitForNextResponse)
+OFCondition SeriesEnquirer::handleMOVEResponse(const T_ASC_PresentationContextID _presID,
+                                               RetrieveResponse* _response,
+                                               OFBool& _waitForNextResponse)
 {
-    OFCondition result = DcmSCU::handleMOVEResponse(presID, response, waitForNextResponse);
+    OFCondition result = DcmSCU::handleMOVEResponse(_presID, _response, _waitForNextResponse);
 
-    // Check error status
-    bool error = (response->m_status != STATUS_Success) && (response->m_status != STATUS_Pending);
+    // Check error status.
+    const bool error = (_response->m_status != STATUS_Success) && (_response->m_status != STATUS_Pending);
 
-    // Notify error
+    // Notify error.
     if(error)
     {
         const std::string msg = "Unable to perform a C-MOVE operation.";
@@ -657,42 +888,43 @@ OFCondition SeriesEnquirer::handleMOVEResponse(
 
 // ----------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::handleSTORERequest (
-    const T_ASC_PresentationContextID presID, DcmDataset* incomingObject,
-    OFBool& continueCGETSession, Uint16& cStoreReturnStatus)
+OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID,
+                                               DcmDataset* _incomingObject,
+                                               OFBool&,
+                                               Uint16&)
 {
     OFCondition result;
 
-    if (incomingObject != NULL)
+    if(_incomingObject != NULL)
     {
-        //Find the series UID
+        // Find the series UID.
         OFString seriesID;
-        if(incomingObject->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesID).good())
+        if(_incomingObject->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesID).good())
         {
             SLM_TRACE("Series Instance UID: " + std::string(seriesID.c_str()));
         }
 
-        //Find the instance UID
+        // Find the instance UID.
         OFString iname;
-        if (incomingObject->findAndGetOFStringArray(DCM_SOPInstanceUID, iname).good())
+        if(_incomingObject->findAndGetOFStringArray(DCM_SOPInstanceUID, iname).good())
         {
             SLM_TRACE("SOP Instance UID: " + std::string(iname.c_str()));
         }
 
-        //Create Folder
+        // Create Folder.
         std::filesystem::path seriesPath = std::filesystem::path(m_path.string() + seriesID.c_str() + "/");
-        if (!std::filesystem::exists(seriesPath))
+        if(!std::filesystem::exists(seriesPath))
         {
             std::filesystem::create_directories(seriesPath);
         }
 
-        //Save the file in the specified folder (Create new meta header for gdcm reader)
+        // Save the file in the specified folder (Create new meta header for gdcm reader).
         std::string filePath = seriesPath.string() + iname.c_str();
-        DcmFileFormat fileFormat(incomingObject);
+        DcmFileFormat fileFormat(_incomingObject);
         fileFormat.saveFile(filePath.c_str(), EXS_Unknown, EET_UndefinedLength,
                             EGL_recalcGL, EPD_noChange, 0, 0, EWM_createNewMeta);
 
-        // Notify callback
+        // Notify callback.
         if(m_progressCallback)
         {
             m_progressCallback->asyncRun(seriesID.c_str(), ++m_instanceIndex, filePath);
@@ -700,6 +932,23 @@ OFCondition SeriesEnquirer::handleSTORERequest (
     }
 
     return result;
+}
+
+// ----------------------------------------------------------------------------
+
+Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
+{
+    Uint8 pc;
+    pc = this->findPresentationContextID(sopClass, UID_LittleEndianExplicitTransferSyntax);
+    if (pc == 0)
+    {
+        pc = this->findPresentationContextID(sopClass, UID_BigEndianExplicitTransferSyntax);
+    }
+    if (pc == 0)
+    {
+        pc = this->findPresentationContextID(sopClass, UID_LittleEndianImplicitTransferSyntax);
+    }
+    return pc;
 }
 
 // ----------------------------------------------------------------------------

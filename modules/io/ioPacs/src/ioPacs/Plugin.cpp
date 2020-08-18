@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,24 +23,30 @@
 #include "ioPacs/Plugin.hpp"
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwServices/macros.hpp>
 
 namespace ioPacs
 {
 
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("ioPacs::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ioPacs::Plugin");
+
+//------------------------------------------------------------------------------
 
 Plugin::~Plugin() noexcept
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
 }
 
-} // namespace ioPacs
+//------------------------------------------------------------------------------
+
+} // namespace ioPacs.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,11 @@
  ***********************************************************************/
 
 #include "fwPacsIO/helper/Series.hpp"
+
 #include "fwPacsIO/exceptions/TagMissing.hpp"
 
 #include <fwCore/spyLog.hpp>
+
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -38,18 +40,20 @@ namespace fwPacsIO
 namespace helper
 {
 
-void Series::releaseResponses(OFList< QRResponse* > responses)
+//------------------------------------------------------------------------------
+
+void Series::releaseResponses(OFList< QRResponse* > _responses)
 {
-    while (!responses.empty())
+    while(!_responses.empty())
     {
-        delete responses.front();
-        responses.pop_front();
+        delete _responses.front();
+        _responses.pop_front();
     }
 }
 
 // ----------------------------------------------------------------------------
 
-Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > responses)
+Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > _responses)
 {
     DicomSeriesContainer seriesContainer;
 
@@ -57,33 +61,31 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > responses
     OFCondition result;
 
     // Every while loop run will get all image for a specific study
-    for (it = responses.begin(); it != responses.end(); ++it)
+    for (it = _responses.begin(); it != _responses.end(); ++it)
     {
         // Be sure we are not in the last response which does not have a dataset
         if ((*it)->m_dataset != NULL)
         {
             OFString data;
 
-            // Create series
+            // Create series and get informations.
             ::fwMedData::DicomSeries::sptr series  = ::fwMedData::DicomSeries::New();
-            ::fwMedData::Patient::sptr patient     = ::fwMedData::Patient::New();
-            ::fwMedData::Study::sptr study         = ::fwMedData::Study::New();
-            ::fwMedData::Equipment::sptr equipment = ::fwMedData::Equipment::New();
+            ::fwMedData::Patient::sptr patient     = series->getPatient();
+            ::fwMedData::Study::sptr study         = series->getStudy();
+            ::fwMedData::Equipment::sptr equipment = series->getEquipment();
 
-            // Set informations to series
-            series->setPatient(patient);
-            series->setStudy(study);
-            series->setEquipment(equipment);
-
-            // ==================================
             // Series
-            // ==================================
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Modality, data);
+            series->setModality(data.c_str());
 
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data);
             series->setInstanceUID(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Modality, data);
-            series->setModality(data.c_str());
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesNumber, data);
+            series->setNumber(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Laterality, data);
+            series->setLaterality(data.c_str());
 
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, data);
             series->setDate(data.c_str());
@@ -91,17 +93,82 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > responses
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesTime, data);
             series->setTime(data.c_str());
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, data);
-            series->setDescription(data.c_str());
-
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformingPhysicianName, data);
             ::fwMedData::DicomValuesType performingPhysiciansName;
             performingPhysiciansName.push_back(data.c_str());
             series->setPerformingPhysiciansName(performingPhysiciansName);
 
-            // ==================================
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ProtocolName, data);
+            series->setProtocolName(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, data);
+            series->setDescription(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_BodyPartExamined, data);
+            series->setBodyPartExamined(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientPosition, data);
+            series->setPatientPosition(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
+            series->setAnatomicalOrientationType(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepID, data);
+            series->setPerformedProcedureStepID(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartDate, data);
+            series->setPerformedProcedureStepStartDate(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartTime, data);
+            series->setPerformedProcedureStepStartTime(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndDate, data);
+            series->setPerformedProcedureStepEndDate(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndTime, data);
+            series->setPerformedProcedureStepEndTime(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepDescription, data);
+            series->setPerformedProcedureStepDescription(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_CommentsOnThePerformedProcedureStep, data);
+            series->setPerformedProcedureComments(data.c_str());
+
+            // Study
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data);
+            study->setInstanceUID(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyID, data);
+            study->setStudyID(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDate, data);
+            study->setDate(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyTime, data);
+            study->setTime(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data);
+            study->setReferringPhysicianName(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ConsultingPhysicianName, data);
+            study->setConsultingPhysicianName(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDescription, data);
+            study->setDescription(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientAge, data);
+            study->setPatientAge(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientSize, data);
+            study->setPatientSize(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientWeight, data);
+            study->setPatientWeight(data.c_str());
+
+            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientBodyMassIndex, data);
+            study->setPatientBodyMassIndex(data.c_str());
+
             // Patient
-            // ==================================
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientName, data);
             patient->setName(data.c_str());
 
@@ -114,46 +181,17 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > responses
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientSex, data);
             patient->setSex(data.c_str());
 
-
-            // ==================================
-            // Study
-            // ==================================
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data);
-            study->setInstanceUID(data.c_str());
-
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDate, data);
-            study->setDate(data.c_str());
-
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyTime, data);
-            study->setTime(data.c_str());
-
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data);
-            study->setReferringPhysicianName(data.c_str());
-
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDescription, data);
-            study->setDescription(data.c_str());
-
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientAge, data);
-            study->setPatientAge(data.c_str());
-
-            // ==================================
             // Equipment
-            // ==================================
             (*it)->m_dataset->findAndGetOFStringArray(DCM_InstitutionName, data);
             equipment->setInstitutionName(data.c_str());
 
-
-
-            // ==================================
             // Number of instances
-            // ==================================
             long int nbinstances;
             (*it)->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nbinstances);
             series->setNumberOfInstances(nbinstances);
 
             // Add series to container
             seriesContainer.push_back(series);
-
         }
 
     }
@@ -163,11 +201,11 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > responses
 
 // ----------------------------------------------------------------------------
 
-Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesContainer series)
+Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesContainer _series)
 {
     InstanceUIDContainer result;
 
-    for(const ::fwMedData::Series::sptr& s: series )
+    for(const ::fwMedData::Series::sptr& s: _series )
     {
         result.push_back(s->getInstanceUID());
     }
@@ -177,7 +215,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 
 // ----------------------------------------------------------------------------
 
-Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResponse* > responses)
+Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResponse* > _responses)
 {
     InstanceUIDContainer instanceUIDContainer;
 
@@ -185,7 +223,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResp
     DcmDataset dataset;
     OFCondition result;
     // Every while loop run will get all image for a specific study
-    for (it = responses.begin(); it != responses.end(); ++it)
+    for (it = _responses.begin(); it != _responses.end(); ++it)
     {
         // Be sure we are not in the last response which does not have a dataset
         if ((*it)->m_dataset != NULL)
@@ -205,7 +243,6 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResp
             }
         }
     }
-
 
     return instanceUIDContainer;
 }

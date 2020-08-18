@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,6 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <filesystem>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
@@ -38,11 +37,13 @@
 #include <QSpinBox>
 #include <QWidget>
 
+#include <filesystem>
+
 namespace ioPacs
 {
 
 /**
- * @brief   This editor service is used to edit a pacs configuration
+ * @brief This editor is used to edit a pacs configuration.
  *
  * @section XML XML Configuration
  *
@@ -57,108 +58,106 @@ namespace ioPacs
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
                                                   public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SPacsConfigurationEditor,  ::fwGui::editor::IEditor );
-    /**
-     * @brief Constructor
-     */
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SPacsConfigurationEditor,  ::fwGui::editor::IEditor )
+
+    /// Creates the service.
     IOPACS_API SPacsConfigurationEditor() noexcept;
 
-    /**
-     * @brief Destructor
-     */
+    /// Destroyes the service.
     IOPACS_API virtual ~SPacsConfigurationEditor() noexcept;
 
 private:
-    IOPACS_API void modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration);
 
-private Q_SLOTS:
-    /// Slot called for pinging the pacs
-    IOPACS_API void pingPacs();
+    /// Configures the editor.
+    virtual void configuring() override;
 
-    /// Slot called for changing the local application title
-    IOPACS_API void localApplicationTitleChanged();
+    /// Creates the UI.
+    virtual void starting() override;
 
-    /// Slot called for changing the pacs host name
-    IOPACS_API void pacsHostNameChanged();
+    /// Does nothing.
+    void updating() override;
 
-    /// Slot called for changing the pacs application title
-    IOPACS_API void pacsApplicationTitleChanged();
+    /// Destroyes the UI.
+    virtual void stopping() override;
 
     /**
-     * @brief Slot called for changing the pacs application port
-     * @param[in] value Pacs application port
+     * @brief Sends a modified signal on the configuration.
+     * @param _pacsConfiguration the modified data .
      */
-    IOPACS_API void pacsApplicationPortChanged(int value);
+    void modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr _pacsConfiguration);
 
-    /// Slot called for changing the move application title
-    IOPACS_API void moveApplicationTitleChanged();
+    /// Contains the AET of the SCU (client name) editor.
+    QPointer< QLineEdit > m_SCUAppEntityTitleEdit;
 
-    /**
-     * @brief Slot called for changing the move application port
-     * @param[in] value Move application port
-     */
-    IOPACS_API void moveApplicationPortChanged(int value);
+    /// Contains the AET of the SCP (server name) editor.
+    QPointer< QLineEdit > m_SCPAppEntityTitleEdit;
 
-    /**
-     * @brief Slot called for changing the retrieve method
-     * @param[in] index Retrieve method index
-     */
-    IOPACS_API void retrieveMethodChanged(int index);
+    /// Contains the SCP host name (server adress) editor.
+    QPointer< QLineEdit > m_SCPHostNameEdit;
 
-protected:
+    /// Contains the SCP port (server port) editor.
+    QPointer< QSpinBox > m_SCPPortEdit;
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="pacsConfigurationEditor" impl="::ioPacs::SPacsConfigurationEditor"
-         autoConnect="yes">
-       </service>
-       @endcode
-     */
-    IOPACS_API virtual void configuring() override;
-
-    /// Override
-    IOPACS_API virtual void starting() override;
-
-    /// Override
-    IOPACS_API virtual void stopping() override;
-
-    /// Override
-    IOPACS_API void updating() override;
-
-    /// Override
-    IOPACS_API void info(std::ostream& _sstream ) override;
-
-    /// Local application title
-    QPointer< QLineEdit > m_localApplicationTitleWidget;
-
-    /// Pacs host name
-    QPointer< QLineEdit > m_pacsHostNameWidget;
-
-    /// Pacs application title
-    QPointer< QLineEdit > m_pacsApplicationTitleWidget;
-
-    /// Pacs application port
-    QPointer< QSpinBox > m_pacsApplicationPortWidget;
-
-    /// Move application title
-    QPointer< QLineEdit > m_moveApplicationTitleWidget;
-
-    /// Move application port
-    QPointer< QSpinBox > m_moveApplicationPortWidget;
-
-    /// Retrieve method
+    /// Contains the request mode, GET or MOVE, editor.
     QPointer< QComboBox > m_retrieveMethodWidget;
 
-    /// Test button
+    /**
+     * @brief Contains the move AET editor. This AET is use to receive C-MOVE responses.
+     *
+     * C-MOVE request are sent from the SCU to the SCP. The SCP will send its response based on its configuration.
+     * Usually the configuration contains an IP and a port that match SCU configuration.
+     * For more information, see the link bellow:
+     * https://book.orthanc-server.com/dicom-guide.html#dicom-network-protocol.
+     */
+    QPointer< QLineEdit > m_moveAppEntityTitleEdit;
+
+    /// Contains the move port editor. This port is use to receive C-MOVE responses.
+    QPointer< QSpinBox > m_movePort;
+
+    /// Contains the test button, sends a C-ECHO request to the PACS.
     QPointer< QPushButton > m_pingPacsButtonWidget;
+
+private Q_SLOTS:
+
+    /// Calls for pinging the pacs.
+    void pingPACS();
+
+    /// Calls for changing AET of the SCU.
+    void onSCUAppEntityTitleChanged();
+
+    /// Calls for changing AET of the SCP.
+    void onSCPAppEntityTitleChanged();
+
+    /// Calls for changing the IP of the SCP.
+    void onSCPHostNameChanged();
+
+    /**
+     * @brief Calls for changing the port of the SCP.
+     * @param _value the PACS application port.
+     */
+    void onSCPPortChanged(int _value);
+
+    /**
+     * @brief Calls for changing the retrieve method.
+     * @param _index the retrieve method index.
+     */
+    void onRetrieveMethodChanged(int _index);
+
+    /// Calls for changing the move AET.
+    void onMoveAppEntityTitleChanged();
+
+    /**
+     * @brief Calls for changing the move IP.
+     * @param _value the move application port.
+     */
+    void onMovePortChanged(int _value);
 
 };
 
-} // namespace ioPacs
+} // namespace ioPacs.

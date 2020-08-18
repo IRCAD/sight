@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,87 +34,111 @@ namespace ioPacs
 {
 
 /**
- * @brief   This service is used to initialize a Pacs Configuration data.
+ * @brief This service is used to initialize a PACS Configuration data and synchronize it with a preference key.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="::ioPacs::SPacsConfigurationInitializer">
             <inout key="config" uid="..." />
-             <config
-                 localApplicationTitle="VRRender"
-                 pacsHostName="mypacs.mycompany.com"
-                 pacsApplicationTitle="PACSNAME"
-                 pacsApplicationPort="11112"
-                 moveApplicationTitle="MoveApplicationTitle"
-                 moveApplicationPort="11110"
-                 retrieveMethod="GET"
-                 preferenceKey="PACS_CONFIGURATION"
-             />
+            <config
+                localApplicationTitle="VRRender"
+                pacsHostName="mypacs.mycompany.com"
+                pacsApplicationTitle="PACSNAME"
+                pacsApplicationPort="11112"
+                moveApplicationTitle="MoveApplicationTitle"
+                moveApplicationPort="11110"
+                retrieveMethod="GET"
+                preferenceKey="PACS_CONFIGURATION"
+            />
        </service>
    @endcode
  * @subsection In-Out In-Out:
  * - \b config [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ *
+ * @subsection Configuration Configuration:
+ * - \b localApplicationTitle (mandatory, string): Name of your local application, it must be known by the PACS.
+ * - \b pacsHostName (mandatory, string): Host name of the PACS.
+ * - \b pacsApplicationTitle (mandatory, string): Name of the PACS.
+ * - \b pacsApplicationPort (mandatory, string): Port of the PACS.
+ * - \b moveApplicationTitle (mandatory, string): Move name used by the MOVE protocol but. It should be the same as the
+ * local application name.
+ * - \b moveApplicationPort (mandatory, string): Port used by the MOVE protocol.
+ * - \b retrieveMethod (mandatory, GET/MOVE): Retrieve method protocol.
+ * - \b preferenceKey (mandatory, string): Key used to store all these values in preferences.
  */
-
 class IOPACS_CLASS_API SPacsConfigurationInitializer : public ::fwServices::IController
 {
+
 public:
 
-    fwCoreServiceMacro(SPacsConfigurationInitializer,  ::fwServices::IController );
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SPacsConfigurationInitializer,  ::fwServices::IController)
 
-    /**
-     * @brief Constructor
-     */
+    /// Creates the service.
     IOPACS_API SPacsConfigurationInitializer() noexcept;
 
-    /**
-     * @brief Destructor
-     */
+    /// Destroyes the service.
     IOPACS_API virtual ~SPacsConfigurationInitializer() noexcept;
 
-protected:
+private:
 
-    /// Configuring method. This method is used to configure the service.
+    /// Configures members.
     IOPACS_API virtual void configuring() override;
 
-    /// Override
+    /// Retrieves the PACS configuration from preferences.
     IOPACS_API virtual void starting() override;
 
-    /// Override
-    IOPACS_API virtual void stopping() override;
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect ::fwPacsIO::data::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
+     *::ioPacs::SPacsConfigurationInitializer::s_UPDATE_SLOT.
+     */
+    virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override final;
 
-    /// Override
+    /// Stores the PACS configuration into preferences.
     IOPACS_API void updating() override;
 
-    /// Override
-    IOPACS_API void info(std::ostream& _sstream ) override;
+    /**
+     * @brief Updates preferences.
+     *
+     * @see updating()
+     */
+    IOPACS_API virtual void stopping() override;
 
-protected:
-    /// Local application title
-    std::string m_localApplicationTitle;
+    /// Defines the AET of the SCU (client name).
+    std::string m_SCUAppEntityTitle;
 
-    /// Pacs host name
-    std::string m_pacsHostName;
+    /// Defines the AET of the SCP (server name).
+    std::string m_SCPAppEntityTitle;
 
-    /// Pacs application title
-    std::string m_pacsApplicationTitle;
+    /// Defines the SCP host name (server adress).
+    std::string m_SCPHostName;
 
-    /// Pacs port
-    unsigned short m_pacsApplicationPort;
+    /// Defines the SCP port (server port).
+    unsigned short m_SCPPort {0};
 
-    /// Move application title
-    std::string m_moveApplicationTitle;
-
-    /// Move application port
-    unsigned short m_moveApplicationPort;
-
-    /// Request mode
+    /// Defines the request mode, GET or MOVE. Usually, most SCU use the C-MOVE method.
     ::fwPacsIO::data::PacsConfiguration::RETRIEVE_METHOD m_retrieveMethod;
 
-    /// The key to save/load the preferences
+    /**
+     * @brief Defines the move AET. This AET is used to receive C-MOVE responses.
+     *
+     * C-MOVE request are sent from the SCU to the SCP. The SCP will send its response based on its configuration.
+     * Usually the configuration contains an IP and a port that match SCU configuration.
+     * For more information, see the link bellow:
+     * https://book.orthanc-server.com/dicom-guide.html#dicom-network-protocol.
+     */
+    std::string m_moveAppEntityTitle;
+
+    /// Defines the move port. This port is use to receive C-MOVE responses.
+    unsigned short m_movePort {0};
+
+    /// Defines the key to save/load preferences.
     std::string m_preferenceKey;
 
 };
 
-} // namespace ioPacs
+} // namespace ioPacs.
