@@ -93,7 +93,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericSceneDMSrv" start="yes" />
+                <view sid="gsDistanceMapSrv" start="yes" />
                 <view sid="gsVideoSrv" start="yes" />
             </registry>
         </service>
@@ -162,7 +162,7 @@
 
         <!-- ******************************* Begin Generic Scene (Distance map)******************************* -->
 
-        <service uid="genericSceneDMSrv" type="::fwRenderOgre::SRender" >
+        <service uid="gsDistanceMapSrv" type="::fwRenderOgre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -174,7 +174,7 @@
         <service uid="videoDMAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="imageDepth" />
             <in key="tf" uid="tfDepth" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene (Video) ******************************* -->
@@ -184,13 +184,13 @@
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="default" order="1" />
-                <adaptor uid="videoVAdp" />
+                <adaptor uid="videoAdp" />
             </scene>
         </service>
 
-        <service uid="videoVAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="imageVideo" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene (Depth) ******************************* -->
@@ -207,7 +207,7 @@
         <service uid="videoDAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotDepth" />
             <in key="tf" uid="tfDepth" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene (Color) ******************************* -->
@@ -223,7 +223,7 @@
 
         <service uid="videoCAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotColor" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene (IR) ******************************* -->
@@ -239,7 +239,7 @@
 
         <service uid="videoIRAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotIR" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -311,7 +311,7 @@
         <start uid="rgbRecorder" />
         <start uid="irRecorder" />
         <start uid="videoDMAdp" />
-        <start uid="videoVAdp" />
+        <start uid="videoAdp" />
         <start uid="videoDAdp" />
         <start uid="videoCAdp" />
         <start uid="videoIRAdp" />

@@ -228,7 +228,7 @@
 
         <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="Frame1" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -244,7 +244,7 @@
 
         <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="Frame2" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ************************************* Services ************************************ -->

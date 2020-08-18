@@ -151,7 +151,7 @@ void SPointList::configuring()
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
-    m_radius       = config.get(s_RADIUS_CONFIG, 1.f);
+    m_radius       = config.get(s_RADIUS_CONFIG, m_radius);
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
 
     const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");

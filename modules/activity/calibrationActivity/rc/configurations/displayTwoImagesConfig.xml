@@ -62,7 +62,7 @@
 
         <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId1}" />
-            <config layer="video" reversed="true" />
+            <config layer="video" />
         </service>
 
         <service uid="pointList1Adp" type="::visuOgreAdaptor::SPointList" >
@@ -86,7 +86,7 @@
 
         <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId2}" />
-            <config layer="video" reversed="true" />
+            <config layer="video" />
         </service>
 
         <service uid="pointList2Adp" type="::visuOgreAdaptor::SPointList" >

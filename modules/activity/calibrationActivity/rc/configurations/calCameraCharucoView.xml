@@ -92,7 +92,7 @@
 
         <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="frame" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->

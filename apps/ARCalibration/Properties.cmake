@@ -1,6 +1,5 @@
-
 set( NAME ARCalibration )
-set( VERSION 0.7 )
+set( VERSION 0.8 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS

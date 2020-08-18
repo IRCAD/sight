@@ -357,7 +357,7 @@
 
         <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="videoFrame" />
-            <config layer="default" reversed="true" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

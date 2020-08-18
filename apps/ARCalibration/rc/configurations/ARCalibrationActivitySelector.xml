@@ -30,7 +30,7 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="activityWizardSrv" start="yes" />
-                <view sid="activitiCreatorSrv" start="yes" />
+                <view sid="activityCreatorSrv" start="yes" />
             </registry>
         </service>
 
@@ -47,7 +47,7 @@
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="activitiCreatorSrv" type="::uiActivitiesQt::editor::SCreateActivity">
+        <service uid="activityCreatorSrv" type="::uiActivitiesQt::editor::SCreateActivity">
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>
@@ -83,12 +83,12 @@
         <connect>
             <signal>activityWizardSrv/canceled</signal>
             <slot>activityWizardSrv/hide</slot>
-            <slot>activitiCreatorSrv/show</slot>
+            <slot>activityCreatorSrv/show</slot>
         </connect>
 
         <!-- connect to hide the creator editor when the activity is created/updated. -->
         <connect>
-            <signal>activitiCreatorSrv/activityIDSelected</signal>
+            <signal>activityCreatorSrv/activityIDSelected</signal>
             <signal>activityWizardSrv/activityCreated</signal>
             <signal>activityWizardSrv/activityUpdated</signal>
             <slot>activityWizardSrv/hide</slot>
@@ -96,21 +96,21 @@
 
         <!-- connect to show the creator editor when the activity should be created. -->
         <connect channel="${CREATE_ACTIVITY_RECEIVER_CHANNEL}">
-            <signal>activitiCreatorSrv/activityIDSelected</signal>
+            <signal>activityCreatorSrv/activityIDSelected</signal>
             <slot>activityWizardSrv/createActivity</slot>
-            <slot>activitiCreatorSrv/hide</slot>
+            <slot>activityCreatorSrv/hide</slot>
         </connect>
 
         <!-- connect to launch the activity when it is created/updated. -->
         <connect channel="${LAUNCH_ACTIVITY_SENDER_CHANNEL}">
             <signal>activityWizardSrv/activityCreated</signal>
             <signal>activityWizardSrv/activityUpdated</signal>
-            <slot>activitiCreatorSrv/show</slot>
+            <slot>activityCreatorSrv/show</slot>
         </connect>
 
         <!-- connect to load the activity . -->
         <connect channel="${LOAD_ACTIVITY_SENDER_CHANNEL}">
-            <signal>activitiCreatorSrv/loadRequested</signal>
+            <signal>activityCreatorSrv/loadRequested</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

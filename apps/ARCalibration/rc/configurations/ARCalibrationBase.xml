@@ -154,7 +154,7 @@
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
         <service uid="saveAct" type="::gui::action::SStarter">
-            <start uid="weriesDBWriterSrv" />
+            <start uid="seriesDBWriterSrv" />
         </service>
 
         <!-- Save current activity. -->
@@ -174,7 +174,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="weriesDBWriterSrv" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
+        <service uid="seriesDBWriterSrv" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
             <inout key="data" uid="seriesDB" />
         </service>
 
