@@ -11,10 +11,12 @@ set( REQUIREMENTS
     dataReg
     gui
     guiQt
+    ioDicom
     ioGdcm
     ioPacs
     media
     servicesReg
+    uiMedDataQt
     visuVTK
     visuVTKAdaptor
     visuVTKQt

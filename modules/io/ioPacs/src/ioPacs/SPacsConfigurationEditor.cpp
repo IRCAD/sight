@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -42,9 +42,6 @@
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioPacs::SPacsConfigurationEditor,
-                         ::fwPacsIO::data::PacsConfiguration );
-
 static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
 
 //------------------------------------------------------------------------------
@@ -60,143 +57,144 @@ SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::info(std::ostream& _sstream )
+void SPacsConfigurationEditor::configuring()
 {
-    _sstream << "SPacsConfigurationEditor::info";
+    ::fwGui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::starting()
 {
-    SLM_TRACE_FUNC();
-
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     QGridLayout* gridLayout = new QGridLayout();
 
-    // Local application title
-    m_localApplicationTitleWidget = new QLineEdit();
-    m_localApplicationTitleWidget->setText(pacsConfiguration->getLocalApplicationTitle().c_str());
-    gridLayout->addWidget(new QLabel("Local application title:"), 0, 0);
-    gridLayout->addWidget(m_localApplicationTitleWidget, 0, 1);
+    m_SCUAppEntityTitleEdit = new QLineEdit();
+    m_SCUAppEntityTitleEdit->setText(pacsConfiguration->getLocalApplicationTitle().c_str());
+    QLabel* const AETofSCU = new QLabel("AET of the SCU:");
+    AETofSCU->setToolTip("Application entity title of the client");
+    AETofSCU->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    gridLayout->addWidget(AETofSCU, 0, 0);
+    gridLayout->addWidget(m_SCUAppEntityTitleEdit, 0, 1);
 
-    // Pacs host name
-    m_pacsHostNameWidget = new QLineEdit();
-    m_pacsHostNameWidget->setText(pacsConfiguration->getPacsHostName().c_str());
-    gridLayout->addWidget(new QLabel("Pacs host name:"), 2, 0);
-    gridLayout->addWidget(m_pacsHostNameWidget, 2, 1);
+    m_SCPAppEntityTitleEdit = new QLineEdit();
+    m_SCPAppEntityTitleEdit->setText(pacsConfiguration->getPacsApplicationTitle().c_str());
+    QLabel* const AETofSCP = new QLabel("AET of the SCP:");
+    AETofSCP->setToolTip("Application entity title of the PACS server");
+    AETofSCP->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    gridLayout->addWidget(AETofSCP, 1, 0);
+    gridLayout->addWidget(m_SCPAppEntityTitleEdit, 1, 1);
 
-    // Pacs application title
-    m_pacsApplicationTitleWidget = new QLineEdit();
-    m_pacsApplicationTitleWidget->setText(pacsConfiguration->getPacsApplicationTitle().c_str());
-    gridLayout->addWidget(new QLabel("Pacs application title:"), 3, 0);
-    gridLayout->addWidget(m_pacsApplicationTitleWidget, 3, 1);
+    m_SCPHostNameEdit = new QLineEdit();
+    m_SCPHostNameEdit->setText(pacsConfiguration->getPacsHostName().c_str());
+    QLabel* const hostNameOfSCP = new QLabel("Host name of the SCP:");
+    hostNameOfSCP->setToolTip("Host name of the PACS server");
+    hostNameOfSCP->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    gridLayout->addWidget(hostNameOfSCP, 2, 0);
+    gridLayout->addWidget(m_SCPHostNameEdit, 2, 1);
 
-    // Pacs application port
-    m_pacsApplicationPortWidget = new QSpinBox();
-    m_pacsApplicationPortWidget->setRange(0, 65535);
-    m_pacsApplicationPortWidget->setValue(pacsConfiguration->getPacsApplicationPort());
-    gridLayout->addWidget(new QLabel("Pacs application port:"), 4, 0);
-    gridLayout->addWidget(m_pacsApplicationPortWidget, 4, 1);
+    m_SCPPortEdit = new QSpinBox();
+    m_SCPPortEdit->setRange(0, 65535);
+    m_SCPPortEdit->setValue(pacsConfiguration->getPacsApplicationPort());
+    QLabel* const SCPPort = new QLabel("Port of the SCP");
+    SCPPort->setToolTip("Port of the PACS server");
+    SCPPort->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    gridLayout->addWidget(SCPPort, 3, 0);
+    gridLayout->addWidget(m_SCPPortEdit, 3, 1);
 
-    // Move application title
-    m_moveApplicationTitleWidget = new QLineEdit();
-    m_moveApplicationTitleWidget->setText(pacsConfiguration->getMoveApplicationTitle().c_str());
-    gridLayout->addWidget(new QLabel("Move application title:"), 5, 0);
-    gridLayout->addWidget(m_moveApplicationTitleWidget, 5, 1);
+    m_moveAppEntityTitleEdit = new QLineEdit();
+    m_moveAppEntityTitleEdit->setText(pacsConfiguration->getMoveApplicationTitle().c_str());
+    QLabel* const AETOfMoveSCU = new QLabel("AET of the move SCU");
+    AETOfMoveSCU->setToolTip("Application entity title of the move client");
+    AETOfMoveSCU->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    gridLayout->addWidget(AETOfMoveSCU, 4, 0);
+    gridLayout->addWidget(m_moveAppEntityTitleEdit, 4, 1);
 
-    // Move application port
-    m_moveApplicationPortWidget = new QSpinBox();
-    m_moveApplicationPortWidget->setRange(0, 65535);
-    m_moveApplicationPortWidget->setValue(pacsConfiguration->getMoveApplicationPort());
-    gridLayout->addWidget(new QLabel("Move application port:"), 6, 0);
-    gridLayout->addWidget(m_moveApplicationPortWidget, 6, 1);
+    m_movePort = new QSpinBox();
+    m_movePort->setRange(0, 65535);
+    m_movePort->setValue(pacsConfiguration->getMoveApplicationPort());
+    QLabel* const PortOfMoveSCU = new QLabel("Port of the move SCU:");
+    PortOfMoveSCU->setToolTip("Port of the move client");
+    PortOfMoveSCU->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    gridLayout->addWidget(PortOfMoveSCU, 5, 0);
+    gridLayout->addWidget(m_movePort, 5, 1);
 
-    // Retrieve method
     m_retrieveMethodWidget = new QComboBox();
     m_retrieveMethodWidget->addItem("Move");
     m_retrieveMethodWidget->addItem("Get");
     m_retrieveMethodWidget->setCurrentIndex(
         (pacsConfiguration->getRetrieveMethod() == ::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) ? 0 : 1);
-    gridLayout->addWidget(new QLabel("Retrieve method:"), 7, 0);
-    gridLayout->addWidget(m_retrieveMethodWidget, 7, 1);
+    QLabel* const RetrieveMethod = new QLabel("Retrieve method:");
+    RetrieveMethod->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    gridLayout->addWidget(RetrieveMethod, 6, 0);
+    gridLayout->addWidget(m_retrieveMethodWidget, 6, 1);
 
-    // Test button
-    m_pingPacsButtonWidget = new QPushButton("Ping Pacs");
-    gridLayout->addWidget(m_pingPacsButtonWidget, 8, 0, 1, 2);
+    m_pingPacsButtonWidget = new QPushButton("Ping PACS");
+    gridLayout->addWidget(m_pingPacsButtonWidget, 7, 0, 1, 2);
 
     qtContainer->setLayout(gridLayout);
 
-    // Connect the signals
-    QObject::connect(m_pingPacsButtonWidget, SIGNAL(clicked()), this, SLOT(pingPacs()));
-    QObject::connect(m_localApplicationTitleWidget, SIGNAL(editingFinished()), this, SLOT(
-                         localApplicationTitleChanged()));
-    QObject::connect(m_pacsHostNameWidget, SIGNAL(editingFinished()), this, SLOT(pacsHostNameChanged()));
-    QObject::connect(m_pacsApplicationTitleWidget, SIGNAL(editingFinished()), this,
-                     SLOT(pacsApplicationTitleChanged()));
-    QObject::connect(m_pacsApplicationPortWidget, SIGNAL(valueChanged(int)), this,
-                     SLOT(pacsApplicationPortChanged(int)));
-    QObject::connect(m_moveApplicationTitleWidget, SIGNAL(editingFinished()), this,
-                     SLOT(moveApplicationTitleChanged()));
-    QObject::connect(m_moveApplicationPortWidget, SIGNAL(valueChanged(int)), this,
-                     SLOT(moveApplicationPortChanged(int)));
-    QObject::connect(m_retrieveMethodWidget, SIGNAL(currentIndexChanged(int)), this, SLOT(retrieveMethodChanged(int)));
+    // Connect signals.
+    QObject::connect(m_pingPacsButtonWidget, SIGNAL(clicked()), this, SLOT(pingPACS()));
+    QObject::connect(m_SCUAppEntityTitleEdit, SIGNAL(editingFinished()), this, SLOT(
+                         onSCUAppEntityTitleChanged()));
+    QObject::connect(m_SCPHostNameEdit, SIGNAL(editingFinished()), this, SLOT(onSCPHostNameChanged()));
+    QObject::connect(m_SCPAppEntityTitleEdit, SIGNAL(editingFinished()), this,
+                     SLOT(onSCPAppEntityTitleChanged()));
+    QObject::connect(m_SCPPortEdit, SIGNAL(valueChanged(int)), this,
+                     SLOT(onSCPPortChanged(int)));
+    QObject::connect(m_moveAppEntityTitleEdit, SIGNAL(editingFinished()), this,
+                     SLOT(onMoveAppEntityTitleChanged()));
+    QObject::connect(m_movePort, SIGNAL(valueChanged(int)), this,
+                     SLOT(onMovePortChanged(int)));
+    QObject::connect(m_retrieveMethodWidget, SIGNAL(currentIndexChanged(int)), this,
+                     SLOT(onRetrieveMethodChanged(int)));
 
-}
-
-//------------------------------------------------------------------------------
-
-void SPacsConfigurationEditor::stopping()
-{
-    SLM_TRACE_FUNC();
-
-    // Disconnect the signals
-    QObject::disconnect(m_pingPacsButtonWidget, SIGNAL(clicked()), this, SLOT(pingPacs()));
-    QObject::disconnect(m_localApplicationTitleWidget, SIGNAL(editingFinished()), this,
-                        SLOT(localApplicationTitleChanged()));
-    QObject::disconnect(m_pacsHostNameWidget, SIGNAL(editingFinished()), this, SLOT(pacsHostNameChanged()));
-    QObject::disconnect(m_pacsApplicationTitleWidget, SIGNAL(editingFinished()), this,
-                        SLOT(pacsApplicationTitleChanged()));
-    QObject::disconnect(m_pacsApplicationPortWidget, SIGNAL(valueChanged(int)), this,
-                        SLOT(pacsApplicationPortChanged(int)));
-    QObject::disconnect(m_moveApplicationTitleWidget, SIGNAL(editingFinished()), this,
-                        SLOT(moveApplicationTitleChanged()));
-    QObject::disconnect(m_moveApplicationPortWidget, SIGNAL(valueChanged(int)), this,
-                        SLOT(moveApplicationPortChanged(int)));
-    QObject::disconnect(m_retrieveMethodWidget, SIGNAL(currentIndexChanged(int)), this,
-                        SLOT(retrieveMethodChanged(int)));
-
-    this->destroy();
-}
-
-//------------------------------------------------------------------------------
-
-void SPacsConfigurationEditor::configuring()
-{
-    SLM_TRACE_FUNC();
-    ::fwGui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::pingPacs()
+void SPacsConfigurationEditor::stopping()
+{
+    // Disconnect signals.
+    QObject::disconnect(m_pingPacsButtonWidget, SIGNAL(clicked()), this, SLOT(pingPACS()));
+    QObject::disconnect(m_SCUAppEntityTitleEdit, SIGNAL(editingFinished()), this,
+                        SLOT(onSCUAppEntityTitleChanged()));
+    QObject::disconnect(m_SCPHostNameEdit, SIGNAL(editingFinished()), this,
+                        SLOT(onSCPHostNameChanged()));
+    QObject::disconnect(m_SCPAppEntityTitleEdit, SIGNAL(editingFinished()), this,
+                        SLOT(onSCPAppEntityTitleChanged()));
+    QObject::disconnect(m_SCPPortEdit, SIGNAL(valueChanged(int)), this,
+                        SLOT(onSCPPortChanged(int)));
+    QObject::disconnect(m_moveAppEntityTitleEdit, SIGNAL(editingFinished()), this,
+                        SLOT(onMoveAppEntityTitleChanged()));
+    QObject::disconnect(m_movePort, SIGNAL(valueChanged(int)), this,
+                        SLOT(onMovePortChanged(int)));
+    QObject::disconnect(m_retrieveMethodWidget, SIGNAL(currentIndexChanged(int)), this,
+                        SLOT(onRetrieveMethodChanged(int)));
+
+    this->destroy();
+}
+
+//------------------------------------------------------------------------------
+
+void SPacsConfigurationEditor::pingPACS()
 {
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
         s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
     ::fwPacsIO::SeriesEnquirer::sptr seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
@@ -207,16 +205,19 @@ void SPacsConfigurationEditor::pingPacs()
             pacsConfiguration->getLocalApplicationTitle(),
             pacsConfiguration->getPacsHostName(),
             pacsConfiguration->getPacsApplicationPort(),
-            pacsConfiguration->getPacsApplicationTitle(),
-            pacsConfiguration->getMoveApplicationTitle());
+            pacsConfiguration->getPacsApplicationTitle());
         seriesEnquirer->connect();
         success = seriesEnquirer->pingPacs();
-        seriesEnquirer->disconnect();
     }
-    catch (::fwPacsIO::exceptions::Base& exception)
+    catch (::fwPacsIO::exceptions::Base& _e)
     {
-        SLM_TRACE(exception.what());
+        SLM_TRACE(_e.what());
         success = false;
+    }
+
+    if(seriesEnquirer->isConnectedToPacs())
+    {
+        seriesEnquirer->disconnect();
     }
 
     // Display a message with the ping result.
@@ -238,9 +239,9 @@ void SPacsConfigurationEditor::pingPacs()
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration)
+void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr _pacsConfiguration)
 {
-    auto sig = pacsConfiguration->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = _pacsConfiguration->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -249,49 +250,50 @@ void SPacsConfigurationEditor::modifiedNotify(::fwPacsIO::data::PacsConfiguratio
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::localApplicationTitleChanged()
+void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
-    pacsConfiguration->setLocalApplicationTitle(m_localApplicationTitleWidget->text().toStdString());
+    pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitleEdit->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::pacsHostNameChanged()
+void SPacsConfigurationEditor::onSCPHostNameChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
-    pacsConfiguration->setPacsHostName(m_pacsHostNameWidget->text().toStdString());
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    pacsConfiguration->setPacsHostName(m_SCPHostNameEdit->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::pacsApplicationTitleChanged()
+void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =
+        this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
+            s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
-    pacsConfiguration->setPacsApplicationTitle(m_pacsApplicationTitleWidget->text().toStdString());
+    pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitleEdit->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::pacsApplicationPortChanged(int value)
+void SPacsConfigurationEditor::onSCPPortChanged(int value)
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
@@ -300,40 +302,40 @@ void SPacsConfigurationEditor::pacsApplicationPortChanged(int value)
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::moveApplicationTitleChanged()
+void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
-    pacsConfiguration->setMoveApplicationTitle(m_moveApplicationTitleWidget->text().toStdString());
+    pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitleEdit->text().toStdString());
 
     modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::moveApplicationPortChanged(int value)
+void SPacsConfigurationEditor::onMovePortChanged(int _value)
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
     SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
 
-    pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(value));
+    pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(_value));
 
     modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::retrieveMethodChanged(int index)
+void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 {
-    ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
-    SLM_ASSERT("The inout key '" + s_CONFIG_INOUT + "' is not correctly set.", pacsConfiguration);
+    const ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration
+        = this->getInOut< ::fwPacsIO::data::PacsConfiguration >(s_CONFIG_INOUT);
+    SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
 
     pacsConfiguration->setRetrieveMethod(
-        (index ==
+        (_index ==
          0) ? (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD): (::fwPacsIO::data::PacsConfiguration::
                                                                             GET_RETRIEVE_METHOD));
 

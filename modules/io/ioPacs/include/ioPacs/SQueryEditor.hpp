@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,19 +31,19 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <filesystem>
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
-#include <QWidget>
 
 namespace ioPacs
 {
 
 /**
- * @brief   This editor service is used to perform a IOPACS query on a pacs.
+ * @brief This editor allows to perform queries on a pacs.
+ *
+ * Queries results are stored in a SeriesDB where each Series is a DicomSeries.
  *
  * @section XML XML Configuration
  *
@@ -51,85 +51,103 @@ namespace ioPacs
         <service type="::ioPacs::SQueryEditor">
             <in key="pacsConfig" uid="..." />
             <inout key="seriesDB" uid="..." />
+            <config icon="..." />
        </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ *
  * @subsection In-Out In-Out:
  * - \b seriesDB [::fwData::Object]: seriesDB where to push the queried data.
+ *
+ * @subsection Configuration Configuration:
+ * - \b icon (optional, string, default=""): path of the icon used in the search button.
+ * - \b width (optional, unsigned int, default=20): width of the icon used in the search button.
+ * - \b height (optional, unsigned int, default=20): height of the icon used in the search button.
  */
-class IOPACS_CLASS_API SQueryEditor : public QObject,
-                                      public ::fwGui::editor::IEditor
+class IOPACS_CLASS_API SQueryEditor final :
+    public QObject,
+    public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SQueryEditor,  ::fwGui::editor::IEditor );
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SQueryEditor,  ::fwGui::editor::IEditor )
 
-    /// Constructor
+    /// Creates the service.
     IOPACS_API SQueryEditor() noexcept;
 
-    /// Destructor
+    /// Destroyes the service.
     IOPACS_API virtual ~SQueryEditor() noexcept;
 
-protected:
+private:
 
-    /// Configuring method. This method is used to configure the service.
-    IOPACS_API virtual void configuring() override;
+    /// Configures the editor.
+    virtual void configuring() override;
 
-    /// Override
-    IOPACS_API virtual void starting() override;
+    /// Creates the GUI and connect widget to @ref updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType&).
+    virtual void starting() override;
 
-    /// Override
-    IOPACS_API virtual void stopping() override;
+    /// Executes a query with last settings.
+    void updating() override;
 
-    /// Override
-    IOPACS_API void updating() override;
-
-    /// Override
-    IOPACS_API void info(std::ostream& _sstream ) override;
+    /// Destroys the GUI and disconnect signals.
+    virtual void stopping() override;
 
     /**
-     * @brief Display an error message
-     * @param[in] message Error message to display
+     * @brief Adds series in the series DB.
+     * @param _series series to add.
      */
-    IOPACS_API void displayErrorMessage(const std::string& message) const;
+    void updateSeriesDB(const ::fwMedData::SeriesDB::ContainerType& _series);
 
-private Q_SLOTS:
-    /// Slot called when querying on patient name
-    IOPACS_API void queryPatientName();
+    /// Defines the path of the button's icon.
+    std::filesystem::path m_iconPath {};
 
-    /// Slot called when querying on study date
-    IOPACS_API void queryStudyDate();
+    /// Defines the with of the button's icon.
+    unsigned int m_iconWidth {20};
 
-    /**
-     * @brief Update the seriesDB with the series retrieved from the pacs
-     * @param[in] series Series which must be added to the SeriesDB
-     */
-    IOPACS_API void updateSeriesDB(::fwMedData::SeriesDB::ContainerType series);
+    /// Defines the height of the button's icon.
+    unsigned int m_iconHeight {20};
 
-protected:
-    /// Patient Name Field
-    QPointer< QLineEdit > m_patientNameLineEdit;
+    /// Contains the search line editor.
+    QPointer< QLineEdit > m_searchEdit;
 
-    /// Patient Name Query Button
-    QPointer< QPushButton > m_patientNameQueryButton;
+    /// Contains the search button.
+    QPointer< QPushButton > m_searchButton;
 
-    /// Begin study date widget
+    /// Contains the begin date line editor.
     QPointer< QDateEdit > m_beginStudyDateEdit;
 
-    /// End study date widget
+    /// Contains the end date line editor.
     QPointer< QDateEdit > m_endStudyDateEdit;
 
-    /// Study Date Query Button
-    QPointer< QPushButton > m_studyDateQueryButton;
+    /// Contains the name line editor.
+    QPointer< QLineEdit > m_patientNameEdit;
 
-    /// Series enquirer
-    ::fwPacsIO::SeriesEnquirer::sptr m_seriesEnquirer;
+    /// Contains the patient id line editor.
+    QPointer< QLineEdit > m_patientUIDEdit;
 
-    /// Pacs Configuration object
+    /// Contains the uid line editor.
+    QPointer< QLineEdit > m_seriesUIDEdit;
+
+    /// Contains the description line editor.
+    QPointer< QLineEdit > m_seriesDescriptionEdit;
+
+    /// Contains the modality line editor.
+    QPointer< QLineEdit > m_seriesModalityEdit;
+
+    /// Contains the configuratuion of the PACS.
     ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
+
+private Q_SLOTS:
+
+    /// Executes a query and fills the result in the series DB.
+    void executeQuery();
+
 };
 
-} // namespace ioPacs
+} // namespace ioPacs.
