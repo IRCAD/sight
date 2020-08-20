@@ -28,11 +28,11 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="myDefaultView" start="yes" />
+                <view sid="mainView" start="yes" />
             </registry>
         </service>
 
-        <service uid="myDefaultView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />

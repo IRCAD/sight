@@ -12,138 +12,275 @@
 
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
-        <object uid="FrameTL" type="::arData::FrameTL" />
+
+        <object uid="frameTL" type="::arData::FrameTL" />
+        <object uid="frame" type="::fwData::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
-                    <view align="center" />
-                    <view align="bottom" caption="Calibration" />
-                    <view align="bottom" caption="Information" />
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="2" />
+                    <view proportion="7" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view wid="cameraView" />
-                <view sid="CalibrationInfoView" start="yes" />
-                <view sid="cameraInfoView" start="yes" />
+                <view sid="leftPanelView" start="yes" />
+                <view sid="cameraView" start="yes" />
             </registry>
         </service>
 
-        <service uid="CalibrationInfoView" type="::gui::view::SDefaultView">
+        <service uid="leftPanelView" type="::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
-                    <view align="center" />
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
                 </layout>
-                <toolBar align="left">
+            </gui>
+            <registry>
+                <view sid="toolboxView" start="yes" />
+                <view sid="errorLabelSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolboxView" type="::gui::view::SDefaultView">
+            <gui>
+                <toolBar/>
+                <layout type="::fwGui::ToolboxLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="3" caption="Calibration input" expanded="true" />
+                    <view proportion="1" caption="Calibration result" expanded="true" />
+                </layout>
+            </gui>
+            <registry>
+                <toolBar sid="videoToolbarView" start="yes" />
+                <view sid="calibrationDataView" start="yes" />
+                <view sid="cameraInfoSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="videoToolbarView" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <editor />
+                    <separator />
+                    <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                    <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
+                    <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
+                </layout>
+            </gui>
+            <registry>
+                <editor sid="videoSelectorSrv" start="yes" />
+                <menuItem sid="startVideoAct" start="yes" />
+                <menuItem sid="pauseVideoAct" start="yes" />
+                <menuItem sid="resumeVideoAct" start="yes" />
+                <menuItem sid="stopVideoAct" start="yes" />
+                <menuItem sid="loopVideoAct" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="calibrationDataView" type="::gui::view::SDefaultView">
+            <gui>
+                <toolBar>
                     <toolBitmapSize height="24" width="24" />
                 </toolBar>
-            </gui>
-            <registry>
-                <toolBar sid="intrinsicCamera" start="yes" />
-                <view sid="CalibrationInfoEditor" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="cameraInfoView" type="::gui::view::SDefaultView">
-            <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
-                    <view align="bottom" />
                 </layout>
             </gui>
             <registry>
-                <view sid="cameraInfo" start="yes" />
-                <view sid="errorLabel" start="yes" />
+                <toolBar sid="intrinsicCameraView" start="yes" />
+                <view sid="calibrationInfoEditorSrv" start="yes" />
             </registry>
         </service>
 
-        <service uid="intrinsicCamera" type="::gui::aspect::SDefaultToolBar">
+        <service uid="intrinsicCameraView" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Add" icon="media-0.1/icons/Import.svg" />
-                    <menuItem name="Remove" icon="media-0.1/icons/remove.svg" />
-                    <menuItem name="Reset" icon="media-0.1/icons/reset.svg" />
-                    <menuItem name="Calibrate with openCV" icon="media-0.1/icons/CheckButton.svg" />
-                    <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
-                    <menuItem name="Edit" icon="media-0.1/icons/configuration.svg" />
+                    <menuItem name="Add" icon="flatIcon-0.1/icons/GreenPlus.svg"  shortcut="A" />
+                    <menuItem name="Remove" icon="flatIcon-0.1/icons/RedMinus.svg" />
+                    <menuItem name="Reset" icon="flatIcon-0.1/icons/RedReset.svg" />
+                    <menuItem name="Calibrate" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="Return" />
+                    <menuItem name="Display" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
+                    <menuItem name="Edit" icon="flatIcon-0.1/icons/BlueParametersCamera.svg" />
                 </layout>
             </gui>
             <registry>
-                <editor sid="Status" start="yes" />
-                <menuItem sid="ActionAdd" start="yes" />
-                <menuItem sid="ActionRemove" start="yes" />
-                <menuItem sid="ActionReset" start="yes" />
-                <menuItem sid="ActionGoOpenCV" start="yes" />
-                <menuItem sid="ActionDisplayImage" start="yes" />
-                <menuItem sid="ActionEdition" start="yes" />
+                <editor sid="detectionStatusSrv" start="yes" />
+                <menuItem sid="addAct" start="yes" />
+                <menuItem sid="removeAct" start="yes" />
+                <menuItem sid="resetAct" start="yes" />
+                <menuItem sid="goOpenCVAct" start="yes" />
+                <menuItem sid="displayImageAct" start="yes" />
+                <menuItem sid="editionAct" start="yes" />
             </registry>
+        </service>
+
+        <service uid="cameraView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                </layout>
+                <slideView opacity="1" hAlign="left" vAlign="bottom" height="35" >
+                    <styleSheet>
+                        <![CDATA[
+                        #SlideBar QWidget {
+                            background-color: none;
+                        }
+                        ]]>
+                    </styleSheet>
+                </slideView>
+            </gui>
+            <registry>
+                <view sid="genericSceneSrv" start="yes" />
+                <slideView sid="videoSliderView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="videoSliderView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="videoSliderSrv" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="frame" />
+            <config layer="default" />
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="ActionAdd" type="::gui::action::SSlotCaller">
+        <!-- Start the frame grabber -->
+        <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
             <slots>
-                <slot>CharucoBoardDetector/detectPoints</slot>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </slots>
+            <state executable="false" />
+        </service>
+
+        <!-- Pause the frame grabber -->
+        <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/show</slot>
+                <slot>pauseVideoAct/hide</slot>
+            </slots>
+            <state visible="false" />
+        </service>
+
+        <!-- Resume the frame grabber -->
+        <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/show</slot>
+            </slots>
+            <state visible="false" />
+        </service>
+
+        <!-- Stop the frame grabber -->
+        <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>startVideoAct/show</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/hide</slot>
+                <slot>stopVideoAct/setInexecutable</slot>
+                <slot>loopVideoAct/setInexecutable</slot>
+                <slot>loopVideoAct/deactivate</slot>
+            </slots>
+            <state executable="false" />
+        </service>
+
+        <!-- Loop the frame grabber -->
+        <service uid="loopVideoAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </slots>
+            <state executable="false" />
+        </service>
+
+        <service uid="addAct" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>charucoBoardDetectorSrv/detectPoints</slot>
             </slots>
         </service>
 
-        <service uid="ActionReset" type="::gui::action::SSlotCaller">
+        <service uid="resetAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>CalibrationInfoEditor/reset</slot>
+                <slot>calibrationInfoEditorSrv/reset</slot>
             </slots>
         </service>
 
-        <service uid="ActionRemove" type="::gui::action::SSlotCaller">
+        <service uid="removeAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>CalibrationInfoEditor/remove</slot>
+                <slot>calibrationInfoEditorSrv/remove</slot>
             </slots>
         </service>
 
-        <service uid="ActionEdition" type="::gui::action::SSlotCaller">
+        <service uid="editionAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>intrinsicEdition/update</slot>
+                <slot>intrinsicEditionSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionGoOpenCV" type="::gui::action::SSlotCaller">
+        <service uid="goOpenCVAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>OpenCVIntrinsicCal/update</slot>
+                <slot>intrinsicCalibrationSrv/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller">
+        <service uid="displayImageAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>CalibrationInfoEditor/getSelection</slot>
+                <slot>calibrationInfoEditorSrv/getSelection</slot>
             </slots>
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="cameraLauncher" type="::fwServices::SConfigController">
-            <appConfig id="calCameraCharucoView" />
-            <inout key="camera" uid="${camera}" />
-            <inout key="timeLine" uid="FrameTL" />
-            <parameter replace="WID_PARENT" uid="cameraView" />
-        </service>
+        <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
 
-        <service uid="Status" type="::uiTools::editor::SStatus">
+        <service uid="detectionStatusSrv" type="::uiTools::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="errorLabel" type="::uiTools::editor::STextStatus">
-            <label>Reprojection Error (RMSE)</label>
+        <service uid="errorLabelSrv" type="::uiTools::editor::STextStatus">
+            <label>Reprojection error (RMSE)</label>
+            <color>#D25252</color>
         </service>
 
-        <service uid="CharucoBoardDetector" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="intr_chess_checker">
+        <service uid="charucoBoardDetectorSrv" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="intr_chess_checker">
             <in group="timeline">
-                <key uid="FrameTL" />
+                <key uid="frameTL" />
             </in>
             <inout group="calInfo">
                 <key uid="${calibrationInfo}" />
@@ -151,73 +288,151 @@
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
         </service>
 
-        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
+        <service uid="displayCalibrationInfoSrv" type="::uiCalibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="CalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="calibrationInfoEditorSrv" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="OpenCVIntrinsicCal" type="::videoCharucoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
+        <service uid="intrinsicCalibrationSrv" type="::videoCharucoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
             <in key="calibrationInfo" uid="${calibrationInfo}" />
             <inout key="camera" uid="${camera}" />
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
         </service>
 
-        <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfoSrv" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera}" />
         </service>
 
-        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition">
+        <service uid="intrinsicEditionSrv" type="::uiCalibration::SIntrinsicEdition">
             <inout key="camera" uid="${camera}" />
         </service>
 
+        <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy">
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="frameTL" />
+        </service>
+
+        <service uid="frameSynchronizerSrv" type="::videoTools::SFrameUpdater">
+            <in key="frameTL" uid="frameTL" autoConnect="yes" />
+            <inout key="frame" uid="frame" />
+        </service>
+
+        <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera">
+            <inout key="camera" uid="${camera}" />
+            <videoSupport>yes</videoSupport>
+            <label></label>
+        </service>
+
         <!-- ******************************* Connections ************************************** -->
+
         <connect>
-            <signal>FrameTL/objectPushed</signal>
-            <slot>CharucoBoardDetector/checkPoints</slot>
+            <signal>videoSelectorSrv/configuredCameras</signal>
+            <slot>videoGrabberSrv/reconfigure</slot>
         </connect>
 
         <connect>
-            <signal>CharucoBoardDetector/charucoBoardDetected</signal>
-            <slot>Status/changeToGreen</slot>
+            <signal>videoSelectorSrv/configuredFile</signal>
+            <signal>videoSelectorSrv/configuredStream</signal>
+            <signal>videoSelectorSrv/configuredDevice</signal>
+            <slot>startVideoAct/update</slot>
         </connect>
 
         <connect>
-            <signal>CharucoBoardDetector/charucoBoardNotDetected</signal>
-            <slot>Status/changeToRed</slot>
+            <signal>videoGrabberSrv/cameraStarted</signal>
+            <slot>pauseVideoAct/show</slot>
+            <slot>startVideoAct/hide</slot>
+            <slot>stopVideoAct/setExecutable</slot>
+            <slot>loopVideoAct/setExecutable</slot>
+        </connect>
+
+        <connect>
+            <signal>${camera}/idModified</signal>
+            <slot>videoGrabberSrv/stopCamera</slot>
+        </connect>
+
+        <connect>
+            <signal>${camera}/modified</signal>
+            <slot>startVideoAct/setExecutable</slot>
+            <slot>stopVideoAct/update</slot>
+        </connect>
+
+        <!-- Manage the video slider -->
+        <connect>
+            <signal>videoSliderSrv/positionChanged</signal>
+            <slot>videoGrabberSrv/setPositionVideo</slot>
+        </connect>
+
+        <connect>
+            <signal>videoGrabberSrv/positionModified</signal>
+            <slot>videoSliderSrv/setPositionSlider</slot>
+        </connect>
+
+        <connect>
+            <signal>videoGrabberSrv/durationModified</signal>
+            <slot>videoSliderSrv/setDurationSlider</slot>
+        </connect>
+
+        <connect>
+            <signal>videoSelectorSrv/configuredFile</signal>
+            <slot>videoSliderView/show</slot>
+        </connect>
+
+        <connect>
+            <signal>videoSelectorSrv/configuredStream</signal>
+            <signal>videoSelectorSrv/configuredDevice</signal>
+            <slot>videoSliderView/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>frameTL/objectPushed</signal>
+            <slot>charucoBoardDetectorSrv/checkPoints</slot>
+        </connect>
+
+        <connect>
+            <signal>charucoBoardDetectorSrv/charucoBoardDetected</signal>
+            <slot>detectionStatusSrv/changeToGreen</slot>
+        </connect>
+
+        <connect>
+            <signal>charucoBoardDetectorSrv/charucoBoardNotDetected</signal>
+            <slot>detectionStatusSrv/changeToRed</slot>
         </connect>
 
         <connect>
             <signal>${calibrationInfo}/getRecord</signal>
-            <slot>DisplayCalibrationInfo/displayImage</slot>
+            <slot>displayCalibrationInfoSrv/displayImage</slot>
         </connect>
 
         <connect>
             <signal>${calibrationInfo}/addedRecord</signal>
             <signal>${calibrationInfo}/removedRecord</signal>
             <signal>${calibrationInfo}/resetRecord</signal>
-            <slot>CalibrationInfoEditor/update</slot>
+            <slot>calibrationInfoEditorSrv/update</slot>
         </connect>
 
         <connect>
-            <signal>OpenCVIntrinsicCal/errorComputed</signal>
-            <slot>errorLabel/setDoubleParameter</slot>
+            <signal>intrinsicCalibrationSrv/errorComputed</signal>
+            <slot>errorLabelSrv/setDoubleParameter</slot>
         </connect>
 
         <connect channel="${preferencesModifiedProxy}">
-            <slot>OpenCVIntrinsicCal/updateCharucoBoardSize</slot>
-            <slot>CharucoBoardDetector/updateCharucoBoardSize</slot>
+            <slot>intrinsicCalibrationSrv/updateCharucoBoardSize</slot>
+            <slot>charucoBoardDetectorSrv/updateCharucoBoardSize</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <start uid="intrinsicCameraView" />
-        <start uid="OpenCVIntrinsicCal" />
-        <start uid="CharucoBoardDetector" />
-        <start uid="DisplayCalibrationInfo" />
-        <start uid="cameraLauncher" />
-        <start uid="intrinsicEdition" />
+        <start uid="mainView" />
+        <start uid="intrinsicCalibrationSrv" />
+        <start uid="charucoBoardDetectorSrv" />
+        <start uid="displayCalibrationInfoSrv" />
+        <start uid="intrinsicEditionSrv" />
+        <start uid="videoGrabberSrv" />
+        <start uid="frameSynchronizerSrv" />
+        <start uid="videoAdp" />
+
     </config>
 </extension>

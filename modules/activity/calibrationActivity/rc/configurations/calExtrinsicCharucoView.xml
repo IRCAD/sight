@@ -275,7 +275,7 @@
         </service>
 
         <service uid="errorLabel" type="::uiTools::editor::STextStatus">
-            <label>Reprojection Error (RMSE)</label>
+            <label>Reprojection error (RMSE)</label>
         </service>
 
         <service uid="CharucoBoardDetector" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="extr_chess_checker">

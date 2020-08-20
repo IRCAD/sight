@@ -20,22 +20,22 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="cameraView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
+                <toolBar/>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
-                <toolBar/>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="yes" />
+                <toolBar sid="toolBarView" start="yes" />
                 <view sid="genericSceneSrv" start="yes" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <editor/>
@@ -43,7 +43,7 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="CameraSelector" start="yes" />
+                <editor sid="videoSelectorSrv" start="yes" />
                 <menuItem sid="ActionEdition" start="yes" />
             </registry>
         </service>
@@ -52,7 +52,7 @@
 
         <service uid="ActionEdition" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>intrinsicEdition/update</slot>
+                <slot>intrinsicEditionSrv/update</slot>
             </slots>
         </service>
 
@@ -82,17 +82,17 @@
             </config>
         </service>
 
-        <service uid="FrameUpdater" type="::videoTools::SFrameUpdater">
+        <service uid="frameSynchronizerSrv" type="::videoTools::SFrameUpdater">
             <in key="frameTL" uid="timeLine" autoConnect="yes" />
             <inout key="frame" uid="frame" />
         </service>
 
-        <service uid="CameraSelector" type="::videoQt::editor::SCamera">
+        <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>yes</videoSupport>
         </service>
 
-        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition">
+        <service uid="intrinsicEditionSrv" type="::uiCalibration::SIntrinsicEdition">
             <inout key="camera" uid="${camera}" />
         </service>
 
@@ -116,10 +116,10 @@
 
         <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <start uid="cameraView" />
+        <start uid="mainView" />
         <start uid="${videoGrabber}" />
-        <start uid="FrameUpdater" />
-        <start uid="intrinsicEdition" />
+        <start uid="frameSynchronizerSrv" />
+        <start uid="intrinsicEditionSrv" />
         <start uid="videoAdp" />
 
     </config>
