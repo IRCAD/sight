@@ -106,20 +106,24 @@
                     <editor/>
                     <menuItem name="Add" icon="flatIcon-0.1/icons/GreenPlus.svg"  shortcut="A" />
                     <menuItem name="Remove" icon="flatIcon-0.1/icons/RedMinus.svg" />
-                    <menuItem name="Reset" icon="flatIcon-0.1/icons/RedReset.svg" />
                     <menuItem name="Calibrate" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="Return" />
                     <menuItem name="Display" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
                     <menuItem name="Edit" icon="flatIcon-0.1/icons/BlueParametersCamera.svg" />
+                    <menuItem name="Reset" icon="flatIcon-0.1/icons/RedReset.svg" />
+                    <menuItem name="Save calibration images" icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                    <menuItem name="Load calibration images" icon="flatIcon-0.1/icons/BlueSave.svg" />
                 </layout>
             </gui>
             <registry>
                 <editor sid="detectionStatusSrv" start="yes" />
                 <menuItem sid="addAct" start="yes" />
                 <menuItem sid="removeAct" start="yes" />
-                <menuItem sid="resetAct" start="yes" />
                 <menuItem sid="goOpenCVAct" start="yes" />
                 <menuItem sid="displayImageAct" start="yes" />
                 <menuItem sid="editionAct" start="yes" />
+                <menuItem sid="resetAct" start="yes" />
+                <menuItem sid="saveInputsAct" start="yes" />
+                <menuItem sid="loadInputsAct" start="yes" />
             </registry>
         </service>
 
@@ -263,6 +267,22 @@
             </slots>
         </service>
 
+        <service uid="saveInputsAct" type="::gui::action::SSlotCaller">
+            <sync>true</sync>
+            <slots>
+                <slot>calibrationDataWriterSrv/configureWithIHM</slot>
+                <slot>calibrationDataWriterSrv/update</slot>
+            </slots>
+        </service>
+
+        <service uid="loadInputsAct" type="::gui::action::SSlotCaller">
+            <sync>true</sync>
+            <slots>
+                <slot>calibrationDataReaderSrv/configureWithIHM</slot>
+                <slot>calibrationDataReaderSrv/update</slot>
+            </slots>
+        </service>
+
         <!-- ************************************* Services ************************************ -->
 
         <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
@@ -276,16 +296,6 @@
         <service uid="errorLabelSrv" type="::uiTools::editor::STextStatus">
             <label>Reprojection error (RMSE)</label>
             <color>#D25252</color>
-        </service>
-
-        <service uid="charucoBoardDetectorSrv" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="intr_chess_checker">
-            <in group="timeline">
-                <key uid="frameTL" />
-            </in>
-            <inout group="calInfo">
-                <key uid="${calibrationInfo}" />
-            </inout>
-            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
         </service>
 
         <service uid="displayCalibrationInfoSrv" type="::uiCalibration::SDisplayCalibrationInfo">
@@ -310,6 +320,22 @@
             <inout key="camera" uid="${camera}" />
         </service>
 
+        <service uid="calibrationDataWriterSrv" type="::ioCalibration::SCalibrationImagesWriter">
+            <in key="data" uid="${calibrationInfo}" />
+            <format>.tiff</format>
+        </service>
+
+        <service uid="calibrationDataReaderSrv" type="::ioCalibration::SCalibrationInfoReader">
+            <inout key="data" uid="${calibrationInfo}" />
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" />
+        </service>
+
+        <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera">
+            <inout key="camera" uid="${camera}" />
+            <videoSupport>yes</videoSupport>
+            <label></label>
+        </service>
+
         <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="frameTL" />
@@ -320,10 +346,14 @@
             <inout key="frame" uid="frame" />
         </service>
 
-        <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera">
-            <inout key="camera" uid="${camera}" />
-            <videoSupport>yes</videoSupport>
-            <label></label>
+        <service uid="charucoBoardDetectorSrv" type="::videoCharucoCalibration::SCharucoBoardDetector" worker="intr_chess_checker">
+            <in group="timeline">
+                <key uid="frameTL" />
+            </in>
+            <inout group="calInfo">
+                <key uid="${calibrationInfo}" />
+            </inout>
+            <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
         </service>
 
         <!-- ******************************* Connections ************************************** -->
@@ -430,6 +460,8 @@
         <start uid="charucoBoardDetectorSrv" />
         <start uid="displayCalibrationInfoSrv" />
         <start uid="intrinsicEditionSrv" />
+        <start uid="calibrationDataWriterSrv" />
+        <start uid="calibrationDataReaderSrv" />
         <start uid="videoGrabberSrv" />
         <start uid="frameSynchronizerSrv" />
         <start uid="videoAdp" />

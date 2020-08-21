@@ -44,10 +44,10 @@
                     <separator/>
                     <menuItem name="Export xml/yaml" icon="flatIcon-0.1/icons/BlueFile.svg" />
                     <separator/>
-                    <menuItem name="Start camera" icon="media-0.1/icons/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="media-0.1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="media-0.1/icons/pause-cam.svg" />
-                    <menuItem name="Loop video" icon="media-0.1/icons/loop-cam.svg" style="check" />
+                    <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
+                    <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                    <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -109,29 +109,29 @@
 
         <service uid="startVideoAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>videoGrabber1/startCamera</slot>
-                <slot>videoGrabber2/startCamera</slot>
+                <slot>videoGrabber1Srv/startCamera</slot>
+                <slot>videoGrabber2Srv/startCamera</slot>
             </slots>
         </service>
 
         <service uid="stopVideoAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>videoGrabber1/stopCamera</slot>
-                <slot>videoGrabber2/stopCamera</slot>
+                <slot>videoGrabber1Srv/stopCamera</slot>
+                <slot>videoGrabber2Srv/stopCamera</slot>
             </slots>
         </service>
 
         <service uid="pauseVideoAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>videoGrabber1/pauseCamera</slot>
-                <slot>videoGrabber2/pauseCamera</slot>
+                <slot>videoGrabber1Srv/pauseCamera</slot>
+                <slot>videoGrabber2Srv/pauseCamera</slot>
             </slots>
         </service>
 
         <service uid="loopVideoAct" type="::gui::action::SSlotCaller">
             <slots>
-                <slot>videoGrabber1/loopVideoAct</slot>
-                <slot>videoGrabber2/loopVideoAct</slot>
+                <slot>videoGrabber1Srv/loopVideoAct</slot>
+                <slot>videoGrabber2Srv/loopVideoAct</slot>
             </slots>
         </service>
 
@@ -141,7 +141,7 @@
             <appConfig id="videoEdition" />
             <inout key="camera" uid="camera0" />
             <parameter replace="WID_PARENT" uid="camera0View" />
-            <parameter replace="videoGrabber" uid="videoGrabber1" />
+            <parameter replace="videoGrabber" uid="videoGrabber1Srv" />
             <parameter replace="grabberProxyGuiTitle" by="Please select the first video grabber" />
             <parameter replace="cameraModifiedChannel" uid="cameraModified" />
             <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
@@ -153,7 +153,7 @@
             <appConfig id="videoEdition" />
             <inout key="camera" uid="camera1" />
             <parameter replace="WID_PARENT" uid="camera1View" />
-            <parameter replace="videoGrabber" uid="videoGrabber2" />
+            <parameter replace="videoGrabber" uid="videoGrabber2Srv" />
             <parameter replace="grabberProxyGuiTitle" by="Please select the second video grabber" />
             <parameter replace="cameraModifiedChannel" uid="cameraModified" />
             <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />

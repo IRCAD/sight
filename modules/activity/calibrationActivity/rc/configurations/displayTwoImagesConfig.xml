@@ -54,20 +54,13 @@
 
                 <layer id="video" order="1" />
                 <adaptor uid="video1Adp" />
-
-                <layer id="default" order="2" />
-                <adaptor uid="pointList1Adp" />
             </scene>
         </service>
 
         <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId1}" />
-            <config layer="video" />
-        </service>
-
-        <service uid="pointList1Adp" type="::visuOgreAdaptor::SPointList" >
             <in key="pointList" uid="${pointListId1}" />
-            <config layer="default" radius="1.0" color="#D25252" fixedSize="true" textureName="circle.dds" />
+            <config layer="video" radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -78,20 +71,13 @@
 
                 <layer id="video" order="1" />
                 <adaptor uid="video2Adp" />
-
-                <layer id="default" order="2" />
-                <adaptor uid="pointList2Adp" />
             </scene>
         </service>
 
         <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId2}" />
-            <config layer="video" />
-        </service>
-
-        <service uid="pointList2Adp" type="::visuOgreAdaptor::SPointList" >
             <in key="pointList" uid="${pointListId2}" />
-            <config layer="default" radius="1.0" labelColor="#D25252" fixedSize="true" textureName="circle.dds" />
+            <config layer="video" radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
@@ -104,9 +90,7 @@
 
         <start uid="mainFrame" />
         <start uid="video1Adp" />
-        <start uid="pointList1Adp" />
         <start uid="video2Adp" />
-        <start uid="pointList2Adp" />
 
         <update uid="video1Adp" />
         <update uid="video2Adp" />

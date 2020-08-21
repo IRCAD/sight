@@ -58,7 +58,7 @@
             </gui>
             <registry>
                 <menuItem sid="newActivityAct" start="yes" />
-                <menuItem sid="openAct" start="yes" />
+                <menuItem sid="openSeriesAct" start="yes" />
                 <menuItem sid="openActivityAct" start="yes" />
                 <menuItem sid="saveAct" start="yes" />
                 <menuItem sid="saveActivityAct" start="no" />
@@ -142,7 +142,7 @@
             </filter>
         </service>
 
-        <service uid="openAct" type="::uiIO::action::SSeriesDBMerger" >
+        <service uid="openSeriesAct" type="::uiIO::action::SSeriesDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>

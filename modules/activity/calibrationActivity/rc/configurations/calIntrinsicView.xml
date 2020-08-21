@@ -13,8 +13,8 @@
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="frameTL" type="::arData::FrameTL" />
-        <object uid="detectionFrame" type="::fwData::Image" />
         <object uid="videoFrame" type="::fwData::Image" />
+        <object uid="distortedFrame" type="::fwData::Image" />
 
         <object uid="detectedChessboard" type="::fwData::PointList" />
         <object uid="chessboardModel" type="::fwData::PointList" src="deferred" />
@@ -114,10 +114,10 @@
                     <editor/>
                     <menuItem name="Add" icon="flatIcon-0.1/icons/GreenPlus.svg"  shortcut="A" />
                     <menuItem name="Remove" icon="flatIcon-0.1/icons/RedMinus.svg" />
-                    <menuItem name="Reset" icon="flatIcon-0.1/icons/RedReset.svg" />
                     <menuItem name="Calibrate" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="Return" />
                     <menuItem name="Display" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
                     <menuItem name="Edit" icon="flatIcon-0.1/icons/BlueParametersCamera.svg" />
+                    <menuItem name="Reset" icon="flatIcon-0.1/icons/RedReset.svg" />
                     <menuItem name="Save calibration images" icon="flatIcon-0.1/icons/BlueLoad.svg" />
                     <menuItem name="Load calibration images" icon="flatIcon-0.1/icons/BlueSave.svg" />
                 </layout>
@@ -126,10 +126,10 @@
                 <editor sid="detectionStatusSrv" start="yes" />
                 <menuItem sid="addAct" start="yes" />
                 <menuItem sid="removeAct" start="yes" />
-                <menuItem sid="resetAct" start="yes" />
                 <menuItem sid="goOpenCVAct" start="yes" />
                 <menuItem sid="displayImageAct" start="yes" />
                 <menuItem sid="editionAct" start="yes" />
+                <menuItem sid="resetAct" start="yes" />
                 <menuItem sid="saveInputsAct" start="yes" />
                 <menuItem sid="loadInputsAct" start="yes" />
             </registry>
@@ -298,30 +298,6 @@
             <color>#D25252</color>
         </service>
 
-        <service uid="frameSynchronizerSrv" type="::videoTools::SFrameMatrixSynchronizer">
-            <in group="frameTL">
-                <key uid="frameTL" autoConnect="yes" />
-            </in>
-            <inout group="image">
-                <key uid="detectionFrame" />
-            </inout>
-            <tolerance>200</tolerance>
-            <framerate>0</framerate>
-        </service>
-
-        <service uid="chessboardDetectorSrv" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
-            <in group="image" autoConnect="yes">
-                <key uid="detectionFrame" />
-            </in>
-            <inout group="calInfo">
-                <key uid="${calibrationInfo}" />
-            </inout>
-            <inout group="detection">
-                <key uid="detectedChessboard" />
-            </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
-        </service>
-
         <service uid="displayCalibrationInfoSrv" type="::uiCalibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
@@ -336,29 +312,12 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
-        <service uid="chessboardReprojectionSrv" type="::videoCalibration::SChessboardReprojection" >
-            <in key="transform" uid="cameraPoseMx" />
-            <in key="camera" uid="${camera}" />
-            <in key="detectedChessboard" uid="detectedChessboard" />
-            <inout key="videoImage" uid="videoFrame" />
-            <out key="chessboardModel" uid="chessboardModel" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
-            <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
-        </service>
-
         <service uid="computeCameraPoseSrv" type="::registrationCV::SSolvePnP" worker="intr_chess_checker">
             <in key="pointList2d" uid="detectedChessboard" />
             <in key="pointList3d" uid="chessboardModel" />
             <in key="calibration" uid="${camera}" />
             <inout key="matrix" uid="cameraPoseMx" />
             <config inverse="false" />
-        </service>
-
-        <service uid="distorterSrv" type="::videoCalibration::SDistortion" >
-            <in key="camera" uid="${camera}" autoConnect="yes" />
-            <in key="input" uid="detectionFrame" />
-            <inout key="output" uid="videoFrame" />
-            <mode>undistort</mode>
         </service>
 
         <service uid="cameraInfoSrv" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
@@ -379,21 +338,62 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
         </service>
 
-        <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy">
-            <in key="camera" uid="${camera}" />
-            <inout key="frameTL" uid="frameTL" />
-        </service>
-
         <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>yes</videoSupport>
             <label></label>
         </service>
 
+        <service uid="videoGrabberSrv" type="::videoTools::SGrabberProxy">
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="frameTL" />
+        </service>
+
+        <service uid="frameSynchronizerSrv" type="::videoTools::SFrameMatrixSynchronizer">
+            <in group="frameTL">
+                <key uid="frameTL" autoConnect="yes" />
+            </in>
+            <inout group="image">
+                <key uid="videoFrame" />
+            </inout>
+            <tolerance>200</tolerance>
+            <framerate>0</framerate>
+        </service>
+
+        <service uid="distorterSrv" type="::videoCalibration::SDistortion" >
+            <in key="camera" uid="${camera}" autoConnect="yes" />
+            <in key="input" uid="videoFrame" />
+            <inout key="output" uid="distortedFrame" />
+            <mode>undistort</mode>
+        </service>
+
+        <service uid="chessboardDetectorSrv" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
+            <in group="image" autoConnect="yes">
+                <key uid="videoFrame" />
+            </in>
+            <inout group="calInfo">
+                <key uid="${calibrationInfo}" />
+            </inout>
+            <inout group="detection">
+                <key uid="detectedChessboard" />
+            </inout>
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+        </service>
+
+        <service uid="chessboardReprojectionSrv" type="::videoCalibration::SChessboardReprojection" >
+            <in key="transform" uid="cameraPoseMx" />
+            <in key="camera" uid="${camera}" />
+            <in key="detectedChessboard" uid="detectedChessboard" />
+            <inout key="videoImage" uid="distortedFrame" />
+            <out key="chessboardModel" uid="chessboardModel" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
+        </service>
+
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
-            <scene>
+            <scene renderMode="sync">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="default" order="1" />
@@ -401,8 +401,8 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
-            <in key="image" uid="videoFrame" />
+        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" >
+            <in key="image" uid="distortedFrame" />
             <config layer="default" />
         </service>
 
@@ -510,6 +510,11 @@
 
         <connect>
             <signal>chessboardReprojectionSrv/updated</signal>
+            <slot>videoAdp/update</slot>
+        </connect>
+
+        <connect>
+            <signal>videoAdp/updated</signal>
             <slot>genericSceneSrv/requestRender</slot>
             <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>

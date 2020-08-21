@@ -88,19 +88,19 @@
             <preference>
                 <type>int</type>
                 <name>Chessboard width</name>
-                <key>CHESSBOARD_WIDTH</key>
+                <key>CHARUCO_WIDTH</key>
                 <default_value>11</default_value>
             </preference>
             <preference>
                 <type>int</type>
                 <name>Chessboard height</name>
-                <key>CHESSBOARD_HEIGHT</key>
+                <key>CHARUCO_HEIGHT</key>
                 <default_value>8</default_value>
             </preference>
             <preference>
                 <type>int</type>
                 <name>Chessboard square size (mm)</name>
-                <key>CHESSBOARD_SQUARE_SIZE</key>
+                <key>CHARUCO_SQUARE_SIZE</key>
                 <default_value>20</default_value>
             </preference>
             <preference>
