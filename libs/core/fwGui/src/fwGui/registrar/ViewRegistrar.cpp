@@ -249,7 +249,7 @@ void ViewRegistrar::unmanage()
                         ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             SLM_TRACE("The service '" + sid.first + "' is stopped by '" + m_sid + "'");
-            service->stop();
+            service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);
     }
@@ -271,7 +271,7 @@ void ViewRegistrar::unmanageToolBar()
             SLM_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
                        ::fwTools::fwID::exist(m_toolBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first );
-            service->stop();
+            service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
     }
@@ -288,7 +288,7 @@ void ViewRegistrar::unmanageMenuBar()
             SLM_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
                        ::fwTools::fwID::exist(m_menuBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first );
-            service->stop();
+            service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDMenuBar(m_menuBarSid.first);
     }

@@ -141,7 +141,7 @@ void MenuBarRegistrar::unmanage()
             SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
                        ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            service->stop();
+            service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);
     }

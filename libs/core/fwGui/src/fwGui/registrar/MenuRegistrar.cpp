@@ -210,7 +210,7 @@ void MenuRegistrar::unmanage()
                         "It may have been destroyed by the configuration if it uses deferred objects.",
                         ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            service->stop();
+            service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterActionSIDToParentSID(sid.first, m_sid);
     }
@@ -222,7 +222,7 @@ void MenuRegistrar::unmanage()
                         "It may have been destroyed by the configuration if it uses deferred objects.",
                         ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
-            service->stop();
+            service->stop().wait();
         }
         ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);
     }
