@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 #include <fwCore/macros.hpp>
 
 #include <filesystem>
-
 #include <sstream>
 
 namespace fwAtoms
@@ -62,9 +61,16 @@ public:
     {
     }
 
-    FWATOMSBOOSTIO_API void write( const SPTR(::fwZip::IWriteArchive)& archive,
-                                   const std::filesystem::path& rootFilename = "root.json",
-                                   FormatType format                         = JSON ) const;
+    /**
+     * @brief Writes the archive in the given file name to the given format.
+     * @param _archive archive to save.
+     * @param _rootFilename filename of the saved archive.
+     * @param _format format of the saved archive (JSON/XML).
+     * @return The folder name used to save data.
+     */
+    FWATOMSBOOSTIO_API std::filesystem::path write( const SPTR(::fwZip::IWriteArchive)_archive,
+                                                    const std::filesystem::path& _rootFilename = "root.json",
+                                                    FormatType _format                         = JSON ) const;
 
 protected:
 

@@ -55,6 +55,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwTools/System.hpp>
+
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
@@ -375,8 +377,6 @@ void SWriter::updating()
 
     FW_RAISE_IF( "Extension is empty", extension.empty() );
 
-    const std::filesystem::path filename = filePath.filename();
-
     FW_RAISE_IF("The file extension '" << extension << "' is not managed",
                 m_allowedExts.find(extension) == m_allowedExts.end());
 
@@ -429,6 +429,11 @@ void SWriter::updating()
                                                          m_associatedWorker
                                                          );
 
+    // Generate a temporary file name for saving the file.
+    const std::filesystem::path tmpFolderPath = std::filesystem::temp_directory_path();
+    const std::filesystem::path tmpFilePath   = tmpFolderPath / (::fwTools::System::genTempFileName() + ".sight");
+    const std::filesystem::path tmpFilename   = tmpFilePath.filename();
+
     // Writing file : job 3
     ::fwJobs::Job::sptr writeJob = ::fwJobs::Job::New("Writing " + extension + " file",
                                                       [ =, &atom](::fwJobs::Job& runningJob)
@@ -440,43 +445,32 @@ void SWriter::updating()
             std::filesystem::path archiveRootName;
             if ( extension == ".json" )
             {
-                writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
-                archiveRootName = filename;
+                writeArchive    = ::fwZip::WriteDirArchive::New(tmpFolderPath.string());
+                archiveRootName = tmpFilename;
                 format          = ::fwAtomsBoostIO::JSON;
             }
             else if ( extension == ".jsonz")
             {
-                if ( std::filesystem::exists( filePath ) )
-                {
-                    std::filesystem::remove( filePath );
-                }
-                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
+                writeArchive    = ::fwZip::WriteZipArchive::New(tmpFilePath.string());
                 archiveRootName = "root.json";
                 format          = ::fwAtomsBoostIO::JSON;
             }
             else if ( extension == ".cpz" )
             {
-                if ( std::filesystem::exists( filePath ) )
-                {
-                    std::filesystem::remove( filePath );
-                }
-                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string(), "", ::fwPreferences::getPassword());
+                writeArchive = ::fwZip::WriteZipArchive::New(tmpFilePath.string(), "",
+                                                             ::fwPreferences::getPassword());
                 archiveRootName = "root.json";
                 format          = ::fwAtomsBoostIO::JSON;
             }
             else if ( extension == ".xml" )
             {
-                writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
-                archiveRootName = filename;
+                writeArchive    = ::fwZip::WriteDirArchive::New(tmpFolderPath.string());
+                archiveRootName = tmpFilename;
                 format          = ::fwAtomsBoostIO::XML;
             }
             else if ( extension == ".xmlz" )
             {
-                if ( std::filesystem::exists( filePath ) )
-                {
-                    std::filesystem::remove( filePath );
-                }
-                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
+                writeArchive    = ::fwZip::WriteZipArchive::New(tmpFilePath.string());
                 archiveRootName = "root.xml";
                 format          = ::fwAtomsBoostIO::XML;
             }
@@ -485,8 +479,22 @@ void SWriter::updating()
                 FW_RAISE( "This file extension '" << extension << "' is not managed" );
             }
 
-            ::fwAtomsBoostIO::Writer(atom).write( writeArchive, archiveRootName, format );
+            const std::filesystem::path folderDirName =
+                ::fwAtomsBoostIO::Writer(atom).write( writeArchive, archiveRootName, format );
             writeArchive.reset();
+
+            // If the save is successful, remove the old file if it exists.
+            if(std::filesystem::exists(filePath))
+            {
+                std::filesystem::remove(filePath);
+            }
+
+            // Rename the temporary file with the real name and move it to the right folder.
+            std::filesystem::rename(tmpFilePath, filePath);
+            if(std::filesystem::exists(tmpFolderPath/folderDirName))
+            {
+                std::filesystem::rename(tmpFolderPath/folderDirName, folderPath/folderDirName);
+            }
 
             runningJob.done();
         }, m_associatedWorker );
@@ -503,16 +511,30 @@ void SWriter::updating()
     {
         jobs->run().get();
     }
-    catch( std::exception& e )
+    catch(std::exception& _e)
     {
-        OSLM_ERROR( e.what() );
+        // Delete the temporary file if the process failed.
+        if(std::filesystem::exists(tmpFilePath))
+        {
+            std::filesystem::remove(tmpFilePath);
+        }
+
+        // Handle the error.
+        OSLM_ERROR(_e.what());
         ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                          e.what(),
+                                                          _e.what(),
                                                           ::fwGui::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
-    catch( ... )
+    catch(...)
     {
+        // Delete the temporary file if the process failed.
+        if(std::filesystem::exists(tmpFilePath))
+        {
+            std::filesystem::remove(tmpFilePath);
+        }
+
+        // Handle the error.
         ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                           "Writing process aborted",
                                                           ::fwGui::dialog::IMessageDialog::CRITICAL);
