@@ -7,7 +7,6 @@ This example shows the possibilities of SParameters:
 <plugin id="ExSParameters" version="@PROJECT_VERSION@">
 
     <requirement id="servicesReg" />
-    <requirement id="dataReg" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig">

@@ -10,7 +10,7 @@ set( REQUIREMENTS
     guiQt                   # Start the module, allow dark theme
 
     # Objects declaration
-    dataReg                 # fwData
+    fwData                 # fwData
     servicesReg             # fwService
 
     # UI declaration/Actions

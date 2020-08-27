@@ -6,10 +6,10 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
 
     appXml
-    arDataReg
+    arData
     ctrlCamp
     ctrlCom
-    dataReg
+    fwData
     fwlauncher
     gui
     guiQt

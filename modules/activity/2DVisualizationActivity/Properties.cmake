@@ -7,7 +7,7 @@ set( REQUIREMENTS
     activities
     gui
     guiQt
-    dataReg
+    fwData
     uiMeasurement
     uiMeasurementQt
     ctrlCamp

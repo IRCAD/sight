@@ -7,7 +7,8 @@ set( DEPENDENCIES
     fwServices
 )
 set( REQUIREMENTS
-    dataReg
+    fwData
+    fwMedData
     servicesReg
     fwlauncher
     appXml

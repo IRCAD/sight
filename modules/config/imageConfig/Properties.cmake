@@ -7,7 +7,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
         2DVisualizationActivity
         qtSceneConfig
-        dataReg
+        fwData
         servicesReg
         gui
         guiQt

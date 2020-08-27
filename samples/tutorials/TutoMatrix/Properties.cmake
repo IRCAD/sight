@@ -7,7 +7,7 @@ set( REQUIREMENTS
     appXml
     gui
     guiQt
-    dataReg
+    fwData
     servicesReg
     fwlauncher
     maths

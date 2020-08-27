@@ -5,9 +5,9 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     appXml
-    arDataReg
+    arData
     ctrlCamp
-    dataReg
+    fwData
     fwlauncher
     gui
     guiQt

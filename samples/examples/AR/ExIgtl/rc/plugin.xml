@@ -1,5 +1,4 @@
 <plugin id="ExIgtl" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />

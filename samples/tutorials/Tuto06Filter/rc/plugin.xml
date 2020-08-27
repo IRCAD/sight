@@ -1,6 +1,5 @@
 <plugin id="Tuto06Filter" version="@PROJECT_VERSION@">
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 

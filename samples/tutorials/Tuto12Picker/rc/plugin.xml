@@ -1,5 +1,4 @@
 <plugin id="Tuto12Picker" version="@PROJECT_VERSION@">
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <extension implements="::fwServices::registry::AppConfig">

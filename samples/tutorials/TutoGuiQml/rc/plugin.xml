@@ -7,7 +7,6 @@
     <!-- The modules in requirements are automatically started when this
          Application is launched. -->
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
 
 </plugin>

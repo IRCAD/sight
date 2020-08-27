@@ -8,7 +8,7 @@ set( REQUIREMENTS
     activities
     ctrlMemory
     ctrlSelection
-    dataReg
+    fwData
     gui
     guiQt
     ioGdcm

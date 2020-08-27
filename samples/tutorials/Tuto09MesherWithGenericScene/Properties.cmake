@@ -5,7 +5,8 @@ set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    dataReg
+    fwData
+    fwMedData
     servicesReg
     gui
     guiQt

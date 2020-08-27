@@ -5,8 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
     activities
-    dataReg
-    arDataReg
+    fwData
+    arData
     ctrlCamp
     gui
     guiQt

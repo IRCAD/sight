@@ -4,7 +4,8 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    dataReg
+    fwData
+    fwMedData
     servicesReg
     gui
     guiQt

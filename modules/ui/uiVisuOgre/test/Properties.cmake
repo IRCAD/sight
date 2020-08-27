@@ -4,7 +4,7 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES fwCore fwTest fwTools fwRenderOgre)
 set( REQUIREMENTS
-    dataReg
+    fwData
     servicesReg
     gui
     uiIO

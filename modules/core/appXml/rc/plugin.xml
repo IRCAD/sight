@@ -2,6 +2,5 @@
 
     <library name="appXml" />
     <requirement id="servicesReg" />
-    <requirement id="dataReg" />
 
 </plugin>

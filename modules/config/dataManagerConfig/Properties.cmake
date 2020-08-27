@@ -11,4 +11,5 @@ set( REQUIREMENTS
     uiReconstructionQt
     ctrlSelection
     media
+    servicesReg
 )

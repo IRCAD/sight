@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwQml
 )
 set( REQUIREMENTS # The modules used by this application
-    dataReg
+    fwData
     servicesReg
     gui
     guiQt

@@ -12,7 +12,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     servicesReg
-    dataReg
+    fwData
     gui
     guiQml
     styleQml

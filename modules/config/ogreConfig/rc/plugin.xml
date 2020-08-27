@@ -1,6 +1,5 @@
 <plugin id="ogreConfig" version="@PROJECT_VERSION@">
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
     <requirement id="scene2D" />

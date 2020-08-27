@@ -12,9 +12,9 @@ set( REQUIREMENTS
     arPatchMedicalData      # Patch old atoms data
 
     # Objects declaration
-    dataReg                 # fwData
     servicesReg             # fwService
-    arDataReg               # arData
+    fwData
+    arData
 
     # UI declaration/Actions
     gui

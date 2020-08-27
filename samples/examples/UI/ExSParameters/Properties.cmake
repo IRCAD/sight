@@ -5,7 +5,7 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     servicesReg
-    dataReg
+    fwData
     gui
     guiQt
     appXml

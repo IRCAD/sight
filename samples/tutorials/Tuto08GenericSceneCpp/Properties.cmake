@@ -12,7 +12,7 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     gui
     guiQt
-    dataReg
+    fwData
     servicesReg
     ioData
     ioVTK

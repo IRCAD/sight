@@ -5,8 +5,8 @@ set( TYPE APP )
 set( UNIQUE TRUE)
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    dataReg
-    arDataReg
+    fwData
+    arData
     gui
     guiQt
     servicesReg

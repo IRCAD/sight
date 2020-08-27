@@ -2,7 +2,6 @@
 
     <library name="visuOgreQt" />
 
-    <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
     <requirement id="visuOgre" />
 

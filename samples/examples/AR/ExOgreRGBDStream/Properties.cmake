@@ -9,8 +9,8 @@ set( REQUIREMENTS
     appXml
     fwlauncher
 
-    arDataReg
-    dataReg
+    arData
+    fwData
     servicesReg
 
     gui

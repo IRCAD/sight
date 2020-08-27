@@ -1,6 +1,5 @@
 <plugin id="TutoGui" version="@PROJECT_VERSION@" >
 
-    <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
 

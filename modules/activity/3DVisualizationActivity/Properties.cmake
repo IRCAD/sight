@@ -9,7 +9,7 @@ set( REQUIREMENTS
     guiQt
     ctrlMemory
     ctrlSelection
-    dataReg
+    fwData
     uiVisu
     uiVisuQt
     servicesReg
