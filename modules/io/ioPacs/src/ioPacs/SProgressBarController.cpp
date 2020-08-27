@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -38,9 +38,9 @@
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SProgressBarController, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SProgressBarController, ::fwData::Composite )
 
-static const ::fwCom::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgress";
+static const ::fwCom::Slots::SlotKeyType s_START_PROGRESS_SLOT = "startProgress";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
 static const ::fwCom::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
 
@@ -69,28 +69,24 @@ void SProgressBarController::info(std::ostream& _sstream )
 
 void SProgressBarController::starting()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::stopping()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::configuring()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::updating()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,12 +35,13 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <filesystem>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
 #include <QWidget>
+
+#include <filesystem>
 
 namespace fwData
 {
@@ -67,171 +68,139 @@ namespace ioPacs
 {
 
 /**
- * @brief   This editor service is used to select a slice index and pull the image from the pacs if it is not
- *          available on the local computer.
- * *
- * @section Slots Slots
- * - \b readImage(size_t) : Read the given slice.
- * - \b displayErrorMessage(size_t) : display an error message.
-
- * @section XML XML Configuration
+ * @brief This editor service is used to select a slice index and pull the image from the pacs if it is not
+ *        available on the local computer.
+ * @deprecated it will be removed in sight 21.0, use ::ioPacs::SSliceIndexDicomEditor instead.
  *
+ * @section Slots Slots
+ * - \b readImage(size_t): read the given slice.
+ * - \b displayErrorMessage(size_t): display an error message.
+ *
+ * @section XML XML Configuration
  * @code{.xml}
-        <service type="::ioDicom::SSliceIndexDicomPullerEditor">
+        <service type="::ioPacs::SSliceIndexDicomPullerEditor">
            <in key="pacsConfig" uid="..." />
            <inout key="series" uid="..." />
            <out key="image" uid="..." />
            <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500">
-               <dicomReaderConfig> <!-- optional -->
+               <dicomReaderConfig>
                    <!-- here goes the configuration for the dicom reader implementation -->
                </dicomReaderConfig>
            </config>
        </service>
    @endcode
+ *
  * @subsection Input Input:
  * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ *
  * @subsection In-Out In-Out:
- * - \b series [::fwMedData::DicomSeries]: Dicom Series where to extract the images.
+ * - \b series [::fwMedData::DicomSeries]: DICOM Series where to extract the images.
+ *
  * @subsection Output Output:
- * - \b image [::fwData::Image]: Downloaded image.
+ * - \b image [::fwData::Image]: downloaded image.
+ *
  * @subsection Configuration Configuration:
- * - \b dicomReader Reader type to use.
- * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
+ * - \b dicomReader (mandatory, string): reader type to use.
+ * - \b dicomReaderConfig (optional, string): configuration for the DICOM Reader.
+ * - \b delay (optional, unsigned int): delay to wait between each slice move.
  */
-class IOPACS_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
-                                                      public ::fwGui::editor::IEditor
+class IOPACS_CLASS_API SSliceIndexDicomPullerEditor final :
+    public QObject,
+    public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ::fwGui::editor::IEditor );
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ::fwGui::editor::IEditor)
 
-    IOPACS_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
-    typedef ::fwCom::Slot<void (std::size_t)> ReadImageSlotType;
-
-    IOPACS_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
-
-    /**
-     * @brief Constructor
-     */
+    /// Creates slots.
+    [[deprecated("Will be removed in sight 21.0, use ::ioPacs::SSliceIndexDicomEditor instead")]]
     IOPACS_API SSliceIndexDicomPullerEditor() noexcept;
 
-    /**
-     * @brief Destructor
-     */
+    /// Destroys the service.
     IOPACS_API virtual ~SSliceIndexDicomPullerEditor() noexcept;
-
-private Q_SLOTS:
-    /**
-     * @brief Slot called when the slider is moved
-     * @param[in] value Slider value
-     */
-    IOPACS_API void changeSliceIndex(int value);
 
 protected:
 
-    /// Configuring method. This method is used to configure the service.
-    IOPACS_API virtual void configuring() override;
+    /// Configures the service.
+    IOPACS_API void configuring() override;
 
-    /// Override
-    IOPACS_API virtual void starting() override;
+    /// Creates the DICOM reader and the slider.
+    IOPACS_API void starting() override;
 
-    /// Override
-    IOPACS_API virtual void stopping() override;
-
-    /// Override
+    /// Does nothing
     IOPACS_API void updating() override;
 
-    /// Override
-    IOPACS_API void info(std::ostream& _sstream ) override;
+    /// Unregisters the DICOM reader and destroys the slider.
+    IOPACS_API void stopping() override;
 
-    /// Function called when a new slice must be displayed
-    IOPACS_API void triggerNewSlice();
+private Q_SLOTS:
 
-    /**
-     * @brief Read the selected image
-     * @param[in] selectedSliceIndex Selected slice of the image that must be read
-     */
-    IOPACS_API void readImage(std::size_t selectedSliceIndex);
+    /// SLOT: Changes the slice index, called when the slider is moved.
+    void changeSliceIndex(int);
 
-    /// Pull the selected slice from the pacs
-    IOPACS_API void pullInstance();
+private:
+
+    /// Retrieves the local slice or pull it, then, read it.
+    void triggerNewSlice();
 
     /**
-     * @brief Displays a dialog box with the error message
+     * @brief Reads a local slice.
+     * @param _selectedSliceIndex index of the slice to read.
      */
-    IOPACS_API void displayErrorMessage(const std::string& message) const;
+    void readImage(std::size_t _selectedSliceIndex);
 
-    /**
-     * @brief Store instance callback
-     * @param[in] seriesInstanceUID Series instance UID
-     * @param[in] instanceNumber Instance number
-     * @param[in] filePath File path
-     */
-    IOPACS_API void storeInstanceCallback(
-        const std::string& seriesInstanceUID, unsigned int instanceNumber, const std::string& filePath);
+    /// Pulls the slice from the PACS.
+    void pullInstance();
 
-    /// Slot to call readLocalSeries method
-    ReadImageSlotType::sptr m_slotReadImage;
+    /// Displays a dialog box with the error message.
+    void displayErrorMessage(const std::string& _message) const;
 
-    /// Slot to call displayErrorMessage method;
+    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
+
+    /// Contains the slot to call displayErrorMessage method;
     DisplayMessageSlotType::sptr m_slotDisplayMessage;
 
-    /// Slice index slider
+    /// Contains the slider.
     QPointer< QSlider > m_sliceIndexSlider;
 
-    /// Slice index line edit
+    /// Contains the slider informations.
     QPointer< QLineEdit > m_sliceIndexLineEdit;
 
-    /// Number of instances
+    /// Defines the number of slice.
     std::size_t m_numberOfSlices;
 
-    /// Pacs Configuration UID
+    /// Defines the UID of the PACS configuration data.
     std::string m_pacsConfigurationUID;
 
-    /// Pacs Configuration object
+    /// Contains the PACS configuration.
     ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
 
-    /// IOPACS Reader
+    /// Defines the DICOM reader implementation.
     std::string m_dicomReaderType;
 
-    /// Reader
+    /// Contains the DICOM reader.
     ::fwIO::IReader::wptr m_dicomReader;
 
-    /// Image Key
+    /// Defines the image key.
     std::string m_imageKey;
 
-    /// Composite UID
-    std::string m_compositeUID;
-
-    /// Composite
-    SPTR(::fwData::Composite) m_composite;
-
-    /// Temporary SeriesDB
+    /// Contains the seriesDB where the DICOM reader sets is output.
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
 
-    /// Axial slice index
-    SPTR(fwData::Integer) m_axialIndex;
-    /// Frontal slice index
-    SPTR(::fwData::Integer) m_frontalIndex;
-    /// Sagittal slice index
-    SPTR(::fwData::Integer) m_sagittalIndex;
-
-    /// Pull Worker
+    /// Contains the worker that pull series from the PACS.
     ::fwThread::Worker::sptr m_pullSeriesWorker;
 
-    /// Series enquirer
-    ::fwPacsIO::SeriesEnquirer::sptr m_seriesEnquirer;
-
-    /// Timer used to generate the new slice selection delay
+    /// Contains the timer used to generate the new slice selection delay.
     SPTR(::fwThread::Timer) m_delayTimer2;
 
-    /// Delay
-    unsigned int m_delay;
+    /// Defines the delay to wait between each slice move.
+    unsigned int m_delay { 500 };
 
-    /// Optional configuration to set to reader implementation
+    /// Contains the optional configuration to set to reader implementation.
     SPTR(::fwRuntime::ConfigurationElement) m_readerConfig;
 };
 
