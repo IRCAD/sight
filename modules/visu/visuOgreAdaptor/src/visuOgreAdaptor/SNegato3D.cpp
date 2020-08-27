@@ -383,7 +383,14 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist", image);
     const ::fwData::mt::ObjectReadLock imgLock(image);
 
-    const auto& imgSize = image->getSize2();
+    auto imgSize = image->getSize2();
+
+    // Sometime, the image can have only one slice,
+    // it result to a divide by 0 when the range is transform between [0-1].
+    // So we increase to image size to 2 to divide by 1.
+    imgSize[0] = imgSize[0] == 1 ? 2 : imgSize[0];
+    imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
+    imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
 
     const ::Ogre::Vector3 sliceIndices = {
         static_cast<float>(_sagittalIndex ) / (static_cast<float>(imgSize[0] - 1)),
