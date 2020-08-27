@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2017 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,18 +45,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    //Hack: force link with arData
-    ::arData::Camera::sptr obj = ::arData::Camera::New();
-    obj->getClassname();
-
-    //Force link with fwDataCamp
-    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-
-    //Force link with fwMedDataCamp
-    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-
-    //Force link with arDataCamp
-    m_arDataVersion = ::arDataCamp::Version::s_CURRENT_VERSION;
 }
 
 //------------------------------------------------------------------------------
