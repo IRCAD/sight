@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ namespace editor
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -114,6 +114,7 @@ void SSelector::starting()
     m_selectorWidget->setInsertMode(m_insertMode);
 
     QVBoxLayout* layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_selectorWidget);
     qtContainer->setLayout(layout);
 
