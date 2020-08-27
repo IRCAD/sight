@@ -30,7 +30,7 @@
 #include <QBoxLayout>
 #include <QTimer>
 
-fwGuiRegisterMacro(::fwGuiQt::dialog::NotificationDialog, ::fwGui::dialog::INotificationDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(::fwGuiQt::dialog::NotificationDialog, ::fwGui::dialog::INotificationDialog::REGISTRY_KEY)
 
 namespace fwGuiQt
 {
@@ -135,7 +135,7 @@ void NotificationDialog::show()
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
-                       const int height  = static_cast<int>(m_size[0]/2) + margin;
+                       const int height  = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - static_cast<int>(m_size[0] / 2),
                                      parentY + margin + (height * m_index));
@@ -148,7 +148,7 @@ void NotificationDialog::show()
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
-                       const int height  = static_cast<int>(m_size[0]/2) + margin;
+                       const int height  = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - static_cast<int>(m_size[0] / 2),
                                      parentY - margin - (height * (m_index+1)));
@@ -161,7 +161,7 @@ void NotificationDialog::show()
                        const auto parrentTopLeft = _parent->mapToGlobal(_parent->rect().topLeft());
                        const int parentX         = parrentTopLeft.x();
                        const int parentY         = parrentTopLeft.y();
-                       const int height          = static_cast<int>(m_size[0]/2) + margin;
+                       const int height          = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX + margin,
                                      parentY + margin + (height * m_index));
@@ -174,7 +174,7 @@ void NotificationDialog::show()
                        const auto parrentTopRight = _parent->mapToGlobal(_parent->rect().topRight());
                        const int parentX          = parrentTopRight.x();
                        const int parentY          = parrentTopRight.y();
-                       const int height           = static_cast<int>(m_size[0]/2) + margin;
+                       const int height           = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - margin - static_cast<int>(m_size[0]),
                                      parentY + margin + (height * m_index));
@@ -187,7 +187,7 @@ void NotificationDialog::show()
                        const auto parrentBottomLeft = _parent->mapToGlobal(_parent->rect().bottomLeft());
                        const int parentX            = parrentBottomLeft.x();
                        const int parentY            = parrentBottomLeft.y();
-                       const int height             = static_cast<int>(m_size[0]/2) + margin;
+                       const int height             = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX + margin,
                                      parentY - (height * (m_index+1)));
@@ -200,7 +200,7 @@ void NotificationDialog::show()
                        const auto parrentBottomRight = _parent->mapToGlobal(_parent->rect().bottomRight());
                        const int parentX             = parrentBottomRight.x();
                        const int parentY             = parrentBottomRight.y();
-                       const int height              = static_cast<int>(m_size[0]/2) + margin;
+                       const int height              = static_cast<int>(m_size[1]) + margin;
 
                        return QPoint(parentX - margin - static_cast<int>(m_size[0]),
                                      parentY - (height * (m_index+1)));
@@ -268,5 +268,5 @@ void NotificationDialog::close() const
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-} // namespace fwGuiQt
+} // namespace dialog.
+} // namespace fwGuiQt.

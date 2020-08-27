@@ -210,5 +210,5 @@ private:
 
 };
 
-} // namespace dialog
-} // namespace fwGuiQt
+} // namespace dialog.
+} // namespace fwGuiQt.
