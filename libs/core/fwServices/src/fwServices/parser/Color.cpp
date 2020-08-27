@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include "dataReg/parser/Color.hpp"
+#include "fwServices/parser/Color.hpp"
+
+#include <fwServices/macros.hpp>
 
 #include <fwData/Color.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-
-#include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro(::fwServices::IXMLParser, ::dataReg::parser::Color)
 fwServicesRegisterObjectMacro(::dataReg::parser::Color, ::fwData::Color)

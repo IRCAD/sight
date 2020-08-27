@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "dataReg/config.hpp"
+#include "fwData/config.hpp"
 
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/IXMLParser.hpp>
@@ -42,19 +42,19 @@ namespace parser
  * ::fwTools::Object implementation (for homogeneity).
  *
  */
-class DATAREG_CLASS_API Object : public ::fwServices::IXMLParser
+class FWSERVICES_CLASS_API Object : public ::fwServices::IXMLParser
 {
 public:
-    fwCoreServiceMacro(Object, ::fwServices::IXMLParser);
+    fwCoreServiceMacro(Object, ::fwServices::IXMLParser)
 
-    DATAREG_API Object( );
-    DATAREG_API virtual ~Object();
+    FWSERVICES_API Object( );
+    FWSERVICES_API virtual ~Object();
 
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
-    DATAREG_API void startConfig() override;
-    DATAREG_API void updateConfig() override;
-    DATAREG_API void stopConfig() override;
-    DATAREG_API void destroyConfig() override;
+    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj ) override;
+    FWSERVICES_API void startConfig() override;
+    FWSERVICES_API void updateConfig() override;
+    FWSERVICES_API void stopConfig() override;
+    FWSERVICES_API void destroyConfig() override;
 
 protected:
 

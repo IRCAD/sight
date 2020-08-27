@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "dataReg/config.hpp"
-
-#include <fwRuntime/ConfigurationElement.hpp>
+#include "fwData/config.hpp"
 
 #include <fwServices/IXMLParser.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
@@ -36,28 +36,28 @@ namespace dataReg
 namespace parser
 {
 /**
- * @brief   Specific service for the construction of a TransformationMatrix3D and its associated services from an
- * XML-based description.
+ * @brief   Specific service for the construction of a GenericField and its associated services from an XML-based
+ * description.
  * @see     ::fwServices::IXMLParser
  */
-class DATAREG_CLASS_API TransformationMatrix3D : public ::fwServices::IXMLParser
+class FWSERVICES_CLASS_API GenericField  : public ::fwServices::IXMLParser
 {
 
 public:
 
-    fwCoreServiceMacro(TransformationMatrix3D, ::fwServices::IXMLParser);
+    fwCoreServiceMacro(GenericField, ::fwServices::IXMLParser)
 
     /// Constructor : does nothing.
-    TransformationMatrix3D()
+    GenericField()
     {
     }
 
     /// Destructor : does nothing.
-    virtual ~TransformationMatrix3D()
+    virtual ~GenericField()
     {
     }
 
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
+    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 protected:
 
     /**
@@ -66,8 +66,44 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    DATAREG_API virtual void updating( ) override;
+    FWSERVICES_API virtual void updating( ) override;
 
+};
+
+/**
+ * @brief Specialisation of GenericField parser for boolean
+ */
+class BooleanParser : public GenericField
+{
+public:
+    fwCoreServiceMacro(BooleanParser, ::fwServices::IXMLParser)
+};
+
+/**
+ * @brief Specialisation of GenericField parser for integer
+ */
+class IntegerParser : public GenericField
+{
+public:
+    fwCoreServiceMacro(IntegerParser, ::fwServices::IXMLParser)
+};
+
+/**
+ * @brief Specialisation of GenericField parser for float
+ */
+class FloatParser : public GenericField
+{
+public:
+    fwCoreServiceMacro(FloatParser, ::fwServices::IXMLParser)
+};
+
+/**
+ * @brief Specialisation of GenericField parser for string
+ */
+class StringParser : public GenericField
+{
+public:
+    fwCoreServiceMacro(StringParser, ::fwServices::IXMLParser)
 };
 
 } //namespace parser

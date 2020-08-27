@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "dataReg/config.hpp"
+#include "fwData/config.hpp"
 
 #include <fwServices/IXMLParser.hpp>
 
@@ -46,7 +46,7 @@ namespace parser
  * @subsection Configuration Configuration
  * - \b value (optional, hexadecimal, default=#FFFFFF): color sets to the data.
  */
-class DATAREG_CLASS_API Color final : public ::fwServices::IXMLParser
+class FWSERVICES_CLASS_API Color final : public ::fwServices::IXMLParser
 {
 
 public:
@@ -55,12 +55,12 @@ public:
     fwCoreServiceMacro(Color, ::fwServices::IXMLParser)
 
     /// Does nothing.
-    DATAREG_API Color()
+    FWSERVICES_API Color()
     {
     }
 
     /// Does nothing.
-    DATAREG_API virtual ~Color()
+    FWSERVICES_API virtual ~Color()
     {
     }
 

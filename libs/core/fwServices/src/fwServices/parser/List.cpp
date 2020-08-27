@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include "dataReg/parser/Composite.hpp"
-
-#include <fwData/Composite.hpp>
+#include "fwServices/parser/List.hpp"
 
 #include <fwServices/macros.hpp>
 
+#include <fwData/List.hpp>
+
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::Composite, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::List, ::fwData::List )
 
 namespace dataReg
 {
@@ -37,7 +37,7 @@ namespace parser
 
 //------------------------------------------------------------------------------
 
-bool Composite::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement )
+bool List::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement )
 {
     bool isOk = true;
 
@@ -51,7 +51,7 @@ bool Composite::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfg
         {
             OSLM_ERROR(
                 "xml subelement \""<< subElementName <<
-                "\" for element object is not supported for the moment when you use a reference on item composite.");
+                    "\" for element object is not supported for the moment when you use a reference on item List.");
             isOk = false;
         }
     }
@@ -61,22 +61,22 @@ bool Composite::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfg
 
 //------------------------------------------------------------------------------
 
-void Composite::updating()
+void List::updating( )
 {
-    SLM_FATAL("This method is deprecated, and this, shouldn't be used.");
+    SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
 
-void Composite::createConfig( ::fwTools::Object::sptr _obj )
+void List::createConfig( ::fwTools::Object::sptr _obj )
 {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
     const std::string BUILD_OBJECT      = "new";
     const std::string GET_OBJECT        = "ref";
 
-    ::fwData::Composite::sptr dataComposite = ::fwData::Composite::dynamicCast(_obj);
-    SLM_ASSERT("The passed object must be a fwData::Composite", dataComposite);
+    ::fwData::List::sptr dataList = ::fwData::List::dynamicCast(_obj);
+    SLM_ASSERT("The passed object must be a fwData::List", dataList);
 
     for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -94,19 +94,8 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
                              buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
-            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" .",
-                        elem->hasAttribute("key") );
-            std::string key = elem->getExistingAttributeValue("key");
-            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" which is not empty.",
-                        !key.empty() );
-            SLM_ASSERT( "The xml element \"item\" must have one (and only one) xml sub-element \"object\".",
-                        elem->size() == 1 && (*elem->getElements().begin())->getName() == "object" );
-
             if( buildMode == BUILD_OBJECT )
             {
-                // Test if key already exist in composite
-                OSLM_ASSERT("The key "<< key <<" already exists in the composite.", dataComposite->find(
-                                key ) == dataComposite->end() );
 
                 // Create and manage object config
                 ::fwServices::IAppConfigManager::sptr ctm = ::fwServices::IAppConfigManager::New();
@@ -117,8 +106,8 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
                 ::fwData::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
-                SLM_ASSERT("A ::fwData::Composite can contain only ::fwData::Object", localObj );
-                (*dataComposite)[ key ] = localObj;
+                SLM_ASSERT("A ::fwData::List can contain only ::fwData::Object", localObj );
+                dataList->getContainer().push_back( localObj );
 
             }
             else // if( buildMode == GET_OBJECT )
@@ -131,7 +120,7 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
 
 //------------------------------------------------------------------------------
 
-void Composite::startConfig()
+void List::startConfig()
 {
     for( ::fwServices::IAppConfigManager::sptr ctm :  m_ctmContainer )
     {
@@ -141,7 +130,7 @@ void Composite::startConfig()
 
 //------------------------------------------------------------------------------
 
-void Composite::updateConfig()
+void List::updateConfig()
 {
     for( ::fwServices::IAppConfigManager::sptr ctm :  m_ctmContainer )
     {
@@ -151,7 +140,7 @@ void Composite::updateConfig()
 
 //------------------------------------------------------------------------------
 
-void Composite::stopConfig()
+void List::stopConfig()
 {
     BOOST_REVERSE_FOREACH( ::fwServices::IAppConfigManager::sptr ctm, m_ctmContainer )
     {
@@ -161,7 +150,7 @@ void Composite::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void Composite::destroyConfig()
+void List::destroyConfig()
 {
     BOOST_REVERSE_FOREACH( ::fwServices::IAppConfigManager::sptr ctm, m_ctmContainer )
     {
@@ -174,4 +163,3 @@ void Composite::destroyConfig()
 
 } //namespace parser
 } //namespace dataReg
-

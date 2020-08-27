@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "dataReg/config.hpp"
+#include "fwData/config.hpp"
 
 #include <fwServices/IXMLParser.hpp>
 
@@ -35,7 +35,7 @@ namespace parser
  * description.
  * @see     ::fwServices::IXMLParser
  */
-class DATAREG_CLASS_API TransferFunction : public ::fwServices::IXMLParser
+class FWSERVICES_CLASS_API TransferFunction : public ::fwServices::IXMLParser
 {
 
 public:
@@ -81,7 +81,7 @@ public:
        @endcode
      *
      */
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
+    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 protected:
 
     /**
@@ -90,7 +90,7 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    DATAREG_API virtual void updating( ) override;
+    FWSERVICES_API virtual void updating( ) override;
 
 };
 

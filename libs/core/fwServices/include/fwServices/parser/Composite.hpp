@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include "dataReg/config.hpp"
-
-#include <fwRuntime/ConfigurationElement.hpp>
+#include "fwData/config.hpp"
 
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/IXMLParser.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
@@ -37,47 +37,48 @@ namespace dataReg
 namespace parser
 {
 /**
- * @brief   Specific service for the construction of a List and its associated services from an XML-based description.
+ * @brief   Specific service for the construction of a Composite and its associated services from an XML-based
+ * description.
  * @see     ::fwServices::IXMLParser
  */
-class DATAREG_CLASS_API List : public ::fwServices::IXMLParser
+class FWSERVICES_CLASS_API Composite : public ::fwServices::IXMLParser
 {
 public:
 
-    fwCoreServiceMacro(List, ::fwServices::IXMLParser);
+    fwCoreServiceMacro(Composite, ::fwServices::IXMLParser)
 
     /**
      * @brief   Constructor : does nothing.
      */
-    List( )
+    Composite( )
     {
     }
 
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~List()
+    virtual ~Composite()
     {
     }
 
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
+    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 
-    DATAREG_API void startConfig() override;
+    FWSERVICES_API void startConfig() override;
 
-    DATAREG_API void updateConfig() override;
+    FWSERVICES_API void updateConfig() override;
 
-    DATAREG_API void stopConfig() override;
+    FWSERVICES_API void stopConfig() override;
 
-    DATAREG_API void destroyConfig() override;
+    FWSERVICES_API void destroyConfig() override;
 
 protected:
 
     /**
-     * @brief   Updating method : create List object.
+     * @brief   Updating method : create composite object.
      *
-     * Parse the List configuration element to configure and add its objects.
+     * Parse the composite configuration element to configure and add its objects.
      */
-    DATAREG_API virtual void updating( ) override;
+    FWSERVICES_API virtual void updating( ) override;
 
 private:
 

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2016 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,9 @@
  *
  ***********************************************************************/
 
-#include "dataReg/parser/GenericField.hpp"
+#include "fwServices/parser/GenericField.hpp"
+
+#include <fwServices/macros.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
@@ -28,17 +30,13 @@
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/macros.hpp>
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::BooleanParser, ::fwData::Boolean )
 
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::IntegerParser, ::fwData::Integer )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::BooleanParser, ::fwData::Boolean );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::FloatParser, ::fwData::Float )
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::IntegerParser, ::fwData::Integer );
-
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::FloatParser, ::fwData::Float );
-
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::StringParser, ::fwData::String );
-
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::StringParser, ::fwData::String )
 
 namespace dataReg
 {
@@ -74,4 +72,3 @@ void GenericField::createConfig( ::fwTools::Object::sptr _obj )
 
 } //namespace parser
 } //namespace dataReg
-

@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "dataReg/parser/TransferFunction.hpp"
+#include "fwServices/parser/TransferFunction.hpp"
+
+#include <fwServices/macros.hpp>
 
 #include <fwData/Color.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwRuntime/Convert.hpp>
-
-#include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::TransferFunction, ::fwData::TransferFunction )
 

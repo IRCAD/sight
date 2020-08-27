@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2017 IRCAD France
- * Copyright (C) 2012-2017 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include "dataReg/parser/Object.hpp"
+#include "fwServices/parser/Object.hpp"
 
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::Object, ::fwData::Object );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::Object, ::fwData::Object )
 
 namespace dataReg
 {
@@ -59,7 +59,7 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
         {
             OSLM_ERROR(
                 "xml subelement \""<< subElementName <<
-                "\" for element object is not supported for the moment when you use a reference on item composite.");
+                    "\" for element object is not supported for the moment when you use a reference on item composite.");
             isOk = false;
         }
     }
@@ -181,4 +181,3 @@ void Object::destroyConfig()
 
 } //namespace parser
 } //namespace dataReg
-
