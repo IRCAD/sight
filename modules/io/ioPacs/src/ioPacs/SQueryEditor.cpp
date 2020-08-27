@@ -252,7 +252,7 @@ void SQueryEditor::executeQuery()
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
             ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't connect to the PACS");
         return;
@@ -423,7 +423,7 @@ void SQueryEditor::executeQuery()
     catch(const ::fwPacsIO::exceptions::Base& _e)
     {
         SLM_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
             ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't execture query");
     }

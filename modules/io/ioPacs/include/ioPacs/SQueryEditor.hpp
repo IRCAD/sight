@@ -46,7 +46,6 @@ namespace ioPacs
  * Queries results are stored in a SeriesDB where each Series is a DicomSeries.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
         <service type="::ioPacs::SQueryEditor">
             <in key="pacsConfig" uid="..." />
