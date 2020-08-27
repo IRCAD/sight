@@ -46,14 +46,19 @@ namespace ioPacs
  * @brief This editor is used to edit a pacs configuration.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
     <service type="::ioPacs::SPacsConfigurationEditor">
         <inout key="config" uid="..." />
+        <config showDialog="true" />
     </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b config [::fwPacsIO::data::PacsConfiguration]: pacs configuration.
+ *
+ * @subsection Configuration Configuration:
+ * - \b showDialog (optional, bool, default=true): display dialog message for the ping result, or just sent the
+ *                                                 notification.
  */
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
                                                   public ::fwGui::editor::IEditor
@@ -122,6 +127,9 @@ private:
 
     /// Contains the test button, sends a C-ECHO request to the PACS.
     QPointer< QPushButton > m_pingPacsButtonWidget;
+
+    /// Defines if the dialog message must be show or not for the ping result.
+    bool m_showDialog { true };
 
 private Q_SLOTS:
 

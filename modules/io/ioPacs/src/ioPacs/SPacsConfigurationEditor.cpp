@@ -42,6 +42,8 @@
 namespace ioPacs
 {
 
+static const ::fwServices::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
+
 static const ::fwServices::IService::KeyType s_CONFIG_INOUT = "config";
 
 //------------------------------------------------------------------------------
@@ -60,6 +62,14 @@ SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
 void SPacsConfigurationEditor::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
+
+    const ConfigType configType = this->getConfigTree();
+    const auto config           = configType.get_child_optional("config.<xmlattr>");
+
+    if(config)
+    {
+        m_showDialog = config->get< bool >(s_SHOW_DIALOG_CONFIG, m_showDialog);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -221,20 +231,37 @@ void SPacsConfigurationEditor::pingPACS()
     }
 
     // Display a message with the ping result.
-    ::fwGui::dialog::MessageDialog messageBox;
-    messageBox.setTitle("Ping Pacs");
+    if(m_showDialog)
+    {
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Ping Pacs");
+        if(success)
+        {
+            messageBox.setMessage("Ping succeed !");
+        }
+        else
+        {
+            messageBox.setMessage("Ping failed !");
+        }
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.show();
+    }
+
     if(success)
     {
-        messageBox.setMessage( "Ping succeed !" );
+        const auto notif = this->signal< ::fwServices::IService::SuccessNotifiedSignalType >(
+            ::fwServices::IService::s_SUCCESS_NOTIFIED_SIG);
+        notif->asyncEmit("Ping succeed !");
+        SLM_INFO("Ping succeed")
     }
     else
     {
-        messageBox.setMessage( "Ping failed !" );
+        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        notif->asyncEmit("Ping failed !");
+        SLM_INFO("Ping failed")
     }
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-    messageBox.show();
-
 }
 
 //------------------------------------------------------------------------------
@@ -258,7 +285,7 @@ void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 
     pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitleEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -270,7 +297,7 @@ void SPacsConfigurationEditor::onSCPHostNameChanged()
     SLM_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
     pacsConfiguration->setPacsHostName(m_SCPHostNameEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -284,7 +311,7 @@ void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 
     pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitleEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -297,7 +324,7 @@ void SPacsConfigurationEditor::onSCPPortChanged(int value)
 
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -310,7 +337,7 @@ void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 
     pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitleEdit->text().toStdString());
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -323,7 +350,7 @@ void SPacsConfigurationEditor::onMovePortChanged(int _value)
 
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(_value));
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -339,7 +366,7 @@ void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
          0) ? (::fwPacsIO::data::PacsConfiguration::MOVE_RETRIEVE_METHOD): (::fwPacsIO::data::PacsConfiguration::
                                                                             GET_RETRIEVE_METHOD));
 
-    modifiedNotify(pacsConfiguration);
+    this->modifiedNotify(pacsConfiguration);
 }
 
 } // namespace ioPacs

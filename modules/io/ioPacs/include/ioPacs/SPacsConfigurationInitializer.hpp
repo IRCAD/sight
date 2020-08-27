@@ -37,7 +37,6 @@ namespace ioPacs
  * @brief This service is used to initialize a PACS Configuration data and synchronize it with a preference key.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
         <service type="::ioPacs::SPacsConfigurationInitializer">
             <inout key="config" uid="..." />
@@ -53,6 +52,7 @@ namespace ioPacs
             />
        </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b config [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
  *
